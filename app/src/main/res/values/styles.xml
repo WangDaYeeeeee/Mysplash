@@ -1,0 +1,79 @@
+<resources>
+
+    <!-- activity & fragment themes. -->
+    <style name="MysplashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="root_color">@color/colorRoot</item>
+        <item name="line_color">@color/colorLine</item>
+        <item name="title_color">@color/colorTextDark</item>
+        <item name="subtitle_color">@color/colorTextGrey</item>
+        <item name="content_color">@color/colorTextDark2nd</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <!-- app bar. -->
+    <style name="MysplashAppBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">?attr/content_color</item>
+        <item name="android:textColorSecondary">?attr/content_color</item>
+    </style>
+    <style name="MySplashPopupTheme" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- Text -->
+
+    <style name="large_title_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/large_title_text_size</item>
+        <item name="android:textColor">?attr/title_color</item>
+    </style>
+
+    <style name="title_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+        <item name="android:textColor">?attr/title_color</item>
+    </style>
+
+    <style name="subtitle_text">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/subtitle_text_size</item>
+        <item name="android:textColor">?attr/subtitle_color</item>
+    </style>
+
+    <style name="content_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/content_text_size</item>
+        <item name="android:textColor">?attr/content_color</item>
+    </style>
+
+    <!-- button -->
+    <style name="material_button" parent="@style/Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/subtitle_text_size</item>
+        <item name="android:textColor">?attr/colorAccent</item>
+    </style>
+
+    <style name="material_image_button">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:padding">@dimen/little_margin</item>
+        <item name="android:layout_margin">@dimen/little_margin</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    </style>
+
+    <!-- image -->
+    <style name="material_icon">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/normal_margin</item>
+    </style>
+
+</resources>

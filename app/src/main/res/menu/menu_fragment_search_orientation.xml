@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_orientation_landscape"
+        android:orderInCategory="100"
+        android:title="@string/action_orientation_landscape" />
+
+    <item
+        android:id="@+id/action_orientation_portrait"
+        android:orderInCategory="100"
+        android:title="@string/action_orientation_portrait" />
+
+    <item
+        android:id="@+id/action_orientation_square"
+        android:orderInCategory="100"
+        android:title="@string/action_orientation_square" />
+
+</menu>
