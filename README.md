@@ -17,8 +17,6 @@
 * 每10小时刷新10张摄影图片
 * 每10天推出10张优秀作品
 
-
-
 ### 历史纪录
 
 [所有的安装包都在这里](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
