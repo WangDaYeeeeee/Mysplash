@@ -19,9 +19,16 @@
 
 ### 历史纪录
 
-[所有的安装包都在这里](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
+* [所有的安装包都在这里](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
+* 安装包从v1.0.0开始收录
   
 ### 联系作者
 
 * wangdayeeeeee@gmail.com
 * [酷安Mysplash主页](http://www.coolapk.com/apk/com.wangdaye.mysplash)
+* 欢迎给作者提出意见、反馈bug、建议功能等
+
+### 近期计划
+* 由于刚刚上线，近期将会把重点放在修复bug上
+* 更多的功能点会在后期缓慢跟进
+* 更多api也会在后期缓慢跟进
