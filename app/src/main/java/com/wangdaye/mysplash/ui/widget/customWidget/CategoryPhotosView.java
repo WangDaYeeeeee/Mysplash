@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.ui.widget.widgetGroup.MainActivity;
+package com.wangdaye.mysplash.ui.widget.customWidget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,7 +6,9 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,16 +19,21 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.data.constant.Mysplash;
 import com.wangdaye.mysplash.data.unslpash.api.PhotoApi;
 import com.wangdaye.mysplash.data.unslpash.model.Photo;
+import com.wangdaye.mysplash.data.unslpash.model.SimplifiedPhoto;
 import com.wangdaye.mysplash.data.unslpash.service.PhotoService;
+import com.wangdaye.mysplash.ui.activity.PhotoActivity;
 import com.wangdaye.mysplash.ui.adapter.PhotosAdapter;
 import com.wangdaye.mysplash.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.utils.OrderAndCategoryUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,30 +42,34 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Home page view. (for home fragment's view pager)
+ * Category photos view.
  * */
 
-public class HomePageView extends FrameLayout
+public class CategoryPhotosView extends FrameLayout
         implements View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         PhotosAdapter.OnItemClickListener, PhotoService.OnRequestPhotosListener {
     // widget
     private RelativeLayout loadingView;
     private CircularProgressView progressView;
     private RelativeLayout feedbackContainer;
+    private TextView feedbackText;
 
     private BothWaySwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
 
-    // data
-    private PhotosAdapter adapter;
-    private boolean loadingData = false;
-    private int photoPage = 0;
-    private String photoOrder = PhotoApi.ORDER_BY_LATEST;
+    private OnStartActivityCallback callback;
 
-    private int type = NEW_TYPE;
-    public static final int NEW_TYPE = 1;
-    public static final int FEATURED_TYPE = 2;
-    public static final int COLLECTIONS_TYPE = 3;
+    // data
+    private PhotoService service;
+
+    private PhotosAdapter adapter;
+    private boolean normalMode = true;
+    private boolean loadingData = false;
+    private boolean loadFinish = false;
+    private int photoPage = 0;
+    private List<Integer> pageList;
+
+    private int photoCategoryId = Mysplash.CATEGORY_BUILDINGS_ID;
 
     private int state = INIT_LOADING_STATE;
     public static final int INIT_LOADING_STATE = 0;
@@ -68,37 +79,35 @@ public class HomePageView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomePageView(Context context, int type, String order) {
+    public CategoryPhotosView(Context context) {
         super(context);
-        this.initialize(type, order);
+        this.initialize();
     }
 
-    public HomePageView(Context context, AttributeSet attrs) {
+    public CategoryPhotosView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.initialize(NEW_TYPE, PhotoApi.ORDER_BY_LATEST);
+        this.initialize();
     }
 
-    public HomePageView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CategoryPhotosView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.initialize(NEW_TYPE, PhotoApi.ORDER_BY_LATEST);
+        this.initialize();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public HomePageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public CategoryPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize(NEW_TYPE, PhotoApi.ORDER_BY_LATEST);
+        this.initialize();
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(int type, String order) {
+    private void initialize() {
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
-        addView(loadingView);
+        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_in_category_view_large, null);
+        addView(searchingView);
 
-        setType(type);
-        setOrder(order);
         initData();
         initWidget();
     }
@@ -124,19 +133,21 @@ public class HomePageView extends FrameLayout
     }
 
     private void initLoadingView() {
-        this.loadingView = (RelativeLayout) findViewById(R.id.container_loading_view_large);
-        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_large_progressView);
+        this.loadingView = (RelativeLayout) findViewById(R.id.container_loading_in_category_view_large);
+        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_in_category_view_large_progressView);
 
-        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_view_large_feedbackContainer);
+        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_in_category_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
 
-        ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
+        ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_in_category_view_large_feedbackImg);
         Glide.with(getContext())
-                .load(R.drawable.feedback_load_failed)
+                .load(R.drawable.feedback_category_photo)
                 .dontAnimate()
                 .into(feedbackImg);
 
-        Button retryButton = (Button) findViewById(R.id.container_loading_view_large_feedbackBtn);
+        this.feedbackText = (TextView) findViewById(R.id.container_loading_in_category_view_large_feedbackTxt);
+
+        Button retryButton = (Button) findViewById(R.id.container_loading_in_category_view_large_feedbackBtn);
         retryButton.setOnClickListener(this);
     }
 
@@ -194,7 +205,8 @@ public class HomePageView extends FrameLayout
 
     private void refreshNew() {
         refreshLayout.setRefreshing(true);
-        requestPhotos(1);
+        requestPhotos(1, true);
+        adapter.cancelService();
     }
 
     // anim.
@@ -236,66 +248,77 @@ public class HomePageView extends FrameLayout
     private void initData() {
         this.adapter = new PhotosAdapter(getContext(), new ArrayList<Photo>());
         adapter.setOnItemClickListener(this);
+
+        this.service = PhotoService.getService()
+                .buildClient();
     }
 
-    public void setType(int type) {
-        this.type = type;
+    public void setMode(boolean normalMode) {
+        this.normalMode = normalMode;
     }
 
-    public void setOrder(String order) {
-        this.photoOrder = order;
-    }
-
-    // check
-
-    public boolean cheekNeedRefresh() {
-        return adapter.getItemCount() <= 0 && !loadingData;
-    }
-
-    public boolean cheekNeedChangOrder(String order) {
-        return !photoOrder.equals(order);
+    public void setCategory(int category) {
+        this.photoCategoryId = category;
     }
 
     // request data.
 
-    private void requestPhotos(int page) {
-        if (!loadingData) {
-            loadingData = true;
-            switch (type) {
-                case NEW_TYPE:
-                    PhotoService.getService()
-                            .buildClient()
-                            .requestPhotos(
-                                    page,
-                                    PhotoApi.DEFAULT_PER_PAGE,
-                                    photoOrder,
-                                    this);
-                    break;
-
-                case FEATURED_TYPE:
-                    PhotoService.getService()
-                            .buildClient()
-                            .requestCuratePhotos(
-                                    page,
-                                    PhotoApi.DEFAULT_PER_PAGE,
-                                    photoOrder,
-                                    this);
-                    break;
-
-                case COLLECTIONS_TYPE:
-                    break;
-            }
+    private void requestPhotos(int page, boolean refresh) {
+        if (normalMode) {
+            requestPhotosOrder(page, refresh);
+        } else {
+            requestPhotosRandom(page, refresh);
         }
     }
 
+    private void requestPhotosOrder(int page, boolean refresh) {
+        service.requestPhotosInAGivenCategory(
+                photoCategoryId,
+                page,
+                PhotoApi.DEFAULT_PER_PAGE,
+                refresh,
+                this);
+    }
+
+    private void requestPhotosRandom(int page, boolean refresh) {
+        if (refresh) {
+            this.pageList = OrderAndCategoryUtils.getPositionListByCategory(photoCategoryId);
+        }
+        service.requestPhotosInAGivenCategory(
+                photoCategoryId,
+                pageList.get(page - 1),
+                PhotoApi.DEFAULT_PER_PAGE,
+                refresh,
+                this);
+    }
+
+    // check.
+
+    public void cancelRequest() {
+        if (service != null) {
+            service.cancel();
+        }
+        adapter.cancelService();
+    }
+
     /** <br> interface. */
+
+    // on start activity callback.
+
+    public interface OnStartActivityCallback {
+        void startActivity(Intent intent, View view);
+    }
+
+    public void setOnStartActivityCallback(OnStartActivityCallback c) {
+        this.callback = c;
+    }
 
     // on click listener.
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.container_loading_view_large_feedbackBtn:
+            case R.id.container_loading_in_category_view_large_feedbackBtn:
                 initRefresh();
                 break;
         }
@@ -307,6 +330,17 @@ public class HomePageView extends FrameLayout
     public void onItemClick(View v, int position) {
         switch (v.getId()) {
             case R.id.item_photo_card:
+                if (callback != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(
+                            getContext().getString(R.string.intent_key_photo),
+                            new SimplifiedPhoto(adapter.getItemList().get(position)));
+
+                    Intent intent = new Intent(getContext(), PhotoActivity.class);
+                    intent.putExtras(bundle);
+
+                    callback.startActivity(intent, v);
+                }
                 break;
         }
     }
@@ -315,12 +349,12 @@ public class HomePageView extends FrameLayout
 
     @Override
     public void onRefresh() {
-        requestPhotos(1);
+        requestPhotos(1, true);
     }
 
     @Override
     public void onLoad() {
-        requestPhotos(photoPage + 1);
+        requestPhotos(photoPage + 1, false);
     }
 
     // on scroll listener.
@@ -336,8 +370,8 @@ public class HomePageView extends FrameLayout
             super.onScrolled(recyclerView, dx, dy);
             int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
             int totalItemCount = recyclerView.getAdapter().getItemCount();
-            if (!loadingData && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-                requestPhotos(photoPage + 1);
+            if (!loadingData && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0 && !loadFinish) {
+                requestPhotos(photoPage + 1, false);
             }
 
             if (loadingData && totalItemCount > 0 && ViewCompat.canScrollVertically(recyclerView, 1)) {
@@ -349,28 +383,88 @@ public class HomePageView extends FrameLayout
     // on request photos listener.
 
     @Override
-    public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response, int page) {
+    public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response, int page, boolean refresh) {
+        if (normalMode) {
+            onRequestPhotosOrderSuccess(response, page, refresh);
+        } else {
+            onRequestPhotosRandomSuccess(response, refresh);
+        }
+    }
+
+    private void onRequestPhotosOrderSuccess(Response<List<Photo>> response, int page, boolean refresh) {
         this.loadingData = false;
-        this.photoPage = page;
-        setState(NORMAL_DISPLAY_STATE);
-        if (page == 1) {
+        if (refresh) {
+            loadFinish = false;
+            refreshLayout.setPermitLoad(true);
             refreshLayout.setRefreshing(false);
             adapter.clearItem();
         } else {
             refreshLayout.setLoading(false);
         }
-        if (response.isSuccessful()) {
+        if (response.isSuccessful() && adapter.getItemCount() + response.body().size() > 0) {
+            this.photoPage = page;
             for (int i = 0; i < response.body().size(); i ++) {
                 adapter.insertItem(response.body().get(i));
             }
+            setState(NORMAL_DISPLAY_STATE);
+            if (response.body().size() < PhotoApi.DEFAULT_PER_PAGE) {
+                loadFinish = true;
+                refreshLayout.setPermitLoad(false);
+                if (response.body().size() == 0) {
+                    Toast.makeText(
+                            getContext(),
+                            getContext().getString(R.string.feedback_is_over) + "\n" + response.message(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            feedbackText.setText(R.string.feedback_load_nothing_tv);
+            setState(INIT_LOAD_FAILED_STATE);
+        }
+    }
+
+    private void onRequestPhotosRandomSuccess(Response<List<Photo>> response, boolean refresh) {
+        loadFinish = false;
+        if (refresh) {
+            loadFinish = false;
+            refreshLayout.setPermitLoad(true);
+            refreshLayout.setRefreshing(false);
+            adapter.clearItem();
+        } else {
+            refreshLayout.setLoading(false);
+        }
+        if (response.isSuccessful() && adapter.getItemCount() + response.body().size() > 0) {
+            if (refresh) {
+                photoPage = 1;
+            } else {
+                photoPage ++;
+            }
+            for (int i = 0; i < response.body().size(); i ++) {
+                adapter.insertItem(response.body().get(i));
+            }
+            setState(NORMAL_DISPLAY_STATE);
+            if (photoPage >= pageList.size()) {
+                loadFinish = true;
+                refreshLayout.setPermitLoad(false);
+                if (response.body().size() == 0) {
+                    Toast.makeText(
+                            getContext(),
+                            getContext().getString(R.string.feedback_is_over) + "\n" + response.message(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            feedbackText.setText(R.string.feedback_load_nothing_tv);
+            setState(INIT_LOAD_FAILED_STATE);
         }
     }
 
     @Override
-    public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t, int page) {
+    public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t, boolean refresh) {
         this.loadingData = false;
+        feedbackText.setText(R.string.feedback_load_failed_tv);
         setState(INIT_LOAD_FAILED_STATE);
-        if (page == 1) {
+        if (refresh) {
             refreshLayout.setRefreshing(false);
         } else {
             refreshLayout.setLoading(false);
@@ -378,7 +472,7 @@ public class HomePageView extends FrameLayout
         if (state == NORMAL_DISPLAY_STATE) {
             Toast.makeText(
                     getContext(),
-                    getContext().getString(R.string.feedback_loading_failed_toast) + "\n" + t.getMessage(),
+                    getContext().getString(R.string.feedback_load_failed_toast) + "\n" + t.getMessage(),
                     Toast.LENGTH_SHORT).show();
         }
     }

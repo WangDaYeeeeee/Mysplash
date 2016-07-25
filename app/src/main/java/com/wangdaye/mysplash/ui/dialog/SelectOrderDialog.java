@@ -3,12 +3,12 @@ package com.wangdaye.mysplash.ui.dialog;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.StyleRes;
 import android.support.design.widget.BottomSheetDialog;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.data.unslpash.api.PhotoApi;
@@ -23,23 +23,13 @@ public class SelectOrderDialog extends BottomSheetDialog implements View.OnClick
 
     /** <br> life cycle. */
 
-    public SelectOrderDialog(@NonNull Context context, String order) {
+    public SelectOrderDialog(@NonNull Context context, String order, boolean normalMode) {
         super(context);
-        this.initialize(order);
-    }
-
-    public SelectOrderDialog(@NonNull Context context, @StyleRes int theme) {
-        super(context, theme);
-        this.initialize(PhotoApi.ORDER_BY_LATEST);
-    }
-
-    protected SelectOrderDialog(@NonNull Context context, boolean cancelable, OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-        this.initialize(PhotoApi.ORDER_BY_LATEST);
+        this.initialize(order, normalMode);
     }
 
     @SuppressLint("SetTextI18n")
-    private void initialize(String order) {
+    private void initialize(String order, boolean normalMode) {
         setContentView(R.layout.dialog_select_order);
 
         ImageButton navigationIcon = (ImageButton) findViewById(R.id.dialog_select_order_navigationIcon);
@@ -56,6 +46,13 @@ public class SelectOrderDialog extends BottomSheetDialog implements View.OnClick
                 (RelativeLayout) findViewById(R.id.dialog_select_order_popular)};
         for (RelativeLayout orderContainer : orderContainers) {
             orderContainer.setOnClickListener(this);
+        }
+
+        if (!normalMode) {
+            Toast.makeText(
+                    getContext(),
+                    getContext().getString(R.string.feedback_random_effect),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

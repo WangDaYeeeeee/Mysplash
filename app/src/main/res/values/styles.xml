@@ -15,6 +15,20 @@
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
+    
+    <style name="MysplashTheme.Photo" parent="MysplashTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <style name="MysplashTheme.Settings" parent="MysplashTheme">
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <style name="MysplashTheme.About" parent="MysplashTheme">
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
 
     <!-- app bar. -->
     <style name="MysplashAppBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">

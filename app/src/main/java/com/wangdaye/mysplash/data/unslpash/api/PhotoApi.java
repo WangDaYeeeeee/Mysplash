@@ -1,12 +1,16 @@
 package com.wangdaye.mysplash.data.unslpash.api;
 
+import com.wangdaye.mysplash.data.unslpash.model.LikePhotoResult;
 import com.wangdaye.mysplash.data.unslpash.model.Photo;
 import com.wangdaye.mysplash.data.unslpash.model.PhotoStats;
 
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -16,13 +20,14 @@ import retrofit2.http.Query;
 public interface PhotoApi {
     // data.
     int DEFAULT_PER_PAGE = 30;
+    int RANDOM_PAGE_LIMIT = 100;
 
     String ORDER_BY_LATEST = "latest";
     String ORDER_BY_OLDEST = "oldest";
     String ORDER_BY_POPULAR = "popular";
 
     String LANDSCAPE_ORIENTATION = "landscape";
-    String PORTRAIT_ORIENTAION = "portrait";
+    String PORTRAIT_ORIENTATION = "portrait";
     String SQUARE_ORIENTATION = "square";
 
     /** <br> interface. */
@@ -45,4 +50,15 @@ public interface PhotoApi {
 
     @GET("photos/:id/stats")
     Call<PhotoStats> getPhotoStats(@Query("id") String id);
+
+    @GET("categories/{id}/photos")
+    Call<List<Photo>> getPhotosInAGivenCategory(@Path("id") int id,
+                                                @Query("page") int page,
+                                                @Query("per_page") int per_page);
+
+    @POST("photos/:id/like")
+    Call<LikePhotoResult> likeAPhoto(@Query("id") String id);
+
+    @DELETE("photos/:id/like")
+    Call<LikePhotoResult> unlikeAPhoto(@Query("id") String id);
 }

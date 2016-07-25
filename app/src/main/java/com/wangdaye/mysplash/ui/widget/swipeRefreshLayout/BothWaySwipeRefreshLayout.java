@@ -6,14 +6,9 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.NestedScrollingParent;
-import android.support.v4.view.NestedScrollingParentHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -21,24 +16,15 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
-import android.widget.AbsListView;
 
 /**
  * Both way swipe refresh layout.
  * */
 
-public class BothWaySwipeRefreshLayout extends ViewGroup
-        implements NestedScrollingParent, NestedScrollingChild {
+public class BothWaySwipeRefreshLayout extends ViewGroup {
     // direction
     public static final int DIRECTION_TOP = 0;
     public static final int DIRECTION_BOTTOM = 1;
-
-    // Maps to ProgressBar.Large style
-    public static final int LARGE = MaterialProgressDrawable.LARGE;
-    // Maps to ProgressBar default style
-    public static final int DEFAULT = MaterialProgressDrawable.DEFAULT;
-
-    private static final String LOG_TAG = BothWaySwipeRefreshLayout.class.getSimpleName();
 
     private static final int MAX_ALPHA = 255;
     private static final int STARTING_PROGRESS_ALPHA = (int) (.3f * MAX_ALPHA);
@@ -47,7 +33,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private static final int CIRCLE_DIAMETER_LARGE = 56;
 
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
-    private static final int INVALID_POINTER = -1;
     private static final float DRAG_RATE = .5f;
 
     // Max amount of circle that can be filled by progress during swipe gesture,
@@ -71,17 +56,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private OnRefreshAndLoadListener mListener;
     private boolean mRefreshing = false;
     private boolean mLoading = false;
+    private boolean mPermitRefresh = true;
+    private boolean mPermitLoad = true;
     private int mTouchSlop;
     private float mTotalDragDistance = -1;
-
-    // If nested scrolling is enabled, the total amount that needed to be
-    // consumed by this as the nested scrolling parent is used in place of the
-    // overscroll determined by MOVE events in the onTouch handler
-    private float mTotalUnconsumed;
-    private final NestedScrollingParentHelper mNestedScrollingParentHelper;
-    private final NestedScrollingChildHelper mNestedScrollingChildHelper;
-    private final int[] mParentScrollConsumed = new int[2];
-    private final int[] mParentOffsetInWindow = new int[2];
 
     private int mMediumAnimationDuration;
     private int mCurrentTargetOffsetTop;
@@ -91,7 +69,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private float mInitialMotionY;
     private float mInitialDownY;
     private boolean mIsBeingDragged;
-    private int mActivePointerId = INVALID_POINTER;
     // Whether this item is scaled up rather than clipped
     private boolean mScale;
 
@@ -177,10 +154,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         // the absolute offset has to take into account that the circle starts at an offset
         mSpinnerFinalOffset = DEFAULT_CIRCLE_TARGET * metrics.density;
         mTotalDragDistance = mSpinnerFinalOffset;
-        mNestedScrollingParentHelper = new NestedScrollingParentHelper(this);
-
-        mNestedScrollingChildHelper = new NestedScrollingChildHelper(this);
-        setNestedScrollingEnabled(true);
     }
 
     private void createProgressView() {
@@ -404,7 +377,9 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mReturningToStart = false;
         }
 
-        if (!isEnabled() || mReturningToStart || mRefreshing || mLoading) {
+        if (!isEnabled()
+                || mReturningToStart
+                || mRefreshing || mLoading) {
             // Fail fast if we're not in a state where a swipe is possible
             return false;
         }
@@ -414,16 +389,9 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
                 for (int i = 0; i < 2; i ++) {
                     setTargetOffsetTopAndBottom(i, mOriginalOffsetTop - mCircleViews[i].getTop(), true);
                 }
-                if (!canChildScrollUp() && mCircleViews[DIRECTION_BOTTOM].getVisibility() == VISIBLE) {
-                    mCircleViews[DIRECTION_BOTTOM].setVisibility(GONE);
-                }
-                if (!canChildScrollDown() && mCircleViews[DIRECTION_TOP].getVisibility() == VISIBLE) {
-                    mCircleViews[DIRECTION_TOP].setVisibility(GONE);
-                }
 
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mIsBeingDragged = false;
-                final float initialDownY = getMotionEventY(ev, mActivePointerId);
+                final float initialDownY = ev.getY();
                 if (initialDownY == -1) {
                     return false;
                 }
@@ -431,35 +399,21 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                if (mActivePointerId == INVALID_POINTER) {
-                    Log.e(LOG_TAG, "Got ACTION_MOVE event but don't have an active pointer id.");
-                    return false;
-                }
-
-                final float y = getMotionEventY(ev, mActivePointerId);
-                if (y == -1) {
-                    return false;
-                }
-                final float yDiff = y - mInitialDownY;
-                if (yDiff > mTouchSlop && !mIsBeingDragged && !canChildScrollUp()) {
+                final float yDiff = ev.getY() - mInitialDownY;
+                if (yDiff > mTouchSlop && !mIsBeingDragged && !canChildScrollUp() && mPermitRefresh) {
                     mInitialMotionY = mInitialDownY + mTouchSlop;
                     mIsBeingDragged = true;
                     mProgress[DIRECTION_TOP].setAlpha(STARTING_PROGRESS_ALPHA);
-                } else if (yDiff < -mTouchSlop && !mIsBeingDragged && !canChildScrollDown()) {
+                } else if (yDiff < -mTouchSlop && !mIsBeingDragged && !canChildScrollDown() && mPermitLoad) {
                     mInitialMotionY = mInitialDownY - mTouchSlop;
                     mIsBeingDragged = true;
                     mProgress[DIRECTION_BOTTOM].setAlpha(STARTING_PROGRESS_ALPHA);
                 }
                 break;
 
-            case MotionEventCompat.ACTION_POINTER_UP:
-                onSecondaryPointerUp(ev);
-                break;
-
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 mIsBeingDragged = false;
-                mActivePointerId = INVALID_POINTER;
                 break;
         }
 
@@ -469,7 +423,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
-        int pointerIndex;
 
         if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
             mReturningToStart = false;
@@ -482,58 +435,31 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
         switch (action) {
             case MotionEvent.ACTION_DOWN:
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mIsBeingDragged = false;
                 break;
 
             case MotionEvent.ACTION_MOVE: {
-                pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                if (pointerIndex < 0) {
-                    Log.e(LOG_TAG, "Got ACTION_MOVE event but have an invalid active pointer id.");
-                    return false;
-                }
-
-                final float y = MotionEventCompat.getY(ev, pointerIndex);
-                final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
+                final float y = ev.getY();
+                final float overScrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 if (mIsBeingDragged) {
-                    if (overscrollTop > 0 && !canChildScrollUp()) {
-                        moveSpinner(DIRECTION_TOP, overscrollTop);
-                    } else if (overscrollTop < 0 && !canChildScrollDown()) {
-                        moveSpinner(DIRECTION_BOTTOM, -overscrollTop);
+                    if (overScrollTop > 0 && !canChildScrollUp()) {
+                        moveSpinner(DIRECTION_TOP, overScrollTop);
+                    } else if (overScrollTop < 0 && !canChildScrollDown()) {
+                        moveSpinner(DIRECTION_BOTTOM, -overScrollTop);
                     }
                 }
                 break;
             }
-            case MotionEventCompat.ACTION_POINTER_DOWN: {
-                pointerIndex = MotionEventCompat.getActionIndex(ev);
-                if (pointerIndex < 0) {
-                    Log.e(LOG_TAG, "Got ACTION_POINTER_DOWN event but have an invalid action index.");
-                    return false;
-                }
-                mActivePointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
-                break;
-            }
-
-            case MotionEventCompat.ACTION_POINTER_UP:
-                onSecondaryPointerUp(ev);
-                break;
 
             case MotionEvent.ACTION_UP: {
-                pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
-                if (pointerIndex < 0) {
-                    Log.e(LOG_TAG, "Got ACTION_UP event but don't have an active pointer id.");
-                    return false;
-                }
-
-                final float y = MotionEventCompat.getY(ev, pointerIndex);
-                final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
+                final float y = ev.getY();
+                final float overScrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 mIsBeingDragged = false;
-                if (overscrollTop > 0 && !canChildScrollUp()) {
-                    finishSpinner(DIRECTION_TOP, overscrollTop);
-                } else if (overscrollTop < 0 && !canChildScrollDown()) {
-                    finishSpinner(DIRECTION_BOTTOM, -overscrollTop);
+                if (overScrollTop > 0 && !canChildScrollUp()) {
+                    finishSpinner(DIRECTION_TOP, overScrollTop);
+                } else if (overScrollTop < 0 && !canChildScrollDown()) {
+                    finishSpinner(DIRECTION_BOTTOM, -overScrollTop);
                 }
-                mActivePointerId = INVALID_POINTER;
                 return false;
             }
             case MotionEvent.ACTION_CANCEL:
@@ -541,38 +467,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
 
         return true;
-    }
-
-    private float getMotionEventY(MotionEvent ev, int activePointerId) {
-        final int index = MotionEventCompat.findPointerIndex(ev, activePointerId);
-        if (index < 0) {
-            return -1;
-        }
-        return MotionEventCompat.getY(ev, index);
-    }
-
-    @Override
-    public void requestDisallowInterceptTouchEvent(boolean b) {
-        // if this is a List < L or another view that doesn't support nested
-        // scrolling, ignore this request so that the vertical scroll event
-        // isn't stolen
-        if ((android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
-                || (mTarget != null && !ViewCompat.isNestedScrollingEnabled(mTarget))) {
-            // Nope.
-        } else {
-            super.requestDisallowInterceptTouchEvent(b);
-        }
-    }
-
-    private void onSecondaryPointerUp(MotionEvent ev) {
-        final int pointerIndex = MotionEventCompat.getActionIndex(ev);
-        final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
-        if (pointerId == mActivePointerId) {
-            // This was our active pointer going up. Choose a new
-            // active pointer and adjust accordingly.
-            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
-            mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
-        }
     }
 
     /** <br> state. */
@@ -584,7 +478,11 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
      * @param refreshing Whether or not the view should show refresh progress.
      */
     public void setRefreshing(boolean refreshing) {
-        if (refreshing && !mRefreshing) {
+        if (refreshing && (mRefreshing || mLoading)) {
+            return;
+        }
+        if (refreshing) {
+            mCircleViews[DIRECTION_BOTTOM].setVisibility(GONE);
             // scale and show
             mRefreshing = true;
             int endTarget;
@@ -598,12 +496,16 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mNotify = false;
             startScaleUpAnimation(DIRECTION_TOP, mRefreshListener);
         } else {
-            setRefreshing(refreshing, false /* notify */);
+            setRefreshing(false, false /* notify */);
         }
     }
 
     public void setLoading(boolean loading) {
-        if (loading && !mLoading) {
+        if (loading && (mRefreshing || mLoading)) {
+            return;
+        }
+        if (loading) {
+            mCircleViews[DIRECTION_TOP].setVisibility(GONE);
             // scale and show
             mLoading = true;
             int endTarget;
@@ -617,7 +519,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mNotify = false;
             startScaleUpAnimation(DIRECTION_BOTTOM, mLoadListener);
         } else {
-            setLoading(loading, false /* notify */);
+            setLoading(false, false /* notify */);
         }
     }
 
@@ -634,6 +536,9 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     }
 
     private void setRefreshing(boolean refreshing, final boolean notify) {
+        if (refreshing && (mRefreshing || mLoading)) {
+            return;
+        }
         if (mRefreshing != refreshing) {
             mNotify = notify;
             ensureTarget();
@@ -647,6 +552,9 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     }
 
     private void setLoading(boolean loading, final boolean notify) {
+        if (loading && (mRefreshing || mLoading)) {
+            return;
+        }
         if (mLoading != loading) {
             mNotify = notify;
             ensureTarget();
@@ -656,6 +564,20 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             } else {
                 startScaleDownAnimation(DIRECTION_BOTTOM, mLoadListener);
             }
+        }
+    }
+
+    public void setPermitRefresh(boolean permit) {
+        mPermitRefresh = permit;
+        if (!mPermitRefresh && !mPermitLoad) {
+            setEnabled(false);
+        }
+    }
+
+    public void setPermitLoad(boolean permit) {
+        mPermitLoad = permit;
+        if (!mPermitRefresh && !mPermitLoad) {
+            setEnabled(false);
         }
     }
 
@@ -1116,162 +1038,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         ensureTarget();
         for (int i = 0; i < 2; i ++) {
             mProgress[i].setColorSchemeColors(colors);
-        }
-    }
-
-    /** <br> nested scroll */
-
-    // NestedScrollingChild
-
-    @Override
-    public void setNestedScrollingEnabled(boolean enabled) {
-        mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
-    }
-
-    @Override
-    public boolean isNestedScrollingEnabled() {
-        return mNestedScrollingChildHelper.isNestedScrollingEnabled();
-    }
-
-    @Override
-    public boolean startNestedScroll(int axes) {
-        return mNestedScrollingChildHelper.startNestedScroll(axes);
-    }
-
-    @Override
-    public void stopNestedScroll() {
-        mNestedScrollingChildHelper.stopNestedScroll();
-    }
-
-    @Override
-    public boolean hasNestedScrollingParent() {
-        return mNestedScrollingChildHelper.hasNestedScrollingParent();
-    }
-
-    @Override
-    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
-                                        int dyUnconsumed, int[] offsetInWindow) {
-        return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed,
-                dxUnconsumed, dyUnconsumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
-        return mNestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean onNestedPreFling(View target, float velocityX,
-                                    float velocityY) {
-        return dispatchNestedPreFling(velocityX, velocityY);
-    }
-
-    @Override
-    public boolean onNestedFling(View target, float velocityX, float velocityY,
-                                 boolean consumed) {
-        return dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
-        return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
-        return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
-    }
-
-    // NestedScrollingParent
-
-    @Override
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        return isEnabled() && !mReturningToStart && !mRefreshing && !mLoading
-                && (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
-    }
-
-    @Override
-    public void onNestedScrollAccepted(View child, View target, int axes) {
-        // Reset the counter of how much leftover scroll needs to be consumed.
-        mNestedScrollingParentHelper.onNestedScrollAccepted(child, target, axes);
-        // Dispatch up to the nested parent
-        startNestedScroll(axes & ViewCompat.SCROLL_AXIS_VERTICAL);
-        mTotalUnconsumed = 0;
-    }
-
-    @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        // If we are in the middle of consuming, a scroll, then we want to move the spinner back up
-        // before allowing the list to scroll
-        if (dy > 0 && mTotalUnconsumed > 0) {
-            if (dy > mTotalUnconsumed) {
-                consumed[1] = dy - (int) mTotalUnconsumed;
-                mTotalUnconsumed = 0;
-            } else {
-                mTotalUnconsumed -= dy;
-                consumed[1] = dy;
-            }
-            for (int i = 0; i < 2; i ++) {
-                moveSpinner(i, mTotalUnconsumed);
-            }
-        }
-
-        // If a client layout is using a custom start position for the circle
-        // view, they mean to hide it again before scrolling the child view
-        // If we get back to mTotalUnconsumed == 0 and there is more to go, hide
-        // the circle so it isn't exposed if its blocking content is moved
-        if (mUsingCustomStart && dy > 0 && mTotalUnconsumed == 0
-                && Math.abs(dy - consumed[1]) > 0) {
-            for (int i = 0; i < 2; i ++) {
-                mCircleViews[i].setVisibility(View.GONE);
-            }
-        }
-
-        // Now let our nested parent consume the leftovers
-        final int[] parentConsumed = mParentScrollConsumed;
-        if (dispatchNestedPreScroll(dx - consumed[0], dy - consumed[1], parentConsumed, null)) {
-            consumed[0] += parentConsumed[0];
-            consumed[1] += parentConsumed[1];
-        }
-    }
-
-    @Override
-    public int getNestedScrollAxes() {
-        return mNestedScrollingParentHelper.getNestedScrollAxes();
-    }
-
-    @Override
-    public void onStopNestedScroll(View target) {
-        mNestedScrollingParentHelper.onStopNestedScroll(target);
-        // Finish the spinner for nested scrolling if we ever consumed any
-        // unconsumed nested scroll
-        if (mTotalUnconsumed > 0) {
-            for (int i = 0; i < 2; i ++) {
-                finishSpinner(i, mTotalUnconsumed);
-            }
-            mTotalUnconsumed = 0;
-        }
-        // Dispatch up our nested parent
-        stopNestedScroll();
-    }
-
-    @Override
-    public void onNestedScroll(final View target, final int dxConsumed, final int dyConsumed,
-                               final int dxUnconsumed, final int dyUnconsumed) {
-        // Dispatch up to the nested parent first
-        dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
-                mParentOffsetInWindow);
-
-        // This is a bit of a hack. Nested scrolling works from the bottom up, and as we are
-        // sometimes between two nested scrolling views, we need a way to be able to know when any
-        // nested scrolling parent has stopped handling events. We do that by using the
-        // 'offset in window 'functionality to see if we have been moved from the event.
-        // This is a decent indication of whether we should take over the event stream or not.
-        final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (dy < 0 && !canChildScrollUp()) {
-            mTotalUnconsumed += Math.abs(dy);
-            moveSpinner(DIRECTION_TOP, mTotalUnconsumed);
-            moveSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
         }
     }
 

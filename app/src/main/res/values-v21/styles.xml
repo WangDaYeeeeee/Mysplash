@@ -16,6 +16,25 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+    </style>
+
+    <style name="MysplashTheme.Photo" parent="MysplashTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor">#292929</item>
+    </style>
+
+    <style name="MysplashTheme.Settings." parent="MysplashTheme">
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor">#292929</item>
+    </style>
+
+    <style name="MysplashTheme.About" parent="MysplashTheme">
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor">#292929</item>
     </style>
 
 </resources>

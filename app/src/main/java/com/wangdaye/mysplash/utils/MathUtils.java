@@ -1,5 +1,7 @@
 package com.wangdaye.mysplash.utils;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -9,6 +11,20 @@ import java.util.Random;
 public class MathUtils {
 
     public static int getRandomInt(int max) {
-        return new Random().nextInt(2);
+        return new Random().nextInt(max);
+    }
+
+    public static List<Integer> getPositionList(int max) {
+        List<Integer> oldList = new ArrayList<>();
+        for (int i = 0; i < max; i ++) {
+            oldList.add(i);
+        }
+
+        List<Integer> newList = new ArrayList<>();
+        for (int i = 0; i < max; i ++) {
+            newList.add(oldList.get(getRandomInt(oldList.size())));
+        }
+
+        return newList;
     }
 }

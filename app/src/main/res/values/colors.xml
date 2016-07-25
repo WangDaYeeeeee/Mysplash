@@ -9,9 +9,6 @@
     <!-- UI. -->
     <color name="colorRoot">@color/colorPrimary</color>
     <color name="colorLine">#e0e0e0</color>
-    <color name="colorPhotoBackground_1">#f0f0f0</color>
-    <color name="colorPhotoBackground_2">#e8e8e8</color>
-    <color name="colorPhotoBackground_3">#d7d7d7</color>
 
     <!-- text color -->
     <color name="colorTextTitle">@color/colorTextDark</color>

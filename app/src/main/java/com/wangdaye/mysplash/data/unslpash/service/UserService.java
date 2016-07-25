@@ -25,18 +25,7 @@ public class UserService {
     /** <br> data. */
 
     public void requestUser(String username, int w, int h, final OnRequestUserListener l) {
-        UserApi api = new Retrofit.Builder()
-                .baseUrl(Mysplash.BASE_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((UserApi.class));
-
-        Call<User> getUser = api.getUser(username, w, h);
+        Call<User> getUser = buildApi(client).getUser(username, w, h);
         getUser.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, retrofit2.Response<User> response) {
@@ -79,6 +68,19 @@ public class UserService {
                 .addInterceptor(new ClientInterceptor())
                 .build();
         return this;
+    }
+
+    public UserApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.BASE_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((UserApi.class));
     }
 
     /** <br> interface. */

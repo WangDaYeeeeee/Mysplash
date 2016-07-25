@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/settings_category_basic"
+        android:layout="@layout/preference_category" >
+
+        <ListPreference
+            android:title="@string/settings_title_default_order"
+            android:key="@string/key_default_order"
+            android:entries="@array/orders"
+            android:entryValues="@array/order_values"
+            android:defaultValue="latest" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

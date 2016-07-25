@@ -47,11 +47,12 @@
             </android.support.v7.widget.Toolbar>
 
             <FrameLayout
+                android:id="@+id/fragment_search_orientationContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
-                    android:id="@+id/fragment_search_touchLayout"
+                    android:id="@+id/fragment_search_orientationMenu"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/tab_layout_height"
                     android:background="?attr/selectableItemBackground"
@@ -82,7 +83,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.wangdaye.mysplash.ui.widget.widgetGroup.MainActivity.SearchContentView
+        <com.wangdaye.mysplash.ui.widget.customWidget.SearchContentView
             android:id="@+id/fragment_search_contentView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

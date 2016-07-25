@@ -14,11 +14,15 @@ import com.wangdaye.mysplash.R;
 
 public class ColorUtils {
 
-    public static int calcBackgroundColor(Bitmap bitmap) {
-        Matrix matrix = new Matrix();
-        matrix.setScale((float) (1.0 / bitmap.getWidth()), (float) (1.0 / 2.0));
-        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), 2, matrix, false);
-        return bitmap.getPixel(0, 0);
+    public static int calcCardBackgroundColor(String color) {
+        int backgroundColor = Color.parseColor(color);
+        int red = ((backgroundColor & 0x00FF0000) >> 16);
+        int green = ((backgroundColor & 0x0000FF00) >> 8);
+        int blue = (backgroundColor & 0x000000FF);
+        return Color.rgb(
+                (int) (red + (255 - red) * 0.7),
+                (int) (green + (255 - green) * 0.7),
+                (int) (blue + (255 - blue) * 0.7));
     }
 
     public static boolean isLightColor(Context context, int color) {

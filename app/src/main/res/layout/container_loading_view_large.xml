@@ -33,7 +33,7 @@
 
         <TextView
             android:id="@+id/container_loading_view_large_feedbackTxt"
-            android:text="@string/feedback_loading_failed_tv"
+            android:text="@string/feedback_load_failed_tv"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/container_loading_view_large_feedbackImg"

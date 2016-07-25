@@ -1,11 +1,16 @@
 package com.wangdaye.mysplash.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -15,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
@@ -24,7 +30,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.data.unslpash.api.PhotoApi;
 import com.wangdaye.mysplash.ui.activity.MainActivity;
 import com.wangdaye.mysplash.ui.widget.StatusBarView;
-import com.wangdaye.mysplash.ui.widget.widgetGroup.MainActivity.SearchContentView;
+import com.wangdaye.mysplash.ui.widget.customWidget.SearchContentView;
 import com.wangdaye.mysplash.utils.SafeHandler;
 
 import java.util.Timer;
@@ -36,7 +42,7 @@ import java.util.TimerTask;
 
 public class SearchFragment extends Fragment
         implements View.OnClickListener, EditText.OnEditorActionListener, SafeHandler.HandlerContainer,
-        PopupMenu.OnMenuItemClickListener, Toolbar.OnMenuItemClickListener {
+        PopupMenu.OnMenuItemClickListener, Toolbar.OnMenuItemClickListener, SearchContentView.OnStartActivityCallback {
     // widget
     private EditText editText;
     private TextView orientationTxt;
@@ -68,6 +74,7 @@ public class SearchFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
+        contentView.cancelRequest();
         hideKeyboard();
     }
 
@@ -92,8 +99,11 @@ public class SearchFragment extends Fragment
         editText.setFocusable(true);
         editText.requestFocus();
 
-        RelativeLayout touchLayout = (RelativeLayout) v.findViewById(R.id.fragment_search_touchLayout);
-        touchLayout.setOnClickListener(this);
+        FrameLayout orientationContainer = (FrameLayout) v.findViewById(R.id.fragment_search_orientationContainer);
+        orientationContainer.setOnClickListener(this);
+
+        RelativeLayout orientationMenu = (RelativeLayout) v.findViewById(R.id.fragment_search_orientationMenu);
+        orientationMenu.setOnClickListener(this);
 
         this.menuIcon = (ImageView) v.findViewById(R.id.fragment_search_menuIcon);
 
@@ -101,6 +111,7 @@ public class SearchFragment extends Fragment
         orientationTxt.setText(searchOrientation.toUpperCase());
 
         this.contentView = (SearchContentView) v.findViewById(R.id.fragment_search_contentView);
+        contentView.setOnStartActivityCallback(this);
         contentView.setOnClickListener(this);
     }
 
@@ -125,7 +136,11 @@ public class SearchFragment extends Fragment
                 ((MainActivity) getActivity()).removeFragment();
                 break;
 
-            case R.id.fragment_search_touchLayout:
+            case R.id.fragment_search_orientationContainer:
+                contentView.scrollToTop();
+                break;
+
+            case R.id.fragment_search_orientationMenu:
                 PopupMenu menu = new PopupMenu(getContext(), menuIcon, Gravity.CENTER);
                 menu.inflate(R.menu.menu_fragment_search_orientation);
                 menu.setOnMenuItemClickListener(this);
@@ -135,6 +150,27 @@ public class SearchFragment extends Fragment
             case R.id.fragment_search_contentView:
                 hideKeyboard();
                 break;
+        }
+    }
+
+    // on start activity callback.
+
+    @Override
+    public void startActivity(Intent intent, View view) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeScaleUpAnimation(
+                            view,
+                            (int) view.getX(), (int) view.getY(),
+                            view.getMeasuredWidth(), view.getMeasuredHeight());
+            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
+        } else {
+            View imageView = ((RelativeLayout) ((CardView) view).getChildAt(0)).getChildAt(0);
+            ActivityOptionsCompat options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(
+                            getActivity(),
+                            Pair.create(imageView, getString(R.string.transition_photo_image)));
+            ActivityCompat.startActivity(getActivity(), intent, options.toBundle());
         }
     }
 
@@ -149,7 +185,7 @@ public class SearchFragment extends Fragment
                 return true;
 
             case R.id.action_orientation_portrait:
-                searchOrientation = PhotoApi.PORTRAIT_ORIENTAION;
+                searchOrientation = PhotoApi.PORTRAIT_ORIENTATION;
                 orientationTxt.setText(searchOrientation.toUpperCase());
                 return true;
 

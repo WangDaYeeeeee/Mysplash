@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="orders">
+        <item>Latest</item>
+        <item>Oldest</item>
+        <item>Popular</item>
+    </string-array>
+    <string-array name="order_values">
+        <item>latest</item>
+        <item>oldest</item>
+        <item>popular</item>
+    </string-array>
+
+</resources>

@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.ui.widget.widgetGroup.MainActivity;
+package com.wangdaye.mysplash.ui.widget.customWidget;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -6,8 +6,10 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,7 +28,9 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.data.unslpash.api.PhotoApi;
 import com.wangdaye.mysplash.data.unslpash.model.Photo;
+import com.wangdaye.mysplash.data.unslpash.model.SimplifiedPhoto;
 import com.wangdaye.mysplash.data.unslpash.service.PhotoService;
+import com.wangdaye.mysplash.ui.activity.PhotoActivity;
 import com.wangdaye.mysplash.ui.adapter.PhotosAdapter;
 import com.wangdaye.mysplash.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 
@@ -45,6 +49,7 @@ public class SearchContentView extends FrameLayout
         View.OnClickListener, PhotoService.OnRequestPhotosListener {
     // widget
     private BothWaySwipeRefreshLayout refreshLayout;
+    private RecyclerView recyclerView;
 
     private RelativeLayout searchingView;
     private CircularProgressView progressView;
@@ -52,11 +57,14 @@ public class SearchContentView extends FrameLayout
     private TextView feedbackText;
     private Button retryButton;
 
+    private OnStartActivityCallback callback;
+
     // data
     private PhotoService service;
 
     private PhotosAdapter adapter;
     private boolean loadingData = false;
+    private boolean searchFinish = false;
     private int photoPage = 0;
     private String searchQuery = "";
     private String searchOrientation = PhotoApi.LANDSCAPE_ORIENTATION;
@@ -117,7 +125,7 @@ public class SearchContentView extends FrameLayout
         refreshLayout.setOnRefreshAndLoadListener(this);
         refreshLayout.setVisibility(GONE);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
+        this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
@@ -169,8 +177,7 @@ public class SearchContentView extends FrameLayout
                 break;
 
             case INIT_SEARCH_FAILED_STATE:
-                if (state == INIT_SEARCH_FAILED_STATE) {
-                    feedbackText.setText(getContext().getString(R.string.feedback_search_failed_tv));
+                if (state == INIT_SEARCHING_STATE) {
                     retryButton.setVisibility(VISIBLE);
                     animHide(progressView);
                     animShow(feedbackContainer);
@@ -190,11 +197,11 @@ public class SearchContentView extends FrameLayout
     // search.
 
     public void doSearch(String query, String orientation) {
+        cancelRequest();
         this.searchQuery = query;
         this.searchOrientation = orientation;
-        if (service != null) {
-            service.cancel();
-        }
+        this.searchFinish = false;
+        refreshLayout.setEnabled(true);
         setBackgroundColor(Color.rgb(250, 250, 250));
         initRefresh();
     }
@@ -208,7 +215,8 @@ public class SearchContentView extends FrameLayout
 
     private void refreshNew() {
         refreshLayout.setRefreshing(true);
-        searchPhotos(1);
+        searchPhotos(1, true);
+        adapter.cancelService();
     }
 
     // anim.
@@ -237,6 +245,10 @@ public class SearchContentView extends FrameLayout
         anim.start();
     }
 
+    public void scrollToTop() {
+        recyclerView.smoothScrollToPosition(0);
+    }
+
     /** <br> data. */
 
     // init.
@@ -244,25 +256,46 @@ public class SearchContentView extends FrameLayout
     private void initData() {
         this.adapter = new PhotosAdapter(getContext(), new ArrayList<Photo>());
         adapter.setOnItemClickListener(this);
+
+        this.service = PhotoService.getService()
+                .buildClient();
     }
 
     // search data.
 
-    private void searchPhotos(int page) {
+    private void searchPhotos(int page, boolean refresh) {
         if (!loadingData) {
             loadingData = true;
-            this.service = PhotoService.getService()
-                    .buildClient();
             service.searchPhotos(
                     searchQuery,
                     searchOrientation,
                     page,
                     PhotoApi.DEFAULT_PER_PAGE,
+                    refresh,
                     this);
         }
     }
 
+    // check.
+
+    public void cancelRequest() {
+        if (service != null) {
+            service.cancel();
+        }
+        adapter.cancelService();
+    }
+
     /** <br> interface. */
+
+    // on start activity callback.
+
+    public interface OnStartActivityCallback {
+        void startActivity(Intent intent, View view);
+    }
+
+    public void setOnStartActivityCallback(OnStartActivityCallback c) {
+        this.callback = c;
+    }
 
     // on click listener.
 
@@ -279,19 +312,33 @@ public class SearchContentView extends FrameLayout
 
     @Override
     public void onItemClick(View v, int position) {
+        switch (v.getId()) {
+            case R.id.item_photo_card:
+                if (callback != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(
+                            getContext().getString(R.string.intent_key_photo),
+                            new SimplifiedPhoto(adapter.getItemList().get(position)));
 
+                    Intent intent = new Intent(getContext(), PhotoActivity.class);
+                    intent.putExtras(bundle);
+
+                    callback.startActivity(intent, v);
+                }
+                break;
+        }
     }
 
     // on refresh and load listener.
 
     @Override
     public void onRefresh() {
-        searchPhotos(1);
+        searchPhotos(1, true);
     }
 
     @Override
     public void onLoad() {
-        searchPhotos(photoPage + 1);
+        searchPhotos(photoPage + 1, false);
     }
 
     // on scroll listener.
@@ -307,8 +354,8 @@ public class SearchContentView extends FrameLayout
             super.onScrolled(recyclerView, dx, dy);
             int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
             int totalItemCount = recyclerView.getAdapter().getItemCount();
-            if (!loadingData && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-                searchPhotos(photoPage + 1);
+            if (!loadingData && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0 && !searchFinish) {
+                searchPhotos(photoPage + 1, false);
             }
 
             if (loadingData && totalItemCount > 0 && ViewCompat.canScrollVertically(recyclerView, 1)) {
@@ -320,28 +367,44 @@ public class SearchContentView extends FrameLayout
     // on request photos listener.
 
     @Override
-    public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response, int page) {
+    public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response, int page, boolean refresh) {
         this.loadingData = false;
         this.photoPage = page;
-        setState(NORMAL_DISPLAY_STATE);
-        if (page == 1) {
+        if (refresh) {
+            searchFinish = false;
+            refreshLayout.setPermitLoad(true);
             refreshLayout.setRefreshing(false);
             adapter.clearItem();
         } else {
             refreshLayout.setLoading(false);
         }
-        if (response.isSuccessful()) {
+        if (response.isSuccessful() && adapter.getItemCount() + response.body().size() > 0) {
             for (int i = 0; i < response.body().size(); i ++) {
                 adapter.insertItem(response.body().get(i));
             }
+            setState(NORMAL_DISPLAY_STATE);
+            if (response.body().size() < PhotoApi.DEFAULT_PER_PAGE) {
+                searchFinish = true;
+                refreshLayout.setPermitLoad(false);
+                if (response.body().size() == 0) {
+                    Toast.makeText(
+                            getContext(),
+                            getContext().getString(R.string.feedback_is_over) + "\n" + response.message(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        } else {
+            feedbackText.setText(R.string.feedback_search_failed_tv);
+            setState(INIT_SEARCH_FAILED_STATE);
         }
     }
 
     @Override
-    public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t, int page) {
+    public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t, boolean refresh) {
         this.loadingData = false;
+        feedbackText.setText(R.string.feedback_search_failed_tv);
         setState(INIT_SEARCH_FAILED_STATE);
-        if (page == 1) {
+        if (refresh) {
             refreshLayout.setRefreshing(false);
         } else {
             refreshLayout.setLoading(false);

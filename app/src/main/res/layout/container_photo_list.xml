@@ -8,6 +8,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/container_photo_list_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false" />
 
 </com.wangdaye.mysplash.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout>

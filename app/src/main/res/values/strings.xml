@@ -3,31 +3,89 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.</string>
+    <string name="version_code">1.0.0</string>
 
     <!-- key words. -->
     <string name="click_retry">CLICK TO RETRY</string>
     <string name="select_order">Select the order of photos</string>
+    <string name="about_app">ABOUT APP</string>
+    <string name="gitHub">GITHUB</string>
+    <string name="email">EMAIL</string>
+    <string name="source_code">SOURCE CODE</string>
+    <string name="thx">THX</string>
+    <string name="unsplash">Unsplash.com</string>
+    <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
+    <string name="retrofit">Retrofit 2.0</string>
+    <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
+    <string name="glide">Glide</string>
+    <string name="about_glide">An image loading and caching library for Android focused on smooth scrolling.</string>
+    <string name="circular_progress_view">CircularProgressView</string>
+    <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
+    <string name="circle_image_view">CircleImageView</string>
+    <string name="about_circle_image_view">A circular ImageView for Android.</string>
+    <string name="file_downloader">FileDownloader</string>
+    <string name="about_file_downloader">Multitask,Breakpoint-resume,High-concurrency,Simple to use,Single/NotSingle-process.</string>
 
     <!-- feedback. -->
-    <string name="feedback_loading_failed_tv">LOAD FAILED</string>
-    <string name="feedback_loading_failed_toast">Load failed</string>
+    <string name="feedback_load_failed_tv">LOAD FAILED</string>
+    <string name="feedback_load_failed_toast">Load failed.</string>
+    <string name="feedback_load_nothing_tv">LOAD NOTHING</string>
+    <string name="feedback_load_nothing_toast">Load nothing.</string>
+
+    <string name="feedback_search_failed_tv">SEARCH FAILED</string>
+    <string name="feedback_search_failed_toast">Search failed.</string>
+    <string name="feedback_search_nothing_tv">SEARCH NOTHING</string>
+    <string name="feedback_search_nothing_toast">Search nothing.</string>
+
     <string name="feedback_search_bar">Search photos</string>
     <string name="feedback_search_tv">SEARCH PHOTOS</string>
-    <string name="feedback_search_failed_tv">SEARCH FAILED</string>
-    <string name="feedback_search_failed_toast">Search failed</string>
+
+    <string name="feedback_is_over">Is over.</string>
+
+    <string name="feedback_random_effect">The order won\'t effective in random mode.</string>
+    <string name="feedback_notify_restart">The changes will take effect when restarted.</string>
+
+    <string name="feedback_download_success">Download success.</string>
+    <string name="feedback_download_failed">Download failed.</string>
+    <string name="feedback_need_permission">Failed to get permission.</string>
+    <string name="feedback_choose_share_app">Share the photo with others.</string>
+    <string name="feedback_choose_wallpaper_app">Set the photo as wallpaper.</string>
 
     <!-- menu. -->
+    <string name="action_home">Home</string>
+    <string name="action_category_buildings">Buildings</string>
+    <string name="action_category_food_drink">Food &amp; Drink</string>
+    <string name="action_category_nature">Nature</string>
+    <string name="action_category_objects">Objects</string>
+    <string name="action_category_people">People</string>
+    <string name="action_category_technology">Technology</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
+
     <string name="action_search">Search</string>
     <string name="action_order">Order</string>
+    <string name="action_random_mode">Random mode</string>
+    <string name="action_normal_mode">Normal mode</string>
+
     <string name="action_orientation_landscape">Landscape</string>
     <string name="action_orientation_portrait">Portrait</string>
     <string name="action_orientation_square">Square</string>
+
     <string name="action_clear_text">Clear text</string>
 
+    <!-- intent key. -->
+    <string name="intent_key_photo">photo</string>
+
+    <!-- transition name. -->
+    <string name="transition_photo_image">photo_image</string>
+
     <!-- settings. -->
+    <string name="settings_category_basic">Basic</string>
+    <string name="settings_title_default_order">Default order</string>
 
     <!-- share preferences. -->
+    <string name="key_normal_mode">normal_mode</string>
+    <string name="key_default_order">default_order</string>
+
 
 </resources>

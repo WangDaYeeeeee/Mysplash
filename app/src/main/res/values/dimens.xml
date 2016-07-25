@@ -4,6 +4,7 @@
     <dimen name="nav_header_height">104dp</dimen>
     <dimen name="circular_progress_height">42dp</dimen>
     <dimen name="tab_layout_height">48dp</dimen>
+    <dimen name="mini_loading_view_height">80dp</dimen>
 
     <!-- text -->
     <dimen name="large_title_text_size">20sp</dimen>
