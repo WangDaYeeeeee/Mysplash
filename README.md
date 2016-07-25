@@ -5,7 +5,7 @@
 ![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_search.png)
 ![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_photo.png)
 
-## 中文说明
+## 说明
   
 ### 简介
 
@@ -32,3 +32,22 @@
 * 由于刚刚上线，近期将会把重点放在修复bug上
 * 更多的功能点会在后期缓慢跟进
 * 更多api也会在后期缓慢跟进
+
+## Description 
+  
+### Introduction
+
+* A light photo(wallpaper) application.
+* All the photos came from [Unsplash.com](https://unsplash.com/)
+* Free (do whatever you want) high-resolution photos.
+* For 10 new photos every 10 days.
+* For 10 featured photos every 10 days.
+
+### History
+
+* [All APKs](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
+* begin with v1.0.0.
+  
+### Contact Me
+
+* wangdayeeeeee@gmail.com
