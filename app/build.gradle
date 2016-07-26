@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 100
-        versionName "1.0.0"
+        versionCode 103
+        versionName "1.0.3"
     }
     buildTypes {
         release {
@@ -35,5 +35,5 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
-    compile 'com.liulishuo.filedownloader:library:0.3.3'
+    compile project(':app/libs/MutiThreadDownloadLib')
 }

@@ -292,7 +292,7 @@
 
         <TextView
             android:id="@+id/container_about_downloaderTitle"
-            android:text="@string/file_downloader"
+            android:text="@string/downloader"
             android:textStyle="bold"
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_marginLeft="@dimen/normal_margin"
@@ -300,7 +300,7 @@
             tools:ignore="RtlHardcoded" />
 
         <TextView
-            android:text="@string/about_file_downloader"
+            android:text="@string/about_downloader"
             android:textStyle="bold"
             android:layout_below="@id/container_about_downloaderTitle"
             android:layout_marginTop="@dimen/mini_margin"

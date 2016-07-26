@@ -21,7 +21,7 @@
                 tools:ignore="ContentDescription" />
 
             <TextView
-                android:text="@string/select_order"
+                android:text="@string/feedback_select_order"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/dialog_select_order_navigationIcon"
                 style="@style/content_text"
@@ -52,6 +52,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/dialog_select_order_latestTxt"
             android:text="LATEST"
             android:textStyle="bold"
             android:layout_centerVertical="true"
@@ -74,6 +75,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/dialog_select_order_oldestTxt"
             android:text="OLDEST"
             android:textStyle="bold"
             android:layout_centerVertical="true"
@@ -96,6 +98,7 @@
             tools:ignore="ContentDescription" />
 
         <TextView
+            android:id="@+id/dialog_select_order_popularTxt"
             android:text="POPULAR"
             android:textStyle="bold"
             android:layout_centerVertical="true"

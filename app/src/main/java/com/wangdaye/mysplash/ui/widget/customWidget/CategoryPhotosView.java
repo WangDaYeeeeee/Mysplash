@@ -33,7 +33,7 @@ import com.wangdaye.mysplash.data.unslpash.service.PhotoService;
 import com.wangdaye.mysplash.ui.activity.PhotoActivity;
 import com.wangdaye.mysplash.ui.adapter.PhotosAdapter;
 import com.wangdaye.mysplash.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
-import com.wangdaye.mysplash.utils.OrderAndCategoryUtils;
+import com.wangdaye.mysplash.utils.ValueUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -282,7 +282,7 @@ public class CategoryPhotosView extends FrameLayout
 
     private void requestPhotosRandom(int page, boolean refresh) {
         if (refresh) {
-            this.pageList = OrderAndCategoryUtils.getPositionListByCategory(photoCategoryId);
+            this.pageList = ValueUtils.getPageListByCategory(photoCategoryId);
         }
         service.requestPhotosInAGivenCategory(
                 photoCategoryId,

@@ -133,7 +133,7 @@ public class AboutActivity extends AppCompatActivity implements View.OnClickList
                 break;
 
             case R.id.container_about_downloaderContainer:
-                Uri downloader = Uri.parse("https://github.com/lingochamp/FileDownloader");
+                Uri downloader = Uri.parse("https://github.com/Aspsine/MultiThreadDownload");
                 startActivity(new Intent(Intent.ACTION_VIEW, downloader));
                 break;
         }

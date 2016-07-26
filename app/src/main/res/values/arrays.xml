@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- photos order. -->
     <string-array name="orders">
         <item>Latest</item>
         <item>Oldest</item>
@@ -10,6 +11,30 @@
         <item>latest</item>
         <item>oldest</item>
         <item>popular</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>Compact  (High quality and less storage.)</item>
+        <item>Raw      (The original photo.)</item>
+        <item>Standard (Cannot work in some area.)</item>
+    </string-array>
+    <string-array name="download_type_values">
+        <item>compact</item>
+        <item>oldest</item>
+        <item>standard</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>Follow system</item>
+        <item>English</item>
+        <item>中文</item>
+    </string-array>
+    <string-array name="language_values">
+        <item>follow_system</item>
+        <item>english</item>
+        <item>chinese</item>
     </string-array>
 
 </resources>

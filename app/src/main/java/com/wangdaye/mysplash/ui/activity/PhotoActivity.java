@@ -3,12 +3,14 @@ package com.wangdaye.mysplash.ui.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,12 +20,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.aspsine.multithreaddownload.CallBack;
+import com.aspsine.multithreaddownload.DownloadException;
+import com.aspsine.multithreaddownload.DownloadManager;
+import com.aspsine.multithreaddownload.DownloadRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloader;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.data.constant.Mysplash;
 import com.wangdaye.mysplash.data.constant.Permission;
@@ -40,13 +43,15 @@ import java.io.File;
  * */
 
 public class PhotoActivity extends AppCompatActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, DownloadDialog.OnCancelListener {
     // widget
     private DownloadDialog dialog;
 
     // data
-    private boolean started = false;
     private SimplifiedPhoto photo;
+    private String downlaodScale;
+
+    private boolean started = false;
     private boolean downloading = false;
 
     private int downloadType;
@@ -123,17 +128,44 @@ public class PhotoActivity extends AppCompatActivity
     /** <br> data. */
 
     private void initData() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
         this.photo = getIntent().getParcelableExtra(getString(R.string.intent_key_photo));
+        this.downlaodScale = sharedPreferences.getString(
+                getString(R.string.key_download_scale),
+                "compact");
     }
 
     private void download() {
         this.dialog = new DownloadDialog();
+        dialog.setOnDismissListener(this);
+        dialog.setCancelable(false);
         dialog.show(getFragmentManager(), null);
-        FileDownloader.getImpl()
-                .create(photo.url_download)
-                .setPath(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT)
-                .setListener(new DownloadListener(photo.id))
-                .start();
+
+        DownloadRequest request = new DownloadRequest.Builder()
+                .setTitle(photo.id + Mysplash.DOWNLOAD_FORMAT)
+                .setUri(getDownloadUrl())
+                .setFolder(new File(Mysplash.DOWNLOAD_PATH))
+                .build();
+
+        DownloadManager.getInstance()
+                .download(request, photo.id, new DownloadCallback(photo.id));
+    }
+
+    private String getDownloadUrl() {
+        switch (downlaodScale) {
+            case "compact":
+                return photo.url_full;
+
+            case "raw":
+                return photo.url_raw;
+
+            case "standard":
+                return photo.url_download;
+
+            default:
+                return photo.url_full;
+        }
     }
 
     /** <br> permission. */
@@ -234,37 +266,54 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
-    // download listener.
+    // on dismiss listener.
 
-    private class DownloadListener extends FileDownloadListener {
+    @Override
+    public void onCancel() {
+        if (downloading) {
+            downloading = false;
+            DownloadManager.getInstance().cancel(photo.id);
+        }
+    }
+
+    private class DownloadCallback implements CallBack {
+        // data
         private String id;
 
-        public DownloadListener(String id) {
+        public DownloadCallback(String id) {
             this.id = id;
         }
 
-        @SuppressLint("SetTextI18n")
         @Override
-        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+        public void onStarted() {
             downloading = true;
         }
 
-        @SuppressLint("SetTextI18n")
         @Override
-        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            // do nothing.
+        public void onConnecting() {
+            dialog.setDownloadProgress(-1);
         }
 
-        @SuppressLint("SetTextI18n")
         @Override
-        protected void completed(BaseDownloadTask task) {
+        public void onConnected(long l, boolean b) {
+            dialog.setDownloadProgress(0);
+        }
+
+        @Override
+        public void onProgress(long l, long l1, int i) {
+            dialog.setDownloadProgress(i);
+        }
+
+        @Override
+        public void onCompleted() {
+            downloading = false;
             dialog.dismiss();
             Toast.makeText(
                     PhotoActivity.this,
                     getString(R.string.feedback_download_success) + "\n" + "ID = " + id,
                     Toast.LENGTH_SHORT).show();
 
-            Uri file = Uri.fromFile(new File(Mysplash.DOWNLOAD_PATH + id + Mysplash.DOWNLOAD_FORMAT));
+            Uri file = Uri.fromFile(new File(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT));
             Intent broadcast = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, file);
             sendBroadcast(broadcast);
             switch (downloadType) {
@@ -287,24 +336,10 @@ public class PhotoActivity extends AppCompatActivity
                     break;
                 }
             }
-
-            downloading = false;
         }
 
-        @SuppressLint("SetTextI18n")
         @Override
-        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            dialog.dismiss();
-            Toast.makeText(
-                    PhotoActivity.this,
-                    getString(R.string.feedback_download_failed) + "\n" + "ID = " + id,
-                    Toast.LENGTH_SHORT).show();
-            downloading = false;
-        }
-
-        @SuppressLint("SetTextI18n")
-        @Override
-        protected void error(BaseDownloadTask task, Throwable e) {
+        public void onDownloadPaused() {
             dialog.dismiss();
             Toast.makeText(
                     PhotoActivity.this,
@@ -314,8 +349,22 @@ public class PhotoActivity extends AppCompatActivity
         }
 
         @Override
-        protected void warn(BaseDownloadTask task) {
-            // do nothing.
+        public void onDownloadCanceled() {
+            Toast.makeText(
+                    PhotoActivity.this,
+                    getString(R.string.feedback_download_cancel) + "\n" + "ID = " + id,
+                    Toast.LENGTH_SHORT).show();
+            downloading = false;
+        }
+
+        @Override
+        public void onFailed(DownloadException e) {
+            dialog.dismiss();
+            Toast.makeText(
+                    PhotoActivity.this,
+                    getString(R.string.feedback_download_failed) + "\n" + "ID = " + id,
+                    Toast.LENGTH_SHORT).show();
+            downloading = false;
         }
     }
 }

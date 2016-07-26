@@ -313,12 +313,12 @@ public class HomePageView extends FrameLayout
         if (refresh) {
             switch (type) {
                 case NEW_TYPE:
-                    this.pageList = MathUtils.getPositionList(
+                    this.pageList = MathUtils.getPageList(
                             Mysplash.TOTAL_NEW_PHOTOS_COUNT / PhotoApi.DEFAULT_PER_PAGE);
                     break;
 
                 case FEATURED_TYPE:
-                    this.pageList = MathUtils.getPositionList(
+                    this.pageList = MathUtils.getPageList(
                             Mysplash.TOTAL_FEATURED_PHOTOS_COUNT / PhotoApi.DEFAULT_PER_PAGE);
                     break;
             }

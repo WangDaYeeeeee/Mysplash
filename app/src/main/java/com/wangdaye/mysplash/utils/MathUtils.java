@@ -14,7 +14,7 @@ public class MathUtils {
         return new Random().nextInt(max);
     }
 
-    public static List<Integer> getPositionList(int max) {
+    public static List<Integer> getPageList(int max) {
         List<Integer> oldList = new ArrayList<>();
         for (int i = 0; i < max; i ++) {
             oldList.add(i);

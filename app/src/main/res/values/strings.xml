@@ -1,18 +1,20 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.0.0</string>
+    <string name="version_code">1.0.3</string>
 
     <!-- key words. -->
-    <string name="click_retry">CLICK TO RETRY</string>
-    <string name="select_order">Select the order of photos</string>
     <string name="about_app">ABOUT APP</string>
     <string name="gitHub">GITHUB</string>
     <string name="email">EMAIL</string>
     <string name="source_code">SOURCE CODE</string>
     <string name="thx">THX</string>
+    <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="backstage">BACKSTAGE</string>
+
+    <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
     <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
     <string name="retrofit">Retrofit 2.0</string>
@@ -23,10 +25,13 @@
     <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
     <string name="circle_image_view">CircleImageView</string>
     <string name="about_circle_image_view">A circular ImageView for Android.</string>
-    <string name="file_downloader">FileDownloader</string>
-    <string name="about_file_downloader">Multitask,Breakpoint-resume,High-concurrency,Simple to use,Single/NotSingle-process.</string>
+    <string name="downloader">MultiThreadDownload</string>
+    <string name="about_downloader">Android Multi-Thread Download library.</string>
 
     <!-- feedback. -->
+    <string name="feedback_click_retry">CLICK TO RETRY</string>
+    <string name="feedback_select_order">Select the order of photos</string>
+
     <string name="feedback_load_failed_tv">LOAD FAILED</string>
     <string name="feedback_load_failed_toast">Load failed.</string>
     <string name="feedback_load_nothing_tv">LOAD NOTHING</string>
@@ -47,6 +52,10 @@
 
     <string name="feedback_download_success">Download success.</string>
     <string name="feedback_download_failed">Download failed.</string>
+    <string name="feedback_download_cancel">Download cancel.</string>
+    <string name="feedback_downloading">DOWNLOADING</string>
+    <string name="feedback_preparing">Preparing</string>
+    <string name="feedback_connecting">Connecting</string>
     <string name="feedback_need_permission">Failed to get permission.</string>
     <string name="feedback_choose_share_app">Share the photo with others.</string>
     <string name="feedback_choose_wallpaper_app">Set the photo as wallpaper.</string>
@@ -82,10 +91,13 @@
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_default_order">Default order</string>
+    <string name="settings_title_download_scale">Download scale</string>
+    <string name="settings_title_language">Language</string>
 
     <!-- share preferences. -->
     <string name="key_normal_mode">normal_mode</string>
     <string name="key_default_order">default_order</string>
-
+    <string name="key_download_scale">download_scale</string>
+    <string name="key_language">language</string>
 
 </resources>

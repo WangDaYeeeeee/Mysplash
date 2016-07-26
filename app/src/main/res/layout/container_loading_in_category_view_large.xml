@@ -42,7 +42,7 @@
 
         <Button
             android:id="@+id/container_loading_in_category_view_large_feedbackBtn"
-            android:text="@string/click_retry"
+            android:text="@string/feedback_click_retry"
             android:textStyle="bold"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/container_loading_in_category_view_large_feedbackTxt"

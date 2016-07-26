@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.data.unslpash.api.PhotoApi;
-import com.wangdaye.mysplash.utils.OrderAndCategoryUtils;
+import com.wangdaye.mysplash.utils.ValueUtils;
 
 /**
  * Settings fragment.
@@ -33,13 +33,32 @@ public class SettingsFragment extends PreferenceFragment
     private void initBasicPart() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
+        // default order.
         ListPreference defaultOrder = (ListPreference) findPreference(getString(R.string.key_default_order));
         String orderKey = sharedPreferences.getString(
                 getString(R.string.key_default_order),
                 PhotoApi.ORDER_BY_LATEST);
-        String orderName = OrderAndCategoryUtils.getOrderName(orderKey);
+        String orderName = ValueUtils.getOrderName(getActivity(), orderKey);
         defaultOrder.setSummary("Now : " + orderName);
         defaultOrder.setOnPreferenceChangeListener(this);
+
+        // download scale.
+        ListPreference downloadScale = (ListPreference) findPreference(getString(R.string.key_download_scale));
+        String scaleKey = sharedPreferences.getString(
+                getString(R.string.key_download_scale),
+                "compact");
+        String scaleName = ValueUtils.getScaleName(getActivity(), scaleKey);
+        downloadScale.setSummary("Now : " + scaleName);
+        downloadScale.setOnPreferenceChangeListener(this);
+
+        // language.
+        ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
+        String languageKey = sharedPreferences.getString(
+                getString(R.string.key_language),
+                "follow_system");
+        String languageName = ValueUtils.getLanguageName(getActivity(), languageKey);
+        language.setSummary("Now : " + languageName);
+        language.setOnPreferenceChangeListener(this);
     }
 
     /** <br> interface. */
@@ -49,8 +68,22 @@ public class SettingsFragment extends PreferenceFragment
         if (preference.getKey().equals(getString(R.string.key_default_order))) {
             // default order
             ListPreference defaultOrder = (ListPreference) findPreference(getString(R.string.key_default_order));
-            String orderName = OrderAndCategoryUtils.getOrderName((String) o);
+            String orderName = ValueUtils.getOrderName(getActivity(), (String) o);
             defaultOrder.setSummary("Now : " + orderName);
+            Toast.makeText(
+                    getActivity(),
+                    getString(R.string.feedback_notify_restart),
+                    Toast.LENGTH_SHORT).show();
+        } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {
+            // download scale.
+            ListPreference downloadScale = (ListPreference) findPreference(getString(R.string.key_download_scale));
+            String scaleName = ValueUtils.getScaleName(getActivity(), (String) o);
+            downloadScale.setSummary("Now : " + scaleName);
+        } else if (preference.getKey().equals(getString(R.string.key_language))) {
+            // language.
+            ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
+            String languageName = ValueUtils.getLanguageName(getActivity(), (String) o);
+            language.setSummary("Now : " + languageName);
             Toast.makeText(
                     getActivity(),
                     getString(R.string.feedback_notify_restart),

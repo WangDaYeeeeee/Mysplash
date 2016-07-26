@@ -18,6 +18,8 @@ public class SimplifiedPhoto implements Parcelable {
     public String user_name;
 
     public String url_download;
+    public String url_raw;
+    public String url_full;
     public String url_regular;
     public String url_user_avatar;
     public String url_html;
@@ -33,6 +35,8 @@ public class SimplifiedPhoto implements Parcelable {
         this.user_name = p.user.name;
 
         this.url_download = p.links.download;
+        this.url_raw = p.urls.raw;
+        this.url_full = p.urls.full;
         this.url_regular = p.urls.regular;
         this.url_user_avatar = p.user.profile_image.large;
         this.url_html = p.links.html;
@@ -49,6 +53,8 @@ public class SimplifiedPhoto implements Parcelable {
         user_id = in.readString();
         user_name = in.readString();
         url_download = in.readString();
+        url_raw = in.readString();
+        url_full = in.readString();
         url_regular = in.readString();
         url_user_avatar = in.readString();
         url_html = in.readString();
@@ -81,6 +87,8 @@ public class SimplifiedPhoto implements Parcelable {
         parcel.writeString(user_id);
         parcel.writeString(user_name);
         parcel.writeString(url_download);
+        parcel.writeString(url_raw);
+        parcel.writeString(url_full);
         parcel.writeString(url_regular);
         parcel.writeString(url_user_avatar);
         parcel.writeString(url_html);

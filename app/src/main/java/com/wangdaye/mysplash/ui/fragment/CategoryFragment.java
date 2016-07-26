@@ -25,7 +25,7 @@ import com.wangdaye.mysplash.data.constant.Mysplash;
 import com.wangdaye.mysplash.ui.activity.MainActivity;
 import com.wangdaye.mysplash.ui.widget.StatusBarView;
 import com.wangdaye.mysplash.ui.widget.customWidget.CategoryPhotosView;
-import com.wangdaye.mysplash.utils.OrderAndCategoryUtils;
+import com.wangdaye.mysplash.utils.ValueUtils;
 
 /**
  * Category fragment.
@@ -67,7 +67,7 @@ public class CategoryFragment extends Fragment
         }
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
-        toolbar.setTitle(OrderAndCategoryUtils.getToolbarTitleByCategory(getActivity(), photoCategoryId));
+        toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), photoCategoryId));
         if (normalMode) {
             toolbar.inflateMenu(R.menu.menu_fragment_category_normal);
         } else {
