@@ -14,8 +14,6 @@
 * 资源由网友自行上传分享
 * 图片可用于商用
 * 网站内有1W+的图片总数
-* 每10小时刷新10张摄影图片
-* 每10天推出10张优秀作品
 
 ### 历史纪录
 
@@ -40,8 +38,6 @@
 * A light photo(wallpaper) application.
 * All the photos came from [Unsplash.com](https://unsplash.com/)
 * Free (do whatever you want) high-resolution photos.
-* For 10 new photos every 10 days.
-* For 10 featured photos every 10 days.
 
 ### History
 
