@@ -1,4 +1,4 @@
-# Myspkash
+# Mysplash
 
 ![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_home.png)
 ![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_drawer.png)
