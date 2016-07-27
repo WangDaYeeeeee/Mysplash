@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MySplash.iml" filepath="$PROJECT_DIR$/MySplash.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/libs/MutiThreadDownloadLib/app_libs_MutiThreadDownloadLib.iml" filepath="$PROJECT_DIR$/app/libs/MutiThreadDownloadLib/app_libs_MutiThreadDownloadLib.iml" />
     </modules>
   </component>
 </project>

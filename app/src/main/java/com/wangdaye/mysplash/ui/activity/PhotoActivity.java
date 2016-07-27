@@ -14,24 +14,26 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aspsine.multithreaddownload.CallBack;
-import com.aspsine.multithreaddownload.DownloadException;
-import com.aspsine.multithreaddownload.DownloadManager;
-import com.aspsine.multithreaddownload.DownloadRequest;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.thin.downloadmanager.DownloadRequest;
+import com.thin.downloadmanager.DownloadStatusListener;
+import com.thin.downloadmanager.ThinDownloadManager;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.data.constant.Mysplash;
 import com.wangdaye.mysplash.data.constant.Permission;
 import com.wangdaye.mysplash.data.unslpash.model.SimplifiedPhoto;
 import com.wangdaye.mysplash.ui.dialog.DownloadDialog;
+import com.wangdaye.mysplash.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash.utils.DisplayUtils;
@@ -43,13 +45,15 @@ import java.io.File;
  * */
 
 public class PhotoActivity extends AppCompatActivity
-        implements View.OnClickListener, DownloadDialog.OnCancelListener {
+        implements View.OnClickListener, DownloadDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
     // widget
     private DownloadDialog dialog;
+    private ThinDownloadManager manager;
 
     // data
     private SimplifiedPhoto photo;
-    private String downlaodScale;
+    private String downloadScale;
+    private int downloadId;
 
     private boolean started = false;
     private boolean downloading = false;
@@ -131,29 +135,33 @@ public class PhotoActivity extends AppCompatActivity
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
         this.photo = getIntent().getParcelableExtra(getString(R.string.intent_key_photo));
-        this.downlaodScale = sharedPreferences.getString(
+        this.downloadScale = sharedPreferences.getString(
                 getString(R.string.key_download_scale),
                 "compact");
     }
 
     private void download() {
+        downloading = true;
+
         this.dialog = new DownloadDialog();
         dialog.setOnDismissListener(this);
         dialog.setCancelable(false);
         dialog.show(getFragmentManager(), null);
 
-        DownloadRequest request = new DownloadRequest.Builder()
-                .setTitle(photo.id + Mysplash.DOWNLOAD_FORMAT)
-                .setUri(getDownloadUrl())
-                .setFolder(new File(Mysplash.DOWNLOAD_PATH))
-                .build();
 
-        DownloadManager.getInstance()
-                .download(request, photo.id, new DownloadCallback(photo.id));
+        Uri downloadUri = Uri.parse(getDownloadUrl());
+        Uri fileUri = Uri.parse(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT);
+        DownloadRequest request = new DownloadRequest(downloadUri)
+                .setDestinationURI(fileUri)
+                .setPriority(DownloadRequest.Priority.HIGH)
+                .setDownloadListener(new DownloadListener(photo.id));
+
+        this.manager = new ThinDownloadManager();
+        this.downloadId = manager.add(request);
     }
 
     private String getDownloadUrl() {
-        switch (downlaodScale) {
+        switch (downloadScale) {
             case "compact":
                 return photo.url_full;
 
@@ -231,6 +239,13 @@ public class PhotoActivity extends AppCompatActivity
                 // do nothing.
                 break;
 
+            case R.id.activity_photo_menuBtn:
+                PopupMenu menu = new PopupMenu(this, findViewById(R.id.activity_photo_menuBtn));
+                menu.inflate(R.menu.menu_activity_photo);
+                menu.setOnMenuItemClickListener(this);
+                menu.show();
+                break;
+
             case R.id.activity_photo_downloadBtn:
                 if (!downloading) {
                     downloadType = SIMPLE_DOWNLOAD_TYPE;
@@ -266,46 +281,45 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
+    // on menu item click listener.
+
+    @Override
+    public boolean onMenuItemClick(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_stats:
+                StatsDialog statsDialog = new StatsDialog();
+                statsDialog.setPhoto(photo);
+                statsDialog.show(getFragmentManager(), null);
+                return true;
+        }
+        return false;
+    }
+
     // on dismiss listener.
 
     @Override
     public void onCancel() {
         if (downloading) {
             downloading = false;
-            DownloadManager.getInstance().cancel(photo.id);
+            if (manager.cancel(downloadId) == 1) {
+                Toast.makeText(
+                        this,
+                        getString(R.string.feedback_download_cancel) + "\n" + photo.id,
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    private class DownloadCallback implements CallBack {
+    private class DownloadListener implements DownloadStatusListener {
         // data
         private String id;
 
-        public DownloadCallback(String id) {
+        public DownloadListener(String id) {
             this.id = id;
         }
 
         @Override
-        public void onStarted() {
-            downloading = true;
-        }
-
-        @Override
-        public void onConnecting() {
-            dialog.setDownloadProgress(-1);
-        }
-
-        @Override
-        public void onConnected(long l, boolean b) {
-            dialog.setDownloadProgress(0);
-        }
-
-        @Override
-        public void onProgress(long l, long l1, int i) {
-            dialog.setDownloadProgress(i);
-        }
-
-        @Override
-        public void onCompleted() {
+        public void onDownloadComplete(int i) {
             downloading = false;
             dialog.dismiss();
             Toast.makeText(
@@ -339,7 +353,7 @@ public class PhotoActivity extends AppCompatActivity
         }
 
         @Override
-        public void onDownloadPaused() {
+        public void onDownloadFailed(int i, int i1, String s) {
             dialog.dismiss();
             Toast.makeText(
                     PhotoActivity.this,
@@ -349,22 +363,8 @@ public class PhotoActivity extends AppCompatActivity
         }
 
         @Override
-        public void onDownloadCanceled() {
-            Toast.makeText(
-                    PhotoActivity.this,
-                    getString(R.string.feedback_download_cancel) + "\n" + "ID = " + id,
-                    Toast.LENGTH_SHORT).show();
-            downloading = false;
-        }
-
-        @Override
-        public void onFailed(DownloadException e) {
-            dialog.dismiss();
-            Toast.makeText(
-                    PhotoActivity.this,
-                    getString(R.string.feedback_download_failed) + "\n" + "ID = " + id,
-                    Toast.LENGTH_SHORT).show();
-            downloading = false;
+        public void onProgress(int i, long l, long l1, int i1) {
+            dialog.setDownloadProgress(i1);
         }
     }
 }

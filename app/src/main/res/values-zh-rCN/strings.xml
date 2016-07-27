@@ -3,7 +3,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.0.3</string>
+    <string name="version_code">1.0.4</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -25,8 +25,8 @@
     <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
     <string name="circle_image_view">CircleImageView</string>
     <string name="about_circle_image_view">A circular ImageView for Android.</string>
-    <string name="downloader">MultiThreadDownload</string>
-    <string name="about_downloader">Android Multi-Thread Download library.</string>
+    <string name="downloader">ThinDownloadManager</string>
+    <string name="about_downloader">To download files and to avoid using DOWNLOAD_WITHOUT_NOTIFICATION permission if you are using Android\'s DownloadManager in your apps.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">点击重试</string>
@@ -54,7 +54,6 @@
     <string name="feedback_download_failed">下载失败</string>
     <string name="feedback_download_cancel">取消下载</string>
     <string name="feedback_downloading">下载中</string>
-    <string name="feedback_preparing">准备中</string>
     <string name="feedback_connecting">连接中</string>
     <string name="feedback_need_permission">获取权限失败</string>
     <string name="feedback_choose_share_app">分享照片</string>
@@ -81,6 +80,8 @@
     <string name="action_orientation_square">方正</string>
 
     <string name="action_clear_text">清空内容</string>
+
+    <string name="action_stats">统计</string>
 
     <!-- intent key. -->
     <string name="intent_key_photo">photo</string>

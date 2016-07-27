@@ -3,7 +3,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.0.3</string>
+    <string name="version_code">1.0.4</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -25,8 +25,8 @@
     <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
     <string name="circle_image_view">CircleImageView</string>
     <string name="about_circle_image_view">A circular ImageView for Android.</string>
-    <string name="downloader">MultiThreadDownload</string>
-    <string name="about_downloader">Android Multi-Thread Download library.</string>
+    <string name="downloader">ThinDownloadManager</string>
+    <string name="about_downloader">To download files and to avoid using DOWNLOAD_WITHOUT_NOTIFICATION permission if you are using Android\'s DownloadManager in your apps.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
@@ -54,11 +54,10 @@
     <string name="feedback_download_failed">Download failed.</string>
     <string name="feedback_download_cancel">Download cancel.</string>
     <string name="feedback_downloading">DOWNLOADING</string>
-    <string name="feedback_preparing">Preparing</string>
     <string name="feedback_connecting">Connecting</string>
     <string name="feedback_need_permission">Failed to get permission.</string>
-    <string name="feedback_choose_share_app">Share the photo with others.</string>
-    <string name="feedback_choose_wallpaper_app">Set the photo as wallpaper.</string>
+    <string name="feedback_choose_share_app">Share photo</string>
+    <string name="feedback_choose_wallpaper_app">Set wallpaper</string>
 
     <!-- menu. -->
     <string name="action_home">Home</string>
@@ -81,6 +80,8 @@
     <string name="action_orientation_square">Square</string>
 
     <string name="action_clear_text">Clear text</string>
+
+    <string name="action_stats">Stats</string>
 
     <!-- intent key. -->
     <string name="intent_key_photo">photo</string>

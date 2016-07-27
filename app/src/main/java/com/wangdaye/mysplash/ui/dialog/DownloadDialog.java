@@ -45,8 +45,10 @@ public class DownloadDialog extends DialogFragment implements View.OnClickListen
 
     /** <br> UI. */
 
+    @SuppressLint("SetTextI18n")
     private void initWidget(View v) {
         this.text = (TextView) v.findViewById(R.id.dialog_download_text);
+        text.setText(getString(R.string.feedback_downloading) + " : " + getString(R.string.feedback_connecting));
 
         v.findViewById(R.id.dialog_download_cancelButton).setOnClickListener(this);
         v.findViewById(R.id.dialog_download_backgroundButton).setOnClickListener(this);

@@ -4,8 +4,6 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.aspsine.multithreaddownload.DownloadConfiguration;
-import com.aspsine.multithreaddownload.DownloadManager;
 import com.wangdaye.mysplash.utils.LanguageUtils;
 
 /**
@@ -17,12 +15,10 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        loadLanguage();
+    }
 
-        DownloadConfiguration configuration = new DownloadConfiguration();
-        configuration.setMaxThreadNum(10);
-        configuration.setThreadNum(3);
-        DownloadManager.getInstance().init(getApplicationContext(), configuration);
-
+    private void loadLanguage() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         String language = sharedPreferences.getString(
                 getString(R.string.key_language),

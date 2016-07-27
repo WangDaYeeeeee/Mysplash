@@ -21,7 +21,7 @@
     </string-array>
     <string-array name="download_type_values">
         <item>compact</item>
-        <item>oldest</item>
+        <item>raw</item>
         <item>standard</item>
     </string-array>
 

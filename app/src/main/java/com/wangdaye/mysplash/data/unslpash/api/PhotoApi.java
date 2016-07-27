@@ -20,7 +20,6 @@ import retrofit2.http.Query;
 public interface PhotoApi {
     // data.
     int DEFAULT_PER_PAGE = 30;
-    int RANDOM_PAGE_LIMIT = 100;
 
     String ORDER_BY_LATEST = "latest";
     String ORDER_BY_OLDEST = "oldest";
@@ -48,17 +47,17 @@ public interface PhotoApi {
                                    @Query("page") int page,
                                    @Query("per_page") int per_page);
 
-    @GET("photos/:id/stats")
-    Call<PhotoStats> getPhotoStats(@Query("id") String id);
+    @GET("photos/{id}/stats")
+    Call<PhotoStats> getPhotoStats(@Path("id") String id);
 
     @GET("categories/{id}/photos")
     Call<List<Photo>> getPhotosInAGivenCategory(@Path("id") int id,
                                                 @Query("page") int page,
                                                 @Query("per_page") int per_page);
 
-    @POST("photos/:id/like")
-    Call<LikePhotoResult> likeAPhoto(@Query("id") String id);
+    @POST("photos/{id}/like")
+    Call<LikePhotoResult> likeAPhoto(@Path("id") String id);
 
-    @DELETE("photos/:id/like")
-    Call<LikePhotoResult> unlikeAPhoto(@Query("id") String id);
+    @DELETE("photos/{id}/like")
+    Call<LikePhotoResult> unlikeAPhoto(@Path("id") String id);
 }

@@ -65,54 +65,61 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     @SuppressLint("RecyclerView")
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Glide.with(context)
-                .load(itemList.get(position).urls.regular)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        if (!itemList.get(position).hasFadedIn) {
-                            holder.image.setHasTransientState(true);
-                            final ObservableColorMatrix matrix = new ObservableColorMatrix();
-                            final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                    matrix, ObservableColorMatrix.SATURATION, 0f, 1f);
-                            saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
-                                    () {
-                                @Override
-                                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                    // just animating the color matrix does not invalidate the
-                                    // drawable so need this update listener.  Also have to create a
-                                    // new CMCF as the matrix is immutable :(
-                                    holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
-                                }
-                            });
-                            saturation.setDuration(2000L);
-                            saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(context));
-                            saturation.addListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    holder.image.clearColorFilter();
-                                    holder.image.setHasTransientState(false);
-                                }
-                            });
-                            saturation.start();
-                            itemList.get(position).hasFadedIn = true;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            Glide.with(context)
+                    .load(itemList.get(position).urls.regular)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.image);
+        } else {
+            Glide.with(context)
+                    .load(itemList.get(position).urls.regular)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model,
+                                                       Target<GlideDrawable> target,
+                                                       boolean isFromMemoryCache, boolean isFirstResource) {
+                            if (!itemList.get(position).hasFadedIn) {
+                                holder.image.setHasTransientState(true);
+                                final ObservableColorMatrix matrix = new ObservableColorMatrix();
+                                final ObjectAnimator saturation = ObjectAnimator.ofFloat(
+                                        matrix, ObservableColorMatrix.SATURATION, 0f, 1f);
+                                saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
+                                        () {
+                                    @Override
+                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                                        // just animating the color matrix does not invalidate the
+                                        // drawable so need this update listener.  Also have to create a
+                                        // new CMCF as the matrix is immutable :(
+                                        holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
+                                    }
+                                });
+                                saturation.setDuration(2000L);
+                                saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(context));
+                                saturation.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        holder.image.clearColorFilter();
+                                        holder.image.setHasTransientState(false);
+                                    }
+                                });
+                                saturation.start();
+                                itemList.get(position).hasFadedIn = true;
+                            }
+                            String titleTxt = "by " + itemList.get(position).user.name + ", "
+                                    + itemList.get(position).created_at.split("T")[0];
+                            holder.title.setText(titleTxt);
+                            return false;
                         }
-                        String titleTxt = "by " + itemList.get(position).user.name + ", "
-                                + itemList.get(position).created_at.split("T")[0];
-                        holder.title.setText(titleTxt);
-                        return false;
-                    }
 
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable>
-                            target, boolean isFirstResource) {
-                        return false;
-                    }
-                })
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(holder.image);
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable>
+                                target, boolean isFirstResource) {
+                            return false;
+                        }
+                    })
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.image);
+        }
 
         holder.likeButton.setImageResource(
                 itemList.get(position).liked_by_user ?
