@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 104
-        versionName "1.0.4"
+        versionCode 106
+        versionName "1.0.6"
     }
     buildTypes {
         release {

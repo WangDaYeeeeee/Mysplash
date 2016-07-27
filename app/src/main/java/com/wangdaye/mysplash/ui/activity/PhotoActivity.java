@@ -37,6 +37,7 @@ import com.wangdaye.mysplash.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash.utils.DisplayUtils;
+import com.wangdaye.mysplash.utils.FileUtils;
 
 import java.io.File;
 
@@ -45,7 +46,7 @@ import java.io.File;
  * */
 
 public class PhotoActivity extends AppCompatActivity
-        implements View.OnClickListener, DownloadDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
+        implements View.OnClickListener, DownloadDialog.OnDismissListener, PopupMenu.OnMenuItemClickListener {
     // widget
     private DownloadDialog dialog;
     private ThinDownloadManager manager;
@@ -57,6 +58,7 @@ public class PhotoActivity extends AppCompatActivity
 
     private boolean started = false;
     private boolean downloading = false;
+    private boolean dialogShowing = false;
 
     private int downloadType;
     private final int SIMPLE_DOWNLOAD_TYPE = 1;
@@ -95,6 +97,7 @@ public class PhotoActivity extends AppCompatActivity
         background.setOnClickListener(this);
 
         FreedomImageView photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
+        photoImage.setOnClickListener(this);
         photoImage.setSize(photo.width, photo.height);
         Glide.with(this)
                 .load(photo.url_regular)
@@ -141,23 +144,25 @@ public class PhotoActivity extends AppCompatActivity
     }
 
     private void download() {
-        downloading = true;
+        if (FileUtils.createFile(this)) {
+            downloading = true;
+            dialogShowing = true;
 
-        this.dialog = new DownloadDialog();
-        dialog.setOnDismissListener(this);
-        dialog.setCancelable(false);
-        dialog.show(getFragmentManager(), null);
+            this.dialog = new DownloadDialog();
+            dialog.setOnDismissListener(this);
+            dialog.setCancelable(false);
+            dialog.show(getFragmentManager(), null);
 
+            Uri downloadUri = Uri.parse(getDownloadUrl());
+            Uri fileUri = Uri.parse(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT);
+            DownloadRequest request = new DownloadRequest(downloadUri)
+                    .setDestinationURI(fileUri)
+                    .setPriority(DownloadRequest.Priority.HIGH)
+                    .setDownloadListener(new DownloadListener(photo.id));
 
-        Uri downloadUri = Uri.parse(getDownloadUrl());
-        Uri fileUri = Uri.parse(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT);
-        DownloadRequest request = new DownloadRequest(downloadUri)
-                .setDestinationURI(fileUri)
-                .setPriority(DownloadRequest.Priority.HIGH)
-                .setDownloadListener(new DownloadListener(photo.id));
-
-        this.manager = new ThinDownloadManager();
-        this.downloadId = manager.add(request);
+            this.manager = new ThinDownloadManager();
+            this.downloadId = manager.add(request);
+        }
     }
 
     private String getDownloadUrl() {
@@ -298,7 +303,13 @@ public class PhotoActivity extends AppCompatActivity
     // on dismiss listener.
 
     @Override
+    public void onDismiss() {
+        dialogShowing = false;
+    }
+
+    @Override
     public void onCancel() {
+        dialogShowing = false;
         if (downloading) {
             downloading = false;
             if (manager.cancel(downloadId) == 1) {
@@ -321,11 +332,13 @@ public class PhotoActivity extends AppCompatActivity
         @Override
         public void onDownloadComplete(int i) {
             downloading = false;
-            dialog.dismiss();
-            Toast.makeText(
-                    PhotoActivity.this,
-                    getString(R.string.feedback_download_success) + "\n" + "ID = " + id,
-                    Toast.LENGTH_SHORT).show();
+            if (dialogShowing) {
+                dialog.dismiss();
+                Toast.makeText(
+                        PhotoActivity.this,
+                        getString(R.string.feedback_download_success) + "\n" + "ID = " + id,
+                        Toast.LENGTH_SHORT).show();
+            }
 
             Uri file = Uri.fromFile(new File(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT));
             Intent broadcast = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, file);
@@ -354,7 +367,9 @@ public class PhotoActivity extends AppCompatActivity
 
         @Override
         public void onDownloadFailed(int i, int i1, String s) {
-            dialog.dismiss();
+            if (dialogShowing) {
+                dialog.dismiss();
+            }
             Toast.makeText(
                     PhotoActivity.this,
                     getString(R.string.feedback_download_failed) + "\n" + "ID = " + id,
@@ -364,7 +379,9 @@ public class PhotoActivity extends AppCompatActivity
 
         @Override
         public void onProgress(int i, long l, long l1, int i1) {
-            dialog.setDownloadProgress(i1);
+            if (dialogShowing) {
+                dialog.setDownloadProgress(i1);
+            }
         }
     }
 }

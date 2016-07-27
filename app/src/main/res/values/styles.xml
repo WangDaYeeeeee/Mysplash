@@ -38,7 +38,6 @@
     <style name="MySplashPopupTheme" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- Text -->
-
     <style name="large_title_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

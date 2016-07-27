@@ -3,7 +3,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.0.4</string>
+    <string name="version_code">1.0.6</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -55,6 +55,8 @@
     <string name="feedback_download_cancel">Download cancel.</string>
     <string name="feedback_downloading">DOWNLOADING</string>
     <string name="feedback_connecting">Connecting</string>
+    <string name="feedback_no_sd_card">Cannot found SD card.</string>
+    <string name="feedback_create_file_failed">Create file failed.</string>
     <string name="feedback_need_permission">Failed to get permission.</string>
     <string name="feedback_choose_share_app">Share photo</string>
     <string name="feedback_choose_wallpaper_app">Set wallpaper</string>

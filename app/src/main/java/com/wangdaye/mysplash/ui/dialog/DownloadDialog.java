@@ -18,7 +18,7 @@ import com.wangdaye.mysplash.R;
 public class DownloadDialog extends DialogFragment implements View.OnClickListener {
     // widget
     private TextView text;
-    private OnCancelListener listener;
+    private OnDismissListener listener;
 
     // data
     private boolean cancel = false;
@@ -40,6 +40,8 @@ public class DownloadDialog extends DialogFragment implements View.OnClickListen
         super.onDestroy();
         if (cancel && listener != null) {
             listener.onCancel();
+        } else if (listener != null) {
+            listener.onDismiss();
         }
     }
 
@@ -65,11 +67,12 @@ public class DownloadDialog extends DialogFragment implements View.OnClickListen
 
     /** <br> interface. */
 
-    public interface OnCancelListener {
+    public interface OnDismissListener {
+        void onDismiss();
         void onCancel();
     }
 
-    public void setOnDismissListener(OnCancelListener l) {
+    public void setOnDismissListener(OnDismissListener l) {
         this.listener = l;
     }
 

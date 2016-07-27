@@ -3,7 +3,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.0.4</string>
+    <string name="version_code">1.0.6</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -55,6 +55,8 @@
     <string name="feedback_download_cancel">取消下载</string>
     <string name="feedback_downloading">下载中</string>
     <string name="feedback_connecting">连接中</string>
+    <string name="feedback_no_sd_card">找不到存储设备</string>
+    <string name="feedback_create_file_failed">创建存储路径失败</string>
     <string name="feedback_need_permission">获取权限失败</string>
     <string name="feedback_choose_share_app">分享照片</string>
     <string name="feedback_choose_wallpaper_app">设为壁纸</string>
