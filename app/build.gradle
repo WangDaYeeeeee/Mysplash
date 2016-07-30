@@ -8,8 +8,24 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 106
-        versionName "1.0.6"
+        versionCode 110
+        versionName "1.1.0"
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java','.apt_generated']
+            aidl.srcDirs = ['src/main/aidl','.apt_generated']
+            assets.srcDirs = ['src/main/assets']
+            res.srcDirs = [
+                    'src/main/res/main',
+                    'src/main/res/photo',
+                    'src/main/res/settings',
+                    'src/main/res/about',
+                    'src/main/res/commen',
+                    'src/main/res/resource',
+                    'src/main/res']
+        }
     }
     buildTypes {
         release {

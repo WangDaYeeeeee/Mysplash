@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_marginTop="24dp">
+
+    <com.wangdaye.mysplash.common.widget.StatusBarView
+        android:id="@+id/fragment_search_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimaryDark" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/MysplashAppBarTheme">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/fragment_search_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:navigationIcon="@drawable/ic_toolbar_back"
+                app:layout_scrollFlags="scroll|snap|enterAlways">
+
+                <EditText
+                    android:id="@+id/fragment_search_editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="@string/feedback_search_bar"
+                    android:textColorHint="?attr/subtitle_color"
+                    android:textSize="@dimen/content_text_size"
+                    android:textColor="?attr/content_color"
+                    android:imeOptions="actionSearch"
+                    android:singleLine="true"
+                    android:inputType="text"
+                    tools:ignore="RtlHardcoded" />
+
+            </android.support.v7.widget.Toolbar>
+
+            <FrameLayout
+                android:id="@+id/fragment_search_orientationContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/fragment_search_orientationMenu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/tab_layout_height"
+                    android:background="?attr/selectableItemBackground"
+                    tools:ignore="UselessParent">
+
+                    <TextView
+                        android:id="@+id/fragment_search_nowTxt"
+                        android:layout_marginLeft="@dimen/normal_margin"
+                        android:layout_centerVertical="true"
+                        style="@style/subtitle_text"
+                        tools:text="LANDSCAPE"
+                        tools:ignore="RtlHardcoded" />
+
+                    <ImageView
+                        android:id="@+id/fragment_search_menuIcon"
+                        android:src="@drawable/ic_menu_down"
+                        android:layout_width="@dimen/mini_icon_size"
+                        android:layout_height="@dimen/mini_icon_size"
+                        android:layout_marginLeft="@dimen/normal_margin"
+                        android:layout_marginRight="@dimen/normal_margin"
+                        android:layout_toRightOf="@id/fragment_search_nowTxt"
+                        android:layout_centerVertical="true"
+                        tools:ignore="ContentDescription,RtlHardcoded" />
+
+                </RelativeLayout>
+
+            </FrameLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <com.wangdaye.mysplash.main.view.widget.SearchContentView
+            android:id="@+id/fragment_search_contentView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</LinearLayout>

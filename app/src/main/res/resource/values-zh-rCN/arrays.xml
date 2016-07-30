@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- photos order. -->
+    <string-array name="orders">
+        <item>最新的</item>
+        <item>最初的</item>
+        <item>最受欢迎的</item>
+    </string-array>
+    <string-array name="order_values">
+        <item>latest</item>
+        <item>oldest</item>
+        <item>popular</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>压缩过的</item>
+        <item>未经压缩</item>
+    </string-array>
+    <string-array name="download_type_values">
+        <item>compact</item>
+        <item>raw</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>跟随系统</item>
+        <item>English</item>
+        <item>中文</item>
+    </string-array>
+    <string-array name="language_values">
+        <item>follow_system</item>
+        <item>english</item>
+        <item>chinese</item>
+    </string-array>
+
+</resources>
