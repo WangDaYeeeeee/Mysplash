@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.model.PhotoStats;
-import com.wangdaye.mysplash.common.data.model.SimplifiedPhoto;
+import com.wangdaye.mysplash.common.data.data.Photo;
+import com.wangdaye.mysplash.common.data.data.PhotoStats;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 
 import retrofit2.Call;
@@ -39,7 +39,7 @@ public class StatsDialog extends DialogFragment
 
     // data
     private PhotoService service;
-    private SimplifiedPhoto photo;
+    private Photo photo;
 
     private int state = 0;
     private final int LOADING_STATE = 0;
@@ -136,7 +136,7 @@ public class StatsDialog extends DialogFragment
 
     /** <br> data. */
 
-    public void setPhoto(SimplifiedPhoto photo) {
+    public void setPhoto(Photo photo) {
         this.photo = photo;
     }
 

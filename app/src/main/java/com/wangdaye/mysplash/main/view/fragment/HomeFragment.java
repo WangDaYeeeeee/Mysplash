@@ -1,12 +1,10 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -18,6 +16,7 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.main.model.fragment.OrderObject;
 import com.wangdaye.mysplash.main.model.fragment.PagerObject;
 import com.wangdaye.mysplash.main.model.fragment.i.OrderModel;
@@ -92,13 +91,12 @@ public class HomeFragment extends Fragment
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
-        if (Build.VERSION.SDK_INT <Build.VERSION_CODES.M) {
-            statusBar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        if (ModeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_home_toolbar);
-        if (orderModel.isNormalMode()) {
+        if (ModeUtils.getInstance(getActivity()).isNormalMode()) {
             toolbar.inflateMenu(R.menu.menu_fragment_home_toolbar_normal);
         } else {
             toolbar.inflateMenu(R.menu.menu_fragment_home_toolbar_random);
@@ -116,12 +114,12 @@ public class HomeFragment extends Fragment
                 getActivity(),
                 TypeStateObject.NEW_TYPE,
                 orderModel.getOrder(),
-                orderModel.isNormalMode());
+                ModeUtils.getInstance(getActivity()).isNormalMode());
         pages[1] = new HomePageView(
                 getActivity(),
                 TypeStateObject.FEATURED_TYPE,
                 orderModel.getOrder(),
-                orderModel.isNormalMode());
+                ModeUtils.getInstance(getActivity()).isNormalMode());
         Collections.addAll(pageList, pages);
 
         List<String> tabList = new ArrayList<>();
@@ -146,10 +144,7 @@ public class HomeFragment extends Fragment
         String pageOrder = sharedPreferences.getString(
                 getString(R.string.key_default_order),
                 PhotoApi.ORDER_BY_LATEST);
-        boolean normalMode = sharedPreferences.getBoolean(
-                getString(R.string.key_normal_mode),
-                true);
-        this.orderModel = new OrderObject(pageOrder, normalMode);
+        this.orderModel = new OrderObject(pageOrder);
         this.pagerModel = new PagerObject();
     }
 

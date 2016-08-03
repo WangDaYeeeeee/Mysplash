@@ -3,10 +3,10 @@ package com.wangdaye.mysplash.main.view.activity.i;
 import android.support.v4.app.Fragment;
 
 /**
- * Fragment manage view.
+ * Drawer view.
  * */
 
-public interface FragmentManageView {
+public interface DrawerView {
 
     void changeFragment(Fragment f);
     void addFragment(Fragment f);
@@ -14,4 +14,6 @@ public interface FragmentManageView {
 
     void closeDrawer();
     void sendMessage(int what);
+
+    void reboot();
 }

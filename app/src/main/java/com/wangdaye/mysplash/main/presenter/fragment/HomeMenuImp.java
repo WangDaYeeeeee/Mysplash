@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.main.model.fragment.i.OrderModel;
 import com.wangdaye.mysplash.main.model.fragment.i.PagerModel;
 import com.wangdaye.mysplash.main.presenter.fragment.i.HomeMenuPresenter;
@@ -49,7 +50,10 @@ public class HomeMenuImp
 
     @Override
     public void clickOrderItem(Context c) {
-        SelectOrderDialog selectOrderDialog = new SelectOrderDialog(c, orderModel.getOrder(), orderModel.isNormalMode());
+        SelectOrderDialog selectOrderDialog = new SelectOrderDialog(
+                c,
+                orderModel.getOrder(),
+                ModeUtils.getInstance(c).isNormalMode());
         selectOrderDialog.setOnOrderSelectedListener(this);
         selectOrderDialog.show();
     }
@@ -74,6 +78,7 @@ public class HomeMenuImp
                 c.getString(R.string.key_normal_mode),
                 normalMode);
         editor1.apply();
+        ModeUtils.getInstance(c).refresh(c);
     }
 
     /** <br> interface. */

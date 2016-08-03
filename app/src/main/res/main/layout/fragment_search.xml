@@ -19,8 +19,7 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/MysplashAppBarTheme">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/fragment_search_toolbar"
@@ -28,7 +27,8 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:navigationIcon="@drawable/ic_toolbar_back"
-                app:layout_scrollFlags="scroll|snap|enterAlways">
+                app:layout_scrollFlags="scroll|snap|enterAlways"
+                app:popupTheme="@style/MysplashPopupMenuTheme">
 
                 <EditText
                     android:id="@+id/fragment_search_editText"

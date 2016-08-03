@@ -7,6 +7,6 @@ package com.wangdaye.mysplash.photo.view.activity.i;
 public interface DownloadView {
 
     void showDialog();
-    void dismissDialog();
+    void setDialogDismiss();
     void setDialogProgress(int progress);
 }

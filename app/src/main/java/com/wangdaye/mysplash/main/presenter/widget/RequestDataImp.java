@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
-import com.wangdaye.mysplash.common.data.model.Photo;
+import com.wangdaye.mysplash.common.data.data.Photo;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.utils.MathUtils;
 import com.wangdaye.mysplash.common.utils.ValueUtils;

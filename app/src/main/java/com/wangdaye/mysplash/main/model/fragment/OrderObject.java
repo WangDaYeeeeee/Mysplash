@@ -10,13 +10,11 @@ public class OrderObject
         implements OrderModel {
     // data
     private String order;
-    private boolean normalMode;
 
     /** <br> life cycle. */
 
-    public OrderObject(String order, boolean normalMode) {
+    public OrderObject(String order) {
         this.order = order;
-        this.normalMode = normalMode;
     }
 
     /** <br> model. */
@@ -31,17 +29,5 @@ public class OrderObject
     @Override
     public void setOrder(String o) {
         this.order = o;
-    }
-
-    // mode.
-
-    @Override
-    public boolean isNormalMode() {
-        return normalMode;
-    }
-
-    @Override
-    public void setNormalMode(boolean b) {
-        this.normalMode = b;
     }
 }

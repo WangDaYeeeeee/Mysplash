@@ -4,10 +4,10 @@ package com.wangdaye.mysplash.main.model.activity.i;
 import android.support.v4.app.Fragment;
 
 /**
- * Fragment manage model.
+ * Drawer model.
  * */
 
-public interface FragmentManageModel {
+public interface DrawerModel {
 
     void setMenuItemId(int id);
     int getMenuItemId();

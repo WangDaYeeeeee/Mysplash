@@ -4,10 +4,10 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 
 /**
- * Fragment manage presenter.
+ * Drawer presenter.
  * */
 
-public interface FragmentManagePresenter {
+public interface DrawerPresenter {
 
     void selectDrawerItem(int id);
 

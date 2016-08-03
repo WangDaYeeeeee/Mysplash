@@ -1,10 +1,5 @@
 <resources>
 
-    <!-- application. -->
-    <string name="app_name">Mysplash</string>
-    <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.0.6</string>
-
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
     <string name="gitHub">GITHUB</string>
@@ -13,20 +8,7 @@
     <string name="thx">THX</string>
     <string name="cancel">取消</string>
     <string name="backstage">后台进行</string>
-
-    <!-- about. -->
-    <string name="unsplash">Unsplash.com</string>
-    <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
-    <string name="retrofit">Retrofit 2.0</string>
-    <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
-    <string name="glide">Glide</string>
-    <string name="about_glide">An image loading and caching library for Android focused on smooth scrolling.</string>
-    <string name="circular_progress_view">CircularProgressView</string>
-    <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
-    <string name="circle_image_view">CircleImageView</string>
-    <string name="about_circle_image_view">A circular ImageView for Android.</string>
-    <string name="downloader">ThinDownloadManager</string>
-    <string name="about_downloader">To download files and to avoid using DOWNLOAD_WITHOUT_NOTIFICATION permission if you are using Android\'s DownloadManager in your apps.</string>
+    <string name="open_in_browser">在浏览器中打开</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">点击重试</string>
@@ -45,14 +27,13 @@
     <string name="feedback_search_bar">搜索照片</string>
     <string name="feedback_search_tv">搜索照片</string>
 
-    <string name="feedback_is_over">Is over.</string>
+    <string name="feedback_is_over">全部加载结束</string>
 
     <string name="feedback_random_effect">排序在随机模式下不会生效</string>
     <string name="feedback_notify_restart">重启后生效</string>
 
     <string name="feedback_download_success">下载成功</string>
     <string name="feedback_download_failed">下载失败</string>
-    <string name="feedback_download_cancel">取消下载</string>
     <string name="feedback_downloading">下载中</string>
     <string name="feedback_connecting">连接中</string>
     <string name="feedback_no_sd_card">找不到存储设备</string>
@@ -69,6 +50,7 @@
     <string name="action_category_objects">物品</string>
     <string name="action_category_people">人物</string>
     <string name="action_category_technology">科技</string>
+    <string name="action_change_theme">更换主题</string>
     <string name="action_settings">设置</string>
     <string name="action_about">关于</string>
 
@@ -84,23 +66,5 @@
     <string name="action_clear_text">清空内容</string>
 
     <string name="action_stats">统计</string>
-
-    <!-- intent key. -->
-    <string name="intent_key_photo">photo</string>
-
-    <!-- transition name. -->
-    <string name="transition_photo_image">photo_image</string>
-
-    <!-- settings. -->
-    <string name="settings_category_basic">基础</string>
-    <string name="settings_title_default_order">默认排序</string>
-    <string name="settings_title_download_scale">下载规格</string>
-    <string name="settings_title_language">语言</string>
-
-    <!-- share preferences. -->
-    <string name="key_normal_mode">normal_mode</string>
-    <string name="key_default_order">default_order</string>
-    <string name="key_download_scale">download_scale</string>
-    <string name="key_language">language</string>
 
 </resources>

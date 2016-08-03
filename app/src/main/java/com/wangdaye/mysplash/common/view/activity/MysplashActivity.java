@@ -5,12 +5,13 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 
 /**
  * Mysplash Activity
  * */
 
-public class MysplashActivity extends AppCompatActivity {
+public abstract class MysplashActivity extends AppCompatActivity {
     // model.
     private boolean started = false;
 
@@ -19,8 +20,8 @@ public class MysplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme();
         Mysplash.getInstance().addActivity(this);
-        DisplayUtils.setStatusBarTransparent(this);
         DisplayUtils.setStatusBarTextDark(this);
     }
 
@@ -39,4 +40,6 @@ public class MysplashActivity extends AppCompatActivity {
     public boolean isStarted() {
         return started;
     }
+
+    protected abstract void setTheme();
 }

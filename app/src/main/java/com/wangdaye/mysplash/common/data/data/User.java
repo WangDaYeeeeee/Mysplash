@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common.data.model;
+package com.wangdaye.mysplash.common.data.data;
 
 /**
  * User.

@@ -10,7 +10,8 @@
     <FrameLayout
         android:id="@+id/activity_main_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="?attr/root_color" />
 
     <android.support.design.widget.NavigationView
         android:id="@+id/activity_main_navView"
@@ -18,11 +19,11 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="?attr/root_color"
-        android:fitsSystemWindows="true"
         app:headerLayout="@layout/container_nav_header"
         app:menu="@menu/menu_activity_main_drawer"
         app:itemIconTint="?attr/content_color"
         app:itemTextColor="?attr/content_color"
+        app:insetForeground="@android:color/transparent"
         tools:layout_marginTop="24dp" />
 
 </android.support.v4.widget.DrawerLayout>

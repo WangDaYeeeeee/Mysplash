@@ -20,11 +20,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
+            app:fiv_full_screen_width="true"
             tools:src="@drawable/design_about_app" />
 
         <TextView
             android:id="@+id/item_photo_title"
-            android:textColor="?attr/root_color"
+            android:textColor="@color/colorTextLight"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"

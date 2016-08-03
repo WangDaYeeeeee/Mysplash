@@ -7,8 +7,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -23,7 +23,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.model.Photo;
+import com.wangdaye.mysplash.common.data.data.Photo;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.main.model.widget.DisplayStateObject;
 import com.wangdaye.mysplash.main.model.widget.PhotoStateObject;
 import com.wangdaye.mysplash.main.model.widget.i.DisplayStateModel;
@@ -127,13 +128,20 @@ public class SearchContentView extends FrameLayout
     private void initView() {
         initContentView();
         initSearchingView();
-        setBackgroundColor(Color.argb((int) (255 * 0.92), 250, 250, 250));
+        setAlpha(0.9F);
     }
 
     private void initContentView() {
         this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
         refreshLayout.setOnRefreshAndLoadListener(this);
         refreshLayout.setVisibility(GONE);
+        if (ModeUtils.getInstance(getContext()).isLightTheme()) {
+            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
+            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
+        } else {
+            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
+            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
+        }
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(photoStateModel.getAdapter());
@@ -257,7 +265,7 @@ public class SearchContentView extends FrameLayout
 
     @Override
     public void setBackgroundOpacity() {
-        setBackgroundColor(Color.rgb(250, 250, 250));
+        setAlpha(1);
     }
 
     // loading view.

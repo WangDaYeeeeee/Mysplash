@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- activity & fragment themes. -->
+
+    <!-- main activity. -->
+
+    <style name="MysplashTheme_light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary_light</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
+        <item name="colorAccent">@color/colorAccent_light</item>
+        <item name="root_color">@color/colorRoot_light</item>
+        <item name="line_color">@color/colorLine_light</item>
+        <item name="title_color">@color/colorTextTitle_light</item>
+        <item name="subtitle_color">@color/colorTextSubtitle_light</item>
+        <item name="content_color">@color/colorTextContent_light</item>
+        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_light</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:actionOverflowMenuStyle">@style/MysplashPopupMenuTheme</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+    </style>
+
+    <style name="MysplashTheme_dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary_dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
+        <item name="colorAccent">@color/colorAccent_dark</item>
+        <item name="root_color">@color/colorRoot_dark</item>
+        <item name="line_color">@color/colorLine_dark</item>
+        <item name="title_color">@color/colorTextTitle_dark</item>
+        <item name="subtitle_color">@color/colorTextSubtitle_dark</item>
+        <item name="content_color">@color/colorTextContent_dark</item>
+        <item name="android:textColorPrimary">@color/colorTextContent_dark</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:actionOverflowMenuStyle">@style/MysplashPopupMenuTheme</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+    </style>
+
+</resources>

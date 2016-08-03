@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 
+import com.wangdaye.mysplash.common.data.data.Photo;
 import com.wangdaye.mysplash.common.utils.LanguageUtils;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 public class Mysplash extends Application {
     // data
     private List<Activity> activityList;
+    private Photo photo;
 
     // Unsplash data.
     public static final String APPLICATION_ID = "72bf3302b0fb868d8822332a8dad712341c48a5bec5af94b7beea4d1cc030ee6";
@@ -88,6 +90,14 @@ public class Mysplash extends Application {
 
     public List<Activity> getActivityList() {
         return activityList;
+    }
+
+    public void setPhoto(Photo p) {
+        this.photo = p;
+    }
+
+    public Photo getPhoto() {
+        return photo;
     }
 
     /** <br> singleton. */

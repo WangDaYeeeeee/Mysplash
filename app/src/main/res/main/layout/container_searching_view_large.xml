@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_searching_view_large"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/root_color">
 
     <com.github.rahatarmanahmed.cpv.CircularProgressView
         android:id="@+id/container_searching_view_large_progressView"

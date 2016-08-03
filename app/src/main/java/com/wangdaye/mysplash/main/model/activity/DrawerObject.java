@@ -3,24 +3,25 @@ package com.wangdaye.mysplash.main.model.activity;
 import android.support.v4.app.Fragment;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.main.model.activity.i.FragmentManageModel;
+import com.wangdaye.mysplash.main.model.activity.i.DrawerModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fragment manage object.
+ * Drawer object.
  * */
 
-public class FragmentManageObject
-        implements FragmentManageModel {
+public class DrawerObject
+        implements DrawerModel {
     // data
     private List<Fragment> fragmentList = new ArrayList<>();
     private int menuItemId = R.id.action_home;
 
     public static final int HOME_FRAGMENT = 1;
-    public static final int SETTINGS_ACTIVITY = -1;
-    public static final int ABOUT_ACTIVITY = -2;
+    public static final int CHANGE_THEME = -1;
+    public static final int SETTINGS_ACTIVITY = -2;
+    public static final int ABOUT_ACTIVITY = -3;
 
     /** <br> model. */
 

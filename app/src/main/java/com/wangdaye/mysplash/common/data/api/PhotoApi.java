@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.common.data.api;
 
-import com.wangdaye.mysplash.common.data.model.PhotoStats;
-import com.wangdaye.mysplash.common.data.model.LikePhotoResult;
-import com.wangdaye.mysplash.common.data.model.Photo;
+import com.wangdaye.mysplash.common.data.data.PhotoStats;
+import com.wangdaye.mysplash.common.data.data.LikePhotoResult;
+import com.wangdaye.mysplash.common.data.data.Photo;
 
 import java.util.List;
 

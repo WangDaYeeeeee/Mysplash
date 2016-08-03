@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.photo.view.activity;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -10,8 +11,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +25,10 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.model.SimplifiedPhoto;
-import com.wangdaye.mysplash.common.view.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.data.data.Photo;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
+import com.wangdaye.mysplash.common.widget.FreedomImageView;
 import com.wangdaye.mysplash.photo.model.DownloadObject;
 import com.wangdaye.mysplash.photo.model.PhotoObject;
 import com.wangdaye.mysplash.photo.model.i.DownloadModel;
@@ -35,14 +41,13 @@ import com.wangdaye.mysplash.photo.view.activity.i.DownloadView;
 import com.wangdaye.mysplash.photo.view.activity.i.PhotoInfoView;
 import com.wangdaye.mysplash.photo.view.dialog.DownloadDialog;
 import com.wangdaye.mysplash.common.widget.CircleImageView;
-import com.wangdaye.mysplash.common.widget.FreedomImageView;
 import com.wangdaye.mysplash.photo.view.dialog.StatsDialog;
 
 /**
  * Photo activity.
  * */
 
-public class PhotoActivity extends MysplashActivity
+public class PhotoActivity extends AppCompatActivity
         implements PhotoInfoView, DownloadView,
         View.OnClickListener, DownloadDialog.OnDismissListener {
     // model.
@@ -51,27 +56,52 @@ public class PhotoActivity extends MysplashActivity
 
     // view.
     private DownloadDialog dialog;
+    private RelativeLayout titleBar;
+    private LinearLayout buttonBar;
 
     // presenter.
     private DownloadPresenter downloadPresenter;
     private PhotoInfoPresenter photoInfoPresenter;
+
+    // data
+    private boolean started = false;
 
     /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme();
+        Mysplash.getInstance().addActivity(this);
         setContentView(R.layout.activity_photo);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!isStarted()) {
-            setStarted();
+        if (!started) {
+            started = true;
             initModel();
             initView();
             initPresenter();
+            animShowView(titleBar);
+            animShowView(buttonBar);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        titleBar.setVisibility(View.GONE);
+        buttonBar.setVisibility(View.GONE);
+        Mysplash.getInstance().removeActivity();
+    }
+
+    private void setTheme() {
+        if (ModeUtils.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Photo);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Photo);
         }
     }
 
@@ -83,6 +113,8 @@ public class PhotoActivity extends MysplashActivity
     }
 
     /** <br> view. */
+
+    // init.
 
     @SuppressLint("SetTextI18n")
     private void initView() {
@@ -98,6 +130,8 @@ public class PhotoActivity extends MysplashActivity
                 .priority(Priority.IMMEDIATE)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(photoImage);
+
+        this.titleBar = (RelativeLayout) findViewById(R.id.activity_photo_titleBar);
 
         CircleImageView avatarImage = (CircleImageView) findViewById(R.id.activity_photo_avatar);
         avatarImage.setOnClickListener(this);
@@ -117,6 +151,8 @@ public class PhotoActivity extends MysplashActivity
         TextView subtitle = (TextView) findViewById(R.id.activity_photo_subtitle);
         subtitle.setText("taken on " + photoModel.getCreateTime());
 
+        this.buttonBar = (LinearLayout) findViewById(R.id.activity_photo_btnBar);
+
         ImageButton[] optionButtons = new ImageButton[] {
                 (ImageButton) findViewById(R.id.activity_photo_downloadBtn),
                 (ImageButton) findViewById(R.id.activity_photo_shareBtn),
@@ -126,6 +162,16 @@ public class PhotoActivity extends MysplashActivity
         }
     }
 
+    // interface.
+
+    public void dismissDialog() {
+        downloadPresenter.dismissDialog();
+    }
+
+    public void progressDialog(int p) {
+        downloadPresenter.progressDialog(p);
+    }
+
     /** <br> model. */
 
     // init.
@@ -133,7 +179,7 @@ public class PhotoActivity extends MysplashActivity
     private void initModel() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        SimplifiedPhoto photo = getIntent().getParcelableExtra(getString(R.string.intent_key_photo));
+        Photo photo = Mysplash.getInstance().getPhoto();
         String scale = sharedPreferences.getString(
                 getString(R.string.key_download_scale),
                 "compact");
@@ -202,6 +248,19 @@ public class PhotoActivity extends MysplashActivity
                 downloadPresenter.setWallpaper(this);
                 break;
         }
+    }
+
+    /** <br> animation. */
+
+    private void animShowView(View v) {
+        DisplayUtils utils = new DisplayUtils(this);
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "translationY", utils.dpToPx(72), 0)
+                .setDuration(300);
+
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setStartDelay(200);
+        anim.start();
     }
 
     /** <br> interface. */
@@ -289,7 +348,7 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    public void dismissDialog() {
+    public void setDialogDismiss() {
         dialog.dismiss();
     }
 

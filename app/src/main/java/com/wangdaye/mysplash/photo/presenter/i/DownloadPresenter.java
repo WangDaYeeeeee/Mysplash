@@ -13,6 +13,7 @@ public interface DownloadPresenter {
     void setWallpaper(Context c);
 
     void dismissDialog();
+    void progressDialog(int p);
     void cancelDownload(Context c);
 
     int getDownloadId();

@@ -8,7 +8,4 @@ public interface OrderModel {
 
     String getOrder();
     void setOrder(String o);
-
-    boolean isNormalMode();
-    void setNormalMode(boolean b);
 }

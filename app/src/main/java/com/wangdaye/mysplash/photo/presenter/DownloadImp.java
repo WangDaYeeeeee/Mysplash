@@ -77,7 +77,7 @@ public class DownloadImp
             DownloadRequest request = new DownloadRequest(downloadUri)
                     .setDestinationURI(fileUri)
                     .setPriority(DownloadRequest.Priority.HIGH)
-                    .setDownloadListener(new DownloadListener(photoModel.getPhotoId()));
+                    .setDownloadListener(new DownloadListener(photoModel.getPhotoId(), downloadModel));
 
             int id = DownloadTools.getInstance().add(request);
             downloadModel.setDownloadId(id);
@@ -89,6 +89,12 @@ public class DownloadImp
     @Override
     public void dismissDialog() {
         downloadModel.setDialogShowing(false);
+        downloadView.setDialogDismiss();
+    }
+
+    @Override
+    public void progressDialog(int p) {
+        downloadView.setDialogProgress(p);
     }
 
     @Override
@@ -96,13 +102,7 @@ public class DownloadImp
         downloadModel.setDialogShowing(false);
         if (downloadModel.isDownloading()) {
             downloadModel.setDownloading(false);
-            if (DownloadTools.getInstance()
-                    .cancel(downloadModel.getDownloadId()) == 1) {
-                Toast.makeText(
-                        c,
-                        c.getString(R.string.feedback_download_cancel) + "\n" + photoModel.getPhotoId(),
-                        Toast.LENGTH_SHORT).show();
-            }
+            DownloadTools.getInstance().cancel(downloadModel.getDownloadId());
         }
     }
 
@@ -118,20 +118,19 @@ public class DownloadImp
     private class DownloadListener implements DownloadStatusListener {
         // data
         private String id;
+        private DownloadModel downloadModel;
 
-        public DownloadListener(String id) {
+        public DownloadListener(String id, DownloadModel downloadModel) {
             this.id = id;
+            this.downloadModel = downloadModel;
         }
 
         @Override
         public void onDownloadComplete(int i) {
-            List<Activity> activityList = Mysplash.getInstance().getActivityList();
-            if (activityList.size() > 0
-                    && activityList.get(activityList.size() - 1) instanceof PhotoActivity) {
-                if (downloadModel.isDialogShowing()
-                        && ((PhotoActivity) activityList.get(activityList.size() - 1)).getDownloadId() == i) {
-                    downloadView.dismissDialog();
-                }
+            PhotoActivity a = getPhotoActivity();
+            if (a != null && a.getDownloadId() == i
+                    && downloadModel.isDialogShowing()) {
+                a.dismissDialog();
             }
 
             Uri file = Uri.fromFile(new File(Mysplash.DOWNLOAD_PATH + id + Mysplash.DOWNLOAD_FORMAT));
@@ -175,13 +174,10 @@ public class DownloadImp
 
         @Override
         public void onDownloadFailed(int i, int i1, String s) {
-            List<Activity> activityList = Mysplash.getInstance().getActivityList();
-            if (activityList.size() > 0
-                    && activityList.get(activityList.size() - 1) instanceof PhotoActivity) {
-                if (downloadModel.isDialogShowing()
-                        && ((PhotoActivity) activityList.get(activityList.size() - 1)).getDownloadId() == i) {
-                    downloadView.dismissDialog();
-                }
+            PhotoActivity a = getPhotoActivity();
+            if (a != null && a.getDownloadId() == i
+                    && downloadModel.isDialogShowing()) {
+                a.dismissDialog();
             }
             Toast.makeText(
                     Mysplash.getInstance(),
@@ -193,14 +189,21 @@ public class DownloadImp
 
         @Override
         public void onProgress(int i, long l, long l1, int i1) {
-            List<Activity> activityList = Mysplash.getInstance().getActivityList();
-            if (activityList.size() > 0
-                    && activityList.get(activityList.size() - 1) instanceof PhotoActivity) {
-                if (downloadModel.isDialogShowing()
-                        && ((PhotoActivity) activityList.get(activityList.size() - 1)).getDownloadId() == i) {
-                    downloadView.setDialogProgress(i1);
+            PhotoActivity a = getPhotoActivity();
+            if (a != null && a.getDownloadId() == i
+                    && downloadModel.isDialogShowing()) {
+                a.progressDialog(i1);
+            }
+        }
+
+        private PhotoActivity getPhotoActivity() {
+            List<Activity> list = Mysplash.getInstance().getActivityList();
+            for (int i = 0; i < list.size(); i ++) {
+                if (list.get(i) instanceof PhotoActivity) {
+                    return (PhotoActivity) list.get(i);
                 }
             }
+            return null;
         }
     }
 }

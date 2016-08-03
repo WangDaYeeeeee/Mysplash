@@ -1,43 +1,80 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- activity & fragment themes. -->
-    <style name="MysplashTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="root_color">@color/colorRoot</item>
-        <item name="line_color">@color/colorLine</item>
-        <item name="title_color">@color/colorTextDark</item>
-        <item name="subtitle_color">@color/colorTextGrey</item>
-        <item name="content_color">@color/colorTextDark2nd</item>
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+
+    <!-- main activity. -->
+
+    <style name="MysplashTheme_light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary_light</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
+        <item name="colorAccent">@color/colorAccent_light</item>
+        <item name="root_color">@color/colorRoot_light</item>
+        <item name="line_color">@color/colorLine_light</item>
+        <item name="title_color">@color/colorTextTitle_light</item>
+        <item name="subtitle_color">@color/colorTextSubtitle_light</item>
+        <item name="content_color">@color/colorTextContent_light</item>
+        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_light</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
     </style>
-    
-    <style name="MysplashTheme.Photo" parent="MysplashTheme">
+
+    <style name="MysplashTheme_dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary_dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
+        <item name="colorAccent">@color/colorAccent_dark</item>
+        <item name="root_color">@color/colorRoot_dark</item>
+        <item name="line_color">@color/colorLine_dark</item>
+        <item name="title_color">@color/colorTextTitle_dark</item>
+        <item name="subtitle_color">@color/colorTextSubtitle_dark</item>
+        <item name="content_color">@color/colorTextContent_dark</item>
+        <item name="android:textColorPrimary">@color/colorTextContent_dark</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+    </style>
+
+    <!-- photo activity. -->
+
+    <style name="MysplashTheme_light.Photo" parent="MysplashTheme_light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
     </style>
 
-    <style name="MysplashTheme.Settings" parent="MysplashTheme">
+    <style name="MysplashTheme_dark.Photo" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
     </style>
 
-    <style name="MysplashTheme.About" parent="MysplashTheme">
+    <!-- common. -->
+
+    <style name="MysplashTheme_light.Common" parent="MysplashTheme_light">
         <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
     </style>
 
-    <!-- app bar. -->
-    <style name="MysplashAppBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="android:textColorPrimary">?attr/content_color</item>
-        <item name="android:textColorSecondary">?attr/content_color</item>
+    <style name="MysplashTheme_dark.Common" parent="MysplashTheme_dark">
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
     </style>
-    <style name="MySplashPopupTheme" parent="ThemeOverlay.AppCompat.Light" />
+
+    <!-- menu. -->
+
+    <style name="MysplashPopupMenuTheme" parent="@style/ThemeOverlay.AppCompat">
+        <item name="android:colorBackground">?attr/line_color</item>
+        <item name="android:textColor">?attr/content_color</item>
+    </style>
 
     <!-- Text -->
+
     <style name="large_title_text">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -67,6 +104,7 @@
     </style>
 
     <!-- button -->
+
     <style name="material_button" parent="@style/Widget.AppCompat.Button.Borderless">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
@@ -83,10 +121,18 @@
     </style>
 
     <!-- image -->
+
     <style name="material_icon">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/normal_margin</item>
+    </style>
+
+    <!-- popup menu. -->
+
+    <style name="material_popup_menu" parent="@android:style/Widget.PopupMenu">
+        <item name="android:textColor">?attr/content_color</item>
+        <item name="android:popupBackground">?attr/line_color</item>
     </style>
 
 </resources>

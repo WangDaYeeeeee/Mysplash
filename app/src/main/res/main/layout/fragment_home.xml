@@ -19,8 +19,7 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/MysplashAppBarTheme">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/fragment_home_toolbar"
@@ -28,9 +27,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:navigationIcon="@drawable/ic_toolbar_menu"
-                app:popupTheme="@style/MySplashPopupTheme"
                 app:layout_scrollFlags="scroll|snap|enterAlways"
                 app:title="@string/app_name"
+                app:popupTheme="@style/MysplashPopupMenuTheme"
                 tools:ignore="UnusedAttribute" />
 
             <android.support.design.widget.TabLayout

@@ -1,43 +1,34 @@
 package com.wangdaye.mysplash.common.view.activity;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.common.view.fragment.SettingsFragment;
 import com.wangdaye.mysplash.common.widget.StatusBarView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * Settings activity.
  * */
 
-public class SettingsActivity extends AppCompatActivity implements View.OnClickListener {
-    // model.
-    private boolean started = false;
+public class SettingsActivity extends MysplashActivity
+        implements View.OnClickListener {
 
     /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DisplayUtils.setStatusBarTransparent(this);
-        DisplayUtils.setStatusBarTextDark(this);
-        DisplayUtils.setWindowTop(this,
-                getString(R.string.action_settings),
-                ContextCompat.getColor(this, R.color.colorPrimary));
         setContentView(R.layout.activity_settings);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!started) {
-            started = true;
+        if (!isStarted()) {
+            setStarted();
             initView();
             getFragmentManager()
                     .beginTransaction()
@@ -47,12 +38,20 @@ public class SettingsActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+    @Override
+    protected void setTheme() {
+        if (ModeUtils.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Common);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Common);
+        }
+    }
+
     /** <br> view. */
 
     private void initView() {
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_settings_statusBar);
-        if (Build.VERSION.SDK_INT <Build.VERSION_CODES.M) {
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        if (ModeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 

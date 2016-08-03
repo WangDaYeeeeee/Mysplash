@@ -30,4 +30,9 @@
         <attr name="civ_fill_color" format="color" />
     </declare-styleable>
 
+    <!-- FreedomImageView -->
+    <declare-styleable name="FreedomImageView">
+        <attr name="fiv_full_screen_width" format="boolean" />
+    </declare-styleable>
+
 </resources>

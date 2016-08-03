@@ -2,10 +2,7 @@ package com.wangdaye.mysplash.common.view.activity;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -16,34 +13,39 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.LinkUtils;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.common.widget.StatusBarView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * About activity.
  * */
 
-public class AboutActivity extends AppCompatActivity
+public class AboutActivity extends MysplashActivity
         implements View.OnClickListener {
-    // model.
-    private boolean started = false;
 
     /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DisplayUtils.setStatusBarTransparent(this);
-        DisplayUtils.setStatusBarTextDark(this);
         setContentView(R.layout.activity_about);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!started) {
-            started = true;
+        if (!isStarted()) {
+            setStarted();
             initView();
+        }
+    }
+
+    @Override
+    protected void setTheme() {
+        if (ModeUtils.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Common);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Common);
         }
     }
 
@@ -51,8 +53,7 @@ public class AboutActivity extends AppCompatActivity
 
     private void initView() {
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_about_statusBar);
-        if (Build.VERSION.SDK_INT <Build.VERSION_CODES.M) {
-            statusBar.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        if (ModeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 

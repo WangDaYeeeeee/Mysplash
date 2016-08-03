@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.photo.model;
 
-import com.wangdaye.mysplash.common.data.model.SimplifiedPhoto;
+import com.wangdaye.mysplash.common.data.data.Photo;
 import com.wangdaye.mysplash.photo.model.i.PhotoModel;
 
 /**
@@ -10,10 +10,10 @@ import com.wangdaye.mysplash.photo.model.i.PhotoModel;
 public class PhotoObject
         implements PhotoModel {
     // data
-    private SimplifiedPhoto photo;
+    private Photo photo;
     private String scale;
 
-    public PhotoObject(SimplifiedPhoto p, String s) {
+    public PhotoObject(Photo p, String s) {
         photo = p;
         scale = s;
     }
@@ -25,7 +25,7 @@ public class PhotoObject
 
     @Override
     public String getHtmlUrl() {
-        return photo.url_html;
+        return photo.links.html;
     }
 
     @Override
@@ -39,13 +39,23 @@ public class PhotoObject
     }
 
     @Override
+    public int getLikes() {
+        return photo.likes;
+    }
+
+    @Override
     public String getUserName() {
-        return photo.user_name;
+        return photo.user.username;
+    }
+
+    @Override
+    public String getAuthorName() {
+        return photo.user.name;
     }
 
     @Override
     public String getAvatarUrl() {
-        return photo.url_user_avatar;
+        return photo.user.profile_image.large;
     }
 
     @Override
@@ -55,7 +65,7 @@ public class PhotoObject
 
     @Override
     public String getRegularUrl() {
-        return photo.url_regular;
+        return photo.urls.regular;
     }
 
     // url.
@@ -64,18 +74,18 @@ public class PhotoObject
     public String selectDownloadUrl() {
         switch (scale) {
             case "compact":
-                return photo.url_full;
+                return photo.urls.full;
 
             case "raw":
-                return photo.url_raw;
+                return photo.urls.raw;
 
             default:
-                return photo.url_full;
+                return photo.urls.full;
         }
     }
 
     @Override
-    public SimplifiedPhoto getPhoto() {
+    public Photo getPhoto() {
         return photo;
     }
 }

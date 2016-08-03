@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/root_color"
+            android:transitionName="@string/transition_photo_background"
             tools:ignore="UnusedAttribute">
 
             <com.wangdaye.mysplash.common.widget.FreedomImageView

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.main.model.fragment.i.CategoryModel;
 import com.wangdaye.mysplash.main.presenter.fragment.i.CategoryMenuPresenter;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
@@ -35,7 +36,7 @@ public class CategoryMenuImp
     public void clickRandomItem(Context c) {
         saveMode(c, false);
         CategoryFragment f = new CategoryFragment();
-        f.initModel(c, categoryModel.getCategoryId());
+        f.initModel(categoryModel.getCategoryId());
         fragmentView.changeFragment(f);
     }
 
@@ -43,7 +44,7 @@ public class CategoryMenuImp
     public void clickNormalItem(Context c) {
         saveMode(c, true);
         CategoryFragment f = new CategoryFragment();
-        f.initModel(c, categoryModel.getCategoryId());
+        f.initModel(categoryModel.getCategoryId());
         fragmentView.changeFragment(f);
     }
 
@@ -53,5 +54,6 @@ public class CategoryMenuImp
                 c.getString(R.string.key_normal_mode),
                 b);
         editor.apply();
+        ModeUtils.getInstance(c).refresh(c);
     }
 }

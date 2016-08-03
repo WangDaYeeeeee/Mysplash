@@ -10,19 +10,18 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.tools.DownloadTools;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.common.view.activity.MysplashActivity;
-import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
-import com.wangdaye.mysplash.main.model.activity.i.FragmentManageModel;
-import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImp;
-import com.wangdaye.mysplash.main.presenter.activity.i.FragmentManagePresenter;
-import com.wangdaye.mysplash.main.view.activity.i.FragmentManageView;
+import com.wangdaye.mysplash.main.model.activity.DrawerObject;
+import com.wangdaye.mysplash.main.model.activity.i.DrawerModel;
+import com.wangdaye.mysplash.main.presenter.activity.DrawerImp;
+import com.wangdaye.mysplash.main.presenter.activity.i.DrawerPresenter;
+import com.wangdaye.mysplash.main.view.activity.i.DrawerView;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.SafeHandler;
 
 import java.util.Timer;
@@ -33,16 +32,16 @@ import java.util.TimerTask;
  * */
 
 public class MainActivity extends MysplashActivity
-        implements FragmentManageView,
-        SafeHandler.HandlerContainer, NavigationView.OnNavigationItemSelectedListener {
+        implements DrawerView,
+        NavigationView.OnNavigationItemSelectedListener, SafeHandler.HandlerContainer {
     // model.
-    private FragmentManageModel fragmentManageModel;
+    private DrawerModel drawerModel;
 
     // view
     private SafeHandler<MainActivity> handler;
 
     // presenter.
-    private FragmentManagePresenter fragmentManagePresenter;
+    private DrawerPresenter drawerPresenter;
 
     /** <br> life cycle. */
 
@@ -70,10 +69,19 @@ public class MainActivity extends MysplashActivity
         DownloadTools.getInstance().cancelAll();
     }
 
+    @Override
+    protected void setTheme() {
+        if (ModeUtils.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light);
+        } else {
+            setTheme(R.style.MysplashTheme_dark);
+        }
+    }
+
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.fragmentManagePresenter = new FragmentManageImp(fragmentManageModel, this);
+        this.drawerPresenter = new DrawerImp(drawerModel, this);
     }
 
     /** <br> view. */
@@ -85,9 +93,6 @@ public class MainActivity extends MysplashActivity
         nav.setNavigationItemSelectedListener(this);
 
         View header = nav.getHeaderView(0);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) header.getLayoutParams();
-        params.setMargins(0, DisplayUtils.getStatusBarHeight(getResources()), 0, 0);
-        header.setLayoutParams(params);
         ImageView icon = (ImageView) header.findViewById(R.id.container_nav_header_icon);
         Glide.with(this)
                 .load(R.drawable.ic_launcher)
@@ -98,7 +103,7 @@ public class MainActivity extends MysplashActivity
     /** <br> model. */
 
     private void initModel() {
-        this.fragmentManageModel = new FragmentManageObject();
+        this.drawerModel = new DrawerObject();
     }
 
     /** <br> interface. */
@@ -107,8 +112,15 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        fragmentManagePresenter.selectDrawerItem(item.getItemId());
-        return true;
+        drawerPresenter.selectDrawerItem(item.getItemId());
+        return item.getItemId() != R.id.action_null;
+    }
+
+    // handler.
+
+    @Override
+    public void handleMessage(Message message) {
+        drawerPresenter.processMessage(this, message.what);
     }
 
     // view.
@@ -154,10 +166,13 @@ public class MainActivity extends MysplashActivity
         }, 400);
     }
 
-    // handler.
-
     @Override
-    public void handleMessage(Message message) {
-        fragmentManagePresenter.processMessage(this, message.what);
+    public void reboot() {
+        int enter_anim = android.R.anim.fade_in;
+        int exit_anim = android.R.anim.fade_out;
+        finish();
+        overridePendingTransition(enter_anim, exit_anim);
+        startActivity(getIntent());
+        overridePendingTransition(enter_anim, exit_anim);
     }
 }

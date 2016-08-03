@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
 import android.content.Context;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
@@ -48,7 +47,7 @@ public class SearchBarImp
 
     @Override
     public void showOrientationMenu(Context c, View anchor) {
-        PopupMenu menu = new PopupMenu(c, anchor, Gravity.CENTER);
+        PopupMenu menu = new PopupMenu(c, anchor);
         menu.inflate(R.menu.menu_fragment_search_orientation);
         menu.setOnMenuItemClickListener(this);
         menu.show();

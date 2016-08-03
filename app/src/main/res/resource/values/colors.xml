@@ -2,18 +2,31 @@
 <resources>
 
     <!-- theme -->
-    <color name="colorPrimary">#fafafa</color>
-    <color name="colorPrimaryDark">#f1f1f1</color>
-    <color name="colorAccent">#aaffec</color>
+    <color name="colorPrimary_light">#fafafa</color>
+    <color name="colorPrimary_dark">#212121</color>
+
+    <color name="colorPrimaryDark_light">#f1f1f1</color>
+    <color name="colorPrimaryDark_dark">#1a1a1a</color>
+
+    <color name="colorAccent_light">#aaffec</color>
+    <color name="colorAccent_dark">#aaffec</color>
 
     <!-- UI. -->
-    <color name="colorRoot">@color/colorPrimary</color>
-    <color name="colorLine">#e0e0e0</color>
+    <color name="colorRoot_light">@color/colorPrimary_light</color>
+    <color name="colorLine_light">#e0e0e0</color>
+
+    <color name="colorRoot_dark">@color/colorPrimary_dark</color>
+    <color name="colorLine_dark">#292929</color>
 
     <!-- text color -->
-    <color name="colorTextTitle">@color/colorTextDark</color>
-    <color name="colorTextSubtitle">@color/colorTextGrey</color>
-    <color name="colorTextContent">@color/colorTextDark2nd</color>
+    <color name="colorTextTitle_light">@color/colorTextDark</color>
+    <color name="colorTextSubtitle_light">@color/colorTextGrey</color>
+    <color name="colorTextContent_light">@color/colorTextDark2nd</color>
+
+    <color name="colorTextTitle_dark">@color/colorTextLight</color>
+    <color name="colorTextSubtitle_dark">@color/colorTextGrey2nd</color>
+    <color name="colorTextContent_dark">@color/colorTextLight2nd</color>
+
     <color name="colorTextDark">#424242</color>
     <color name="colorTextDark2nd">#757575</color>
     <color name="colorTextGrey">#9e9e9e</color>

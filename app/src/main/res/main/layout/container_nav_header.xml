@@ -35,7 +35,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?attr/line_color"
+        android:background="@android:color/black"
+        android:alpha="0.1"
         android:layout_alignParentBottom="true" />
 
 </RelativeLayout>

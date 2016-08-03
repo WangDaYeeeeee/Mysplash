@@ -1,11 +1,9 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -20,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.model.fragment.SearchObject;
 import com.wangdaye.mysplash.main.model.fragment.i.SearchModel;
@@ -93,8 +92,7 @@ public class SearchFragment extends Fragment
         this.handler = new SafeHandler<>(this);
 
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_search_statusBar);
-        if (Build.VERSION.SDK_INT <Build.VERSION_CODES.M) {
-            statusBar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        if (ModeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 

@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -28,10 +27,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.model.LikePhotoResult;
-import com.wangdaye.mysplash.common.data.model.Photo;
-import com.wangdaye.mysplash.common.data.model.SimplifiedPhoto;
+import com.wangdaye.mysplash.common.data.data.LikePhotoResult;
+import com.wangdaye.mysplash.common.data.data.Photo;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.widget.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -130,9 +129,16 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
         }
 
         holder.likeButton.setImageResource(
-                itemList.get(position).liked_by_user ?
-                        R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
-        holder.card.setBackgroundColor(ColorUtils.calcCardBackgroundColor(itemList.get(position).color));
+                itemList.get(position).liked_by_user
+                        ?
+                        R.drawable.ic_item_heart_red
+                        :
+                        R.drawable.ic_item_heart_outline);
+        holder.card.setBackgroundColor(
+                ColorUtils.calcCardBackgroundColor(
+                        a,
+                        itemList.get(position).color));
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.image.setTransitionName(itemList.get(position).id);
         }
@@ -167,10 +173,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
     public void clearItem() {
         itemList.clear();
         notifyDataSetChanged();
-    }
-
-    public List<Photo> getItemList() {
-        return itemList;
     }
 
     private void setLikeForAPhoto(int position) {
@@ -228,9 +230,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             card.setOnClickListener(this);
 
             this.image = (FreedomImageView) itemView.findViewById(R.id.item_photo_image);
-            image.setSize(
-                    itemList.get(position).width,
-                    itemList.get(position).height);
+            image.setSize(itemList.get(position).width, itemList.get(position).height);
 
             this.title = (TextView) itemView.findViewById(R.id.item_photo_title);
             this.likeButton = (ImageButton) itemView.findViewById(R.id.item_photo_likeButton);
@@ -242,13 +242,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
             switch (view.getId()) {
                 case R.id.item_photo_card:
                     if (a instanceof Activity) {
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(
-                                a.getString(R.string.intent_key_photo),
-                                new SimplifiedPhoto(itemList.get(getAdapterPosition())));
+                        Photo p = itemList.get(getAdapterPosition());
+                        Mysplash.getInstance().setPhoto(p);
 
                         Intent intent = new Intent(a, PhotoActivity.class);
-                        intent.putExtras(bundle);
                         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                             ActivityOptionsCompat options = ActivityOptionsCompat
                                     .makeScaleUpAnimation(
@@ -261,7 +258,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.ViewHolder
                             ActivityOptionsCompat options = ActivityOptionsCompat
                                     .makeSceneTransitionAnimation(
                                             (Activity) a,
-                                            Pair.create(imageView, a.getString(R.string.transition_photo_image)));
+                                            Pair.create(imageView, a.getString(R.string.transition_photo_image)),
+                                            Pair.create(imageView, a.getString(R.string.transition_photo_background)));
                             ActivityCompat.startActivity((Activity) a, intent, options.toBundle());
                         }
                     }

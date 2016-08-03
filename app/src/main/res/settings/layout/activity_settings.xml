@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="?attr/root_color"
+    tools:layout_marginTop="24dp">
     
     <com.wangdaye.mysplash.common.widget.StatusBarView
         android:id="@+id/activity_settings_statusBar"
@@ -18,8 +20,7 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/MysplashAppBarTheme">
+            android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/activity_settings_toolbar"
@@ -27,9 +28,9 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:navigationIcon="@drawable/ic_toolbar_back"
-                app:popupTheme="@style/MySplashPopupTheme"
                 app:layout_scrollFlags="scroll|snap|enterAlways"
                 app:title="@string/action_settings"
+                app:popupTheme="@style/MysplashPopupMenuTheme"
                 tools:ignore="UnusedAttribute" />
 
         </android.support.design.widget.AppBarLayout>

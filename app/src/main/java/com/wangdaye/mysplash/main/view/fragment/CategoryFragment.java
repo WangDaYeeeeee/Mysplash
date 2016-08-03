@@ -1,12 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -16,11 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.api.PhotoApi;
+import com.wangdaye.mysplash.common.utils.ModeUtils;
 import com.wangdaye.mysplash.main.model.fragment.CategoryObject;
-import com.wangdaye.mysplash.main.model.fragment.OrderObject;
 import com.wangdaye.mysplash.main.model.fragment.i.CategoryModel;
-import com.wangdaye.mysplash.main.model.fragment.i.OrderModel;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryMenuImp;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImp;
 import com.wangdaye.mysplash.main.presenter.fragment.i.CategoryMenuPresenter;
@@ -40,7 +33,6 @@ public class CategoryFragment extends Fragment
         implements ToolbarView, FragmentView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener {
     // model.
-    private OrderModel orderModel;
     private CategoryModel categoryModel;
 
     // view.
@@ -78,14 +70,13 @@ public class CategoryFragment extends Fragment
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
-        if (Build.VERSION.SDK_INT <Build.VERSION_CODES.M) {
-            statusBar.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+        if (ModeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
         toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryModel.getCategoryId()));
-        if (orderModel.isNormalMode()) {
+        if (ModeUtils.getInstance(getActivity()).isNormalMode()) {
             toolbar.inflateMenu(R.menu.menu_fragment_category_normal);
         } else {
             toolbar.inflateMenu(R.menu.menu_fragment_category_random);
@@ -97,17 +88,12 @@ public class CategoryFragment extends Fragment
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
         photosView.setActivity(getActivity());
         photosView.setCategoryId(categoryModel.getCategoryId());
-        photosView.setNormalMode(orderModel.isNormalMode());
+        photosView.setNormalMode(ModeUtils.getInstance(getActivity()).isNormalMode());
     }
 
     /** <br> model. */
 
-    public void initModel(Context c, int categoryId) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
-        boolean normalMode = sharedPreferences.getBoolean(
-                c.getString(R.string.key_normal_mode),
-                true);
-        this.orderModel = new OrderObject(PhotoApi.ORDER_BY_LATEST, normalMode);
+    public void initModel(int categoryId) {
         this.categoryModel = new CategoryObject(categoryId);
     }
 
