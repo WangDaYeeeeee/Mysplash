@@ -1,8 +1,6 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -15,29 +13,27 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.api.PhotoApi;
-import com.wangdaye.mysplash.common.utils.ModeUtils;
-import com.wangdaye.mysplash.main.model.fragment.OrderObject;
-import com.wangdaye.mysplash.main.model.fragment.PagerObject;
-import com.wangdaye.mysplash.main.model.fragment.i.OrderModel;
-import com.wangdaye.mysplash.main.model.fragment.i.PagerModel;
-import com.wangdaye.mysplash.main.model.widget.TypeStateObject;
-import com.wangdaye.mysplash.main.presenter.fragment.HomeMenuImp;
-import com.wangdaye.mysplash.main.presenter.fragment.PagerImp;
-import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImp;
-import com.wangdaye.mysplash.main.presenter.fragment.i.HomeMenuPresenter;
-import com.wangdaye.mysplash.main.presenter.fragment.i.PagerPresenter;
-import com.wangdaye.mysplash.main.presenter.fragment.i.ToolbarPresenter;
+import com.wangdaye.mysplash._common.i.model.PagerManageModel;
+import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.i.view.CollectionsView;
+import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash._common.i.view.PagerManageView;
+import com.wangdaye.mysplash._common.i.view.PagerView;
+import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.i.view.ToolbarView;
+import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
+import com.wangdaye.mysplash.main.model.widget.PhotosObject;
+import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.main.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash.common.widget.StatusBarView;
-import com.wangdaye.mysplash.main.view.fragment.i.FragmentView;
-import com.wangdaye.mysplash.main.view.fragment.i.PagerView;
-import com.wangdaye.mysplash.main.view.fragment.i.ToolbarView;
-import com.wangdaye.mysplash.main.view.widget.HomePageView;
+import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
+import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,19 +41,19 @@ import java.util.List;
  * */
 
 public class HomeFragment extends Fragment
-        implements ToolbarView, FragmentView, PagerView,
+        implements ToolbarView, PopupManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
     // model.
-    private OrderModel orderModel;
-    private PagerModel pagerModel;
+    private PagerManageModel pagerManageModel;
 
     // view.
-    private HomePageView[] pages = new HomePageView[2];
+    private Toolbar toolbar;
+    private PagerView[] pagers = new PagerView[3];
 
     // presenter.
     private ToolbarPresenter toolbarPresenter;
-    private HomeMenuPresenter homeMenuPresenter;
-    private PagerPresenter pagerPresenter;
+    private HomeFragmentPopupManageImplementor popupManageImplementor;
+    private PagerManagePresenter pagerManagePresenter;
 
     /** <br> life cycle. */
 
@@ -67,14 +63,14 @@ public class HomeFragment extends Fragment
         initModel();
         initView(view);
         initPresenter();
-        pages[0].initRefresh();
+        pagers[0].refreshPager();
         return view;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        for (HomePageView p : pages) {
+        for (PagerView p : pagers) {
             p.cancelRequest();
         }
     }
@@ -82,24 +78,26 @@ public class HomeFragment extends Fragment
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImp(pagerModel, this);
-        this.homeMenuPresenter = new HomeMenuImp(orderModel, pagerModel, this, this);
-        this.pagerPresenter = new PagerImp(orderModel, pagerModel, this);
+        this.toolbarPresenter = new ToolbarImplementor(this);
+        this.popupManageImplementor = new HomeFragmentPopupManageImplementor(this);
+        this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
     }
 
     /** <br> view. */
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
-        if (ModeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 
-        Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_home_toolbar);
-        if (ModeUtils.getInstance(getActivity()).isNormalMode()) {
-            toolbar.inflateMenu(R.menu.menu_fragment_home_toolbar_normal);
+        this.toolbar = (Toolbar) v.findViewById(R.id.fragment_home_toolbar);
+        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            toolbar.inflateMenu(R.menu.fragment_home_toolbar_light);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
         } else {
-            toolbar.inflateMenu(R.menu.menu_fragment_home_toolbar_random);
+            toolbar.inflateMenu(R.menu.fragment_home_toolbar_dark);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
         }
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
@@ -110,42 +108,32 @@ public class HomeFragment extends Fragment
 
     private void initPages(View v) {
         List<View> pageList = new ArrayList<>();
-        pages[0] = new HomePageView(
-                getActivity(),
-                TypeStateObject.NEW_TYPE,
-                orderModel.getOrder(),
-                ModeUtils.getInstance(getActivity()).isNormalMode());
-        pages[1] = new HomePageView(
-                getActivity(),
-                TypeStateObject.FEATURED_TYPE,
-                orderModel.getOrder(),
-                ModeUtils.getInstance(getActivity()).isNormalMode());
-        Collections.addAll(pageList, pages);
+        pageList.add(new HomePhotosView(getActivity(), PhotosObject.PHOTOS_TYPE_NEW));
+        pageList.add(new HomePhotosView(getActivity(), PhotosObject.PHOTOS_TYPE_FEATURED));
+        pageList.add(new HomeCollectionsView(getActivity()));
+        for (int i = 0; i < pageList.size(); i ++) {
+            pagers[i] = (PagerView) pageList.get(i);
+        }
 
         List<String> tabList = new ArrayList<>();
         tabList.add("NEW");
         tabList.add("FEATURED");
+        tabList.add("COLLECTIONS");
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
-
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_home_tabLayout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         ViewPager viewPager = (ViewPager) v.findViewById(R.id.fragment_home_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
+
+        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_home_tabLayout);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
     }
 
     /** <br> model. */
 
     private void initModel() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
-        String pageOrder = sharedPreferences.getString(
-                getString(R.string.key_default_order),
-                PhotoApi.ORDER_BY_LATEST);
-        this.orderModel = new OrderObject(pageOrder);
-        this.pagerModel = new PagerObject();
+        this.pagerManageModel = new PagerManageObject(0);
     }
 
     /** <br> interface. */
@@ -156,11 +144,11 @@ public class HomeFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.clickNavigationIcon();
+                toolbarPresenter.touchNavigatorIcon();
                 break;
 
             case R.id.fragment_home_toolbar:
-                toolbarPresenter.clickToolbar();
+                toolbarPresenter.touchToolbar();
                 break;
         }
     }
@@ -169,24 +157,8 @@ public class HomeFragment extends Fragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                homeMenuPresenter.clickSearchItem();
-                return true;
-
-            case R.id.action_order:
-                homeMenuPresenter.clickOrderItem(getActivity());
-                return true;
-
-            case R.id.action_random_mode:
-                homeMenuPresenter.clickRandomItem(getActivity());
-                return true;
-
-            case R.id.action_normal_mode:
-                homeMenuPresenter.clickNormalItem(getActivity());
-                return true;
-        }
-        return false;
+        toolbarPresenter.touchMenuItem(item.getItemId());
+        return true;
     }
 
     // on page changed listener.
@@ -198,7 +170,8 @@ public class HomeFragment extends Fragment
 
     @Override
     public void onPageSelected(int position) {
-        pagerPresenter.checkPageRefresh(position);
+        pagerManagePresenter.setPagerPosition(position);
+        pagerManagePresenter.checkToRefresh(position);
     }
 
     @Override
@@ -211,39 +184,56 @@ public class HomeFragment extends Fragment
     // toolbar view.
 
     @Override
-    public void clickNavigationIcon() {
+    public void touchNavigatorIcon() {
         DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.activity_main_drawerLayout);
         drawer.openDrawer(GravityCompat.START);
     }
 
     @Override
-    public void scrollToTop(int i) {
-        pages[i].scrollToTop();
-    }
-
-    // home menu view.
-
-    @Override
-    public void addFragment(Fragment f) {
-        ((MainActivity) getActivity()).addFragment(f);
+    public void touchToolbar() {
+        pagers[pagerManageModel.getPagerPosition()].scrollToPageTop();
     }
 
     @Override
-    public void changeFragment(Fragment f) {
-        ((MainActivity) getActivity()).changeFragment(f);
+    public void touchMenuItem(int itemId) {
+        switch (itemId) {
+            case R.id.action_search:
+                ((MainActivity) getActivity()).insertFragment(itemId);
+                break;
+
+            case R.id.action_filter:
+                int page = pagerManagePresenter.getPagerPosition();
+                popupManageImplementor.showPopup(
+                        getActivity(),
+                        toolbar,
+                        pagerManagePresenter.getPageKey(page),
+                        page);
+                break;
+        }
     }
 
-    // pager view.
+    // pager manage view.
 
     @Override
-    public void resetPage(int page, String order) {
-        HomePageView v = pages[page];
-        v.setOrder(order);
-        v.initRefresh();
+    public PagerView getPagerView(int position) {
+        return pagers[position];
     }
 
     @Override
-    public HomePageView getPage(int page) {
-        return pages[page];
+    public boolean canPagerSwipeBack(int position, int dir) {
+        return false;
+    }
+
+    @Override
+    public int getPagerItemCount(int position) {
+        return pagers[position].getItemCount();
+    }
+
+    // popup manage view.
+
+    @Override
+    public void responsePopup(String value, int position) {
+        pagers[position].setKey(value);
+        pagers[position].refreshPager();
     }
 }

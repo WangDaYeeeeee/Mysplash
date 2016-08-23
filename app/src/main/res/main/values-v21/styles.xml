@@ -8,7 +8,7 @@
     <style name="MysplashTheme_light" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary_light</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
-        <item name="colorAccent">@color/colorAccent_light</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="root_color">@color/colorRoot_light</item>
         <item name="line_color">@color/colorLine_light</item>
         <item name="title_color">@color/colorTextTitle_light</item>
@@ -28,7 +28,7 @@
     <style name="MysplashTheme_dark" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary_dark</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
-        <item name="colorAccent">@color/colorAccent_dark</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="root_color">@color/colorRoot_dark</item>
         <item name="line_color">@color/colorLine_dark</item>
         <item name="title_color">@color/colorTextTitle_dark</item>

@@ -1,9 +1,10 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <!-- application. -->
     <string name="app_name">Mysplash</string>
-    <string name="powered">Powered by Unsplash.</string>
-    <string name="version_code">1.1.3</string>
+    <string name="powered">Powered by Unsplash.com</string>
+    <string name="version_code">1.2.1</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -13,7 +14,11 @@
     <string name="thx">THX</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="backstage">BACKSTAGE</string>
-    <string name="open_in_browser">OPEN IN BROWSER</string>
+    <string name="details">DETAILS</string>
+    <string name="restart">RESTART</string>
+    <string name="create">CREATE</string>
+    <string name="delete">DELETE</string>
+    <string name="save">SAVE</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
@@ -28,28 +33,24 @@
     <string name="about_circle_image_view">A circular ImageView for Android.</string>
     <string name="downloader">ThinDownloadManager</string>
     <string name="about_downloader">To download files and to avoid using DOWNLOAD_WITHOUT_NOTIFICATION permission if you are using Android\'s DownloadManager in your apps.</string>
+    <string name="tagLayout">FlowLayout</string>
+    <string name="about_tagLayout">Android flow layout.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
-    <string name="feedback_select_order">Select the order of photos</string>
-
     <string name="feedback_load_failed_tv">LOAD FAILED</string>
     <string name="feedback_load_failed_toast">Load failed.</string>
     <string name="feedback_load_nothing_tv">LOAD NOTHING</string>
     <string name="feedback_load_nothing_toast">Load nothing.</string>
-
     <string name="feedback_search_failed_tv">SEARCH FAILED</string>
     <string name="feedback_search_failed_toast">Search failed.</string>
     <string name="feedback_search_nothing_tv">SEARCH NOTHING</string>
     <string name="feedback_search_nothing_toast">Search nothing.</string>
-
     <string name="feedback_search_bar">Search photos</string>
     <string name="feedback_search_tv">SEARCH PHOTOS</string>
-
     <string name="feedback_is_over">Is over.</string>
 
-    <string name="feedback_random_effect">The order won\'t effective in random mode.</string>
-    <string name="feedback_notify_restart">The changes will take effect when restarted.</string>
+    <string name="feedback_notify_restart">Take effect when restarted.</string>
 
     <string name="feedback_download_success">Download success.</string>
     <string name="feedback_download_failed">Download failed.</string>
@@ -58,8 +59,45 @@
     <string name="feedback_no_sd_card">Cannot found SD card.</string>
     <string name="feedback_create_file_failed">Create file failed.</string>
     <string name="feedback_need_permission">Failed to get permission.</string>
-    <string name="feedback_choose_share_app">Share photo</string>
+    <string name="feedback_choose_share_app">Share requestKey</string>
     <string name="feedback_choose_wallpaper_app">Set wallpaper</string>
+    <string name="feedback_download_check">CHECK</string>
+
+    <string name="feedback_size">Size</string>
+    <string name="feedback_color">Color</string>
+    <string name="feedback_location">Location</string>
+    <string name="feedback_model">Model</string>
+    <string name="feedback_exposure">Exposure time</string>
+    <string name="feedback_aperture">Aperture</string>
+    <string name="feedback_focal">Focal length</string>
+    <string name="feedback_iso">Iso</string>
+
+    <string name="feedback_portfolio_is_null">Portfolio link is null.</string>
+    <string name="feedback_no_filter">No filter item.</string>
+
+    <string name="feedback_request_token_failed">Request access token failed.</string>
+    <string name="feedback_login_text">Login to your Unsplash account.</string>
+
+    <string name="feedback_edit_my_profile">Edit profile</string>
+    <string name="feedback_edit_username">Username (letters, numbers, underscores)</string>
+    <string name="feedback_edit_first_name">First name</string>
+    <string name="feedback_edit_last_name">Last name</string>
+    <string name="feedback_edit_email">Email address</string>
+    <string name="feedback_edit_portfolio">Personal site/portfolio</string>
+    <string name="feedback_edit_location">Location</string>
+    <string name="feedback_edit_bio">Bio</string>
+
+    <string name="feedback_add_to_collection">Add to collection</string>
+    <string name="feedback_create_collection">Create new collection</string>
+    <string name="feedback_edit_collection">Edit collection</string>
+    <string name="feedback_name">Name</string>
+    <string name="feedback_description">Description (optional)</string>
+    <string name="feedback_collection_private">Make collection private</string>
+
+    <string name="feedback_add_photo_to_collection_failed">Cannot add photo to collection.</string>
+    <string name="feedback_delete_collection_failed">Cannot delete collection.</string>
+    <string name="feedback_loading_my_profile">Loading profile..</string>
+    <string name="feedback_name_is_required">Name is required.</string>
 
     <!-- menu. -->
     <string name="action_home">Home</string>
@@ -74,36 +112,47 @@
     <string name="action_about">About</string>
 
     <string name="action_search">Search</string>
-    <string name="action_order">Order</string>
-    <string name="action_random_mode">Random mode</string>
-    <string name="action_normal_mode">Normal mode</string>
-
-    <string name="action_orientation_landscape">Landscape</string>
-    <string name="action_orientation_portrait">Portrait</string>
-    <string name="action_orientation_square">Square</string>
+    <string name="action_filter">Filter</string>
 
     <string name="action_clear_text">Clear text</string>
 
     <string name="action_stats">Stats</string>
+    <string name="action_open_photo_link">Open in browser</string>
+    <string name="action_open_download_link">Open download web page</string>
+    
+    <string name="action_open_portfolio">Open portfolio link</string>
 
-    <!-- intent key. -->
-    <string name="intent_key_photo">photo</string>
+    <string name="action_edit">Edit</string>
 
     <!-- transition name. -->
     <string name="transition_photo_image">photo_image</string>
     <string name="transition_photo_background">photo_background</string>
+    <string name="transition_user_avatar">user_avatar</string>
+    <string name="transition_me_avatar">me_avatar</string>
 
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_default_order">Default order</string>
+    <string name="settings_title_default_collection_type">Default collection type</string>
+    <string name="settings_title_default_category_order">Default requestKey order in category</string>
     <string name="settings_title_download_scale">Download scale</string>
     <string name="settings_title_language">Language</string>
 
     <!-- share preferences. -->
     <string name="key_light_theme">light_theme</string>
-    <string name="key_normal_mode">normal_mode</string>
-    <string name="key_default_order">default_order</string>
+    <string name="key_default_photo_order">default_photo_order</string>
+    <string name="key_default_collection_type">default_collection_type</string>
+    <string name="key_default_category_order">default_category_order</string>
     <string name="key_download_scale">download_scale</string>
     <string name="key_language">language</string>
+
+    <string name="key_category_total_new_count">category_total_new_count</string>
+    <string name="key_category_total_feature_count">category_total_feature_count</string>
+    <string name="key_category_buildings_count">category_buildings_count</string>
+    <string name="key_category_food_drink_count">category_buildings_count</string>
+    <string name="key_category_nature_count">category_nature_count</string>
+    <string name="key_category_objects_count">category_objects_count</string>
+    <string name="key_category_people_count">category_people_count</string>
+    <string name="key_category_technology_count">category_technology_count</string>
 
 </resources>

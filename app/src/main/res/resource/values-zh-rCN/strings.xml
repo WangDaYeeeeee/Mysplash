@@ -1,6 +1,6 @@
 <resources>
 
-    <!-- key words. -->
+    <!-- 关键字. -->
     <string name="about_app">ABOUT APP</string>
     <string name="gitHub">GITHUB</string>
     <string name="email">EMAIL</string>
@@ -8,28 +8,26 @@
     <string name="thx">THX</string>
     <string name="cancel">取消</string>
     <string name="backstage">后台进行</string>
-    <string name="open_in_browser">在浏览器中打开</string>
+    <string name="details">详情</string>
+    <string name="restart">重启</string>
+    <string name="create">创建</string>
+    <string name="delete">删除</string>
+    <string name="save">保存</string>
 
-    <!-- feedback. -->
+    <!-- 反馈. -->
     <string name="feedback_click_retry">点击重试</string>
-    <string name="feedback_select_order">选择排序方式</string>
-
     <string name="feedback_load_failed_tv">加载失败</string>
     <string name="feedback_load_failed_toast">加载失败</string>
     <string name="feedback_load_nothing_tv">什么也没加载出</string>
     <string name="feedback_load_nothing_toast">什么也没加载出</string>
-
     <string name="feedback_search_failed_tv">搜索失败</string>
     <string name="feedback_search_failed_toast">搜索失败</string>
     <string name="feedback_search_nothing_tv">什么也没搜索到</string>
     <string name="feedback_search_nothing_toast">什么也没搜索到</string>
-
     <string name="feedback_search_bar">搜索照片</string>
     <string name="feedback_search_tv">搜索照片</string>
-
     <string name="feedback_is_over">全部加载结束</string>
 
-    <string name="feedback_random_effect">排序在随机模式下不会生效</string>
     <string name="feedback_notify_restart">重启后生效</string>
 
     <string name="feedback_download_success">下载成功</string>
@@ -41,8 +39,45 @@
     <string name="feedback_need_permission">获取权限失败</string>
     <string name="feedback_choose_share_app">分享照片</string>
     <string name="feedback_choose_wallpaper_app">设为壁纸</string>
+    <string name="feedback_download_check">查看</string>
 
-    <!-- menu. -->
+    <string name="feedback_size">尺寸</string>
+    <string name="feedback_color">颜色</string>
+    <string name="feedback_location">位置</string>
+    <string name="feedback_model">器材</string>
+    <string name="feedback_exposure">快门时间</string>
+    <string name="feedback_aperture">光圈</string>
+    <string name="feedback_focal">焦距</string>
+    <string name="feedback_iso">曝光度</string>
+
+    <string name="feedback_portfolio_is_null">个人主页为空</string>
+    <string name="feedback_no_filter">不存在过滤项</string>
+
+    <string name="feedback_request_token_failed">获取访问权限失败</string>
+    <string name="feedback_login_text">登录你的Unsplash账号</string>
+
+    <string name="feedback_edit_my_profile">编辑个人信息</string>
+    <string name="feedback_edit_username">用户名 (字母、数字、下划线)</string>
+    <string name="feedback_edit_first_name">名字</string>
+    <string name="feedback_edit_last_name">姓氏</string>
+    <string name="feedback_edit_email">邮箱</string>
+    <string name="feedback_edit_portfolio">个人主页</string>
+    <string name="feedback_edit_location">位置</string>
+    <string name="feedback_edit_bio">个人简介</string>
+
+    <string name="feedback_add_to_collection">添加至收藏集</string>
+    <string name="feedback_create_collection">创建收藏集</string>
+    <string name="feedback_edit_collection">编辑收藏集</string>
+    <string name="feedback_name">名称</string>
+    <string name="feedback_description">描述 (可选)</string>
+    <string name="feedback_collection_private">私有收藏集</string>
+
+    <string name="feedback_add_photo_to_collection_failed">添加照片失败</string>
+    <string name="feedback_delete_collection_failed">删除收藏集失败</string>
+    <string name="feedback_loading_my_profile">正在获取个人信息..</string>
+    <string name="feedback_name_is_required">标题不能为空</string>
+
+    <!-- 菜单项. -->
     <string name="action_home">主页</string>
     <string name="action_category_buildings">建筑</string>
     <string name="action_category_food_drink">饮食</string>
@@ -55,16 +90,24 @@
     <string name="action_about">关于</string>
 
     <string name="action_search">搜索</string>
-    <string name="action_order">排序</string>
-    <string name="action_random_mode">随机模式</string>
-    <string name="action_normal_mode">常规模式</string>
-
-    <string name="action_orientation_landscape">横向</string>
-    <string name="action_orientation_portrait">纵向</string>
-    <string name="action_orientation_square">方正</string>
+    <string name="action_filter">筛选</string>
 
     <string name="action_clear_text">清空内容</string>
 
     <string name="action_stats">统计</string>
+    <string name="action_open_photo_link">在网页中打开</string>
+    <string name="action_open_download_link">访问下载页</string>
+
+    <string name="action_open_portfolio">个人主页</string>
+
+    <string name="action_edit">编辑</string>
+
+    <!-- 设置项. -->
+    <string name="settings_category_basic">基础</string>
+    <string name="settings_title_default_order">照片默认排序</string>
+    <string name="settings_title_default_collection_type">收藏默认类型</string>
+    <string name="settings_title_default_category_order">分类照片的默认排序</string>
+    <string name="settings_title_download_scale">下载规格</string>
+    <string name="settings_title_language">语言</string>
 
 </resources>

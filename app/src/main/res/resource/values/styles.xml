@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
 
     <!-- activity & fragment themes. -->
 
@@ -13,9 +13,6 @@
         <item name="title_color">@color/colorTextTitle_light</item>
         <item name="subtitle_color">@color/colorTextSubtitle_light</item>
         <item name="content_color">@color/colorTextContent_light</item>
-        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
-        <item name="android:textColorSecondary">@color/colorTextContent_light</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:popupMenuStyle">@style/material_popup_menu</item>
     </style>
@@ -29,47 +26,94 @@
         <item name="title_color">@color/colorTextTitle_dark</item>
         <item name="subtitle_color">@color/colorTextSubtitle_dark</item>
         <item name="content_color">@color/colorTextContent_dark</item>
-        <item name="android:textColorPrimary">@color/colorTextContent_dark</item>
-        <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
-        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:popupMenuStyle">@style/material_popup_menu</item>
     </style>
 
-    <!-- photo activity. -->
+    <!-- requestKey activity. -->
 
     <style name="MysplashTheme_light.Photo" parent="MysplashTheme_light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
     </style>
 
     <style name="MysplashTheme_dark.Photo" parent="MysplashTheme_dark">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
+    </style>
+
+    <!-- user activity. -->
+
+    <style name="MysplashTheme_light.User" parent="MysplashTheme_light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.User" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- collection activity. -->
+    <style name="MysplashTheme_light.Collection" parent="MysplashTheme_light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Collection" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- login activity. -->
+
+    <style name="MysplashTheme_light.Login" parent="MysplashTheme_light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Login" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- me activity. -->
+
+    <style name="MysplashTheme_light.Me" parent="MysplashTheme_light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Me" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <!-- common. -->
 
     <style name="MysplashTheme_light.Common" parent="MysplashTheme_light">
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
+        <item name="colorAccent">@color/colorTextContent_light</item>
+        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
     </style>
 
     <style name="MysplashTheme_dark.Common" parent="MysplashTheme_dark">
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:navigationBarColor" tools:targetApi="lollipop">@color/colorPrimaryDark_dark</item>
+        <item name="colorAccent">@color/colorTextContent_light</item>
+        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
+    </style>
+
+    <!-- toolbar. -->
+
+    <style name="MysplashToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">?attr/content_color</item>
+        <item name="android:textColorSecondary">?attr/content_color</item>
     </style>
 
     <!-- menu. -->
 
     <style name="MysplashPopupMenuTheme" parent="@style/ThemeOverlay.AppCompat">
-        <item name="android:colorBackground">?attr/line_color</item>
+        <item name="android:colorBackground">?attr/root_color</item>
         <item name="android:textColor">?attr/content_color</item>
     </style>
 
@@ -128,11 +172,18 @@
         <item name="android:layout_margin">@dimen/normal_margin</item>
     </style>
 
-    <!-- popup menu. -->
+    <!-- popup. -->
 
-    <style name="material_popup_menu" parent="@android:style/Widget.PopupMenu">
-        <item name="android:textColor">?attr/content_color</item>
-        <item name="android:popupBackground">?attr/line_color</item>
+    <style name="material_popup_menu"
+        parent="@android:style/Widget.Holo.PopupMenu">
+        <item name="android:popupBackground">?attr/root_color</item>
+    </style>
+
+    <!-- toast. -->
+
+    <style name="material_toast">
+        <item name="android:windowEnterAnimation">@anim/toast_in</item>
+        <item name="android:windowExitAnimation">@anim/toast_out</item>
     </style>
 
 </resources>

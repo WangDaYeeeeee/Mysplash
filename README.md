@@ -35,7 +35,7 @@
   
 ### Introduction
 
-* A light photo(wallpaper) application.
+* A light requestKey(wallpaper) application.
 * All the photos came from [Unsplash.com](https://unsplash.com/)
 * Free (do whatever you want) high-resolution photos.
 

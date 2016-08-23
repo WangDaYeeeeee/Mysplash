@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:layout_marginTop="24dp">
 
-    <com.wangdaye.mysplash.common.widget.StatusBarView
+    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
         android:id="@+id/fragment_search_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,14 +19,14 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:theme="@style/MysplashToolbarTheme">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/fragment_search_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:navigationIcon="@drawable/ic_toolbar_back"
                 app:layout_scrollFlags="scroll|snap|enterAlways"
                 app:popupTheme="@style/MysplashPopupMenuTheme">
 
@@ -37,6 +37,7 @@
                     android:background="@android:color/transparent"
                     android:hint="@string/feedback_search_bar"
                     android:textColorHint="?attr/subtitle_color"
+                    android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
                     android:imeOptions="actionSearch"
@@ -68,7 +69,7 @@
 
                     <ImageView
                         android:id="@+id/fragment_search_menuIcon"
-                        android:src="@drawable/ic_menu_down"
+                        android:src="@drawable/ic_menu_down_light"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
                         android:layout_marginLeft="@dimen/normal_margin"
@@ -83,7 +84,7 @@
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.wangdaye.mysplash.main.view.widget.SearchContentView
+        <com.wangdaye.mysplash.main.view.widget.SearchPhotosView
             android:id="@+id/fragment_search_contentView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

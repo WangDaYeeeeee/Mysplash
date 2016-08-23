@@ -32,7 +32,8 @@
 
     <!-- FreedomImageView -->
     <declare-styleable name="FreedomImageView">
-        <attr name="fiv_full_screen_width" format="boolean" />
+        <attr name="fiv_cover_mode" format="boolean" />
+        <attr name="fiv_exist_photo" format="boolean" />
     </declare-styleable>
 
 </resources>

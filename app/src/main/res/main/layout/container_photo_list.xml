@@ -6,11 +6,12 @@
     android:layout_height="match_parent"
     android:background="?attr/root_color">
 
-    <android.support.v7.widget.RecyclerView
+    <com.wangdaye.mysplash.common.widget.MyRecyclerView
         android:id="@+id/container_photo_list_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
+        android:paddingTop="@dimen/large_margin"
         android:clipToPadding="false" />
 
 </com.wangdaye.mysplash.common.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout>

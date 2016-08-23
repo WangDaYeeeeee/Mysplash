@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- photos order. -->
-    <string-array name="orders">
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
         <item>最新的</item>
-        <item>最初的</item>
+        <item>最久远的</item>
         <item>最受欢迎的</item>
+        <item>随机</item>
     </string-array>
-    <string-array name="order_values">
+    <string-array name="photo_order_values">
         <item>latest</item>
         <item>oldest</item>
         <item>popular</item>
+        <item>random</item>
+    </string-array>
+
+    <!-- collection type. -->
+    <string-array name="collection_types">
+        <item>所有</item>
+        <item>画展</item>
+        <item>精选</item>
+    </string-array>
+    <string-array name="collection_type_values">
+        <item>all</item>
+        <item>curated</item>
+        <item>featured</item>
     </string-array>
 
     <!-- download type. -->
@@ -33,6 +47,18 @@
         <item>follow_system</item>
         <item>english</item>
         <item>chinese</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>横向</item>
+        <item>纵向</item>
+        <item>方正</item>
+    </string-array>
+    <string-array name="search_orientation_values">
+        <item>landscape</item>
+        <item>portrait</item>
+        <item>square</item>
     </string-array>
 
 </resources>

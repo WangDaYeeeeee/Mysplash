@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_collection_swipeBackLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+        android:id="@+id/activity_collection_statusBar"
+        android:background="?attr/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_collection_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        tools:ignore="UnusedAttribute">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/activity_collection_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|snap">
+
+                <TextView
+                    android:id="@+id/activity_collection_title"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/design_title_text_size"
+                    android:layout_centerHorizontal="true"
+                    android:layout_margin="@dimen/little_icon_size"
+                    style="@style/title_text"
+                    tools:text="The University" />
+
+                <TextView
+                    android:id="@+id/activity_collection_description"
+                    android:layout_below="@id/activity_collection_title"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/mini_icon_size"
+                    android:layout_marginRight="@dimen/mini_icon_size"
+                    android:layout_width="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:lineSpacingMultiplier="1.3"
+                    style="@style/content_text"
+                    tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_collection_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/activity_collection_creatorBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="UselessParent">
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true">
+
+                    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+                        android:id="@+id/activity_collection_avatar"
+                        android:layout_width="@dimen/little_icon_size"
+                        android:layout_height="@dimen/little_icon_size"
+                        android:layout_margin="@dimen/normal_margin"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerCrop"
+                        android:src="?attr/line_color"
+                        app:civ_fill_color="@color/colorTextGrey"
+                        tools:ignore="RtlHardcoded" />
+
+                    <TextView
+                        android:id="@+id/activity_collection_subtitle"
+                        android:layout_toRightOf="@id/activity_collection_avatar"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/normal_margin"
+                        android:singleLine="true"
+                        style="@style/subtitle_text"
+                        tools:text="By Daniil Omelchenko"
+                        tools:ignore="RtlHardcoded" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView
+            android:id="@+id/activity_collection_photosView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>

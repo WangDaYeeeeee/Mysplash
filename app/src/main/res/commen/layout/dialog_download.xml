@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_download"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    tools:layout_marginTop="24dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/dialog_download_progress"
+            android:layout_width="@dimen/circular_progress_height"
+            android:layout_height="@dimen/circular_progress_height"
+            android:layout_margin="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            app:cpv_animAutostart="true"
+            app:cpv_color="?attr/content_color"
+            app:cpv_indeterminate="true"/>
+
+        <TextView
+            android:id="@+id/dialog_download_text"
+            tools:text="@string/feedback_downloading"
+            android:textStyle="bold"
+            android:layout_toRightOf="@id/dialog_download_progress"
+            android:layout_centerVertical="true"
+            style="@style/subtitle_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/dialog_download_cancelButton"
+            android:text="@string/cancel"
+            android:textColor="?attr/content_color"
+            android:layout_alignParentRight="true"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+        <Button
+            android:id="@+id/dialog_download_backgroundButton"
+            android:text="@string/backstage"
+            android:textColor="?attr/subtitle_color"
+            android:layout_toLeftOf="@id/dialog_download_cancelButton"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

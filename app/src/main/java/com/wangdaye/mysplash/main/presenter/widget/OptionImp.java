@@ -115,7 +115,7 @@ public class OptionImp
 
     @Override
     public void cancelRequest() {
-        photoStateModel.getAdapter().cancelService();
+
     }
 
     private void requestDataByType(Context c, boolean refresh) {

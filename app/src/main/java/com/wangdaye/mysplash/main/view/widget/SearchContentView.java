@@ -35,7 +35,6 @@ import com.wangdaye.mysplash.main.presenter.widget.RequestDataImp;
 import com.wangdaye.mysplash.main.presenter.widget.i.DisplayStatePresenter;
 import com.wangdaye.mysplash.main.presenter.widget.i.OptionPresenter;
 import com.wangdaye.mysplash.main.presenter.widget.i.RequestDataPresenter;
-import com.wangdaye.mysplash.main.adapter.PhotosAdapter;
 import com.wangdaye.mysplash.common.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.main.view.widget.i.ContentView;
 import com.wangdaye.mysplash.main.view.widget.i.LoadingView;
@@ -177,7 +176,7 @@ public class SearchContentView extends FrameLayout
 
     private void initModel() {
         this.photoStateModel = new PhotoStateObject();
-        photoStateModel.setAdapter(new PhotosAdapter(getContext(), new ArrayList<Photo>()));
+        photoStateModel.setAdapter(new PhotoDesignAdapter(getContext(), new ArrayList<Photo>()));
         photoStateModel.setNormalMode(true);
 
         this.displayStateModel = new DisplayStateObject(DisplayStateObject.INIT_LOAD_FAILED_STATE);

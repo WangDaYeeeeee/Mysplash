@@ -23,35 +23,33 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.data.Photo;
-import com.wangdaye.mysplash.common.utils.ModeUtils;
-import com.wangdaye.mysplash.main.model.widget.DisplayStateObject;
-import com.wangdaye.mysplash.main.model.widget.PhotoStateObject;
-import com.wangdaye.mysplash.main.model.widget.i.DisplayStateModel;
-import com.wangdaye.mysplash.main.model.widget.i.PhotoStateModel;
-import com.wangdaye.mysplash.main.presenter.widget.DisplayStateImp;
-import com.wangdaye.mysplash.main.presenter.widget.OptionImp;
-import com.wangdaye.mysplash.main.presenter.widget.RequestDataImp;
-import com.wangdaye.mysplash.main.presenter.widget.i.DisplayStatePresenter;
-import com.wangdaye.mysplash.main.presenter.widget.i.OptionPresenter;
-import com.wangdaye.mysplash.main.presenter.widget.i.RequestDataPresenter;
-import com.wangdaye.mysplash.main.view.widget.i.ContentView;
-import com.wangdaye.mysplash.main.view.widget.i.LoadingView;
-import com.wangdaye.mysplash.main.view.widget.i.PhotosView;
-import com.wangdaye.mysplash.main.adapter.PhotosAdapter;
-import com.wangdaye.mysplash.common.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
-
-import java.util.ArrayList;
+import com.wangdaye.mysplash._common.i.model.CategoryModel;
+import com.wangdaye.mysplash._common.i.model.LoadModel;
+import com.wangdaye.mysplash._common.i.presenter.CategoryPresenter;
+import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash._common.i.view.CategoryView;
+import com.wangdaye.mysplash._common.i.view.LoadView;
+import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash.main.model.widget.CategoryObject;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.main.model.widget.LoadObject;
+import com.wangdaye.mysplash.main.presenter.widget.CategoryImplementor;
+import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
+import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 
 /**
  * Category photos view.
  * */
 
 public class CategoryPhotosView extends FrameLayout
-        implements ContentView, LoadingView, PhotosView,
+        implements CategoryView, LoadView, ScrollView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-    // widget
-    private RelativeLayout loadingView;
+    // model.
+    private CategoryModel categoryModel;
+    private LoadModel loadModel;
+
     private CircularProgressView progressView;
     private RelativeLayout feedbackContainer;
     private TextView feedbackText;
@@ -59,11 +57,10 @@ public class CategoryPhotosView extends FrameLayout
     private BothWaySwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
 
-    // mvp.
-    private PhotoStateModel photoStateModel;
-    private DisplayStateModel displayStateModel;
-
-    private OptionPresenter optionPresenter;
+    // presenter.
+    private CategoryPresenter categoryPresenter;
+    private LoadPresenter loadPresenter;
+    private ScrollPresenter scrollPresenter;
 
     /** <br> life cycle. */
 
@@ -101,33 +98,12 @@ public class CategoryPhotosView extends FrameLayout
         initPresenter();
     }
 
-    public void setActivity(Activity a) {
-        photoStateModel.getAdapter().setActivity(a);
-    }
-
-    public void setNormalMode(boolean b) {
-        photoStateModel.setNormalMode(b);
-    }
-
-    public void setCategoryId(int id) {
-        photoStateModel.setCategoryId(id);
-    }
-
     /** <br> presenter. */
 
     private void initPresenter() {
-        DisplayStatePresenter displayStatePresenter = new DisplayStateImp(
-                photoStateModel, displayStateModel,
-                this, this, this);
-        RequestDataPresenter requestDataPresenter = new RequestDataImp(
-                photoStateModel, null, displayStateModel,
-                this, this,
-                displayStatePresenter);
-        this.optionPresenter = new OptionImp(
-                photoStateModel,
-                this, this, this,
-                requestDataPresenter, displayStatePresenter,
-                OptionImp.CATEGORY_LOAD_TYPE);
+        this.categoryPresenter = new CategoryImplementor(categoryModel, this);
+        this.loadPresenter = new LoadImplementor(loadModel, this);
+        this.scrollPresenter = new ScrollImplementor(this);
     }
 
     /** <br> view. */
@@ -141,7 +117,7 @@ public class CategoryPhotosView extends FrameLayout
         this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
         refreshLayout.setOnRefreshAndLoadListener(this);
         refreshLayout.setVisibility(GONE);
-        if (ModeUtils.getInstance(getContext()).isLightTheme()) {
+        if (ThemeUtils.getInstance(getContext()).isLightTheme()) {
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
         } else {
@@ -150,13 +126,12 @@ public class CategoryPhotosView extends FrameLayout
         }
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
-        recyclerView.setAdapter(photoStateModel.getAdapter());
+        recyclerView.setAdapter(categoryModel.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
     }
 
     private void initLoadingView() {
-        this.loadingView = (RelativeLayout) findViewById(R.id.container_loading_in_category_view_large);
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_in_category_view_large_progressView);
 
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_in_category_view_large_feedbackContainer);
@@ -179,21 +154,34 @@ public class CategoryPhotosView extends FrameLayout
     // init
 
     private void initModel() {
-        this.photoStateModel = new PhotoStateObject();
-        photoStateModel.setAdapter(new PhotosAdapter(getContext(), new ArrayList<Photo>()));
-        photoStateModel.setNormalMode(true);
-
-        this.displayStateModel = new DisplayStateObject(DisplayStateObject.INIT_LOADING_STATE);
+        this.categoryModel = new CategoryObject(getContext());
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
     }
 
     // interface.
 
+    public void setActivity(Activity a) {
+        categoryModel.setActivity(a);
+    }
+
+    public void setCategory(int id) {
+        categoryModel.setPhotosCategory(id);
+    }
+
+    public String getOrder() {
+        return categoryModel.getPhotosOrder();
+    }
+
+    public void setOrder(String order) {
+        categoryPresenter.setOrder(order);
+    }
+
     public void cancelRequest() {
-        optionPresenter.cancelRequest();
+        categoryPresenter.cancelRequest();
     }
 
     public void initRefresh() {
-        optionPresenter.initRefresh(getContext());
+        categoryPresenter.initRefresh();
     }
 
     /** <br> interface. */
@@ -204,7 +192,7 @@ public class CategoryPhotosView extends FrameLayout
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.container_loading_in_category_view_large_feedbackBtn:
-                initRefresh();
+                categoryPresenter.initRefresh();
                 break;
         }
     }
@@ -213,35 +201,69 @@ public class CategoryPhotosView extends FrameLayout
 
     @Override
     public void onRefresh() {
-        optionPresenter.refreshNew(getContext());
+        categoryPresenter.refreshNew(false);
     }
 
     @Override
     public void onLoad() {
-        optionPresenter.loadMore(getContext());
+        categoryPresenter.loadMore(false);
     }
 
     // on scroll listener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            optionPresenter.autoLoad(recyclerView, dy);
+            scrollPresenter.autoLoad(dy);
         }
     };
 
     // view.
 
-    // content view.
+    // category view.
 
     @Override
-    public void animShow(final View v) {
+    public void setRefreshing(boolean refreshing) {
+        refreshLayout.setRefreshing(refreshing);
+    }
+
+    @Override
+    public void setLoading(boolean loading) {
+        refreshLayout.setLoading(loading);
+    }
+
+    @Override
+    public void setPermitRefreshing(boolean permit) {
+        refreshLayout.setPermitRefresh(permit);
+    }
+
+    @Override
+    public void setPermitLoading(boolean permit) {
+        refreshLayout.setPermitLoad(permit);
+    }
+
+    @Override
+    public void initRefreshStart() {
+        loadPresenter.setLoadingState();
+    }
+
+    @Override
+    public void requestPhotosSuccess() {
+        loadPresenter.setNormalState();
+    }
+
+    @Override
+    public void requestPhotosFailed(String feedback) {
+        feedbackText.setText(feedback);
+        loadPresenter.setFailedState();
+    }
+
+    // load view.
+
+    @Override
+    public void animShow(View v) {
         if (v.getVisibility() == GONE) {
             v.setVisibility(VISIBLE);
         }
@@ -267,43 +289,30 @@ public class CategoryPhotosView extends FrameLayout
     }
 
     @Override
-    public void setBackgroundOpacity() {
-        // do nothing.
-    }
-
-    // loading view.
-
-    @Override
-    public View getLoadingView() {
-        return loadingView;
+    public void setLoadingState() {
+        animShow(progressView);
+        animHide(feedbackContainer);
     }
 
     @Override
-    public View getProgressView() {
-        return progressView;
+    public void setFailedState() {
+        animShow(feedbackContainer);
+        animHide(progressView);
     }
 
     @Override
-    public View getFeedbackContainer() {
-        return feedbackContainer;
+    public void setNormalState() {
+        animShow(refreshLayout);
+        animHide(progressView);
     }
 
     @Override
-    public void setFeedbackText(String text) {
-        feedbackText.setText(text);
+    public void resetLoadingState() {
+        animShow(progressView);
+        animHide(refreshLayout);
     }
 
-    @Override
-    public void showButton() {
-        // do nothing.
-    }
-
-    // photos view.
-
-    @Override
-    public View getPhotosView() {
-        return refreshLayout;
-    }
+    // scroll view.
 
     @Override
     public void scrollToTop() {
@@ -311,32 +320,12 @@ public class CategoryPhotosView extends FrameLayout
     }
 
     @Override
-    public void setRefreshing(boolean refreshing) {
-        refreshLayout.setRefreshing(refreshing);
-    }
-
-    @Override
-    public void setLoading(boolean loading) {
-        refreshLayout.setLoading(loading);
-    }
-
-    @Override
-    public void setPermitLoad(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
-    }
-
-    @Override
-    public void resetRefreshLayout() {
-        // do nothing.
-    }
-
-    @Override
-    public boolean checkNeedRefresh() {
-        return false;
-    }
-
-    @Override
-    public boolean checkNeedChangOrder(String order) {
-        return false;
+    public void autoLoad(int dy) {
+        int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        if (categoryPresenter.canLoadMore()
+                && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
+            categoryPresenter.loadMore(true);
+        }
     }
 }

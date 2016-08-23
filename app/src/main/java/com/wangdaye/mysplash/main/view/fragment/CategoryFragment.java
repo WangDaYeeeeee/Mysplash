@@ -11,36 +11,37 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.ModeUtils;
-import com.wangdaye.mysplash.main.model.fragment.CategoryObject;
-import com.wangdaye.mysplash.main.model.fragment.i.CategoryModel;
-import com.wangdaye.mysplash.main.presenter.fragment.CategoryMenuImp;
-import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImp;
-import com.wangdaye.mysplash.main.presenter.fragment.i.CategoryMenuPresenter;
-import com.wangdaye.mysplash.main.presenter.fragment.i.ToolbarPresenter;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.common.widget.StatusBarView;
-import com.wangdaye.mysplash.main.view.fragment.i.FragmentView;
-import com.wangdaye.mysplash.main.view.fragment.i.ToolbarView;
+import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
+import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash._common.i.view.CategoryManageView;
+import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.i.view.ToolbarView;
+import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
+import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.widget.CategoryPhotosView;
-import com.wangdaye.mysplash.common.utils.ValueUtils;
+import com.wangdaye.mysplash._common.utils.ValueUtils;
 
 /**
  * Category fragment.
  * */
 
 public class CategoryFragment extends Fragment
-        implements ToolbarView, FragmentView,
+        implements ToolbarView, PopupManageView, CategoryManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener {
     // model.
-    private CategoryModel categoryModel;
+    private CategoryManageModel categoryManageModel;
 
     // view.
+    private Toolbar toolbar;
     private CategoryPhotosView photosView;
 
     // presenter.
     private ToolbarPresenter toolbarPresenter;
-    private CategoryMenuPresenter categoryMenuPresenter;
+    private PopupManagePresenter popupManagePresenter;
 
     /** <br> life cycle. */
 
@@ -49,7 +50,6 @@ public class CategoryFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_category, container, false);
         initView(view);
         initPresenter();
-        photosView.initRefresh();
         return view;
     }
 
@@ -62,24 +62,26 @@ public class CategoryFragment extends Fragment
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImp(null, this);
-        this.categoryMenuPresenter = new CategoryMenuImp(categoryModel, this);
+        this.toolbarPresenter = new ToolbarImplementor(this);
+        this.popupManagePresenter = new CategoryFragmentPopupManageImplementor(this);
     }
 
     /** <br> view. */
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
-        if (ModeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 
-        Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
-        toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryModel.getCategoryId()));
-        if (ModeUtils.getInstance(getActivity()).isNormalMode()) {
-            toolbar.inflateMenu(R.menu.menu_fragment_category_normal);
+        this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
+        toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryManageModel.getCategoryId()));
+        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            toolbar.inflateMenu(R.menu.fragment_category_light);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
         } else {
-            toolbar.inflateMenu(R.menu.menu_fragment_category_random);
+            toolbar.inflateMenu(R.menu.fragment_category_dark);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
         }
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
@@ -87,14 +89,23 @@ public class CategoryFragment extends Fragment
 
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
         photosView.setActivity(getActivity());
-        photosView.setCategoryId(categoryModel.getCategoryId());
-        photosView.setNormalMode(ModeUtils.getInstance(getActivity()).isNormalMode());
+        photosView.setCategory(categoryManageModel.getCategoryId());
+        photosView.initRefresh();
     }
 
     /** <br> model. */
 
-    public void initModel(int categoryId) {
-        this.categoryModel = new CategoryObject(categoryId);
+    // init.
+
+    private void initModel(int categoryId) {
+        this.categoryManageModel = new CategoryManageObject(categoryId);
+    }
+
+    // interface.
+
+    public Fragment setCategory(int category) {
+        initModel(category);
+        return this;
     }
 
     /** <br> interface. */
@@ -105,11 +116,11 @@ public class CategoryFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.clickNavigationIcon();
+                toolbarPresenter.touchNavigatorIcon();
                 break;
 
             case R.id.fragment_category_toolbar:
-                toolbarPresenter.clickToolbar();
+                toolbarPresenter.touchToolbar();
                 break;
         }
     }
@@ -118,15 +129,7 @@ public class CategoryFragment extends Fragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_random_mode:
-                categoryMenuPresenter.clickRandomItem(getActivity());
-                break;
-
-            case R.id.action_normal_mode:
-                categoryMenuPresenter.clickNormalItem(getActivity());
-                break;
-        }
+        toolbarPresenter.touchMenuItem(item.getItemId());
         return true;
     }
 
@@ -135,25 +138,37 @@ public class CategoryFragment extends Fragment
     // toolbar view.
 
     @Override
-    public void clickNavigationIcon() {
+    public void touchNavigatorIcon() {
         DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.activity_main_drawerLayout);
         drawer.openDrawer(GravityCompat.START);
     }
 
     @Override
-    public void scrollToTop(int i) {
+    public void touchToolbar() {
         photosView.scrollToTop();
     }
 
-    // fragment view.
-
     @Override
-    public void addFragment(Fragment f) {
-        // do nothing.
+    public void touchMenuItem(int itemId) {
+        switch (itemId) {
+            case R.id.action_filter:
+                popupManagePresenter.showPopup(getActivity(), toolbar, photosView.getOrder(), 0);
+                break;
+        }
     }
 
+    // popup manage view.
+
     @Override
-    public void changeFragment(Fragment f) {
-        ((MainActivity) getActivity()).changeFragment(f);
+    public void responsePopup(String value, int position) {
+        photosView.setOrder(value);
+        photosView.initRefresh();
+    }
+
+    // category manage view.
+
+    @Override
+    public void setPagerCategory(int id) {
+        // do nothing.
     }
 }

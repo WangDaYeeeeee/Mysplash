@@ -1,0 +1,260 @@
+package com.wangdaye.mysplash.user.view.widget;
+
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.i.model.LoadModel;
+import com.wangdaye.mysplash._common.i.model.UserModel;
+import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
+import com.wangdaye.mysplash._common.i.view.LoadView;
+import com.wangdaye.mysplash._common.i.view.UserView;
+import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash.user.model.widget.LoadObject;
+import com.wangdaye.mysplash.user.presenter.widget.LoadImplementor;
+import com.wangdaye.mysplash.user.model.widget.UserObject;
+import com.wangdaye.mysplash.user.presenter.widget.UserImplementor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * User profile view.
+ * */
+
+public class UserProfileView extends FrameLayout
+        implements UserView, LoadView,
+        View.OnClickListener {
+    // model.
+    private UserModel userModel;
+    private LoadModel loadModel;
+
+    // view.
+    private CircularProgressView progressView;
+    private Button retryButton;
+
+    private RelativeLayout profileContainer;
+    private TextView locationTxt;
+    private TextView bioTxt;
+
+    private MyPagerAdapter adapter;
+
+    // presenter.
+    private UserPresenter userPresenter;
+    private LoadPresenter loadPresenter;
+
+    /** <br> life cycle. */
+
+    public UserProfileView(Context context) {
+        super(context);
+        this.initialize();
+    }
+
+    public UserProfileView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.initialize();
+    }
+
+    public UserProfileView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.initialize();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public UserProfileView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        this.initialize();
+    }
+
+    @SuppressLint("InflateParams")
+    private void initialize() {
+        View v = LayoutInflater.from(getContext()).inflate(R.layout.container_user_profile, null);
+        addView(v);
+
+        initModel();
+        initView();
+        initPresenter();
+    }
+
+    /** <br> presenter. */
+
+    private void initPresenter() {
+        this.userPresenter = new UserImplementor(userModel, this);
+        this.loadPresenter = new LoadImplementor(loadModel, this);
+    }
+
+    /** <br> view. */
+
+    private void initView() {
+        this.progressView = (CircularProgressView) findViewById(R.id.container_user_profile_progressView);
+        progressView.setVisibility(VISIBLE);
+
+        this.retryButton = (Button) findViewById(R.id.container_user_profile_retryButton);
+        retryButton.setOnClickListener(this);
+        retryButton.setVisibility(GONE);
+
+        this.profileContainer = (RelativeLayout) findViewById(R.id.container_user_profile_profileContainer);
+        profileContainer.setVisibility(GONE);
+
+        this.locationTxt = (TextView) findViewById(R.id.container_user_profile_locationTxt);
+        TypefaceUtils.setTypeface(getContext(), locationTxt);
+
+        this.bioTxt = (TextView) findViewById(R.id.container_user_profile_bio);
+        TypefaceUtils.setTypeface(getContext(), bioTxt);
+
+        if (ThemeUtils.getInstance(getContext()).isLightTheme()) {
+            ((ImageView) findViewById(R.id.container_user_profile_locationIcon)).setImageResource(R.drawable.ic_location_light);
+        } else {
+            ((ImageView) findViewById(R.id.container_user_profile_locationIcon)).setImageResource(R.drawable.ic_location_dark);
+        }
+    }
+
+    /** <br> model. */
+
+    // init.
+
+    private void initModel() {
+        this.userModel = new UserObject();
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+    }
+
+    // interface.
+
+    public void requestUserProfile(MyPagerAdapter adapter) {
+        this.adapter = adapter;
+        userPresenter.requestUser();
+    }
+
+    public void cancelRequest() {
+        userPresenter.cancelRequest();
+    }
+
+    public String getUserPortfolio() {
+        return userModel.getUser().portfolio_url;
+    }
+
+    /** <br> interface. */
+
+    // on click listener.
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.container_user_profile_retryButton:
+                userPresenter.requestUser();
+                break;
+        }
+    }
+
+    // view.
+
+    // user data view.
+
+    @SuppressLint("SetTextI18n")
+    @Override
+    public void drawUserInfo(User u) {
+        if (!TextUtils.isEmpty(u.location)) {
+            locationTxt.setText(u.location);
+        } else {
+            locationTxt.setText("Unknown");
+        }
+
+        if (!TextUtils.isEmpty(u.bio)) {
+            bioTxt.setText(u.bio);
+        } else {
+            bioTxt.setVisibility(GONE);
+        }
+
+        List<String> titleList = new ArrayList<>();
+        titleList.add(u.total_photos + (u.total_photos > 1 ? " PHOTOS" : " PHOTO"));
+        titleList.add(u.total_collections + (u.total_collections > 1 ? " COLLECTIONS" : " COLLECTION"));
+        titleList.add(u.total_likes + (u.total_likes > 1 ? " LIKES" : " LIKE"));
+        adapter.titleList = titleList;
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void initRefreshStart() {
+        loadPresenter.setLoadingState();
+    }
+
+    @Override
+    public void requestDetailsSuccess() {
+        loadPresenter.setNormalState();
+    }
+
+    @Override
+    public void requestDetailsFailed() {
+        loadPresenter.setFailedState();
+    }
+
+    // load view.
+
+    @Override
+    public void animShow(final View v) {
+        if (v.getVisibility() == GONE) {
+            v.setVisibility(VISIBLE);
+        }
+        ObjectAnimator
+                .ofFloat(v, "alpha", 0, 1)
+                .setDuration(300)
+                .start();
+    }
+
+    @Override
+    public void animHide(final View v) {
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "alpha", 1, 0)
+                .setDuration(300);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                v.setVisibility(GONE);
+            }
+        });
+        anim.start();
+    }
+
+    @Override
+    public void setLoadingState() {
+        animShow(progressView);
+        animHide(retryButton);
+    }
+
+    @Override
+    public void setFailedState() {
+        animShow(retryButton);
+        animHide(progressView);
+    }
+
+    @Override
+    public void setNormalState() {
+        animShow(profileContainer);
+        animHide(progressView);
+    }
+
+    @Override
+    public void resetLoadingState() {
+        // do nothing.
+    }
+}

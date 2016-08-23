@@ -18,17 +18,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.ModeUtils;
-import com.wangdaye.mysplash.common.utils.ValueUtils;
-import com.wangdaye.mysplash.main.model.fragment.SearchObject;
-import com.wangdaye.mysplash.main.model.fragment.i.SearchModel;
-import com.wangdaye.mysplash.main.presenter.fragment.SearchBarImp;
-import com.wangdaye.mysplash.main.presenter.fragment.i.SearchBarPresenter;
+import com.wangdaye.mysplash._common.i.model.SearchBarModel;
+import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
+import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.ValueUtils;
+import com.wangdaye.mysplash._common.i.view.MessageManageView;
+import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.i.view.SearchBarView;
+import com.wangdaye.mysplash.main.model.fragment.SearchBarObject;
+import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.SearchBarImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.SearchFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.common.widget.StatusBarView;
-import com.wangdaye.mysplash.main.view.fragment.i.SearchBarView;
-import com.wangdaye.mysplash.main.view.widget.SearchContentView;
-import com.wangdaye.mysplash.common.utils.SafeHandler;
+import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash.main.view.widget.SearchPhotosView;
+import com.wangdaye.mysplash._common.utils.SafeHandler;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -38,22 +45,24 @@ import java.util.TimerTask;
  * */
 
 public class SearchFragment extends Fragment
-        implements SearchBarView,
+        implements SearchBarView, MessageManageView, PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
         SafeHandler.HandlerContainer {
     // model.
-    private SearchModel searchModel;
+    private SearchBarModel searchBarModel;
 
     // view.
     private EditText editText;
     private TextView orientationTxt;
     private ImageView menuIcon;
-    private SearchContentView contentView;
+    private SearchPhotosView contentView;
 
     private SafeHandler<SearchFragment> handler;
 
     // presenter.
     private SearchBarPresenter searchBarPresenter;
+    private MessageManagePresenter messageManagePresenter;
+    private PopupManagePresenter popupManagePresenter;
 
     /** <br> life cycle. */
 
@@ -63,27 +72,24 @@ public class SearchFragment extends Fragment
         initModel();
         initView(view);
         initPresenter();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.obtainMessage(1).sendToTarget();
-            }
-        }, 400);
+        messageManagePresenter.sendMessage(1, null);
         return view;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        searchBarPresenter.hideKeyboard();
         handler.removeCallbacksAndMessages(null);
         contentView.cancelRequest();
-        hideKeyboard();
     }
 
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.searchBarPresenter = new SearchBarImp(searchModel, this);
+        this.searchBarPresenter = new SearchBarImplementor(searchBarModel, this);
+        this.messageManagePresenter = new MessageManageImplementor(this);
+        this.popupManagePresenter = new SearchFragmentPopupManageImplementor(this);
     }
 
     /** <br> view. */
@@ -92,16 +98,23 @@ public class SearchFragment extends Fragment
         this.handler = new SafeHandler<>(this);
 
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_search_statusBar);
-        if (ModeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_search_toolbar);
-        toolbar.inflateMenu(R.menu.menu_fragment_search_toolbar);
+        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            toolbar.inflateMenu(R.menu.fragment_search_toolbar_light);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+        } else {
+            toolbar.inflateMenu(R.menu.fragment_search_toolbar_dark);
+            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+        }
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
 
         this.editText = (EditText) v.findViewById(R.id.fragment_search_editText);
+        TypefaceUtils.setTypeface(getActivity(), editText);
         editText.setOnEditorActionListener(this);
         editText.setFocusable(true);
         editText.requestFocus();
@@ -113,11 +126,17 @@ public class SearchFragment extends Fragment
         orientationMenu.setOnClickListener(this);
 
         this.menuIcon = (ImageView) v.findViewById(R.id.fragment_search_menuIcon);
+        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            menuIcon.setImageResource(R.drawable.ic_menu_down_light);
+        } else {
+            menuIcon.setImageResource(R.drawable.ic_menu_down_dark);
+        }
 
         this.orientationTxt = (TextView) v.findViewById(R.id.fragment_search_nowTxt);
-        orientationTxt.setText(ValueUtils.getOrientationName(getActivity(), searchModel.getOrientation()));
+        TypefaceUtils.setTypeface(getActivity(), orientationTxt);
+        orientationTxt.setText(ValueUtils.getOrientationName(getActivity(), searchBarModel.getOrientation()));
 
-        this.contentView = (SearchContentView) v.findViewById(R.id.fragment_search_contentView);
+        this.contentView = (SearchPhotosView) v.findViewById(R.id.fragment_search_contentView);
         contentView.setActivity(getActivity());
         contentView.setOnClickListener(this);
     }
@@ -125,7 +144,7 @@ public class SearchFragment extends Fragment
     /** <br> model. */
 
     private void initModel() {
-        this.searchModel = new SearchObject();
+        this.searchBarModel = new SearchBarObject();
     }
 
     /** <br> interface. */
@@ -136,19 +155,19 @@ public class SearchFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                searchBarPresenter.clickNavigationIcon();
+                searchBarPresenter.touchNavigatorIcon();
                 break;
 
             case R.id.fragment_search_orientationContainer:
-                searchBarPresenter.clickSearchBar();
+                searchBarPresenter.touchSearchBar();
                 break;
 
             case R.id.fragment_search_orientationMenu:
-                searchBarPresenter.showOrientationMenu(getActivity(), menuIcon);
+                searchBarPresenter.touchOrientationIcon();
                 break;
 
             case R.id.fragment_search_contentView:
-                hideKeyboard();
+                searchBarPresenter.hideKeyboard();
                 break;
         }
     }
@@ -157,7 +176,7 @@ public class SearchFragment extends Fragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        searchBarPresenter.clickMenuItem(item.getItemId());
+        searchBarPresenter.touchMenuItem(item.getItemId());
         return true;
     }
 
@@ -165,7 +184,11 @@ public class SearchFragment extends Fragment
 
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-        searchBarPresenter.inputSearchQuery(textView.getText().toString());
+        String text = textView.getText().toString();
+        if (!text.equals("")) {
+            searchBarPresenter.submitSearchInfo(text);
+        }
+        searchBarPresenter.hideKeyboard();
         return true;
     }
 
@@ -173,11 +196,7 @@ public class SearchFragment extends Fragment
 
     @Override
     public void handleMessage(Message message) {
-        switch (message.what) {
-            case 1:
-                showKeyboard();
-                break;
-        }
+        messageManagePresenter.responseMessage(message.what, message.obj);
     }
 
     // view.
@@ -185,28 +204,27 @@ public class SearchFragment extends Fragment
     // search bar view.
 
     @Override
-    public void clickNavigationIcon() {
+    public void touchNavigatorIcon() {
         ((MainActivity) getActivity()).removeFragment();
     }
 
     @Override
-    public void clearSearchText() {
-        editText.setText("");
+    public void touchMenuItem(int itemId) {
+        switch (itemId) {
+            case R.id.action_clear_text:
+                editText.setText("");
+                break;
+        }
     }
 
     @Override
-    public void changeOrientation(String orientation) {
-        orientationTxt.setText(ValueUtils.getOrientationName(getActivity(), orientation));
+    public void touchOrientationIcon() {
+        popupManagePresenter.showPopup(getActivity(), menuIcon, searchBarModel.getOrientation(), 0);
     }
 
     @Override
-    public void scrollToTop() {
-        contentView.scrollToTop();
-    }
-
-    @Override
-    public void inputSearchQuery(String query, String orientation) {
-        contentView.doSearch(query, orientation);
+    public void touchSearchBar() {
+        contentView.scrollToPageTop();
     }
 
     @Override
@@ -219,5 +237,39 @@ public class SearchFragment extends Fragment
     public void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+    @Override
+    public void submitSearchInfo(String text, String orientation) {
+        contentView.doSearch(text, orientation);
+    }
+
+    // message manage view.
+
+    @Override
+    public void sendMessage(final int what, final Object o) {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                handler.obtainMessage(what, o).sendToTarget();
+            }
+        }, 400);
+    }
+
+    @Override
+    public void responseMessage(int what, Object o) {
+        switch (what) {
+            case 1:
+                showKeyboard();
+                break;
+        }
+    }
+
+    // popup manage view.
+
+    @Override
+    public void responsePopup(String value, int position) {
+        searchBarPresenter.setOrientation(value);
+        orientationTxt.setText(ValueUtils.getOrientationName(getActivity(), value));
     }
 }

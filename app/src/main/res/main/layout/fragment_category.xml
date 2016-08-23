@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:layout_marginTop="24dp">
 
-    <com.wangdaye.mysplash.common.widget.StatusBarView
+    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
         android:id="@+id/fragment_category_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,14 +19,14 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:theme="@style/MysplashToolbarTheme">
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/fragment_category_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
-                app:navigationIcon="@drawable/ic_toolbar_menu"
                 app:popupTheme="@style/MysplashPopupMenuTheme"
                 tools:title="Building"
                 tools:ignore="UnusedAttribute" />

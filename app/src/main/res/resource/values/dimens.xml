@@ -1,10 +1,11 @@
 <resources>
 
     <!-- view size. -->
-    <dimen name="nav_header_height">128dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
     <dimen name="circular_progress_height">42dp</dimen>
     <dimen name="tab_layout_height">48dp</dimen>
     <dimen name="mini_loading_view_height">80dp</dimen>
+    <dimen name="user_cover_view_height">240dp</dimen>
 
     <!-- text -->
     <dimen name="design_title_text_size">24sp</dimen>
@@ -14,6 +15,7 @@
     <dimen name="content_text_size">16sp</dimen>
 
     <!-- icon -->
+    <dimen name="design_icon_size">72dp</dimen>
     <dimen name="large_icon_size">56dp</dimen>
     <dimen name="normal_icon_size">48dp</dimen>
     <dimen name="little_icon_size">36dp</dimen>

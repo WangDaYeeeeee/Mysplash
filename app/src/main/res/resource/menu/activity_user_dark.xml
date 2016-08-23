@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_open_portfolio"
+        android:orderInCategory="100"
+        android:title="@string/action_open_portfolio"
+        android:icon="@drawable/ic_earth_dark"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_filter"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_toolbar_filter_dark"
+        android:title="@string/action_filter"
+        app:showAsAction="ifRoom" />
+
+</menu>

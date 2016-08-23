@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_marginTop="24dp">
+
+    <FrameLayout
+        android:background="?attr/line_color"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/container_photo_details_progressView"
+        android:layout_width="@dimen/circular_progress_height"
+        android:layout_height="@dimen/circular_progress_height"
+        android:layout_centerInParent="true"
+        android:layout_margin="24dp"
+        app:cpv_animAutostart="true"
+        app:cpv_color="?attr/content_color"
+        app:cpv_indeterminate="true" />
+
+    <Button
+        android:id="@+id/container_photo_details_retryButton"
+        android:text="@string/feedback_click_retry"
+        android:textStyle="bold"
+        android:textColor="?attr/content_color"
+        android:layout_centerInParent="true"
+        android:layout_margin="24dp"
+        android:visibility="gone"
+        style="@style/material_button" />
+
+
+    <RelativeLayout
+        android:id="@+id/container_photo_details_detailsContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/container_photo_details_title"
+            android:text="@string/details"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/normal_margin"
+            style="@style/subtitle_text" />
+
+        <FrameLayout
+            android:id="@+id/container_photo_details_center"
+            android:layout_centerHorizontal="true"
+            android:layout_width="1dp"
+            android:layout_height="1dp" />
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_sizeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_title"
+            android:layout_toLeftOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_sizeIcon"
+                android:src="@drawable/ic_size_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_sizeTxt"
+                android:textColor="?attr/content_color"
+                android:layout_toRightOf="@id/container_photo_details_sizeIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="4390 × 1980"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_colorContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_sizeContainer"
+            android:layout_toLeftOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_colorIcon"
+                android:src="@drawable/ic_color_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_colorTxt"
+                android:textColor="?attr/content_color"
+                android:layout_toRightOf="@id/container_photo_details_colorIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/little_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="#34a67c"
+                tools:ignore="RtlHardcoded" />
+
+            <FrameLayout
+                android:id="@+id/container_photo_details_colorSample"
+                android:layout_width="@dimen/little_margin"
+                android:layout_height="@dimen/little_margin"
+                android:layout_toRightOf="@id/container_photo_details_colorTxt"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:background="#34a67c"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_locationContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_colorContainer"
+            android:layout_toLeftOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_locationIcon"
+                android:src="@drawable/ic_location_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_locationTxt"
+                android:layout_toRightOf="@id/container_photo_details_locationIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="Montreal, Canada"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_modelContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_locationContainer"
+            android:layout_toLeftOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_modelIcon"
+                android:src="@drawable/ic_camera_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_modelTxt"
+                android:layout_toRightOf="@id/container_photo_details_modelIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="Canon EOS 40D"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_exposureContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_title"
+            android:layout_toRightOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_exposureIcon"
+                android:src="@drawable/ic_exposure_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_exposureTxt"
+                android:layout_toRightOf="@id/container_photo_details_exposureIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="0.011111111"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_apertureContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_exposureContainer"
+            android:layout_toRightOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_apertureIcon"
+                android:src="@drawable/ic_aperture_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_apertureTxt"
+                android:layout_toRightOf="@id/container_photo_details_apertureIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="4.970854"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_focalContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_apertureContainer"
+            android:layout_toRightOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_focalIcon"
+                android:src="@drawable/ic_focal_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_focalTxt"
+                android:layout_toRightOf="@id/container_photo_details_focalIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="37"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/container_photo_details_isoContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_focalContainer"
+            android:layout_toRightOf="@id/container_photo_details_center"
+            android:background="?attr/selectableItemBackground"
+            tools:ignore="RtlHardcoded">
+
+            <ImageView
+                android:id="@+id/container_photo_details_isoIcon"
+                android:src="@drawable/ic_iso_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_photo_details_isoTxt"
+                android:layout_toRightOf="@id/container_photo_details_isoIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:singleLine="true"
+                style="@style/content_text"
+                tools:text="100"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+        
+        <com.zhy.view.flowlayout.TagFlowLayout
+            android:id="@+id/container_photo_details_tagView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/container_photo_details_isoContainer"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
+            app:auto_select_effect="true" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/container_user_profile_progressView"
+        android:layout_width="@dimen/circular_progress_height"
+        android:layout_height="@dimen/circular_progress_height"
+        android:layout_centerInParent="true"
+        android:layout_margin="24dp"
+        app:cpv_animAutostart="true"
+        app:cpv_color="?attr/line_color"
+        app:cpv_indeterminate="true" />
+
+    <Button
+        android:id="@+id/container_user_profile_retryButton"
+        android:text="@string/feedback_click_retry"
+        android:textStyle="bold"
+        android:textColor="?attr/content_color"
+        android:layout_centerInParent="true"
+        style="@style/material_button" />
+
+    <RelativeLayout
+        android:id="@+id/container_user_profile_profileContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/container_user_profile_locationContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+
+            <ImageView
+                android:id="@+id/container_user_profile_locationIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginBottom="@dimen/normal_margin"
+                android:layout_marginLeft="@dimen/normal_margin"
+                android:src="@drawable/ic_location_light"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/container_user_profile_locationTxt"
+                android:layout_toRightOf="@id/container_user_profile_locationIcon"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginLeft="@dimen/mini_margin"
+                style="@style/subtitle_text"
+                tools:text="Bermuda// Durham"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/container_user_profile_bio"
+            android:layout_below="@id/container_user_profile_locationContainer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="@dimen/mini_icon_size"
+            android:layout_marginRight="@dimen/mini_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_centerInParent="true"
+            android:lineSpacingMultiplier="1.3"
+            style="@style/content_text"
+            tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
+
+    </RelativeLayout>
+
+</RelativeLayout>

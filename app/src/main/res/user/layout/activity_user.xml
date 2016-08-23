@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_user_swipeBackLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_marginTop="24dp">
+
+    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+        android:id="@+id/activity_user_statusBar"
+        android:background="?attr/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_user_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        tools:ignore="UnusedAttribute">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/activity_user_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|snap">
+
+                <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+                    android:id="@+id/activity_user_avatar"
+                    android:layout_width="@dimen/design_icon_size"
+                    android:layout_height="@dimen/design_icon_size"
+                    android:layout_marginTop="@dimen/little_icon_size"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    android:src="?attr/line_color"
+                    android:transitionName="@string/transition_user_avatar"
+                    app:civ_fill_color="@color/colorTextGrey"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/activity_user_title"
+                    android:textSize="@dimen/large_title_text_size"
+                    android:textStyle="bold"
+                    android:textColor="?attr/title_color"
+                    android:layout_below="@id/activity_user_avatar"
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:layout_marginRight="@dimen/normal_margin"
+                    android:layout_centerHorizontal="true"
+                    style="@style/title_text"
+                    tools:text="Alfredo Wong"
+                    tools:ignore="RtlHardcoded" />
+
+                <com.wangdaye.mysplash.user.view.widget.UserProfileView
+                    android:id="@+id/activity_user_profileView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/activity_user_title" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_user_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"/>
+
+            </RelativeLayout>
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/activity_user_tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_layout_height"
+                android:layout_below="@id/activity_user_profileView"
+                app:tabIndicatorHeight="3dp"
+                app:tabIndicatorColor="?attr/content_color"
+                app:tabSelectedTextColor="?attr/content_color"
+                app:tabTextColor="?attr/subtitle_color" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/activity_user_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </android.support.design.widget.CoordinatorLayout>
+
+</com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>

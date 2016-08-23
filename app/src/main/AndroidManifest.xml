@@ -27,12 +27,41 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".common.view.activity.SettingsActivity"
+            android:name=".collection.view.activity.CollectionActivity"
+            android:theme="@style/MysplashTheme_light.Collection"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".user.view.activity.UserActivity"
+            android:theme="@style/MysplashTheme_light.User"
+            android:label="@string/app_name" />
+
+        <activity android:name=".login.view.LoginActivity"
+            android:theme="@style/MysplashTheme_light.Common"
+            android:label="@string/app_name"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <data
+                    android:host="unsplash-auth-callback"
+                    android:scheme="mysplash" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".me.view.activity.MeActivity"
+            android:theme="@style/MysplashTheme_light.Me"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name="._common.ui.activity.SettingsActivity"
             android:theme="@style/MysplashTheme_light.Common"
             android:label="@string/action_settings" />
 
         <activity
-            android:name=".common.view.activity.AboutActivity"
+            android:name="._common.ui.activity.AboutActivity"
             android:theme="@style/MysplashTheme_light.Common"
             android:label="@string/action_about"/>
 

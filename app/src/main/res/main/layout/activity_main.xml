@@ -20,7 +20,6 @@
         android:layout_gravity="start"
         android:background="?attr/root_color"
         app:headerLayout="@layout/container_nav_header"
-        app:menu="@menu/menu_activity_main_drawer"
         app:itemIconTint="?attr/content_color"
         app:itemTextColor="?attr/content_color"
         app:insetForeground="@android:color/transparent"

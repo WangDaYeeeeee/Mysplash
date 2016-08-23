@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_collection_mini_card"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/design_icon_size"
+    android:layout_marginLeft="@dimen/little_margin"
+    android:layout_marginRight="@dimen/little_margin"
+    android:layout_marginBottom="@dimen/little_margin"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise"
+    app:cardBackgroundColor="?attr/root_color"
+    app:cardCornerRadius="2dp"
+    tools:ignore="UnusedAttribute">
+
+    <ImageView
+        android:id="@+id/item_collection_mini_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/design_about_app"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/item_collection_privateIcon"
+            android:src="@drawable/ic_item_lock"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="@dimen/little_margin"
+            android:layout_margin="@dimen/little_margin"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/item_collection_privateIcon"
+            tools:ignore="RtlHardcoded,UselessParent">
+
+            <TextView
+                android:id="@+id/item_collection_mini_subtitle"
+                android:textColor="@android:color/white"
+                android:singleLine="true"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:shadowColor="@color/colorTextDark2nd"
+                android:alpha="0.9"
+                android:layout_marginLeft="@dimen/normal_margin"
+                style="@style/subtitle_text"
+                tools:text="3 photos"/>
+
+            <TextView
+                android:id="@+id/item_collection_mini_title"
+                android:textColor="@android:color/white"
+                android:singleLine="true"
+                android:textSize="@dimen/large_title_text_size"
+                android:textStyle="bold"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:shadowColor="@color/colorTextDark2nd"
+                android:layout_marginLeft="@dimen/normal_margin"
+                android:layout_marginRight="@dimen/normal_margin"
+                style="@style/title_text"
+                tools:text="LET THE INSPIRATION BEGIN"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>
