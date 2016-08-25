@@ -1,7 +1,5 @@
 # Mysplash
 
-![PREVIEW](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_total.png)
-
 ## 说明
   
 ### 简介
