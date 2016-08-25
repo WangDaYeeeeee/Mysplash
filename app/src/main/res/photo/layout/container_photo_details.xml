@@ -22,17 +22,6 @@
         app:cpv_color="?attr/content_color"
         app:cpv_indeterminate="true" />
 
-    <Button
-        android:id="@+id/container_photo_details_retryButton"
-        android:text="@string/feedback_click_retry"
-        android:textStyle="bold"
-        android:textColor="?attr/content_color"
-        android:layout_centerInParent="true"
-        android:layout_margin="24dp"
-        android:visibility="gone"
-        style="@style/material_button" />
-
-
     <RelativeLayout
         android:id="@+id/container_photo_details_detailsContainer"
         android:layout_width="match_parent"

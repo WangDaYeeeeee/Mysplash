@@ -14,8 +14,9 @@ public interface PagerManagePresenter {
     PagerView getPagerView(int position);
     void checkToRefresh(int position);
 
-    void pageScrollToTop();
-    String getPageKey(int position);
+    boolean needPagerBackToTop();
+    void pagerScrollToTop();
+    String getPagerKey(int position);
 
     boolean canPagerSwipeBack(int dir);
     int getPagerItemCount();

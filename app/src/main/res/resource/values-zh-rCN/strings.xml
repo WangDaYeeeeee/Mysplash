@@ -13,6 +13,9 @@
     <string name="create">创建</string>
     <string name="delete">删除</string>
     <string name="save">保存</string>
+    <string name="stats">统计</string>
+    <string name="open_photo_link">在网页中打开</string>
+    <string name="open_download_link">访问下载页</string>
 
     <!-- 反馈. -->
     <string name="feedback_click_retry">点击重试</string>
@@ -55,6 +58,7 @@
 
     <string name="feedback_request_token_failed">获取访问权限失败</string>
     <string name="feedback_login_text">登录你的Unsplash账号</string>
+    <string name="feedback_re_login">请重新登录</string>
 
     <string name="feedback_edit_my_profile">编辑个人信息</string>
     <string name="feedback_edit_username">用户名 (字母、数字、下划线)</string>
@@ -64,6 +68,7 @@
     <string name="feedback_edit_portfolio">个人主页</string>
     <string name="feedback_edit_location">位置</string>
     <string name="feedback_edit_bio">个人简介</string>
+    <string name="feedback_update_profile_failed">编辑个人信息失败</string>
 
     <string name="feedback_add_to_collection">添加至收藏集</string>
     <string name="feedback_create_collection">创建收藏集</string>
@@ -93,10 +98,6 @@
     <string name="action_filter">筛选</string>
 
     <string name="action_clear_text">清空内容</string>
-
-    <string name="action_stats">统计</string>
-    <string name="action_open_photo_link">在网页中打开</string>
-    <string name="action_open_download_link">访问下载页</string>
 
     <string name="action_open_portfolio">个人主页</string>
 

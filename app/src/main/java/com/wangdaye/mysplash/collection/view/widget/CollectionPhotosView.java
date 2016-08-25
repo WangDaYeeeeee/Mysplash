@@ -1,14 +1,12 @@
 package com.wangdaye.mysplash.collection.view.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -24,8 +22,13 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.collection.model.LoadObject;
-import com.wangdaye.mysplash.collection.model.PhotosObject;
+import com.wangdaye.mysplash._common.i.model.ScrollModel;
+import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
+import com.wangdaye.mysplash._common.i.view.SwipeBackView;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash.collection.model.widget.LoadObject;
+import com.wangdaye.mysplash.collection.model.widget.PhotosObject;
+import com.wangdaye.mysplash.collection.model.widget.ScrollObject;
 import com.wangdaye.mysplash.collection.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.collection.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.collection.presenter.widget.ScrollImplementor;
@@ -41,17 +44,19 @@ import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 
 /**
  * Collection photos view.
  * */
 
 public class CollectionPhotosView extends FrameLayout
-        implements PhotosView, LoadView, ScrollView,
+        implements PhotosView, LoadView, ScrollView, SwipeBackView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
     private PhotosModel photosModel;
     private LoadModel loadModel;
+    private ScrollModel scrollModel;
 
     // view.
     private CircularProgressView progressView;
@@ -65,6 +70,7 @@ public class CollectionPhotosView extends FrameLayout
     private PhotosPresenter photosPresenter;
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
+    private SwipeBackPresenter swipeBackPresenter;
 
     /** <br> life cycle. */
 
@@ -105,12 +111,15 @@ public class CollectionPhotosView extends FrameLayout
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.photosPresenter = new PhotosImplementor(Mysplash.getInstance().getCollection(), photosModel, this);
+        this.photosPresenter = new PhotosImplementor(photosModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
-        this.scrollPresenter = new ScrollImplementor(this);
+        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
+        this.swipeBackPresenter = new SwipeBackImplementor(this);
     }
 
     /** <br> view. */
+
+    // init.
 
     private void initView() {
         this.initContentView();
@@ -154,23 +163,30 @@ public class CollectionPhotosView extends FrameLayout
         retryButton.setOnClickListener(this);
     }
 
+    // interface.
+
+    public void pagerBackToTop() {
+        scrollPresenter.scrollToTop();
+    }
+
     /** <br> model. */
 
     // init.
 
     private void initModel() {
-        if (Mysplash.getInstance().getCollection().curated) {
-            this.photosModel = new PhotosObject(getContext(), PhotosObject.PHOTOS_TYPE_CURATED);
-        } else {
-            this.photosModel = new PhotosObject(getContext(), PhotosObject.PHOTOS_TYPE_NORMAL);
-        }
+        this.photosModel = new PhotosObject(
+                getContext(),
+                Mysplash.getInstance().getCollection(),
+                Mysplash.getInstance().getCollection().curated ?
+                        PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject();
     }
 
     // interface.
 
     public void setActivity(Activity a) {
-        photosModel.getAdapter().setActivity(a);
+        photosPresenter.setActivityForAdapter(a);
     }
 
     public void initRefresh() {
@@ -182,12 +198,15 @@ public class CollectionPhotosView extends FrameLayout
     }
 
     public Collection getCollection() {
-        return ((PhotosImplementor) photosPresenter).getRequestKey();
+        return (Collection) photosPresenter.getRequestKey();
     }
 
     public boolean canSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || photosModel.getAdapter().getRealItemCount() <= 0;
+        return swipeBackPresenter.checkCanSwipeBack(dir);
+    }
+
+    public boolean needPagerBackToTop() {
+        return scrollPresenter.needBackToTop();
     }
 
     /** <br> interface. */
@@ -269,28 +288,12 @@ public class CollectionPhotosView extends FrameLayout
 
     @Override
     public void animShow(View v) {
-        if (v.getVisibility() == GONE) {
-            v.setVisibility(VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
+        AnimUtils.animShow(v);
     }
 
     @Override
     public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(GONE);
-            }
-        });
-        anim.start();
+        AnimUtils.animHide(v);
     }
 
     @Override
@@ -330,7 +333,29 @@ public class CollectionPhotosView extends FrameLayout
         int totalItemCount = recyclerView.getAdapter().getItemCount();
         if (photosPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-            photosPresenter.loadMore(getContext(), true);
+            photosPresenter.loadMore(getContext(), false);
         }
+        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
+            scrollPresenter.setToTop(true);
+        } else {
+            scrollPresenter.setToTop(false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && photosPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+    }
+
+    @Override
+    public boolean needBackToTop() {
+        return !scrollPresenter.isToTop()
+                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    // swipe back view.
+
+    @Override
+    public boolean checkCanSwipeBack(int dir) {
+        return SwipeBackLayout.canSwipeBack(recyclerView, dir)
+                || photosPresenter.getAdapterItemCount() <= 0;
     }
 }

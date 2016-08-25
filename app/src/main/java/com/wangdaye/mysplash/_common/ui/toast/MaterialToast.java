@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.ui.toast;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.PixelFormat;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.SafeHandler;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import java.util.Timer;
@@ -22,13 +24,14 @@ import java.util.TimerTask;
  * */
 
 public class MaterialToast
-        implements View.OnClickListener {
+        implements View.OnClickListener, SafeHandler.HandlerContainer {
     // widget
     private WindowManager windowManager;
     private View toastView;
     private WindowManager.LayoutParams params;
     private Timer timer;
 
+    private SafeHandler<MaterialToast> handler;
     private OnActionClickListener listener;
 
     // data
@@ -36,7 +39,7 @@ public class MaterialToast
     private boolean showing;
 
     public static final int LENGTH_SHORT = 1500;
-    public static final int LENGTH_LONG = 3500;
+    public static final int LENGTH_LONG = 5000;
 
     /** <br> life cycle. */
 
@@ -45,6 +48,7 @@ public class MaterialToast
         this.showTime = showTime;
         this.showing = false;
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        handler = new SafeHandler<>(this);
         timer = new Timer();
         setParams();
         buildView(context, text, action);
@@ -96,8 +100,7 @@ public class MaterialToast
             timer.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    windowManager.removeView(toastView);
-                    showing = false;
+                    handler.obtainMessage(1).sendToTarget();
                 }
             }, showTime);
         }
@@ -132,5 +135,11 @@ public class MaterialToast
                 }
                 break;
         }
+    }
+
+    @Override
+    public void handleMessage(Message message) {
+        windowManager.removeView(toastView);
+        showing = false;
     }
 }

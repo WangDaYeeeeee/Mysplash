@@ -12,4 +12,6 @@ public interface DownloadPresenter {
 
     void setDialogShowing(boolean showing);
     void cancelDownloading();
+    int getDownloadId();
+    void setDownloadId(int id);
 }

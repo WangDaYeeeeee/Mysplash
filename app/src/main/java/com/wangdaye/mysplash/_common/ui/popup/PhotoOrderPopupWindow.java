@@ -10,9 +10,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -41,6 +43,13 @@ public class PhotoOrderPopupWindow extends PopupWindow
     public PhotoOrderPopupWindow(Context c, View anchor, String valueNow, int type) {
         super(c);
         this.initialize(c, anchor, valueNow, type);
+        Mysplash.getInstance().setActivityInBackstage(true);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Mysplash.getInstance().setActivityInBackstage(false);
+            }
+        });
     }
 
     @SuppressLint("InflateParams")
@@ -121,6 +130,18 @@ public class PhotoOrderPopupWindow extends PopupWindow
             } else {
                 randomTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
+        }
+
+        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            ((ImageView) v.findViewById(R.id.popup_photo_order_latestIcon)).setImageResource(R.drawable.ic_timer_light);
+            ((ImageView) v.findViewById(R.id.popup_photo_order_oldestIcon)).setImageResource(R.drawable.ic_timer_off_light);
+            ((ImageView) v.findViewById(R.id.popup_photo_order_popularIcon)).setImageResource(R.drawable.ic_fire_light);
+            ((ImageView) v.findViewById(R.id.popup_photo_order_randomIcon)).setImageResource(R.drawable.ic_random_light);
+        } else {
+            ((ImageView) v.findViewById(R.id.popup_photo_order_latestIcon)).setImageResource(R.drawable.ic_timer_dark);
+            ((ImageView) v.findViewById(R.id.popup_photo_order_oldestIcon)).setImageResource(R.drawable.ic_timer_off_dark);
+            ((ImageView) v.findViewById(R.id.popup_photo_order_popularIcon)).setImageResource(R.drawable.ic_fire_dark);
+            ((ImageView) v.findViewById(R.id.popup_photo_order_randomIcon)).setImageResource(R.drawable.ic_random_dark);
         }
     }
 

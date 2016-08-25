@@ -12,13 +12,11 @@ public class CategoryManageImplementor
         implements CategoryManagePresenter {
     // model & view.
     private CategoryManageModel model;
-    private CategoryManageView view;
 
     /** <br> life cycle. */
 
-    public CategoryManageImplementor(CategoryManageModel model, CategoryManageView view) {
+    public CategoryManageImplementor(CategoryManageModel model) {
         this.model = model;
-        this.view = view;
     }
 
     /** <br> presenter. */
@@ -31,6 +29,5 @@ public class CategoryManageImplementor
     @Override
     public void setCategoryId(int id) {
         model.setCategoryId(id);
-        view.setPagerCategory(id);
     }
 }

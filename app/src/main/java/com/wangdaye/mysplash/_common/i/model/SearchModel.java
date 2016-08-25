@@ -24,6 +24,9 @@ public interface SearchModel {
     int getPhotosPage();
     void setPhotosPage(int page);
 
+    boolean isRefreshing();
+    void setRefreshing(boolean refreshing);
+
     boolean isLoading();
     void setLoading(boolean loading);
 

@@ -25,12 +25,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CollectionService {
     // widget
-    private OkHttpClient client;
     private Call call;
 
     /** <br> data. */
     public void requestAllCollections(int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getAllCollections = buildApi(client).getAllCollections(page, per_page);
+        Call<List<Collection>> getAllCollections = buildApi(buildClient()).getAllCollections(page, per_page);
         getAllCollections.enqueue(new Callback<List<Collection>>() {
             @Override
             public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
@@ -50,7 +49,7 @@ public class CollectionService {
     }
 
     public void requestCuratedCollections(int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getCuratedCollections = buildApi(client).getCuratedCollections(page, per_page);
+        Call<List<Collection>> getCuratedCollections = buildApi(buildClient()).getCuratedCollections(page, per_page);
         getCuratedCollections.enqueue(new Callback<List<Collection>>() {
             @Override
             public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
@@ -70,7 +69,7 @@ public class CollectionService {
     }
 
     public void requestFeaturedCollections(int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getFeaturedCollections = buildApi(client).getFeaturedCollections(page, per_page);
+        Call<List<Collection>> getFeaturedCollections = buildApi(buildClient()).getFeaturedCollections(page, per_page);
         getFeaturedCollections.enqueue(new Callback<List<Collection>>() {
             @Override
             public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
@@ -90,7 +89,7 @@ public class CollectionService {
     }
 
     public void requestUserCollections(User u, int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getUserCollections = buildApi(client).getUserCollections(u.username, page, per_page);
+        Call<List<Collection>> getUserCollections = buildApi(buildClient()).getUserCollections(u.username, page, per_page);
         getUserCollections.enqueue(new Callback<List<Collection>>() {
             @Override
             public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
@@ -110,7 +109,7 @@ public class CollectionService {
     }
 
     public void requestUserCollections(Me me, int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getUserCollections = buildApi(client).getUserCollections(me.username, page, per_page);
+        Call<List<Collection>> getUserCollections = buildApi(buildClient()).getUserCollections(me.username, page, per_page);
         getUserCollections.enqueue(new Callback<List<Collection>>() {
             @Override
             public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
@@ -133,9 +132,9 @@ public class CollectionService {
                                  final OnRequestACollectionListener l) {
         Call<Collection> createCollection;
         if (description == null) {
-            createCollection = buildApi(client).createCollection(title, privateX);
+            createCollection = buildApi(buildClient()).createCollection(title, privateX);
         } else {
-            createCollection = buildApi(client).createCollection(title, description, privateX);
+            createCollection = buildApi(buildClient()).createCollection(title, description, privateX);
         }
         createCollection.enqueue(new Callback<Collection>() {
             @Override
@@ -157,7 +156,7 @@ public class CollectionService {
 
     public void addPhotoToCollection(int collection_id, String photo_id,
                                      final OnAddPhotoToCollectionListener l) {
-        Call<AddPhotoToCollectionResult> addPhotoToCollection = buildApi(client)
+        Call<AddPhotoToCollectionResult> addPhotoToCollection = buildApi(buildClient())
                 .addPhotoToCollection(collection_id, photo_id);
         addPhotoToCollection.enqueue(new Callback<AddPhotoToCollectionResult>() {
             @Override
@@ -180,7 +179,7 @@ public class CollectionService {
 
     public void updateCollection(int id, String title, String description, boolean privateX,
                                  final OnRequestACollectionListener l) {
-        Call<Collection> updateCollection = buildApi(client).updateCollection(id, title, description, privateX);
+        Call<Collection> updateCollection = buildApi(buildClient()).updateCollection(id, title, description, privateX);
         updateCollection.enqueue(new Callback<Collection>() {
             @Override
             public void onResponse(Call<Collection> call, Response<Collection> response) {
@@ -200,7 +199,7 @@ public class CollectionService {
     }
 
     public void deleteCollection(int id, final OnDeleteCollectionListener l) {
-        Call<DeleteCollectionResult> deleteCollection = buildApi(client).deleteCollection(id);
+        Call<DeleteCollectionResult> deleteCollection = buildApi(buildClient()).deleteCollection(id);
         deleteCollection.enqueue(new Callback<DeleteCollectionResult>() {
             @Override
             public void onResponse(Call<DeleteCollectionResult> call,
@@ -232,11 +231,10 @@ public class CollectionService {
         return new CollectionService();
     }
 
-    public CollectionService buildClient() {
-        this.client = new OkHttpClient.Builder()
+    public OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
-        return this;
     }
 
     private CollectionApi buildApi(OkHttpClient client) {

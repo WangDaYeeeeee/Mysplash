@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -15,8 +16,14 @@ public interface CollectionsPresenter {
     void loadMore(Context c, boolean notify);
     void initRefresh(Context c);
 
-    boolean waitingRefresh();
     boolean canLoadMore();
+    boolean isRefreshing();
+    boolean isLoading();
+
+    Object getRequestKey();
+    void setRequestKey(Object k);
 
     void setType(String key);
+    void setActivityForAdapter(Activity a);
+    int getAdapterItemCount();
 }

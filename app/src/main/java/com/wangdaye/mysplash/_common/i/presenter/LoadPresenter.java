@@ -10,5 +10,5 @@ public interface LoadPresenter {
     void setFailedState();
     void setNormalState();
 
-    boolean isNormalState();
+    int getLoadState();
 }

@@ -26,16 +26,20 @@ import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.activity.UpdateMeActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
@@ -43,6 +47,7 @@ import com.wangdaye.mysplash.me.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
 import com.wangdaye.mysplash.me.presenter.activity.PagerManageImplementor;
 import com.wangdaye.mysplash.me.presenter.activity.PopupManageImplementor;
+import com.wangdaye.mysplash.me.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.me.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.me.view.widget.MeCollectionsView;
 import com.wangdaye.mysplash.me.view.widget.MePhotosView;
@@ -56,7 +61,7 @@ import java.util.List;
  * */
 
 public class MeActivity extends MysplashActivity
-        implements ToolbarView, PagerManageView, PopupManageView,
+        implements ToolbarView, PagerManageView, PopupManageView, SwipeBackManageView,
         Toolbar.OnMenuItemClickListener, View.OnClickListener, ViewPager.OnPageChangeListener,
         SwipeBackLayout.OnSwipeListener, AuthManager.OnAuthDataChangedListener {
     // model.
@@ -78,6 +83,7 @@ public class MeActivity extends MysplashActivity
     private ToolbarPresenter toolbarPresenter;
     private PagerManagePresenter pagerManagePresenter;
     private PopupManagePresenter popupManagePresenter;
+    private SwipeBackManagePresenter swipeBackManagePresenter;
 
     /** <br> life cycle. */
 
@@ -95,7 +101,7 @@ public class MeActivity extends MysplashActivity
             initModel();
             initView();
             initPresenter();
-            animShowView((View) pagers[0], 400);
+            AnimUtils.animInitShow((View) pagers[0], 400);
             pagers[0].refreshPager();
         }
     }
@@ -104,6 +110,7 @@ public class MeActivity extends MysplashActivity
     protected void onDestroy() {
         super.onDestroy();
         AuthManager.getInstance().removeOnWriteDataListener(this);
+        AuthManager.getInstance().cancelRequest();
         for (PagerView p : pagers) {
             p.cancelRequest();
         }
@@ -115,6 +122,17 @@ public class MeActivity extends MysplashActivity
             setTheme(R.style.MysplashTheme_light_Me);
         } else {
             setTheme(R.style.MysplashTheme_dark_Me);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (Mysplash.getInstance().isActivityInBackstage()) {
+            super.onBackPressed();
+        } else if (pagerManagePresenter.needPagerBackToTop()) {
+            pagerManagePresenter.pagerScrollToTop();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -141,6 +159,7 @@ public class MeActivity extends MysplashActivity
         this.toolbarPresenter = new ToolbarImplementor(this);
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
         this.popupManagePresenter = new PopupManageImplementor(this);
+        this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
     }
 
     /** <br> view. */
@@ -176,9 +195,6 @@ public class MeActivity extends MysplashActivity
         initPages();
         this.utils = new DisplayUtils(this);
 
-        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE) {
-            AuthManager.getInstance().refreshPersonalProfile();
-        }
         drawProfile();
     }
 
@@ -259,6 +275,10 @@ public class MeActivity extends MysplashActivity
     private void initModel() {
         this.pagerManageModel = new PagerManageObject(0);
         AuthManager.getInstance().addOnWriteDataListener(this);
+        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE
+                && AuthManager.getInstance().getMe() == null) {
+            AuthManager.getInstance().refreshPersonalProfile();
+        }
     }
 
     /** <br> interface. */
@@ -307,25 +327,12 @@ public class MeActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        if (pagerManagePresenter.getPagerItemCount() <= 0) {
-            return true;
-        }
-        if (dir == SwipeBackLayout.UP_DIR) {
-            return pagerManagePresenter.canPagerSwipeBack(dir)
-                    && appBar.getY() <= -appBar.getMeasuredHeight() + utils.dpToPx(48);
-        } else {
-            return pagerManagePresenter.canPagerSwipeBack(dir)
-                    && appBar.getY() >= 0;
-        }
+        return swipeBackManagePresenter.checkCanSwipeBack(dir);
     }
 
     @Override
     public void onSwipeFinish() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
-        } else {
-            finish();
-        }
+        swipeBackManagePresenter.swipeBackFinish();
     }
 
     // on author data changed listener.
@@ -348,11 +355,7 @@ public class MeActivity extends MysplashActivity
 
     @Override
     public void onLogout() {
-        drawProfile();
-        meProfileView.setLoading();
-        for (PagerView pager : pagers) {
-            pager.refreshPager();
-        }
+        // do nothing.
     }
 
     // view.
@@ -375,14 +378,15 @@ public class MeActivity extends MysplashActivity
 
     @Override
     public void touchMenuItem(int itemId) {
-        switch (itemId) {/*
-            case R.id.action_update_profile:
+        switch (itemId) {
+            case R.id.action_edit:
                 if (AuthManager.getInstance().isAuthorized()
                         && AuthManager.getInstance().getMe() != null) {
-                    // TODO: 2016/8/19 update activity.
+                    Intent u = new Intent(this, UpdateMeActivity.class);
+                    startActivity(u);
                 }
                 break;
-*/
+
             case R.id.action_open_portfolio:
                 if (AuthManager.getInstance().isAuthorized()
                         && AuthManager.getInstance().getMe() != null) {
@@ -406,7 +410,7 @@ public class MeActivity extends MysplashActivity
                     popupManagePresenter.showPopup(
                             this,
                             toolbar,
-                            pagerManagePresenter.getPageKey(page),
+                            pagerManagePresenter.getPagerKey(page),
                             page);
                 }
                 break;
@@ -437,6 +441,31 @@ public class MeActivity extends MysplashActivity
         pagers[position].setKey(value);
         if (AuthManager.getInstance().getState() != AuthManager.LOADING_ME_STATE) {
             pagers[position].refreshPager();
+        }
+    }
+
+    // swipe back manage view.
+
+    @Override
+    public boolean checkCanSwipeBack(int dir) {
+        if (pagerManagePresenter.getPagerItemCount() <= 0) {
+            return true;
+        }
+        if (dir == SwipeBackLayout.UP_DIR) {
+            return pagerManagePresenter.canPagerSwipeBack(dir)
+                    && appBar.getY() <= -appBar.getMeasuredHeight() + utils.dpToPx(48);
+        } else {
+            return pagerManagePresenter.canPagerSwipeBack(dir)
+                    && appBar.getY() >= 0;
+        }
+    }
+
+    @Override
+    public void swipeBackFinish() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        } else {
+            finish();
         }
     }
 }

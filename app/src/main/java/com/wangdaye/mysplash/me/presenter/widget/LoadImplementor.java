@@ -55,7 +55,7 @@ public class LoadImplementor implements LoadPresenter {
     }
 
     @Override
-    public boolean isNormalState() {
-        return model.getState() == LoadObject.NORMAL_STATE;
+    public int getLoadState() {
+        return model.getState();
     }
 }

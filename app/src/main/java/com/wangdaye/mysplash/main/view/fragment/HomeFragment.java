@@ -16,7 +16,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.i.view.CollectionsView;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
@@ -85,6 +84,8 @@ public class HomeFragment extends Fragment
 
     /** <br> view. */
 
+    // init.
+
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
@@ -130,10 +131,24 @@ public class HomeFragment extends Fragment
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    // interface.
+
+    public void pagerBackToTop() {
+        pagerManagePresenter.pagerScrollToTop();
+    }
+
     /** <br> model. */
+
+    // init.
 
     private void initModel() {
         this.pagerManageModel = new PagerManageObject(0);
+    }
+
+    // interface.
+
+    public boolean needPagerBackToTop() {
+        return pagerManagePresenter.needPagerBackToTop();
     }
 
     /** <br> interface. */
@@ -206,7 +221,7 @@ public class HomeFragment extends Fragment
                 popupManageImplementor.showPopup(
                         getActivity(),
                         toolbar,
-                        pagerManagePresenter.getPageKey(page),
+                        pagerManagePresenter.getPagerKey(page),
                         page);
                 break;
         }

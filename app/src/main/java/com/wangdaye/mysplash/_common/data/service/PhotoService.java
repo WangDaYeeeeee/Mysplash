@@ -27,13 +27,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PhotoService {
     // widget
-    private OkHttpClient client;
     private Call call;
 
     /** <br> data. */
 
     public void requestPhotos(int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getPhotos = buildApi(client).getPhotos(page, per_page, order_by);
+        Call<List<Photo>> getPhotos = buildApi(buildClient()).getPhotos(page, per_page, order_by);
         getPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -53,7 +52,7 @@ public class PhotoService {
     }
 
     public void requestCuratePhotos(int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getCuratePhotos = buildApi(client).getCuratedPhotos(page, per_page, order_by);
+        Call<List<Photo>> getCuratePhotos = buildApi(buildClient()).getCuratedPhotos(page, per_page, order_by);
         getCuratePhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -73,7 +72,7 @@ public class PhotoService {
     }
 
     public void searchPhotos(String query, String orientation, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> searchPhotos = buildApi(client).searchPhotos(query, orientation, page, per_page);
+        Call<List<Photo>> searchPhotos = buildApi(buildClient()).searchPhotos(query, orientation, page, per_page);
         searchPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -93,7 +92,7 @@ public class PhotoService {
     }
 
     public void requestStats(String id, final OnRequestStatsListener l) {
-        Call<PhotoStats> getStats = buildApi(client).getPhotoStats(id);
+        Call<PhotoStats> getStats = buildApi(buildClient()).getPhotoStats(id);
         getStats.enqueue(new Callback<PhotoStats>() {
             @Override
             public void onResponse(Call<PhotoStats> call, retrofit2.Response<PhotoStats> response) {
@@ -113,7 +112,7 @@ public class PhotoService {
     }
 
     public void requestPhotosInAGivenCategory(int id, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getPhotosInAGivenCategory = buildApi(client).getPhotosInAGivenCategory(id, page, per_page);
+        Call<List<Photo>> getPhotosInAGivenCategory = buildApi(buildClient()).getPhotosInAGivenCategory(id, page, per_page);
         getPhotosInAGivenCategory.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -134,7 +133,7 @@ public class PhotoService {
 
     public void setLikeForAPhoto(String id, boolean like, final OnSetLikeListener l) {
         Call<LikePhotoResult> setLikeForAPhoto = like ?
-                buildApi(client).likeAPhoto(id) : buildApi(client).unlikeAPhoto(id);
+                buildApi(buildClient()).likeAPhoto(id) : buildApi(buildClient()).unlikeAPhoto(id);
         setLikeForAPhoto.enqueue(new Callback<LikePhotoResult>() {
             @Override
             public void onResponse(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
@@ -153,7 +152,7 @@ public class PhotoService {
     }
 
     public void requestPhotoDetails(Photo p, final OnRequestPhotoDetailsListener l) {
-        Call<PhotoDetails> getAPhoto = buildApi(client).getAPhoto(p.id, p.width, p.height, "0,0," + p.width + "," + p.height);
+        Call<PhotoDetails> getAPhoto = buildApi(buildClient()).getAPhoto(p.id, p.width, p.height, "0,0," + p.width + "," + p.height);
         getAPhoto.enqueue(new Callback<PhotoDetails>() {
             @Override
             public void onResponse(Call<PhotoDetails> call, Response<PhotoDetails> response) {
@@ -172,7 +171,7 @@ public class PhotoService {
     }
 
     public void requestUserPhotos(User u, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserPhotos = buildApi(client).getUserPhotos(u.username, page, per_page, order_by);
+        Call<List<Photo>> getUserPhotos = buildApi(buildClient()).getUserPhotos(u.username, page, per_page, order_by);
         getUserPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -191,7 +190,7 @@ public class PhotoService {
     }
 
     public void requestUserPhotos(Me me, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserPhotos = buildApi(client).getUserPhotos(me.username, page, per_page, order_by);
+        Call<List<Photo>> getUserPhotos = buildApi(buildClient()).getUserPhotos(me.username, page, per_page, order_by);
         getUserPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -210,7 +209,7 @@ public class PhotoService {
     }
 
     public void requestUserLikes(User u, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserLikes = buildApi(client).getUserLikes(u.username, page, per_page, order_by);
+        Call<List<Photo>> getUserLikes = buildApi(buildClient()).getUserLikes(u.username, page, per_page, order_by);
         getUserLikes.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -229,7 +228,7 @@ public class PhotoService {
     }
 
     public void requestUserLikes(Me me, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserLikes = buildApi(client).getUserLikes(me.username, page, per_page, order_by);
+        Call<List<Photo>> getUserLikes = buildApi(buildClient()).getUserLikes(me.username, page, per_page, order_by);
         getUserLikes.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -248,7 +247,7 @@ public class PhotoService {
     }
 
     public void requestCollectionPhotos(Collection c, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getCollectionPhotos = buildApi(client).getCollectionPhotos(c.id, page, per_page);
+        Call<List<Photo>> getCollectionPhotos = buildApi(buildClient()).getCollectionPhotos(c.id, page, per_page);
         getCollectionPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
@@ -267,7 +266,7 @@ public class PhotoService {
     }
 
     public void requestCuratedCollectionPhotos(Collection c, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getCuratedCollectionPhotos = buildApi(client).getCuratedCollectionPhotos(c.id, page, per_page);
+        Call<List<Photo>> getCuratedCollectionPhotos = buildApi(buildClient()).getCuratedCollectionPhotos(c.id, page, per_page);
         getCuratedCollectionPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
@@ -297,11 +296,10 @@ public class PhotoService {
         return new PhotoService();
     }
 
-    public PhotoService buildClient() {
-        this.client = new OkHttpClient.Builder()
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
-        return this;
     }
 
     private PhotoApi buildApi(OkHttpClient client) {

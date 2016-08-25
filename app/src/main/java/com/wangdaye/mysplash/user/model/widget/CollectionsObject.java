@@ -2,7 +2,9 @@ package com.wangdaye.mysplash.user.model.widget;
 
 import android.app.Activity;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
@@ -19,8 +21,10 @@ public class CollectionsObject
     private CollectionAdapter adapter;
     private CollectionService service;
 
+    private User requestKey;
     private int collectionsPage;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -28,10 +32,12 @@ public class CollectionsObject
 
     public CollectionsObject(Activity a) {
         this.adapter = new CollectionAdapter(a, new ArrayList<Collection>());
-        this.service = CollectionService.getService().buildClient();
+        this.service = CollectionService.getService();
 
+        this.requestKey = Mysplash.getInstance().getUser();
         this.collectionsPage = 0;
 
+        this.refreshing = false;
         this.loading = false;
         this.over = false;
     }
@@ -46,6 +52,16 @@ public class CollectionsObject
     @Override
     public CollectionService getService() {
         return service;
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return requestKey;
+    }
+
+    @Override
+    public void setRequestKey(Object key) {
+        requestKey = (User) key;
     }
 
     @Override
@@ -66,6 +82,16 @@ public class CollectionsObject
     @Override
     public void setCollectionsPage(int page) {
         collectionsPage = page;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

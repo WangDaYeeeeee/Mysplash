@@ -20,7 +20,7 @@ public class PhotoDetailsObject
     /** <br> life cycle. */
 
     public PhotoDetailsObject() {
-        service = PhotoService.getService().buildClient();
+        service = PhotoService.getService();
         photo = Mysplash.getInstance().getPhoto();
     }
 

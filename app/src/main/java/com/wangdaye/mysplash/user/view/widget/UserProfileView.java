@@ -1,8 +1,5 @@
 package com.wangdaye.mysplash.user.view.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,7 +8,6 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,6 +23,7 @@ import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.UserView;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.user.model.widget.LoadObject;
@@ -42,15 +39,13 @@ import java.util.List;
  * */
 
 public class UserProfileView extends FrameLayout
-        implements UserView, LoadView,
-        View.OnClickListener {
+        implements UserView, LoadView {
     // model.
     private UserModel userModel;
     private LoadModel loadModel;
 
     // view.
     private CircularProgressView progressView;
-    private Button retryButton;
 
     private RelativeLayout profileContainer;
     private TextView locationTxt;
@@ -108,10 +103,6 @@ public class UserProfileView extends FrameLayout
         this.progressView = (CircularProgressView) findViewById(R.id.container_user_profile_progressView);
         progressView.setVisibility(VISIBLE);
 
-        this.retryButton = (Button) findViewById(R.id.container_user_profile_retryButton);
-        retryButton.setOnClickListener(this);
-        retryButton.setVisibility(GONE);
-
         this.profileContainer = (RelativeLayout) findViewById(R.id.container_user_profile_profileContainer);
         profileContainer.setVisibility(GONE);
 
@@ -153,17 +144,6 @@ public class UserProfileView extends FrameLayout
     }
 
     /** <br> interface. */
-
-    // on click listener.
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.container_user_profile_retryButton:
-                userPresenter.requestUser();
-                break;
-        }
-    }
 
     // view.
 
@@ -211,40 +191,23 @@ public class UserProfileView extends FrameLayout
 
     @Override
     public void animShow(final View v) {
-        if (v.getVisibility() == GONE) {
-            v.setVisibility(VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
+        AnimUtils.animShow(v);
     }
 
     @Override
     public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(GONE);
-            }
-        });
-        anim.start();
+        AnimUtils.animHide(v);
     }
 
     @Override
     public void setLoadingState() {
         animShow(progressView);
-        animHide(retryButton);
+        animHide(profileContainer);
     }
 
     @Override
     public void setFailedState() {
-        animShow(retryButton);
-        animHide(progressView);
+        // do nothing.
     }
 
     @Override

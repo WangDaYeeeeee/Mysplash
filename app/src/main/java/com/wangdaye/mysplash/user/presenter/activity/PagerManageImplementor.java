@@ -45,12 +45,17 @@ public class PagerManageImplementor
     }
 
     @Override
-    public void pageScrollToTop() {
+    public boolean needPagerBackToTop() {
+        return view.getPagerView(model.getPagerPosition()).checkNeedBackToTop();
+    }
+
+    @Override
+    public void pagerScrollToTop() {
         getPagerView(model.getPagerPosition()).scrollToPageTop();
     }
 
     @Override
-    public String getPageKey(int position) {
+    public String getPagerKey(int position) {
         return getPagerView(position).getKey();
     }
 

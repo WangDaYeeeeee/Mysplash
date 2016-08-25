@@ -1,14 +1,12 @@
 package com.wangdaye.mysplash.main.view.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -24,15 +22,18 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
+import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SearchView;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
+import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.model.widget.SearchObject;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
@@ -49,6 +50,7 @@ public class SearchPhotosView extends FrameLayout
     // model.
     private SearchModel searchModel;
     private LoadModel loadModel;
+    private ScrollModel scrollModel;
 
     // view.
     private BothWaySwipeRefreshLayout refreshLayout;
@@ -105,7 +107,7 @@ public class SearchPhotosView extends FrameLayout
     private void initPresenter() {
         this.searchPresenter = new SearchImplementor(searchModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
-        this.scrollPresenter = new ScrollImplementor(this);
+        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
 
     /** <br> view. */
@@ -158,7 +160,7 @@ public class SearchPhotosView extends FrameLayout
 
     // interface.
 
-    public void scrollToPageTop() {
+    public void pagerScrollToTop() {
         scrollPresenter.scrollToTop();
     }
 
@@ -169,12 +171,13 @@ public class SearchPhotosView extends FrameLayout
     private void initModel() {
         this.searchModel = new SearchObject(getContext());
         this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+        this.scrollModel = new ScrollObject();
     }
 
     // interface.
 
     public void setActivity(Activity a) {
-        searchModel.setActivity(a);
+        searchPresenter.setActivityForAdapter(a);
     }
 
     public void cancelRequest() {
@@ -185,6 +188,10 @@ public class SearchPhotosView extends FrameLayout
         searchPresenter.setQuery(query);
         searchPresenter.setOrientation(orientation);
         searchPresenter.initRefresh(getContext());
+    }
+
+    public boolean needPagerBackToTop() {
+        return scrollPresenter.needBackToTop();
     }
 
     /** <br> interface. */
@@ -277,28 +284,12 @@ public class SearchPhotosView extends FrameLayout
 
     @Override
     public void animShow(View v) {
-        if (v.getVisibility() == GONE) {
-            v.setVisibility(VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
+        AnimUtils.animShow(v);
     }
 
     @Override
     public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(GONE);
-            }
-        });
-        anim.start();
+        AnimUtils.animHide(v);
     }
 
     @Override
@@ -338,7 +329,21 @@ public class SearchPhotosView extends FrameLayout
         int totalItemCount = recyclerView.getAdapter().getItemCount();
         if (searchPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-            searchPresenter.loadMore(getContext(), true);
+            searchPresenter.loadMore(getContext(), false);
         }
+        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
+            scrollPresenter.setToTop(true);
+        } else {
+            scrollPresenter.setToTop(false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && searchPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+    }
+
+    @Override
+    public boolean needBackToTop() {
+        return !scrollPresenter.isToTop()
+                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
     }
 }

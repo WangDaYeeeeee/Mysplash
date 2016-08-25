@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
+import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -16,7 +17,11 @@ public interface SearchPresenter {
     void initRefresh(Context c);
 
     boolean canLoadMore();
+    boolean isRefreshing();
+    boolean isLoading();
 
     void setQuery(String key);
     void setOrientation(String key);
+    void setActivityForAdapter(Activity a);
+    int getAdapterItemCount();
 }

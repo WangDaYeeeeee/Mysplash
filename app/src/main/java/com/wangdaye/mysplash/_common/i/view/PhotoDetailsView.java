@@ -12,5 +12,4 @@ public interface PhotoDetailsView {
 
     void initRefreshStart();
     void requestDetailsSuccess();
-    void requestDetailsFailed();
 }

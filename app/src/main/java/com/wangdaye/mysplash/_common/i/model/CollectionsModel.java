@@ -12,11 +12,17 @@ public interface CollectionsModel {
     CollectionAdapter getAdapter();
     CollectionService getService();
 
+    Object getRequestKey();
+    void setRequestKey(Object key);
+
     String getCollectionsType();
     void setCollectionsType(String type);
 
     int getCollectionsPage();
     void setCollectionsPage(int page);
+
+    boolean isRefreshing();
+    void setRefreshing(boolean refreshing);
 
     boolean isLoading();
     void setLoading(boolean loading);

@@ -42,7 +42,7 @@ public class PhotosObject
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(a);
 
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>());
-        this.service = PhotoService.getService().buildClient();
+        this.service = PhotoService.getService();
 
         this.photosType = photosType;
         this.photosOrder = sharedPreferences.getString(
@@ -67,6 +67,16 @@ public class PhotosObject
     @Override
     public PhotoService getService() {
         return service;
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return null;
+    }
+
+    @Override
+    public void setRequestKey(Object key) {
+        // do nothing.
     }
 
     @Override
@@ -107,6 +117,16 @@ public class PhotosObject
     @Override
     public void setPageList(List<Integer> list) {
         pageList = list;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return false;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+
     }
 
     @Override

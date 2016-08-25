@@ -11,6 +11,8 @@ import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
+import java.util.List;
+
 /**
  * Fragment manage implementor.
  * */
@@ -26,6 +28,11 @@ public class FragmentManageImplementor
     public FragmentManageImplementor(FragmentManageModel model, FragmentManageView view) {
         this.model = model;
         this.view = view;
+    }
+
+    @Override
+    public List<Fragment> getFragmentList() {
+        return model.getFragmentList();
     }
 
     /** <br> presenter. */
@@ -47,14 +54,15 @@ public class FragmentManageImplementor
 
     @Override
     public void changeFragment(int code) {
-        if (model.getFragmentCount() > 1 || model.getFragmentCode() != code) {
-            while (model.getFragmentCount() > 0) {
+        if (model.getFragmentCount() > 1) {
+            while (model.getFragmentCount() > 1) {
                 popFragment();
             }
-            Fragment f = buildFragmentByCode(code);
-            model.addFragmentToList(f);
-            view.changeFragment(f);
         }
+        Fragment f = buildFragmentByCode(code);
+        model.getFragmentList().clear();
+        model.addFragmentToList(f);
+        view.changeFragment(f);
     }
 
     /** <br> utils. */

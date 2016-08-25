@@ -26,6 +26,7 @@ public class SearchObject
 
     private int photosPage;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -33,13 +34,14 @@ public class SearchObject
 
     public SearchObject(Context c) {
         this.adapter = new PhotoAdapter(c, new ArrayList<Photo>());
-        this.service = PhotoService.getService().buildClient();
+        this.service = PhotoService.getService();
 
         this.searchQuery = "";
         this.searchOrientation = PhotoApi.LANDSCAPE_ORIENTATION;
 
         this.photosPage = 0;
 
+        this.refreshing = false;
         this.loading = false;
         this.over = false;
     }
@@ -87,6 +89,16 @@ public class SearchObject
     @Override
     public void setPhotosPage(int page) {
         photosPage = page;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

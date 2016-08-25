@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -37,8 +38,12 @@ public class CollectionsImplementor
 
     @Override
     public void requestCollections(Context c, int page, boolean refresh) {
-        if (!model.isLoading()) {
-            model.setLoading(true);
+        if (!model.isRefreshing() && !model.isLoading()) {
+            if (refresh) {
+                model.setRefreshing(true);
+            } else {
+                model.setLoading(true);
+            }
             final String[] types = c
                     .getResources()
                     .getStringArray(R.array.collection_type_values);
@@ -76,24 +81,50 @@ public class CollectionsImplementor
     @Override
     public void initRefresh(Context c) {
         model.getService().cancel();
+        model.setRefreshing(false);
         model.setLoading(false);
         refreshNew(c, false);
         view.initRefreshStart();
     }
 
     @Override
-    public boolean waitingRefresh() {
-        return !model.isLoading() && model.getAdapter().getRealItemCount() <= 0;
+    public boolean canLoadMore() {
+        return !model.isRefreshing() && !model.isLoading() && !model.isOver();
     }
 
     @Override
-    public boolean canLoadMore() {
-        return !model.isLoading() && !model.isOver();
+    public boolean isRefreshing() {
+        return model.isRefreshing();
+    }
+
+    @Override
+    public boolean isLoading() {
+        return model.isLoading();
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return null;
+    }
+
+    @Override
+    public void setRequestKey(Object k) {
+        // do nothing.
     }
 
     @Override
     public void setType(String key) {
         model.setCollectionsType(key);
+    }
+
+    @Override
+    public void setActivityForAdapter(Activity a) {
+        model.getAdapter().setActivity(a);
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return model.getAdapter().getRealItemCount();
     }
 
     /** <br> utils. */
@@ -141,6 +172,7 @@ public class CollectionsImplementor
 
         @Override
         public void onRequestCollectionsSuccess(Call<List<Collection>> call, Response<List<Collection>> response) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
@@ -175,6 +207,7 @@ public class CollectionsImplementor
 
         @Override
         public void onRequestCollectionsFailed(Call<List<Collection>> call, Throwable t) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 view.setRefreshing(false);

@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.Toast;
 
@@ -20,7 +21,8 @@ import retrofit2.Response;
  * Search implementor.
  * */
 
-public class SearchImplementor implements SearchPresenter {
+public class SearchImplementor
+        implements SearchPresenter {
     // model & view.
     private SearchModel model;
     private SearchView view;
@@ -36,8 +38,12 @@ public class SearchImplementor implements SearchPresenter {
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
-        if (!model.isLoading()) {
-            model.setLoading(true);
+        if (!model.isRefreshing() && !model.isLoading()) {
+            if (refresh) {
+                model.setRefreshing(true);
+            } else {
+                model.setLoading(true);
+            }
             page = refresh ? 1 : page + 1;
             model.getService()
                     .searchPhotos(
@@ -74,6 +80,7 @@ public class SearchImplementor implements SearchPresenter {
     @Override
     public void initRefresh(Context c) {
         model.getService().cancel();
+        model.setRefreshing(false);
         model.setLoading(false);
         refreshNew(c, false);
         view.setBackgroundOpacity();
@@ -82,7 +89,17 @@ public class SearchImplementor implements SearchPresenter {
 
     @Override
     public boolean canLoadMore() {
-        return !model.isLoading() && !model.isOver();
+        return !model.isRefreshing() && !model.isLoading() && !model.isOver();
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return model.isRefreshing();
+    }
+
+    @Override
+    public boolean isLoading() {
+        return model.isLoading();
     }
 
     @Override
@@ -93,6 +110,16 @@ public class SearchImplementor implements SearchPresenter {
     @Override
     public void setOrientation(String key) {
         model.setSearchOrientation(key);
+    }
+
+    @Override
+    public void setActivityForAdapter(Activity a) {
+        model.getAdapter().setActivity(a);
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return model.getAdapter().getRealItemCount();
     }
 
     /** >br> interface. */
@@ -111,6 +138,7 @@ public class SearchImplementor implements SearchPresenter {
 
         @Override
         public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
@@ -145,6 +173,7 @@ public class SearchImplementor implements SearchPresenter {
 
         @Override
         public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 view.setRefreshing(false);

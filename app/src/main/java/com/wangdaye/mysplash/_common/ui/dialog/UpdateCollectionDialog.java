@@ -1,8 +1,5 @@
 package com.wangdaye.mysplash._common.ui.dialog;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -21,11 +18,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -67,6 +66,7 @@ public class UpdateCollectionDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Mysplash.getInstance().setActivityInBackstage(true);
         Context contextThemeWrapper;
         if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
             contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MysplashTheme_light_Common);
@@ -86,6 +86,7 @@ public class UpdateCollectionDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Mysplash.getInstance().setActivityInBackstage(false);
         service.cancel();
     }
 
@@ -134,35 +135,35 @@ public class UpdateCollectionDialog extends DialogFragment
             case INPUT_STATE:
                 setCancelable(true);
                 if (state == CONFIRM_STATE) {
-                    animShow(baseBtnContainer);
-                    animHide(confirmBtnContainer);
+                    AnimUtils.animShow(baseBtnContainer);
+                    AnimUtils.animHide(confirmBtnContainer);
                 }
                 break;
 
             case UPDATE_STATE:
                 setCancelable(false);
                 if (state == INPUT_STATE) {
-                    animShow(progressView);
-                    animHide(contentView);
+                    AnimUtils.animShow(progressView);
+                    AnimUtils.animHide(contentView);
                 }
                 break;
 
             case CONFIRM_STATE:
                 setCancelable(true);
                 if (state == INPUT_STATE) {
-                    animShow(confirmBtnContainer);
-                    animHide(baseBtnContainer);
+                    AnimUtils.animShow(confirmBtnContainer);
+                    AnimUtils.animHide(baseBtnContainer);
                 } else if (state == DELETE_STATE) {
-                    animShow(contentView);
-                    animHide(progressView);
+                    AnimUtils.animShow(contentView);
+                    AnimUtils.animHide(progressView);
                 }
                 break;
 
             case DELETE_STATE:
                 setCancelable(false);
                 if (state == CONFIRM_STATE) {
-                    animShow(progressView);
-                    animHide(contentView);
+                    AnimUtils.animShow(progressView);
+                    AnimUtils.animHide(contentView);
                 }
                 break;
         }
@@ -178,7 +179,7 @@ public class UpdateCollectionDialog extends DialogFragment
     /** <br> data. */
 
     private void initData() {
-        this.service = CollectionService.getService().buildClient();
+        this.service = CollectionService.getService();
         this.state = INPUT_STATE;
     }
 
@@ -210,32 +211,6 @@ public class UpdateCollectionDialog extends DialogFragment
 
     private void deleteCollection() {
         service.deleteCollection(collection.id, this);
-    }
-
-    /** <br> animator. */
-
-    public void animShow(View v) {
-        if (v.getVisibility() == View.GONE) {
-            v.setVisibility(View.VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
-    }
-
-    public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(View.GONE);
-            }
-        });
-        anim.start();
     }
 
     /** <br> interface. */

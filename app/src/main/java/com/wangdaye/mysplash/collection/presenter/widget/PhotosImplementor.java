@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.collection.presenter.widget;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -10,7 +11,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
-import com.wangdaye.mysplash.collection.model.PhotosObject;
+import com.wangdaye.mysplash.collection.model.widget.PhotosObject;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 
 import java.util.List;
@@ -28,34 +29,30 @@ public class PhotosImplementor
     private PhotosModel model;
     private PhotosView view;
 
-    // data
-    private Collection requestKey;
-
     /** <br> life cycle. */
 
-    public PhotosImplementor(Collection c, PhotosModel model, PhotosView view) {
+    public PhotosImplementor(PhotosModel model, PhotosView view) {
         this.model = model;
         this.view = view;
-        this.requestKey = c;
-    }
-
-    public Collection getRequestKey() {
-        return requestKey;
     }
 
     /** <br> presenter. */
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
-        if (!model.isLoading()) {
-            model.setLoading(true);
+        if (!model.isLoading() && !model.isRefreshing()) {
+            if (refresh) {
+                model.setRefreshing(true);
+            } else {
+                model.setLoading(true);
+            }
             switch (model.getPhotosType()) {
                 case PhotosObject.PHOTOS_TYPE_NORMAL:
-                    requestCollectionPhotos(c, requestKey, page, refresh);
+                    requestCollectionPhotos(c, (Collection) model.getRequestKey(), page, refresh);
                     break;
 
                 case PhotosObject.PHOTOS_TYPE_CURATED:
-                    requestCuratedCollectionPhotos(c, requestKey, page, refresh);
+                    requestCuratedCollectionPhotos(c, (Collection) model.getRequestKey(), page, refresh);
                     break;
             }
         }
@@ -85,24 +82,50 @@ public class PhotosImplementor
     @Override
     public void initRefresh(Context c) {
         model.getService().cancel();
+        model.setRefreshing(false);
         model.setLoading(false);
         refreshNew(c, false);
         view.initRefreshStart();
     }
 
     @Override
-    public boolean waitingRefresh() {
-        return !model.isLoading() && model.getAdapter().getRealItemCount() <= 0;
+    public boolean canLoadMore() {
+        return !model.isRefreshing() && !model.isLoading() && !model.isOver();
     }
 
     @Override
-    public boolean canLoadMore() {
-        return !model.isLoading() && !model.isOver();
+    public boolean isRefreshing() {
+        return model.isRefreshing();
+    }
+
+    @Override
+    public boolean isLoading() {
+        return model.isLoading();
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return model.getRequestKey();
+    }
+
+    @Override
+    public void setRequestKey(Object k) {
+        model.setRequestKey(k);
     }
 
     @Override
     public void setOrder(String key) {
         model.setPhotosOrder(key);
+    }
+
+    @Override
+    public void setActivityForAdapter(Activity a) {
+        model.getAdapter().setActivity(a);
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return model.getAdapter().getRealItemCount();
     }
 
     /** <br> utils. */
@@ -143,6 +166,7 @@ public class PhotosImplementor
 
         @Override
         public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
@@ -177,6 +201,7 @@ public class PhotosImplementor
 
         @Override
         public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 view.setRefreshing(false);

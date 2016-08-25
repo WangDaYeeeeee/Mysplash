@@ -18,7 +18,7 @@ public class UserObject
     /** <br> life cycle. */
 
     public UserObject() {
-        service = UserService.getService().buildClient();
+        service = UserService.getService();
         user = Mysplash.getInstance().getUser();
     }
 

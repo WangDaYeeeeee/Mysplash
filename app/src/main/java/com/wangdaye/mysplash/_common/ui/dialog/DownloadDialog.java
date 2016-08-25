@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 /**
@@ -29,6 +30,7 @@ public class DownloadDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Mysplash.getInstance().setActivityInBackstage(true);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_download, null, false);
         initWidget(view);
         return new AlertDialog.Builder(getActivity())
@@ -39,6 +41,7 @@ public class DownloadDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Mysplash.getInstance().setActivityInBackstage(false);
         if (cancel && listener != null) {
             listener.onCancel();
         } else if (listener != null) {

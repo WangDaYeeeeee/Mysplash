@@ -15,14 +15,6 @@
         app:cpv_color="?attr/line_color"
         app:cpv_indeterminate="true" />
 
-    <Button
-        android:id="@+id/container_user_profile_retryButton"
-        android:text="@string/feedback_click_retry"
-        android:textStyle="bold"
-        android:textColor="?attr/content_color"
-        android:layout_centerInParent="true"
-        style="@style/material_button" />
-
     <RelativeLayout
         android:id="@+id/container_user_profile_profileContainer"
         android:layout_width="match_parent"

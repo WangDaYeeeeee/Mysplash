@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -24,17 +25,13 @@ import retrofit2.Response;
 
 public class PhotosImplementor
         implements PhotosPresenter {
-    // data
-    private User requestKey;
-
     // model & view.
     private PhotosModel model;
     private PhotosView view;
 
     /** <br> life cycle. */
 
-    public PhotosImplementor(User u, PhotosModel model, PhotosView view) {
-        this.requestKey = u;
+    public PhotosImplementor(PhotosModel model, PhotosView view) {
         this.model = model;
         this.view = view;
     }
@@ -43,8 +40,12 @@ public class PhotosImplementor
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
-        if (!model.isLoading()) {
-            model.setLoading(true);
+        if (!model.isRefreshing() && !model.isLoading()) {
+            if (refresh) {
+                model.setRefreshing(true);
+            } else {
+                model.setLoading(true);
+            }
             switch (model.getPhotosType()) {
                 case PhotosObject.PHOTOS_TYPE_PHOTOS:
                     requestUserPhotos(c, page, refresh, model.getPhotosOrder());
@@ -82,24 +83,50 @@ public class PhotosImplementor
     @Override
     public void initRefresh(Context c) {
         model.getService().cancel();
+        model.setRefreshing(false);
         model.setLoading(false);
         refreshNew(c, false);
         view.initRefreshStart();
     }
 
     @Override
-    public boolean waitingRefresh() {
-        return !model.isLoading() && model.getAdapter().getRealItemCount() <= 0;
+    public boolean canLoadMore() {
+        return !model.isRefreshing() && !model.isLoading() && !model.isOver();
     }
 
     @Override
-    public boolean canLoadMore() {
-        return !model.isLoading() && !model.isOver();
+    public boolean isRefreshing() {
+        return model.isRefreshing();
+    }
+
+    @Override
+    public boolean isLoading() {
+        return model.isLoading();
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return model.getRequestKey();
+    }
+
+    @Override
+    public void setRequestKey(Object k) {
+        model.setRequestKey(k);
     }
 
     @Override
     public void setOrder(String key) {
         model.setPhotosOrder(key);
+    }
+
+    @Override
+    public void setActivityForAdapter(Activity a) {
+        model.getAdapter().setActivity(a);
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return model.getAdapter().getRealItemCount();
     }
 
     /** <br> utils. */
@@ -108,7 +135,7 @@ public class PhotosImplementor
         page = refresh ? 1 : page + 1;
         model.getService()
                 .requestUserPhotos(
-                        requestKey,
+                        (User) model.getRequestKey(),
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         order,
@@ -119,7 +146,7 @@ public class PhotosImplementor
         page = refresh ? 1 : page + 1;
         model.getService()
                 .requestUserLikes(
-                        requestKey,
+                        (User) model.getRequestKey(),
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         order,
@@ -142,6 +169,7 @@ public class PhotosImplementor
 
         @Override
         public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
@@ -175,6 +203,7 @@ public class PhotosImplementor
 
         @Override
         public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 view.setRefreshing(false);

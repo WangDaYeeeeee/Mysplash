@@ -1,11 +1,9 @@
 package com.wangdaye.mysplash.main.view.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,11 +19,13 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
+import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
@@ -33,6 +33,7 @@ import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.PhotosObject;
+import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PhotosImplementor;
@@ -49,6 +50,7 @@ public class HomePhotosView extends FrameLayout
     // model.
     private PhotosModel photosModel;
     private LoadModel loadModel;
+    private ScrollModel scrollModel;
 
     // view.
     private CircularProgressView progressView;
@@ -90,7 +92,7 @@ public class HomePhotosView extends FrameLayout
         this.photosPresenter = new PhotosImplementor(photosModel, this);
         this.pagerPresenter = new PagerImplementor(this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
-        this.scrollPresenter = new ScrollImplementor(this);
+        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
 
     /** <br> view. */
@@ -141,6 +143,7 @@ public class HomePhotosView extends FrameLayout
     private void initModel(Activity a, int photosType) {
         this.photosModel = new PhotosObject(a, photosType);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject();
     }
 
     /** <br> interface. */
@@ -229,7 +232,13 @@ public class HomePhotosView extends FrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return photosPresenter.waitingRefresh();
+        return photosPresenter.getAdapterItemCount() <= 0
+                && !photosPresenter.isRefreshing() && !photosPresenter.isLoading();
+    }
+
+    @Override
+    public boolean checkNeedBackToTop() {
+        return scrollPresenter.needBackToTop();
     }
 
     @Override
@@ -264,7 +273,7 @@ public class HomePhotosView extends FrameLayout
 
     @Override
     public int getItemCount() {
-        if (!loadPresenter.isNormalState()) {
+        if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
             return photosModel.getAdapter().getRealItemCount();
@@ -275,28 +284,12 @@ public class HomePhotosView extends FrameLayout
 
     @Override
     public void animShow(View v) {
-        if (v.getVisibility() == GONE) {
-            v.setVisibility(VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
+        AnimUtils.animShow(v);
     }
 
     @Override
     public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(GONE);
-            }
-        });
-        anim.start();
+        AnimUtils.animHide(v);
     }
 
     @Override
@@ -336,7 +329,21 @@ public class HomePhotosView extends FrameLayout
         int totalItemCount = recyclerView.getAdapter().getItemCount();
         if (photosPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-            photosPresenter.loadMore(getContext(), true);
+            photosPresenter.loadMore(getContext(), false);
         }
+        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
+            scrollPresenter.setToTop(true);
+        } else {
+            scrollPresenter.setToTop(false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && photosPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+    }
+
+    @Override
+    public boolean needBackToTop() {
+        return !scrollPresenter.isToTop()
+                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
     }
 }

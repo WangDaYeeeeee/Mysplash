@@ -32,6 +32,7 @@ public class CategoryObject
     private int photosPage;
     private List<Integer> pageList;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -43,7 +44,7 @@ public class CategoryObject
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
 
         this.adapter = new PhotoAdapter(c, new ArrayList<Photo>());
-        this.service = PhotoService.getService().buildClient();
+        this.service = PhotoService.getService();
 
         String defaultOrder = sharedPreferences.getString(
                 c.getString(R.string.key_default_photo_order),
@@ -55,6 +56,7 @@ public class CategoryObject
         this.photosPage = 0;
         this.pageList = new ArrayList<>();
 
+        this.refreshing = false;
         this.loading = false;
         this.over = false;
     }
@@ -67,11 +69,6 @@ public class CategoryObject
     @Override
     public PhotoService getService() {
         return service;
-    }
-
-    @Override
-    public void setActivity(Activity a) {
-        adapter.setActivity(a);
     }
 
     @Override
@@ -117,6 +114,16 @@ public class CategoryObject
     @Override
     public void setPageList(List<Integer> list) {
         pageList = list;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

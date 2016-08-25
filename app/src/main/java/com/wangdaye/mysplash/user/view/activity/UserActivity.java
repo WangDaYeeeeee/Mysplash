@@ -22,13 +22,16 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
@@ -38,6 +41,7 @@ import com.wangdaye.mysplash.user.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.user.model.widget.PhotosObject;
 import com.wangdaye.mysplash.user.presenter.activity.PagerManageImplementor;
 import com.wangdaye.mysplash.user.presenter.activity.PopupManageImplementor;
+import com.wangdaye.mysplash.user.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.user.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.user.view.widget.UserCollectionsView;
 import com.wangdaye.mysplash.user.view.widget.UserPhotosView;
@@ -51,7 +55,7 @@ import java.util.List;
  * */
 
 public class UserActivity extends MysplashActivity
-        implements ToolbarView, PagerManageView, PopupManageView,
+        implements ToolbarView, PagerManageView, PopupManageView, SwipeBackManageView,
         Toolbar.OnMenuItemClickListener, View.OnClickListener,
         ViewPager.OnPageChangeListener, SwipeBackLayout.OnSwipeListener {
     // model.
@@ -70,6 +74,7 @@ public class UserActivity extends MysplashActivity
     private ToolbarPresenter toolbarPresenter;
     private PagerManagePresenter pagerManagePresenter;
     private PopupManagePresenter popupManagePresenter;
+    private SwipeBackManagePresenter swipeBackManagePresenter;
 
     /** <br> life cycle. */
 
@@ -87,7 +92,7 @@ public class UserActivity extends MysplashActivity
             initModel();
             initView();
             initPresenter();
-            animShowView((View) pagers[0], 400);
+            AnimUtils.animInitShow((View) pagers[0], 400);
             pagers[0].refreshPager();
         }
     }
@@ -110,12 +115,24 @@ public class UserActivity extends MysplashActivity
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (Mysplash.getInstance().isActivityInBackstage()) {
+            super.onBackPressed();
+        } else if (pagerManagePresenter.needPagerBackToTop()) {
+            pagerManagePresenter.pagerScrollToTop();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     /** <br> presenter. */
 
     private void initPresenter() {
         this.toolbarPresenter = new ToolbarImplementor(this);
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
         this.popupManagePresenter = new PopupManageImplementor(this);
+        this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
     }
 
     /** <br> view. */
@@ -238,25 +255,12 @@ public class UserActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        if (pagerManagePresenter.getPagerItemCount() <= 0) {
-            return true;
-        }
-        if (dir == SwipeBackLayout.UP_DIR) {
-            return pagerManagePresenter.canPagerSwipeBack(dir)
-                    && appBar.getY() <= -appBar.getMeasuredHeight() + utils.dpToPx(48);
-        } else {
-            return pagerManagePresenter.canPagerSwipeBack(dir)
-                    && appBar.getY() >= 0;
-        }
+        return swipeBackManagePresenter.checkCanSwipeBack(dir);
     }
 
     @Override
     public void onSwipeFinish() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
-        } else {
-            finish();
-        }
+        swipeBackManagePresenter.swipeBackFinish();
     }
 
     // view.
@@ -298,7 +302,7 @@ public class UserActivity extends MysplashActivity
                 popupManagePresenter.showPopup(
                         this,
                         toolbar,
-                        pagerManagePresenter.getPageKey(page),
+                        pagerManagePresenter.getPagerKey(page),
                         page);
                 break;
         }
@@ -327,5 +331,28 @@ public class UserActivity extends MysplashActivity
     public void responsePopup(String value, int position) {
         pagers[position].setKey(value);
         pagers[position].refreshPager();
+    }
+
+    @Override
+    public boolean checkCanSwipeBack(int dir) {
+        if (pagerManagePresenter.getPagerItemCount() <= 0) {
+            return true;
+        }
+        if (dir == SwipeBackLayout.UP_DIR) {
+            return pagerManagePresenter.canPagerSwipeBack(dir)
+                    && appBar.getY() <= -appBar.getMeasuredHeight() + utils.dpToPx(48);
+        } else {
+            return pagerManagePresenter.canPagerSwipeBack(dir)
+                    && appBar.getY() >= 0;
+        }
+    }
+
+    @Override
+    public void swipeBackFinish() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        } else {
+            finish();
+        }
     }
 }

@@ -1,9 +1,6 @@
 package com.wangdaye.mysplash.photo.view.activity;
 
 import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -18,7 +15,6 @@ import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -33,6 +29,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
+import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotoInfoPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
@@ -42,7 +39,8 @@ import com.wangdaye.mysplash._common.i.view.PhotoInfoView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
@@ -56,6 +54,7 @@ import com.wangdaye.mysplash.photo.presenter.activity.PhotoActivityPopupManageIm
 import com.wangdaye.mysplash.photo.presenter.activity.PhotoInfoImplementor;
 import com.wangdaye.mysplash.photo.presenter.activity.ScrollImplementor;
 import com.wangdaye.mysplash.photo.view.widget.PhotoDetailsView;
+import com.wangdaye.mysplash.user.model.widget.ScrollObject;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
@@ -68,6 +67,7 @@ public class PhotoActivity extends AppCompatActivity
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
+    private ScrollModel scrollModel;
 
     // view.
     private DownloadDialog dialog;
@@ -105,9 +105,9 @@ public class PhotoActivity extends AppCompatActivity
             initModel();
             initView();
             initPresenter();
-            animShowView(titleBar, 200);
-            animShowView(buttonBar, 300);
-            animShowView(detailsView, 400);
+            AnimUtils.animInitShow(titleBar, 200);
+            AnimUtils.animInitShow(buttonBar, 300);
+            AnimUtils.animInitShow(detailsView, 400);
         }
     }
 
@@ -131,7 +131,7 @@ public class PhotoActivity extends AppCompatActivity
     private void initPresenter() {
         this.photoInfoPresenter = new PhotoInfoImplementor(photoInfoModel, this);
         this.downloadPresenter = new DownloadImplementor(downloadModel, this);
-        this.scrollPresenter = new ScrollImplementor(this);
+        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.popupManagePresenter = new PhotoActivityPopupManageImplementor(this);
     }
 
@@ -227,12 +227,13 @@ public class PhotoActivity extends AppCompatActivity
     private void initModel() {
         this.photoInfoModel = new PhotoInfoObject();
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
+        this.scrollModel = new ScrollObject();
     }
 
     // interface.
 
     public int getDownloadId() {
-        return downloadModel.getDownloadId();
+        return downloadPresenter.getDownloadId();
     }
 
     /** <br> permission. */
@@ -289,27 +290,6 @@ public class PhotoActivity extends AppCompatActivity
                 downloadPresenter.setWallpaper();
                 break;
         }
-    }
-
-    /** <br> animation. */
-
-    private void animShowView(final View v, int delay) {
-        v.setVisibility(View.INVISIBLE);
-        DisplayUtils utils = new DisplayUtils(this);
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "translationY", utils.dpToPx(72), 0)
-                .setDuration(300);
-
-        anim.setInterpolator(new DecelerateInterpolator());
-        anim.setStartDelay(delay);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                v.setVisibility(View.VISIBLE);
-            }
-        });
-        anim.start();
     }
 
     /** <br> interface. */
@@ -416,20 +396,20 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     public void touchMenuItem(int itemId) {
         switch (itemId) {
-            case R.id.action_stats:
+            case PhotoMenuPopupWindow.ITEM_STATS:
                 StatsDialog dialog = new StatsDialog();
                 dialog.setPhoto(photoInfoPresenter.getPhoto());
                 dialog.show(getFragmentManager(), null);
                 break;
 
-            case R.id.action_open_photo_link:
+            case PhotoMenuPopupWindow.ITEM_BROWSER:
                 Intent p = new Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse(photoInfoPresenter.getPhoto().links.html));
                 startActivity(p);
                 break;
 
-            case R.id.action_open_download_link:
+            case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
                 Intent d = new Intent(
                         Intent.ACTION_VIEW,
                         Uri.parse(photoInfoPresenter.getPhoto().links.download));
@@ -473,6 +453,11 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     public void autoLoad(int dy) {
         // do nothing.
+    }
+
+    @Override
+    public boolean needBackToTop() {
+        return false;
     }
 
     // popup manage view.

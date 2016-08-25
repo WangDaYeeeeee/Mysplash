@@ -26,6 +26,7 @@ public class CollectionsObject
 
     private int collectionsPage;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -35,7 +36,7 @@ public class CollectionsObject
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(a);
 
         this.adapter = new CollectionAdapter(a, new ArrayList<Collection>());
-        this.service = CollectionService.getService().buildClient();
+        this.service = CollectionService.getService();
 
         this.collectionsType = sharedPreferences.getString(
                 a.getString(R.string.key_default_collection_type),
@@ -43,6 +44,7 @@ public class CollectionsObject
 
         this.collectionsPage = 0;
 
+        this.refreshing = false;
         this.loading = false;
         this.over = false;
     }
@@ -57,6 +59,16 @@ public class CollectionsObject
     @Override
     public CollectionService getService() {
         return service;
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return null;
+    }
+
+    @Override
+    public void setRequestKey(Object key) {
+        // do nothing.
     }
 
     @Override
@@ -77,6 +89,16 @@ public class CollectionsObject
     @Override
     public void setCollectionsPage(int page) {
         collectionsPage = page;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

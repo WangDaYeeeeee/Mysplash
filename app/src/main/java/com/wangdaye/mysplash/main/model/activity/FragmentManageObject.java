@@ -15,32 +15,14 @@ public class FragmentManageObject
         implements FragmentManageModel {
     // data
     private List<Fragment> fragmentList;
-    private int fragmentCode;
-
-    public static final int NULL_CODE = 0;
 
     /** <br> life cycle. */
 
-    public FragmentManageObject(int code) {
+    public FragmentManageObject() {
         this.fragmentList = new ArrayList<>();
-        this.fragmentCode = code;
     }
 
     /** <br> model. */
-
-    // code.
-
-    @Override
-    public int getFragmentCode() {
-        return fragmentCode;
-    }
-
-    @Override
-    public void setFragmentCode(int code) {
-        fragmentCode = code;
-    }
-
-    // fragment list.
 
     @Override
     public List<Fragment> getFragmentList() {

@@ -8,6 +8,7 @@ public interface PagerView {
 
     void checkToRefresh();
     boolean checkNeedRefresh();
+    boolean checkNeedBackToTop();
     void refreshPager();
 
     void scrollToPageTop();

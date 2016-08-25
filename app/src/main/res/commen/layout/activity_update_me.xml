@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_marginTop="24dp">
+
+    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+        android:id="@+id/activity_update_me_statusBar"
+        android:background="?attr/colorPrimaryDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageButton
+            android:id="@+id/activity_update_me_closeBtn"
+            android:src="@drawable/ic_close_light"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:text="@string/action_edit"
+            android:textStyle="bold"
+            android:textSize="@dimen/large_title_text_size"
+            android:textColor="?attr/content_color"
+            android:layout_toRightOf="@id/activity_update_me_closeBtn"
+            android:layout_margin="@dimen/normal_margin"
+            android:layout_centerInParent="true"
+            style="@style/title_text"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/activity_update_me_scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/root_color">
+
+        <include layout="@layout/container_update_me" />
+
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>

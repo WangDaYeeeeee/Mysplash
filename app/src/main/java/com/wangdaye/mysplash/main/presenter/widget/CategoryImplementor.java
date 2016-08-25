@@ -1,5 +1,8 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
+import android.app.Activity;
+import android.content.Context;
+
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
@@ -36,16 +39,20 @@ public class CategoryImplementor
     /** <br> presenter. */
 
     @Override
-    public void requestPhotos(int page, boolean refresh) {
-        if (!model.isLoading()) {
-            model.setLoading(true);
+    public void requestPhotos(Context c, int page, boolean refresh) {
+        if (!model.isRefreshing() && !model.isLoading()) {
+            if (refresh) {
+                model.setRefreshing(true);
+            } else {
+                model.setLoading(true);
+            }
             switch (model.getPhotosOrder()) {
                 case PhotoApi.ORDER_BY_LATEST:
-                    requestPhotosInCategoryOrders(page, refresh);
+                    requestPhotosInCategoryOrders(c, page, refresh);
                     break;
 
                 default:
-                    requestPhotosInCategoryRandom(page, refresh);
+                    requestPhotosInCategoryRandom(c, page, refresh);
                     break;
             }
         }
@@ -58,32 +65,43 @@ public class CategoryImplementor
     }
 
     @Override
-    public void refreshNew(boolean notify) {
+    public void refreshNew(Context c, boolean notify) {
         if (notify) {
             view.setRefreshing(true);
         }
-        requestPhotos(model.getPhotosPage(), true);
+        requestPhotos(c, model.getPhotosPage(), true);
     }
 
     @Override
-    public void loadMore(boolean notify) {
+    public void loadMore(Context c, boolean notify) {
         if (notify) {
             view.setLoading(true);
         }
-        requestPhotos(model.getPhotosPage(), false);
+        requestPhotos(c, model.getPhotosPage(), false);
     }
 
     @Override
-    public void initRefresh() {
+    public void initRefresh(Context c) {
         model.getService().cancel();
+        model.setRefreshing(false);
         model.setLoading(false);
-        refreshNew(false);
+        refreshNew(c, false);
         view.initRefreshStart();
     }
 
     @Override
     public boolean canLoadMore() {
-        return !model.isLoading() && !model.isOver();
+        return !model.isRefreshing() && !model.isLoading() && !model.isOver();
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return model.isRefreshing();
+    }
+
+    @Override
+    public boolean isLoading() {
+        return model.isLoading();
     }
 
     @Override
@@ -96,19 +114,34 @@ public class CategoryImplementor
         model.setPhotosOrder(key);
     }
 
+    @Override
+    public String getOrder() {
+        return model.getPhotosOrder();
+    }
+
+    @Override
+    public void setActivityForAdapter(Activity a) {
+        model.getAdapter().setActivity(a);
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return model.getAdapter().getRealItemCount();
+    }
+
     /** <br> utils. */
 
-    private void requestPhotosInCategoryOrders(int page, boolean refresh) {
+    private void requestPhotosInCategoryOrders(Context c, int page, boolean refresh) {
         page = refresh ? 1: page + 1;
         model.getService()
                 .requestPhotosInAGivenCategory(
                         model.getPhotosCategory(),
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
-                        new OnRequestPhotosListener(page, model.getPhotosCategory(), refresh, false));
+                        new OnRequestPhotosListener(c, page, model.getPhotosCategory(), refresh, false));
     }
 
-    private void requestPhotosInCategoryRandom(int page, boolean refresh) {
+    private void requestPhotosInCategoryRandom(Context c, int page, boolean refresh) {
         if (refresh) {
             page = 0;
             model.setPageList(ValueUtils.getPageListByCategory(Mysplash.CATEGORY_TOTAL_NEW));
@@ -118,19 +151,21 @@ public class CategoryImplementor
                         model.getPhotosCategory(),
                         model.getPageList().get(page),
                         Mysplash.DEFAULT_PER_PAGE,
-                        new OnRequestPhotosListener(page, model.getPhotosCategory(), refresh, true));
+                        new OnRequestPhotosListener(c, page, model.getPhotosCategory(), refresh, true));
     }
 
     /** <br> interface. */
 
     private class OnRequestPhotosListener implements PhotoService.OnRequestPhotosListener {
         // data
+        private Context c;
         private int page;
         private int category;
         private boolean refresh;
         private boolean random;
 
-        public OnRequestPhotosListener(int page, int category, boolean refresh, boolean random) {
+        public OnRequestPhotosListener(Context c, int page, int category, boolean refresh, boolean random) {
+            this.c = c;
             this.page = page;
             this.category = category;
             this.refresh = refresh;
@@ -139,6 +174,7 @@ public class CategoryImplementor
 
         @Override
         public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
@@ -150,7 +186,7 @@ public class CategoryImplementor
             }
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
-                ValueUtils.writePhotoCount(Mysplash.getInstance(), response, category);
+                ValueUtils.writePhotoCount(c, response, category);
                 if (random) {
                     model.setPhotosPage(page + 1);
                 } else {
@@ -164,20 +200,21 @@ public class CategoryImplementor
                     view.setPermitLoading(false);
                     if (response.body().size() == 0) {
                         MaterialToast.makeText(
-                                Mysplash.getInstance(),
-                                Mysplash.getInstance().getString(R.string.feedback_is_over),
+                                c,
+                                c.getString(R.string.feedback_is_over),
                                 null,
                                 MaterialToast.LENGTH_SHORT).show();
                     }
                 }
                 view.requestPhotosSuccess();
             } else {
-                view.requestPhotosFailed(Mysplash.getInstance().getString(R.string.feedback_load_nothing_tv));
+                view.requestPhotosFailed(c.getString(R.string.feedback_load_nothing_tv));
             }
         }
 
         @Override
         public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 view.setRefreshing(false);
@@ -185,11 +222,11 @@ public class CategoryImplementor
                 view.setLoading(false);
             }
             MaterialToast.makeText(
-                    Mysplash.getInstance(),
-                    Mysplash.getInstance().getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
+                    c,
+                    c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     null,
                     MaterialToast.LENGTH_SHORT).show();
-            view.requestPhotosFailed(Mysplash.getInstance().getString(R.string.feedback_load_failed_tv));
+            view.requestPhotosFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }
 }

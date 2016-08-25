@@ -18,11 +18,13 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request;
         if (AuthManager.getInstance().isAuthorized()) {
-            request = chain.request().newBuilder()
+            request = chain.request()
+                    .newBuilder()
                     .addHeader("Authorization", "Bearer " + AuthManager.getInstance().getAccessToken())
                     .build();
         } else {
-            request = chain.request().newBuilder()
+            request = chain.request()
+                    .newBuilder()
                     .addHeader("Authorization", "Client-ID " + Mysplash.APPLICATION_ID)
                     .build();
         }

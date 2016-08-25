@@ -10,9 +10,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -36,6 +38,13 @@ public class SearchOrientationPopupWindow extends PopupWindow
     public SearchOrientationPopupWindow(Context c, View anchor, String valueNow) {
         super(c);
         this.initialize(c, anchor, valueNow);
+        Mysplash.getInstance().setActivityInBackstage(true);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Mysplash.getInstance().setActivityInBackstage(false);
+            }
+        });
     }
 
     @SuppressLint("InflateParams")
@@ -98,6 +107,22 @@ public class SearchOrientationPopupWindow extends PopupWindow
             } else {
                 squarishTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
+        }
+
+        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            ((ImageView) v.findViewById(R.id.popup_search_orientation_landscapeIcon))
+                    .setImageResource(R.drawable.ic_orientation_landscape_light);
+            ((ImageView) v.findViewById(R.id.popup_search_orientation_portraitIcon))
+                    .setImageResource(R.drawable.ic_orientation_portrait_light);
+            ((ImageView) v.findViewById(R.id.popup_search_orientation_squarishIcon))
+                    .setImageResource(R.drawable.ic_orientation_squarish_light);
+        } else {
+            ((ImageView) v.findViewById(R.id.popup_search_orientation_landscapeIcon))
+                    .setImageResource(R.drawable.ic_orientation_landscape_dark);
+            ((ImageView) v.findViewById(R.id.popup_search_orientation_portraitIcon))
+                    .setImageResource(R.drawable.ic_orientation_portrait_dark);
+            ((ImageView) v.findViewById(R.id.popup_search_orientation_squarishIcon))
+                    .setImageResource(R.drawable.ic_orientation_squarish_dark);
         }
     }
 

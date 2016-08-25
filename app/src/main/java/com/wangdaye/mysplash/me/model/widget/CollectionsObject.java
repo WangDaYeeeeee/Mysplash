@@ -21,6 +21,7 @@ public class CollectionsObject
 
     private int collectionsPage;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -29,7 +30,7 @@ public class CollectionsObject
     public CollectionsObject(Activity a) {
         this.adapter = new CollectionAdapter(a, new ArrayList<Collection>());
         adapter.setOwn(true);
-        this.service = CollectionService.getService().buildClient();
+        this.service = CollectionService.getService();
 
         this.collectionsPage = 0;
 
@@ -50,6 +51,16 @@ public class CollectionsObject
     }
 
     @Override
+    public Object getRequestKey() {
+        return null;
+    }
+
+    @Override
+    public void setRequestKey(Object key) {
+        // do nothing.
+    }
+
+    @Override
     public String getCollectionsType() {
         return null;
     }
@@ -67,6 +78,16 @@ public class CollectionsObject
     @Override
     public void setCollectionsPage(int page) {
         collectionsPage = page;
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

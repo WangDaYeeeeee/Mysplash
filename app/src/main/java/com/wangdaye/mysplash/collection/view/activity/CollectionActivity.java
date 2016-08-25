@@ -20,8 +20,17 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.i.model.EditResultModel;
+import com.wangdaye.mysplash._common.i.presenter.EditResultPresenter;
+import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
+import com.wangdaye.mysplash._common.i.view.EditResultView;
+import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash.collection.model.activity.EditResultObject;
+import com.wangdaye.mysplash.collection.presenter.activity.EditResultImplementor;
+import com.wangdaye.mysplash.collection.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
 import com.wangdaye.mysplash._common.data.data.Collection;
@@ -40,11 +49,11 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
  * */
 
 public class CollectionActivity extends MysplashActivity
-        implements ToolbarView,
+        implements ToolbarView, SwipeBackManageView, EditResultView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
         UpdateCollectionDialog.OnCollectionChangedListener {
     // model.
-    private Collection collection;
+    private EditResultModel editResultModel;
     public static final String DELETE_COLLECTION = "delete_collection";
 
     // view.
@@ -55,6 +64,8 @@ public class CollectionActivity extends MysplashActivity
     
     // presenter.
     private ToolbarPresenter toolbarPresenter;
+    private SwipeBackManagePresenter swipeBackManagePresenter;
+    private EditResultPresenter editResultPresenter;
 
     /** <br> life cycle. */
 
@@ -72,7 +83,7 @@ public class CollectionActivity extends MysplashActivity
             initModel();
             initView();
             initPresenter();
-            animShowView(photosView, 400);
+            AnimUtils.animInitShow(photosView, 400);
         }
     }
 
@@ -93,11 +104,16 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void onBackPressed() {
-        Mysplash.getInstance().setCollection(collection);
-        Intent result = new Intent();
-        result.putExtra(DELETE_COLLECTION, false);
-        setResult(RESULT_OK, result);
-        super.onBackPressed();
+        if (Mysplash.getInstance().isActivityInBackstage()) {
+            super.onBackPressed();
+        } else if (photosView.needPagerBackToTop()) {
+            photosView.pagerBackToTop();
+        } else {
+            Intent result = new Intent();
+            result.putExtra(DELETE_COLLECTION, false);
+            setResult(RESULT_OK, result);
+            super.onBackPressed();
+        }
     }
 
     private void finishActivity(boolean delete) {
@@ -111,12 +127,16 @@ public class CollectionActivity extends MysplashActivity
 
     private void initPresenter() {
         this.toolbarPresenter = new ToolbarImplementor(this);
+        this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
+        this.editResultPresenter = new EditResultImplementor(editResultModel, this);
     }
 
     /** <br> view. */
 
     @SuppressLint("SetTextI18n")
     private void initView() {
+        Collection c = (Collection) editResultModel.getEditKey();
+
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_collection_swipeBackLayout);
         swipeBackLayout.setOnSwipeListener(this);
 
@@ -128,14 +148,14 @@ public class CollectionActivity extends MysplashActivity
         this.appBar = (AppBarLayout) findViewById(R.id.activity_collection_appBar);
 
         TextView title = (TextView) findViewById(R.id.activity_collection_title);
-        title.setText(collection.title);
+        title.setText(c.title);
 
         TextView description = (TextView) findViewById(R.id.activity_collection_description);
-        if (TextUtils.isEmpty(collection.description)) {
+        if (TextUtils.isEmpty(c.description)) {
             description.setVisibility(View.GONE);
         } else {
             TypefaceUtils.setTypeface(this, description);
-            description.setText(collection.description);
+            description.setText(c.description);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_collection_toolbar);
@@ -159,7 +179,7 @@ public class CollectionActivity extends MysplashActivity
         this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
         avatarImage.setOnClickListener(this);
         Glide.with(this)
-                .load(collection.user.profile_image.large)
+                .load(c.user.profile_image.large)
                 .priority(Priority.HIGH)
                 .override(128, 128)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -167,7 +187,7 @@ public class CollectionActivity extends MysplashActivity
 
         TextView subtitle = (TextView) findViewById(R.id.activity_collection_subtitle);
         TypefaceUtils.setTypeface(this, subtitle);
-        subtitle.setText("By " + collection.user.name);
+        subtitle.setText("By " + c.user.name);
 
         this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
         photosView.setActivity(this);
@@ -177,7 +197,7 @@ public class CollectionActivity extends MysplashActivity
     /** <br> model. */
 
     private void initModel() {
-        this.collection = Mysplash.getInstance().getCollection();
+        this.editResultModel = new EditResultObject();
     }
 
     /** <br> interface. */
@@ -209,42 +229,24 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        if (dir == SwipeBackLayout.UP_DIR) {
-            return photosView.canSwipeBack(dir)
-                    && appBar.getY() <= -appBar.getMeasuredHeight() + creatorBar.getMeasuredHeight();
-        } else {
-            return photosView.canSwipeBack(dir)
-                    && appBar.getY() >= 0;
-        }
+        return swipeBackManagePresenter.checkCanSwipeBack(dir);
     }
 
     @Override
     public void onSwipeFinish() {
-        Mysplash.getInstance().setCollection(collection);
-        finishActivity(false);
+        swipeBackManagePresenter.swipeBackFinish();
     }
 
     // on collection changed listener.
 
     @Override
     public void onEditCollection(Collection c) {
-        collection = c;
-        TextView title = (TextView) findViewById(R.id.activity_collection_title);
-        title.setText(collection.title);
-
-        TextView description = (TextView) findViewById(R.id.activity_collection_description);
-        if (TextUtils.isEmpty(collection.description)) {
-            description.setVisibility(View.GONE);
-        } else {
-            TypefaceUtils.setTypeface(this, description);
-            description.setText(collection.description);
-        }
+        editResultPresenter.updateSomething(c);
     }
 
     @Override
     public void onDeleteCollection(Collection c) {
-        Mysplash.getInstance().setCollection(c);
-        finishActivity(true);
+        editResultPresenter.deleteSomething(c);
     }
 
     // view.
@@ -253,13 +255,12 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void touchNavigatorIcon() {
-        Mysplash.getInstance().setCollection(collection);
         finishActivity(false);
     }
 
     @Override
     public void touchToolbar() {
-        User u = User.buildUser(collection);
+        User u = User.buildUser((Collection) editResultModel.getEditKey());
         Mysplash.getInstance().setUser(u);
 
         Intent intent = new Intent(this, UserActivity.class);
@@ -280,10 +281,56 @@ public class CollectionActivity extends MysplashActivity
         switch (itemId) {
             case R.id.action_edit:
                 UpdateCollectionDialog dialog = new UpdateCollectionDialog();
-                dialog.setCollection(collection);
+                dialog.setCollection((Collection) editResultPresenter.getEditKey());
                 dialog.setOnCollectionChangedListener(this);
                 dialog.show(getFragmentManager(), null);
                 break;
         }
+    }
+
+    // swipe back manage view.
+
+    @Override
+    public boolean checkCanSwipeBack(int dir) {
+        if (dir == SwipeBackLayout.UP_DIR) {
+            return photosView.canSwipeBack(dir)
+                    && appBar.getY() <= -appBar.getMeasuredHeight() + creatorBar.getMeasuredHeight();
+        } else {
+            return photosView.canSwipeBack(dir)
+                    && appBar.getY() >= 0;
+        }
+    }
+
+    @Override
+    public void swipeBackFinish() {
+        finishActivity(false);
+    }
+
+    // edit result view.
+
+    @Override
+    public void drawCreateResult(Object newKey) {
+        // do nothing.
+    }
+
+    @Override
+    public void drawUpdateResult(Object newKey) {
+        Collection c = (Collection) newKey;
+
+        TextView title = (TextView) findViewById(R.id.activity_collection_title);
+        title.setText(c.title);
+
+        TextView description = (TextView) findViewById(R.id.activity_collection_description);
+        if (TextUtils.isEmpty(c.description)) {
+            description.setVisibility(View.GONE);
+        } else {
+            TypefaceUtils.setTypeface(this, description);
+            description.setText(c.description);
+        }
+    }
+
+    @Override
+    public void drawDeleteResult(Object oldKey) {
+        finishActivity(true);
     }
 }

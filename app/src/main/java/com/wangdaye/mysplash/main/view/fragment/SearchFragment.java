@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -94,6 +93,8 @@ public class SearchFragment extends Fragment
 
     /** <br> view. */
 
+    // init.
+
     private void initView(View v) {
         this.handler = new SafeHandler<>(this);
 
@@ -119,9 +120,6 @@ public class SearchFragment extends Fragment
         editText.setFocusable(true);
         editText.requestFocus();
 
-        FrameLayout orientationContainer = (FrameLayout) v.findViewById(R.id.fragment_search_orientationContainer);
-        orientationContainer.setOnClickListener(this);
-
         RelativeLayout orientationMenu = (RelativeLayout) v.findViewById(R.id.fragment_search_orientationMenu);
         orientationMenu.setOnClickListener(this);
 
@@ -141,10 +139,24 @@ public class SearchFragment extends Fragment
         contentView.setOnClickListener(this);
     }
 
+    // interface.
+
+    public void pagerBackToTop() {
+        contentView.pagerScrollToTop();
+    }
+
     /** <br> model. */
+
+    // init.
 
     private void initModel() {
         this.searchBarModel = new SearchBarObject();
+    }
+
+    // interface.
+
+    public boolean needPagerBackToTop() {
+        return contentView.needPagerBackToTop();
     }
 
     /** <br> interface. */
@@ -156,10 +168,6 @@ public class SearchFragment extends Fragment
         switch (view.getId()) {
             case -1:
                 searchBarPresenter.touchNavigatorIcon();
-                break;
-
-            case R.id.fragment_search_orientationContainer:
-                searchBarPresenter.touchSearchBar();
                 break;
 
             case R.id.fragment_search_orientationMenu:
@@ -224,7 +232,7 @@ public class SearchFragment extends Fragment
 
     @Override
     public void touchSearchBar() {
-        contentView.scrollToPageTop();
+        // do nothing.
     }
 
     @Override

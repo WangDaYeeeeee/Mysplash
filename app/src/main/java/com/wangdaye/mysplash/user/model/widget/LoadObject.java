@@ -10,7 +10,6 @@ public class LoadObject implements LoadModel {
     // data
     private int state;
     public static final int LOADING_STATE = 0;
-    public static final int FAILED_STATE = -1;
     public static final int NORMAL_STATE = 1;
 
     /** <br> life cycle. */

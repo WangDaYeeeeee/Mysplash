@@ -9,7 +9,8 @@ import com.wangdaye.mysplash.main.model.widget.LoadObject;
  * Load implementor.
  * */
 
-public class LoadImplementor implements LoadPresenter {
+public class LoadImplementor
+        implements LoadPresenter {
     // model & view.
     private LoadModel model;
     private LoadView view;
@@ -55,7 +56,7 @@ public class LoadImplementor implements LoadPresenter {
     }
 
     @Override
-    public boolean isNormalState() {
-        return model.getState() == LoadObject.NORMAL_STATE;
+    public int getLoadState() {
+        return model.getState();
     }
 }

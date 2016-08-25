@@ -73,6 +73,16 @@ public class DownloadImplementor
         model.setDownloading(false);
     }
 
+    @Override
+    public int getDownloadId() {
+        return model.getDownloadId();
+    }
+
+    @Override
+    public void setDownloadId(int id) {
+        model.setDownloadId(id);
+    }
+
     /** <br> utils. */
 
     private void doDownload() {
@@ -211,11 +221,11 @@ public class DownloadImplementor
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash");
-            intent.setDataAndType(Uri.fromFile(file), "file/*");
+            File file = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash/" + id + ".jpg");
+            intent.setDataAndType(Uri.fromFile(file), "image/*");
 
             Context c = Mysplash.getInstance().getActivityList().get(0);
-            c.startActivity(Intent.createChooser(intent, c.getString(R.string.feedback_download_check)));
+            c.startActivity(intent);
         }
     }
 }

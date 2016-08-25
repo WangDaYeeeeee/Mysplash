@@ -26,6 +26,7 @@ public class PhotosObject
 
     private int photosPage;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -37,13 +38,14 @@ public class PhotosObject
     public PhotosObject(Activity a, int photosType) {
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>());
         adapter.setOwn(true);
-        this.service = PhotoService.getService().buildClient();
+        this.service = PhotoService.getService();
 
         this.photosType = photosType;
         this.photosOrder = PhotoApi.ORDER_BY_LATEST;
 
         this.photosPage = 0;
 
+        this.refreshing = false;
         this.loading = false;
         this.over = false;
     }
@@ -58,6 +60,16 @@ public class PhotosObject
     @Override
     public PhotoService getService() {
         return service;
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return null;
+    }
+
+    @Override
+    public void setRequestKey(Object key) {
+        // do nothing.
     }
 
     @Override
@@ -98,6 +110,16 @@ public class PhotosObject
     @Override
     public void setPageList(List<Integer> list) {
         // do nothing.
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

@@ -78,14 +78,6 @@
 
     </LinearLayout>
 
-    <Button
-        android:id="@+id/dialog_stats_retryButton"
-        android:text="@string/feedback_click_retry"
-        android:textStyle="bold"
-        android:textColor="?attr/content_color"
-        android:layout_centerInParent="true"
-        style="@style/material_button" />
-
     <com.github.rahatarmanahmed.cpv.CircularProgressView
         android:id="@+id/dialog_stats_progress"
         android:layout_width="@dimen/circular_progress_height"

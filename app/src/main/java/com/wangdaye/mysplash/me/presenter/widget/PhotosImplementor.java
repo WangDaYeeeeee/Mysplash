@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.me.presenter.widget;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -39,8 +40,13 @@ public class PhotosImplementor
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
-        if (!model.isLoading() && AuthManager.getInstance().getMe() != null) {
-            model.setLoading(true);
+        if (!model.isRefreshing() && !model.isLoading()
+                && AuthManager.getInstance().getMe() != null) {
+            if (refresh) {
+                model.setRefreshing(true);
+            } else {
+                model.setLoading(true);
+            }
             switch (model.getPhotosType()) {
                 case PhotosObject.PHOTOS_TYPE_PHOTOS:
                     requestUserPhotos(c, page, refresh, model.getPhotosOrder());
@@ -78,19 +84,35 @@ public class PhotosImplementor
     @Override
     public void initRefresh(Context c) {
         model.getService().cancel();
+        model.setRefreshing(false);
         model.setLoading(false);
         refreshNew(c, false);
         view.initRefreshStart();
     }
 
     @Override
-    public boolean waitingRefresh() {
-        return !model.isLoading();
+    public boolean canLoadMore() {
+        return !model.isRefreshing() && !model.isLoading() && !model.isOver();
     }
 
     @Override
-    public boolean canLoadMore() {
-        return !model.isLoading() && !model.isOver();
+    public boolean isRefreshing() {
+        return model.isRefreshing();
+    }
+
+    @Override
+    public boolean isLoading() {
+        return model.isLoading();
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return null;
+    }
+
+    @Override
+    public void setRequestKey(Object k) {
+        // do nothing.
     }
 
     @Override
@@ -98,12 +120,21 @@ public class PhotosImplementor
         model.setPhotosOrder(key);
     }
 
+    @Override
+    public void setActivityForAdapter(Activity a) {
+        model.getAdapter().setActivity(a);
+    }
+
+    @Override
+    public int getAdapterItemCount() {
+        return model.getAdapter().getRealItemCount();
+    }
+
     /** <br> utils. */
 
     private void requestUserPhotos(Context c, int page, boolean refresh, String order) {
         page = refresh ? 1 : page + 1;
         model.getService()
-                .buildClient()
                 .requestUserPhotos(
                         AuthManager.getInstance().getMe(),
                         page,
@@ -115,7 +146,6 @@ public class PhotosImplementor
     private void requestUserLikes(Context c, int page, boolean refresh, String order) {
         page = refresh ? 1 : page + 1;
         model.getService()
-                .buildClient()
                 .requestUserLikes(
                         AuthManager.getInstance().getMe(),
                         page,
@@ -140,6 +170,7 @@ public class PhotosImplementor
 
         @Override
         public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
@@ -173,6 +204,7 @@ public class PhotosImplementor
 
         @Override
         public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t) {
+            model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
                 view.setRefreshing(false);

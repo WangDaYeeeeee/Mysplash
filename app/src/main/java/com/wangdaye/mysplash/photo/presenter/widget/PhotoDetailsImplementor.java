@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.photo.presenter.widget;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
@@ -74,22 +73,13 @@ public class PhotoDetailsImplementor
                 view.drawExif(model.getPhotoDetails());
                 view.requestDetailsSuccess();
             } else {
-                requestPhotoDetailsError(response.message());
+                requestPhotoDetails(c);
             }
         }
 
         @Override
         public void onRequestPhotoDetailsFailed(Call<PhotoDetails> call, Throwable t) {
-            requestPhotoDetailsError(t.getMessage());
-        }
-
-        private void requestPhotoDetailsError(String msg) {
-            MaterialToast.makeText(
-                    c,
-                    c.getString(R.string.feedback_load_failed_toast) + " (" + msg + ")",
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
-            view.requestDetailsFailed();
+            requestPhotoDetails(c);
         }
     }
 }

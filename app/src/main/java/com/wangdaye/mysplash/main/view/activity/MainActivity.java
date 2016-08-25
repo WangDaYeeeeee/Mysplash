@@ -25,25 +25,32 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.data.tools.DownloadManager;
+import com.wangdaye.mysplash._common.i.model.DrawerModel;
+import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash._common.i.view.DrawerView;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
 import com.wangdaye.mysplash._common.ui.activity.AboutActivity;
 import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.i.view.FragmentManageView;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
+import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
+import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash._common.utils.SafeHandler;
+import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -53,11 +60,12 @@ import java.util.TimerTask;
  * */
 
 public class MainActivity extends MysplashActivity
-        implements FragmentManageView, MessageManageView, MeManageView,
+        implements FragmentManageView, MessageManageView, MeManageView, DrawerView,
         View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
         AuthManager.OnAuthDataChangedListener, SafeHandler.HandlerContainer {
     // model.
     private FragmentManageModel fragmentManageModel;
+    private DrawerModel drawerModel;
 
     // view
     private CircleImageView navAvatar;
@@ -71,6 +79,7 @@ public class MainActivity extends MysplashActivity
     private FragmentManagePresenter fragmentManagePresenter;
     private MessageManagePresenter messageManagePresenter;
     private MeManagePresenter meManagePresenter;
+    private DrawerPresenter drawerPresenter;
 
     /** <br> life cycle. */
 
@@ -88,7 +97,7 @@ public class MainActivity extends MysplashActivity
             initModel();
             initView();
             initPresenter();
-            changeFragment(new HomeFragment());
+            fragmentManagePresenter.changeFragment(R.id.action_home);
         }
     }
 
@@ -96,6 +105,7 @@ public class MainActivity extends MysplashActivity
     protected void onDestroy() {
         super.onDestroy();
         AuthManager.getInstance().removeOnWriteDataListener(this);
+        AuthManager.getInstance().cancelRequest();
         DownloadManager.getInstance().cancelAll();
     }
 
@@ -113,8 +123,23 @@ public class MainActivity extends MysplashActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
+        } else if (Mysplash.getInstance().isActivityInBackstage()) {
             super.onBackPressed();
+        } else {
+            int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
+            Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
+            if (f instanceof HomeFragment
+                    && ((HomeFragment) f).needPagerBackToTop()) {
+                ((HomeFragment) f).pagerBackToTop();
+            } else if (f instanceof SearchFragment
+                    && ((SearchFragment) f).needPagerBackToTop()) {
+                ((SearchFragment) f).pagerBackToTop();
+            } else if (f instanceof CategoryFragment
+                    && ((CategoryFragment) f).needPagerBackToTop()) {
+                ((CategoryFragment) f).pagerBackToTop();
+            } else {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -143,6 +168,7 @@ public class MainActivity extends MysplashActivity
         this.fragmentManagePresenter = new FragmentManageImplementor(fragmentManageModel, this);
         this.messageManagePresenter = new MessageManageImplementor(this);
         this.meManagePresenter = new MeManageImplementor(this);
+        this.drawerPresenter = new DrawerImplementor(drawerModel, this);
     }
 
     /** <br> view. */
@@ -204,9 +230,10 @@ public class MainActivity extends MysplashActivity
     /** <br> model. */
 
     private void initModel() {
-        this.fragmentManageModel = new FragmentManageObject(FragmentManageObject.NULL_CODE);
+        this.fragmentManageModel = new FragmentManageObject();
+        this.drawerModel = new DrawerObject();
         AuthManager.getInstance().addOnWriteDataListener(this);
-        AuthManager.getInstance().refreshPersonalProfile();
+        // AuthManager.getInstance().refreshPersonalProfile();
     }
 
     /** <br> interface. */
@@ -231,9 +258,7 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        messageManagePresenter.sendMessage(item.getItemId(), null);
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
-        drawer.closeDrawer(GravityCompat.START);
+        drawerPresenter.touchNavItem(item.getItemId());
         return true;
     }
 
@@ -407,5 +432,14 @@ public class MainActivity extends MysplashActivity
                 navButton.setImageResource(R.drawable.ic_close_mini_dark);
             }
         }
+    }
+
+    // drawer view.
+
+    @Override
+    public void touchNavItem(int id) {
+        messageManagePresenter.sendMessage(id, null);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
+        drawer.closeDrawer(GravityCompat.START);
     }
 }

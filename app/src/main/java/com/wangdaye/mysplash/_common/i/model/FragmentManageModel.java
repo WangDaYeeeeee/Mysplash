@@ -10,11 +10,10 @@ import java.util.List;
 
 public interface FragmentManageModel {
 
-    int getFragmentCode();
-    void setFragmentCode(int code);
-
     List<Fragment> getFragmentList();
+
     Fragment getFragmentFromList(int position);
+
     int getFragmentCount();
     void addFragmentToList(Fragment f);
     void popFragmentFromList();

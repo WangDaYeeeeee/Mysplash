@@ -2,8 +2,10 @@ package com.wangdaye.mysplash.user.model.widget;
 
 import android.app.Activity;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
 import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
@@ -21,11 +23,14 @@ public class PhotosObject
     private PhotoAdapter adapter;
     private PhotoService service;
 
+    private User requestKey;
+
     private int photosType;
     private String photosOrder;
 
     private int photosPage;
 
+    private boolean refreshing;
     private boolean loading;
     private boolean over;
 
@@ -36,13 +41,16 @@ public class PhotosObject
 
     public PhotosObject(Activity a, int photosType) {
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>());
-        this.service = PhotoService.getService().buildClient();
+        this.service = PhotoService.getService();
+
+        this.requestKey = Mysplash.getInstance().getUser();
 
         this.photosType = photosType;
         this.photosOrder = PhotoApi.ORDER_BY_LATEST;
 
         this.photosPage = 0;
 
+        this.refreshing = false;
         this.loading = false;
         this.over = false;
     }
@@ -57,6 +65,16 @@ public class PhotosObject
     @Override
     public PhotoService getService() {
         return service;
+    }
+
+    @Override
+    public Object getRequestKey() {
+        return requestKey;
+    }
+
+    @Override
+    public void setRequestKey(Object key) {
+        requestKey = (User) key;
     }
 
     @Override
@@ -97,6 +115,16 @@ public class PhotosObject
     @Override
     public void setPageList(List<Integer> list) {
         // do nothing.
+    }
+
+    @Override
+    public boolean isRefreshing() {
+        return refreshing;
+    }
+
+    @Override
+    public void setRefreshing(boolean refreshing) {
+        this.refreshing = refreshing;
     }
 
     @Override

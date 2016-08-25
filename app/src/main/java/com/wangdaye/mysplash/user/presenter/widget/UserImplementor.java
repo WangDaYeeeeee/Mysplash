@@ -49,12 +49,12 @@ public class UserImplementor
             view.drawUserInfo(response.body());
             view.requestDetailsSuccess();
         } else {
-            view.requestDetailsFailed();
+            requestUser();
         }
     }
 
     @Override
     public void onRequestUserProfileFailed(Call<User> call, Throwable t) {
-        view.requestDetailsFailed();
+        requestUser();
     }
 }

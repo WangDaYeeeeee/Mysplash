@@ -1,8 +1,5 @@
 package com.wangdaye.mysplash._common.ui.dialog;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -10,15 +7,16 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.data.PhotoStats;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import retrofit2.Call;
@@ -29,10 +27,9 @@ import retrofit2.Response;
  * */
 
 public class StatsDialog extends DialogFragment
-        implements PhotoService.OnRequestStatsListener, View.OnClickListener {
+        implements PhotoService.OnRequestStatsListener {
     // widget
     private CircularProgressView progress;
-    private Button retryButton;
     private LinearLayout dataContainer;
     private TextView likeNum;
     private TextView viewNum;
@@ -44,7 +41,6 @@ public class StatsDialog extends DialogFragment
 
     private int state = 0;
     private final int LOADING_STATE = 0;
-    private final int FAILED_STATE = -1;
     private final int SUCCESS_STATE = 1;
 
     /** <br> life cycle. */
@@ -52,6 +48,7 @@ public class StatsDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Mysplash.getInstance().setActivityInBackstage(true);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_stats, null, false);
         initWidget(view);
         service.requestStats(photo.id, this);
@@ -63,6 +60,7 @@ public class StatsDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Mysplash.getInstance().setActivityInBackstage(false);
         if (service != null) {
             service.cancel();
         }
@@ -72,15 +70,10 @@ public class StatsDialog extends DialogFragment
 
     private void initWidget(View v) {
         state = LOADING_STATE;
-        this.service = PhotoService.getService()
-                .buildClient();
+        this.service = PhotoService.getService();
 
         this.progress = (CircularProgressView) v.findViewById(R.id.dialog_stats_progress);
         progress.setVisibility(View.VISIBLE);
-
-        this.retryButton = (Button) v.findViewById(R.id.dialog_stats_retryButton);
-        retryButton.setOnClickListener(this);
-        retryButton.setVisibility(View.GONE);
 
         this.dataContainer = (LinearLayout) v.findViewById(R.id.dialog_stats_dataContainer);
         dataContainer.setVisibility(View.GONE);
@@ -97,52 +90,14 @@ public class StatsDialog extends DialogFragment
 
     private void setState(int stateTo) {
         switch (stateTo) {
-            case LOADING_STATE:
-                if (state == FAILED_STATE) {
-                    animShow(progress);
-                    animHide(retryButton);
-                }
-                break;
-
-            case FAILED_STATE:
-                if (state == LOADING_STATE) {
-                    animShow(retryButton);
-                    animHide(progress);
-                }
-                break;
-
             case SUCCESS_STATE:
                 if (state == LOADING_STATE) {
-                    animHide(progress);
-                    animShow(dataContainer);
+                    AnimUtils.animHide(progress);
+                    AnimUtils.animShow(dataContainer);
                 }
                 break;
         }
         this.state = stateTo;
-    }
-
-    private void animShow(final View v) {
-        if (v.getVisibility() == View.GONE) {
-            v.setVisibility(View.VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
-    }
-
-    private void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(View.GONE);
-            }
-        });
-        anim.start();
     }
 
     /** <br> data. */
@@ -152,18 +107,6 @@ public class StatsDialog extends DialogFragment
     }
 
     /** <br> interface. */
-
-    // on click listener.
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.dialog_stats_retryButton:
-                setState(LOADING_STATE);
-                service.requestStats(photo.id, this);
-                break;
-        }
-    }
 
     // on request stats listener.
 
@@ -176,12 +119,12 @@ public class StatsDialog extends DialogFragment
             downloadNum.setText(response.body().downloads + " DOWNLOADS");
             setState(SUCCESS_STATE);
         } else {
-            setState(FAILED_STATE);
+            service.requestStats(photo.id, this);
         }
     }
 
     @Override
     public void onRequestStatsFailed(Call<PhotoStats> call, Throwable t) {
-        setState(FAILED_STATE);
+        service.requestStats(photo.id, this);
     }
 }

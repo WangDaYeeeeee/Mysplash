@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
-import com.wangdaye.mysplash.login.view.LoginActivity;
+import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 /**

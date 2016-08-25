@@ -1,14 +1,11 @@
 package com.wangdaye.mysplash.photo.presenter.activity;
 
 import android.content.Context;
-import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.PopupMenu;
 
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 
 /**
  * Photo activity popup manage implementor.
@@ -16,7 +13,7 @@ import com.wangdaye.mysplash._common.i.view.PopupManageView;
 
 public class PhotoActivityPopupManageImplementor
         implements PopupManagePresenter,
-        PopupMenu.OnMenuItemClickListener {
+        PhotoMenuPopupWindow.OnSelectItemListener {
     // model & view.
     private PopupManageView view;
 
@@ -30,15 +27,12 @@ public class PhotoActivityPopupManageImplementor
 
     @Override
     public void showPopup(Context c, View anchor, String value, int position) {
-        PopupMenu menu = new PopupMenu(c, anchor, Gravity.CENTER);
-        menu.inflate(R.menu.activity_photo);
-        menu.setOnMenuItemClickListener(this);
-        menu.show();
+        PhotoMenuPopupWindow window = new PhotoMenuPopupWindow(c, anchor);
+        window.setOnSelectItemListener(this);
     }
 
     @Override
-    public boolean onMenuItemClick(MenuItem menuItem) {
-        view.responsePopup(null, menuItem.getItemId());
-        return true;
+    public void onSelectItem(int id) {
+        view.responsePopup(null, id);
     }
 }

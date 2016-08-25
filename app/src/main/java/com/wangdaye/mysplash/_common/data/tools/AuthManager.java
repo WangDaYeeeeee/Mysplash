@@ -5,10 +5,12 @@ import android.content.SharedPreferences;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.AccessToken;
 import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
+import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +54,23 @@ public class AuthManager
     public static final int LOADING_ME_STATE = 1;
     public static final int LOADING_USER_STATE = 2;
 
+    private static final String KEY_VERSION = "version";
+    private static final int VERSION_CODE = 4;
+
+    private static final String KEY_BUILD_TYPE = "build_type";
+    private static final int BUILD_TYPE_OLD = 1;
+    private static final int BUILD_TYPE_2_OPEN_SOURCE = 21;
+    private static final int BUILD_TYPE_2_BETA = 22;
+    private static final int BUILD_TYPE_2_COOL_APK = 23;
+    private static final int BUILD_TYPE_2_GOOGLE_PLAY = 24;
+    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_2_BETA;
+    // TODO: Need change APPLICATION_ID & SECRET when build type is change.
+
     /** <br> life cycle. */
 
     private AuthManager() {
+        updateVersion();
+
         SharedPreferences sharedPreferences = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
 
@@ -78,15 +94,50 @@ public class AuthManager
         this.state = FREEDOM_STATE;
     }
 
+    private void updateVersion() {
+        int versionNow = Mysplash.getInstance()
+                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                .getInt(KEY_VERSION, 0);
+        int buildTypeNow = Mysplash.getInstance()
+                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                .getInt(KEY_BUILD_TYPE, BUILD_TYPE_OLD);
+
+        if (versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE) {
+            MaterialToast.makeText(
+                    Mysplash.getInstance().getActivityList().get(0),
+                    Mysplash.getInstance().getString(R.string.feedback_re_login),
+                    null,
+                    MaterialToast.LENGTH_LONG
+            ).show();
+
+            SharedPreferences.Editor editor = Mysplash.getInstance()
+                    .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+            editor.putInt(KEY_VERSION, VERSION_CODE);
+            editor.putInt(KEY_BUILD_TYPE, BUILD_TYPE_2_BETA);
+            editor.putString(KEY_ACCESS_TOKEN, null);
+            editor.putString(KEY_USERNAME, null);
+            editor.putString(KEY_FIRST_NAME, null);
+            editor.putString(KEY_LAST_NAME, null);
+            editor.putString(KEY_EMAIL, null);
+            editor.putString(KEY_AVATAR_PATH, null);
+            editor.apply();
+        }
+    }
+
     /** <br> data. */
 
     // refresh.
 
     public void refreshPersonalProfile() {
+        if (authorized) {
+            service.cancel();
+            state = LOADING_ME_STATE;
+            service.requestMeProfile(this);
+        }
+    }
+
+    public void cancelRequest() {
         service.cancel();
-        state = LOADING_ME_STATE;
-        service = service.buildClient();
-        service.requestMeProfile(this);
     }
 
     // getter.
@@ -182,6 +233,8 @@ public class AuthManager
     }
 
     public void logout() {
+        service.cancel();
+
         SharedPreferences.Editor editor = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_ACCESS_TOKEN, null);
@@ -200,14 +253,13 @@ public class AuthManager
         this.avatar_path = null;
         this.authorized = false;
 
-        for (int i = 0; i < listenerList.size(); i ++) {
-            listenerList.get(i).onLogout();
-        }
-
-        service.cancel();
         this.me = null;
         this.user = null;
         this.state = FREEDOM_STATE;
+
+        for (int i = 0; i < listenerList.size(); i ++) {
+            listenerList.get(i).onLogout();
+        }
     }
 
     /** singleton. */

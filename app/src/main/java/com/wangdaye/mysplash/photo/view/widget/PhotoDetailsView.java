@@ -1,8 +1,5 @@
 package com.wangdaye.mysplash.photo.view.widget;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -12,7 +9,6 @@ import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,6 +23,7 @@ import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.ui.adapter.TagAdapter;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.photo.model.widget.LoadObject;
@@ -48,10 +45,8 @@ public class PhotoDetailsView extends FrameLayout
 
     // view.
     private CircularProgressView progressView;
-    private Button retryButton;
 
     private RelativeLayout detailsContainer;
-
     private TextView sizeText;
     private TextView colorText;
     private TextView locationText;
@@ -114,10 +109,6 @@ public class PhotoDetailsView extends FrameLayout
     private void initView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_photo_details_progressView);
         progressView.setVisibility(VISIBLE);
-
-        this.retryButton = (Button) findViewById(R.id.container_photo_details_retryButton);
-        retryButton.setOnClickListener(this);
-        retryButton.setVisibility(GONE);
 
         this.detailsContainer = (RelativeLayout) findViewById(R.id.container_photo_details_detailsContainer);
         detailsContainer.setVisibility(GONE);
@@ -206,10 +197,6 @@ public class PhotoDetailsView extends FrameLayout
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.container_photo_details_retryButton:
-                photoDetailsPresenter.requestPhotoDetails(getContext());
-                break;
-
             case R.id.container_photo_details_sizeContainer:
                 photoDetailsPresenter.showExifDescription(
                         getContext(),
@@ -317,49 +304,27 @@ public class PhotoDetailsView extends FrameLayout
         loadPresenter.setNormalState();
     }
 
-    @Override
-    public void requestDetailsFailed() {
-        loadPresenter.setFailedState();
-    }
-
     // load view.
 
     @Override
     public void animShow(final View v) {
-        if (v.getVisibility() == GONE) {
-            v.setVisibility(VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
+        AnimUtils.animShow(v);
     }
 
     @Override
     public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(GONE);
-            }
-        });
-        anim.start();
+        AnimUtils.animHide(v);
     }
 
     @Override
     public void setLoadingState() {
         animShow(progressView);
-        animHide(retryButton);
+        animHide(detailsContainer);
     }
 
     @Override
     public void setFailedState() {
-        animShow(retryButton);
-        animHide(progressView);
+        // do nothing.
     }
 
     @Override

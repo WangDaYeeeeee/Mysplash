@@ -15,7 +15,6 @@ import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.i.view.CategoryManageView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
@@ -30,7 +29,7 @@ import com.wangdaye.mysplash._common.utils.ValueUtils;
  * */
 
 public class CategoryFragment extends Fragment
-        implements ToolbarView, PopupManageView, CategoryManageView,
+        implements ToolbarView, PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener {
     // model.
     private CategoryManageModel categoryManageModel;
@@ -42,6 +41,7 @@ public class CategoryFragment extends Fragment
     // presenter.
     private ToolbarPresenter toolbarPresenter;
     private PopupManagePresenter popupManagePresenter;
+    //private CategoryManagePresenter categoryManagePresenter;
 
     /** <br> life cycle. */
 
@@ -64,9 +64,12 @@ public class CategoryFragment extends Fragment
     private void initPresenter() {
         this.toolbarPresenter = new ToolbarImplementor(this);
         this.popupManagePresenter = new CategoryFragmentPopupManageImplementor(this);
+        //this.categoryManagePresenter = new CategoryManageImplementor(categoryManageModel);
     }
 
     /** <br> view. */
+
+    // init.
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
@@ -93,6 +96,12 @@ public class CategoryFragment extends Fragment
         photosView.initRefresh();
     }
 
+    // interface.
+
+    public void pagerBackToTop() {
+        photosView.pagerScrollToTop();
+    }
+
     /** <br> model. */
 
     // init.
@@ -102,6 +111,10 @@ public class CategoryFragment extends Fragment
     }
 
     // interface.
+
+    public boolean needPagerBackToTop() {
+        return photosView.needPagerBackToTop();
+    }
 
     public Fragment setCategory(int category) {
         initModel(category);
@@ -117,10 +130,6 @@ public class CategoryFragment extends Fragment
         switch (view.getId()) {
             case -1:
                 toolbarPresenter.touchNavigatorIcon();
-                break;
-
-            case R.id.fragment_category_toolbar:
-                toolbarPresenter.touchToolbar();
                 break;
         }
     }
@@ -163,12 +172,5 @@ public class CategoryFragment extends Fragment
     public void responsePopup(String value, int position) {
         photosView.setOrder(value);
         photosView.initRefresh();
-    }
-
-    // category manage view.
-
-    @Override
-    public void setPagerCategory(int id) {
-        // do nothing.
     }
 }

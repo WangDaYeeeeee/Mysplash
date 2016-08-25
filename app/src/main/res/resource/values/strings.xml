@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">1.2.1</string>
+    <string name="version_code">2.0.3</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -19,6 +19,9 @@
     <string name="create">CREATE</string>
     <string name="delete">DELETE</string>
     <string name="save">SAVE</string>
+    <string name="stats">Stats</string>
+    <string name="open_photo_link">Open in browser</string>
+    <string name="open_download_link">Open download web page</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
@@ -77,6 +80,7 @@
 
     <string name="feedback_request_token_failed">Request access token failed.</string>
     <string name="feedback_login_text">Login to your Unsplash account.</string>
+    <string name="feedback_re_login">Please login again.</string>
 
     <string name="feedback_edit_my_profile">Edit profile</string>
     <string name="feedback_edit_username">Username (letters, numbers, underscores)</string>
@@ -86,6 +90,7 @@
     <string name="feedback_edit_portfolio">Personal site/portfolio</string>
     <string name="feedback_edit_location">Location</string>
     <string name="feedback_edit_bio">Bio</string>
+    <string name="feedback_update_profile_failed">Cannot edit profile.</string>
 
     <string name="feedback_add_to_collection">Add to collection</string>
     <string name="feedback_create_collection">Create new collection</string>
@@ -115,10 +120,6 @@
     <string name="action_filter">Filter</string>
 
     <string name="action_clear_text">Clear text</string>
-
-    <string name="action_stats">Stats</string>
-    <string name="action_open_photo_link">Open in browser</string>
-    <string name="action_open_download_link">Open download web page</string>
     
     <string name="action_open_portfolio">Open portfolio link</string>
 

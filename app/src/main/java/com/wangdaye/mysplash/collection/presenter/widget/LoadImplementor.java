@@ -3,13 +3,14 @@ package com.wangdaye.mysplash.collection.presenter.widget;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
-import com.wangdaye.mysplash.collection.model.LoadObject;
+import com.wangdaye.mysplash.collection.model.widget.LoadObject;
 
 /**
  * Load implementor.
  * */
 
-public class LoadImplementor implements LoadPresenter {
+public class LoadImplementor
+        implements LoadPresenter {
     // model & view.
     private LoadModel model;
     private LoadView view;
@@ -55,7 +56,7 @@ public class LoadImplementor implements LoadPresenter {
     }
 
     @Override
-    public boolean isNormalState() {
-        return model.getState() == LoadObject.NORMAL_STATE;
+    public int getLoadState() {
+        return model.getState();
     }
 }

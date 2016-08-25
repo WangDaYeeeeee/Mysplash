@@ -1,8 +1,5 @@
 package com.wangdaye.mysplash._common.ui.dialog;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -22,6 +19,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.AddPhotoToCollectionResult;
 import com.wangdaye.mysplash._common.data.data.Collection;
@@ -31,6 +29,7 @@ import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -79,6 +78,7 @@ public class SelectCollectionDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Mysplash.getInstance().setActivityInBackstage(true);
         Context contextThemeWrapper;
         if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
             contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MysplashTheme_light_Common);
@@ -99,6 +99,7 @@ public class SelectCollectionDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Mysplash.getInstance().setActivityInBackstage(false);
         service.cancel();
     }
 
@@ -143,44 +144,44 @@ public class SelectCollectionDialog extends DialogFragment
             case SHOW_COLLECTIONS_STATE:
                 setCancelable(true);
                 if (state == LOAD_COLLECTIONS_STATE) {
-                    animShow(selectorContainer);
-                    animHide(progressView);
+                    AnimUtils.animShow(selectorContainer);
+                    AnimUtils.animHide(progressView);
                 } else if (state == CREATE_COLLECTION_STATE) {
-                    animShow(selectorContainer);
-                    animHide(progressView);
+                    AnimUtils.animShow(selectorContainer);
+                    AnimUtils.animHide(progressView);
                 } else if (state == INPUT_COLLECTION_STATE) {
-                    animShow(selectorContainer);
-                    animHide(creatorContainer);
+                    AnimUtils.animShow(selectorContainer);
+                    AnimUtils.animHide(creatorContainer);
                 } else if (state == ADD_PHOTO_STATE) {
-                    animShow(selectorContainer);
-                    animHide(progressView);
+                    AnimUtils.animShow(selectorContainer);
+                    AnimUtils.animHide(progressView);
                 }
                 break;
 
             case INPUT_COLLECTION_STATE:
                 setCancelable(true);
                 if (state == SHOW_COLLECTIONS_STATE) {
-                    animShow(creatorContainer);
-                    animHide(selectorContainer);
+                    AnimUtils.animShow(creatorContainer);
+                    AnimUtils.animHide(selectorContainer);
                 } else if (state == CREATE_COLLECTION_STATE) {
-                    animShow(creatorContainer);
-                    animHide(progressView);
+                    AnimUtils.animShow(creatorContainer);
+                    AnimUtils.animHide(progressView);
                 }
                 break;
 
             case CREATE_COLLECTION_STATE:
                 setCancelable(false);
                 if (state == INPUT_COLLECTION_STATE) {
-                    animShow(progressView);
-                    animHide(creatorContainer);
+                    AnimUtils.animShow(progressView);
+                    AnimUtils.animHide(creatorContainer);
                 }
                 break;
 
             case ADD_PHOTO_STATE:
                 setCancelable(false);
                 if (state == SHOW_COLLECTIONS_STATE) {
-                    animShow(progressView);
-                    animHide(selectorContainer);
+                    AnimUtils.animShow(progressView);
+                    AnimUtils.animHide(selectorContainer);
                 }
                 break;
         }
@@ -200,7 +201,7 @@ public class SelectCollectionDialog extends DialogFragment
         this.adapter = new CollectionMiniAdapter(getActivity(), new ArrayList<Collection>());
         adapter.setOnClickCreateItemListener(this);
         this.page = 1;
-        this.service = CollectionService.getService().buildClient();
+        this.service = CollectionService.getService();
         this.state = LOAD_COLLECTIONS_STATE;
     }
 
@@ -231,32 +232,6 @@ public class SelectCollectionDialog extends DialogFragment
                     this);
             setState(CREATE_COLLECTION_STATE);
         }
-    }
-
-    /** <br> animator. */
-
-    public void animShow(View v) {
-        if (v.getVisibility() == View.GONE) {
-            v.setVisibility(View.VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
-    }
-
-    public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(View.GONE);
-            }
-        });
-        anim.start();
     }
 
     /** <br> interface. */

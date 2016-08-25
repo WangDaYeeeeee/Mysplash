@@ -10,9 +10,11 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -36,6 +38,13 @@ public class CollectionTypePopupWindow extends PopupWindow
     public CollectionTypePopupWindow(Context c, View anchor, String valueNow) {
         super(c);
         this.initialize(c, anchor, valueNow);
+        Mysplash.getInstance().setActivityInBackstage(true);
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                Mysplash.getInstance().setActivityInBackstage(false);
+            }
+        });
     }
 
     @SuppressLint("InflateParams")
@@ -98,6 +107,16 @@ public class CollectionTypePopupWindow extends PopupWindow
             } else {
                 featuredTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
+        }
+
+        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            ((ImageView) v.findViewById(R.id.popup_collection_type_allIcon)).setImageResource(R.drawable.ic_mountain_light);
+            ((ImageView) v.findViewById(R.id.popup_collection_type_curatedIcon)).setImageResource(R.drawable.ic_star_outline_light);
+            ((ImageView) v.findViewById(R.id.popup_collection_type_featuredIcon)).setImageResource(R.drawable.ic_feature_light);
+        } else {
+            ((ImageView) v.findViewById(R.id.popup_collection_type_allIcon)).setImageResource(R.drawable.ic_mountain_dark);
+            ((ImageView) v.findViewById(R.id.popup_collection_type_curatedIcon)).setImageResource(R.drawable.ic_star_outline_dark);
+            ((ImageView) v.findViewById(R.id.popup_collection_type_featuredIcon)).setImageResource(R.drawable.ic_feature_dark);
         }
     }
 

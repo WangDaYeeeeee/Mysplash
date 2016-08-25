@@ -42,7 +42,7 @@ import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
-import com.wangdaye.mysplash.login.view.LoginActivity;
+import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
@@ -208,8 +208,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     private void setLikeForAPhoto(int position) {
         if (service == null) {
-            service = PhotoService.getService()
-                    .buildClient();
+            service = PhotoService.getService();
         } else {
             service.cancel();
         }

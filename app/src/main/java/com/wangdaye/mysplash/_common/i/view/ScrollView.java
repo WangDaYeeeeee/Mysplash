@@ -8,4 +8,5 @@ public interface ScrollView {
 
     void scrollToTop();
     void autoLoad(int dy);
+    boolean needBackToTop();
 }

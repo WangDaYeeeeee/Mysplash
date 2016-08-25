@@ -27,11 +27,12 @@ public class Mysplash extends Application {
     private Collection collection;
     private User user;
     private Drawable drawable;
-    private boolean myOwnCollection;
+    private boolean myOwnCollection = false;
+    private boolean activityInBackstage = false;
 
     // Unsplash data.
-    public static final String APPLICATION_ID = "72bf3302b0fb868d8822332a8dad712341c48a5bec5af94b7beea4d1cc030ee6";
-    public static final String SECRET = "da8217d65b3a76ca3c94710a33287dbe2fee53892595917339b9dcef2eaf94e6";
+    public static final String APPLICATION_ID = "43cf9e07af1dbcfa440321796f4ff869461be423e97d3b089520e6ad64fc0d8a";
+    public static final String SECRET = "0ba6d9ce725b64bc319f4a0ade1de968984c102a22e9011e7ab299943cb7f1e5";
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
@@ -164,6 +165,14 @@ public class Mysplash extends Application {
 
     public boolean isMyOwnCollection() {
         return myOwnCollection;
+    }
+
+    public void setActivityInBackstage(boolean showing) {
+        this.activityInBackstage = showing;
+    }
+
+    public boolean isActivityInBackstage() {
+        return activityInBackstage;
     }
 
     /** <br> singleton. */
