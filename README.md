@@ -1,10 +1,5 @@
 # Mysplash
 
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_home.png)
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_drawer.png)
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_search.png)
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_photo.png)
-
 ## 说明
   
 ### 简介
@@ -47,3 +42,13 @@
 ### Contact Me
 
 * wangdayeeeeee@gmail.com
+
+## PREVIEW
+
+![HOME](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_home.png)
+![DRAWER](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_drawer.png)
+![SEARCH](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_search.png)
+![PHOTO](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_photo.png)
+![COLLECTION](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_collection.png)
+![USER](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_user.png)
+![ABOUT](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_about.png)
