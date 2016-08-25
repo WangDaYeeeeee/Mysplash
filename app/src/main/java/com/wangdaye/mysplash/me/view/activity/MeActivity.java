@@ -275,8 +275,7 @@ public class MeActivity extends MysplashActivity
     private void initModel() {
         this.pagerManageModel = new PagerManageObject(0);
         AuthManager.getInstance().addOnWriteDataListener(this);
-        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE
-                && AuthManager.getInstance().getMe() == null) {
+        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE) {
             AuthManager.getInstance().refreshPersonalProfile();
         }
     }

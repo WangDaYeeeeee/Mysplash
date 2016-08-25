@@ -78,7 +78,7 @@
                 android:layout_height="@dimen/tab_layout_height"
                 android:layout_below="@id/activity_me_profileView"
                 app:tabIndicatorHeight="3dp"
-                app:tabIndicatorColor="?attr/content_color"
+                app:tabIndicatorColor="?attr/title_color"
                 app:tabSelectedTextColor="?attr/content_color"
                 app:tabTextColor="?attr/subtitle_color" />
 
