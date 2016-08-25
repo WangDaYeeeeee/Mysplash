@@ -1,10 +1,5 @@
 # Mysplash
 
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_home.png)
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_drawer.png)
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_search.png)
-![](https://github.com/WangDaYeeeeee/MySplash/blob/master/preview/preview_photo.png)
-
 ## 说明
   
 ### 简介
