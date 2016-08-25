@@ -38,7 +38,6 @@ public class AuthManager
     private String last_name;
     private String email;
     private String avatar_path;
-
     private boolean authorized;
 
     private static final String PREFERENCE_NAME = "mysplash_authorize_manager";
@@ -63,7 +62,7 @@ public class AuthManager
     private static final int BUILD_TYPE_2_BETA = 22;
     private static final int BUILD_TYPE_2_COOL_APK = 23;
     private static final int BUILD_TYPE_2_GOOGLE_PLAY = 24;
-    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_2_BETA;
+    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_2_OPEN_SOURCE;
     // TODO: Need change APPLICATION_ID & SECRET when build type is change.
 
     /** <br> life cycle. */
@@ -113,7 +112,7 @@ public class AuthManager
             SharedPreferences.Editor editor = Mysplash.getInstance()
                     .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
             editor.putInt(KEY_VERSION, VERSION_CODE);
-            editor.putInt(KEY_BUILD_TYPE, BUILD_TYPE_2_BETA);
+            editor.putInt(KEY_BUILD_TYPE, CORRECT_BUILD_TYPE);
             editor.putString(KEY_ACCESS_TOKEN, null);
             editor.putString(KEY_USERNAME, null);
             editor.putString(KEY_FIRST_NAME, null);

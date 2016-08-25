@@ -31,8 +31,8 @@ public class Mysplash extends Application {
     private boolean activityInBackstage = false;
 
     // Unsplash data.
-    public static final String APPLICATION_ID = "43cf9e07af1dbcfa440321796f4ff869461be423e97d3b089520e6ad64fc0d8a";
-    public static final String SECRET = "0ba6d9ce725b64bc319f4a0ade1de968984c102a22e9011e7ab299943cb7f1e5";
+    public static final String APPLICATION_ID = "7a96a77d719e9967f935da53784d6a3eb58a4fb174dda25e89ec69059e46c815";
+    public static final String SECRET = "dd766f4ee6e01599ca6db2e97c306a883a024f7322f92d4f7ab4aeae3be7924e";
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
