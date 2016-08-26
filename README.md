@@ -1,4 +1,4 @@
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_google_play_cover.png)
 
 ## [中文](#中文) | [English](#联系作者)
 
@@ -22,7 +22,6 @@
 ### 近期计划
 * 下载管理
 * UI细节调整
-* 上架google play
 * 优化代码层对activity生命周期的管理
 * 每日一图功能
 * 每日自动更换壁纸功能
@@ -49,7 +48,6 @@
 ### Plan
 * Add download manag view.
 * tweak UI.
-* upload to Google Play.
 * add Daily pictures.
 * add Daily wallpaper.
 * add Set as lock screen wallpaper.
