@@ -1,8 +1,8 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
-## [中文](#一中文) | [English](#一English)
+## [中文](#中文) | [English](#近期计划)
 
-## 一中文
+## 中文
   
 ### 简介
 
