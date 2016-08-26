@@ -1,8 +1,8 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
-## [中文](#说明) | [English](#Description)
+## [中文](#中文) | [English](#English)
 
-## 说明
+## 中文
   
 ### 简介
 
@@ -42,7 +42,7 @@
 * 每日自动更换壁纸功能
 * 锁屏壁纸功能
 
-## Description 
+## English 
   
 ### Introduction
 
