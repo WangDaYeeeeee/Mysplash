@@ -1,5 +1,7 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
+## [中文](#说明) | [English](#Description)
+
 ## 说明
   
 ### 简介
