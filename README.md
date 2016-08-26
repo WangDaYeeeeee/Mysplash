@@ -1,8 +1,8 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_google_play_cover.png)
 
 ## [中文](#中文) | [English](#联系作者)
-[Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
-[Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
+* [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
+* [Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 
 ## 中文
   
