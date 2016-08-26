@@ -3,10 +3,12 @@ package com.wangdaye.mysplash.photo.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -27,6 +29,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
+import com.wangdaye.mysplash._common.data.tools.DownloadManager;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -41,6 +44,7 @@ import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
@@ -92,6 +96,7 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadLanguage();
         setTheme();
         Mysplash.getInstance().addActivity(this);
         setContentView(R.layout.activity_photo);
@@ -115,6 +120,7 @@ public class PhotoActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         Mysplash.getInstance().removeActivity();
+        DownloadManager.getInstance().removeDownloadListener((DownloadImplementor) downloadPresenter);
         detailsView.cancelRequest();
     }
 
@@ -124,6 +130,14 @@ public class PhotoActivity extends AppCompatActivity
         } else {
             setTheme(R.style.MysplashTheme_dark_Photo);
         }
+    }
+
+    private void loadLanguage() {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String language = sharedPreferences.getString(
+                getString(R.string.key_language),
+                getResources().getStringArray(R.array.language_values)[0]);
+        LanguageUtils.setLanguage(this, language);
     }
 
     /** <br> presenter. */
@@ -228,12 +242,6 @@ public class PhotoActivity extends AppCompatActivity
         this.photoInfoModel = new PhotoInfoObject();
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
         this.scrollModel = new ScrollObject();
-    }
-
-    // interface.
-
-    public int getDownloadId() {
-        return downloadPresenter.getDownloadId();
     }
 
     /** <br> permission. */

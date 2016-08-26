@@ -2,15 +2,12 @@ package com.wangdaye.mysplash;
 
 import android.app.Activity;
 import android.app.Application;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.data.User;
-import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 
 import java.util.ArrayList;
@@ -86,20 +83,11 @@ public class Mysplash extends Application {
         super.onCreate();
         initialize();
         readPhotoCount();
-        loadLanguage();
     }
 
     private void initialize() {
         instance = this;
         activityList = new ArrayList<>();
-    }
-
-    private void loadLanguage() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String language = sharedPreferences.getString(
-                getString(R.string.key_language),
-                "follow_system");
-        LanguageUtils.setLanguage(this, language);
     }
 
     private void readPhotoCount() {

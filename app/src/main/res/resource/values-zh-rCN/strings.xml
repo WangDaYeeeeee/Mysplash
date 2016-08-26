@@ -13,6 +13,7 @@
     <string name="create">创建</string>
     <string name="delete">删除</string>
     <string name="save">保存</string>
+    <string name="check">查看</string>
     <string name="stats">统计</string>
     <string name="open_photo_link">在网页中打开</string>
     <string name="open_download_link">访问下载页</string>
@@ -42,7 +43,6 @@
     <string name="feedback_need_permission">获取权限失败</string>
     <string name="feedback_choose_share_app">分享照片</string>
     <string name="feedback_choose_wallpaper_app">设为壁纸</string>
-    <string name="feedback_download_check">查看</string>
 
     <string name="feedback_size">尺寸</string>
     <string name="feedback_color">颜色</string>
@@ -91,6 +91,7 @@
     <string name="action_category_people">人物</string>
     <string name="action_category_technology">科技</string>
     <string name="action_change_theme">更换主题</string>
+    <string name="action_download_manage">下载管理</string>
     <string name="action_settings">设置</string>
     <string name="action_about">关于</string>
 

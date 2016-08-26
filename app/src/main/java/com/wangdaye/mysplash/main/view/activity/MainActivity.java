@@ -344,6 +344,10 @@ public class MainActivity extends MysplashActivity
                 reboot();
                 break;
 
+            case R.id.action_download_manage:
+                // TODO: 2016/8/26 start download manage activity.
+                break;
+
             case R.id.action_settings:
                 Intent s = new Intent(this, SettingsActivity.class);
                 startActivity(s);

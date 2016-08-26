@@ -5,6 +5,8 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.wangdaye.mysplash.R;
+
 import java.util.Locale;
 
 /**
@@ -14,7 +16,7 @@ import java.util.Locale;
 public class LanguageUtils {
 
     public static void setLanguage(Context c, String key) {
-        if (key.equals("follow_system")) {
+        if (key.equals(c.getResources().getStringArray(R.array.language_values)[0])) {
             return;
         }
         Resources resources = c.getResources();

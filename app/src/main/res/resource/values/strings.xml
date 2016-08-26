@@ -19,6 +19,7 @@
     <string name="create">CREATE</string>
     <string name="delete">DELETE</string>
     <string name="save">SAVE</string>
+    <string name="check">CHECK</string>
     <string name="stats">Stats</string>
     <string name="open_photo_link">Open in browser</string>
     <string name="open_download_link">Open download web page</string>
@@ -53,7 +54,7 @@
     <string name="feedback_search_tv">SEARCH PHOTOS</string>
     <string name="feedback_is_over">Is over.</string>
 
-    <string name="feedback_notify_restart">Take effect when restarted.</string>
+    <string name="feedback_notify_restart">Restart to work.</string>
 
     <string name="feedback_download_success">Download success.</string>
     <string name="feedback_download_failed">Download failed.</string>
@@ -62,9 +63,8 @@
     <string name="feedback_no_sd_card">Cannot found SD card.</string>
     <string name="feedback_create_file_failed">Create file failed.</string>
     <string name="feedback_need_permission">Failed to get permission.</string>
-    <string name="feedback_choose_share_app">Share requestKey</string>
+    <string name="feedback_choose_share_app">Share photo</string>
     <string name="feedback_choose_wallpaper_app">Set wallpaper</string>
-    <string name="feedback_download_check">CHECK</string>
 
     <string name="feedback_size">Size</string>
     <string name="feedback_color">Color</string>
@@ -113,6 +113,7 @@
     <string name="action_category_people">People</string>
     <string name="action_category_technology">Technology</string>
     <string name="action_change_theme">Change theme</string>
+    <string name="action_download_manage">Downloads</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
 

@@ -61,6 +61,12 @@
             android:title="@string/action_change_theme" />
 
         <item
+            android:id="@+id/action_download_manage"
+            android:orderInCategory="100"
+            android:icon="@drawable/ic_download_light"
+            android:title="@string/action_download_manage" />
+
+        <item
             android:id="@+id/action_settings"
             android:orderInCategory="100"
             android:icon="@drawable/ic_settings_light"

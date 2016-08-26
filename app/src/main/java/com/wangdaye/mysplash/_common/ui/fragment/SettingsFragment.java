@@ -118,8 +118,9 @@ public class SettingsFragment extends PreferenceFragment
             MaterialToast.makeText(
                     getActivity(),
                     getString(R.string.feedback_notify_restart),
-                    null,
+                    getString(R.string.restart),
                     MaterialToast.LENGTH_SHORT)
+                    .setOnActionClickListener(this)
                     .show();
         }
         return true;

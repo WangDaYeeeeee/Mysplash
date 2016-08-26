@@ -30,6 +30,7 @@ public class DrawerImplementor
             view.touchNavItem(id);
         }
         if (id != R.id.action_change_theme
+                && id != R.id.action_download_manage
                 && id != R.id.action_settings
                 && id != R.id.action_about) {
             model.setSelectedItemId(id);
