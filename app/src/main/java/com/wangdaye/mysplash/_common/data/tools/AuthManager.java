@@ -57,12 +57,9 @@ public class AuthManager
     private static final int VERSION_CODE = 4;
 
     private static final String KEY_BUILD_TYPE = "build_type";
-    private static final int BUILD_TYPE_OLD = 1;
-    private static final int BUILD_TYPE_2_OPEN_SOURCE = 21;
-    private static final int BUILD_TYPE_2_BETA = 22;
-    private static final int BUILD_TYPE_2_COOL_APK = 23;
-    private static final int BUILD_TYPE_2_GOOGLE_PLAY = 24;
-    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_2_OPEN_SOURCE;
+    private static final int BUILD_TYPE_BUILD = 1;
+    private static final int BUILD_TYPE_RELEASE = 2;
+    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_BUILD;
     // TODO: Need change APPLICATION_ID & SECRET when build type is change.
 
     /** <br> life cycle. */
@@ -99,9 +96,13 @@ public class AuthManager
                 .getInt(KEY_VERSION, 0);
         int buildTypeNow = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
-                .getInt(KEY_BUILD_TYPE, BUILD_TYPE_OLD);
+                .getInt(KEY_BUILD_TYPE, BUILD_TYPE_RELEASE);
+        String token = Mysplash.getInstance()
+                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                .getString(KEY_ACCESS_TOKEN, null);
 
-        if (versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE) {
+        if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
+                && !TextUtils.isEmpty(token)) {
             MaterialToast.makeText(
                     Mysplash.getInstance().getActivityList().get(0),
                     Mysplash.getInstance().getString(R.string.feedback_re_login),
