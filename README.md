@@ -42,7 +42,7 @@
 * 每日自动更换壁纸功能
 * 锁屏壁纸功能
 
-## English 
+## English
   
 ### Introduction
 
