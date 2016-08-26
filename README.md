@@ -1,4 +1,4 @@
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_google_play_cover.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
 ## [中文](#中文) | [English](#联系作者)
 * [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
