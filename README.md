@@ -1,8 +1,37 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
-## [中文](#中文) | [English](#联系作者)
+## [中文](#中文) | [English](#)
 * [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 * [Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
+
+## English
+  
+### Introduction
+
+* A light Unsplash android client.
+* Powered by [Unsplash.com](https://unsplash.com/)
+* 100000+ photos.
+* Material design.
+* Support select photos as tags.
+* Support share photos and set as wallpaper.
+* Support download raw photos.
+
+### Plan
+* Add download manag view.
+* tweak UI.
+* add Daily pictures.
+* add Daily wallpaper.
+* add Set as lock screen wallpaper.
+
+### History
+
+* [All APKs](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
+* begin with v1.0.0.
+  
+### Contact Me
+
+* wangdayeeeeee@gmail.com
+* [Google Play Mysplash page](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 
 ## 中文
   
@@ -35,32 +64,3 @@
 * [酷安Mysplash主页](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 * [Google Play Mysplash主页](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 * 欢迎给作者提出意见、反馈bug、建议功能等
-
-## English
-  
-### Introduction
-
-* A light Unsplash android client.
-* Powered by [Unsplash.com](https://unsplash.com/)
-* 100000+ photos.
-* Material design.
-* Support select photos as tags.
-* Support share photos and set as wallpaper.
-* Support download raw photos.
-
-### Plan
-* Add download manag view.
-* tweak UI.
-* add Daily pictures.
-* add Daily wallpaper.
-* add Set as lock screen wallpaper.
-
-### History
-
-* [All APKs](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
-* begin with v1.0.0.
-  
-### Contact Me
-
-* wangdayeeeeee@gmail.com
-* [Google Play Mysplash page](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
