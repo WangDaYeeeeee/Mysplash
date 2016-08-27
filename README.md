@@ -1,6 +1,6 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
-## [中文](#中文) | [English](#)
+## [中文](#中文) | [English]()
 * [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 * [Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 
