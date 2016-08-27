@@ -1,12 +1,12 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
 
-
+## <a href="#chinese">中文</a> | <a href="#english">English</a>
 * [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 * [Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 
 -----
 
-## 
+## <p id="english">About Mysplash</p>
   
 ### Introduction
 
@@ -37,7 +37,7 @@
 
 -----
 
-## 
+## <p id="chinese">关于Mysplash</p>
   
 ### 简介
 
