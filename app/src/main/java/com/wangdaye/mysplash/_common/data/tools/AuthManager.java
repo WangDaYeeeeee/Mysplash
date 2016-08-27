@@ -59,7 +59,7 @@ public class AuthManager
     private static final String KEY_BUILD_TYPE = "build_type";
     private static final int BUILD_TYPE_BUILD = 1;
     private static final int BUILD_TYPE_RELEASE = 2;
-    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_RELEASE;
+    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_BUILD;
     // TODO: Need change APPLICATION_ID & SECRET when build type is change.
 
     /** <br> life cycle. */
