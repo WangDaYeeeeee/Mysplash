@@ -71,15 +71,16 @@ public class DownloadImplementor
 
     private void doDownload(int type) {
         if (FileUtils.createDownloadPath(Mysplash.getInstance())) {
-            model.setDownloading(true);
-            model.setDialogShowing(true);
-            view.showDownloadDialog();
-
             int id = DownloadManager.getInstance().add(
                     (Photo) model.getDownloadKey(),
                     type,
                     this);
-            model.setDownloadId(id);
+            if (id != DownloadManager.FAILED_CODE) {
+                model.setDownloadId(id);
+                model.setDownloading(true);
+                model.setDialogShowing(true);
+                view.showDownloadDialog();
+            }
         }
     }
 

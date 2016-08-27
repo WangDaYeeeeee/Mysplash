@@ -1,13 +1,7 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.ColorMatrixColorFilter;
-import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,13 +13,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.tools.DownloadManager;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 
 import java.util.List;
 
@@ -34,6 +23,7 @@ import java.util.List;
  * */
 
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHolder> {
+    // widget
     private Context c;
     private List<DownloadManager.Mission> itemList;
     private OnDownloadResponseListener listener;
@@ -56,57 +46,10 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            Glide.with(c)
-                    .load(itemList.get(position).photo.urls.regular)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.image);
-        } else {
-            Glide.with(c)
-                    .load(itemList.get(position).photo.urls.regular)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model,
-                                                       Target<GlideDrawable> target,
-                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                            if (!itemList.get(position).photo.hasFadedIn) {
-                                holder.image.setHasTransientState(true);
-                                final ObservableColorMatrix matrix = new ObservableColorMatrix();
-                                final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                        matrix, ObservableColorMatrix.SATURATION, 0f, 1f);
-                                saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
-                                        () {
-                                    @Override
-                                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                        // just animating the color matrix does not invalidate the
-                                        // drawable so need this update listener.  Also have to create a
-                                        // new CMCF as the matrix is immutable :(
-                                        holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
-                                    }
-                                });
-                                saturation.setDuration(2000L);
-                                saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(c));
-                                saturation.addListener(new AnimatorListenerAdapter() {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation) {
-                                        holder.image.clearColorFilter();
-                                        holder.image.setHasTransientState(false);
-                                    }
-                                });
-                                saturation.start();
-                                itemList.get(position).photo.hasFadedIn = true;
-                            }
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.image);
-        }
+        Glide.with(c)
+                .load(itemList.get(position).photo.urls.regular)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(holder.image);
 
         if (itemList.get(position).failed) {
             holder.title.setText(c.getString(R.string.feedback_download_failed));
@@ -129,6 +72,19 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    public int getItemAdapterPosition(int id) {
+        for (int i = 0; i < itemList.size(); i ++) {
+            if (itemList.get(i).id == id) {
+                return i;
+            }
+        }
+        return DownloadManager.FAILED_CODE;
+    }
+
+    public DownloadManager.Mission getItem(int position) {
+        return itemList.get(position);
     }
 
     // add.
@@ -165,7 +121,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         for (int i = 0; i < itemList.size(); i ++) {
             if (itemList.get(i).id == id) {
                 itemList.get(i).progress = percent;
-                notifyItemChanged(i);
                 return;
             }
         }
@@ -209,6 +164,8 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         public ImageButton cancelBtn;
         public ImageButton retryBtn;
 
+        // life cycle.
+
         public ViewHolder(View itemView) {
             super(itemView);
 
@@ -222,6 +179,8 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             this.retryBtn = (ImageButton) itemView.findViewById(R.id.item_download_retryBtn);
             retryBtn.setOnClickListener(this);
         }
+
+        // interface.
 
         @Override
         public void onClick(View view) {

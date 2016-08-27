@@ -2,8 +2,6 @@
 
     <!-- activity & fragment themes. -->
 
-    <!-- main activity. -->
-
     <style name="MysplashTheme_light" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary_light</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
@@ -30,78 +28,37 @@
         <item name="android:popupMenuStyle">@style/material_popup_menu</item>
     </style>
 
-    <!-- requestKey activity. -->
-
-    <style name="MysplashTheme_light.Photo" parent="MysplashTheme_light">
+    <style name="MysplashTheme_light.Translucent" parent="MysplashTheme_light">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <!-- photo activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Photo" parent="MysplashTheme_light.Translucent">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
-    <style name="MysplashTheme_dark.Photo" parent="MysplashTheme_dark">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+    <style name="MysplashTheme_dark.Translucent.Photo" parent="MysplashTheme_dark.Translucent">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <!-- user activity. -->
 
-    <style name="MysplashTheme_light.User" parent="MysplashTheme_light">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
+    <style name="MysplashTheme_light.Translucent.User" parent="MysplashTheme_light.Translucent" />
 
-    <style name="MysplashTheme_dark.User" parent="MysplashTheme_dark">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <!-- collection activity. -->
-    <style name="MysplashTheme_light.Collection" parent="MysplashTheme_light">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <style name="MysplashTheme_dark.Collection" parent="MysplashTheme_dark">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <!-- login activity. -->
-
-    <style name="MysplashTheme_light.Login" parent="MysplashTheme_light">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <style name="MysplashTheme_dark.Login" parent="MysplashTheme_dark">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
+    <style name="MysplashTheme_dark.Translucent.User" parent="MysplashTheme_dark.Translucent" />
 
     <!-- me activity. -->
 
-    <style name="MysplashTheme_light.Me" parent="MysplashTheme_light">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
+    <style name="MysplashTheme_light.Translucent.Me" parent="MysplashTheme_light.Translucent" />
 
-    <style name="MysplashTheme_dark.Me" parent="MysplashTheme_dark">
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
-    <!-- common. -->
-
-    <style name="MysplashTheme_light.Common" parent="MysplashTheme_light">
-        <item name="colorAccent">@color/colorTextContent_light</item>
-        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
-    </style>
-
-    <style name="MysplashTheme_dark.Common" parent="MysplashTheme_dark">
-        <item name="colorAccent">@color/colorTextContent_light</item>
-        <item name="android:textColorPrimary">@color/colorTextContent_light</item>
-    </style>
+    <style name="MysplashTheme_dark.Translucent.Me" parent="MysplashTheme_dark.Translucent" />
 
     <!-- toolbar. -->
 

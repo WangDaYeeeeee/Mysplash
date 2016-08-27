@@ -96,9 +96,9 @@ public class CollectionActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Collection);
+            setTheme(R.style.MysplashTheme_light_Translucent);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Collection);
+            setTheme(R.style.MysplashTheme_dark_Translucent);
         }
     }
 

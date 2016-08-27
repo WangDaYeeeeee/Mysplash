@@ -126,9 +126,9 @@ public class PhotoActivity extends AppCompatActivity
 
     private void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Photo);
+            setTheme(R.style.MysplashTheme_light_Translucent_Photo);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Photo);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Photo);
         }
     }
 

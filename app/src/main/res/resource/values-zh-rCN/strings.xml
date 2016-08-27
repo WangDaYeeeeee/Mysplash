@@ -80,7 +80,6 @@
 
     <string name="feedback_add_photo_to_collection_failed">添加照片失败</string>
     <string name="feedback_delete_collection_failed">删除收藏集失败</string>
-    <string name="feedback_loading_my_profile">正在获取个人信息..</string>
     <string name="feedback_name_is_required">标题不能为空</string>
 
     <!-- 菜单项. -->

@@ -10,7 +10,7 @@
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise"
-    app:cardBackgroundColor="?attr/root_color"
+    app:cardBackgroundColor="@android:color/black"
     app:cardCornerRadius="2dp"
     tools:ignore="UnusedAttribute">
 
@@ -19,6 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
+        android:alpha="0.9"
         tools:src="@drawable/design_about_app"
         tools:ignore="ContentDescription" />
 

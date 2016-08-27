@@ -8,8 +8,8 @@
     <color name="colorPrimaryDark_light">#f1f1f1</color>
     <color name="colorPrimaryDark_dark">#1a1a1a</color>
 
-    <color name="colorAccent_light">#aaffec</color>
-    <color name="colorAccent_dark">#aaffec</color>
+    <color name="colorAccent_light">@color/colorTextTitle_light</color>
+    <color name="colorAccent_dark">@color/colorTextTitle_dark</color>
 
     <!-- UI. -->
     <color name="colorRoot_light">@color/colorPrimary_light</color>

@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.ui.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.LinkUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
@@ -23,7 +25,9 @@ import com.wangdaye.mysplash._common.utils.TypefaceUtils;
  * */
 
 public class AboutActivity extends MysplashActivity
-        implements View.OnClickListener {
+        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener {
+    // widget
+    private NestedScrollView scrollView;
 
     /** <br> life cycle. */
 
@@ -45,19 +49,24 @@ public class AboutActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent);
         }
     }
 
     /** <br> UI.. */
 
     private void initWidget() {
+        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_about_swipeBackLayout);
+        swipeBackLayout.setOnSwipeListener(this);
+
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_about_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
+
+        this.scrollView = (NestedScrollView) findViewById(R.id.activity_about_scrollView);
 
         ImageView iconView = (ImageView) findViewById(R.id.container_about_appIcon);
         Glide.with(this)
@@ -120,6 +129,8 @@ public class AboutActivity extends MysplashActivity
 
     /** <br> interface. */
 
+    // on click listener.
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -169,5 +180,17 @@ public class AboutActivity extends MysplashActivity
                 LinkUtils.accessLink(this, "https://github.com/hongyangAndroid/FlowLayout");
                 break;
         }
+    }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return SwipeBackLayout.canSwipeBack(scrollView, dir);
+    }
+
+    @Override
+    public void onSwipeFinish() {
+        finish();
     }
 }

@@ -32,6 +32,7 @@ public class DownloadManager {
     private List<Mission> missionList;
 
     public static final int CANCELED_CODE = 1008;
+    public static final int FAILED_CODE = -1;
 
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
@@ -55,7 +56,7 @@ public class DownloadManager {
                         c.getString(R.string.feedback_download_repeat),
                         null,
                         MaterialToast.LENGTH_SHORT).show();
-                return -1;
+                return FAILED_CODE;
             }
         }
         Mission m = new Mission(p, type);
@@ -70,7 +71,7 @@ public class DownloadManager {
             if (missionList.get(i).photo.id.equals(photoId)) {
                 if (missionList.get(i).failed) {
                     missionList.remove(i);
-                    return -1;
+                    return FAILED_CODE;
                 } else {
                     int id = missionList.get(i).id;
                     missionList.remove(i);
@@ -78,7 +79,7 @@ public class DownloadManager {
                 }
             }
         }
-        return -1;
+        return FAILED_CODE;
     }
 
     public void cancelAll() {
@@ -142,7 +143,7 @@ public class DownloadManager {
 
     public static class Mission implements DownloadStatusListener, MaterialToast.OnActionClickListener {
         // data
-        public int id = -1;
+        public int id = FAILED_CODE;
         public Photo photo;
         public int downloadType;
         public int progress = 0;

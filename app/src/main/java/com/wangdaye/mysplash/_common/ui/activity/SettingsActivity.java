@@ -41,9 +41,9 @@ public class SettingsActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent);
         }
     }
 

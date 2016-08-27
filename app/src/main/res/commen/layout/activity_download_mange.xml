@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_download_manage_swipeBackLayout"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/root_color">
+    android:layout_height="match_parent">
 
     <com.wangdaye.mysplash._common.ui.widget.StatusBarView
         android:id="@+id/activity_download_manage_statusBar"
@@ -16,7 +17,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/root_color">
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
@@ -43,4 +45,4 @@
 
     </LinearLayout>
 
-</LinearLayout>
+</com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>

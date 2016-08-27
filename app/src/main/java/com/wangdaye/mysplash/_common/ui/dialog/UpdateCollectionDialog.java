@@ -7,7 +7,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -67,15 +66,7 @@ public class UpdateCollectionDialog extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Mysplash.getInstance().setActivityInBackstage(true);
-        Context contextThemeWrapper;
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
-            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MysplashTheme_light_Common);
-        } else {
-            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MysplashTheme_dark_Common);
-        }
-        View view = LayoutInflater.from(getActivity())
-                .cloneInContext(contextThemeWrapper)
-                .inflate(R.layout.dialog_update_collection, null, false);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_update_collection, null, false);
         initData();
         initWidget(view);
         return new AlertDialog.Builder(getActivity())

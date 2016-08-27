@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -30,7 +29,6 @@ import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import java.util.ArrayList;
@@ -44,9 +42,9 @@ import retrofit2.Response;
  * */
 
 public class SelectCollectionDialog extends DialogFragment
-        implements View.OnClickListener, CollectionMiniAdapter.OnCollectionResponseListener,
-        CollectionService.OnRequestCollectionsListener, CollectionService.OnRequestACollectionListener,
-        CollectionService.OnAddPhotoToCollectionListener {
+        implements View.OnClickListener, AuthManager.OnAuthDataChangedListener,
+        CollectionMiniAdapter.OnCollectionResponseListener, CollectionService.OnRequestCollectionsListener,
+        CollectionService.OnRequestACollectionListener, CollectionService.OnAddPhotoToCollectionListener {
     // widget
     private CircularProgressView progressView;
 
@@ -79,18 +77,10 @@ public class SelectCollectionDialog extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Mysplash.getInstance().setActivityInBackstage(true);
-        Context contextThemeWrapper;
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
-            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MysplashTheme_light_Common);
-        } else {
-            contextThemeWrapper = new ContextThemeWrapper(getActivity(), R.style.MysplashTheme_dark_Common);
-        }
-        View view = LayoutInflater.from(getActivity())
-                .cloneInContext(contextThemeWrapper)
-                .inflate(R.layout.dialog_select_collection, null, false);
+        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_select_collection, null, false);
         initData();
         initWidget(view);
-        requestCollections();
+        initRefresh();
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -100,6 +90,7 @@ public class SelectCollectionDialog extends DialogFragment
     public void onDestroy() {
         super.onDestroy();
         Mysplash.getInstance().setActivityInBackstage(false);
+        AuthManager.getInstance().removeOnWriteDataListener(this);
         service.cancel();
     }
 
@@ -209,6 +200,21 @@ public class SelectCollectionDialog extends DialogFragment
         photo = p;
     }
 
+    private void initRefresh() {
+        AuthManager.getInstance().addOnWriteDataListener(this);
+        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE) {
+            if (AuthManager.getInstance().getMe() == null) {
+                requestProfile();
+            } else {
+                requestCollections();
+            }
+        }
+    }
+
+    private void requestProfile() {
+        AuthManager.getInstance().refreshPersonalProfile();
+    }
+
     private void requestCollections() {
         service.requestUserCollections(me, page, 10, this);
     }
@@ -260,6 +266,31 @@ public class SelectCollectionDialog extends DialogFragment
                 setState(SHOW_COLLECTIONS_STATE);
                 break;
         }
+    }
+
+    // on auth data changed listener.
+
+    @Override
+    public void onWriteAccessToken() {
+        // do nothing.
+    }
+
+    @Override
+    public void onWriteUserInfo() {
+        if (me == null) {
+            me = AuthManager.getInstance().getMe();
+            requestCollections();
+        }
+    }
+
+    @Override
+    public void onWriteAvatarPath() {
+        // do nothing.
+    }
+
+    @Override
+    public void onLogout() {
+        // do nothing.
     }
 
     // on click create item listener.

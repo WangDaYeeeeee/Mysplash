@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -30,8 +32,11 @@ import retrofit2.Response;
  * */
 
 public class UpdateMeActivity extends MysplashActivity
-        implements View.OnClickListener, UserService.OnRequestMeProfileListener {
+        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener,
+        UserService.OnRequestMeProfileListener {
     // widget
+    private NestedScrollView scrollView;
+
     private CircularProgressView progressView;
     private LinearLayout contentView;
 
@@ -71,9 +76,9 @@ public class UpdateMeActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent);
         }
     }
 
@@ -86,6 +91,9 @@ public class UpdateMeActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
+        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_update_me_swipeBackLayout);
+        swipeBackLayout.setOnSwipeListener(this);
+
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_update_me_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
@@ -98,6 +106,8 @@ public class UpdateMeActivity extends MysplashActivity
             closeBtn.setImageResource(R.drawable.ic_close_dark);
         }
         closeBtn.setOnClickListener(this);
+
+        this.scrollView = (NestedScrollView) findViewById(R.id.activity_update_me_scrollView);
 
         this.progressView = (CircularProgressView) findViewById(R.id.container_update_me_progressView);
         progressView.setVisibility(View.GONE);
@@ -229,6 +239,18 @@ public class UpdateMeActivity extends MysplashActivity
                 updateProfile();
                 break;
         }
+    }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return SwipeBackLayout.canSwipeBack(scrollView, dir);
+    }
+
+    @Override
+    public void onSwipeFinish() {
+        finish();
     }
 
     // on request me profile listener.

@@ -19,9 +19,9 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.LinkUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
@@ -35,7 +35,8 @@ import retrofit2.Response;
  * */
 
 public class LoginActivity extends MysplashActivity
-        implements View.OnClickListener, AuthorizeService.OnRequestAccessTokenListener {
+        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener,
+        AuthorizeService.OnRequestAccessTokenListener {
     // widget
     private LinearLayout buttonContainer;
     private RelativeLayout progressContainer;
@@ -68,9 +69,9 @@ public class LoginActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent);
         }
     }
 
@@ -95,6 +96,9 @@ public class LoginActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
+        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_login_swipeBackLayout);
+        swipeBackLayout.setOnSwipeListener(this);
+
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_login_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
@@ -178,6 +182,18 @@ public class LoginActivity extends MysplashActivity
                 LinkUtils.accessLink(this, Mysplash.UNSPLASH_JOIN_URL);
                 break;
         }
+    }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return true;
+    }
+
+    @Override
+    public void onSwipeFinish() {
+        finish();
     }
 
     // on request access token listener.

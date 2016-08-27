@@ -109,9 +109,9 @@ public class UserActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_User);
+            setTheme(R.style.MysplashTheme_light_Translucent_User);
         } else {
-            setTheme(R.style.MysplashTheme_dark_User);
+            setTheme(R.style.MysplashTheme_dark_Translucent_User);
         }
     }
 

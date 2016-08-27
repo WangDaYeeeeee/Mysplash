@@ -1,16 +1,20 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.tools.DownloadManager;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 
 import java.util.ArrayList;
@@ -21,8 +25,11 @@ import java.util.List;
  * */
 
 public class DownloadManageActivity extends MysplashActivity
-        implements View.OnClickListener, Toolbar.OnMenuItemClickListener,
+        implements View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
         DownloadManager.OnDownloadListener, DownloadAdapter.OnDownloadResponseListener {
+    // widget
+    private RecyclerView recyclerView;
+
     // data
     private DownloadAdapter adapter;
 
@@ -54,15 +61,18 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent);
         }
     }
 
     /** <br> UI. */
 
     private void initWidget() {
+        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_download_manage_swipeBackLayout);
+        swipeBackLayout.setOnSwipeListener(this);
+
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_download_manage_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
@@ -79,7 +89,7 @@ public class DownloadManageActivity extends MysplashActivity
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnMenuItemClickListener(this);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.activity_download_manage_recyclerView);
+        this.recyclerView = (RecyclerView) findViewById(R.id.activity_download_manage_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
     }
@@ -119,6 +129,18 @@ public class DownloadManageActivity extends MysplashActivity
         return true;
     }
 
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return SwipeBackLayout.canSwipeBack(recyclerView, dir);
+    }
+
+    @Override
+    public void onSwipeFinish() {
+        finish();
+    }
+
     // on download listener.
 
     @Override
@@ -131,9 +153,19 @@ public class DownloadManageActivity extends MysplashActivity
         adapter.setItemFailed(id);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onDownloadProgress(int id, int percent) {
         adapter.setItemProgress(id, percent);
+        int position = adapter.getItemAdapterPosition(id);
+        Log.d("DMA", "position = " + position);
+        if (position != DownloadManager.FAILED_CODE) {
+            DownloadAdapter.ViewHolder holder
+                    = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+            DownloadManager.Mission mission = adapter.getItem(position);
+            ((TextView) holder.itemView.findViewById(R.id.item_download_title))
+                    .setText(mission.photo.id.toUpperCase() + " : " + mission.progress + "%");
+        }
     }
 
     // on download response listener.

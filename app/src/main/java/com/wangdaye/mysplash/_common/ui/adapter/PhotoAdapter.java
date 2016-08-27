@@ -355,19 +355,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                         if (!AuthManager.getInstance().isAuthorized()) {
                             Intent i = new Intent(a, LoginActivity.class);
                             a.startActivity(i);
-                        } else if (AuthManager.getInstance().getMe() != null) {
+                        } else {
                             SelectCollectionDialog dialog = new SelectCollectionDialog();
                             dialog.setPhoto(itemList.get(getAdapterPosition()));
                             if (own) {
                                 dialog.setOnCollectionsChangedListener(PhotoAdapter.this);
                             }
                             dialog.show(((Activity) a).getFragmentManager(), null);
-                        } else {
-                            MaterialToast.makeText(
-                                    a,
-                                    a.getString(R.string.feedback_loading_my_profile),
-                                    null,
-                                    MaterialToast.LENGTH_SHORT).show();
                         }
                     }
                     break;

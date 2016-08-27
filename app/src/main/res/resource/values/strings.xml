@@ -102,7 +102,6 @@
 
     <string name="feedback_add_photo_to_collection_failed">Cannot add photo to collection.</string>
     <string name="feedback_delete_collection_failed">Cannot delete collection.</string>
-    <string name="feedback_loading_my_profile">Loading profile..</string>
     <string name="feedback_name_is_required">Name is required.</string>
 
     <!-- menu. -->
