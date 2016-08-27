@@ -65,6 +65,7 @@
     <string name="feedback_need_permission">Failed to get permission.</string>
     <string name="feedback_choose_share_app">Share photo</string>
     <string name="feedback_choose_wallpaper_app">Set wallpaper</string>
+    <string name="feedback_download_repeat">Download repeat.</string>
 
     <string name="feedback_size">Size</string>
     <string name="feedback_color">Color</string>
@@ -125,6 +126,8 @@
     <string name="action_open_portfolio">Open portfolio link</string>
 
     <string name="action_edit">Edit</string>
+
+    <string name="action_cancel_all">Cancel All</string>
 
     <!-- transition name. -->
     <string name="transition_photo_image">photo_image</string>

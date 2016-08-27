@@ -33,6 +33,7 @@ import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.DrawerView;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
 import com.wangdaye.mysplash._common.ui.activity.AboutActivity;
+import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -345,7 +346,8 @@ public class MainActivity extends MysplashActivity
                 break;
 
             case R.id.action_download_manage:
-                // TODO: 2016/8/26 start download manage activity.
+                Intent d = new Intent(this, DownloadManageActivity.class);
+                startActivity(d);
                 break;
 
             case R.id.action_settings:

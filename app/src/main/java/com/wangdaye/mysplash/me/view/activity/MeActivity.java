@@ -179,10 +179,10 @@ public class MeActivity extends MysplashActivity
 
         this.toolbar = (Toolbar) findViewById(R.id.activity_me_toolbar);
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            toolbar.inflateMenu(R.menu.activity_me_light);
+            toolbar.inflateMenu(R.menu.activity_me_toolbar_light);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
         } else {
-            toolbar.inflateMenu(R.menu.activity_me_dark);
+            toolbar.inflateMenu(R.menu.activity_me_toolbar_dark);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
         }
         toolbar.setOnMenuItemClickListener(this);

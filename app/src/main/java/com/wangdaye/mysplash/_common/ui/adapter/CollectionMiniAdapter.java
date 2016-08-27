@@ -24,7 +24,6 @@ import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -127,10 +126,6 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
             }
-            holder.card.setBackgroundColor(
-                    ColorUtils.calcCardBackgroundColor(
-                            c,
-                            itemList.get(position - 1).cover_photo.color));
         } else {
             holder.image.setImageResource(R.color.colorTextContent_light);
             holder.title.setText(itemList.get(position - 1).title.toUpperCase());
@@ -141,10 +136,6 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             holder.lockIcon.setVisibility(View.VISIBLE);
         } else {
             holder.lockIcon.setVisibility(View.GONE);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.image.setTransitionName(String.valueOf(itemList.get(position - 1).id));
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 import java.io.File;
@@ -14,7 +15,7 @@ import java.io.File;
 
 public class FileUtils {
 
-    public static boolean createFile(Context c) {
+    public static boolean createDownloadPath(Context c) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             Toast.makeText(c,
                     c.getString(R.string.feedback_no_sd_card),
@@ -41,5 +42,10 @@ public class FileUtils {
             }
         }
         return true;
+    }
+
+    public static boolean isFileExist(String photoId) {
+        File f = new File(Mysplash.DOWNLOAD_PATH + photoId + Mysplash.DOWNLOAD_FORMAT);
+        return f.exists();
     }
 }

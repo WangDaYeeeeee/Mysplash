@@ -162,13 +162,13 @@ public class CollectionActivity extends MysplashActivity
         if (ThemeUtils.getInstance(this).isLightTheme()) {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
             if (Mysplash.getInstance().isMyOwnCollection()) {
-                toolbar.inflateMenu(R.menu.activity_collection_light);
+                toolbar.inflateMenu(R.menu.activity_collection_toolbar_light);
                 toolbar.setOnMenuItemClickListener(this);
             }
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
             if (Mysplash.getInstance().isMyOwnCollection()) {
-                toolbar.inflateMenu(R.menu.activity_collection_dark);
+                toolbar.inflateMenu(R.menu.activity_collection_toolbar_dark);
                 toolbar.setOnMenuItemClickListener(this);
             }
         }

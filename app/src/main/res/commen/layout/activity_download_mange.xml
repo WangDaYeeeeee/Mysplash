@@ -13,7 +13,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark" />
 
-    <android.support.design.widget.CoordinatorLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -28,18 +29,18 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:title="@string/action_download_manage"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/MysplashPopupMenuTheme"
                 tools:ignore="UnusedAttribute" />
 
         </android.support.design.widget.AppBarLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_download_manage_container"
+            android:id="@+id/activity_download_manage_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:paddingTop="@dimen/little_margin"
+            android:clipToPadding="false" />
 
-    </android.support.design.widget.CoordinatorLayout>
+    </LinearLayout>
 
 </LinearLayout>

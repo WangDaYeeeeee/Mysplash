@@ -80,10 +80,10 @@ public class CategoryFragment extends Fragment
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
         toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryManageModel.getCategoryId()));
         if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
-            toolbar.inflateMenu(R.menu.fragment_category_light);
+            toolbar.inflateMenu(R.menu.fragment_category_toolbar_light);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
         } else {
-            toolbar.inflateMenu(R.menu.fragment_category_dark);
+            toolbar.inflateMenu(R.menu.fragment_category_toolbar_dark);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
         }
         toolbar.setOnMenuItemClickListener(this);

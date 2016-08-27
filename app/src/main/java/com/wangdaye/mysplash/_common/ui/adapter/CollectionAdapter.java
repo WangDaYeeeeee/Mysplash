@@ -30,7 +30,6 @@ import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
@@ -128,19 +127,11 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
             }
-            holder.background.setBackgroundColor(
-                    ColorUtils.calcCardBackgroundColor(
-                            a,
-                            itemList.get(position).cover_photo.color));
         } else {
             holder.image.setImageResource(R.color.colorTextContent_light);
             holder.title.setText(itemList.get(position).title.toUpperCase());
             int photoNum = itemList.get(position).total_photos;
             holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.image.setTransitionName(String.valueOf(itemList.get(position).id));
         }
     }
 

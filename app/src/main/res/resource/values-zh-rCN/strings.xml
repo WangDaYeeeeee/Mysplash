@@ -43,6 +43,7 @@
     <string name="feedback_need_permission">获取权限失败</string>
     <string name="feedback_choose_share_app">分享照片</string>
     <string name="feedback_choose_wallpaper_app">设为壁纸</string>
+    <string name="feedback_download_repeat">下载任务重复</string>
 
     <string name="feedback_size">尺寸</string>
     <string name="feedback_color">颜色</string>
@@ -103,6 +104,8 @@
     <string name="action_open_portfolio">个人主页</string>
 
     <string name="action_edit">编辑</string>
+
+    <string name="action_cancel_all">全部取消</string>
 
     <!-- 设置项. -->
     <string name="settings_category_basic">基础</string>

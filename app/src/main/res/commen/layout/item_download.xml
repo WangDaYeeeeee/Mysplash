@@ -26,6 +26,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <ImageButton
+            android:id="@+id/item_download_cancelBtn"
+            android:src="@drawable/ic_item_close"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="@dimen/little_margin"
+            android:layout_marginRight="@dimen/little_margin"
+            android:layout_marginBottom="@dimen/little_margin"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <ImageButton
+            android:id="@+id/item_download_retryBtn"
+            android:src="@drawable/ic_item_retry"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="@dimen/little_margin"
+            android:layout_marginBottom="@dimen/little_margin"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/item_download_cancelBtn"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
         <TextView
             android:id="@+id/item_download_title"
             android:textColor="@android:color/white"
@@ -39,8 +64,11 @@
             android:layout_marginLeft="@dimen/normal_margin"
             android:layout_marginRight="@dimen/normal_margin"
             android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/item_download_retryBtn"
+            android:layout_alignParentLeft="true"
             style="@style/title_text"
-            tools:text="LET THE INSPIRATION BEGIN"/>
+            tools:text="30adf9f8sla98fgs : 92%"
+            tools:ignore="RtlHardcoded" />
 
     </RelativeLayout>
 

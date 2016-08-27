@@ -15,6 +15,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,9 @@ public class DownloadManager {
 
     // data
     private List<Mission> missionList;
+
     public static final int CANCELED_CODE = 1008;
+
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
     public static final int WALLPAPER_TYPE = 3;
@@ -44,6 +47,17 @@ public class DownloadManager {
     /** <br> data. */
 
     public int add(Photo p, int type, OnDownloadListener l) {
+        for (int i = 0; i < missionList.size(); i ++) {
+            if (missionList.get(i).photo.id.equals(p.id)) {
+                Context c = Mysplash.getInstance().getActivityList().get(0);
+                MaterialToast.makeText(
+                        c,
+                        c.getString(R.string.feedback_download_repeat),
+                        null,
+                        MaterialToast.LENGTH_SHORT).show();
+                return -1;
+            }
+        }
         Mission m = new Mission(p, type);
         m.id = manager.add(m.request);
         m.addOnDownloadListener(l);
@@ -51,14 +65,20 @@ public class DownloadManager {
         return m.id;
     }
 
-    public int cancel(int id) {
+    public int cancel(String photoId) {
         for (int i = 0; i < missionList.size(); i ++) {
-            if (missionList.get(i).id == id) {
-                missionList.remove(i);
-                break;
+            if (missionList.get(i).photo.id.equals(photoId)) {
+                if (missionList.get(i).failed) {
+                    missionList.remove(i);
+                    return -1;
+                } else {
+                    int id = missionList.get(i).id;
+                    missionList.remove(i);
+                    return manager.cancel(id);
+                }
             }
         }
-        return manager.cancel(id);
+        return -1;
     }
 
     public void cancelAll() {
@@ -70,16 +90,21 @@ public class DownloadManager {
         missionList.remove(m);
     }
 
-    public void retry(int downloadId, OnDownloadListener l) {
+    public Mission retry(String photoId, OnDownloadListener l) {
         for (int i = 0; i < missionList.size(); i ++) {
-            if (missionList.get(i).id == downloadId) {
+            if (missionList.get(i).photo.id.equals(photoId)) {
                 Photo p = missionList.get(i).photo;
                 int type = missionList.get(i).downloadType;
                 missionList.remove(i);
                 add(p, type, l);
-                return;
+                return missionList.get(missionList.size() - 1);
             }
         }
+        return null;
+    }
+
+    public List<Mission> getMissionList() {
+        return missionList;
     }
 
     /** <br> interface. */
@@ -88,15 +113,6 @@ public class DownloadManager {
         void onDownloadComplete(int id);
         void onDownloadFailed(int id, int code);
         void onDownloadProgress(int id, int percent);
-    }
-
-    public void addOnDownloadListener(int downloadId, OnDownloadListener l) {
-        for (int i = 0; i < missionList.size(); i ++) {
-            if (missionList.get(i).id == downloadId) {
-                missionList.get(i).addOnDownloadListener(l);
-                return;
-            }
-        }
     }
 
     public void addOnDownloadListener(OnDownloadListener l) {
@@ -124,11 +140,12 @@ public class DownloadManager {
 
     /** <br> inner class. */
 
-    public class Mission implements DownloadStatusListener, MaterialToast.OnActionClickListener {
+    public static class Mission implements DownloadStatusListener, MaterialToast.OnActionClickListener {
         // data
         public int id = -1;
         public Photo photo;
         public int downloadType;
+        public int progress = 0;
         public boolean failed = false;
         public DownloadRequest request;
         public List<OnDownloadListener> listenerList;
@@ -170,12 +187,16 @@ public class DownloadManager {
 
         @Override
         public void onDownloadComplete(int id) {
+            if (!FileUtils.isFileExist(photo.id)) {
+                return;
+            }
+
             for (int i = 0; i < listenerList.size(); i ++) {
                 listenerList.get(i).onDownloadComplete(id);
             }
             listenerList.clear();
 
-            Uri file = Uri.parse(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT);
+            Uri file = Uri.parse("file://" + Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT);
             Intent broadcast = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, file);
             Mysplash.getInstance().sendBroadcast(broadcast);
             switch (downloadType) {
@@ -214,7 +235,7 @@ public class DownloadManager {
                     break;
                 }
             }
-            deleteMission(this);
+            DownloadManager.getInstance().deleteMission(this);
         }
 
         @Override
@@ -224,7 +245,7 @@ public class DownloadManager {
             }
             if (i1 == CANCELED_CODE) {
                 listenerList.clear();
-                deleteMission(this);
+                DownloadManager.getInstance().deleteMission(this);
             } else {
                 failed = true;
                 Context c = Mysplash.getInstance().getActivityList().get(0);
@@ -240,6 +261,7 @@ public class DownloadManager {
 
         @Override
         public void onProgress(int id, long l, long l1, int i1) {
+            progress = i1;
             for (int i = 0; i < listenerList.size(); i ++) {
                 listenerList.get(i).onDownloadProgress(id, i1);
             }

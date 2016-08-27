@@ -1,29 +1,13 @@
 package com.wangdaye.mysplash.photo.presenter.activity;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
-import android.os.Environment;
-import android.preference.PreferenceManager;
-
-import com.thin.downloadmanager.DownloadRequest;
-import com.thin.downloadmanager.DownloadStatusListener;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.tools.DownloadManager;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.i.view.DownloadView;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.utils.FileUtils;
 import com.wangdaye.mysplash.photo.model.activity.DownloadObject;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * Download implementor.
@@ -69,7 +53,7 @@ public class DownloadImplementor
 
     @Override
     public void cancelDownloading() {
-        DownloadManager.getInstance().cancel(model.getDownloadId());
+        DownloadManager.getInstance().cancel(((Photo) model.getDownloadKey()).id);
         model.setDownloading(false);
     }
 
@@ -86,7 +70,7 @@ public class DownloadImplementor
     /** <br> utils. */
 
     private void doDownload(int type) {
-        if (FileUtils.createFile(Mysplash.getInstance())) {
+        if (FileUtils.createDownloadPath(Mysplash.getInstance())) {
             model.setDownloading(true);
             model.setDialogShowing(true);
             view.showDownloadDialog();
