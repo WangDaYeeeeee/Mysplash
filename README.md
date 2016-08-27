@@ -6,7 +6,7 @@
 
 -----
 
-## <p id="english">About Mysplash</p>
+## 
   
 ### Introduction
 
@@ -37,7 +37,7 @@
 
 -----
 
-## <p id="chinese">关于Mysplash</p>
+## 
   
 ### 简介
 
