@@ -1,4 +1,4 @@
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/preview_total.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/work/cover_github.png)
 
 ## <a href="#chinese">中文</a> | <a href="#english">English</a>
 * [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
