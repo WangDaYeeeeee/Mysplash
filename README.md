@@ -19,7 +19,6 @@
 * Support download raw photos.
 
 ### Plan
-* Add download manag view.
 * tweak UI.
 * add Daily pictures.
 * add Daily wallpaper.
@@ -55,7 +54,6 @@
 * 安装包从v1.0.0开始收录
 
 ### 近期计划
-* 下载管理
 * UI细节调整
 * 优化代码层对activity生命周期的管理
 * 每日一图功能
@@ -68,3 +66,15 @@
 * [酷安Mysplash主页](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 * [Google Play Mysplash主页](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 * 欢迎给作者提出意见、反馈bug、建议功能等
+
+-----
+
+## PREVIEW
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_home.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_photo.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_user.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_collection.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_search.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_category.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_download.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_about.png)
