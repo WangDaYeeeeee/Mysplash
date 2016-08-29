@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -158,7 +157,6 @@ public class DownloadManageActivity extends MysplashActivity
     public void onDownloadProgress(int id, int percent) {
         adapter.setItemProgress(id, percent);
         int position = adapter.getItemAdapterPosition(id);
-        Log.d("DMA", "position = " + position);
         if (position != DownloadManager.FAILED_CODE) {
             DownloadAdapter.ViewHolder holder
                     = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);

@@ -12,6 +12,7 @@
     android:stateListAnimator="@animator/touch_rise"
     app:cardBackgroundColor="@android:color/black"
     app:cardCornerRadius="2dp"
+    app:cardPreventCornerOverlap="true"
     tools:ignore="UnusedAttribute">
 
     <ImageView

@@ -46,6 +46,7 @@ public class PhotosImplementor
             } else {
                 model.setLoading(true);
             }
+            page = refresh ? 1 : page + 1;
             switch (model.getPhotosType()) {
                 case PhotosObject.PHOTOS_TYPE_NORMAL:
                     requestCollectionPhotos(c, (Collection) model.getRequestKey(), page, refresh);

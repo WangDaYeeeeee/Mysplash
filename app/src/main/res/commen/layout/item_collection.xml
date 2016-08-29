@@ -4,7 +4,7 @@
     android:id="@+id/item_collection_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/black"
+    android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise"
     tools:layout_marginTop="24dp"
@@ -14,7 +14,6 @@
         android:id="@+id/item_collection_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:alpha="0.9"
         android:scaleType="centerCrop"
         tools:src="@drawable/design_about_app" />
 

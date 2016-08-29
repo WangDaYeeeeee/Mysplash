@@ -26,6 +26,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash._common.data.data.Collection;
@@ -127,6 +128,10 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
             }
+            holder.background.setBackgroundColor(
+                    ColorUtils.calcCardBackgroundColor(
+                            a,
+                            itemList.get(position).cover_photo.color));
         } else {
             holder.image.setImageResource(R.color.colorTextContent_light);
             holder.title.setText(itemList.get(position).title.toUpperCase());

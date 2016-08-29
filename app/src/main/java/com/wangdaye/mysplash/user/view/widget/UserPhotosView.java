@@ -301,6 +301,10 @@ public class UserPhotosView extends FrameLayout
 
     @Override
     public void scrollToTop() {
+        int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+        if (firstVisibleItem > 5) {
+            recyclerView.scrollToPosition(5);
+        }
         recyclerView.smoothScrollToPosition(0);
     }
 
