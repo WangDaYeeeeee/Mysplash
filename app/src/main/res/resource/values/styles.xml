@@ -60,6 +60,16 @@
 
     <style name="MysplashTheme_dark.Translucent.Me" parent="MysplashTheme_dark.Translucent" />
 
+    <!-- settings activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Settings" parent="MysplashTheme_light.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme_light</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.Settings" parent="MysplashTheme_dark.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme_dark</item>
+    </style>
+
     <!-- toolbar. -->
 
     <style name="MysplashToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
@@ -141,6 +151,25 @@
     <style name="material_toast">
         <item name="android:windowEnterAnimation">@anim/toast_in</item>
         <item name="android:windowExitAnimation">@anim/toast_out</item>
+    </style>
+
+    <!-- preference -->
+    <style name="MysplashDialogTheme_light" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorRoot_light</item>
+        <item name="android:textColorPrimary">@color/colorTextTitle_light</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextContent_light</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_light</item>
+        <item name="colorAccent">@color/colorTextTitle_light</item>
+        <item name="android:layout_width">match_parent</item>
+    </style>
+
+    <style name="MysplashDialogTheme_dark" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorRoot_dark</item>
+        <item name="android:textColorPrimary">@color/colorTextTitle_dark</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextContent_dark</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
+        <item name="colorAccent">@color/colorTextTitle_dark</item>
+        <item name="android:layout_width">match_parent</item>
     </style>
 
 </resources>

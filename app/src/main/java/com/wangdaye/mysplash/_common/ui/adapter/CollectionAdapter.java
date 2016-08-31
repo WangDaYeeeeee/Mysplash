@@ -69,15 +69,30 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.title.setText("");
         holder.subtitle.setText("");
+        holder.image.setShowShadow(false);
         if (itemList.get(position).cover_photo != null) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 Glide.with(a)
                         .load(itemList.get(position).cover_photo.urls.regular)
+                        .listener(new RequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model,
+                                                           Target<GlideDrawable> target,
+                                                           boolean isFromMemoryCache, boolean isFirstResource) {
+                                holder.title.setText(itemList.get(position).title.toUpperCase());
+                                int photoNum = itemList.get(position).total_photos;
+                                holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
+                                holder.image.setShowShadow(true);
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
-                holder.title.setText(itemList.get(position).title.toUpperCase());
-                int photoNum = itemList.get(position).total_photos;
-                holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
             } else {
                 Glide.with(a)
                         .load(itemList.get(position).cover_photo.urls.regular)
@@ -117,6 +132,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                                 holder.title.setText(itemList.get(position).title.toUpperCase());
                                 int photoNum = itemList.get(position).total_photos;
                                 holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
+                                holder.image.setShowShadow(true);
                                 return false;
                             }
 

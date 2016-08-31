@@ -66,7 +66,7 @@
 
         <activity
             android:name="._common.ui.activity.SettingsActivity"
-            android:theme="@style/MysplashTheme_light.Translucent"
+            android:theme="@style/MysplashTheme_light.Translucent.Settings"
             android:label="@string/action_settings" />
 
         <activity

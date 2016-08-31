@@ -83,6 +83,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.title.setText("");
+        holder.image.setShowShadow(false);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
@@ -96,6 +97,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             String titleTxt = "By " + itemList.get(position).user.name + ", On "
                                     + itemList.get(position).created_at.split("T")[0];
                             holder.title.setText(titleTxt);
+                            holder.image.setShowShadow(true);
                             return false;
                         }
 
@@ -146,6 +148,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             String titleTxt = "By " + itemList.get(position).user.name + ", On "
                                     + itemList.get(position).created_at.split("T")[0];
                             holder.title.setText(titleTxt);
+                            holder.image.setShowShadow(true);
                             return false;
                         }
 

@@ -1,25 +1,43 @@
 package com.wangdaye.mysplash._common.ui.widget;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Freedom image view.
  * */
 
 public class FreedomImageView extends ImageView {
+    // widget
+    private Paint paint;
+
     // data
     private float width = 1;
     private float height = 0.666F;
     private boolean coverMode = false;
+    private boolean showShadow = false;
+    private String textPosition;
+    private int textHeight;
+
+    private static final String POSITION_NONE = "none";
+    private static final String POSITION_TOP = "top";
+    private static final String POSITION_BOTTOM = "bottom";
 
     /** <br> life cycle. */
 
@@ -45,9 +63,22 @@ public class FreedomImageView extends ImageView {
 
     private void initialize(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.FreedomImageView, defStyleAttr, defStyleRes);
+
         this.coverMode = a.getBoolean(R.styleable.FreedomImageView_fiv_cover_mode, false);
+
         boolean existPhoto = a.getBoolean(R.styleable.FreedomImageView_fiv_exist_photo, false);
+
+        this.textPosition = a.getString(R.styleable.FreedomImageView_fiv_text_position);
+        if (TextUtils.isEmpty(textPosition)
+                || (!textPosition.equals(POSITION_TOP)
+                && !textPosition.equals(POSITION_BOTTOM)
+                && !textPosition.equals(POSITION_NONE))) {
+            textPosition = POSITION_NONE;
+        }
+
         a.recycle();
+
+        this.textHeight = (int) new DisplayUtils(getContext()).dpToPx(72);
 
         if (existPhoto) {
             Photo p = Mysplash.getInstance().getPhoto();
@@ -56,6 +87,8 @@ public class FreedomImageView extends ImageView {
                 height = p.height;
             }
         }
+
+        this.paint = new Paint();
     }
 
     /** <br> UI. */
@@ -80,10 +113,53 @@ public class FreedomImageView extends ImageView {
         }
     }
 
+    @SuppressLint("DrawAllocation")
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (showShadow) {
+            switch (textPosition) {
+                case POSITION_NONE:
+                    break;
+
+                case POSITION_TOP:
+                    paint.setShader(new LinearGradient(
+                            0, 0,
+                            0, textHeight,
+                            new int[] {
+                                    Color.argb((int) (255 * 0.25), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.1), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.03), 0, 0, 0),
+                                    Color.argb(0, 0, 0, 0)},
+                            null,
+                            Shader.TileMode.CLAMP));
+                    canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
+                    break;
+
+                case POSITION_BOTTOM:
+                    paint.setShader(new LinearGradient(
+                            0, getMeasuredHeight(),
+                            0, getMeasuredHeight() - textHeight,
+                            new int[] {
+                                    Color.argb((int) (255 * 0.25), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.1), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.03), 0, 0, 0),
+                                    Color.argb(0, 0, 0, 0)},
+                            null,
+                            Shader.TileMode.CLAMP));
+                    canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
+                    break;
+            }
+        }
+    }
+
     /** <br> data. */
 
     public void setSize(float width, float height) {
         this.width = width;
         this.height = height;
+    }
+
+    public void setShowShadow(boolean show) {
+        this.showShadow = show;
     }
 }

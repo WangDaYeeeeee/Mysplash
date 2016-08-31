@@ -109,8 +109,11 @@
                         <ImageButton
                             android:id="@+id/activity_photo_downloadBtn"
                             android:src="@drawable/ic_download_light"
+                            android:layout_width="@dimen/large_icon_size"
+                            android:layout_height="@dimen/large_icon_size"
+                            android:padding="@dimen/normal_margin"
                             android:layout_centerHorizontal="true"
-                            style="@style/material_image_button"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             tools:ignore="ContentDescription" />
 
                         <TextView
@@ -134,8 +137,11 @@
                         <ImageButton
                             android:id="@+id/activity_photo_shareBtn"
                             android:src="@drawable/ic_send_light"
+                            android:layout_width="@dimen/large_icon_size"
+                            android:layout_height="@dimen/large_icon_size"
+                            android:padding="@dimen/normal_margin"
                             android:layout_centerHorizontal="true"
-                            style="@style/material_image_button"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             tools:ignore="ContentDescription" />
 
                         <TextView
@@ -159,8 +165,11 @@
                         <ImageButton
                             android:id="@+id/activity_photo_wallBtn"
                             android:src="@drawable/ic_mountain_light"
+                            android:layout_width="@dimen/large_icon_size"
+                            android:layout_height="@dimen/large_icon_size"
+                            android:padding="@dimen/normal_margin"
                             android:layout_centerHorizontal="true"
-                            style="@style/material_image_button"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             tools:ignore="ContentDescription" />
 
                         <TextView

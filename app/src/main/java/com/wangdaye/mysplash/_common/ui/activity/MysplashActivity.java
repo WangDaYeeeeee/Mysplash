@@ -23,9 +23,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Mysplash.getInstance().addActivity(this);
         loadLanguage();
         setTheme();
-        Mysplash.getInstance().addActivity(this);
+        DisplayUtils.setWindowTop(this);
         DisplayUtils.setStatusBarTextDark(this);
     }
 

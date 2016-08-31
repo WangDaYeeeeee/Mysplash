@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.support.v4.content.ContextCompat;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
@@ -55,12 +56,24 @@ public class DisplayUtils {
         return 0;
     }
 
-    public static void setWindowTop(Activity activity, String name, int color) {
+    public static void setWindowTop(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher);
-            ActivityManager.TaskDescription taskDescription
-                    = new ActivityManager.TaskDescription(name, icon, color);
-            activity.setTaskDescription(taskDescription);
+            if (ThemeUtils.getInstance(activity).isLightTheme()) {
+                ActivityManager.TaskDescription taskDescription
+                        = new ActivityManager.TaskDescription(
+                        activity.getString(R.string.app_name),
+                        icon,
+                        ContextCompat.getColor(activity, R.color.colorPrimary_light));
+                activity.setTaskDescription(taskDescription);
+            } else {
+                ActivityManager.TaskDescription taskDescription
+                        = new ActivityManager.TaskDescription(
+                        activity.getString(R.string.app_name),
+                        icon,
+                        ContextCompat.getColor(activity, R.color.colorPrimary_dark));
+                activity.setTaskDescription(taskDescription);
+            }
             icon.recycle();
         }
     }
