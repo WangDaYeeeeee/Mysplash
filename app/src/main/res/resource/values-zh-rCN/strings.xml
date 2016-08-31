@@ -59,7 +59,7 @@
 
     <string name="feedback_request_token_failed">获取访问权限失败</string>
     <string name="feedback_login_text">登录你的Unsplash账号</string>
-    <string name="feedback_re_login">请重新登录</string>
+    <string name="feedback_please_login">请登录您的账号</string>
 
     <string name="feedback_edit_my_profile">编辑个人信息</string>
     <string name="feedback_edit_username">用户名 (字母、数字、下划线)</string>

@@ -103,9 +103,10 @@ public class AuthManager
 
         if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
                 && !TextUtils.isEmpty(token)) {
+
             MaterialToast.makeText(
                     Mysplash.getInstance().getActivityList().get(0),
-                    Mysplash.getInstance().getString(R.string.feedback_re_login),
+                    Mysplash.getInstance().getString(R.string.feedback_please_login),
                     null,
                     MaterialToast.LENGTH_LONG
             ).show();
@@ -270,6 +271,11 @@ public class AuthManager
         if (instance == null) {
             instance = new AuthManager();
         }
+        return instance;
+    }
+
+    public static AuthManager reBuild() {
+        instance = new AuthManager();
         return instance;
     }
 

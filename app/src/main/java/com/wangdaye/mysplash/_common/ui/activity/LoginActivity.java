@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -121,9 +122,15 @@ public class LoginActivity extends MysplashActivity
         TypefaceUtils.setTypeface(this, ((TextView) findViewById(R.id.activity_login_content)));
 
         Button loginBtn = (Button) findViewById(R.id.activity_login_loginBtn);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            loginBtn.setTextColor(Color.WHITE);
+        }
         loginBtn.setOnClickListener(this);
 
         Button joinBtn = (Button) findViewById(R.id.activity_login_joinBtn);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            joinBtn.setTextColor(Color.WHITE);
+        }
         joinBtn.setOnClickListener(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

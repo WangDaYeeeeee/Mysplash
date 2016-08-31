@@ -97,11 +97,38 @@
         <item name="android:windowSharedElementReturnTransition">@transition/me_activity_shared_return</item>
     </style>
 
+    <!-- settings activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Settings" parent="MysplashTheme_light.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme_light</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.Settings" parent="MysplashTheme_dark.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme_dark</item>
+    </style>
+
     <!-- popup. -->
 
     <style name="material_popup_menu"
         parent="@android:style/Widget.Material.Light.PopupMenu.Overflow">
         <item name="android:popupBackground">?attr/root_color</item>
+    </style>
+
+    <!-- dialog. -->
+    <style name="MysplashDialogTheme_light" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorRoot_light</item>
+        <item name="android:textColorPrimary">@color/colorTextTitle_light</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextContent_light</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_light</item>
+        <item name="colorAccent">@color/colorTextTitle_light</item>
+    </style>
+
+    <style name="MysplashDialogTheme_dark" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorRoot_dark</item>
+        <item name="android:textColorPrimary">@color/colorTextTitle_dark</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextContent_dark</item>
+        <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
+        <item name="colorAccent">@color/colorTextTitle_dark</item>
     </style>
 
 </resources>

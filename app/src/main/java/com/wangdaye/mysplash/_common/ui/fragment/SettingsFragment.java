@@ -33,7 +33,7 @@ public class SettingsFragment extends PreferenceFragment
         initView();
     }
 
-    /** <br> view. */
+    /** <br> UI. */
 
     private void initView() {
         initBasicPart();

@@ -33,7 +33,6 @@ public class FreedomImageView extends ImageView {
     private boolean coverMode = false;
     private boolean showShadow = false;
     private String textPosition;
-    private int textHeight;
 
     private static final String POSITION_NONE = "none";
     private static final String POSITION_TOP = "top";
@@ -78,8 +77,6 @@ public class FreedomImageView extends ImageView {
 
         a.recycle();
 
-        this.textHeight = (int) new DisplayUtils(getContext()).dpToPx(72);
-
         if (existPhoto) {
             Photo p = Mysplash.getInstance().getPhoto();
             if (p != null) {
@@ -122,12 +119,13 @@ public class FreedomImageView extends ImageView {
                     break;
 
                 case POSITION_TOP:
+                    int topTextHeight = (int) new DisplayUtils(getContext()).dpToPx(128);
                     paint.setShader(new LinearGradient(
                             0, 0,
-                            0, textHeight,
+                            0, topTextHeight,
                             new int[] {
                                     Color.argb((int) (255 * 0.25), 0, 0, 0),
-                                    Color.argb((int) (255 * 0.1), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.09), 0, 0, 0),
                                     Color.argb((int) (255 * 0.03), 0, 0, 0),
                                     Color.argb(0, 0, 0, 0)},
                             null,
@@ -136,11 +134,12 @@ public class FreedomImageView extends ImageView {
                     break;
 
                 case POSITION_BOTTOM:
+                    int bottomTextHeight = (int) new DisplayUtils(getContext()).dpToPx(72);
                     paint.setShader(new LinearGradient(
                             0, getMeasuredHeight(),
-                            0, getMeasuredHeight() - textHeight,
+                            0, getMeasuredHeight() - bottomTextHeight,
                             new int[] {
-                                    Color.argb((int) (255 * 0.25), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.3), 0, 0, 0),
                                     Color.argb((int) (255 * 0.1), 0, 0, 0),
                                     Color.argb((int) (255 * 0.03), 0, 0, 0),
                                     Color.argb(0, 0, 0, 0)},

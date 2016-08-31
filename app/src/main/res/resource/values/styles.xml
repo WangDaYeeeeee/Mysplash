@@ -153,23 +153,23 @@
         <item name="android:windowExitAnimation">@anim/toast_out</item>
     </style>
 
-    <!-- preference -->
-    <style name="MysplashDialogTheme_light" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/colorRoot_light</item>
+    <!-- dialog. -->
+    <style name="MysplashDialogTheme_light" parent="@android:style/Theme.Holo.Light.Dialog">
         <item name="android:textColorPrimary">@color/colorTextTitle_light</item>
         <item name="android:textColorAlertDialogListItem">@color/colorTextContent_light</item>
         <item name="android:textColorSecondary">@color/colorTextContent_light</item>
         <item name="colorAccent">@color/colorTextTitle_light</item>
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
-    <style name="MysplashDialogTheme_dark" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="android:background">@color/colorRoot_dark</item>
+    <style name="MysplashDialogTheme_dark" parent="@android:style/Theme.Holo.Dialog">
         <item name="android:textColorPrimary">@color/colorTextTitle_dark</item>
         <item name="android:textColorAlertDialogListItem">@color/colorTextContent_dark</item>
         <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
         <item name="colorAccent">@color/colorTextTitle_dark</item>
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
 </resources>

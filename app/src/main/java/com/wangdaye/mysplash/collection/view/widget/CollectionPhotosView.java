@@ -177,8 +177,8 @@ public class CollectionPhotosView extends FrameLayout
         this.photosModel = new PhotosObject(
                 getContext(),
                 Mysplash.getInstance().getCollection(),
-                Mysplash.getInstance().getCollection().curated ?
-                        PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
+                Mysplash.getInstance().getCollection().curated
+                        ? PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }

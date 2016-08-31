@@ -340,7 +340,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     break;
 
                 case R.id.item_photo_likeButton:
-                    if (AuthManager.getInstance().isAuthorized()) {
+                    if (!AuthManager.getInstance().isAuthorized()) {
+                        Intent i = new Intent(a, LoginActivity.class);
+                        a.startActivity(i);
+                    } else {
                         setLikeForAPhoto(getAdapterPosition());
                         if (itemList.get(getAdapterPosition()).liked_by_user) {
                             itemList.get(getAdapterPosition()).liked_by_user = false;

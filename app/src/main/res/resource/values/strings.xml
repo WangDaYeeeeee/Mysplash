@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.1.4</string>
+    <string name="version_code">2.1.7</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -81,7 +81,7 @@
 
     <string name="feedback_request_token_failed">Request access token failed.</string>
     <string name="feedback_login_text">Login to your Unsplash account.</string>
-    <string name="feedback_re_login">Please login again.</string>
+    <string name="feedback_please_login">Please login.</string>
 
     <string name="feedback_edit_my_profile">Edit profile</string>
     <string name="feedback_edit_username">Username (letters, numbers, underscores)</string>

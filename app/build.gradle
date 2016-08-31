@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 214
-        versionName "2.1.4"
+        versionCode 217
+        versionName "2.1.7"
     }
     sourceSets {
         main {
@@ -54,4 +54,5 @@ dependencies {
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.zhy:flowlayout-lib:1.0.3'
     compile files('libs/thindownloadmanager-1.0.1.jar')
+    compile 'com.github.johnpersano:supertoasts:2.0'
 }

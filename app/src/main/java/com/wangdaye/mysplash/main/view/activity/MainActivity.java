@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -231,10 +232,9 @@ public class MainActivity extends MysplashActivity
     /** <br> model. */
 
     private void initModel() {
+        AuthManager.reBuild().addOnWriteDataListener(this);
         this.fragmentManageModel = new FragmentManageObject();
         this.drawerModel = new DrawerObject();
-        AuthManager.getInstance().addOnWriteDataListener(this);
-        // AuthManager.getInstance().refreshPersonalProfile();
     }
 
     /** <br> interface. */
@@ -258,7 +258,7 @@ public class MainActivity extends MysplashActivity
     // on navigation item selected listener.
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerPresenter.touchNavItem(item.getItemId());
         return true;
     }

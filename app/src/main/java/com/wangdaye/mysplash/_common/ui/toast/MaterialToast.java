@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.SafeHandler;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -26,8 +27,8 @@ import java.util.TimerTask;
 public class MaterialToast
         implements View.OnClickListener, SafeHandler.HandlerContainer {
     // widget
-    private WindowManager windowManager;
     private View toastView;
+    private WindowManager windowManager;
     private WindowManager.LayoutParams params;
     private Timer timer;
 
@@ -47,7 +48,8 @@ public class MaterialToast
     private MaterialToast(Context context, String text, String action, int showTime){
         this.showTime = showTime;
         this.showing = false;
-        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        windowManager = (WindowManager) Mysplash.getInstance()
+                .getSystemService(Context.WINDOW_SERVICE);
         handler = new SafeHandler<>(this);
         timer = new Timer();
         setParams();
