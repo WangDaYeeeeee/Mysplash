@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -20,11 +22,11 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.LinkUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -39,6 +41,7 @@ public class LoginActivity extends MysplashActivity
         implements View.OnClickListener, SwipeBackLayout.OnSwipeListener,
         AuthorizeService.OnRequestAccessTokenListener {
     // widget
+    private CoordinatorLayout container;
     private LinearLayout buttonContainer;
     private RelativeLayout progressContainer;
 
@@ -104,6 +107,8 @@ public class LoginActivity extends MysplashActivity
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
+
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_login_container);
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.activity_login_closeBtn);
         closeBtn.setOnClickListener(this);
@@ -210,29 +215,27 @@ public class LoginActivity extends MysplashActivity
         if (response.isSuccessful()) {
             AuthManager.getInstance().writeAccessToken(response.body());
             AuthManager.getInstance().refreshPersonalProfile();
-            MaterialToast.makeText(
-                    this,
-                    "Welcome back.",
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
             finish();
         } else {
-            MaterialToast.makeText(
-                    this,
+            NotificationUtils.showSnackbar(
                     getString(R.string.feedback_request_token_failed),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
             setState(NORMAL_STATE);
         }
     }
 
     @Override
     public void onRequestAccessTokenFailed(Call<AccessToken> call, Throwable t) {
-        MaterialToast.makeText(
-                this,
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_request_token_failed),
-                null,
-                MaterialToast.LENGTH_SHORT).show();
+                Snackbar.LENGTH_SHORT);
         setState(NORMAL_STATE);
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 }

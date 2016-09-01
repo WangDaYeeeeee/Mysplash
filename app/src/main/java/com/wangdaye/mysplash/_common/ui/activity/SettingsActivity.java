@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -15,6 +16,8 @@ import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 
 public class SettingsActivity extends MysplashActivity
         implements View.OnClickListener {
+    // widget
+    private CoordinatorLayout container;
 
     /** <br> life cycle. */
 
@@ -33,7 +36,7 @@ public class SettingsActivity extends MysplashActivity
             getFragmentManager()
                     .beginTransaction()
                     .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(R.id.activity_settings_container, new SettingsFragment())
+                    .replace(R.id.activity_settings_preferenceContainer, new SettingsFragment())
                     .commit();
         }
     }
@@ -62,6 +65,8 @@ public class SettingsActivity extends MysplashActivity
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
         }
         toolbar.setNavigationOnClickListener(this);
+
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_settings_container);
     }
 
     /** <br> interface. */
@@ -73,5 +78,10 @@ public class SettingsActivity extends MysplashActivity
                 finish();
                 break;
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 }

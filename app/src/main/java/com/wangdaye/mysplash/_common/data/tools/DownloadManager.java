@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListener;
@@ -14,8 +16,8 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.utils.FileUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +53,9 @@ public class DownloadManager {
         for (int i = 0; i < missionList.size(); i ++) {
             if (missionList.get(i).photo.id.equals(p.id)) {
                 Context c = Mysplash.getInstance().getActivityList().get(0);
-                MaterialToast.makeText(
-                        c,
+                NotificationUtils.showSnackbar(
                         c.getString(R.string.feedback_download_repeat),
-                        null,
-                        MaterialToast.LENGTH_SHORT).show();
+                        Snackbar.LENGTH_SHORT);
                 return FAILED_CODE;
             }
         }
@@ -141,7 +141,7 @@ public class DownloadManager {
 
     /** <br> inner class. */
 
-    public static class Mission implements DownloadStatusListener, MaterialToast.OnActionClickListener {
+    public static class Mission implements DownloadStatusListener, View.OnClickListener {
         // data
         public int id = FAILED_CODE;
         public Photo photo;
@@ -203,13 +203,11 @@ public class DownloadManager {
             switch (downloadType) {
                 case DOWNLOAD_TYPE:
                     Context c = Mysplash.getInstance().getActivityList().get(0);
-                    MaterialToast.makeText(
-                            c,
+                    NotificationUtils.showActionSnackbar(
                             c.getString(R.string.feedback_download_success),
                             c.getString(R.string.check),
-                            MaterialToast.LENGTH_SHORT)
-                            .setOnActionClickListener(this)
-                            .show();
+                            Snackbar.LENGTH_SHORT,
+                            this);
                     break;
 
                 case SHARE_TYPE: {
@@ -250,13 +248,11 @@ public class DownloadManager {
             } else {
                 failed = true;
                 Context c = Mysplash.getInstance().getActivityList().get(0);
-                MaterialToast.makeText(
-                        c,
+                NotificationUtils.showActionSnackbar(
                         c.getString(R.string.feedback_download_failed),
                         c.getString(R.string.check),
-                        MaterialToast.LENGTH_SHORT)
-                        .setOnActionClickListener(this)
-                        .show();
+                        Snackbar.LENGTH_SHORT,
+                        this);
             }
         }
 
@@ -269,7 +265,7 @@ public class DownloadManager {
         }
 
         @Override
-        public void onActionClick() {
+        public void onClick(View v) {
             if (failed) {
                 Context c = Mysplash.getInstance().getActivityList().get(0);
                 Intent intent = new Intent(c, DownloadManageActivity.class);

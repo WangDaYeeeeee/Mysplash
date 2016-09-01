@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.1.7</string>
+    <string name="version_code">2.1.8</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>

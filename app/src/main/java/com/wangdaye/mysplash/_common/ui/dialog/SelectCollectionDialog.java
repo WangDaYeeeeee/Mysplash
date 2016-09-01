@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -27,7 +28,6 @@ import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -222,11 +222,10 @@ public class SelectCollectionDialog extends DialogFragment
     private void createCollection() {
         String title = nameTxt.getText().toString();
         if (TextUtils.isEmpty(title)) {
-            MaterialToast.makeText(
+            Toast.makeText(
                     getActivity(),
                     getString(R.string.feedback_name_is_required),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
@@ -364,22 +363,20 @@ public class SelectCollectionDialog extends DialogFragment
             }
             dismiss();
         } else {
-            MaterialToast.makeText(
+            Toast.makeText(
                     getActivity(),
                     getString(R.string.feedback_add_photo_to_collection_failed),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();
             setState(SHOW_COLLECTIONS_STATE);
         }
     }
 
     @Override
     public void onAddPhotoFailed(Call<AddPhotoToCollectionResult> call, Throwable t) {
-        MaterialToast.makeText(
+        Toast.makeText(
                 getActivity(),
                 getString(R.string.feedback_add_photo_to_collection_failed),
-                null,
-                MaterialToast.LENGTH_SHORT).show();
+                Toast.LENGTH_SHORT).show();
         setState(SHOW_COLLECTIONS_STATE);
     }
 }

@@ -14,8 +14,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_download_manage_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/root_color">
@@ -41,8 +41,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/little_margin"
-            android:clipToPadding="false" />
+            android:clipToPadding="false"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </LinearLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>

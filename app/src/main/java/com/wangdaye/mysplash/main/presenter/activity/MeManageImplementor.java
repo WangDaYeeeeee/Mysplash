@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.main.presenter.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -13,6 +14,7 @@ import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 /**
@@ -64,6 +66,9 @@ public class MeManageImplementor
 
     @Override
     public void responseWriteAccessToken() {
+        NotificationUtils.showSnackbar(
+                "Welcome back.",
+                Snackbar.LENGTH_SHORT);
         view.drawMeAvatar();
         view.drawMeTitle();
         view.drawMeSubtitle();

@@ -7,11 +7,13 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -22,7 +24,7 @@ import java.util.List;
  * */
 
 public class SettingsFragment extends PreferenceFragment
-        implements Preference.OnPreferenceChangeListener, MaterialToast.OnActionClickListener {
+        implements Preference.OnPreferenceChangeListener {
 
     /** <br> life cycle. */
 
@@ -79,6 +81,14 @@ public class SettingsFragment extends PreferenceFragment
         language.setOnPreferenceChangeListener(this);
     }
 
+    private void showRebootSnackbar() {
+        NotificationUtils.showActionSnackbar(
+                getString(R.string.feedback_notify_restart),
+                getString(R.string.restart),
+                Snackbar.LENGTH_SHORT,
+                rebootListener);
+    }
+
     /** <br> interface. */
 
     // on preference changed listener.
@@ -89,24 +99,12 @@ public class SettingsFragment extends PreferenceFragment
             // default order.
             String order = ValueUtils.getOrderName(getActivity(), (String) o);
             preference.setSummary("Now : " + order);
-            MaterialToast.makeText(
-                    getActivity(),
-                    getString(R.string.feedback_notify_restart),
-                    getString(R.string.restart),
-                    MaterialToast.LENGTH_SHORT)
-                    .setOnActionClickListener(this)
-                    .show();
+            showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_default_collection_type))) {
             // collection type.
             String type = ValueUtils.getCollectionName(getActivity(), (String) o);
             preference.setSummary("Now : " + type);
-            MaterialToast.makeText(
-                    getActivity(),
-                    getString(R.string.feedback_notify_restart),
-                    getString(R.string.restart),
-                    MaterialToast.LENGTH_SHORT)
-                    .setOnActionClickListener(this)
-                    .show();
+            showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {
             // download scale.
             String scale = ValueUtils.getScaleName(getActivity(), (String) o);
@@ -115,23 +113,19 @@ public class SettingsFragment extends PreferenceFragment
             // language.
             String language = ValueUtils.getLanguageName(getActivity(), (String) o);
             preference.setSummary("Now : " + language);
-            MaterialToast.makeText(
-                    getActivity(),
-                    getString(R.string.feedback_notify_restart),
-                    getString(R.string.restart),
-                    MaterialToast.LENGTH_SHORT)
-                    .setOnActionClickListener(this)
-                    .show();
+            showRebootSnackbar();
         }
         return true;
     }
 
     // on action click listener.
 
-    @Override
-    public void onActionClick() {
-        List<Activity> list = Mysplash.getInstance().getActivityList();
-        MainActivity a = (MainActivity) list.get(0);
-        a.reboot();
-    }
+    private View.OnClickListener rebootListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            List<Activity> list = Mysplash.getInstance().getActivityList();
+            MainActivity a = (MainActivity) list.get(0);
+            a.reboot();
+        }
+    };
 }

@@ -14,7 +14,7 @@
         android:layout_height="wrap_content" />
 
     <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/activity_collection_background"
+        android:id="@+id/activity_collection_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/root_color"

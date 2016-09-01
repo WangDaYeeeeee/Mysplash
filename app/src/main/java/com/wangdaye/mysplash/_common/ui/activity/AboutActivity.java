@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.ui.activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -27,6 +28,7 @@ import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 public class AboutActivity extends MysplashActivity
         implements View.OnClickListener, SwipeBackLayout.OnSwipeListener {
     // widget
+    private CoordinatorLayout container;
     private NestedScrollView scrollView;
 
     /** <br> life cycle. */
@@ -66,6 +68,7 @@ public class AboutActivity extends MysplashActivity
             statusBar.setMask(true);
         }
 
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_about_container);
         this.scrollView = (NestedScrollView) findViewById(R.id.activity_about_scrollView);
 
         ImageView iconView = (ImageView) findViewById(R.id.container_about_appIcon);
@@ -192,5 +195,12 @@ public class AboutActivity extends MysplashActivity
     @Override
     public void onSwipeFinish() {
         finish();
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 }

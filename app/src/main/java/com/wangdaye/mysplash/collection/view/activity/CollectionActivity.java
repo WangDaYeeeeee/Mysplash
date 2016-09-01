@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -57,6 +58,7 @@ public class CollectionActivity extends MysplashActivity
     public static final String DELETE_COLLECTION = "delete_collection";
 
     // view.
+    private CoordinatorLayout container;
     private AppBarLayout appBar;
     private RelativeLayout creatorBar;
     private CircleImageView avatarImage;
@@ -145,6 +147,7 @@ public class CollectionActivity extends MysplashActivity
             statusBar.setMask(true);
         }
 
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
         this.appBar = (AppBarLayout) findViewById(R.id.activity_collection_appBar);
 
         TextView title = (TextView) findViewById(R.id.activity_collection_title);
@@ -247,6 +250,13 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public void onDeleteCollection(Collection c) {
         editResultPresenter.deleteSomething(c);
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // view.

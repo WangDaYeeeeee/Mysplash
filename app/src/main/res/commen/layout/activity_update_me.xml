@@ -12,44 +12,51 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_update_me_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/root_color">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:background="?attr/root_color">
 
-            <ImageButton
-                android:id="@+id/activity_update_me_closeBtn"
-                android:src="@drawable/ic_close_light"
-                style="@style/material_image_button"
-                tools:ignore="ContentDescription" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:text="@string/action_edit"
-                android:textStyle="bold"
-                android:textSize="@dimen/large_title_text_size"
-                android:textColor="?attr/content_color"
-                android:layout_toRightOf="@id/activity_update_me_closeBtn"
-                android:layout_margin="@dimen/normal_margin"
-                android:layout_centerInParent="true"
-                style="@style/title_text"
-                tools:ignore="RtlHardcoded" />
+                <ImageButton
+                    android:id="@+id/activity_update_me_closeBtn"
+                    android:src="@drawable/ic_close_light"
+                    style="@style/material_image_button"
+                    tools:ignore="ContentDescription" />
 
-        </RelativeLayout>
+                <TextView
+                    android:text="@string/action_edit"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/large_title_text_size"
+                    android:textColor="?attr/content_color"
+                    android:layout_toRightOf="@id/activity_update_me_closeBtn"
+                    android:layout_margin="@dimen/normal_margin"
+                    android:layout_centerInParent="true"
+                    style="@style/title_text"
+                    tools:ignore="RtlHardcoded" />
 
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/activity_update_me_scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            </RelativeLayout>
 
-            <include layout="@layout/container_update_me" />
+            <android.support.v4.widget.NestedScrollView
+                android:id="@+id/activity_update_me_scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </android.support.v4.widget.NestedScrollView>
+                <include layout="@layout/container_update_me" />
 
-    </LinearLayout>
+            </android.support.v4.widget.NestedScrollView>
+
+        </LinearLayout>
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>

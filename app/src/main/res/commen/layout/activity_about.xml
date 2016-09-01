@@ -10,7 +10,8 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimaryDark" />
 
-    <FrameLayout
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_about_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/root_color">
@@ -24,6 +25,6 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-    </FrameLayout>
+    </android.support.design.widget.CoordinatorLayout>
 
 </com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>

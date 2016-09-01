@@ -9,12 +9,14 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 /**
  * Mysplash Activity
  * */
 
-public abstract class MysplashActivity extends AppCompatActivity {
+public abstract class MysplashActivity extends AppCompatActivity
+        implements NotificationUtils.SnackbarContainer {
     // data.
     private boolean started = false;
 

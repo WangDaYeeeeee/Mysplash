@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -16,6 +17,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
@@ -41,11 +43,13 @@ import java.util.List;
 
 public class HomeFragment extends Fragment
         implements ToolbarView, PopupManageView, PagerManageView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
+        NotificationUtils.SnackbarContainer {
     // model.
     private PagerManageModel pagerManageModel;
 
     // view.
+    private CoordinatorLayout container;
     private Toolbar toolbar;
     private PagerView[] pagers = new PagerView[3];
 
@@ -91,6 +95,8 @@ public class HomeFragment extends Fragment
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
+
+        this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_home_container);
 
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_home_toolbar);
         if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
@@ -192,6 +198,13 @@ public class HomeFragment extends Fragment
     @Override
     public void onPageScrollStateChanged(int state) {
         // do nothing.
+    }
+
+    // snackbar container;
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // view.

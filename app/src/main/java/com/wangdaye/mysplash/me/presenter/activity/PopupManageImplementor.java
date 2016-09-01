@@ -1,13 +1,14 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.popup.PhotoOrderPopupWindow;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 /**
  * Popup manage implementor.
@@ -41,11 +42,9 @@ public class PopupManageImplementor
                 }
             });
         } else {
-            MaterialToast.makeText(
-                    c,
+            NotificationUtils.showSnackbar(
                     c.getString(R.string.feedback_no_filter),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
         }
     }
 }

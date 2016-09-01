@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.data.tools;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -10,7 +11,6 @@ import com.wangdaye.mysplash._common.data.data.AccessToken;
 import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,12 +104,10 @@ public class AuthManager
         if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
                 && !TextUtils.isEmpty(token)) {
 
-            MaterialToast.makeText(
-                    Mysplash.getInstance().getActivityList().get(0),
+            Toast.makeText(
+                    Mysplash.getInstance(),
                     Mysplash.getInstance().getString(R.string.feedback_please_login),
-                    null,
-                    MaterialToast.LENGTH_LONG
-            ).show();
+                    Toast.LENGTH_LONG).show();
 
             SharedPreferences.Editor editor = Mysplash.getInstance()
                     .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();

@@ -287,6 +287,23 @@ public class MainActivity extends MysplashActivity
         meManagePresenter.responseLogout();
     }
 
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
+        Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
+        if (f instanceof HomeFragment) {
+            return ((HomeFragment) f).getSnackbarContainer();
+        } else if (f instanceof SearchFragment) {
+            return ((SearchFragment) f).getSnackbarContainer();
+        } else if (f instanceof CategoryFragment) {
+            return ((CategoryFragment) f).getSnackbarContainer();
+        } else {
+            return null;
+        }
+    }
+
     // handler.
 
     @Override

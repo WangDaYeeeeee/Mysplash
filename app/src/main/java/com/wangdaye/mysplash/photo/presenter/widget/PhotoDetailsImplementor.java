@@ -1,13 +1,14 @@
 package com.wangdaye.mysplash.photo.presenter.widget;
 
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotoDetailsView;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 
 import retrofit2.Call;
@@ -46,11 +47,9 @@ public class PhotoDetailsImplementor
 
     @Override
     public void showExifDescription(Context c, String title, String content) {
-        MaterialToast.makeText(
-                c,
+        NotificationUtils.showSnackbar(
                 title + " : " + content,
-                null,
-                MaterialToast.LENGTH_SHORT).show();
+                Snackbar.LENGTH_SHORT);
     }
 
     /** <br> interface. */

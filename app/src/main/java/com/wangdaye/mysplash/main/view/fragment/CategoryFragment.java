@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -14,6 +15,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.ToolbarView;
@@ -30,11 +32,12 @@ import com.wangdaye.mysplash._common.utils.ValueUtils;
 
 public class CategoryFragment extends Fragment
         implements ToolbarView, PopupManageView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, NotificationUtils.SnackbarContainer {
     // model.
     private CategoryManageModel categoryManageModel;
 
     // view.
+    private CoordinatorLayout container;
     private Toolbar toolbar;
     private CategoryPhotosView photosView;
 
@@ -76,6 +79,8 @@ public class CategoryFragment extends Fragment
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
+
+        this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_category_container);
 
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
         toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryManageModel.getCategoryId()));
@@ -140,6 +145,13 @@ public class CategoryFragment extends Fragment
     public boolean onMenuItemClick(MenuItem item) {
         toolbarPresenter.touchMenuItem(item.getItemId());
         return true;
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // view.

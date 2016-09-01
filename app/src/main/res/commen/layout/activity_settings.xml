@@ -15,6 +15,7 @@
         android:background="?attr/colorPrimaryDark" />
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/activity_settings_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -36,7 +37,7 @@
         </android.support.design.widget.AppBarLayout>
 
         <FrameLayout
-            android:id="@+id/activity_settings_container"
+            android:id="@+id/activity_settings_preferenceContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />

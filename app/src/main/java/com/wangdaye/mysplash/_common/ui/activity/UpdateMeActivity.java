@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
@@ -18,9 +20,9 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
@@ -35,6 +37,7 @@ public class UpdateMeActivity extends MysplashActivity
         implements View.OnClickListener, SwipeBackLayout.OnSwipeListener,
         UserService.OnRequestMeProfileListener {
     // widget
+    private CoordinatorLayout container;
     private NestedScrollView scrollView;
 
     private CircularProgressView progressView;
@@ -98,6 +101,8 @@ public class UpdateMeActivity extends MysplashActivity
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
+
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_update_me_container);
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.activity_update_me_closeBtn);
         if (ThemeUtils.getInstance(this).isLightTheme()) {
@@ -190,11 +195,9 @@ public class UpdateMeActivity extends MysplashActivity
                     this);
             setState(UPDATE_STATE);
         } else {
-            MaterialToast.makeText(
-                    this,
+            NotificationUtils.showSnackbar(
                     getString(R.string.feedback_name_is_required),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
         }
     }
 
@@ -262,21 +265,22 @@ public class UpdateMeActivity extends MysplashActivity
             finish();
         } else {
             setState(INPUT_STATE);
-            MaterialToast.makeText(
-                    this,
+            NotificationUtils.showSnackbar(
                     getString(R.string.feedback_update_profile_failed),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
         }
     }
 
     @Override
     public void onRequestMeProfileFailed(Call<Me> call, Throwable t) {
         setState(INPUT_STATE);
-        MaterialToast.makeText(
-                this,
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_update_profile_failed),
-                null,
-                MaterialToast.LENGTH_SHORT).show();
+                Snackbar.LENGTH_SHORT);
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 }

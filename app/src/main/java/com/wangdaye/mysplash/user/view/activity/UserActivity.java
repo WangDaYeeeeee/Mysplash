@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -62,6 +63,7 @@ public class UserActivity extends MysplashActivity
     private PagerManageModel pagerManageModel;
 
     // view.
+    private CoordinatorLayout container;
     private AppBarLayout appBar;
     private Toolbar toolbar;
     private MyPagerAdapter adapter;
@@ -146,6 +148,7 @@ public class UserActivity extends MysplashActivity
             statusBar.setMask(true);
         }
 
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_user_container);
         this.appBar = (AppBarLayout) findViewById(R.id.activity_user_appBar);
 
         this.toolbar = (Toolbar) findViewById(R.id.activity_user_toolbar);
@@ -261,6 +264,13 @@ public class UserActivity extends MysplashActivity
     @Override
     public void onSwipeFinish() {
         swipeBackManagePresenter.swipeBackFinish();
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // view.

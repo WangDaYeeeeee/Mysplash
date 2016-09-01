@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.user.presenter.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -11,7 +12,7 @@ import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.view.CollectionsView;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import java.util.List;
 
@@ -160,11 +161,9 @@ public class CollectionsImplementor
                     model.setOver(true);
                     view.setPermitLoading(false);
                     if (response.body().size() == 0) {
-                        MaterialToast.makeText(
-                                c,
+                        NotificationUtils.showSnackbar(
                                 c.getString(R.string.feedback_is_over),
-                                null,
-                                MaterialToast.LENGTH_SHORT).show();
+                                Snackbar.LENGTH_SHORT);
                     }
                 }
                 view.requestCollectionsSuccess();
@@ -182,11 +181,9 @@ public class CollectionsImplementor
             } else {
                 view.setLoading(false);
             }
-            MaterialToast.makeText(
-                    c,
+            NotificationUtils.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
             view.requestCollectionsFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }

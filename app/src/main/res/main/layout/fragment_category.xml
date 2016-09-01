@@ -14,6 +14,7 @@
         android:background="?attr/colorPrimaryDark" />
 
     <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/fragment_category_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

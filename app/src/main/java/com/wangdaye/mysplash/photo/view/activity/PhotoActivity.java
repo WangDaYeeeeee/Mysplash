@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -46,6 +47,7 @@ import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
@@ -68,7 +70,8 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class PhotoActivity extends AppCompatActivity
         implements PhotoInfoView, DownloadView, ScrollView, PopupManageView,
-        View.OnClickListener, DownloadDialog.OnDismissListener, SwipeBackLayout.OnSwipeListener {
+        View.OnClickListener, DownloadDialog.OnDismissListener, SwipeBackLayout.OnSwipeListener,
+        NotificationUtils.SnackbarContainer {
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
@@ -76,6 +79,8 @@ public class PhotoActivity extends AppCompatActivity
 
     // view.
     private DownloadDialog dialog;
+
+    private CoordinatorLayout container;
     private NestedScrollView scrollView;
     private RelativeLayout titleBar;
     private ImageButton menuBtn;
@@ -159,6 +164,8 @@ public class PhotoActivity extends AppCompatActivity
     private void initView() {
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_photo_swipeBackLayout);
         swipeBackLayout.setOnSwipeListener(this);
+
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
 
         FreedomImageView photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
         if (Mysplash.getInstance().getDrawable() != null) {
@@ -382,6 +389,13 @@ public class PhotoActivity extends AppCompatActivity
         } else {
             finish();
         }
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // view.

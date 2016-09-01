@@ -9,7 +9,7 @@
         android:duration="350"
         tools:ignore="NewApi">
         <targets>
-            <target android:targetId="@id/activity_photo_background" />
+            <target android:targetId="@id/activity_photo_container" />
         </targets>
     </changeBounds>
 

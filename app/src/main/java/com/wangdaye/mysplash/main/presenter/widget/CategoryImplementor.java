@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.main.presenter.widget;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -10,7 +11,7 @@ import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.CategoryModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryPresenter;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash._common.i.view.CategoryView;
 
@@ -199,11 +200,9 @@ public class CategoryImplementor
                     model.setOver(true);
                     view.setPermitLoading(false);
                     if (response.body().size() == 0) {
-                        MaterialToast.makeText(
-                                c,
+                        NotificationUtils.showSnackbar(
                                 c.getString(R.string.feedback_is_over),
-                                null,
-                                MaterialToast.LENGTH_SHORT).show();
+                                Snackbar.LENGTH_SHORT);
                     }
                 }
                 view.requestPhotosSuccess();
@@ -221,11 +220,9 @@ public class CategoryImplementor
             } else {
                 view.setLoading(false);
             }
-            MaterialToast.makeText(
-                    c,
+            NotificationUtils.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
             view.requestPhotosFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }

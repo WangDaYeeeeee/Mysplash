@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -69,6 +70,7 @@ public class MeActivity extends MysplashActivity
     public static final int COLLECTION_ACTIVITY = 1;
 
     // view.
+    private CoordinatorLayout container;
     private AppBarLayout appBar;
     private Toolbar toolbar;
     private CircleImageView avatar;
@@ -175,6 +177,7 @@ public class MeActivity extends MysplashActivity
             statusBar.setMask(true);
         }
 
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_me_container);
         this.appBar = (AppBarLayout) findViewById(R.id.activity_me_appBar);
 
         this.toolbar = (Toolbar) findViewById(R.id.activity_me_toolbar);
@@ -355,6 +358,13 @@ public class MeActivity extends MysplashActivity
     @Override
     public void onLogout() {
         // do nothing.
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // view.

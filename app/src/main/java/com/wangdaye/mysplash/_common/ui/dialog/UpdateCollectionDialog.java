@@ -15,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -22,9 +23,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.ui.toast.MaterialToast;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import retrofit2.Call;
@@ -181,11 +180,10 @@ public class UpdateCollectionDialog extends DialogFragment
     private void updateCollection() {
         String title = nameTxt.getText().toString();
         if (TextUtils.isEmpty(title)) {
-            MaterialToast.makeText(
+            Toast.makeText(
                     getActivity(),
                     getString(R.string.feedback_name_is_required),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
@@ -269,22 +267,20 @@ public class UpdateCollectionDialog extends DialogFragment
             }
             dismiss();
         } else {
-            MaterialToast.makeText(
+            Toast.makeText(
                     getActivity(),
                     getString(R.string.feedback_delete_collection_failed),
-                    null,
-                    MaterialToast.LENGTH_SHORT).show();
+                    Toast.LENGTH_SHORT).show();
             setState(CONFIRM_STATE);
         }
     }
 
     @Override
     public void onDeleteCollectionFailed(Call<DeleteCollectionResult> call, Throwable t) {
-        MaterialToast.makeText(
+        Toast.makeText(
                 getActivity(),
                 getString(R.string.feedback_delete_collection_failed),
-                null,
-                MaterialToast.LENGTH_SHORT).show();
+                Toast.LENGTH_SHORT).show();
         setState(CONFIRM_STATE);
     }
 }

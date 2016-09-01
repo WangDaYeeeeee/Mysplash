@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -21,6 +22,7 @@ import com.wangdaye.mysplash._common.i.model.SearchBarModel;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
@@ -46,11 +48,12 @@ import java.util.TimerTask;
 public class SearchFragment extends Fragment
         implements SearchBarView, MessageManageView, PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
-        SafeHandler.HandlerContainer {
+        NotificationUtils.SnackbarContainer, SafeHandler.HandlerContainer {
     // model.
     private SearchBarModel searchBarModel;
 
     // view.
+    private CoordinatorLayout container;
     private EditText editText;
     private TextView orientationTxt;
     private ImageView menuIcon;
@@ -102,6 +105,8 @@ public class SearchFragment extends Fragment
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
             statusBar.setMask(true);
         }
+
+        this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_search_container);
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_search_toolbar);
         if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
@@ -198,6 +203,13 @@ public class SearchFragment extends Fragment
         }
         searchBarPresenter.hideKeyboard();
         return true;
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     // handler.

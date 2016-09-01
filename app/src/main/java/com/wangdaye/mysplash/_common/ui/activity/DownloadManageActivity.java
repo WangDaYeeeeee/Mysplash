@@ -2,6 +2,7 @@ package com.wangdaye.mysplash._common.ui.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +28,7 @@ public class DownloadManageActivity extends MysplashActivity
         implements View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
         DownloadManager.OnDownloadListener, DownloadAdapter.OnDownloadResponseListener {
     // widget
+    private CoordinatorLayout container;
     private RecyclerView recyclerView;
 
     // data
@@ -87,6 +89,8 @@ public class DownloadManageActivity extends MysplashActivity
         }
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnMenuItemClickListener(this);
+
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_download_manage_container);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.activity_download_manage_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -177,5 +181,12 @@ public class DownloadManageActivity extends MysplashActivity
     public void onRetryDownload(DownloadManager.Mission m) {
         DownloadManager.Mission newMission = DownloadManager.getInstance().retry(m.photo.id, this);
         adapter.insertItem(newMission, 0);
+    }
+
+    // snackbar container.
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 }
