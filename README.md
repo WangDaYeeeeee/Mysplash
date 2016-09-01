@@ -19,6 +19,8 @@
 * Support download raw photos.
 
 ### Plan
+* add Full screen preview.
+* add Search user.
 * tweak UI.
 * add Daily pictures.
 * add Daily wallpaper.
@@ -54,6 +56,8 @@
 * 安装包从v1.0.0开始收录
 
 ### 近期计划
+* 全屏预览
+* 搜索用户
 * UI细节调整
 * 优化代码层对activity生命周期的管理
 * 每日一图功能
