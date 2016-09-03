@@ -37,6 +37,18 @@
         <item>raw</item>
     </string-array>
 
+    <!-- back to top. -->
+    <string-array name="back_to_top_type">
+        <item>应用于所有的照片列表界面</item>
+        <item>只应用于主页列表</item>
+        <item>关闭</item>
+    </string-array>
+    <string-array name="back_to_top_type_values">
+        <item>all</item>
+        <item>home</item>
+        <item>none</item>
+    </string-array>
+
     <!-- language. -->
     <string-array name="languages">
         <item>跟随系统</item>

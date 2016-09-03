@@ -37,6 +37,18 @@
         <item>raw</item>
     </string-array>
 
+    <!-- back to top. -->
+    <string-array name="back_to_top_type">
+        <item>All of the list view</item>
+        <item>Only Home</item>
+        <item>None</item>
+    </string-array>
+    <string-array name="back_to_top_type_values">
+        <item>all</item>
+        <item>home</item>
+        <item>none</item>
+    </string-array>
+
     <!-- language. -->
     <string-array name="languages">
         <item>Follow system</item>

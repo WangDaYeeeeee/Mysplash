@@ -14,6 +14,7 @@
     <string name="delete">删除</string>
     <string name="save">保存</string>
     <string name="check">查看</string>
+    <string name="set">设置</string>
     <string name="stats">统计</string>
     <string name="open_photo_link">在网页中打开</string>
     <string name="open_download_link">访问下载页</string>
@@ -82,6 +83,8 @@
     <string name="feedback_delete_collection_failed">删除收藏集失败</string>
     <string name="feedback_name_is_required">标题不能为空</string>
 
+    <string name="feedback_notify_set_back_to_top">你可以设置按下返回键时的效果</string>
+
     <!-- 菜单项. -->
     <string name="action_home">主页</string>
     <string name="action_category_buildings">建筑</string>
@@ -112,6 +115,7 @@
     <string name="settings_title_default_collection_type">收藏默认类型</string>
     <string name="settings_title_default_category_order">分类照片的默认排序</string>
     <string name="settings_title_download_scale">下载规格</string>
+    <string name="settings_title_back_to_top">点击返回键回到顶部</string>
     <string name="settings_title_language">语言</string>
 
 </resources>

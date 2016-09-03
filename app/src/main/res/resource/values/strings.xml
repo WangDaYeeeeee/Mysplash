@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.1.8</string>
+    <string name="version_code">2.2.1</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -20,6 +20,7 @@
     <string name="delete">DELETE</string>
     <string name="save">SAVE</string>
     <string name="check">CHECK</string>
+    <string name="set">SET</string>
     <string name="stats">Stats</string>
     <string name="open_photo_link">Open in browser</string>
     <string name="open_download_link">Open download web page</string>
@@ -39,6 +40,8 @@
     <string name="about_downloader">To download files and to avoid using DOWNLOAD_WITHOUT_NOTIFICATION permission if you are using Android\'s DownloadManager in your apps.</string>
     <string name="tagLayout">FlowLayout</string>
     <string name="about_tagLayout">Android flow layout.</string>
+    <string name="photo_view">PhotoView</string>
+    <string name="about_photo_view">A widget to preview and scale image.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
@@ -104,6 +107,8 @@
     <string name="feedback_delete_collection_failed">Cannot delete collection.</string>
     <string name="feedback_name_is_required">Name is required.</string>
 
+    <string name="feedback_notify_set_back_to_top">You can set the back pressed effect.</string>
+
     <!-- menu. -->
     <string name="action_home">Home</string>
     <string name="action_category_buildings">Buildings</string>
@@ -129,6 +134,8 @@
     <string name="action_cancel_all">Cancel All</string>
 
     <!-- transition name. -->
+    <string name="transition_activity_container">activity_container</string>
+
     <string name="transition_photo_image">photo_image</string>
     <string name="transition_photo_background">photo_background</string>
     <string name="transition_user_avatar">user_avatar</string>
@@ -140,6 +147,7 @@
     <string name="settings_title_default_collection_type">Default collection type</string>
     <string name="settings_title_default_category_order">Default requestKey order in category</string>
     <string name="settings_title_download_scale">Download scale</string>
+    <string name="settings_title_back_to_top">Press back button to scroll to top</string>
     <string name="settings_title_language">Language</string>
 
     <!-- share preferences. -->
@@ -148,6 +156,7 @@
     <string name="key_default_collection_type">default_collection_type</string>
     <string name="key_default_category_order">default_category_order</string>
     <string name="key_download_scale">download_scale</string>
+    <string name="key_back_to_top">back_to_top</string>
     <string name="key_language">language</string>
 
     <string name="key_category_total_new_count">category_total_new_count</string>
@@ -158,5 +167,7 @@
     <string name="key_category_objects_count">category_objects_count</string>
     <string name="key_category_people_count">category_people_count</string>
     <string name="key_category_technology_count">category_technology_count</string>
+
+    <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 
 </resources>

@@ -13,6 +13,7 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -71,6 +72,15 @@ public class SettingsFragment extends PreferenceFragment
         downloadScale.setSummary("Now : " + scaleName);
         downloadScale.setOnPreferenceChangeListener(this);
 
+        // back to top.
+        ListPreference backToTop = (ListPreference) findPreference(getString(R.string.key_back_to_top));
+        String backToTopValue = sharedPreferences.getString(
+                getString(R.string.key_back_to_top),
+                "all");
+        String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
+        backToTop.setSummary("Now : " + backToTopName);
+        backToTop.setOnPreferenceChangeListener(this);
+
         // language.
         ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
         String languageValue = sharedPreferences.getString(
@@ -109,6 +119,11 @@ public class SettingsFragment extends PreferenceFragment
             // download scale.
             String scale = ValueUtils.getScaleName(getActivity(), (String) o);
             preference.setSummary("Now : " + scale);
+        } else if (preference.getKey().equals(getString(R.string.key_back_to_top))) {
+            // back to top.
+            String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
+            preference.setSummary("Now : " + backType);
+            BackToTopUtils.getInstance(getActivity()).changeBackValue((String) o);
         } else if (preference.getKey().equals(getString(R.string.key_language))) {
             // language.
             String language = ValueUtils.getLanguageName(getActivity(), (String) o);

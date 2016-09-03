@@ -37,6 +37,7 @@ import com.wangdaye.mysplash._common.ui.activity.AboutActivity;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
@@ -131,13 +132,15 @@ public class MainActivity extends MysplashActivity
             int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
             Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
             if (f instanceof HomeFragment
-                    && ((HomeFragment) f).needPagerBackToTop()) {
+                    && ((HomeFragment) f).needPagerBackToTop()
+                    && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
                 ((HomeFragment) f).pagerBackToTop();
             } else if (f instanceof SearchFragment
                     && ((SearchFragment) f).needPagerBackToTop()) {
                 ((SearchFragment) f).pagerBackToTop();
             } else if (f instanceof CategoryFragment
-                    && ((CategoryFragment) f).needPagerBackToTop()) {
+                    && ((CategoryFragment) f).needPagerBackToTop()
+                    && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
                 ((CategoryFragment) f).pagerBackToTop();
             } else {
                 super.onBackPressed();

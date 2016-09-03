@@ -48,6 +48,18 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <!-- photo preview activity. -->
+
+    <style name="MysplashTheme_light.Translucent.PhotoPreview" parent="MysplashTheme_light.Translucent">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.PhotoPreview" parent="MysplashTheme_dark.Translucent">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
     <!-- user activity. -->
 
     <style name="MysplashTheme_light.Translucent.User" parent="MysplashTheme_light.Translucent" />
@@ -144,13 +156,6 @@
     <style name="material_popup_menu"
         parent="@android:style/Widget.Holo.PopupMenu">
         <item name="android:popupBackground">?attr/root_color</item>
-    </style>
-
-    <!-- toast. -->
-
-    <style name="material_toast">
-        <item name="android:windowEnterAnimation">@anim/toast_in</item>
-        <item name="android:windowExitAnimation">@anim/toast_out</item>
     </style>
 
     <!-- dialog. -->

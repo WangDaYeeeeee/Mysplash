@@ -42,8 +42,10 @@ import com.wangdaye.mysplash._common.i.view.DownloadView;
 import com.wangdaye.mysplash._common.i.view.PhotoInfoView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash._common.ui.activity.PreviewPhotoActivity;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
+import com.wangdaye.mysplash._common.ui.widget.PhotoTouchView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
@@ -177,6 +179,9 @@ public class PhotoActivity extends AppCompatActivity
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(photoImage);
         }
+
+        PhotoTouchView touchView = (PhotoTouchView) findViewById(R.id.activity_photo_touchView);
+        touchView.setOnClickListener(this);
 
         this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
 
@@ -326,6 +331,12 @@ public class PhotoActivity extends AppCompatActivity
 
             case R.id.activity_photo_toolbar:
                 scrollPresenter.scrollToTop();
+                break;
+
+            case R.id.activity_photo_touchView:
+                Mysplash.getInstance().setPhoto(photoInfoPresenter.getPhoto());
+                Intent p = new Intent(this, PreviewPhotoActivity.class);
+                startActivity(p);
                 break;
 
             case R.id.activity_photo_avatar:

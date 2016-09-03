@@ -91,7 +91,8 @@ public class AboutActivity extends MysplashActivity
                 (RelativeLayout) findViewById(R.id.container_about_cpvContainer),
                 (RelativeLayout) findViewById(R.id.container_about_civContainer),
                 (RelativeLayout) findViewById(R.id.container_about_downloaderContainer),
-                (RelativeLayout) findViewById(R.id.container_about_tagContainer)};
+                (RelativeLayout) findViewById(R.id.container_about_tagContainer),
+                (RelativeLayout) findViewById(R.id.container_about_photoViewContainer)};
         for (RelativeLayout r : containers) {
             r.setOnClickListener(this);
         }
@@ -105,6 +106,7 @@ public class AboutActivity extends MysplashActivity
                 (TextView) findViewById(R.id.container_about_civTitle),
                 (TextView) findViewById(R.id.container_about_downloaderTitle),
                 (TextView) findViewById(R.id.container_about_tagTitle),
+                (TextView) findViewById(R.id.container_about_photoViewTitle),
                 (TextView) findViewById(R.id.container_about_unsplashContent),
                 (TextView) findViewById(R.id.container_about_retrofitContent),
                 (TextView) findViewById(R.id.container_about_glideContent),
@@ -112,7 +114,7 @@ public class AboutActivity extends MysplashActivity
                 (TextView) findViewById(R.id.container_about_civContent),
                 (TextView) findViewById(R.id.container_about_downloaderContent),
                 (TextView) findViewById(R.id.container_about_tagContent),
-        };
+                (TextView) findViewById(R.id.container_about_photoViewContent)};
         for (TextView t : textViews) {
             TypefaceUtils.setTypeface(this, t);
         }
@@ -181,6 +183,10 @@ public class AboutActivity extends MysplashActivity
 
             case R.id.container_about_tagContainer:
                 LinkUtils.accessLink(this, "https://github.com/hongyangAndroid/FlowLayout");
+                break;
+
+            case R.id.container_about_photoViewContainer:
+                LinkUtils.accessLink(this, "https://github.com/bm-x/PhotoView");
                 break;
         }
     }

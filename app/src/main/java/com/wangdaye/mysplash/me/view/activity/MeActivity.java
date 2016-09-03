@@ -41,6 +41,7 @@ import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
@@ -131,7 +132,8 @@ public class MeActivity extends MysplashActivity
     public void onBackPressed() {
         if (Mysplash.getInstance().isActivityInBackstage()) {
             super.onBackPressed();
-        } else if (pagerManagePresenter.needPagerBackToTop()) {
+        } else if (pagerManagePresenter.needPagerBackToTop()
+                && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
             pagerManagePresenter.pagerScrollToTop();
         } else {
             super.onBackPressed();

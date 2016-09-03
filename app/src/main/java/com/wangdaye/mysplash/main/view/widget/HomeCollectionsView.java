@@ -26,6 +26,7 @@ import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.CollectionsView;
 import com.wangdaye.mysplash._common.i.view.LoadView;
@@ -325,6 +326,10 @@ public class HomeCollectionsView extends FrameLayout
             recyclerView.scrollToPosition(5);
         }
         recyclerView.smoothScrollToPosition(0);
+
+        if (!BackToTopUtils.getInstance(getContext()).isNotified()) {
+            BackToTopUtils.getInstance(getContext()).showSetBackToTopSnackbar();
+        }
     }
 
     @Override

@@ -18,6 +18,8 @@
     <color name="colorRoot_dark">@color/colorPrimary_dark</color>
     <color name="colorLine_dark">#292929</color>
 
+    <color name="colorAccentRed">#f15151</color>
+
     <!-- text color -->
     <color name="colorTextTitle_light">@color/colorTextDark</color>
     <color name="colorTextSubtitle_light">@color/colorTextGrey</color>
@@ -33,6 +35,5 @@
     <color name="colorTextGrey2nd">#bdbdbd</color>
     <color name="colorTextLight">#fafafa</color>
     <color name="colorTextLight2nd">#f5f5f5</color>
-    <color name="colorTextWarningRed">#f15151</color>
     
 </resources>

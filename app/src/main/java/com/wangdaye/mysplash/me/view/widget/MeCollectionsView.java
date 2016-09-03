@@ -30,6 +30,7 @@ import com.wangdaye.mysplash._common.i.view.SwipeBackView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.me.model.widget.CollectionsObject;
@@ -331,6 +332,10 @@ public class MeCollectionsView extends FrameLayout
             recyclerView.scrollToPosition(5);
         }
         recyclerView.smoothScrollToPosition(0);
+
+        if (!BackToTopUtils.getInstance(getContext()).isNotified()) {
+            BackToTopUtils.getInstance(getContext()).showSetBackToTopSnackbar();
+        }
     }
 
     @Override

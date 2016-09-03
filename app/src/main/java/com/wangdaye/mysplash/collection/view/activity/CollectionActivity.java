@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.i.view.EditResultView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.collection.model.activity.EditResultObject;
 import com.wangdaye.mysplash.collection.presenter.activity.EditResultImplementor;
@@ -108,7 +109,8 @@ public class CollectionActivity extends MysplashActivity
     public void onBackPressed() {
         if (Mysplash.getInstance().isActivityInBackstage()) {
             super.onBackPressed();
-        } else if (photosView.needPagerBackToTop()) {
+        } else if (photosView.needPagerBackToTop()
+                && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
             photosView.pagerBackToTop();
         } else {
             Intent result = new Intent();
@@ -178,6 +180,7 @@ public class CollectionActivity extends MysplashActivity
         toolbar.setNavigationOnClickListener(this);
 
         this.creatorBar = (RelativeLayout) findViewById(R.id.activity_collection_creatorBar);
+        creatorBar.setOnClickListener(this);
 
         this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
         avatarImage.setOnClickListener(this);
@@ -214,8 +217,24 @@ public class CollectionActivity extends MysplashActivity
                 toolbarPresenter.touchNavigatorIcon();
                 break;
 
-            case R.id.activity_collection_avatar:
+            case R.id.activity_collection_creatorBar:
                 toolbarPresenter.touchToolbar();
+
+            case R.id.activity_collection_avatar:
+                User u = User.buildUser((Collection) editResultModel.getEditKey());
+                Mysplash.getInstance().setUser(u);
+
+                Intent intent = new Intent(this, UserActivity.class);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                    startActivity(intent);
+                } else {
+                    View v = avatarImage;
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                            .makeSceneTransitionAnimation(
+                                    this,
+                                    Pair.create(v, getString(R.string.transition_user_avatar)));
+                    ActivityCompat.startActivity(this, intent, options.toBundle());
+                }
                 break;
         }
     }
@@ -270,20 +289,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void touchToolbar() {
-        User u = User.buildUser((Collection) editResultModel.getEditKey());
-        Mysplash.getInstance().setUser(u);
-
-        Intent intent = new Intent(this, UserActivity.class);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(intent);
-        } else {
-            View v = avatarImage;
-            ActivityOptionsCompat options = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(
-                            this,
-                            Pair.create(v, getString(R.string.transition_user_avatar)));
-            ActivityCompat.startActivity(this, intent, options.toBundle());
-        }
+        photosView.pagerBackToTop();
     }
 
     @Override

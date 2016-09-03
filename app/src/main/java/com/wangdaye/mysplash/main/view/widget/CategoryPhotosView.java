@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.i.presenter.CategoryPresenter;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.CategoryView;
 import com.wangdaye.mysplash._common.i.view.LoadView;
@@ -321,6 +322,10 @@ public class CategoryPhotosView extends FrameLayout
             recyclerView.scrollToPosition(5);
         }
         recyclerView.smoothScrollToPosition(0);
+
+        if (!BackToTopUtils.getInstance(getContext()).isNotified()) {
+            BackToTopUtils.getInstance(getContext()).showSetBackToTopSnackbar();
+        }
     }
 
     @Override

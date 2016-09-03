@@ -68,6 +68,22 @@ public class ValueUtils {
         }
     }
 
+    public static String getBackToTopName(Context c, String key) {
+        switch (key) {
+            case "all":
+                return c.getResources().getStringArray(R.array.back_to_top_type)[0];
+
+            case "home":
+                return c.getResources().getStringArray(R.array.back_to_top_type)[1];
+
+            case "none":
+                return c.getResources().getStringArray(R.array.back_to_top_type)[2];
+
+            default:
+                return null;
+        }
+    }
+
     public static String getLanguageName(Context c, String key) {
         switch (key) {
             case "follow_system":

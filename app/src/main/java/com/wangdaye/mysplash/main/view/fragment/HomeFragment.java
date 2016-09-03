@@ -219,7 +219,7 @@ public class HomeFragment extends Fragment
 
     @Override
     public void touchToolbar() {
-        pagers[pagerManageModel.getPagerPosition()].scrollToPageTop();
+        pagers[pagerManagePresenter.getPagerPosition()].scrollToPageTop();
     }
 
     @Override

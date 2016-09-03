@@ -22,11 +22,59 @@ import java.util.ArrayList;
  */
 public class AnimUtils {
 
-    private AnimUtils() { }
+    private AnimUtils() {}
 
     private static Interpolator fastOutSlowIn;
     private static Interpolator fastOutLinearIn;
     private static Interpolator linearOutSlowIn;
+
+    /** <br> view anim. */
+
+    public static void animInitShow(final View v, int delay) {
+        v.setVisibility(View.INVISIBLE);
+        DisplayUtils utils = new DisplayUtils(v.getContext());
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "translationY", utils.dpToPx(72), 0)
+                .setDuration(300);
+
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setStartDelay(delay);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                v.setVisibility(View.VISIBLE);
+            }
+        });
+        anim.start();
+    }
+
+    public static void animShow(View v) {
+        if (v.getVisibility() == View.GONE) {
+            v.setVisibility(View.VISIBLE);
+        }
+        ObjectAnimator
+                .ofFloat(v, "alpha", 0, 1)
+                .setDuration(300)
+                .start();
+
+    }
+
+    public static void animHide(final View v) {
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "alpha", 1, 0)
+                .setDuration(300);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                v.setVisibility(View.GONE);
+            }
+        });
+        anim.start();
+    }
+
+    /** <br> image anim. */
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Interpolator getFastOutSlowInInterpolator(Context context) {
@@ -303,48 +351,5 @@ public class AnimUtils {
         public void onTransitionResume(Transition transition) {
 
         }
-    }
-
-    public static void animInitShow(final View v, int delay) {
-        v.setVisibility(View.INVISIBLE);
-        DisplayUtils utils = new DisplayUtils(v.getContext());
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "translationY", utils.dpToPx(72), 0)
-                .setDuration(300);
-
-        anim.setInterpolator(new DecelerateInterpolator());
-        anim.setStartDelay(delay);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                v.setVisibility(View.VISIBLE);
-            }
-        });
-        anim.start();
-    }
-
-    public static void animShow(View v) {
-        if (v.getVisibility() == View.GONE) {
-            v.setVisibility(View.VISIBLE);
-        }
-        ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
-                .start();
-    }
-
-    public static void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
-                .setDuration(300);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                v.setVisibility(View.GONE);
-            }
-        });
-        anim.start();
     }
 }

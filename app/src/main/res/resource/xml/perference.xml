@@ -30,6 +30,14 @@
             android:layout="@layout/preference_widget_list" />
 
         <ListPreference
+            android:title="@string/settings_title_back_to_top"
+            android:key="@string/key_back_to_top"
+            android:entries="@array/back_to_top_type"
+            android:entryValues="@array/back_to_top_type_values"
+            android:defaultValue="all"
+            android:layout="@layout/preference_widget_list" />
+
+        <ListPreference
             android:title="@string/settings_title_language"
             android:key="@string/key_language"
             android:entries="@array/languages"

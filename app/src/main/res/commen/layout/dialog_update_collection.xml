@@ -87,7 +87,7 @@
                 <Button
                     android:id="@+id/dialog_update_collection_deleteBtn"
                     android:text="@string/delete"
-                    android:textColor="@color/colorTextWarningRed"
+                    android:textColor="@color/colorAccentRed"
                     android:layout_alignParentLeft="true"
                     style="@style/material_button"
                     tools:ignore="RtlHardcoded" />
@@ -102,7 +102,7 @@
                 <Button
                     android:id="@+id/dialog_update_collection_doDeleteBtn"
                     android:text="@string/delete"
-                    android:textColor="@color/colorTextWarningRed"
+                    android:textColor="@color/colorAccentRed"
                     android:layout_alignParentRight="true"
                     style="@style/material_button"
                     tools:ignore="RtlHardcoded" />
