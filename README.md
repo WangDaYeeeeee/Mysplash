@@ -81,4 +81,4 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_search.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_category.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_download.png)
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_about.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_preview.png)
