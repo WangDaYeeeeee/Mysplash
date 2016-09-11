@@ -1,10 +1,12 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.i.model.UserModel;
 import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash._common.i.view.UserView;
+import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -48,6 +50,12 @@ public class UserImplementor
             model.setUser(response.body());
             view.drawUserInfo(response.body());
             view.requestDetailsSuccess();
+        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+            RateLimitDialog dialog = new RateLimitDialog();
+            dialog.show(
+                    Mysplash.getInstance().getActivityList().get(
+                            Mysplash.getInstance().getActivityList().size()).getFragmentManager(),
+                    null);
         } else {
             requestUser();
         }

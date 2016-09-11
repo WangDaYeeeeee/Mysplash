@@ -20,6 +20,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -79,9 +80,17 @@ public class UpdateMeActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (state == INPUT_STATE) {
+            super.onBackPressed();
+            overridePendingTransition(0, R.anim.activity_slide_out_bottom);
         }
     }
 
@@ -252,8 +261,17 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish() {
+    public void onSwipeFinish(int dir) {
         finish();
+        switch (dir) {
+            case SwipeBackLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
     }
 
     // on request me profile listener.
@@ -263,11 +281,15 @@ public class UpdateMeActivity extends MysplashActivity
         if (response.isSuccessful()) {
             AuthManager.getInstance().writeUserInfo(response.body());
             finish();
+            overridePendingTransition(0, R.anim.activity_slide_out_bottom);
         } else {
             setState(INPUT_STATE);
             NotificationUtils.showSnackbar(
                     getString(R.string.feedback_update_profile_failed),
                     Snackbar.LENGTH_SHORT);
+            RateLimitDialog.checkAndNotify(
+                    this,
+                    response.headers().get("X-Ratelimit-Remaining"));
         }
     }
 

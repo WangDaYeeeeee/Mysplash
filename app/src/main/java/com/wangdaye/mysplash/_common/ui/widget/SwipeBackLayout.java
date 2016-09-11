@@ -3,7 +3,6 @@ package com.wangdaye.mysplash._common.ui.widget;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
@@ -30,6 +29,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
     // data
     private float swipeDistance = 0;
     private float animDistance = 0;
+    private float animTime = 0;
     private float SWIPE_TRIGGER;
     private static final float SWIPE_RADIO = 2.5F;
 
@@ -37,6 +37,8 @@ public class SwipeBackLayout extends CoordinatorLayout {
     private float oldX;
     private float oldY;
     private boolean swiping = false;
+    private boolean animating = false;
+    private boolean finishing = false;
 
     private boolean hasLayout = false;
     private int stateNow;
@@ -85,7 +87,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
             oldX = ev.getX();
             oldY = ev.getY();
         }
-        return stateNow == NORMAL_STATE && isEnabled();
+        return stateNow == NORMAL_STATE && isEnabled() && !animating;
     }
 
     @Override
@@ -150,7 +152,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
                         if (statusBar != null) {
                             statusBar.setVisibility(View.GONE);
                         }
-                        swipeBack();
+                        swipeBack(swipeDir);
                     } else if (swipeDir != NULL_DIR) {
                         reset();
                     }
@@ -235,7 +237,9 @@ public class SwipeBackLayout extends CoordinatorLayout {
 
     private void reset() {
         setState(ANIMATING_STATE);
-        this.animDistance = swipeDistance;
+        animating = true;
+        finishing = false;
+        animDistance = swipeDistance;
 
         reset.setDuration(300);
         reset.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -244,18 +248,16 @@ public class SwipeBackLayout extends CoordinatorLayout {
         container.startAnimation(reset);
     }
 
-    private void swipeBack() {
+    private void swipeBack(int dir) {
         setState(BACKING_STATE);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            this.animDistance = swipeDistance;
-            swipeOut.setDuration(300);
-            swipeOut.setInterpolator(new DecelerateInterpolator());
-            swipeOut.setAnimationListener(new OnSwipeOutListener());
-            container.clearAnimation();
-            container.startAnimation(swipeOut);
-        } else if (listener != null) {
-            invalidate();
-            listener.onSwipeFinish();
+        animating = true;
+        finishing = true;
+        animOut.setDuration(100);
+        animOut.setInterpolator(new DecelerateInterpolator());
+        startAnimation(animOut);
+
+        if (listener != null) {
+            listener.onSwipeFinish(dir);
         }
     }
 
@@ -273,10 +275,17 @@ public class SwipeBackLayout extends CoordinatorLayout {
     }
 
     private int getShadowColor() {
-        if (swipeDistance == 0 || swipeDistance > SWIPE_TRIGGER) {
-            return Color.argb(0, 0, 0, 0);
+        if (animating && finishing) {
+            return Color.argb((int) (255.0 * 0.5 * (1 - animTime)), 0, 0, 0);
+        } else {
+            if (swipeDistance == 0) {
+                return Color.argb(0, 0, 0, 0);
+            } else if (swipeDistance > SWIPE_TRIGGER) {
+                return Color.argb((int) (255 * 0.5), 0, 0, 0);
+            } else {
+                return Color.argb((int) (255.0 * 0.5 * (2 - swipeDistance / SWIPE_TRIGGER)), 0, 0, 0);
+            }
         }
-        return Color.argb((int) (255.0 * (1 - swipeDistance / SWIPE_TRIGGER)), 0, 0, 0);
     }
 
     /** <br> data */
@@ -296,18 +305,30 @@ public class SwipeBackLayout extends CoordinatorLayout {
         public void applyTransformation(float interpolatedTime, Transformation t) {
             // distance = -anim * x + anim
             swipeDistance = animDistance * (1 - interpolatedTime);
+            animTime = interpolatedTime;
             requestLayout();
+            invalidate();
             setStatusBarAlpha(swipeDistance);
         }
     };
-
+/*
     private Animation swipeOut = new Animation() {
         @Override
         public void applyTransformation(float interpolatedTime, Transformation t) {
             // distance = (9 * anim) * x + anim
             swipeDistance = (float) (animDistance * (1.0 + 9.0 * interpolatedTime));
+            animTime = interpolatedTime;
             requestLayout();
+            invalidate();
             setStatusBarAlpha(swipeDistance);
+        }
+    };
+*/
+    private Animation animOut = new Animation() {
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            animTime = interpolatedTime;
+            invalidate();
         }
     };
 
@@ -315,7 +336,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
 
     public interface OnSwipeListener {
         boolean canSwipeBack(int dir);
-        void onSwipeFinish();
+        void onSwipeFinish(int dir);
     }
 
     public void setOnSwipeListener(OnSwipeListener listener) {
@@ -335,6 +356,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
         public void onAnimationEnd(Animation animation) {
             swipeDistance = 0;
             animDistance = 0;
+            animating = false;
             swipeDir = NULL_DIR;
             requestLayout();
             setStatusBarAlpha(swipeDistance);
@@ -346,7 +368,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
             // do nothing.
         }
     }
-
+/*
     private class OnSwipeOutListener implements Animation.AnimationListener {
 
         @Override
@@ -356,6 +378,7 @@ public class SwipeBackLayout extends CoordinatorLayout {
 
         @Override
         public void onAnimationEnd(Animation animation) {
+            animating = false;
             if (listener != null) {
                 listener.onSwipeFinish();
             }
@@ -366,4 +389,5 @@ public class SwipeBackLayout extends CoordinatorLayout {
 
         }
     }
+    */
 }

@@ -3,7 +3,7 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.CollectionApi;
-import com.wangdaye.mysplash._common.data.data.AddPhotoToCollectionResult;
+import com.wangdaye.mysplash._common.data.data.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.data.Me;
@@ -155,26 +155,49 @@ public class CollectionService {
     }
 
     public void addPhotoToCollection(int collection_id, String photo_id,
-                                     final OnAddPhotoToCollectionListener l) {
-        Call<AddPhotoToCollectionResult> addPhotoToCollection = buildApi(buildClient())
+                                     final OnChangeCollectionPhotoListener l) {
+        Call<ChangeCollectionPhotoResult> addPhotoToCollection = buildApi(buildClient())
                 .addPhotoToCollection(collection_id, photo_id);
-        addPhotoToCollection.enqueue(new Callback<AddPhotoToCollectionResult>() {
+        addPhotoToCollection.enqueue(new Callback<ChangeCollectionPhotoResult>() {
             @Override
-            public void onResponse(Call<AddPhotoToCollectionResult> call,
-                                   Response<AddPhotoToCollectionResult> response) {
+            public void onResponse(Call<ChangeCollectionPhotoResult> call,
+                                   Response<ChangeCollectionPhotoResult> response) {
                 if (l != null) {
-                    l.onAddPhotoSuccess(call, response);
+                    l.onChangePhotoSuccess(call, response);
                 }
             }
 
             @Override
-            public void onFailure(Call<AddPhotoToCollectionResult> call, Throwable t) {
+            public void onFailure(Call<ChangeCollectionPhotoResult> call, Throwable t) {
                 if (l != null) {
-                    l.onAddPhotoFailed(call, t);
+                    l.onChangePhotoFailed(call, t);
                 }
             }
         });
         call = addPhotoToCollection;
+    }
+
+    public void deletePhotoFromCollection(int collection_id, String photo_id,
+                                          final OnChangeCollectionPhotoListener l) {
+        Call<ChangeCollectionPhotoResult> deletePhotoFromCollection = buildApi(buildClient())
+                .deletePhotoFromCollection(collection_id, photo_id);
+        deletePhotoFromCollection.enqueue(new Callback<ChangeCollectionPhotoResult>() {
+            @Override
+            public void onResponse(Call<ChangeCollectionPhotoResult> call,
+                                   Response<ChangeCollectionPhotoResult> response) {
+                if (l != null) {
+                    l.onChangePhotoSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ChangeCollectionPhotoResult> call, Throwable t) {
+                if (l != null) {
+                    l.onChangePhotoFailed(call, t);
+                }
+            }
+        });
+        call = deletePhotoFromCollection;
     }
 
     public void updateCollection(int id, String title, String description, boolean privateX,
@@ -262,9 +285,9 @@ public class CollectionService {
         void onRequestACollectionFailed(Call<Collection> call, Throwable t);
     }
 
-    public interface OnAddPhotoToCollectionListener {
-        void onAddPhotoSuccess(Call<AddPhotoToCollectionResult> call, retrofit2.Response<AddPhotoToCollectionResult> response);
-        void onAddPhotoFailed(Call<AddPhotoToCollectionResult> call, Throwable t);
+    public interface OnChangeCollectionPhotoListener {
+        void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call, retrofit2.Response<ChangeCollectionPhotoResult> response);
+        void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t);
     }
 
     public interface OnDeleteCollectionListener {

@@ -54,6 +54,12 @@ public class DownloadManageActivity extends MysplashActivity
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         DownloadManager.getInstance().removeDownloadListener(this);
@@ -62,9 +68,9 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
     }
 
@@ -140,8 +146,17 @@ public class DownloadManageActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish() {
+    public void onSwipeFinish(int dir) {
         finish();
+        switch (dir) {
+            case SwipeBackLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
     }
 
     // on download listener.

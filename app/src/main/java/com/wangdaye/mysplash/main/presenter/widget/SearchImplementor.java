@@ -11,6 +11,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;
 import com.wangdaye.mysplash._common.i.view.SearchView;
+import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
 import java.util.List;
 
@@ -168,6 +169,9 @@ public class SearchImplementor
             } else {
                 view.showButton();
                 view.requestPhotosFailed(c.getString(R.string.feedback_search_failed_tv));
+                RateLimitDialog.checkAndNotify(
+                        Mysplash.getInstance().getActivityList().get(Mysplash.getInstance().getActivityList().size()),
+                        response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 

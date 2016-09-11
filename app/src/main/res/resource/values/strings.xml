@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.2.1</string>
+    <string name="version_code">2.2.4</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -12,6 +12,7 @@
     <string name="email">EMAIL</string>
     <string name="source_code">SOURCE CODE</string>
     <string name="thx">THX</string>
+    <string name="enter">ENTER</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="backstage">BACKSTAGE</string>
     <string name="details">DETAILS</string>
@@ -97,17 +98,26 @@
     <string name="feedback_update_profile_failed">Cannot edit profile.</string>
 
     <string name="feedback_add_to_collection">Add to collection</string>
+    <string name="feedback_delete_from_collection">Delete from collection</string>
     <string name="feedback_create_collection">Create new collection</string>
     <string name="feedback_edit_collection">Edit collection</string>
     <string name="feedback_name">Name</string>
     <string name="feedback_description">Description (optional)</string>
     <string name="feedback_collection_private">Make collection private</string>
 
-    <string name="feedback_add_photo_to_collection_failed">Cannot add photo to collection.</string>
-    <string name="feedback_delete_collection_failed">Cannot delete collection.</string>
     <string name="feedback_name_is_required">Name is required.</string>
+    <string name="feedback_sure">Are you sure?</string>
 
     <string name="feedback_notify_set_back_to_top">You can set the back pressed effect.</string>
+
+    <string name="feedback_add_photo_failed">Add photo failed.</string>
+    <string name="feedback_delete_photo_failed">Delete photo failed.</string>
+    <string name="feedback_create_collection_failed">Create collection failed.</string>
+    <string name="feedback_update_collection_failed">Update collection failed.</string>
+    <string name="feedback_delete_collection_failed">Delete collection failed.</string>
+
+    <string name="feedback_overload">Overload</string>
+    <string name="feedback_exceed_rate_limit">In this hour, the visits of Uysplash API exceed the rate limit, So we cannot load anything now.\n\nYou can try again in next hour.</string>
 
     <!-- menu. -->
     <string name="action_home">Home</string>

@@ -99,9 +99,9 @@ public class CollectionActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
     }
 
@@ -117,14 +117,26 @@ public class CollectionActivity extends MysplashActivity
             result.putExtra(DELETE_COLLECTION, false);
             setResult(RESULT_OK, result);
             super.onBackPressed();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+            }
         }
     }
 
-    private void finishActivity(boolean delete) {
+    private void finishActivity(int dir, boolean delete) {
         Intent result = new Intent();
         result.putExtra(DELETE_COLLECTION, delete);
         setResult(RESULT_OK, result);
         finish();
+        switch (dir) {
+            case SwipeBackLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
     }
 
     /** <br> presenter. */
@@ -202,8 +214,16 @@ public class CollectionActivity extends MysplashActivity
 
     /** <br> model. */
 
+    // init.
+
     private void initModel() {
         this.editResultModel = new EditResultObject();
+    }
+
+    // interface.
+
+    public Collection getCollection() {
+        return (Collection) editResultPresenter.getEditKey();
     }
 
     /** <br> interface. */
@@ -219,6 +239,7 @@ public class CollectionActivity extends MysplashActivity
 
             case R.id.activity_collection_creatorBar:
                 toolbarPresenter.touchToolbar();
+                break;
 
             case R.id.activity_collection_avatar:
                 User u = User.buildUser((Collection) editResultModel.getEditKey());
@@ -227,6 +248,7 @@ public class CollectionActivity extends MysplashActivity
                 Intent intent = new Intent(this, UserActivity.class);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     startActivity(intent);
+                    overridePendingTransition(R.anim.activity_in, 0);
                 } else {
                     View v = avatarImage;
                     ActivityOptionsCompat options = ActivityOptionsCompat
@@ -255,8 +277,8 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish() {
-        swipeBackManagePresenter.swipeBackFinish();
+    public void onSwipeFinish(int dir) {
+        swipeBackManagePresenter.swipeBackFinish(dir);
     }
 
     // on collection changed listener.
@@ -284,7 +306,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void touchNavigatorIcon() {
-        finishActivity(false);
+        finishActivity(SwipeBackLayout.NULL_DIR, false);
     }
 
     @Override
@@ -318,8 +340,8 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    public void swipeBackFinish() {
-        finishActivity(false);
+    public void swipeBackFinish(int dir) {
+        finishActivity(dir, false);
     }
 
     // edit result view.
@@ -347,6 +369,6 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void drawDeleteResult(Object oldKey) {
-        finishActivity(true);
+        finishActivity(SwipeBackLayout.NULL_DIR, true);
     }
 }

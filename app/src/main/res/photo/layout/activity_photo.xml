@@ -24,7 +24,6 @@
             android:foreground="?attr/selectableItemBackground"
             android:src="@drawable/design_about_app"
             app:fiv_cover_mode="true"
-            app:fiv_exist_photo="true"
             app:layout_behavior="._common.ui.behavior.CoverBehavior"
             tools:ignore="UnusedAttribute" />
 
@@ -42,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.wangdaye.mysplash._common.ui.widget.PhotoTouchView
+                <com.wangdaye.mysplash._common.ui.widget.FreedomTouchView
                     android:id="@+id/activity_photo_touchView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

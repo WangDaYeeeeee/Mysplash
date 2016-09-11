@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:layout_marginTop="24dp">
+    android:layout_height="wrap_content">
 
     <FrameLayout
         android:background="?attr/line_color"
@@ -90,6 +89,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/little_margin"
                 android:singleLine="true"
+                android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:text="#34a67c"
                 tools:ignore="RtlHardcoded" />

@@ -45,7 +45,7 @@ import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.activity.PreviewPhotoActivity;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
-import com.wangdaye.mysplash._common.ui.widget.PhotoTouchView;
+import com.wangdaye.mysplash._common.ui.widget.FreedomTouchView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
@@ -126,6 +126,14 @@ public class PhotoActivity extends AppCompatActivity
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         Mysplash.getInstance().removeActivity();
@@ -170,6 +178,7 @@ public class PhotoActivity extends AppCompatActivity
         this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
 
         FreedomImageView photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
+        photoImage.setSize(photoInfoModel.getPhoto().width, photoInfoModel.getPhoto().height);
         if (Mysplash.getInstance().getDrawable() != null) {
             photoImage.setImageDrawable(Mysplash.getInstance().getDrawable());
         } else {
@@ -180,7 +189,8 @@ public class PhotoActivity extends AppCompatActivity
                     .into(photoImage);
         }
 
-        PhotoTouchView touchView = (PhotoTouchView) findViewById(R.id.activity_photo_touchView);
+        FreedomTouchView touchView = (FreedomTouchView) findViewById(R.id.activity_photo_touchView);
+        touchView.setSize(photoInfoModel.getPhoto().width, photoInfoModel.getPhoto().height);
         touchView.setOnClickListener(this);
 
         this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
@@ -337,6 +347,7 @@ public class PhotoActivity extends AppCompatActivity
                 Mysplash.getInstance().setPhoto(photoInfoPresenter.getPhoto());
                 Intent p = new Intent(this, PreviewPhotoActivity.class);
                 startActivity(p);
+                overridePendingTransition(R.anim.activity_in, 0);
                 break;
 
             case R.id.activity_photo_avatar:
@@ -394,11 +405,20 @@ public class PhotoActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSwipeFinish() {
+    public void onSwipeFinish(int dir) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
             finish();
+            switch (dir) {
+                case SwipeBackLayout.UP_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_top);
+                    break;
+
+                case SwipeBackLayout.DOWN_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                    break;
+            }
         }
     }
 
@@ -418,6 +438,7 @@ public class PhotoActivity extends AppCompatActivity
         Intent intent = new Intent(this, UserActivity.class);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             startActivity(intent);
+            overridePendingTransition(R.anim.activity_in, 0);
         } else {
             View v = avatarImage;
             ActivityOptionsCompat options = ActivityOptionsCompat

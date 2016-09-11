@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.data.AddPhotoToCollectionResult;
+import com.wangdaye.mysplash._common.data.data.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.DeleteCollectionResult;
 
@@ -56,6 +56,10 @@ public interface CollectionApi {
     Call<DeleteCollectionResult> deleteCollection(@Path("id") int id);
 
     @POST("collections/{collection_id}/add")
-    Call<AddPhotoToCollectionResult> addPhotoToCollection(@Path("collection_id") int collection_id,
-                                                          @Query("photo_id") String photo_id);
+    Call<ChangeCollectionPhotoResult> addPhotoToCollection(@Path("collection_id") int collection_id,
+                                                           @Query("photo_id") String photo_id);
+
+    @DELETE("collections/{collection_id}/remove")
+    Call<ChangeCollectionPhotoResult> deletePhotoFromCollection(@Path("collection_id") int collection_id,
+                                                                @Query("photo_id") String photo_id);
 }

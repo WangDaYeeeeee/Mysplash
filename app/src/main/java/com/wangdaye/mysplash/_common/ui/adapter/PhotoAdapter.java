@@ -29,19 +29,21 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.data.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.LikePhotoResult;
-import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
-import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
+import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
@@ -55,7 +57,8 @@ import retrofit2.Response;
  * */
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
-        implements SelectCollectionDialog.OnCollectionsChangedListener {
+        implements SelectCollectionPhotoDialog.OnCollectionsChangedListener,
+        DeleteCollectionPhotoDialog.OnDeleteCollectionListener {
     // widget
     private Context a;
     private List<Photo> itemList;
@@ -63,6 +66,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     // data
     private boolean own = false;
+    private boolean inMyCollection = false;
 
     /** <br> life cycle. */
 
@@ -161,6 +165,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     .into(holder.image);
         }
 
+        if (inMyCollection) {
+            holder.deleteButton.setVisibility(View.VISIBLE);
+        } else {
+            holder.deleteButton.setVisibility(View.GONE);
+        }
+
         if (itemList.get(position).liked_by_user) {
             holder.likeButton.setImageResource(R.drawable.ic_item_heart_red);
         } else {
@@ -234,6 +244,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         this.own = own;
     }
 
+    public void setInMyCollection(boolean in) {
+        this.inMyCollection = in;
+    }
+
     /** <br> interface. */
 
     // on set like listener.
@@ -269,8 +283,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     }
 
     @Override
-    public void onAddPhotoToCollection(Collection c, Me me) {
+    public void onAddPhotoToCollection(Collection c, ChangeCollectionPhotoResult.User u) {
         ((MeActivity) a).changeCollection(c);
+    }
+
+    // on delete collection photo listener.
+
+    @Override
+    public void onDeletePhotoSuccess(ChangeCollectionPhotoResult result, int position) {
+        if (itemList.size() > position && itemList.get(position).id.equals(result.photo.id)) {
+            itemList.remove(position);
+            notifyItemRemoved(position);
+        }
     }
 
     /** <br> inner class. */
@@ -283,6 +307,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         public RelativeLayout background;
         public FreedomImageView image;
         public TextView title;
+        public ImageButton deleteButton;
         public ImageButton likeButton;
 
         public ViewHolder(View itemView, int position) {
@@ -296,6 +321,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
             this.title = (TextView) itemView.findViewById(R.id.item_photo_title);
             TypefaceUtils.setTypeface(itemView.getContext(), title);
+
+            this.deleteButton = (ImageButton) itemView.findViewById(R.id.item_photo_deleteButton);
+            deleteButton.setOnClickListener(this);
 
             this.likeButton = (ImageButton) itemView.findViewById(R.id.item_photo_likeButton);
             likeButton.setOnClickListener(this);
@@ -339,6 +367,18 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     }
                     break;
 
+                case R.id.item_photo_deleteButton:
+                    if (a instanceof CollectionActivity) {
+                        DeleteCollectionPhotoDialog dialog = new DeleteCollectionPhotoDialog();
+                        dialog.setDeleteInfo(
+                                ((CollectionActivity) a).getCollection(),
+                                itemList.get(getAdapterPosition()),
+                                getAdapterPosition());
+                        dialog.setOnDeleteCollectionListener(PhotoAdapter.this);
+                        dialog.show(((CollectionActivity) a).getFragmentManager(), null);
+                    }
+                    break;
+
                 case R.id.item_photo_likeButton:
                     if (!AuthManager.getInstance().isAuthorized()) {
                         Intent i = new Intent(a, LoginActivity.class);
@@ -361,7 +401,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             Intent i = new Intent(a, LoginActivity.class);
                             a.startActivity(i);
                         } else {
-                            SelectCollectionDialog dialog = new SelectCollectionDialog();
+                            SelectCollectionPhotoDialog dialog = new SelectCollectionPhotoDialog();
                             dialog.setPhoto(itemList.get(getAdapterPosition()));
                             if (own) {
                                 dialog.setOnCollectionsChangedListener(PhotoAdapter.this);

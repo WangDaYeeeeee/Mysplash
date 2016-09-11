@@ -6,6 +6,7 @@
     <string name="email">EMAIL</string>
     <string name="source_code">SOURCE CODE</string>
     <string name="thx">THX</string>
+    <string name="enter">确认</string>
     <string name="cancel">取消</string>
     <string name="backstage">后台进行</string>
     <string name="details">详情</string>
@@ -73,17 +74,26 @@
     <string name="feedback_update_profile_failed">编辑个人信息失败</string>
 
     <string name="feedback_add_to_collection">添加至收藏集</string>
+    <string name="feedback_delete_from_collection">从收藏集中删除</string>
     <string name="feedback_create_collection">创建收藏集</string>
     <string name="feedback_edit_collection">编辑收藏集</string>
     <string name="feedback_name">名称</string>
     <string name="feedback_description">描述 (可选)</string>
     <string name="feedback_collection_private">私有收藏集</string>
 
-    <string name="feedback_add_photo_to_collection_failed">添加照片失败</string>
-    <string name="feedback_delete_collection_failed">删除收藏集失败</string>
     <string name="feedback_name_is_required">标题不能为空</string>
+    <string name="feedback_sure">确认要进行删除么</string>
 
     <string name="feedback_notify_set_back_to_top">你可以设置按下返回键时的效果</string>
+
+    <string name="feedback_add_photo_failed">添加照片失败</string>
+    <string name="feedback_delete_photo_failed">删除照片失败</string>
+    <string name="feedback_create_collection_failed">创建收藏集失败</string>
+    <string name="feedback_update_collection_failed">编辑收藏集失败</string>
+    <string name="feedback_delete_collection_failed">删除收藏集失败</string>
+
+    <string name="feedback_overload">过载</string>
+    <string name="feedback_exceed_rate_limit">由于本小时的接口访问数超过了Unsplash官方的限制次数，所以我们将暂时无法加载数据。\n\n请于下个小时进行重试。</string>
 
     <!-- 菜单项. -->
     <string name="action_home">主页</string>

@@ -137,6 +137,9 @@ public class MeActivity extends MysplashActivity
             pagerManagePresenter.pagerScrollToTop();
         } else {
             super.onBackPressed();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+            }
         }
     }
 
@@ -335,8 +338,8 @@ public class MeActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish() {
-        swipeBackManagePresenter.swipeBackFinish();
+    public void onSwipeFinish(int dir) {
+        swipeBackManagePresenter.swipeBackFinish(dir);
     }
 
     // on author data changed listener.
@@ -395,6 +398,7 @@ public class MeActivity extends MysplashActivity
                         && AuthManager.getInstance().getMe() != null) {
                     Intent u = new Intent(this, UpdateMeActivity.class);
                     startActivity(u);
+                    overridePendingTransition(R.anim.activity_in, 0);
                 }
                 break;
 
@@ -472,11 +476,20 @@ public class MeActivity extends MysplashActivity
     }
 
     @Override
-    public void swipeBackFinish() {
+    public void swipeBackFinish(int dir) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
             finish();
+            switch (dir) {
+                case SwipeBackLayout.UP_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_top);
+                    break;
+
+                case SwipeBackLayout.DOWN_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                    break;
+            }
         }
     }
 }

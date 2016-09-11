@@ -73,9 +73,9 @@ public class LoginActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
     }
 
@@ -89,6 +89,12 @@ public class LoginActivity extends MysplashActivity
             service.requestAccessToken(intent.getData().getQueryParameter("code"), this);
             setState(AUTH_STATE);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
     }
 
     @Override
@@ -184,6 +190,7 @@ public class LoginActivity extends MysplashActivity
         switch (view.getId()) {
             case R.id.activity_login_closeBtn:
                 finish();
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
 
             case R.id.activity_login_loginBtn:
@@ -204,8 +211,17 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish() {
+    public void onSwipeFinish(int dir) {
         finish();
+        switch (dir) {
+            case SwipeBackLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
     }
 
     // on request access token listener.

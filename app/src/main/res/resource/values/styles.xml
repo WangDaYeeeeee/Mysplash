@@ -81,6 +81,12 @@
     <style name="MysplashTheme_dark.Translucent.Settings" parent="MysplashTheme_dark.Translucent">
         <item name="android:alertDialogTheme">@style/MysplashDialogTheme_dark</item>
     </style>
+    
+    <!-- common activity theme. -->
+    
+    <style name="MysplashTheme_light.Translucent.Common" parent="MysplashTheme_light.Translucent" />
+
+    <style name="MysplashTheme_dark.Translucent.Common" parent="MysplashTheme_dark.Translucent" />
 
     <!-- toolbar. -->
 

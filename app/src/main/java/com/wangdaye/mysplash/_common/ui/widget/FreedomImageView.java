@@ -12,11 +12,10 @@ import android.graphics.Shader;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -32,8 +31,8 @@ public class FreedomImageView extends ImageView {
     private float height = 0.666F;
     private boolean coverMode = false;
     private boolean showShadow = false;
-    private String textPosition;
 
+    private String textPosition;
     private static final String POSITION_NONE = "none";
     private static final String POSITION_TOP = "top";
     private static final String POSITION_BOTTOM = "bottom";
@@ -65,8 +64,6 @@ public class FreedomImageView extends ImageView {
 
         this.coverMode = a.getBoolean(R.styleable.FreedomImageView_fiv_cover_mode, false);
 
-        boolean existPhoto = a.getBoolean(R.styleable.FreedomImageView_fiv_exist_photo, false);
-
         this.textPosition = a.getString(R.styleable.FreedomImageView_fiv_text_position);
         if (TextUtils.isEmpty(textPosition)
                 || (!textPosition.equals(POSITION_TOP)
@@ -77,40 +74,20 @@ public class FreedomImageView extends ImageView {
 
         a.recycle();
 
-        if (existPhoto) {
-            Photo p = Mysplash.getInstance().getPhoto();
-            if (p != null) {
-                width = p.width;
-                height = p.height;
-            }
-        }
-
         this.paint = new Paint();
     }
 
     /** <br> UI. */
 
+    @SuppressLint("DrawAllocation")
+    @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (coverMode) {
-            float h = (float) (getResources().getDisplayMetrics().heightPixels * 0.6);
-            float w = h / this.height * this.width;
-            if (w < getResources().getDisplayMetrics().widthPixels) {
-                int width = getResources().getDisplayMetrics().widthPixels;
-                setMeasuredDimension(
-                        width,
-                        (int) (width / this.width * this.height));
-            } else {
-                setMeasuredDimension((int) w, (int) h);
-            }
-        } else {
-            int width = MeasureSpec.getSize(widthMeasureSpec);
-            setMeasuredDimension(
-                    width,
-                    (int) (width / this.width * this.height));
-        }
+        int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
+        setMeasuredDimension(size[0], size[1]);
     }
 
     @SuppressLint("DrawAllocation")
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (showShadow) {
@@ -153,12 +130,39 @@ public class FreedomImageView extends ImageView {
 
     /** <br> data. */
 
-    public void setSize(float width, float height) {
-        this.width = width;
-        this.height = height;
+    public void setSize(int w, int h) {
+        width = w;
+        height = h;
+
+        if (getMeasuredWidth() != 0) {
+            int[] size = getMeasureSize(getMeasuredWidth());
+
+            ViewGroup.LayoutParams params = getLayoutParams();
+            params.width = size[0];
+            params.height = size[1];
+            setLayoutParams(params);
+        }
     }
 
     public void setShowShadow(boolean show) {
         this.showShadow = show;
+    }
+
+    private int[] getMeasureSize(int measureWidth) {
+        if (coverMode) {
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            int screenHeight = getResources().getDisplayMetrics().heightPixels;
+            float limitHeight = screenHeight
+                    - new DisplayUtils(getContext()).dpToPx(280);
+
+            if (1.0 * height / width * screenWidth <= limitHeight) {
+                return new int[] {
+                        (int) (limitHeight * width / height),
+                        (int) limitHeight};
+            }
+        }
+        return new int[] {
+                measureWidth,
+                (int) (measureWidth * height / width)};
     }
 }

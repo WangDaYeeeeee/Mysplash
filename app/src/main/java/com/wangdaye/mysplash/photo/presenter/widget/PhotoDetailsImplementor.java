@@ -3,11 +3,13 @@ package com.wangdaye.mysplash.photo.presenter.widget;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotoDetailsView;
+import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 
@@ -73,6 +75,9 @@ public class PhotoDetailsImplementor
                 view.requestDetailsSuccess();
             } else {
                 requestPhotoDetails(c);
+                RateLimitDialog.checkAndNotify(
+                        Mysplash.getInstance().getActivityList().get(Mysplash.getInstance().getActivityList().size()),
+                        response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 

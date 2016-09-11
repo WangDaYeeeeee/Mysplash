@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.main.presenter.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -39,7 +40,8 @@ public class MeManageImplementor
         if (!AuthManager.getInstance().isAuthorized()) {
             Intent intent = new Intent(a, LoginActivity.class);
             a.startActivity(intent);
-        } else {
+            a.overridePendingTransition(R.anim.activity_in, 0);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Intent intent = new Intent(a, MeActivity.class);
 
             NavigationView nav = (NavigationView) a.findViewById(R.id.activity_main_navView);
@@ -51,6 +53,10 @@ public class MeManageImplementor
                                     header.findViewById(R.id.container_nav_header_avatar),
                                     a.getString(R.string.transition_me_avatar)));
             ActivityCompat.startActivity(a, intent, options.toBundle());
+        } else {
+            Intent intent = new Intent(a, MeActivity.class);
+            a.startActivity(intent);
+            a.overridePendingTransition(R.anim.activity_in, 0);
         }
     }
 
@@ -59,6 +65,7 @@ public class MeManageImplementor
         if (!AuthManager.getInstance().isAuthorized()) {
             Intent intent = new Intent(a, LoginActivity.class);
             a.startActivity(intent);
+            a.overridePendingTransition(R.anim.activity_in, 0);
         } else {
             AuthManager.getInstance().logout();
         }

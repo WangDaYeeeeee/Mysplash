@@ -7,5 +7,5 @@ package com.wangdaye.mysplash._common.i.view;
 public interface SwipeBackManageView {
 
     boolean checkCanSwipeBack(int dir);
-    void swipeBackFinish();
+    void swipeBackFinish(int dir);
 }

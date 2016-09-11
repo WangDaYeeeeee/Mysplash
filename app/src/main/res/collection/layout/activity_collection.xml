@@ -37,9 +37,12 @@
                     android:textStyle="bold"
                     android:textSize="@dimen/design_title_text_size"
                     android:layout_centerHorizontal="true"
-                    android:layout_margin="@dimen/little_icon_size"
+                    android:layout_marginTop="@dimen/little_icon_size"
+                    android:layout_marginBottom="@dimen/little_icon_size"
+                    android:layout_marginLeft="@dimen/large_icon_size"
+                    android:layout_marginRight="@dimen/large_icon_size"
                     style="@style/title_text"
-                    tools:text="The University" />
+                    tools:text="The Sample Collection Title" />
 
                 <TextView
                     android:id="@+id/activity_collection_description"

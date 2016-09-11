@@ -118,6 +118,10 @@ public class StatsDialog extends DialogFragment
             viewNum.setText(response.body().views + " VIEWS");
             downloadNum.setText(response.body().downloads + " DOWNLOADS");
             setState(SUCCESS_STATE);
+        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+            dismiss();
+            RateLimitDialog dialog = new RateLimitDialog();
+            dialog.show(getFragmentManager(), null);
         } else {
             service.requestStats(photo.id, this);
         }

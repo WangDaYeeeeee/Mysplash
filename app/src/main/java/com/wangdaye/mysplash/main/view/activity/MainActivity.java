@@ -193,14 +193,14 @@ public class MainActivity extends MysplashActivity
         nav.setNavigationItemSelectedListener(this);
 
         View header = nav.getHeaderView(0);
+        header.setOnClickListener(this);
+
         this.navAvatar = (CircleImageView) header.findViewById(R.id.container_nav_header_avatar);
-        navAvatar.setOnClickListener(this);
 
         this.appIcon = (ImageView) header.findViewById(R.id.container_nav_header_appIcon);
         Glide.with(this)
                 .load(R.drawable.ic_launcher)
                 .into(appIcon);
-        appIcon.setOnClickListener(this);
 
         this.navTitle = (TextView) header.findViewById(R.id.container_nav_header_title);
         TypefaceUtils.setTypeface(this, navTitle);
@@ -247,8 +247,7 @@ public class MainActivity extends MysplashActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.container_nav_header_avatar:
-            case R.id.container_nav_header_appIcon:
+            case R.id.container_nav_header:
                 meManagePresenter.touchMeAvatar(this);
                 break;
 
@@ -368,16 +367,19 @@ public class MainActivity extends MysplashActivity
             case R.id.action_download_manage:
                 Intent d = new Intent(this, DownloadManageActivity.class);
                 startActivity(d);
+                overridePendingTransition(R.anim.activity_in, 0);
                 break;
 
             case R.id.action_settings:
                 Intent s = new Intent(this, SettingsActivity.class);
                 startActivity(s);
+                overridePendingTransition(R.anim.activity_in, 0);
                 break;
 
             case R.id.action_about:
                 Intent a = new Intent(this, AboutActivity.class);
                 startActivity(a);
+                overridePendingTransition(R.anim.activity_in, 0);
                 break;
 
             default:

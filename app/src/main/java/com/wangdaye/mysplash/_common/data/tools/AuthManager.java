@@ -11,6 +11,7 @@ import com.wangdaye.mysplash._common.data.data.AccessToken;
 import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
+import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,9 +58,9 @@ public class AuthManager
     private static final int VERSION_CODE = 4;
 
     private static final String KEY_BUILD_TYPE = "build_type";
-    private static final int BUILD_TYPE_BUILD = 1;
+    private static final int BUILD_TYPE_BETA = 1;
     private static final int BUILD_TYPE_RELEASE = 2;
-    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_BUILD;
+    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_BETA;
     // TODO: Need change APPLICATION_ID & SECRET when build type is change.
 
     /** <br> life cycle. */
@@ -321,6 +322,12 @@ public class AuthManager
         if (response.isSuccessful() && response.body() != null) {
             state = FREEDOM_STATE;
             writeAvatarPath(response.body());
+        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+            RateLimitDialog dialog = new RateLimitDialog();
+            dialog.show(
+                    Mysplash.getInstance().getActivityList().get(
+                            Mysplash.getInstance().getActivityList().size()).getFragmentManager(),
+                    null);
         } else {
             service.requestUserProfile(me.username, this);
         }
