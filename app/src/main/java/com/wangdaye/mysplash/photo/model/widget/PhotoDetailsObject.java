@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.photo.model.widget;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
@@ -19,9 +18,9 @@ public class PhotoDetailsObject
 
     /** <br> life cycle. */
 
-    public PhotoDetailsObject() {
+    public PhotoDetailsObject(Photo p) {
         service = PhotoService.getService();
-        photo = Mysplash.getInstance().getPhoto();
+        photo = p;
     }
 
     /** <br> model. */

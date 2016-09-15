@@ -90,6 +90,8 @@ public class MainActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initModel();
+        initPresenter();
     }
 
     @Override
@@ -97,9 +99,7 @@ public class MainActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
-            initModel();
             initView();
-            initPresenter();
             fragmentManagePresenter.changeFragment(R.id.action_home);
         }
     }

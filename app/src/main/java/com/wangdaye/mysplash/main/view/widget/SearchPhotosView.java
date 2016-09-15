@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -47,7 +46,7 @@ import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRe
 
 public class SearchPhotosView extends FrameLayout
         implements SearchView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
     private SearchModel searchModel;
     private LoadModel loadModel;
@@ -60,7 +59,6 @@ public class SearchPhotosView extends FrameLayout
     private CircularProgressView progressView;
     private RelativeLayout feedbackContainer;
     private TextView feedbackText;
-    private Button retryButton;
 
     // presenter.
     private SearchPresenter searchPresenter;
@@ -153,10 +151,6 @@ public class SearchPhotosView extends FrameLayout
 
         this.feedbackText = (TextView) findViewById(R.id.container_searching_view_large_feedbackTxt);
         feedbackText.setText(getContext().getString(R.string.feedback_search_tv));
-
-        this.retryButton = (Button) findViewById(R.id.container_searching_view_large_feedbackBtn);
-        retryButton.setOnClickListener(this);
-        retryButton.setVisibility(GONE);
     }
 
     // interface.
@@ -196,17 +190,6 @@ public class SearchPhotosView extends FrameLayout
     }
 
     /** <br> interface. */
-
-    // on click listener.
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.container_searching_view_large_feedbackBtn:
-                searchPresenter.initRefresh(getContext());
-                break;
-        }
-    }
 
     // on refresh and load listener.
 
@@ -253,11 +236,6 @@ public class SearchPhotosView extends FrameLayout
     @Override
     public void setPermitLoading(boolean permit) {
         refreshLayout.setPermitLoad(permit);
-    }
-
-    @Override
-    public void showButton() {
-        retryButton.setVisibility(VISIBLE);
     }
 
     @Override

@@ -36,7 +36,8 @@
             android:padding="@dimen/little_margin"
             android:layout_marginRight="@dimen/little_margin"
             android:layout_marginBottom="@dimen/little_margin"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
@@ -48,7 +49,8 @@
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
             android:layout_marginBottom="@dimen/little_margin"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/item_download_cancelBtn"
             tools:ignore="ContentDescription,RtlHardcoded" />

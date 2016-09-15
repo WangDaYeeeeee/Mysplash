@@ -44,7 +44,6 @@ public class CategoryFragment extends Fragment
     // presenter.
     private ToolbarPresenter toolbarPresenter;
     private PopupManagePresenter popupManagePresenter;
-    //private CategoryManagePresenter categoryManagePresenter;
 
     /** <br> life cycle. */
 
@@ -67,7 +66,6 @@ public class CategoryFragment extends Fragment
     private void initPresenter() {
         this.toolbarPresenter = new ToolbarImplementor(this);
         this.popupManagePresenter = new CategoryFragmentPopupManageImplementor(this);
-        //this.categoryManagePresenter = new CategoryManageImplementor(categoryManageModel);
     }
 
     /** <br> view. */

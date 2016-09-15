@@ -233,6 +233,7 @@ public class PhotoActivity extends AppCompatActivity
         }
 
         this.detailsView = (PhotoDetailsView) findViewById(R.id.activity_photo_detailsView);
+        detailsView.initMP(photoInfoModel.getPhoto());
         detailsView.requestPhotoDetails();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_photo_toolbar);

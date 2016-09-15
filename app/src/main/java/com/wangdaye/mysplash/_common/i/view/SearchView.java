@@ -12,7 +12,6 @@ public interface SearchView {
     void setPermitRefreshing(boolean permit);
     void setPermitLoading(boolean permit);
 
-    void showButton();
     void setBackgroundOpacity();
 
     void initRefreshStart();

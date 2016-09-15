@@ -36,8 +36,10 @@ import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.data.tools.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
+import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
@@ -171,11 +173,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             holder.deleteButton.setVisibility(View.GONE);
         }
 
-        if (itemList.get(position).liked_by_user) {
-            holder.likeButton.setImageResource(R.drawable.ic_item_heart_red);
-        } else {
-            holder.likeButton.setImageResource(R.drawable.ic_item_heart_outline);
-        }
+        holder.likeButton.initLikeState(itemList.get(position).liked_by_user);
 
         holder.background.setBackgroundColor(
                 ColorUtils.calcCardBackgroundColor(
@@ -218,16 +216,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         notifyDataSetChanged();
     }
 
-    private void setLikeForAPhoto(int position) {
+    private void setLikeForAPhoto(boolean like, int position) {
         if (service == null) {
             service = PhotoService.getService();
-        } else {
-            service.cancel();
         }
         service.setLikeForAPhoto(
                 itemList.get(position).id,
-                !itemList.get(position).liked_by_user,
-                new OnSetLikeListener(position));
+                like,
+                new OnSetLikeListener(itemList.get(position).id, like, position));
     }
 
     public void cancelService() {
@@ -254,24 +250,41 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
         // data
+        private String id;
+        private boolean like;
         private int position;
 
-        public OnSetLikeListener(int position) {
+        public OnSetLikeListener(String id, boolean like, int position) {
+            this.id = id;
+            this.like = like;
             this.position = position;
         }
 
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
-            if (response.body() != null
-                    && itemList.size() >= position && itemList.get(position).id.equals(response.body().photo.id)) {
-                itemList.get(position).liked_by_user = response.body().photo.liked_by_user;
-                itemList.get(position).likes = response.body().photo.likes;
+            if (response.isSuccessful() && response.body() != null) {
+                if (itemList.size() >= position
+                        && itemList.get(position).id.equals(response.body().photo.id)) {
+                    itemList.get(position).liked_by_user = response.body().photo.liked_by_user;
+                    itemList.get(position).likes = response.body().photo.likes;
+                }
+            } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+                RateLimitDialog dialog = new RateLimitDialog();
+                dialog.show(((Activity) a).getFragmentManager(), null);
+            } else {
+                service.setLikeForAPhoto(
+                        id,
+                        like,
+                        this);
             }
         }
 
         @Override
         public void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t) {
-            // do nothing.
+            service.setLikeForAPhoto(
+                    id,
+                    like,
+                    this);
         }
     }
 
@@ -302,13 +315,13 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     // view holder.
 
     public class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+            implements View.OnClickListener, LikeImageButton.OnLikeListener {
         // widget
         public RelativeLayout background;
         public FreedomImageView image;
         public TextView title;
         public ImageButton deleteButton;
-        public ImageButton likeButton;
+        public LikeImageButton likeButton;
 
         public ViewHolder(View itemView, int position) {
             super(itemView);
@@ -325,8 +338,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             this.deleteButton = (ImageButton) itemView.findViewById(R.id.item_photo_deleteButton);
             deleteButton.setOnClickListener(this);
 
-            this.likeButton = (ImageButton) itemView.findViewById(R.id.item_photo_likeButton);
-            likeButton.setOnClickListener(this);
+            this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_photo_likeButton);
+            likeButton.setOnLikeListener(this);
 
             itemView.findViewById(R.id.item_photo_collectionButton).setOnClickListener(this);
         }
@@ -379,22 +392,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     }
                     break;
 
-                case R.id.item_photo_likeButton:
-                    if (!AuthManager.getInstance().isAuthorized()) {
-                        Intent i = new Intent(a, LoginActivity.class);
-                        a.startActivity(i);
-                    } else {
-                        setLikeForAPhoto(getAdapterPosition());
-                        if (itemList.get(getAdapterPosition()).liked_by_user) {
-                            itemList.get(getAdapterPosition()).liked_by_user = false;
-                            ((ImageButton) view).setImageResource(R.drawable.ic_item_heart_broken);
-                        } else {
-                            itemList.get(getAdapterPosition()).liked_by_user = true;
-                            ((ImageButton) view).setImageResource(R.drawable.ic_item_heart_red);
-                        }
-                    }
-                    break;
-
                 case R.id.item_photo_collectionButton:
                     if (a instanceof Activity) {
                         if (!AuthManager.getInstance().isAuthorized()) {
@@ -411,6 +408,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     }
                     break;
             }
+        }
+
+        @Override
+        public void onClickLikeButton(boolean newLikeState) {
+            setLikeForAPhoto(newLikeState, getAdapterPosition());
         }
     }
 }

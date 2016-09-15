@@ -106,9 +106,11 @@ public class MeProfileView  extends FrameLayout
         TypefaceUtils.setTypeface(getContext(), bioTxt);
 
         if (ThemeUtils.getInstance(getContext()).isLightTheme()) {
-            ((ImageView) findViewById(R.id.container_user_profile_locationIcon)).setImageResource(R.drawable.ic_location_light);
+            ((ImageView) findViewById(R.id.container_user_profile_locationIcon))
+                    .setImageResource(R.drawable.ic_location_light);
         } else {
-            ((ImageView) findViewById(R.id.container_user_profile_locationIcon)).setImageResource(R.drawable.ic_location_dark);
+            ((ImageView) findViewById(R.id.container_user_profile_locationIcon))
+                    .setImageResource(R.drawable.ic_location_dark);
         }
     }
 

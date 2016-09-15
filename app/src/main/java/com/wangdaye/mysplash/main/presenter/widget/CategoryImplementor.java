@@ -211,7 +211,7 @@ public class CategoryImplementor
                 view.requestPhotosFailed(c.getString(R.string.feedback_load_nothing_tv));
                 RateLimitDialog.checkAndNotify(
                         Mysplash.getInstance().getActivityList().get(
-                                Mysplash.getInstance().getActivityList().size()),
+                                Mysplash.getInstance().getActivityList().size() - 1),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }

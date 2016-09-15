@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
@@ -104,9 +103,13 @@ public class CollectionPhotosView extends FrameLayout
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel();
         initView();
+    }
+
+    public void initMP(Activity a, Collection c) {
+        initModel(a, c);
         initPresenter();
+        recyclerView.setAdapter(photosModel.getAdapter());
     }
 
     /** <br> presenter. */
@@ -141,7 +144,6 @@ public class CollectionPhotosView extends FrameLayout
         }
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
-        recyclerView.setAdapter(photosModel.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(onScrollListener);
     }
@@ -174,12 +176,11 @@ public class CollectionPhotosView extends FrameLayout
 
     // init.
 
-    private void initModel() {
+    private void initModel(Activity a, Collection c) {
         this.photosModel = new PhotosObject(
-                getContext(),
-                Mysplash.getInstance().getCollection(),
-                Mysplash.getInstance().getCollection().curated
-                        ? PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
+                a,
+                c,
+                c.curated ? PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }

@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.data.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
@@ -92,8 +93,11 @@ public class PhotoDetailsView extends FrameLayout
         View v = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_details, null);
         addView(v);
 
-        initModel();
         initView();
+    }
+
+    public void initMP(Photo p) {
+        initModel(p);
         initPresenter();
     }
 
@@ -175,8 +179,8 @@ public class PhotoDetailsView extends FrameLayout
 
     // init.
 
-    private void initModel() {
-        this.photoDetailsModel = new PhotoDetailsObject();
+    private void initModel(Photo p) {
+        this.photoDetailsModel = new PhotoDetailsObject(p);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
     }
 

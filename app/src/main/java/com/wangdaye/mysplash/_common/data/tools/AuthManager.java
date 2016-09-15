@@ -3,10 +3,8 @@ package com.wangdaye.mysplash._common.data.tools;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.data.AccessToken;
 import com.wangdaye.mysplash._common.data.data.Me;
 import com.wangdaye.mysplash._common.data.data.User;
@@ -104,11 +102,6 @@ public class AuthManager
 
         if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
                 && !TextUtils.isEmpty(token)) {
-
-            Toast.makeText(
-                    Mysplash.getInstance(),
-                    Mysplash.getInstance().getString(R.string.feedback_please_login),
-                    Toast.LENGTH_LONG).show();
 
             SharedPreferences.Editor editor = Mysplash.getInstance()
                     .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
@@ -326,7 +319,7 @@ public class AuthManager
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(
                     Mysplash.getInstance().getActivityList().get(
-                            Mysplash.getInstance().getActivityList().size()).getFragmentManager(),
+                            Mysplash.getInstance().getActivityList().size() - 1).getFragmentManager(),
                     null);
         } else {
             service.requestUserProfile(me.username, this);

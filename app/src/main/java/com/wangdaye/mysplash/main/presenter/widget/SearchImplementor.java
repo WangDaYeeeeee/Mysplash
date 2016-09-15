@@ -167,10 +167,10 @@ public class SearchImplementor
                 }
                 view.requestPhotosSuccess();
             } else {
-                view.showButton();
                 view.requestPhotosFailed(c.getString(R.string.feedback_search_failed_tv));
                 RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getActivityList().get(Mysplash.getInstance().getActivityList().size()),
+                        Mysplash.getInstance().getActivityList().get(
+                                Mysplash.getInstance().getActivityList().size() - 1),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }
@@ -188,7 +188,6 @@ public class SearchImplementor
                     c,
                     c.getString(R.string.feedback_search_failed_toast) + "\n" + t.getMessage(),
                     Toast.LENGTH_SHORT).show();
-            view.showButton();
             view.requestPhotosFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }

@@ -41,16 +41,6 @@
             android:layout_below="@id/container_searching_view_large_feedbackImg"
             style="@style/subtitle_text" />
 
-        <Button
-            android:id="@+id/container_searching_view_large_feedbackBtn"
-            android:text="@string/feedback_click_retry"
-            android:textStyle="bold"
-            android:visibility="invisible"
-            android:enabled="false"
-            android:layout_centerHorizontal="true"
-            android:layout_below="@id/container_searching_view_large_feedbackTxt"
-            style="@style/material_button" />
-
     </RelativeLayout>
 
 </RelativeLayout>

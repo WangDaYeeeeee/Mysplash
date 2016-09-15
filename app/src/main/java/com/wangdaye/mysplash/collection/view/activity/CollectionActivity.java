@@ -76,6 +76,8 @@ public class CollectionActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_collection);
+        initModel();
+        initPresenter();
     }
 
     @Override
@@ -83,9 +85,7 @@ public class CollectionActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
-            initModel();
             initView();
-            initPresenter();
             AnimUtils.animInitShow(photosView, 400);
         }
     }
@@ -208,7 +208,7 @@ public class CollectionActivity extends MysplashActivity
         subtitle.setText("By " + c.user.name);
 
         this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
-        photosView.setActivity(this);
+        photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
         photosView.initRefresh();
     }
 

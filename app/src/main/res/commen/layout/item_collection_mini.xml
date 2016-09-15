@@ -37,7 +37,8 @@
             android:layout_margin="@dimen/little_margin"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <LinearLayout
