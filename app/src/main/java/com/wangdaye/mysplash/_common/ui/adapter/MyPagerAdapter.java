@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MyPagerAdapter extends PagerAdapter {
     // widget
-    public List<View> viewList;
+    private List<View> viewList;
     public List<String> titleList;
 
     /** <br> life cycle. */

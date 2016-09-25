@@ -40,12 +40,6 @@ public interface PhotoApi {
                                        @Query("per_page") int per_page,
                                        @Query("order_by") String order_by);
 
-    @GET("photos/search")
-    Call<List<Photo>> searchPhotos(@Query("query") String query,
-                                   @Query("orientation") String orientation,
-                                   @Query("page") int page,
-                                   @Query("per_page") int per_page);
-
     @GET("photos/{id}/stats")
     Call<PhotoStats> getPhotoStats(@Path("id") String id);
 
@@ -87,4 +81,12 @@ public interface PhotoApi {
     Call<List<Photo>> getCuratedCollectionPhotos(@Path("id") int id,
                                                  @Query("page") int page,
                                                  @Query("per_page") int per_page);
+
+    @GET("photos/random")
+    Call<List<Photo>> getRandomPhotos(@Query("category") Integer categoryId,
+                                             @Query("featured") Boolean featured,
+                                             @Query("username") String username,
+                                             @Query("query") String query,
+                                             @Query("orientation") String orientation,
+                                             @Query("count") int count);
 }

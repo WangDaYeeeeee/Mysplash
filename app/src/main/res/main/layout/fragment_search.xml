@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:layout_marginTop="24dp">
+    android:layout_height="match_parent">
 
     <com.wangdaye.mysplash._common.ui.widget.StatusBarView
         android:id="@+id/fragment_search_statusBar"
@@ -42,51 +41,25 @@
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
                     android:imeOptions="actionSearch"
-                    android:singleLine="true"
                     android:inputType="text"
+                    android:maxLines="1"
                     tools:ignore="RtlHardcoded" />
 
             </android.support.v7.widget.Toolbar>
 
-            <FrameLayout
-                android:id="@+id/fragment_search_orientationContainer"
+            <android.support.design.widget.TabLayout
+                android:id="@+id/fragment_search_tabLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:id="@+id/fragment_search_orientationMenu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/tab_layout_height"
-                    android:background="?attr/selectableItemBackground"
-                    tools:ignore="UselessParent">
-
-                    <TextView
-                        android:id="@+id/fragment_search_nowTxt"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_centerVertical="true"
-                        style="@style/subtitle_text"
-                        tools:text="LANDSCAPE"
-                        tools:ignore="RtlHardcoded" />
-
-                    <ImageView
-                        android:id="@+id/fragment_search_menuIcon"
-                        android:src="@drawable/ic_menu_down_light"
-                        android:layout_width="@dimen/mini_icon_size"
-                        android:layout_height="@dimen/mini_icon_size"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_marginRight="@dimen/normal_margin"
-                        android:layout_toRightOf="@id/fragment_search_nowTxt"
-                        android:layout_centerVertical="true"
-                        tools:ignore="ContentDescription,RtlHardcoded" />
-
-                </RelativeLayout>
-
-            </FrameLayout>
+                android:layout_height="@dimen/tab_layout_height"
+                app:tabIndicatorHeight="3dp"
+                app:tabIndicatorColor="?attr/title_color"
+                app:tabSelectedTextColor="?attr/content_color"
+                app:tabTextColor="?attr/subtitle_color" />
 
         </android.support.design.widget.AppBarLayout>
 
-        <com.wangdaye.mysplash.main.view.widget.SearchPhotosView
-            android:id="@+id/fragment_search_contentView"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/fragment_search_viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />

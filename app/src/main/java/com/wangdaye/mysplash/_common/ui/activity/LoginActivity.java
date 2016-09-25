@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -133,18 +132,20 @@ public class LoginActivity extends MysplashActivity
         TypefaceUtils.setTypeface(this, ((TextView) findViewById(R.id.activity_login_content)));
 
         Button loginBtn = (Button) findViewById(R.id.activity_login_loginBtn);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            loginBtn.setTextColor(Color.WHITE);
-        }
         loginBtn.setOnClickListener(this);
 
         Button joinBtn = (Button) findViewById(R.id.activity_login_joinBtn);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            joinBtn.setTextColor(Color.WHITE);
-        }
         joinBtn.setOnClickListener(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            if (ThemeUtils.getInstance(this).isLightTheme()) {
+                loginBtn.setBackgroundResource(R.color.colorTextTitle_light);
+                joinBtn.setBackgroundResource(R.color.colorPrimaryDark_light);
+            } else {
+                loginBtn.setBackgroundResource(R.color.colorTextTitle_dark);
+                joinBtn.setBackgroundResource(R.color.colorPrimaryDark_dark);
+            }
+        } else {
             loginBtn.setBackgroundResource(R.drawable.button_login);
             joinBtn.setBackgroundResource(R.drawable.button_join);
         }

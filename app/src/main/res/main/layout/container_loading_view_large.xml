@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_loading_view_large"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_marginBottom="98dp">
 
     <com.github.rahatarmanahmed.cpv.CircularProgressView
         android:id="@+id/container_loading_view_large_progressView"
         android:layout_width="@dimen/circular_progress_height"
-        android:layout_height="126dp"
+        android:layout_height="@dimen/circular_progress_height"
         android:layout_centerInParent="true"
-        android:paddingBottom="84dp"
         app:cpv_animAutostart="true"
         app:cpv_color="?attr/content_color"
         app:cpv_indeterminate="true" />
@@ -22,13 +22,16 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <ImageView
+        <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
             android:id="@+id/container_loading_view_large_feedbackImg"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="108dp"
+            android:layout_marginRight="108dp"
             android:layout_marginBottom="@dimen/normal_margin"
             android:layout_centerHorizontal="true"
-            tools:src="@drawable/feedback_load_failed"
+            app:fiv_square="true"
+            tools:src="@drawable/feedback_no_photos"
             tools:ignore="ContentDescription" />
 
         <TextView

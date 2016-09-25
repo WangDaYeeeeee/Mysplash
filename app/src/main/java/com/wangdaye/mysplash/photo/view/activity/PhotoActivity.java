@@ -17,6 +17,7 @@ import android.support.v4.util.Pair;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -72,8 +73,8 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class PhotoActivity extends AppCompatActivity
         implements PhotoInfoView, DownloadView, ScrollView, PopupManageView,
-        View.OnClickListener, DownloadDialog.OnDismissListener, SwipeBackLayout.OnSwipeListener,
-        NotificationUtils.SnackbarContainer {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, DownloadDialog.OnDismissListener,
+        SwipeBackLayout.OnSwipeListener, NotificationUtils.SnackbarContainer {
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
@@ -240,10 +241,13 @@ public class PhotoActivity extends AppCompatActivity
         toolbar.setTitle(title.getText().toString());
         if (ThemeUtils.getInstance(this).isLightTheme()) {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+            toolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+            toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
         }
         toolbar.setNavigationOnClickListener(this);
+        toolbar.setOnMenuItemClickListener(this);
         toolbar.setOnClickListener(this);
 
         if (ThemeUtils.getInstance(this).isLightTheme()) {
@@ -383,6 +387,18 @@ public class PhotoActivity extends AppCompatActivity
                 }
                 break;
         }
+    }
+
+    // on menu item click listener.
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_menu:
+                popupManagePresenter.showPopup(this, menuBtn, null, 0);
+                break;
+        }
+        return true;
     }
 
     // on dismiss listener.

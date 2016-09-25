@@ -165,6 +165,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     })
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(holder.image);
+
+            holder.image.setTransitionName(itemList.get(position).id);
         }
 
         if (inMyCollection) {
@@ -179,10 +181,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                 ColorUtils.calcCardBackgroundColor(
                         a,
                         itemList.get(position).color));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.image.setTransitionName(itemList.get(position).id);
-        }
     }
 
     @Override
@@ -254,7 +252,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         private boolean like;
         private int position;
 
-        public OnSetLikeListener(String id, boolean like, int position) {
+        OnSetLikeListener(String id, boolean like, int position) {
             this.id = id;
             this.like = like;
             this.position = position;
@@ -314,16 +312,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     // view holder.
 
-    public class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, LikeImageButton.OnLikeListener {
         // widget
         public RelativeLayout background;
         public FreedomImageView image;
         public TextView title;
-        public ImageButton deleteButton;
-        public LikeImageButton likeButton;
+        ImageButton deleteButton;
+        LikeImageButton likeButton;
 
-        public ViewHolder(View itemView, int position) {
+        ViewHolder(View itemView, int position) {
             super(itemView);
 
             this.background = (RelativeLayout) itemView.findViewById(R.id.item_photo_background);

@@ -100,7 +100,7 @@ public class UserService {
         return new UserService();
     }
 
-    public OkHttpClient buildClient() {
+    private OkHttpClient buildClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor())
                 .build();

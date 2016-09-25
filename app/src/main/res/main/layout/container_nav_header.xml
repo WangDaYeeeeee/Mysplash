@@ -3,53 +3,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_nav_header"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/nav_header_height"
+    android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground">
 
-    <ImageButton
-        android:id="@+id/container_nav_header_button"
-        android:src="@drawable/ic_plus_mini_light"
-        android:layout_width="34dp"
-        android:layout_height="34dp"
-        android:padding="@dimen/little_margin"
-        android:layout_margin="@dimen/little_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        tools:ignore="ContentDescription,RtlHardcoded" />
-
-    <TextView
-        android:id="@+id/container_nav_header_subtitle"
-        android:text="@string/powered"
-        android:singleLine="true"
-        android:layout_marginLeft="@dimen/normal_margin"
-        android:layout_marginBottom="@dimen/little_margin"
-        android:layout_alignParentBottom="true"
-        android:layout_toLeftOf="@id/container_nav_header_button"
-        android:layout_alignParentLeft="true"
-        style="@style/subtitle_text"
-        tools:ignore="RtlHardcoded" />
-
-    <TextView
-        android:id="@+id/container_nav_header_title"
-        android:text="@string/app_name"
-        android:singleLine="true"
-        android:layout_above="@id/container_nav_header_subtitle"
-        android:layout_marginLeft="@dimen/normal_margin"
-        android:layout_marginRight="@dimen/normal_margin"
-        style="@style/title_text" />
+    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+        android:id="@+id/container_nav_header_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:id="@+id/container_nav_header_iconContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/container_nav_header_title">
+        android:layout_width="@dimen/large_icon_size"
+        android:layout_height="@dimen/large_icon_size"
+        android:layout_below="@id/container_nav_header_statusBar"
+        android:layout_margin="@dimen/normal_margin"
+        tools:ignore="RtlHardcoded">
 
         <com.wangdaye.mysplash._common.ui.widget.CircleImageView
             android:id="@+id/container_nav_header_avatar"
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
-            android:layout_margin="@dimen/normal_margin"
             tools:src="@drawable/ic_launcher"
             tools:ignore="ContentDescription" />
 
@@ -57,17 +30,50 @@
             android:id="@+id/container_nav_header_appIcon"
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
-            android:layout_margin="@dimen/normal_margin"
             tools:src="@drawable/ic_launcher"
             tools:ignore="ContentDescription" />
 
     </FrameLayout>
+
+    <TextView
+        android:id="@+id/container_nav_header_title"
+        android:text="@string/app_name"
+        android:singleLine="true"
+        android:layout_below="@id/container_nav_header_iconContainer"
+        android:layout_marginLeft="@dimen/normal_margin"
+        android:layout_marginRight="66dp"
+        style="@style/title_text"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/container_nav_header_subtitle"
+        android:text="@string/feedback_login_text"
+        android:singleLine="true"
+        android:layout_marginLeft="@dimen/normal_margin"
+        android:layout_marginRight="66dp"
+        android:layout_marginBottom="@dimen/little_margin"
+        android:layout_below="@id/container_nav_header_title"
+        android:layout_alignParentLeft="true"
+        style="@style/subtitle_text"
+        tools:ignore="RtlHardcoded" />
+
+    <ImageButton
+        android:id="@+id/container_nav_header_button"
+        android:src="@drawable/ic_plus_mini_light"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:padding="@dimen/little_margin"
+        android:layout_marginRight="@dimen/little_margin"
+        android:layout_alignParentRight="true"
+        android:layout_alignBottom="@id/container_nav_header_subtitle"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        tools:ignore="ContentDescription,RtlHardcoded" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@android:color/black"
         android:alpha="0.1"
-        android:layout_alignParentBottom="true" />
+        android:layout_below="@id/container_nav_header_subtitle" />
 
 </RelativeLayout>

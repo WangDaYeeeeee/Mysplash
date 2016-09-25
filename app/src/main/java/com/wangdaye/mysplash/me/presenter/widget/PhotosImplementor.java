@@ -31,6 +31,9 @@ public class PhotosImplementor
     private PhotosModel model;
     private PhotosView view;
 
+    // data
+    private OnRequestPhotosListener listener;
+
     /** <br> life cycle. */
 
     public PhotosImplementor(PhotosModel model, PhotosView view) {
@@ -63,8 +66,13 @@ public class PhotosImplementor
 
     @Override
     public void cancelRequest() {
+        if (listener != null) {
+            listener.cancel();
+        }
         model.getService().cancel();
         model.getAdapter().cancelService();
+        model.setRefreshing(false);
+        model.setLoading(false);
     }
 
     @Override
@@ -85,9 +93,7 @@ public class PhotosImplementor
 
     @Override
     public void initRefresh(Context c) {
-        model.getService().cancel();
-        model.setRefreshing(false);
-        model.setLoading(false);
+        cancelRequest();
         refreshNew(c, false);
         view.initRefreshStart();
     }
@@ -136,24 +142,26 @@ public class PhotosImplementor
 
     private void requestUserPhotos(Context c, int page, boolean refresh, String order) {
         page = refresh ? 1 : page + 1;
+        listener = new OnRequestPhotosListener(c, page, refresh);
         model.getService()
                 .requestUserPhotos(
                         AuthManager.getInstance().getMe(),
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         order,
-                        new OnRequestPhotosListener(c, page, refresh));
+                        listener);
     }
 
     private void requestUserLikes(Context c, int page, boolean refresh, String order) {
         page = refresh ? 1 : page + 1;
+        listener = new OnRequestPhotosListener(c, page, refresh);
         model.getService()
                 .requestUserLikes(
                         AuthManager.getInstance().getMe(),
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         order,
-                        new OnRequestPhotosListener(c, page, refresh));
+                        listener);
     }
 
     /** <br> interface. */
@@ -163,15 +171,24 @@ public class PhotosImplementor
         private Context c;
         private int page;
         private boolean refresh;
+        private boolean canceled;
 
-        public OnRequestPhotosListener(Context c, int page, boolean refresh) {
+        OnRequestPhotosListener(Context c, int page, boolean refresh) {
             this.c = c;
             this.page = page;
             this.refresh = refresh;
+            this.canceled = false;
+        }
+
+        public void cancel() {
+            canceled = true;
         }
 
         @Override
         public void onRequestPhotosSuccess(Call<List<Photo>> call, Response<List<Photo>> response) {
+            if (canceled) {
+                return;
+            }
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
@@ -200,14 +217,16 @@ public class PhotosImplementor
             } else {
                 view.requestPhotosFailed(c.getString(R.string.feedback_load_nothing_tv));
                 RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getActivityList().get(
-                                Mysplash.getInstance().getActivityList().size() - 1),
+                        Mysplash.getInstance().getLatestActivity(),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 
         @Override
         public void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t) {
+            if (canceled) {
+                return;
+            }
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {

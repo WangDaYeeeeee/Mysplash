@@ -11,7 +11,7 @@
         android:toAlpha="1" />
 
     <translate
-        android:fromYDelta="10%p"
+        android:fromYDelta="5%p"
         android:fromXDelta="0"
         android:toYDelta="0"
         android:toXDelta="0"/>

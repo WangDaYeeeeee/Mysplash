@@ -318,8 +318,7 @@ public class AuthManager
         } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(
-                    Mysplash.getInstance().getActivityList().get(
-                            Mysplash.getInstance().getActivityList().size() - 1).getFragmentManager(),
+                    Mysplash.getInstance().getLatestActivity().getFragmentManager(),
                     null);
         } else {
             service.requestUserProfile(me.username, this);

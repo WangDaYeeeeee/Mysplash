@@ -24,6 +24,8 @@
             android:id="@+id/container_user_profile_locationContainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/normal_icon_size"
+            android:layout_marginRight="@dimen/normal_icon_size"
             android:layout_centerHorizontal="true">
 
             <ImageView
@@ -42,6 +44,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
                 android:layout_marginLeft="@dimen/mini_margin"
+                android:maxLines="2"
                 style="@style/subtitle_text"
                 tools:text="Bermuda// Durham"
                 tools:ignore="RtlHardcoded" />

@@ -158,15 +158,15 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         // widget
-        public CardView card;
+        CardView card;
         public ImageView image;
         public TextView title;
-        public ImageButton cancelBtn;
-        public ImageButton retryBtn;
+        ImageButton cancelBtn;
+        ImageButton retryBtn;
 
         // life cycle.
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
             this.card = (CardView) itemView.findViewById(R.id.item_download_card);

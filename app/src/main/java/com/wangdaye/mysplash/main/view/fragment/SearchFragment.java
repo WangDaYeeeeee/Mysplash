@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,32 +15,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.SearchBarModel;
+import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
+import com.wangdaye.mysplash._common.i.view.PagerManageView;
+import com.wangdaye.mysplash._common.i.view.PagerView;
+import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
-import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.SearchBarView;
-import com.wangdaye.mysplash.main.model.fragment.SearchBarObject;
-import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
+import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
+import com.wangdaye.mysplash.main.presenter.fragment.MessageManageImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.SearchBarImplementor;
-import com.wangdaye.mysplash.main.presenter.fragment.SearchFragmentPopupManageImplementor;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
-import com.wangdaye.mysplash.main.view.widget.SearchPhotosView;
+import com.wangdaye.mysplash.main.view.widget.HomeSearchView;
 import com.wangdaye.mysplash._common.utils.SafeHandler;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -47,25 +48,23 @@ import java.util.TimerTask;
  * */
 
 public class SearchFragment extends Fragment
-        implements SearchBarView, MessageManageView, PopupManageView,
+        implements SearchBarView, MessageManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
-        NotificationUtils.SnackbarContainer, SafeHandler.HandlerContainer {
+        NotificationUtils.SnackbarContainer, ViewPager.OnPageChangeListener, SafeHandler.HandlerContainer {
     // model.
-    private SearchBarModel searchBarModel;
+    private PagerManageModel pagerManageModel;
 
     // view.
     private CoordinatorLayout container;
     private EditText editText;
-    private TextView orientationTxt;
-    private ImageView menuIcon;
-    private SearchPhotosView contentView;
+    private PagerView[] pagers = new PagerView[3];
 
     private SafeHandler<SearchFragment> handler;
 
     // presenter.
     private SearchBarPresenter searchBarPresenter;
     private MessageManagePresenter messageManagePresenter;
-    private PopupManagePresenter popupManagePresenter;
+    private PagerManagePresenter pagerManagePresenter;
 
     /** <br> life cycle. */
 
@@ -82,17 +81,19 @@ public class SearchFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        for (PagerView p : pagers) {
+            p.cancelRequest();
+        }
         searchBarPresenter.hideKeyboard();
         handler.removeCallbacksAndMessages(null);
-        contentView.cancelRequest();
     }
 
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.searchBarPresenter = new SearchBarImplementor(searchBarModel, this);
+        this.searchBarPresenter = new SearchBarImplementor(this);
         this.messageManagePresenter = new MessageManageImplementor(this);
-        this.popupManagePresenter = new SearchFragmentPopupManageImplementor(this);
+        this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
     }
 
     /** <br> view. */
@@ -126,32 +127,43 @@ public class SearchFragment extends Fragment
         editText.setFocusable(true);
         editText.requestFocus();
 
-        FrameLayout orientationContainer = (FrameLayout) v.findViewById(R.id.fragment_search_orientationContainer);
-        orientationContainer.setOnClickListener(this);
+        initPages(v);
+    }
 
-        RelativeLayout orientationMenu = (RelativeLayout) v.findViewById(R.id.fragment_search_orientationMenu);
-        orientationMenu.setOnClickListener(this);
-
-        this.menuIcon = (ImageView) v.findViewById(R.id.fragment_search_menuIcon);
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
-            menuIcon.setImageResource(R.drawable.ic_menu_down_light);
-        } else {
-            menuIcon.setImageResource(R.drawable.ic_menu_down_dark);
+    private void initPages(View v) {
+        List<View> pageList = new ArrayList<>();
+        pageList.add(new HomeSearchView(getActivity(), HomeSearchView.SEARCH_PHOTOS_TYPE));
+        pageList.add(new HomeSearchView(getActivity(), HomeSearchView.SEARCH_COLLECTIONS_TYPE));
+        pageList.add(new HomeSearchView(getActivity(), HomeSearchView.SEARCH_USERS_TYPE));
+        for (int i = 0; i < pageList.size(); i ++) {
+            pagers[i] = (PagerView) pageList.get(i);
+            pageList.get(i).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    searchBarPresenter.hideKeyboard();
+                }
+            });
         }
 
-        this.orientationTxt = (TextView) v.findViewById(R.id.fragment_search_nowTxt);
-        TypefaceUtils.setTypeface(getActivity(), orientationTxt);
-        orientationTxt.setText(ValueUtils.getOrientationName(getActivity(), searchBarModel.getOrientation()));
+        List<String> tabList = new ArrayList<>();
+        tabList.add("PHOTOS");
+        tabList.add("COLLECTIONS");
+        tabList.add("USERS");
+        MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
-        this.contentView = (SearchPhotosView) v.findViewById(R.id.fragment_search_contentView);
-        contentView.setActivity(getActivity());
-        contentView.setOnClickListener(this);
+        ViewPager viewPager = (ViewPager) v.findViewById(R.id.fragment_search_viewPager);
+        viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(this);
+
+        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_search_tabLayout);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setupWithViewPager(viewPager);
     }
 
     // interface.
 
     public void pagerBackToTop() {
-        contentView.pagerScrollToTop();
+        pagerManagePresenter.pagerScrollToTop();
     }
 
     /** <br> model. */
@@ -159,13 +171,13 @@ public class SearchFragment extends Fragment
     // init.
 
     private void initModel() {
-        this.searchBarModel = new SearchBarObject();
+        this.pagerManageModel = new PagerManageObject(0);
     }
 
     // interface.
 
     public boolean needPagerBackToTop() {
-        return contentView.needPagerBackToTop();
+        return pagerManagePresenter.needPagerBackToTop();
     }
 
     /** <br> interface. */
@@ -176,18 +188,7 @@ public class SearchFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                searchBarPresenter.touchNavigatorIcon();
-                break;
-
-            case R.id.fragment_search_orientationContainer:
-                searchBarPresenter.touchSearchBar();
-
-            case R.id.fragment_search_orientationMenu:
-                searchBarPresenter.touchOrientationIcon();
-                break;
-
-            case R.id.fragment_search_contentView:
-                searchBarPresenter.hideKeyboard();
+                searchBarPresenter.touchNavigatorIcon(getActivity());
                 break;
         }
     }
@@ -196,8 +197,7 @@ public class SearchFragment extends Fragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        searchBarPresenter.touchMenuItem(item.getItemId());
-        return true;
+        return searchBarPresenter.touchMenuItem(getActivity(), item.getItemId());
     }
 
     // on editor action clickListener.
@@ -212,6 +212,24 @@ public class SearchFragment extends Fragment
         return true;
     }
 
+    // on page change listener.
+
+    @Override
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+        // do nothing.
+    }
+
+    @Override
+    public void onPageSelected(int position) {
+        pagerManagePresenter.setPagerPosition(position);
+        pagerManagePresenter.checkToRefresh(position);
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int state) {
+        // do nothing.
+    }
+
     // snackbar container.
 
     @Override
@@ -223,7 +241,7 @@ public class SearchFragment extends Fragment
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(message.what, message.obj);
+        messageManagePresenter.responseMessage(getActivity(), message.what, message.obj);
     }
 
     // view.
@@ -231,27 +249,8 @@ public class SearchFragment extends Fragment
     // search bar view.
 
     @Override
-    public void touchNavigatorIcon() {
-        ((MainActivity) getActivity()).removeFragment();
-    }
-
-    @Override
-    public void touchMenuItem(int itemId) {
-        switch (itemId) {
-            case R.id.action_clear_text:
-                editText.setText("");
-                break;
-        }
-    }
-
-    @Override
-    public void touchOrientationIcon() {
-        popupManagePresenter.showPopup(getActivity(), menuIcon, searchBarModel.getOrientation(), 0);
-    }
-
-    @Override
-    public void touchSearchBar() {
-        contentView.pagerScrollToTop();
+    public void clearSearchBarText() {
+        editText.setText("");
     }
 
     @Override
@@ -267,8 +266,12 @@ public class SearchFragment extends Fragment
     }
 
     @Override
-    public void submitSearchInfo(String text, String orientation) {
-        contentView.doSearch(text, orientation);
+    public void submitSearchInfo(String text) {
+        for (PagerView p : pagers) {
+            p.setKey(text);
+            ((HomeSearchView) p).clearAdapter();
+        }
+        pagerManagePresenter.getPagerView(pagerManagePresenter.getPagerPosition()).refreshPager();
     }
 
     // message manage view.
@@ -292,11 +295,20 @@ public class SearchFragment extends Fragment
         }
     }
 
-    // popup manage view.
+    // page manage view.
 
     @Override
-    public void responsePopup(String value, int position) {
-        searchBarPresenter.setOrientation(value);
-        orientationTxt.setText(ValueUtils.getOrientationName(getActivity(), value));
+    public PagerView getPagerView(int position) {
+        return pagers[position];
+    }
+
+    @Override
+    public boolean canPagerSwipeBack(int position, int dir) {
+        return false;
+    }
+
+    @Override
+    public int getPagerItemCount(int position) {
+        return pagers[position].getItemCount();
     }
 }

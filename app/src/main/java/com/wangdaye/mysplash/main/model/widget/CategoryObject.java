@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.model.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

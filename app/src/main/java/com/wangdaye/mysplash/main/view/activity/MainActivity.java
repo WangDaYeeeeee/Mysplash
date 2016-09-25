@@ -10,7 +10,6 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
@@ -33,9 +32,7 @@ import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.DrawerView;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
-import com.wangdaye.mysplash._common.ui.activity.AboutActivity;
-import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
-import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
+import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -44,7 +41,6 @@ import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
-import com.wangdaye.mysplash._common.i.view.FragmentManageView;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
@@ -63,7 +59,7 @@ import java.util.TimerTask;
  * */
 
 public class MainActivity extends MysplashActivity
-        implements FragmentManageView, MessageManageView, MeManageView, DrawerView,
+        implements MessageManageView, MeManageView, DrawerView,
         View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
         AuthManager.OnAuthDataChangedListener, SafeHandler.HandlerContainer {
     // model.
@@ -100,7 +96,9 @@ public class MainActivity extends MysplashActivity
         if (!isStarted()) {
             setStarted();
             initView();
-            fragmentManagePresenter.changeFragment(R.id.action_home);
+            fragmentManagePresenter.changeFragment(this, R.id.action_home);
+
+            IntroduceActivity.checkAndStartIntroduce(this);
         }
     }
 
@@ -136,11 +134,11 @@ public class MainActivity extends MysplashActivity
                     && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
                 ((HomeFragment) f).pagerBackToTop();
             } else if (f instanceof SearchFragment
-                    && ((SearchFragment) f).needPagerBackToTop()) {
+                    && ((SearchFragment) f).needPagerBackToTop()
+                    && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
                 ((SearchFragment) f).pagerBackToTop();
             } else if (f instanceof CategoryFragment
-                    && ((CategoryFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
+                    && ((CategoryFragment) f).needPagerBackToTop()) {
                 ((CategoryFragment) f).pagerBackToTop();
             } else {
                 super.onBackPressed();
@@ -158,6 +156,14 @@ public class MainActivity extends MysplashActivity
         }
     }
 
+    public void changeTheme() {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        editor.putBoolean(getString(R.string.key_light_theme), !ThemeUtils.getInstance(this).isLightTheme());
+        editor.apply();
+        ThemeUtils.getInstance(this).refresh(this);
+        reboot();
+    }
+
     public void reboot() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -170,7 +176,7 @@ public class MainActivity extends MysplashActivity
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.fragmentManagePresenter = new FragmentManageImplementor(fragmentManageModel, this);
+        this.fragmentManagePresenter = new FragmentManageImplementor(fragmentManageModel);
         this.messageManagePresenter = new MessageManageImplementor(this);
         this.meManagePresenter = new MeManageImplementor(this);
         this.drawerPresenter = new DrawerImplementor(drawerModel, this);
@@ -225,11 +231,19 @@ public class MainActivity extends MysplashActivity
     // interface.
 
     public void insertFragment(int code) {
-        fragmentManagePresenter.addFragment(code);
+        fragmentManagePresenter.addFragment(this, code);
     }
 
     public void removeFragment() {
-        fragmentManagePresenter.popFragment();
+        fragmentManagePresenter.popFragment(this);
+    }
+
+    public void changeFragment(int code) {
+        fragmentManagePresenter.changeFragment(this, code);
+    }
+
+    public Fragment getTopFragment() {
+        return fragmentManagePresenter.getTopFragment();
     }
 
     /** <br> model. */
@@ -310,36 +324,10 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(message.what, message.obj);
+        messageManagePresenter.responseMessage(this, message.what, message.obj);
     }
 
     // view.
-
-    // fragment manage view.
-
-    @Override
-    public void addFragment(Fragment f) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.activity_main_fragment, f)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .addToBackStack(null)
-                .commit();
-    }
-
-    @Override
-    public void popFragment() {
-        getSupportFragmentManager().popBackStack();
-    }
-
-    @Override
-    public void changeFragment(Fragment f) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.activity_main_fragment, f)
-                .commit();
-    }
 
     // message manage view.
 
@@ -355,37 +343,7 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void responseMessage(int what, Object o) {
-        switch (what) {
-            case R.id.action_change_theme:
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-                editor.putBoolean(getString(R.string.key_light_theme), !ThemeUtils.getInstance(this).isLightTheme());
-                editor.apply();
-                ThemeUtils.getInstance(this).refresh(this);
-                reboot();
-                break;
-
-            case R.id.action_download_manage:
-                Intent d = new Intent(this, DownloadManageActivity.class);
-                startActivity(d);
-                overridePendingTransition(R.anim.activity_in, 0);
-                break;
-
-            case R.id.action_settings:
-                Intent s = new Intent(this, SettingsActivity.class);
-                startActivity(s);
-                overridePendingTransition(R.anim.activity_in, 0);
-                break;
-
-            case R.id.action_about:
-                Intent a = new Intent(this, AboutActivity.class);
-                startActivity(a);
-                overridePendingTransition(R.anim.activity_in, 0);
-                break;
-
-            default:
-                fragmentManagePresenter.changeFragment(what);
-                break;
-        }
+        // do nothing.
     }
 
     // me manage view.

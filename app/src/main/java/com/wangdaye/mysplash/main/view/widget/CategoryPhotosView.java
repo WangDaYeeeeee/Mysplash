@@ -145,7 +145,7 @@ public class CategoryPhotosView extends FrameLayout
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_in_category_view_large_feedbackImg);
         Glide.with(getContext())
-                .load(R.drawable.feedback_category_photo)
+                .load(R.drawable.feedback_no_photos)
                 .dontAnimate()
                 .into(feedbackImg);
 

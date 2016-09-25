@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container_filtering_view_large"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="160dp"
+        tools:ignore="UselessParent">
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/container_filtering_view_large_progressView"
+            android:layout_width="@dimen/circular_progress_height"
+            android:layout_height="@dimen/circular_progress_height"
+            android:layout_centerInParent="true"
+            app:cpv_animAutostart="true"
+            app:cpv_color="?attr/content_color"
+            app:cpv_indeterminate="true" />
+
+        <RelativeLayout
+            android:id="@+id/container_filtering_view_large_feedbackContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+
+            <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
+                android:id="@+id/container_filtering_view_large_feedbackImg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="108dp"
+                android:layout_marginRight="108dp"
+                android:layout_marginBottom="@dimen/normal_margin"
+                android:layout_centerHorizontal="true"
+                app:fiv_square="true"
+                tools:src="@drawable/feedback_search"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/container_filtering_view_large_feedbackTxt"
+                android:text="@string/feedback_search_photos_tv"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/container_filtering_view_large_feedbackImg"
+                style="@style/subtitle_text" />
+
+            <Button
+                android:id="@+id/container_filtering_view_large_feedbackBtn"
+                android:text="@string/feedback_click_retry"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@id/container_filtering_view_large_feedbackTxt"
+                android:layout_marginBottom="@dimen/normal_icon_size"
+                style="@style/material_button" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</FrameLayout>

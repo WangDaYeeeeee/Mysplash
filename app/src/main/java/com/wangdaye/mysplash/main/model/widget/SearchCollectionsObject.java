@@ -3,26 +3,23 @@ package com.wangdaye.mysplash.main.model.widget;
 import android.app.Activity;
 import android.content.Context;
 
-import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.service.PhotoService;
+import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.service.SearchService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 
 import java.util.ArrayList;
 
 /**
- * Search object.
+ * Search collections object.
  * */
 
-public class SearchObject
-        implements SearchModel {
+public class SearchCollectionsObject implements SearchModel {
     // data
-    private PhotoAdapter adapter;
-    private PhotoService service;
+    private CollectionAdapter adapter;
+    private SearchService service;
 
     private String searchQuery;
-    private String searchOrientation;
 
     private int photosPage;
 
@@ -32,12 +29,11 @@ public class SearchObject
 
     /** <br> life cycle. */
 
-    public SearchObject(Context c) {
-        this.adapter = new PhotoAdapter(c, new ArrayList<Photo>());
-        this.service = PhotoService.getService();
+    public SearchCollectionsObject(Context c) {
+        this.adapter = new CollectionAdapter(c, new ArrayList<Collection>());
+        this.service = SearchService.getService();
 
         this.searchQuery = "";
-        this.searchOrientation = PhotoApi.LANDSCAPE_ORIENTATION;
 
         this.photosPage = 0;
 
@@ -47,12 +43,12 @@ public class SearchObject
     }
 
     @Override
-    public PhotoAdapter getAdapter() {
+    public CollectionAdapter getAdapter() {
         return adapter;
     }
 
     @Override
-    public PhotoService getService() {
+    public SearchService getService() {
         return service;
     }
 
@@ -69,16 +65,6 @@ public class SearchObject
     @Override
     public void setSearchQuery(String query) {
         searchQuery = query;
-    }
-
-    @Override
-    public String getSearchOrientation() {
-        return searchOrientation;
-    }
-
-    @Override
-    public void setSearchOrientation(String orientation) {
-        searchOrientation = orientation;
     }
 
     @Override

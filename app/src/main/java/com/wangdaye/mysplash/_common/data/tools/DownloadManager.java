@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.data.tools;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,7 +51,7 @@ public class DownloadManager {
     public int add(Photo p, int type, OnDownloadListener l) {
         for (int i = 0; i < missionList.size(); i ++) {
             if (missionList.get(i).photo.id.equals(p.id)) {
-                Context c = Mysplash.getInstance().getActivityList().get(0);
+                Context c = Mysplash.getInstance().getLatestActivity();
                 NotificationUtils.showSnackbar(
                         c.getString(R.string.feedback_download_repeat),
                         Snackbar.LENGTH_SHORT);
@@ -202,7 +201,7 @@ public class DownloadManager {
             Mysplash.getInstance().sendBroadcast(broadcast);
             switch (downloadType) {
                 case DOWNLOAD_TYPE:
-                    Context c = Mysplash.getInstance().getActivityList().get(0);
+                    Context c = Mysplash.getInstance().getLatestActivity();
                     NotificationUtils.showActionSnackbar(
                             c.getString(R.string.feedback_download_success),
                             c.getString(R.string.check),
@@ -214,11 +213,13 @@ public class DownloadManager {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_STREAM, file);
                     intent.setType("image/*");
-                    List<Activity> list = Mysplash.getInstance().getActivityList();
-                    list.get(list.size() - 1).startActivity(
-                            Intent.createChooser(
-                                    intent,
-                                    Mysplash.getInstance().getString(R.string.feedback_choose_share_app)));
+                    Mysplash.getInstance()
+                            .getLatestActivity()
+                            .startActivity(
+                                    Intent.createChooser(
+                                            intent,
+                                            Mysplash.getInstance()
+                                                    .getString(R.string.feedback_choose_share_app)));
                     break;
                 }
 
@@ -226,11 +227,13 @@ public class DownloadManager {
                     Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
                     intent.setDataAndType(file, "image/jpg");
                     intent.putExtra("mimeType", "image/jpg");
-                    List<Activity> list = Mysplash.getInstance().getActivityList();
-                    list.get(list.size() - 1).startActivity(
-                            Intent.createChooser(
-                                    intent,
-                                    Mysplash.getInstance().getString(R.string.feedback_choose_wallpaper_app)));
+                    Mysplash.getInstance()
+                            .getLatestActivity()
+                            .startActivity(
+                                    Intent.createChooser(
+                                            intent,
+                                            Mysplash.getInstance()
+                                                    .getString(R.string.feedback_choose_wallpaper_app)));
                     break;
                 }
             }
@@ -247,7 +250,7 @@ public class DownloadManager {
                 DownloadManager.getInstance().deleteMission(this);
             } else {
                 failed = true;
-                Context c = Mysplash.getInstance().getActivityList().get(0);
+                Context c = Mysplash.getInstance().getLatestActivity();
                 NotificationUtils.showActionSnackbar(
                         c.getString(R.string.feedback_download_failed),
                         c.getString(R.string.check),
@@ -267,7 +270,7 @@ public class DownloadManager {
         @Override
         public void onClick(View v) {
             if (failed) {
-                Context c = Mysplash.getInstance().getActivityList().get(0);
+                Context c = Mysplash.getInstance().getLatestActivity();
                 Intent intent = new Intent(c, DownloadManageActivity.class);
                 c.startActivity(intent);
             } else {
@@ -278,7 +281,7 @@ public class DownloadManager {
                 Uri file = Uri.parse(Mysplash.DOWNLOAD_PATH + photo.id + Mysplash.DOWNLOAD_FORMAT);
                 intent.setDataAndType(file, "image/*");
 
-                Context c = Mysplash.getInstance().getActivityList().get(0);
+                Context c = Mysplash.getInstance().getLatestActivity();
                 c.startActivity(intent);
             }
         }

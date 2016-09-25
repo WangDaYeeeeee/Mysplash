@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    android:scrollbars="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="?attr/root_color">
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_allIcon"
+                android:src="@drawable/ic_infinity_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_allTxt"
+                android:text="ALL"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_allIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_buildings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_buildingsIcon"
+                android:src="@drawable/ic_building_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_buildingsTxt"
+                android:text="@string/action_category_buildings"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_buildingsIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_food_drink"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_food_drinkIcon"
+                android:src="@drawable/ic_drink_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_food_drinkTxt"
+                android:text="@string/action_category_food_drink"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_food_drinkIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_nature"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_natureIcon"
+                android:src="@drawable/ic_duck_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_natureTxt"
+                android:text="@string/action_category_nature"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_natureIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_object"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_objectIcon"
+                android:src="@drawable/ic_cube_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_objectTxt"
+                android:text="@string/action_category_objects"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_objectIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_people"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_peopleIcon"
+                android:src="@drawable/ic_face_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_peopleTxt"
+                android:text="@string/action_category_people"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_peopleIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/popup_search_category_technology"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground">
+
+            <ImageView
+                android:id="@+id/popup_search_category_technologyIcon"
+                android:src="@drawable/ic_technology_light"
+                style="@style/material_icon"
+                tools:ignore="ContentDescription" />
+
+            <TextView
+                android:id="@+id/popup_search_category_technologyTxt"
+                android:text="@string/action_category_technology"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/popup_search_category_technologyIcon"
+                android:layout_width="wrap_content"
+                style="@style/content_text"
+                tools:ignore="HardcodedText,RtlHardcoded" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.v4.widget.NestedScrollView>

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Collections object.
  * */
 
-public class CollectionsObject 
+public class CollectionsObject
         implements CollectionsModel {
     // data
     private CollectionAdapter adapter;

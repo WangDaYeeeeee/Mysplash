@@ -3,8 +3,6 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,7 +16,6 @@ import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
@@ -31,7 +28,7 @@ import com.wangdaye.mysplash._common.utils.ValueUtils;
  * */
 
 public class CategoryFragment extends Fragment
-        implements ToolbarView, PopupManageView,
+        implements PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, NotificationUtils.SnackbarContainer {
     // model.
     private CategoryManageModel categoryManageModel;
@@ -64,7 +61,7 @@ public class CategoryFragment extends Fragment
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImplementor(this);
+        this.toolbarPresenter = new ToolbarImplementor();
         this.popupManagePresenter = new CategoryFragmentPopupManageImplementor(this);
     }
 
@@ -105,6 +102,10 @@ public class CategoryFragment extends Fragment
         photosView.pagerScrollToTop();
     }
 
+    public void showPopup() {
+        popupManagePresenter.showPopup(getActivity(), toolbar, photosView.getOrder(), 0);
+    }
+
     /** <br> model. */
 
     // init.
@@ -132,11 +133,11 @@ public class CategoryFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.touchNavigatorIcon();
+                toolbarPresenter.touchNavigatorIcon(getActivity());
                 break;
 
             case R.id.fragment_category_toolbar:
-                toolbarPresenter.touchToolbar();
+                toolbarPresenter.touchToolbar(getActivity());
                 break;
         }
     }
@@ -145,8 +146,7 @@ public class CategoryFragment extends Fragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        toolbarPresenter.touchMenuItem(item.getItemId());
-        return true;
+        return toolbarPresenter.touchMenuItem(getActivity(), item.getItemId());
     }
 
     // snackbar container.
@@ -157,28 +157,6 @@ public class CategoryFragment extends Fragment
     }
 
     // view.
-
-    // toolbar view.
-
-    @Override
-    public void touchNavigatorIcon() {
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.activity_main_drawerLayout);
-        drawer.openDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public void touchToolbar() {
-        photosView.pagerScrollToTop();
-    }
-
-    @Override
-    public void touchMenuItem(int itemId) {
-        switch (itemId) {
-            case R.id.action_filter:
-                popupManagePresenter.showPopup(getActivity(), toolbar, photosView.getOrder(), 0);
-                break;
-        }
-    }
 
     // popup manage view.
 

@@ -38,7 +38,6 @@ import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
 import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
@@ -51,7 +50,7 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
  * */
 
 public class CollectionActivity extends MysplashActivity
-        implements ToolbarView, SwipeBackManageView, EditResultView,
+        implements SwipeBackManageView, EditResultView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
         UpdateCollectionDialog.OnCollectionChangedListener {
     // model.
@@ -123,7 +122,7 @@ public class CollectionActivity extends MysplashActivity
         }
     }
 
-    private void finishActivity(int dir, boolean delete) {
+    public void finishActivity(int dir, boolean delete) {
         Intent result = new Intent();
         result.putExtra(DELETE_COLLECTION, delete);
         setResult(RESULT_OK, result);
@@ -142,12 +141,14 @@ public class CollectionActivity extends MysplashActivity
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImplementor(this);
+        this.toolbarPresenter = new ToolbarImplementor();
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
         this.editResultPresenter = new EditResultImplementor(editResultModel, this);
     }
 
     /** <br> view. */
+
+    // init.
 
     @SuppressLint("SetTextI18n")
     private void initView() {
@@ -212,6 +213,12 @@ public class CollectionActivity extends MysplashActivity
         photosView.initRefresh();
     }
 
+    // interface.
+
+    public CollectionPhotosView getPhotosView() {
+        return photosView;
+    }
+
     /** <br> model. */
 
     // init.
@@ -234,11 +241,11 @@ public class CollectionActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.touchNavigatorIcon();
+                toolbarPresenter.touchNavigatorIcon(this);
                 break;
 
             case R.id.activity_collection_creatorBar:
-                toolbarPresenter.touchToolbar();
+                toolbarPresenter.touchToolbar(this);
                 break;
 
             case R.id.activity_collection_avatar:
@@ -265,8 +272,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        toolbarPresenter.touchMenuItem(item.getItemId());
-        return false;
+        return toolbarPresenter.touchMenuItem(this, item.getItemId());
     }
 
     // on swipe listener.
@@ -278,7 +284,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        swipeBackManagePresenter.swipeBackFinish(dir);
+        swipeBackManagePresenter.swipeBackFinish(this, dir);
     }
 
     // on collection changed listener.
@@ -302,30 +308,6 @@ public class CollectionActivity extends MysplashActivity
 
     // view.
 
-    // toolbar view.
-
-    @Override
-    public void touchNavigatorIcon() {
-        finishActivity(SwipeBackLayout.NULL_DIR, false);
-    }
-
-    @Override
-    public void touchToolbar() {
-        photosView.pagerBackToTop();
-    }
-
-    @Override
-    public void touchMenuItem(int itemId) {
-        switch (itemId) {
-            case R.id.action_edit:
-                UpdateCollectionDialog dialog = new UpdateCollectionDialog();
-                dialog.setCollection((Collection) editResultPresenter.getEditKey());
-                dialog.setOnCollectionChangedListener(this);
-                dialog.show(getFragmentManager(), null);
-                break;
-        }
-    }
-
     // swipe back manage view.
 
     @Override
@@ -337,11 +319,6 @@ public class CollectionActivity extends MysplashActivity
             return photosView.canSwipeBack(dir)
                     && appBar.getY() >= 0;
         }
-    }
-
-    @Override
-    public void swipeBackFinish(int dir) {
-        finishActivity(dir, false);
     }
 
     // edit result view.

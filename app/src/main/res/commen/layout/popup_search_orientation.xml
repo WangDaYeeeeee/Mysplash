@@ -7,6 +7,30 @@
     android:background="?attr/root_color">
 
     <RelativeLayout
+        android:id="@+id/popup_search_orientation_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_search_orientation_allIcon"
+            android:src="@drawable/ic_infinity_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_orientation_allTxt"
+            android:text="ALL"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_search_orientation_allIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/popup_search_orientation_landscape"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

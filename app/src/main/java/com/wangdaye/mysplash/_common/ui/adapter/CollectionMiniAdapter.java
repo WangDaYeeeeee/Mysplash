@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -177,20 +176,18 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
     // view holder.
 
-    public class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         // widget
-        public CardView card;
         public ImageView image;
         public TextView title;
         public TextView subtitle;
-        public ImageView lockIcon;
+        ImageView lockIcon;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
 
-            this.card = (CardView) itemView.findViewById(R.id.item_collection_mini_card);
-            card.setOnClickListener(this);
+            itemView.findViewById(R.id.item_collection_mini_card).setOnClickListener(this);
 
             this.image = (ImageView) itemView.findViewById(R.id.item_collection_mini_image);
 

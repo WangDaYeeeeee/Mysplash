@@ -1,8 +1,11 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
-import com.wangdaye.mysplash._common.i.model.SearchBarModel;
+import android.app.Activity;
+
+import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.SearchBarView;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 /**
  * Search bar implementor.
@@ -10,37 +13,30 @@ import com.wangdaye.mysplash._common.i.view.SearchBarView;
 
 public class SearchBarImplementor
         implements SearchBarPresenter {
-    // model & view.
-    private SearchBarModel model;
+    // models & view.
     private SearchBarView view;
 
     /** <br> life cycle. */
 
-    public SearchBarImplementor(SearchBarModel model, SearchBarView view) {
-        this.model = model;
+    public SearchBarImplementor(SearchBarView view) {
         this.view = view;
     }
 
     /** <br> presenter. */
 
     @Override
-    public void touchNavigatorIcon() {
-        view.touchNavigatorIcon();
+    public void touchNavigatorIcon(Activity a) {
+        ((MainActivity) a).removeFragment();
     }
 
     @Override
-    public void touchMenuItem(int itemId) {
-        view.touchMenuItem(itemId);
-    }
-
-    @Override
-    public void touchOrientationIcon() {
-        view.touchOrientationIcon();
-    }
-
-    @Override
-    public void touchSearchBar() {
-        view.touchSearchBar();
+    public boolean touchMenuItem(Activity a, int itemId) {
+        switch (itemId) {
+            case R.id.action_clear_text:
+                view.clearSearchBarText();
+                break;
+        }
+        return true;
     }
 
     @Override
@@ -54,12 +50,7 @@ public class SearchBarImplementor
     }
 
     @Override
-    public void setOrientation(String orientation) {
-        model.setOrientation(orientation);
-    }
-
-    @Override
     public void submitSearchInfo(String text) {
-        view.submitSearchInfo(text, model.getOrientation());
+        view.submitSearchInfo(text);
     }
 }

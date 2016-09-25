@@ -30,7 +30,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:title="@string/action_settings"
-                app:layout_scrollFlags="scroll|enterAlways|snap"
                 app:popupTheme="@style/MysplashPopupMenuTheme"
                 tools:ignore="UnusedAttribute" />
 

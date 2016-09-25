@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
+        android:id="@+id/container_introduce_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="96dp"
+        android:layout_marginRight="96dp"
+        app:fiv_square="true"
+        tools:src="@drawable/illustration_start"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/container_introduce_title"
+        android:textSize="@dimen/design_title_text_size"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/container_introduce_image"
+        android:layout_marginLeft="@dimen/large_icon_size"
+        android:layout_marginRight="@dimen/large_icon_size"
+        android:layout_marginBottom="@dimen/little_icon_size"
+        style="@style/large_title_text"
+        tools:text="@string/introduce_title_back_top" />
+
+    <TextView
+        android:id="@+id/container_introduce_description"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/container_introduce_image"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="@dimen/large_icon_size"
+        android:layout_marginRight="@dimen/large_icon_size"
+        android:layout_marginTop="@dimen/normal_margin"
+        style="@style/content_text"
+        tools:text="@string/introduce_description_back_top" />
+
+    <Button
+        android:id="@+id/container_introduce_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_below="@id/container_introduce_description"
+        android:layout_centerHorizontal="true"
+        android:textColor="?attr/root_color"
+        tools:text="@string/set"/>
+
+</RelativeLayout>

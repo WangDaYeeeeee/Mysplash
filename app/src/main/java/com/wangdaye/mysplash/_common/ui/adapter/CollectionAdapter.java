@@ -221,7 +221,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     // view holder.
 
-    public class ViewHolder extends RecyclerView.ViewHolder
+    class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         // widget
         public RelativeLayout background;
@@ -229,7 +229,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         public TextView title;
         public TextView subtitle;
 
-        public ViewHolder(View itemView, int position) {
+        ViewHolder(View itemView, int position) {
             super(itemView);
 
             this.background = (RelativeLayout) itemView.findViewById(R.id.item_collection_background);

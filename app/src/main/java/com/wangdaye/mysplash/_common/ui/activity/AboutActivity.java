@@ -88,6 +88,7 @@ public class AboutActivity extends MysplashActivity
         backBtn.setOnClickListener(this);
 
         RelativeLayout[] containers = new RelativeLayout[] {
+                (RelativeLayout) findViewById(R.id.container_about_introduceContainer),
                 (RelativeLayout) findViewById(R.id.container_about_gitHubContainer),
                 (RelativeLayout) findViewById(R.id.container_about_emailContainer),
                 (RelativeLayout) findViewById(R.id.container_about_sourceCodeContainer),
@@ -98,7 +99,8 @@ public class AboutActivity extends MysplashActivity
                 (RelativeLayout) findViewById(R.id.container_about_civContainer),
                 (RelativeLayout) findViewById(R.id.container_about_downloaderContainer),
                 (RelativeLayout) findViewById(R.id.container_about_tagContainer),
-                (RelativeLayout) findViewById(R.id.container_about_photoViewContainer)};
+                (RelativeLayout) findViewById(R.id.container_about_photoViewContainer),
+                (RelativeLayout) findViewById(R.id.container_about_indicatorContainer)};
         for (RelativeLayout r : containers) {
             r.setOnClickListener(this);
         }
@@ -113,6 +115,7 @@ public class AboutActivity extends MysplashActivity
                 (TextView) findViewById(R.id.container_about_downloaderTitle),
                 (TextView) findViewById(R.id.container_about_tagTitle),
                 (TextView) findViewById(R.id.container_about_photoViewTitle),
+                (TextView) findViewById(R.id.container_about_indicatorTitle),
                 (TextView) findViewById(R.id.container_about_unsplashContent),
                 (TextView) findViewById(R.id.container_about_retrofitContent),
                 (TextView) findViewById(R.id.container_about_glideContent),
@@ -120,18 +123,21 @@ public class AboutActivity extends MysplashActivity
                 (TextView) findViewById(R.id.container_about_civContent),
                 (TextView) findViewById(R.id.container_about_downloaderContent),
                 (TextView) findViewById(R.id.container_about_tagContent),
-                (TextView) findViewById(R.id.container_about_photoViewContent)};
+                (TextView) findViewById(R.id.container_about_photoViewContent),
+                (TextView) findViewById(R.id.container_about_indicatorContent)};
         for (TextView t : textViews) {
             TypefaceUtils.setTypeface(this, t);
         }
 
         if (ThemeUtils.getInstance(this).isLightTheme()) {
             ((ImageView) findViewById(R.id.container_about_backButton)).setImageResource(R.drawable.ic_toolbar_back_light);
+            ((ImageView) findViewById(R.id.container_about_introduceIcon)).setImageResource(R.drawable.ic_book_light);
             ((ImageView) findViewById(R.id.container_about_gitHubIcon)).setImageResource(R.drawable.ic_github_light);
             ((ImageView) findViewById(R.id.container_about_emailIcon)).setImageResource(R.drawable.ic_email_light);
             ((ImageView) findViewById(R.id.container_about_sourceCodeIcon)).setImageResource(R.drawable.ic_android_studio_light);
         } else {
             ((ImageView) findViewById(R.id.container_about_backButton)).setImageResource(R.drawable.ic_toolbar_back_dark);
+            ((ImageView) findViewById(R.id.container_about_introduceIcon)).setImageResource(R.drawable.ic_book_dark);
             ((ImageView) findViewById(R.id.container_about_gitHubIcon)).setImageResource(R.drawable.ic_github_dark);
             ((ImageView) findViewById(R.id.container_about_emailIcon)).setImageResource(R.drawable.ic_email_dark);
             ((ImageView) findViewById(R.id.container_about_sourceCodeIcon)).setImageResource(R.drawable.ic_android_studio_dark);
@@ -148,6 +154,10 @@ public class AboutActivity extends MysplashActivity
             case -1:
             case R.id.container_about_backButton:
                 finish();
+                break;
+
+            case R.id.container_about_introduceContainer:
+                IntroduceActivity.watchAllIntroduce(this);
                 break;
 
             case R.id.container_about_gitHubContainer:
@@ -194,6 +204,9 @@ public class AboutActivity extends MysplashActivity
             case R.id.container_about_photoViewContainer:
                 LinkUtils.accessLink(this, "https://github.com/bm-x/PhotoView");
                 break;
+
+            case R.id.container_about_indicatorContainer:
+                LinkUtils.accessLink(this, "https://github.com/DavidPacioianu/InkPageIndicator");
         }
     }
 

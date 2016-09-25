@@ -71,26 +71,6 @@ public class PhotoService {
         call = getCuratePhotos;
     }
 
-    public void searchPhotos(String query, String orientation, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> searchPhotos = buildApi(buildClient()).searchPhotos(query, orientation, page, per_page);
-        searchPhotos.enqueue(new Callback<List<Photo>>() {
-            @Override
-            public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
-                if (l != null) {
-                    l.onRequestPhotosSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Photo>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestPhotosFailed(call, t);
-                }
-            }
-        });
-        call = searchPhotos;
-    }
-
     public void requestStats(String id, final OnRequestStatsListener l) {
         Call<PhotoStats> getStats = buildApi(buildClient()).getPhotoStats(id);
         getStats.enqueue(new Callback<PhotoStats>() {
@@ -268,6 +248,32 @@ public class PhotoService {
     public void requestCuratedCollectionPhotos(Collection c, int page, int per_page, final OnRequestPhotosListener l) {
         Call<List<Photo>> getCuratedCollectionPhotos = buildApi(buildClient()).getCuratedCollectionPhotos(c.id, page, per_page);
         getCuratedCollectionPhotos.enqueue(new Callback<List<Photo>>() {
+            @Override
+            public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
+                if (l != null) {
+                    l.onRequestPhotosSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Photo>> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestPhotosFailed(call, t);
+                }
+            }
+        });
+    }
+
+
+
+    public void requestRandwomPhotos(Integer categoryId, Boolean featured,
+                                     String username, String query,
+                                     String orientation, final OnRequestPhotosListener l) {
+        Call<List<Photo>> getRandomPhotos = buildApi(buildClient()).getRandomPhotos(
+                categoryId, featured,
+                username, query,
+                orientation, Mysplash.DEFAULT_PER_PAGE);
+        getRandomPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
                 if (l != null) {

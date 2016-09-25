@@ -55,4 +55,5 @@ dependencies {
     compile 'com.zhy:flowlayout-lib:1.0.3'
     compile files('libs/thindownloadmanager-1.0.1.jar')
     compile 'com.bm.photoview:library:1.4.1'
+    compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
 }

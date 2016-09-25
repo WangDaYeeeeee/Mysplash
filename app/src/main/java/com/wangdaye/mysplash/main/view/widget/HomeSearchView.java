@@ -1,17 +1,14 @@
 package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
-import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -24,8 +21,13 @@ import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;
+import com.wangdaye.mysplash._common.i.view.PagerView;
+import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
@@ -34,19 +36,25 @@ import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SearchView;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
-import com.wangdaye.mysplash.main.model.widget.SearchObject;
+import com.wangdaye.mysplash.main.model.widget.SearchCollectionsObject;
+import com.wangdaye.mysplash.main.model.widget.SearchPhotosObject;
+import com.wangdaye.mysplash.main.model.widget.SearchUsersObject;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
+import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
-import com.wangdaye.mysplash.main.presenter.widget.SearchImplementor;
+import com.wangdaye.mysplash.main.presenter.widget.SearchCollectionsImplementor;
+import com.wangdaye.mysplash.main.presenter.widget.SearchPhotosImplementor;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.main.presenter.widget.SearchUsersImplementor;
 
 /**
  * Search content view.
  * */
 
-public class SearchPhotosView extends FrameLayout
-        implements SearchView, LoadView, ScrollView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+@SuppressLint("ViewConstructor")
+public class HomeSearchView extends FrameLayout
+        implements SearchView, PagerView, LoadView, ScrollView,
+        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
     private SearchModel searchModel;
     private LoadModel loadModel;
@@ -59,52 +67,56 @@ public class SearchPhotosView extends FrameLayout
     private CircularProgressView progressView;
     private RelativeLayout feedbackContainer;
     private TextView feedbackText;
+    private Button feedbackButton;
 
     // presenter.
     private SearchPresenter searchPresenter;
+    private PagerPresenter pagerPresenter;
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
+    // data
+    public static final int SEARCH_PHOTOS_TYPE = 0;
+    public static final int SEARCH_COLLECTIONS_TYPE = 1;
+    public static final int SEARCH_USERS_TYPE = 2;
+
     /** <br> life cycle. */
 
-    public SearchPhotosView(Context context) {
-        super(context);
-        this.initialize();
-    }
-
-    public SearchPhotosView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.initialize();
-    }
-
-    public SearchPhotosView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.initialize();
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public SearchPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
+    public HomeSearchView(Activity a, int type) {
+        super(a);
+        this.initialize(type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize() {
+    private void initialize(int type) {
         View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_searching_view_large, null);
         addView(searchingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel();
-        initView();
-        initPresenter();
+        initModel(type);
+        initView(type);
+        initPresenter(type);
     }
 
     /** <br> presenter. */
 
-    private void initPresenter() {
-        this.searchPresenter = new SearchImplementor(searchModel, this);
+    private void initPresenter(int type) {
+        switch (type) {
+            case SEARCH_PHOTOS_TYPE:
+                this.searchPresenter = new SearchPhotosImplementor(searchModel, this);
+                break;
+
+            case SEARCH_COLLECTIONS_TYPE:
+                this.searchPresenter = new SearchCollectionsImplementor(searchModel, this);
+                break;
+
+            case SEARCH_USERS_TYPE:
+                this.searchPresenter = new SearchUsersImplementor(searchModel, this);
+                break;
+        }
+        this.pagerPresenter = new PagerImplementor(this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
@@ -113,10 +125,9 @@ public class SearchPhotosView extends FrameLayout
 
     // init.
 
-    private void initView() {
+    private void initView(int type) {
         initContentView();
-        initSearchingView();
-        setAlpha(0.9F);
+        initSearchingView(type);
     }
 
     private void initContentView() {
@@ -137,7 +148,7 @@ public class SearchPhotosView extends FrameLayout
         recyclerView.addOnScrollListener(scrollListener);
     }
 
-    private void initSearchingView() {
+    private void initSearchingView(int type) {
         this.progressView = (CircularProgressView) findViewById(R.id.container_searching_view_large_progressView);
         progressView.setVisibility(GONE);
 
@@ -145,12 +156,28 @@ public class SearchPhotosView extends FrameLayout
 
         ImageView feedbackImage = (ImageView) findViewById(R.id.container_searching_view_large_feedbackImg);
         Glide.with(getContext())
-                .load(R.drawable.feedback_search_photo)
+                .load(R.drawable.feedback_search)
                 .dontAnimate()
                 .into(feedbackImage);
 
         this.feedbackText = (TextView) findViewById(R.id.container_searching_view_large_feedbackTxt);
-        feedbackText.setText(getContext().getString(R.string.feedback_search_tv));
+        switch (type) {
+            case SEARCH_PHOTOS_TYPE:
+                feedbackText.setText(getContext().getString(R.string.feedback_search_photos_tv));
+                break;
+
+            case SEARCH_COLLECTIONS_TYPE:
+                feedbackText.setText(getContext().getString(R.string.feedback_search_collections_tv));
+                break;
+
+            case SEARCH_USERS_TYPE:
+                feedbackText.setText(getContext().getString(R.string.feedback_search_users_tv));
+                break;
+        }
+
+        this.feedbackButton = (Button) findViewById(R.id.container_searching_view_large_feedbackBtn);
+        feedbackButton.setVisibility(GONE);
+        feedbackButton.setOnClickListener(this);
     }
 
     // interface.
@@ -159,37 +186,57 @@ public class SearchPhotosView extends FrameLayout
         scrollPresenter.scrollToTop();
     }
 
+    public void clearAdapter() {
+        RecyclerView.Adapter adapter = searchPresenter.getAdapter();
+        if (adapter instanceof PhotoAdapter) {
+            ((PhotoAdapter) adapter).clearItem();
+        } else if (adapter instanceof CollectionAdapter) {
+            ((CollectionAdapter) adapter).clearItem();
+        } else {
+            ((UserAdapter) adapter).clearItem();
+        }
+    }
+
     /** <br> model. */
 
     // init.
 
-    private void initModel() {
-        this.searchModel = new SearchObject(getContext());
+    private void initModel(int type) {
+        switch (type) {
+            case SEARCH_PHOTOS_TYPE:
+                this.searchModel = new SearchPhotosObject(getContext());
+                break;
+
+            case SEARCH_COLLECTIONS_TYPE:
+                this.searchModel = new SearchCollectionsObject(getContext());
+                break;
+
+            case SEARCH_USERS_TYPE:
+                this.searchModel = new SearchUsersObject(getContext());
+                break;
+        }
         this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
         this.scrollModel = new ScrollObject();
     }
 
     // interface.
 
-    public void setActivity(Activity a) {
-        searchPresenter.setActivityForAdapter(a);
-    }
-
-    public void cancelRequest() {
-        searchPresenter.cancelRequest();
-    }
-
-    public void doSearch(String query, String orientation) {
-        searchPresenter.setQuery(query);
-        searchPresenter.setOrientation(orientation);
-        searchPresenter.initRefresh(getContext());
-    }
-
     public boolean needPagerBackToTop() {
         return scrollPresenter.needBackToTop();
     }
 
     /** <br> interface. */
+
+    // on click listener.
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.container_searching_view_large_feedbackBtn:
+                searchPresenter.initRefresh(getContext());
+                break;
+        }
+    }
 
     // on refresh and load listener.
 
@@ -239,11 +286,6 @@ public class SearchPhotosView extends FrameLayout
     }
 
     @Override
-    public void setBackgroundOpacity() {
-        setAlpha(1);
-    }
-
-    @Override
     public void initRefreshStart() {
         loadPresenter.setLoadingState();
     }
@@ -257,6 +299,66 @@ public class SearchPhotosView extends FrameLayout
     public void requestPhotosFailed(String feedback) {
         feedbackText.setText(feedback);
         loadPresenter.setFailedState();
+    }
+
+    // pager view.
+
+    @Override
+    public void checkToRefresh() { // interface
+        if (pagerPresenter.checkNeedRefresh()) {
+            pagerPresenter.refreshPager();
+        }
+    }
+
+    @Override
+    public boolean checkNeedRefresh() {
+        return searchPresenter.getAdapterItemCount() <= 0
+                && !searchPresenter.getQuery().equals("")
+                && !searchPresenter.isRefreshing() && !searchPresenter.isLoading();
+    }
+
+    @Override
+    public boolean checkNeedBackToTop() {
+        return scrollPresenter.needBackToTop();
+    }
+
+    @Override
+    public void refreshPager() {
+        searchPresenter.initRefresh(getContext());
+    }
+
+    @Override
+    public void scrollToPageTop() { // interface.
+        scrollPresenter.scrollToTop();
+    }
+
+    @Override
+    public void cancelRequest() {
+        searchPresenter.cancelRequest();
+    }
+
+    @Override
+    public void setKey(String key) {
+        searchPresenter.setQuery(key);
+    }
+
+    @Override
+    public String getKey() {
+        return searchPresenter.getQuery();
+    }
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return false;
+    }
+
+    @Override
+    public int getItemCount() {
+        if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
+            return 0;
+        } else {
+            return searchPresenter.getAdapterItemCount();
+        }
     }
 
     // load view.
@@ -279,6 +381,7 @@ public class SearchPhotosView extends FrameLayout
 
     @Override
     public void setFailedState() {
+        feedbackButton.setVisibility(VISIBLE);
         animShow(feedbackContainer);
         animHide(progressView);
     }

@@ -12,8 +12,6 @@ public interface SearchView {
     void setPermitRefreshing(boolean permit);
     void setPermitLoading(boolean permit);
 
-    void setBackgroundOpacity();
-
     void initRefreshStart();
     void requestPhotosSuccess();
     void requestPhotosFailed(String feedback);

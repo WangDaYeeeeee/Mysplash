@@ -129,7 +129,7 @@ public class HomeCollectionsView extends FrameLayout
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
         Glide.with(getContext())
-                .load(R.drawable.feedback_load_failed)
+                .load(R.drawable.feedback_no_photos)
                 .dontAnimate()
                 .into(feedbackImg);
 

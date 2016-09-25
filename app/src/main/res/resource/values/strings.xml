@@ -8,11 +8,13 @@
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
+    <string name="introduce">INTRODUCE</string>
     <string name="gitHub">GITHUB</string>
     <string name="email">EMAIL</string>
     <string name="source_code">SOURCE CODE</string>
     <string name="thx">THX</string>
     <string name="enter">ENTER</string>
+    <string name="next">NEXT</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="backstage">BACKSTAGE</string>
     <string name="details">DETAILS</string>
@@ -22,6 +24,7 @@
     <string name="save">SAVE</string>
     <string name="check">CHECK</string>
     <string name="set">SET</string>
+    <string name="all">ALL</string>
     <string name="stats">Stats</string>
     <string name="open_photo_link">Open in browser</string>
     <string name="open_download_link">Open download web page</string>
@@ -43,19 +46,28 @@
     <string name="about_tagLayout">Android flow layout.</string>
     <string name="photo_view">PhotoView</string>
     <string name="about_photo_view">A widget to preview and scale image.</string>
+    <string name="page_indicator">InkPageIndicator</string>
+    <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
+
     <string name="feedback_load_failed_tv">LOAD FAILED</string>
     <string name="feedback_load_failed_toast">Load failed.</string>
     <string name="feedback_load_nothing_tv">LOAD NOTHING</string>
     <string name="feedback_load_nothing_toast">Load nothing.</string>
+
     <string name="feedback_search_failed_tv">SEARCH FAILED</string>
     <string name="feedback_search_failed_toast">Search failed.</string>
     <string name="feedback_search_nothing_tv">SEARCH NOTHING</string>
     <string name="feedback_search_nothing_toast">Search nothing.</string>
-    <string name="feedback_search_bar">Search photos</string>
-    <string name="feedback_search_tv">SEARCH PHOTOS</string>
+    <string name="feedback_search_bar">Search photos, collections or users</string>
+    <string name="feedback_search_photos_bar">Key word</string>
+    <string name="feedback_search_users_bar">User</string>
+    <string name="feedback_search_photos_tv">SEARCH PHOTOS</string>
+    <string name="feedback_search_collections_tv">SEARCH COLLECTIONS</string>
+    <string name="feedback_search_users_tv">SEARCH USERS</string>
+
     <string name="feedback_is_over">Is over.</string>
 
     <string name="feedback_notify_restart">Restart to work.</string>
@@ -119,8 +131,26 @@
     <string name="feedback_overload">Overload</string>
     <string name="feedback_exceed_rate_limit">In this hour, the visits of Uysplash API exceed the rate limit, So we cannot load anything now.\n\nYou can try again in next hour.</string>
 
+    <string name="feedback_confirm_change_theme">Confirm Change Theme</string>
+    <string name="feedback_change_theme_warning">Change theme now will make downloads canceled.</string>
+    <string name="feedback_confirm_restart">Confirm Restart</string>
+    <string name="feedback_restart_warning">Restart application now will make downloads canceled.</string>
+
+    <string name="feedback_click_again_to_skip">Click again to skip.</string>
+
+    <!-- introduce. -->
+    <string name="introduce_title_search">New Search View</string>
+    <string name="introduce_description_search">The more powerful Search View is coming. Not only photos, you can also search users and collections now.</string>
+    <string name="introduce_title_filter">Multi-Filter</string>
+    <string name="introduce_description_filter">Find this function in drawer, you can filter photos by multiple conditions.</string>
+    <string name="introduce_title_back_top">Scroll To Top</string>
+    <string name="introduce_description_back_top">Click top bar or back button, the photo list view will scroll back to the top.</string>
+    <string name="introduce_title_start">Start</string>
+    <string name="introduce_description_start">Hope you like Mysplash.</string>
+
     <!-- menu. -->
     <string name="action_home">Home</string>
+    <string name="action_multi_filter">Multi-Filter</string>
     <string name="action_category_buildings">Buildings</string>
     <string name="action_category_food_drink">Food &amp; Drink</string>
     <string name="action_category_nature">Nature</string>
@@ -136,7 +166,9 @@
     <string name="action_filter">Filter</string>
 
     <string name="action_clear_text">Clear text</string>
-    
+
+    <string name="action_menu">Menu</string>
+
     <string name="action_open_portfolio">Open portfolio link</string>
 
     <string name="action_edit">Edit</string>
@@ -153,21 +185,24 @@
 
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
-    <string name="settings_title_default_order">Default order</string>
-    <string name="settings_title_default_collection_type">Default collection type</string>
-    <string name="settings_title_default_category_order">Default requestKey order in category</string>
-    <string name="settings_title_download_scale">Download scale</string>
     <string name="settings_title_back_to_top">Press back button to scroll to top</string>
     <string name="settings_title_language">Language</string>
 
+    <string name="settings_category_filter">Filter</string>
+    <string name="settings_title_default_order">Default order</string>
+    <string name="settings_title_default_collection_type">Default collection type</string>
+
+    <string name="settings_category_download">Download</string>
+    <string name="settings_title_download_scale">Download scale</string>
+
     <!-- share preferences. -->
     <string name="key_light_theme">light_theme</string>
-    <string name="key_default_photo_order">default_photo_order</string>
-    <string name="key_default_collection_type">default_collection_type</string>
-    <string name="key_default_category_order">default_category_order</string>
-    <string name="key_download_scale">download_scale</string>
+
     <string name="key_back_to_top">back_to_top</string>
     <string name="key_language">language</string>
+    <string name="key_default_photo_order">default_photo_order</string>
+    <string name="key_default_collection_type">default_collection_type</string>
+    <string name="key_download_scale">download_scale</string>
 
     <string name="key_category_total_new_count">category_total_new_count</string>
     <string name="key_category_total_feature_count">category_total_feature_count</string>

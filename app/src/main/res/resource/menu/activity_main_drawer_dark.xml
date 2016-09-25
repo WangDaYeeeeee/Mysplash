@@ -13,6 +13,13 @@
             android:checked="true" />
 
         <item
+            android:id="@+id/action_multi_filter"
+            android:orderInCategory="100"
+            android:icon="@drawable/ic_filter_outline_dark"
+            android:title="@string/action_multi_filter"
+            android:checkable="true" />
+
+        <item
             android:id="@+id/action_category_buildings"
             android:orderInCategory="100"
             android:icon="@drawable/ic_building_dark"

@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash._common.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -11,8 +10,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
-import java.util.List;
-
 /**
  * Snackbar utils.
  * */
@@ -20,10 +17,9 @@ import java.util.List;
 public class NotificationUtils {
 
     public static void showSnackbar(String content, int duration) {
-        List<Activity> activityList = Mysplash.getInstance().getActivityList();
-        if (activityList != null && activityList.size() != 0) {
-            Context c = activityList.get(activityList.size() - 1);
-            View container = ((SnackbarContainer) activityList.get(activityList.size() - 1)).getSnackbarContainer();
+        if (Mysplash.getInstance().getActivityCount() > 0) {
+            Activity a = Mysplash.getInstance().getLatestActivity();
+            View container = ((SnackbarContainer) a).getSnackbarContainer();
 
             Snackbar snackbar = Snackbar
                     .make(container, content, duration);
@@ -31,13 +27,13 @@ public class NotificationUtils {
             Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
 
             TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            TypefaceUtils.setTypeface(c, contentTxt);
+            TypefaceUtils.setTypeface(a, contentTxt);
 
-            if (ThemeUtils.getInstance(c).isLightTheme()) {
-                contentTxt.setTextColor(ContextCompat.getColor(c, R.color.colorTextContent_light));
+            if (ThemeUtils.getInstance(a).isLightTheme()) {
+                contentTxt.setTextColor(ContextCompat.getColor(a, R.color.colorTextContent_light));
                 snackbarLayout.setBackgroundResource(R.color.colorRoot_light);
             } else {
-                contentTxt.setTextColor(ContextCompat.getColor(c, R.color.colorTextContent_dark));
+                contentTxt.setTextColor(ContextCompat.getColor(a, R.color.colorTextContent_dark));
                 snackbarLayout.setBackgroundResource(R.color.colorRoot_dark);
             }
 
@@ -47,10 +43,9 @@ public class NotificationUtils {
 
     public static void showActionSnackbar(String content, String action,
                                           int duration, View.OnClickListener l) {
-        List<Activity> activityList = Mysplash.getInstance().getActivityList();
-        if (activityList != null && activityList.size() != 0) {
-            Context c = activityList.get(activityList.size() - 1);
-            View container = ((SnackbarContainer) activityList.get(activityList.size() - 1)).getSnackbarContainer();
+        if (Mysplash.getInstance().getActivityCount() > 0) {
+            Activity a = Mysplash.getInstance().getLatestActivity();
+            View container = ((SnackbarContainer) a).getSnackbarContainer();
 
             Snackbar snackbar = Snackbar
                     .make(container, content, duration)
@@ -59,17 +54,17 @@ public class NotificationUtils {
             Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
 
             TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            TypefaceUtils.setTypeface(c, contentTxt);
+            TypefaceUtils.setTypeface(a, contentTxt);
 
             Button actionBtn = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
 
-            if (ThemeUtils.getInstance(c).isLightTheme()) {
-                contentTxt.setTextColor(ContextCompat.getColor(c, R.color.colorTextContent_light));
-                actionBtn.setTextColor(ContextCompat.getColor(c, R.color.colorTextTitle_light));
+            if (ThemeUtils.getInstance(a).isLightTheme()) {
+                contentTxt.setTextColor(ContextCompat.getColor(a, R.color.colorTextContent_light));
+                actionBtn.setTextColor(ContextCompat.getColor(a, R.color.colorTextTitle_light));
                 snackbarLayout.setBackgroundResource(R.color.colorRoot_light);
             } else {
-                contentTxt.setTextColor(ContextCompat.getColor(c, R.color.colorTextContent_dark));
-                actionBtn.setTextColor(ContextCompat.getColor(c, R.color.colorTextTitle_dark));
+                contentTxt.setTextColor(ContextCompat.getColor(a, R.color.colorTextContent_dark));
+                actionBtn.setTextColor(ContextCompat.getColor(a, R.color.colorTextTitle_dark));
                 snackbarLayout.setBackgroundResource(R.color.colorRoot_dark);
             }
 

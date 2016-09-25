@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/popup_search_featured_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_search_featured_allIcon"
+            android:src="@drawable/ic_infinity_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_featured_allTxt"
+            android:text="ALL"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_search_featured_allIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_search_featured_featured"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_search_featured_featuredIcon"
+            android:src="@drawable/ic_feature_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_featured_featuredTxt"
+            android:text="FEATURED"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_search_featured_featuredIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

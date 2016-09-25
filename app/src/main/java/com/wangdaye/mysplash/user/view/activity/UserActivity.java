@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash.user.view.activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -9,11 +7,9 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -29,7 +25,6 @@ import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -57,7 +52,7 @@ import java.util.List;
  * */
 
 public class UserActivity extends MysplashActivity
-        implements ToolbarView, PagerManageView, PopupManageView, SwipeBackManageView,
+        implements PagerManageView, PopupManageView, SwipeBackManageView,
         Toolbar.OnMenuItemClickListener, View.OnClickListener,
         ViewPager.OnPageChangeListener, SwipeBackLayout.OnSwipeListener {
     // model.
@@ -136,13 +131,15 @@ public class UserActivity extends MysplashActivity
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImplementor(this);
+        this.toolbarPresenter = new ToolbarImplementor();
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
         this.popupManagePresenter = new PopupManageImplementor(this);
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
     }
 
     /** <br> view. */
+
+    // init.
 
     private void initView() {
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_user_swipeBackLayout);
@@ -210,10 +207,29 @@ public class UserActivity extends MysplashActivity
         tabLayout.setupWithViewPager(viewPager);
     }
 
+    // interface.
+
+    public void showPopup() {
+        int page = pagerManagePresenter.getPagerPosition();
+        popupManagePresenter.showPopup(
+                this,
+                toolbar,
+                pagerManagePresenter.getPagerKey(page),
+                page);
+    }
+
     /** <br> model. */
+
+    // init.
 
     private void initModel() {
         this.pagerManageModel = new PagerManageObject(0);
+    }
+
+    // interface.
+
+    public String getUserPortfolio() {
+        return userProfileView.getUserPortfolio();
     }
 
     /** <br> interface. */
@@ -237,8 +253,7 @@ public class UserActivity extends MysplashActivity
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        toolbarPresenter.touchMenuItem(item.getItemId());
-        return true;
+        return toolbarPresenter.touchMenuItem(this, item.getItemId());
     }
 
     // on page change listener.
@@ -268,7 +283,7 @@ public class UserActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        swipeBackManagePresenter.swipeBackFinish(dir);
+        swipeBackManagePresenter.swipeBackFinish(this, dir);
     }
 
     // snackbar container.
@@ -279,49 +294,6 @@ public class UserActivity extends MysplashActivity
     }
 
     // view.
-
-    // toolbar view.
-
-    @Override
-    public void touchNavigatorIcon() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
-        } else {
-            finish();
-        }
-    }
-
-    @Override
-    public void touchToolbar() {
-        // do nothing.
-    }
-
-    @Override
-    public void touchMenuItem(int itemId) {
-        switch (itemId) {
-            case R.id.action_open_portfolio:
-                String url = userProfileView.getUserPortfolio();
-                if (!TextUtils.isEmpty(url)) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    startActivity(i);
-                } else {
-                    Toast.makeText(
-                            this,
-                            getString(R.string.feedback_portfolio_is_null),
-                            Toast.LENGTH_SHORT).show();
-                }
-                break;
-
-            case R.id.action_filter:
-                int page = pagerManagePresenter.getPagerPosition();
-                popupManagePresenter.showPopup(
-                        this,
-                        toolbar,
-                        pagerManagePresenter.getPagerKey(page),
-                        page);
-                break;
-        }
-    }
 
     // pager manage view.
 
@@ -359,24 +331,6 @@ public class UserActivity extends MysplashActivity
         } else {
             return pagerManagePresenter.canPagerSwipeBack(dir)
                     && appBar.getY() >= 0;
-        }
-    }
-
-    @Override
-    public void swipeBackFinish(int dir) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
-        } else {
-            finish();
-            switch (dir) {
-                case SwipeBackLayout.UP_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_top);
-                    break;
-
-                case SwipeBackLayout.DOWN_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                    break;
-            }
         }
     }
 }

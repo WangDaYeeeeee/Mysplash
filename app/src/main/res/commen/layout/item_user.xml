@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_user_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise"
+    tools:ignore="UnusedAttribute">
+
+    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+        android:id="@+id/item_user_avatar"
+        android:layout_width="@dimen/normal_icon_size"
+        android:layout_height="@dimen/normal_icon_size"
+        android:layout_margin="@dimen/normal_margin"
+        android:src="@drawable/default_avatar" />
+
+    <FrameLayout
+        android:id="@+id/item_user_centerFlag"
+        android:layout_alignParentRight="true"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        tools:ignore="ContentDescription,RtlHardcoded" />
+
+    <RelativeLayout
+        android:id="@+id/item_user_titleContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/item_user_centerFlag"
+        android:layout_toRightOf="@id/item_user_avatar"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@+id/item_user_title"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:layout_marginLeft="@dimen/nano_margin"
+            android:layout_centerVertical="true"
+            style="@style/title_text"
+            tools:text="Wang Yueeeeee"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageButton
+            android:id="@+id/item_user_portfolio"
+            android:layout_width="@dimen/nano_icon_size"
+            android:layout_height="@dimen/nano_icon_size"
+            android:layout_marginLeft="@dimen/little_margin"
+            android:layout_marginBottom="@dimen/nano_margin"
+            android:layout_toRightOf="@id/item_user_title"
+            android:layout_centerVertical="true"
+            tools:src="@drawable/ic_item_earth_light"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/item_user_subtitle"
+        android:layout_below="@id/item_user_titleContainer"
+        android:layout_toRightOf="@id/item_user_avatar"
+        android:layout_marginLeft="@dimen/nano_margin"
+        android:layout_marginTop="@dimen/nano_margin"
+        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/normal_margin"
+        style="@style/subtitle_text"
+        tools:text="An developer from Qingdao, Chinaaaaaaa. Contact me by email : Wangdayeeeeee@gmail.com"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

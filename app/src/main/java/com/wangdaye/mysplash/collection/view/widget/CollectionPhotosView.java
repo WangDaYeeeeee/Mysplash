@@ -14,11 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -60,8 +56,7 @@ public class CollectionPhotosView extends FrameLayout
 
     // view.
     private CircularProgressView progressView;
-    private RelativeLayout feedbackContainer;
-    private TextView feedbackText;
+    private Button retryButton;
 
     private BothWaySwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
@@ -97,7 +92,7 @@ public class CollectionPhotosView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
+        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
@@ -149,20 +144,9 @@ public class CollectionPhotosView extends FrameLayout
     }
 
     private void initLoadingView() {
-        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_large_progressView);
+        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_mini_progressView);
 
-        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_view_large_feedbackContainer);
-        feedbackContainer.setVisibility(GONE);
-
-        ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
-        Glide.with(getContext())
-                .load(R.drawable.feedback_load_failed)
-                .dontAnimate()
-                .into(feedbackImg);
-
-        this.feedbackText = (TextView) findViewById(R.id.container_loading_view_large_feedbackTxt);
-
-        Button retryButton = (Button) findViewById(R.id.container_loading_view_large_feedbackBtn);
+        this.retryButton = (Button) findViewById(R.id.container_loading_view_mini_retryButton);
         retryButton.setOnClickListener(this);
     }
 
@@ -282,7 +266,6 @@ public class CollectionPhotosView extends FrameLayout
 
     @Override
     public void requestPhotosFailed(String feedback) {
-        feedbackText.setText(feedback);
         loadPresenter.setFailedState();
     }
 
@@ -301,12 +284,12 @@ public class CollectionPhotosView extends FrameLayout
     @Override
     public void setLoadingState() {
         animShow(progressView);
-        animHide(feedbackContainer);
+        animHide(retryButton);
     }
 
     @Override
     public void setFailedState() {
-        animShow(feedbackContainer);
+        animShow(retryButton);
         animHide(progressView);
     }
 

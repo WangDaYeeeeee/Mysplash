@@ -9,6 +9,7 @@ import com.wangdaye.mysplash._common.data.data.Collection;
 import com.wangdaye.mysplash._common.data.data.Photo;
 import com.wangdaye.mysplash._common.data.data.User;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +51,9 @@ public class Mysplash extends Application {
     public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash/";
     public static final String DOWNLOAD_FORMAT = ".jpg";
+
     public static final int DEFAULT_PER_PAGE = 30;
+    public static final int SEARCH_PER_PAGE = 20;
 
     public static final int CATEGORY_TOTAL_NEW = 0;
     public static final int CATEGORY_TOTAL_FEATURED = 1;
@@ -110,9 +113,29 @@ public class Mysplash extends Application {
     public void removeActivity() {
         activityList.remove(activityList.size() - 1);
     }
-
+/*
     public List<Activity> getActivityList() {
         return activityList;
+    }
+*/
+    public Activity getLatestActivity() {
+        if (activityList.size() > 0) {
+            return activityList.get(activityList.size() - 1);
+        } else {
+            return null;
+        }
+    }
+
+    public MainActivity getMainActivity() {
+        if (activityList.get(0) instanceof MainActivity) {
+            return (MainActivity) activityList.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    public int getActivityCount() {
+        return activityList.size();
     }
 
     public void setPhoto(Photo p) {

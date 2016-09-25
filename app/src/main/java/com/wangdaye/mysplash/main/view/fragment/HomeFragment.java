@@ -4,9 +4,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -22,13 +20,11 @@ import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.i.view.ToolbarView;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
 import com.wangdaye.mysplash.main.model.widget.PhotosObject;
 import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
@@ -42,7 +38,7 @@ import java.util.List;
  * */
 
 public class HomeFragment extends Fragment
-        implements ToolbarView, PopupManageView, PagerManageView,
+        implements PopupManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
         NotificationUtils.SnackbarContainer {
     // model.
@@ -81,7 +77,7 @@ public class HomeFragment extends Fragment
     /** <br> presenter. */
 
     private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImplementor(this);
+        this.toolbarPresenter = new ToolbarImplementor();
         this.popupManageImplementor = new HomeFragmentPopupManageImplementor(this);
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
     }
@@ -143,6 +139,15 @@ public class HomeFragment extends Fragment
         pagerManagePresenter.pagerScrollToTop();
     }
 
+    public void showPopup() {
+        int page = pagerManagePresenter.getPagerPosition();
+        popupManageImplementor.showPopup(
+                getActivity(),
+                toolbar,
+                pagerManagePresenter.getPagerKey(page),
+                page);
+    }
+
     /** <br> model. */
 
     // init.
@@ -165,11 +170,11 @@ public class HomeFragment extends Fragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.touchNavigatorIcon();
+                toolbarPresenter.touchNavigatorIcon(getActivity());
                 break;
 
             case R.id.fragment_home_toolbar:
-                toolbarPresenter.touchToolbar();
+                toolbarPresenter.touchToolbar(getActivity());
                 break;
         }
     }
@@ -178,8 +183,7 @@ public class HomeFragment extends Fragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        toolbarPresenter.touchMenuItem(item.getItemId());
-        return true;
+        return toolbarPresenter.touchMenuItem(getActivity(), item.getItemId());
     }
 
     // on page changed listener.
@@ -208,37 +212,6 @@ public class HomeFragment extends Fragment
     }
 
     // view.
-
-    // toolbar view.
-
-    @Override
-    public void touchNavigatorIcon() {
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.activity_main_drawerLayout);
-        drawer.openDrawer(GravityCompat.START);
-    }
-
-    @Override
-    public void touchToolbar() {
-        pagers[pagerManagePresenter.getPagerPosition()].scrollToPageTop();
-    }
-
-    @Override
-    public void touchMenuItem(int itemId) {
-        switch (itemId) {
-            case R.id.action_search:
-                ((MainActivity) getActivity()).insertFragment(itemId);
-                break;
-
-            case R.id.action_filter:
-                int page = pagerManagePresenter.getPagerPosition();
-                popupManageImplementor.showPopup(
-                        getActivity(),
-                        toolbar,
-                        pagerManagePresenter.getPagerKey(page),
-                        page);
-                break;
-        }
-    }
 
     // pager manage view.
 

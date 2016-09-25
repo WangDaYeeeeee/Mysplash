@@ -26,6 +26,9 @@ public class PhotoDetailsImplementor
     private PhotoDetailsModel model;
     private PhotoDetailsView view;
 
+    // data
+    private OnRequestPhotoDetailsListener listener;
+
     /** <br> life cycle. */
 
     public PhotoDetailsImplementor(PhotoDetailsModel model, PhotoDetailsView view) {
@@ -38,12 +41,16 @@ public class PhotoDetailsImplementor
     @Override
     public void requestPhotoDetails(Context c) {
         view.initRefreshStart();
+        listener = new OnRequestPhotoDetailsListener(c);
         model.getService()
-                .requestPhotoDetails(model.getPhoto(), new OnRequestPhotoDetailsListener(c));
+                .requestPhotoDetails(model.getPhoto(), listener);
     }
 
     @Override
     public void cancelRequest() {
+        if (listener != null) {
+            listener.cancel();
+        }
         model.getService().cancel();
     }
 
@@ -59,13 +66,22 @@ public class PhotoDetailsImplementor
     private class OnRequestPhotoDetailsListener implements PhotoService.OnRequestPhotoDetailsListener {
         // data
         private Context c;
+        private boolean canceled;
         
-        public OnRequestPhotoDetailsListener(Context c) {
+        OnRequestPhotoDetailsListener(Context c) {
             this.c = c;
+            this.canceled = false;
+        }
+
+        public void cancel() {
+            canceled = true;
         }
 
         @Override
         public void onRequestPhotoDetailsSuccess(Call<PhotoDetails> call, Response<PhotoDetails> response) {
+            if (canceled) {
+                return;
+            }
             if (response.isSuccessful() && response.body() != null) {
                 ValueUtils.writePhotoCount(
                         c,
@@ -76,14 +92,16 @@ public class PhotoDetailsImplementor
             } else {
                 requestPhotoDetails(c);
                 RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getActivityList().get(
-                                Mysplash.getInstance().getActivityList().size() - 1),
+                        Mysplash.getInstance().getLatestActivity(),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 
         @Override
         public void onRequestPhotoDetailsFailed(Call<PhotoDetails> call, Throwable t) {
+            if (canceled) {
+                return;
+            }
             requestPhotoDetails(c);
         }
     }
