@@ -8,6 +8,8 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterBarPresenter;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
+import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 
 /**
  * Multi-filter bar implementor.
@@ -35,6 +37,13 @@ public class MultiFilterBarImplementor
     }
 
     @Override
+    public void touchToolbar(Activity a) {
+        MainActivity activity = (MainActivity) a;
+        MultiFilterFragment f = (MultiFilterFragment) activity.getTopFragment();
+        f.pagerBackToTop();
+    }
+
+    @Override
     public void touchMenuContainer(int position) {
         view.touchMenuContainer(position);
     }
@@ -50,11 +59,8 @@ public class MultiFilterBarImplementor
     }
 
     @Override
-    public void submitSearchInfo(int categoryId, boolean featured,
-                                 String username, String query, String orientation) {
-        view.submitSearchInfo(
-                categoryId, featured,
-                username, query, orientation);
+    public void submitSearchInfo() {
+        view.submitSearchInfo();
     }
 
     @Override

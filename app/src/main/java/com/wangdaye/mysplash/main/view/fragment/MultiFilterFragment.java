@@ -5,12 +5,14 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -19,12 +21,10 @@ import com.wangdaye.mysplash._common.i.presenter.MultiFilterBarPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.popup.SearchCategoryPopupWindow;
-import com.wangdaye.mysplash._common.ui.popup.SearchFeaturedPopupWindow;
-import com.wangdaye.mysplash._common.ui.popup.SearchOrientationPopupWindow;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.model.fragment.MultiFilterBarObject;
 import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterBarImplementor;
@@ -37,7 +37,7 @@ import com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView;
 
 public class MultiFilterFragment extends Fragment
         implements MultiFilterBarView, PopupManageView,
-        View.OnClickListener,  NotificationUtils.SnackbarContainer {
+        View.OnClickListener, NotificationUtils.SnackbarContainer {
     // model.
     private MultiFilterBarModel multiFilterBarModel;
 
@@ -45,7 +45,7 @@ public class MultiFilterFragment extends Fragment
     private CoordinatorLayout container;
     private EditText[] editTexts;
     private TextView[] menuTexts;
-    private ImageView[] menuIcons;
+    private ImageButton[] menuIcons;
     private MultiFilterPhotosView photosView;
 
     // presenter.
@@ -66,6 +66,7 @@ public class MultiFilterFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        multiFilterBarPresenter.hideKeyboard();
         photosView.cancelRequest();
     }
 
@@ -101,6 +102,10 @@ public class MultiFilterFragment extends Fragment
         this.editTexts = new EditText[] {
                 (EditText) v.findViewById(R.id.fragment_multi_filter_photos_editText),
                 (EditText) v.findViewById(R.id.fragment_multi_filter_users_editText)};
+        editTexts[0].setOnEditorActionListener(queryEditorActionListener);
+        editTexts[1].setOnEditorActionListener(userEditorActionListener);
+        TypefaceUtils.setTypeface(getActivity(), editTexts[0]);
+        TypefaceUtils.setTypeface(getActivity(), editTexts[1]);
 
         v.findViewById(R.id.fragment_multi_filter_categoryContainer).setOnClickListener(this);
         v.findViewById(R.id.fragment_multi_filter_orientationContainer).setOnClickListener(this);
@@ -112,22 +117,25 @@ public class MultiFilterFragment extends Fragment
                 (TextView) v.findViewById(R.id.fragment_multi_filter_featuredTxt)};
         for (TextView t : menuTexts) {
             t.setText(R.string.all);
+            TypefaceUtils.setTypeface(getActivity(), t);
         }
 
-        this.menuIcons = new ImageView[] {
-                (ImageView) v.findViewById(R.id.fragment_multi_filter_categoryBtn),
-                (ImageView) v.findViewById(R.id.fragment_multi_filter_orientationBtn),
-                (ImageView) v.findViewById(R.id.fragment_multi_filter_featuredBtn)};
-        for (ImageView i : menuIcons) {
+        this.menuIcons = new ImageButton[] {
+                (ImageButton) v.findViewById(R.id.fragment_multi_filter_categoryBtn),
+                (ImageButton) v.findViewById(R.id.fragment_multi_filter_orientationBtn),
+                (ImageButton) v.findViewById(R.id.fragment_multi_filter_featuredBtn)};
+        for (ImageButton b : menuIcons) {
             if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
-                i.setImageResource(R.drawable.ic_menu_down_light);
+                b.setImageResource(R.drawable.ic_menu_down_light);
             } else {
-                i.setImageResource(R.drawable.ic_menu_down_dark);
+                b.setImageResource(R.drawable.ic_menu_down_dark);
             }
+            b.setOnClickListener(this);
         }
 
         this.photosView = (MultiFilterPhotosView) v.findViewById(R.id.fragment_multi_filter_photosView);
         photosView.setActivity(getActivity());
+        photosView.setOnClickListener(this);
     }
 
     // interface.
@@ -188,8 +196,55 @@ public class MultiFilterFragment extends Fragment
             case -1:
                 multiFilterBarPresenter.touchNavigatorIcon(getActivity());
                 break;
+
+            case R.id.fragment_multi_filter_toolbar:
+                multiFilterBarPresenter.touchToolbar(getActivity());
+                break;
+
+            case R.id.fragment_multi_filter_photosView:
+                multiFilterBarPresenter.hideKeyboard();
+                break;
+
+            case R.id.fragment_multi_filter_categoryBtn:
+            case R.id.fragment_multi_filter_categoryContainer:
+                showPopup(0);
+                break;
+
+            case R.id.fragment_multi_filter_orientationBtn:
+            case R.id.fragment_multi_filter_orientationContainer:
+                showPopup(1);
+                break;
+
+            case R.id.fragment_multi_filter_featuredBtn:
+            case R.id.fragment_multi_filter_featuredContainer:
+                showPopup(2);
+                break;
         }
     }
+
+    // on editor action listener.
+
+    private EditText.OnEditorActionListener queryEditorActionListener
+            = new EditText.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            multiFilterBarPresenter.setQuery(v.getText().toString());
+            multiFilterBarPresenter.hideKeyboard();
+            multiFilterBarPresenter.submitSearchInfo();
+            return true;
+        }
+    };
+
+    private EditText.OnEditorActionListener userEditorActionListener
+            = new EditText.OnEditorActionListener() {
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            multiFilterBarPresenter.setUsername(v.getText().toString());
+            multiFilterBarPresenter.hideKeyboard();
+            multiFilterBarPresenter.submitSearchInfo();
+            return true;
+        }
+    };
 
     // snackbar container.
 
@@ -221,9 +276,13 @@ public class MultiFilterFragment extends Fragment
     }
 
     @Override
-    public void submitSearchInfo(int categoryId, boolean featured,
-                                 String username, String query, String orientation) {
-        photosView.doSearch(categoryId, featured, username, query, orientation);
+    public void submitSearchInfo() {
+        photosView.doSearch(
+                multiFilterBarPresenter.getCategory(),
+                multiFilterBarModel.isFeatured(),
+                multiFilterBarPresenter.getUsername(),
+                multiFilterBarPresenter.getQuery(),
+                multiFilterBarPresenter.getOrientation());
     }
 
     // popup manage view.
@@ -233,14 +292,32 @@ public class MultiFilterFragment extends Fragment
         switch (position) {
             case 0:
                 multiFilterBarPresenter.setCategory(Integer.parseInt(value));
+                if (Integer.parseInt(value) == 0) {
+                    menuTexts[0].setText(R.string.all);
+                } else {
+                    menuTexts[0].setText(
+                            ValueUtils.getToolbarTitleByCategory(
+                                    getContext(),
+                                    Integer.parseInt(value)));
+                }
                 break;
 
             case 1:
                 multiFilterBarPresenter.setOrientation(value);
+                if (TextUtils.isEmpty(value)) {
+                    menuTexts[1].setText(R.string.all);
+                } else {
+                    menuTexts[1].setText(value);
+                }
                 break;
 
             case 2:
                 multiFilterBarPresenter.setFeatured(Boolean.parseBoolean(value));
+                if (Boolean.parseBoolean(value)) {
+                    menuTexts[2].setText(getResources().getStringArray(R.array.collection_types)[2]);
+                } else {
+                    menuTexts[2].setText(R.string.all);
+                }
                 break;
         }
     }

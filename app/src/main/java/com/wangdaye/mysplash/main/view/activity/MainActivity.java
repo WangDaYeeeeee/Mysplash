@@ -49,6 +49,7 @@ import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash._common.utils.SafeHandler;
+import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
 import java.util.Timer;
@@ -138,8 +139,13 @@ public class MainActivity extends MysplashActivity
                     && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
                 ((SearchFragment) f).pagerBackToTop();
             } else if (f instanceof CategoryFragment
-                    && ((CategoryFragment) f).needPagerBackToTop()) {
+                    && ((CategoryFragment) f).needPagerBackToTop()
+                    && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
                 ((CategoryFragment) f).pagerBackToTop();
+            } else if (f instanceof MultiFilterFragment
+                    && ((MultiFilterFragment) f).needPagerBackToTop()
+                    && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
+                ((MultiFilterFragment) f).pagerBackToTop();
             } else {
                 super.onBackPressed();
             }

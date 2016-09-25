@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|snap"
+                app:layout_scrollFlags="scroll|snap|enterAlways"
                 app:popupTheme="@style/MysplashPopupMenuTheme"
                 app:navigationIcon="@drawable/ic_toolbar_menu_light">
 
@@ -76,7 +76,6 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tab_layout_height"
-                app:layout_scrollFlags="scroll|snap"
                 tools:ignore="DisableBaselineAlignment,RtlHardcoded">
 
                 <RelativeLayout
@@ -99,6 +98,7 @@
                         android:layout_toLeftOf="@id/fragment_multi_filter_categoryBtn"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/normal_margin"
+                        android:maxLines="1"
                         style="@style/content_text"
                         tools:text="All" />
 
@@ -124,6 +124,7 @@
                         android:layout_toLeftOf="@id/fragment_multi_filter_orientationBtn"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/normal_margin"
+                        android:maxLines="1"
                         style="@style/content_text"
                         tools:text="All" />
 
@@ -149,6 +150,7 @@
                         android:layout_toLeftOf="@id/fragment_multi_filter_featuredBtn"
                         android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/normal_margin"
+                        android:maxLines="1"
                         style="@style/content_text"
                         tools:text="All" />
 

@@ -8,14 +8,13 @@ import android.app.Activity;
 
 public interface MultiFilterBarPresenter {
     void touchNavigatorIcon(Activity a);
+    void touchToolbar(Activity a);
     void touchMenuContainer(int position);
 
     void showKeyboard();
     void hideKeyboard();
 
-    void submitSearchInfo(int categoryId, boolean featured,
-                          String username, String query,
-                          String orientation);
+    void submitSearchInfo();
 
     void setQuery(String query);
     String getQuery();

@@ -11,6 +11,7 @@ import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
+import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
 import java.util.List;
@@ -65,10 +66,6 @@ public class FragmentManageImplementor
 
     @Override
     public void changeFragment(Activity a, int code) {
-        if (code == R.id.action_multi_filter) {
-            return;
-        }
-
         if (model.getFragmentCount() > 1) {
             while (model.getFragmentCount() > 1) {
                 popFragment(a);
@@ -94,6 +91,9 @@ public class FragmentManageImplementor
 
             case R.id.action_search:
                 return new SearchFragment();
+
+            case R.id.action_multi_filter:
+                return new MultiFilterFragment();
 
             case R.id.action_category_buildings:
                 return new CategoryFragment().setCategory(Mysplash.CATEGORY_BUILDINGS_ID);

@@ -139,9 +139,9 @@ public class MultiFilterPhotosView extends FrameLayout
 
     private void initLoadingView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_filtering_view_large_progressView);
+        progressView.setVisibility(GONE);
 
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_filtering_view_large_feedbackContainer);
-        feedbackContainer.setVisibility(GONE);
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_filtering_view_large_feedbackImg);
         Glide.with(getContext())
@@ -150,8 +150,10 @@ public class MultiFilterPhotosView extends FrameLayout
                 .into(feedbackImg);
 
         this.feedbackText = (TextView) findViewById(R.id.container_filtering_view_large_feedbackTxt);
+        feedbackText.setText(R.string.feedback_search_photos_tv);
 
         Button retryButton = (Button) findViewById(R.id.container_filtering_view_large_feedbackBtn);
+        retryButton.setVisibility(GONE);
         retryButton.setOnClickListener(this);
     }
 
@@ -167,7 +169,7 @@ public class MultiFilterPhotosView extends FrameLayout
 
     private void initModel() {
         this.multiFilterModel = new MultiFilterObject(getContext());
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
         this.scrollModel = new ScrollObject();
     }
 

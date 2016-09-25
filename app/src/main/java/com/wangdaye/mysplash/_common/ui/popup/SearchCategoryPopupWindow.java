@@ -91,7 +91,6 @@ public class SearchCategoryPopupWindow extends PopupWindow
 
         TextView buildingsTxt = (TextView) v.findViewById(R.id.popup_search_category_buildingsTxt);
         TypefaceUtils.setTypeface(v.getContext(), buildingsTxt);
-        buildingsTxt.setText(v.getContext().getText(R.string.action_category_buildings));
         if (valueNow == Mysplash.CATEGORY_BUILDINGS_ID) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 buildingsTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
@@ -102,7 +101,6 @@ public class SearchCategoryPopupWindow extends PopupWindow
 
         TextView foodDrinkTxt = (TextView) v.findViewById(R.id.popup_search_category_food_drinkTxt);
         TypefaceUtils.setTypeface(v.getContext(), foodDrinkTxt);
-        foodDrinkTxt.setText(v.getContext().getText(R.string.action_category_buildings));
         if (valueNow == Mysplash.CATEGORY_FOOD_DRINK_ID) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 foodDrinkTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
@@ -113,7 +111,6 @@ public class SearchCategoryPopupWindow extends PopupWindow
 
         TextView naturedTxt = (TextView) v.findViewById(R.id.popup_search_category_natureTxt);
         TypefaceUtils.setTypeface(v.getContext(), naturedTxt);
-        naturedTxt.setText(v.getContext().getText(R.string.action_category_buildings));
         if (valueNow == Mysplash.CATEGORY_NATURE_ID) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 naturedTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
@@ -124,7 +121,6 @@ public class SearchCategoryPopupWindow extends PopupWindow
 
         TextView objectTxt = (TextView) v.findViewById(R.id.popup_search_category_objectTxt);
         TypefaceUtils.setTypeface(v.getContext(), objectTxt);
-        objectTxt.setText(v.getContext().getText(R.string.action_category_buildings));
         if (valueNow == Mysplash.CATEGORY_OBJECTS_ID) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 objectTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
@@ -135,7 +131,6 @@ public class SearchCategoryPopupWindow extends PopupWindow
 
         TextView peopleTxt = (TextView) v.findViewById(R.id.popup_search_category_peopleTxt);
         TypefaceUtils.setTypeface(v.getContext(), peopleTxt);
-        peopleTxt.setText(v.getContext().getText(R.string.action_category_buildings));
         if (valueNow == Mysplash.CATEGORY_PEOPLE_ID) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 peopleTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
@@ -146,7 +141,6 @@ public class SearchCategoryPopupWindow extends PopupWindow
 
         TextView technologyTxt = (TextView) v.findViewById(R.id.popup_search_category_technologyTxt);
         TypefaceUtils.setTypeface(v.getContext(), technologyTxt);
-        technologyTxt.setText(v.getContext().getText(R.string.action_category_buildings));
         if (valueNow == Mysplash.CATEGORY_TECHNOLOGY_ID) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 technologyTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
@@ -156,7 +150,7 @@ public class SearchCategoryPopupWindow extends PopupWindow
         }
 
         if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_allIcon))
+            ((ImageView) v.findViewById(R.id.popup_search_category_allIcon))
                     .setImageResource(R.drawable.ic_infinity_light);
             ((ImageView) v.findViewById(R.id.popup_search_category_buildingsIcon))
                     .setImageResource(R.drawable.ic_building_light);
