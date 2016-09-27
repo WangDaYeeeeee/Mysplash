@@ -147,6 +147,7 @@ public class CollectionPhotosView extends FrameLayout
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_mini_progressView);
 
         this.retryButton = (Button) findViewById(R.id.container_loading_view_mini_retryButton);
+        retryButton.setVisibility(GONE);
         retryButton.setOnClickListener(this);
     }
 

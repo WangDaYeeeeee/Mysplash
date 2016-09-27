@@ -84,6 +84,7 @@ public class MultiFilterFragment extends Fragment
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_multi_filter_statusBar);
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 

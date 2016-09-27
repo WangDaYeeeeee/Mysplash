@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.ColorInt;
@@ -1006,8 +1007,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup {
     /**
      * @deprecated Use {@link #setColorSchemeResources(int...)}
      */
+    @SuppressLint("SupportAnnotationUsage")
+    @ColorInt
     @Deprecated
-    public void setColorScheme(@ColorInt int... colors) {
+    public void setColorScheme(int... colors) {
         setColorSchemeResources(colors);
     }
 
@@ -1033,6 +1036,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup {
      *
      * @param colors
      */
+    @SuppressLint("SupportAnnotationUsage")
     @ColorInt
     public void setColorSchemeColors(int... colors) {
         ensureTarget();

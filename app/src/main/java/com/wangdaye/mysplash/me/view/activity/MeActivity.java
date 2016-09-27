@@ -175,6 +175,7 @@ public class MeActivity extends MysplashActivity
 
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_me_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 

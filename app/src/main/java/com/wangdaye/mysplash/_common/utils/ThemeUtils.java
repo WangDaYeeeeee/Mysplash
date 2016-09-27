@@ -28,7 +28,7 @@ public class ThemeUtils {
         return lightTheme;
     }
 
-    public boolean isNeedSetStatusBarTextDark() {
+    boolean isNeedSetStatusBarTextDark() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                 && isLightTheme();
     }

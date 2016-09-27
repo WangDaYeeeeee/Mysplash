@@ -23,6 +23,7 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.SafeHandler;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
@@ -148,6 +149,12 @@ public class IntroduceActivity extends MysplashActivity
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
+
+        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_introduce_statusBar);
+        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
+            statusBar.setMask(true);
+        }
 
         ImageButton backBtn = (ImageButton) findViewById(R.id.activity_introduce_backBtn);
         if (ThemeUtils.getInstance(this).isLightTheme()) {

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -24,9 +25,11 @@ public class RateLimitDialog extends DialogFragment
     /** <br> utils. */
 
     public static void checkAndNotify(Activity a, String remaining) {
-        if (Integer.parseInt(remaining) < 0) {
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(a.getFragmentManager(), remaining);
+        if (!TextUtils.isEmpty(remaining)) {
+            if (Integer.parseInt(remaining) < 0) {
+                RateLimitDialog dialog = new RateLimitDialog();
+                dialog.show(a.getFragmentManager(), remaining);
+            }
         }
     }
 

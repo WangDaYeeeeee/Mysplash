@@ -89,6 +89,7 @@ public class HomeFragment extends Fragment
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 

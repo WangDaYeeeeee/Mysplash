@@ -227,6 +227,7 @@ public class PhotosImplementor
             if (canceled) {
                 return;
             }
+
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
@@ -262,7 +263,7 @@ public class PhotosImplementor
                 view.requestPhotosFailed(c.getString(R.string.feedback_load_nothing_tv));
                 RateLimitDialog.checkAndNotify(
                         Mysplash.getInstance().getLatestActivity(),
-                        response.headers().get("X-Ratelimit-Remaining"));
+                        response.headers().get(""));
             }
         }
 

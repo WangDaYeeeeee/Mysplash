@@ -61,6 +61,7 @@ public class SettingsActivity extends MysplashActivity
     private void initWidget() {
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_settings_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 

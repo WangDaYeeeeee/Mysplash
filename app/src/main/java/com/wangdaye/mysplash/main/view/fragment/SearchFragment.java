@@ -105,6 +105,7 @@ public class SearchFragment extends Fragment
 
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_search_statusBar);
         if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
@@ -269,6 +270,7 @@ public class SearchFragment extends Fragment
     public void submitSearchInfo(String text) {
         for (PagerView p : pagers) {
             p.setKey(text);
+            p.cancelRequest();
             ((HomeSearchView) p).clearAdapter();
         }
         pagerManagePresenter.getPagerView(pagerManagePresenter.getPagerPosition()).refreshPager();

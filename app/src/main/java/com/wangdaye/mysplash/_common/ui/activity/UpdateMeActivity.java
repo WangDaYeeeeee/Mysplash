@@ -108,6 +108,7 @@ public class UpdateMeActivity extends MysplashActivity
 
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_update_me_statusBar);
         if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+            statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 

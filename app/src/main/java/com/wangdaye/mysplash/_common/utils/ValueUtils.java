@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.utils;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -174,7 +175,7 @@ public class ValueUtils {
 
     public static void writePhotoCount(Context c, Response<List<Photo>> response, int category) {
         String value = response.headers().get("X-Total");
-        if (value != null && !value.equals("")) {
+        if (!TextUtils.isEmpty(value)) {
             int count = Integer.parseInt(value);
             writePhotoCount(c, category, count);
         }
