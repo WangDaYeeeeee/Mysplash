@@ -43,9 +43,4 @@ public class FileUtils {
         }
         return true;
     }
-
-    public static boolean isFileExist(String photoId) {
-        File f = new File(Mysplash.DOWNLOAD_PATH + photoId + Mysplash.DOWNLOAD_FORMAT);
-        return f.exists();
-    }
 }

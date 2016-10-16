@@ -3,12 +3,12 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.CollectionApi;
-import com.wangdaye.mysplash._common.data.data.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.DeleteCollectionResult;
-import com.wangdaye.mysplash._common.data.data.Me;
-import com.wangdaye.mysplash._common.data.data.User;
-import com.wangdaye.mysplash._common.data.tools.AuthInterceptor;
+import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
+import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.utils.AuthInterceptor;
 
 import java.util.List;
 
@@ -86,6 +86,46 @@ public class CollectionService {
             }
         });
         call = getFeaturedCollections;
+    }
+
+    public void requestACollections(String id, final OnRequestSingleCollectionListener l) {
+        Call<Collection> getACollection = buildApi(buildClient()).getACollection(id);
+        getACollection.enqueue(new Callback<Collection>() {
+            @Override
+            public void onResponse(Call<Collection> call, retrofit2.Response<Collection> response) {
+                if (l != null) {
+                    l.onRequestSingleCollectionSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestSingleCollectionFailed(call, t);
+                }
+            }
+        });
+        call = getACollection;
+    }
+
+    public void requestACuratedCollections(String id, final OnRequestSingleCollectionListener l) {
+        Call<Collection> getACuratedCollection = buildApi(buildClient()).getACuratedCollection(id);
+        getACuratedCollection.enqueue(new Callback<Collection>() {
+            @Override
+            public void onResponse(Call<Collection> call, retrofit2.Response<Collection> response) {
+                if (l != null) {
+                    l.onRequestSingleCollectionSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Collection> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestSingleCollectionFailed(call, t);
+                }
+            }
+        });
+        call = getACuratedCollection;
     }
 
     public void requestUserCollections(User u, int page, int per_page, final OnRequestCollectionsListener l) {
@@ -254,7 +294,7 @@ public class CollectionService {
         return new CollectionService();
     }
 
-    public OkHttpClient buildClient() {
+    private OkHttpClient buildClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
@@ -278,6 +318,11 @@ public class CollectionService {
     public interface OnRequestCollectionsListener {
         void onRequestCollectionsSuccess(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response);
         void onRequestCollectionsFailed(Call<List<Collection>> call, Throwable t);
+    }
+
+    public interface OnRequestSingleCollectionListener {
+        void onRequestSingleCollectionSuccess(Call<Collection> call, retrofit2.Response<Collection> response);
+        void onRequestSingleCollectionFailed(Call<Collection> call, Throwable t);
     }
 
     public interface OnRequestACollectionListener {

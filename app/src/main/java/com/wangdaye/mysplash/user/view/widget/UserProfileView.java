@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.UserModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
@@ -86,8 +86,8 @@ public class UserProfileView extends FrameLayout
         addView(v);
 
         initModel();
-        initView();
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -130,6 +130,10 @@ public class UserProfileView extends FrameLayout
 
     // interface.
 
+    public void setUser(User user) {
+        userPresenter.setUser(user);
+    }
+
     public void requestUserProfile(MyPagerAdapter adapter) {
         this.adapter = adapter;
         userPresenter.requestUser();
@@ -139,8 +143,12 @@ public class UserProfileView extends FrameLayout
         userPresenter.cancelRequest();
     }
 
+    public User getUser() {
+        return userPresenter.getUser();
+    }
+
     public String getUserPortfolio() {
-        return userModel.getUser().portfolio_url;
+        return userPresenter.getUser().portfolio_url;
     }
 
     /** <br> interface. */
@@ -165,9 +173,9 @@ public class UserProfileView extends FrameLayout
         }
 
         List<String> titleList = new ArrayList<>();
-        titleList.add(u.total_photos + (u.total_photos > 1 ? " PHOTOS" : " PHOTO"));
-        titleList.add(u.total_collections + (u.total_collections > 1 ? " COLLECTIONS" : " COLLECTION"));
-        titleList.add(u.total_likes + (u.total_likes > 1 ? " LIKES" : " LIKE"));
+        titleList.add(u.total_photos + " " + getResources().getStringArray(R.array.user_tabs)[0]);
+        titleList.add(u.total_collections + " " + getResources().getStringArray(R.array.user_tabs)[1]);
+        titleList.add(u.total_likes + " " + getResources().getStringArray(R.array.user_tabs)[2]);
         adapter.titleList = titleList;
         adapter.notifyDataSetChanged();
     }

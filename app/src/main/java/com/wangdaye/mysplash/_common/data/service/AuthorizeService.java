@@ -2,7 +2,7 @@ package com.wangdaye.mysplash._common.data.service;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.AuthorizeApi;
-import com.wangdaye.mysplash._common.data.data.AccessToken;
+import com.wangdaye.mysplash._common.data.entity.AccessToken;
 
 import retrofit2.Call;
 import retrofit2.Callback;

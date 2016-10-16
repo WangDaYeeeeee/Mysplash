@@ -233,7 +233,7 @@ public class HomePhotosView extends FrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return photosPresenter.getAdapterItemCount() <= 0
+        return photosPresenter.getAdapter().getRealItemCount() <= 0
                 && !photosPresenter.isRefreshing() && !photosPresenter.isLoading();
     }
 

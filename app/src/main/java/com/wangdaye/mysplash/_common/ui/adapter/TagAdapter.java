@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.zhy.view.flowlayout.FlowLayout;
 
 import java.util.List;

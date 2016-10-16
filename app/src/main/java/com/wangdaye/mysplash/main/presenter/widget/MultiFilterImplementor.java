@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterPresenter;
@@ -233,7 +233,7 @@ public class MultiFilterImplementor
             } else {
                 view.requestPhotosFailed(c.getString(R.string.feedback_search_nothing_tv));
                 RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getLatestActivity(),
+                        Mysplash.getInstance().getTopActivity(),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }

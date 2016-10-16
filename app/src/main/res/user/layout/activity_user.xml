@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_user_swipeBackLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:layout_marginTop="24dp">
+    android:layout_height="match_parent">
 
     <com.wangdaye.mysplash._common.ui.widget.StatusBarView
         android:id="@+id/activity_user_statusBar"
@@ -32,11 +31,18 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|snap">
 
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_user_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"/>
+
                 <com.wangdaye.mysplash._common.ui.widget.CircleImageView
                     android:id="@+id/activity_user_avatar"
                     android:layout_width="@dimen/design_icon_size"
                     android:layout_height="@dimen/design_icon_size"
-                    android:layout_marginTop="@dimen/little_icon_size"
+                    android:layout_below="@id/activity_user_toolbar"
                     android:layout_centerHorizontal="true"
                     android:scaleType="centerCrop"
                     android:src="?attr/line_color"
@@ -63,20 +69,12 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/activity_user_title" />
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/activity_user_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    app:popupTheme="@style/MysplashPopupMenuTheme"/>
-
             </RelativeLayout>
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/activity_user_tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/tab_layout_height"
-                android:layout_below="@id/activity_user_profileView"
                 app:tabIndicatorHeight="3dp"
                 app:tabIndicatorColor="?attr/title_color"
                 app:tabSelectedTextColor="?attr/content_color"

@@ -6,12 +6,13 @@ import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash.user.model.widget.PhotosObject;
@@ -128,13 +129,18 @@ public class PhotosImplementor
     }
 
     @Override
+    public String getOrder() {
+        return model.getPhotosOrder();
+    }
+
+    @Override
     public void setActivityForAdapter(Activity a) {
         model.getAdapter().setActivity(a);
     }
 
     @Override
-    public int getAdapterItemCount() {
-        return model.getAdapter().getRealItemCount();
+    public PhotoAdapter getAdapter() {
+        return model.getAdapter();
     }
 
     /** <br> utils. */
@@ -216,7 +222,7 @@ public class PhotosImplementor
             } else {
                 view.requestPhotosFailed(c.getString(R.string.feedback_load_nothing_tv));
                 RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getLatestActivity(),
+                        Mysplash.getInstance().getTopActivity(),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }

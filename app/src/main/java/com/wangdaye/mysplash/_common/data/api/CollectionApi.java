@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.data.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.DeleteCollectionResult;
+import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
 
 import java.util.List;
 
@@ -31,6 +31,12 @@ public interface CollectionApi {
     @GET("collections/featured")
     Call<List<Collection>> getFeaturedCollections(@Query("page") int page,
                                                   @Query("per_page") int per_page);
+
+    @GET("collections/{id}")
+    Call<Collection> getACollection(@Path("id") String id);
+
+    @GET("collections/curated/{id}")
+    Call<Collection> getACuratedCollection(@Path("id") String id);
 
     @GET("users/{username}/collections")
     Call<List<Collection>> getUserCollections(@Path("username") String username,

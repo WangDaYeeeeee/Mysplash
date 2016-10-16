@@ -5,9 +5,9 @@ import android.app.Application;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -21,11 +21,13 @@ import java.util.List;
 public class Mysplash extends Application {
     // data
     private List<Activity> activityList;
-    private Photo photo;
-    private Collection collection;
-    private User user;
-    private Drawable drawable;
-    private boolean myOwnCollection = false;
+
+    private Photo photo = null;
+    private Collection collection = null;
+    private User user = null;
+
+    private Drawable drawable = null;
+
     private boolean activityInBackstage = false;
 
     // Unsplash data.
@@ -110,15 +112,11 @@ public class Mysplash extends Application {
         activityList.add(a);
     }
 
-    public void removeActivity() {
-        activityList.remove(activityList.size() - 1);
+    public void removeActivity(Activity a) {
+        activityList.remove(a);
     }
-/*
-    public List<Activity> getActivityList() {
-        return activityList;
-    }
-*/
-    public Activity getLatestActivity() {
+
+    public Activity getTopActivity() {
         if (activityList.size() > 0) {
             return activityList.get(activityList.size() - 1);
         } else {
@@ -168,14 +166,6 @@ public class Mysplash extends Application {
 
     public Drawable getDrawable() {
         return drawable;
-    }
-
-    public void setMyOwnCollection(boolean own) {
-        this.myOwnCollection = own;
-    }
-
-    public boolean isMyOwnCollection() {
-        return myOwnCollection;
     }
 
     public void setActivityInBackstage(boolean showing) {

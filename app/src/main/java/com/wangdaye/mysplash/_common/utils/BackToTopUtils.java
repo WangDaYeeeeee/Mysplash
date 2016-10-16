@@ -35,7 +35,7 @@ public class BackToTopUtils {
     /** <br> UI. */
 
     public void showSetBackToTopSnackbar() {
-        final Context c = Mysplash.getInstance().getLatestActivity();
+        final Context c = Mysplash.getInstance().getTopActivity();
 
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
         if (!notified) {

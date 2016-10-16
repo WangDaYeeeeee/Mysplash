@@ -21,7 +21,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -66,7 +66,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         holder.title.setText(itemList.get(position - 1).title.toUpperCase());
         int photoNum = itemList.get(position - 1).total_photos;
-        holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
+        holder.subtitle.setText(photoNum + " " + c.getResources().getStringArray(R.array.user_tabs)[0]);
 
         if (itemList.get(position - 1).cover_photo != null) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

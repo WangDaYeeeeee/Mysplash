@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Me;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
@@ -78,8 +78,8 @@ public class MeProfileView  extends FrameLayout
         addView(v);
 
         initModel();
-        initView();
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -131,9 +131,9 @@ public class MeProfileView  extends FrameLayout
         }
 
         List<String> titleList = new ArrayList<>();
-        titleList.add(me.total_photos + (me.total_photos > 1 ? " PHOTOS" : " PHOTO"));
-        titleList.add(me.total_collections + (me.total_collections > 1 ? " COLLECTIONS" : " COLLECTION"));
-        titleList.add(me.total_likes + (me.total_likes > 1 ? " LIKES" : " LIKE"));
+        titleList.add(me.total_photos + " " + getResources().getStringArray(R.array.user_tabs)[0]);
+        titleList.add(me.total_collections + " " + getResources().getStringArray(R.array.user_tabs)[1]);
+        titleList.add(me.total_likes + " " + getResources().getStringArray(R.array.user_tabs)[2]);
         adapter.titleList = titleList;
         adapter.notifyDataSetChanged();
 

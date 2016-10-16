@@ -3,6 +3,8 @@ package com.wangdaye.mysplash._common.i.presenter;
 import android.app.Activity;
 import android.content.Context;
 
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+
 /**
  * Photos presenter.
  * */
@@ -24,6 +26,7 @@ public interface PhotosPresenter {
     void setRequestKey(Object k);
 
     void setOrder(String key);
+    String getOrder();
     void setActivityForAdapter(Activity a);
-    int getAdapterItemCount();
+    PhotoAdapter getAdapter();
 }

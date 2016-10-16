@@ -159,7 +159,7 @@ public class FreedomImageView extends ImageView {
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
             int screenHeight = getResources().getDisplayMetrics().heightPixels;
             float limitHeight = screenHeight
-                    - new DisplayUtils(getContext()).dpToPx(280);
+                    - new DisplayUtils(getContext()).dpToPx(300);
 
             if (1.0 * height / width * screenWidth <= limitHeight) {
                 return new int[] {

@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash._common.i.model;
 
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 
 /**
  * Photo info model.

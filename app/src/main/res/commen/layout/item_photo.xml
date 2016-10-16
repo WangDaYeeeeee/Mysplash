@@ -16,8 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:fiv_text_position="bottom"
-        tools:src="@drawable/design_about_app" />
+        app:fiv_text_position="bottom" />
 
     <ImageButton
         android:id="@+id/item_photo_deleteButton"
@@ -73,7 +72,7 @@
         android:layout_alignBottom="@+id/item_photo_image"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/item_photo_collectionButton"
-        android:singleLine="true"
+        android:maxLines="1"
         style="@style/subtitle_text"
         tools:text="By Alfredo Wong, On 2016-7-21"
         tools:ignore="RtlHardcoded" />

@@ -8,7 +8,6 @@
     android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise"
-    tools:layout_marginTop="24dp"
     tools:ignore="UnusedAttribute">
 
     <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
@@ -17,12 +16,12 @@
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
         app:fiv_text_position="top"
-        tools:src="@drawable/design_about_app" />
+        tools:src="?attr/title_color" />
 
     <TextView
         android:id="@+id/item_collection_subtitle"
         android:textColor="@android:color/white"
-        android:singleLine="true"
+        android:maxLines="1"
         android:shadowDx="1"
         android:shadowDy="1"
         android:shadowRadius="1"
@@ -37,7 +36,7 @@
     <TextView
         android:id="@+id/item_collection_title"
         android:textColor="@android:color/white"
-        android:singleLine="true"
+        android:maxLines="1"
         android:textSize="@dimen/large_title_text_size"
         android:textStyle="bold"
         android:shadowDx="1"

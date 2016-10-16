@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.view;
 
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 
 /**
  * Photo details view.

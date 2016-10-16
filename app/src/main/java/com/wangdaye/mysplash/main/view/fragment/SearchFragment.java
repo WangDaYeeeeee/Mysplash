@@ -39,6 +39,7 @@ import com.wangdaye.mysplash.main.view.widget.HomeSearchView;
 import com.wangdaye.mysplash._common.utils.SafeHandler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -72,8 +73,8 @@ public class SearchFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         initModel();
-        initView(view);
         initPresenter();
+        initView(view);
         messageManagePresenter.sendMessage(1, null);
         return view;
     }
@@ -146,10 +147,10 @@ public class SearchFragment extends Fragment
             });
         }
 
+        String[] searchTabs = getResources().getStringArray(R.array.search_tabs);
+
         List<String> tabList = new ArrayList<>();
-        tabList.add("PHOTOS");
-        tabList.add("COLLECTIONS");
-        tabList.add("USERS");
+        Collections.addAll(tabList, searchTabs);
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
         ViewPager viewPager = (ViewPager) v.findViewById(R.id.fragment_search_viewPager);

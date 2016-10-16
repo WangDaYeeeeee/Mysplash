@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -96,7 +96,7 @@ public class FreedomTouchView extends View {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
         float limitHeight = screenHeight
-                - new DisplayUtils(getContext()).dpToPx(280);
+                - new DisplayUtils(getContext()).dpToPx(300);
 
         if (1.0 * height / width * screenWidth <= limitHeight) {
             return new int[] {

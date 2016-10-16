@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.data.AccessToken;
+import com.wangdaye.mysplash._common.data.entity.AccessToken;
 
 import retrofit2.Call;
 import retrofit2.http.POST;

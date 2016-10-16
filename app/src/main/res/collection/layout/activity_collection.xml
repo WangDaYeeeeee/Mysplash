@@ -29,18 +29,25 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_scrollFlags="scroll|snap">
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_collection_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
 
                 <TextView
                     android:id="@+id/activity_collection_title"
                     android:textStyle="bold"
                     android:textSize="@dimen/design_title_text_size"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="@dimen/little_icon_size"
                     android:layout_marginBottom="@dimen/little_icon_size"
                     android:layout_marginLeft="@dimen/large_icon_size"
                     android:layout_marginRight="@dimen/large_icon_size"
+                    android:layout_below="@id/activity_collection_toolbar"
                     style="@style/title_text"
                     tools:text="The Sample Collection Title" />
 
@@ -56,13 +63,6 @@
                     style="@style/content_text"
                     tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/activity_collection_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    app:popupTheme="@style/MysplashPopupMenuTheme" />
-
             </RelativeLayout>
 
             <RelativeLayout
@@ -74,6 +74,8 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/normal_margin"
+                    android:layout_marginRight="@dimen/normal_margin"
                     android:layout_centerHorizontal="true">
 
                     <com.wangdaye.mysplash._common.ui.widget.CircleImageView
@@ -89,10 +91,10 @@
 
                     <TextView
                         android:id="@+id/activity_collection_subtitle"
+                        android:maxLines="1"
                         android:layout_toRightOf="@id/activity_collection_avatar"
                         android:layout_centerVertical="true"
                         android:layout_marginRight="@dimen/normal_margin"
-                        android:singleLine="true"
                         style="@style/subtitle_text"
                         tools:text="By Daniil Omelchenko"
                         tools:ignore="RtlHardcoded" />

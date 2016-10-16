@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.i.model.EditResultModel;
 import com.wangdaye.mysplash._common.i.presenter.EditResultPresenter;
 import com.wangdaye.mysplash._common.i.view.EditResultView;

@@ -128,7 +128,7 @@ public class IntroduceActivity extends MysplashActivity
         } else {
             backPressed = true;
             NotificationUtils.showSnackbar(
-                    getString(R.string.feedback_click_again_to_skip),
+                    getString(R.string.feedback_click_again_to_exit),
                     Snackbar.LENGTH_SHORT);
 
             new Timer().schedule(new TimerTask() {

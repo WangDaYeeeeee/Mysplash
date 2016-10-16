@@ -6,6 +6,8 @@ package com.wangdaye.mysplash._common.i.view;
 
 public interface MultiFilterBarView {
 
+    void touchNavigationIcon();
+    void touchSearchButton();
     void touchMenuContainer(int position);
     void showKeyboard();
     void hideKeyboard();

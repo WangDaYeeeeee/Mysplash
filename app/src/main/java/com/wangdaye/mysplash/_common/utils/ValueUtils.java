@@ -8,8 +8,8 @@ import android.text.TextUtils;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 
 import java.util.List;
 

@@ -12,8 +12,6 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.tools.DownloadManager;
-import com.wangdaye.mysplash._common.ui.dialog.ConfirmRebootDialog;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
@@ -52,7 +50,7 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.key_back_to_top),
                 "all");
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
-        backToTop.setSummary("Now : " + backToTopName);
+        backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
 
         // language.
@@ -61,7 +59,7 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.key_language),
                 "follow_system");
         String languageName = ValueUtils.getLanguageName(getActivity(), languageValue);
-        language.setSummary("Now : " + languageName);
+        language.setSummary(getString(R.string.now) + " : " + languageName);
         language.setOnPreferenceChangeListener(this);
     }
 
@@ -74,7 +72,7 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.key_default_photo_order),
                 PhotoApi.ORDER_BY_LATEST);
         String orderName = ValueUtils.getOrderName(getActivity(), orderValue);
-        defaultOrder.setSummary("Now : " + orderName);
+        defaultOrder.setSummary(getString(R.string.now) + " : " + orderName);
         defaultOrder.setOnPreferenceChangeListener(this);
 
         // collection type.
@@ -83,7 +81,7 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.key_default_collection_type),
                 "featured");
         String valueName = ValueUtils.getCollectionName(getActivity(), typeValue);
-        collectionType.setSummary("Now : " + valueName);
+        collectionType.setSummary(getString(R.string.now) + " : " + valueName);
         collectionType.setOnPreferenceChangeListener(this);
     }
 
@@ -96,7 +94,7 @@ public class SettingsFragment extends PreferenceFragment
                 getString(R.string.key_download_scale),
                 "compact");
         String scaleName = ValueUtils.getScaleName(getActivity(), scaleValue);
-        downloadScale.setSummary("Now : " + scaleName);
+        downloadScale.setSummary(getString(R.string.now) + " : " + scaleName);
         downloadScale.setOnPreferenceChangeListener(this);
     }
 
@@ -117,27 +115,27 @@ public class SettingsFragment extends PreferenceFragment
         if (preference.getKey().equals(getString(R.string.key_back_to_top))) {
             // back to top.
             String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
-            preference.setSummary("Now : " + backType);
+            preference.setSummary(getString(R.string.now) + " : " + backType);
             BackToTopUtils.getInstance(getActivity()).changeBackValue((String) o);
         } else if (preference.getKey().equals(getString(R.string.key_language))) {
             // language.
             String language = ValueUtils.getLanguageName(getActivity(), (String) o);
-            preference.setSummary("Now : " + language);
+            preference.setSummary(getString(R.string.now) + " : " + language);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_default_photo_order))) {
             // default order.
             String order = ValueUtils.getOrderName(getActivity(), (String) o);
-            preference.setSummary("Now : " + order);
+            preference.setSummary(getString(R.string.now) + " : " + order);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_default_collection_type))) {
             // collection type.
             String type = ValueUtils.getCollectionName(getActivity(), (String) o);
-            preference.setSummary("Now : " + type);
+            preference.setSummary(getString(R.string.now) + " : " + type);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {
             // download scale.
             String scale = ValueUtils.getScaleName(getActivity(), (String) o);
-            preference.setSummary("Now : " + scale);
+            preference.setSummary(getString(R.string.now) + " : " + scale);
         }
         return true;
     }
@@ -147,24 +145,9 @@ public class SettingsFragment extends PreferenceFragment
     private View.OnClickListener rebootListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (DownloadManager.getInstance().getMissionList().size() > 0) {
-                ConfirmRebootDialog dialog = ConfirmRebootDialog.buildDialog(
-                        ConfirmRebootDialog.RESTART_APP_TYPE);
-                dialog.setOnConfirmRebootListener(new ConfirmRebootDialog.OnConfirmRebootListener() {
-                    @Override
-                    public void onConfirm() {
-                        MainActivity a = Mysplash.getInstance().getMainActivity();
-                        if (a != null) {
-                            a.reboot();
-                        }
-                    }
-                });
-                dialog.show(getFragmentManager(), null);
-            } else {
-                MainActivity a = Mysplash.getInstance().getMainActivity();
-                if (a != null) {
-                    a.reboot();
-                }
+            MainActivity a = Mysplash.getInstance().getMainActivity();
+            if (a != null) {
+                a.reboot();
             }
         }
     };

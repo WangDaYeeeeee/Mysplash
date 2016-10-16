@@ -1,24 +1,30 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
-import android.annotation.SuppressLint;
+import android.app.DownloadManager;
+import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.tools.DownloadManager;
+import com.wangdaye.mysplash._common.ui.dialog.PathDialog;
+import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash._common.utils.SafeHandler;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Download manage activity.
@@ -26,13 +32,17 @@ import java.util.List;
 
 public class DownloadManageActivity extends MysplashActivity
         implements View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
-        DownloadManager.OnDownloadListener, DownloadAdapter.OnDownloadResponseListener {
+        DownloadHelper.OnDownloadListener, SafeHandler.HandlerContainer {
     // widget
+    private SafeHandler<DownloadManageActivity> handler;
+    private Timer timer;
+
     private CoordinatorLayout container;
     private RecyclerView recyclerView;
 
     // data
     private DownloadAdapter adapter;
+    public static final String EXTRA_NOTIFICATION = "notification";
 
     /** <br> life cycle. */
 
@@ -49,7 +59,13 @@ public class DownloadManageActivity extends MysplashActivity
             setStarted();
             initData();
             initWidget();
-            DownloadManager.getInstance().addOnDownloadListener(this);
+            DownloadHelper.getInstance(this).setOnDownloadListener(this);
+            timer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.obtainMessage(1).sendToTarget();
+                }
+            }, 200, 200);
         }
     }
 
@@ -62,7 +78,9 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        DownloadManager.getInstance().removeDownloadListener(this);
+        timer.cancel();
+        handler.removeCallbacksAndMessages(null);
+        DownloadHelper.getInstance(this).setOnDownloadListener(null);
     }
 
     @Override
@@ -77,6 +95,9 @@ public class DownloadManageActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
+        this.handler = new SafeHandler(this);
+        this.timer = new Timer();
+
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_download_manage_swipeBackLayout);
         swipeBackLayout.setOnSwipeListener(this);
 
@@ -86,12 +107,22 @@ public class DownloadManageActivity extends MysplashActivity
             statusBar.setMask(true);
         }
 
+        boolean openByNotification = getIntent().getBooleanExtra(EXTRA_NOTIFICATION, false);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_download_manage_toolbar);
         if (ThemeUtils.getInstance(this).isLightTheme()) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+            if (openByNotification) {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+            }
             toolbar.inflateMenu(R.menu.activity_download_manage_toolbar_light);
         } else {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+            if (openByNotification) {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+            }
             toolbar.inflateMenu(R.menu.activity_download_manage_toolbar_dark);
         }
         toolbar.setNavigationOnClickListener(this);
@@ -107,10 +138,7 @@ public class DownloadManageActivity extends MysplashActivity
     /** <br> data. */
 
     private void initData() {
-        List<DownloadManager.Mission> list = new ArrayList<>();
-        list.addAll(DownloadManager.getInstance().getMissionList());
-        this.adapter = new DownloadAdapter(this, list);
-        adapter.setOnDownloadResponseListener(this);
+        this.adapter = new DownloadAdapter(this);
     }
 
     /** <br> interface. */
@@ -121,6 +149,9 @@ public class DownloadManageActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
+                if (getIntent().getBooleanExtra(EXTRA_NOTIFICATION, false)) {
+                    startActivity(new Intent(this, MainActivity.class));
+                }
                 finish();
                 break;
         }
@@ -131,9 +162,14 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_path:
+                PathDialog dialog = new PathDialog();
+                dialog.show(getFragmentManager(), null);
+                break;
+
             case R.id.action_cancel_all:
-                adapter.clearItem();
-                DownloadManager.getInstance().cancelAll();
+                DownloadHelper.getInstance(this).clearMission(this);
+                adapter.notifyDataSetChanged();
                 break;
         }
         return true;
@@ -163,40 +199,29 @@ public class DownloadManageActivity extends MysplashActivity
     // on download listener.
 
     @Override
-    public void onDownloadComplete(int id) {
-        adapter.removeItem(id);
+    public void onProcess(long id, int position) {
+        DownloadAdapter.ViewHolder holder
+                = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+
+        DownloadMissionEntity entity = adapter.getItem(position);
+
+        Cursor cursor = ((DownloadManager) getSystemService(DOWNLOAD_SERVICE)).query(
+                new DownloadManager.Query().setFilterById(entity.missionId));
+        cursor.moveToFirst();
+
+        holder.title.setText(
+                DownloadHelper.getInstance(this).entityList.get(position).photoId.toUpperCase()
+                        + " : " + adapter.getProcess(cursor) + "%");
     }
 
     @Override
-    public void onDownloadFailed(int id, int code) {
-        adapter.setItemFailed(id);
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onDownloadProgress(int id, int percent) {
-        adapter.setItemProgress(id, percent);
-        int position = adapter.getItemAdapterPosition(id);
-        if (position != DownloadManager.FAILED_CODE) {
-            DownloadAdapter.ViewHolder holder
-                    = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-            DownloadManager.Mission mission = adapter.getItem(position);
-            ((TextView) holder.itemView.findViewById(R.id.item_download_title))
-                    .setText(mission.photo.id.toUpperCase() + " : " + mission.progress + "%");
-        }
-    }
-
-    // on download response listener.
-
-    @Override
-    public void onCancelDownload(DownloadManager.Mission m) {
-        DownloadManager.getInstance().cancel(m.photo.id);
+    public void onSuccess(long id, int position) {
+        adapter.notifyItemRemoved(position);
     }
 
     @Override
-    public void onRetryDownload(DownloadManager.Mission m) {
-        DownloadManager.Mission newMission = DownloadManager.getInstance().retry(m.photo.id, this);
-        adapter.insertItem(newMission, 0);
+    public void onFailed(long id, int position) {
+        adapter.notifyItemChanged(position);
     }
 
     // snackbar container.
@@ -204,5 +229,16 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     public View getSnackbarContainer() {
         return container;
+    }
+
+    // handler.
+
+    @Override
+    public void handleMessage(Message message) {
+        switch (message.what) {
+            case 1:
+                DownloadHelper.getInstance(this).refreshEntityList();
+                break;
+        }
     }
 }

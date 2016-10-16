@@ -82,8 +82,8 @@ public class UserCollectionsView extends FrameLayout
         addView(contentView);
 
         initModel(a);
-        initView();
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -117,7 +117,7 @@ public class UserCollectionsView extends FrameLayout
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(collectionsModel.getAdapter());
+        recyclerView.setAdapter(collectionsPresenter.getAdapter());
         recyclerView.addOnScrollListener(scrollListener);
     }
 
@@ -213,8 +213,8 @@ public class UserCollectionsView extends FrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return loadPresenter.getLoadState() == com.wangdaye.mysplash.me.model.widget.LoadObject.FAILED_STATE
-                || (loadPresenter.getLoadState() == com.wangdaye.mysplash.me.model.widget.LoadObject.LOADING_STATE
+        return loadPresenter.getLoadState() == LoadObject.FAILED_STATE
+                || (loadPresenter.getLoadState() == LoadObject.LOADING_STATE
                 && !collectionsPresenter.isRefreshing() && !collectionsPresenter.isLoading());
     }
 
@@ -258,7 +258,7 @@ public class UserCollectionsView extends FrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return collectionsPresenter.getAdapterItemCount();
+            return collectionsPresenter.getAdapter().getRealItemCount();
         }
     }
 
@@ -342,6 +342,6 @@ public class UserCollectionsView extends FrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || collectionsPresenter.getAdapterItemCount() <= 0;
+                || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
     }
 }

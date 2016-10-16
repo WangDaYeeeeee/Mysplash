@@ -16,7 +16,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
-import com.wangdaye.mysplash._common.utils.LinkUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -63,7 +62,7 @@ public class AboutActivity extends MysplashActivity
         overridePendingTransition(0, R.anim.activity_slide_out_bottom);
     }
 
-    /** <br> UI.. */
+    /** <br> UI. */
 
     private void initWidget() {
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_about_swipeBackLayout);
@@ -98,10 +97,10 @@ public class AboutActivity extends MysplashActivity
                 (RelativeLayout) findViewById(R.id.container_about_glideContainer),
                 (RelativeLayout) findViewById(R.id.container_about_cpvContainer),
                 (RelativeLayout) findViewById(R.id.container_about_civContainer),
-                (RelativeLayout) findViewById(R.id.container_about_downloaderContainer),
                 (RelativeLayout) findViewById(R.id.container_about_tagContainer),
                 (RelativeLayout) findViewById(R.id.container_about_photoViewContainer),
-                (RelativeLayout) findViewById(R.id.container_about_indicatorContainer)};
+                (RelativeLayout) findViewById(R.id.container_about_indicatorContainer),
+                (RelativeLayout) findViewById(R.id.container_about_greenDaoContainer)};
         for (RelativeLayout r : containers) {
             r.setOnClickListener(this);
         }
@@ -113,19 +112,19 @@ public class AboutActivity extends MysplashActivity
                 (TextView) findViewById(R.id.container_about_glideTitle),
                 (TextView) findViewById(R.id.container_about_cpvTitle),
                 (TextView) findViewById(R.id.container_about_civTitle),
-                (TextView) findViewById(R.id.container_about_downloaderTitle),
                 (TextView) findViewById(R.id.container_about_tagTitle),
                 (TextView) findViewById(R.id.container_about_photoViewTitle),
                 (TextView) findViewById(R.id.container_about_indicatorTitle),
+                (TextView) findViewById(R.id.container_about_greenDaoTitle),
                 (TextView) findViewById(R.id.container_about_unsplashContent),
                 (TextView) findViewById(R.id.container_about_retrofitContent),
                 (TextView) findViewById(R.id.container_about_glideContent),
                 (TextView) findViewById(R.id.container_about_cpvContent),
                 (TextView) findViewById(R.id.container_about_civContent),
-                (TextView) findViewById(R.id.container_about_downloaderContent),
                 (TextView) findViewById(R.id.container_about_tagContent),
                 (TextView) findViewById(R.id.container_about_photoViewContent),
-                (TextView) findViewById(R.id.container_about_indicatorContent)};
+                (TextView) findViewById(R.id.container_about_indicatorContent),
+                (TextView) findViewById(R.id.container_about_greenDaoContent)};
         for (TextView t : textViews) {
             TypefaceUtils.setTypeface(this, t);
         }
@@ -145,6 +144,12 @@ public class AboutActivity extends MysplashActivity
         }
     }
 
+
+    public void accessLink(String link) {
+        Uri uri = Uri.parse(link);
+        startActivity(new Intent(Intent.ACTION_VIEW, uri));
+    }
+
     /** <br> interface. */
 
     // on click listener.
@@ -162,7 +167,7 @@ public class AboutActivity extends MysplashActivity
                 break;
 
             case R.id.container_about_gitHubContainer:
-                LinkUtils.accessLink(this, Mysplash.AUTHOR_GITHUB);
+                accessLink(Mysplash.AUTHOR_GITHUB);
                 break;
 
             case R.id.container_about_emailContainer:
@@ -171,43 +176,42 @@ public class AboutActivity extends MysplashActivity
                 break;
 
             case R.id.container_about_sourceCodeContainer:
-                LinkUtils.accessLink(this, Mysplash.MYSPLASH_GITHUB);
+                accessLink(Mysplash.MYSPLASH_GITHUB);
                 break;
 
             case R.id.container_about_unsplashContainer:
-                LinkUtils.accessLink(this, Mysplash.UNSPLASH_URL);
+                accessLink(Mysplash.UNSPLASH_URL);
                 break;
 
             case R.id.container_about_retrofitContainer:
-                LinkUtils.accessLink(this, "https://github.com/square/retrofit");
+                accessLink("https://github.com/square/retrofit");
                 break;
 
             case R.id.container_about_glideContainer:
-                LinkUtils.accessLink(this, "https://github.com/bumptech/glide");
+                accessLink("https://github.com/bumptech/glide");
                 break;
 
             case R.id.container_about_cpvContainer:
-                LinkUtils.accessLink(this, "https://github.com/rahatarmanahmed/CircularProgressView");
+                accessLink("https://github.com/rahatarmanahmed/CircularProgressView");
                 break;
 
             case R.id.container_about_civContainer:
-                LinkUtils.accessLink(this, "https://github.com/hdodenhof/CircleImageView");
-                break;
-
-            case R.id.container_about_downloaderContainer:
-                LinkUtils.accessLink(this, "https://github.com/smanikandan14/ThinDownloadManager");
+                accessLink("https://github.com/hdodenhof/CircleImageView");
                 break;
 
             case R.id.container_about_tagContainer:
-                LinkUtils.accessLink(this, "https://github.com/hongyangAndroid/FlowLayout");
+                accessLink("https://github.com/hongyangAndroid/FlowLayout");
                 break;
 
             case R.id.container_about_photoViewContainer:
-                LinkUtils.accessLink(this, "https://github.com/bm-x/PhotoView");
+                accessLink("https://github.com/bm-x/PhotoView");
                 break;
 
             case R.id.container_about_indicatorContainer:
-                LinkUtils.accessLink(this, "https://github.com/DavidPacioianu/InkPageIndicator");
+                accessLink("https://github.com/DavidPacioianu/InkPageIndicator");
+
+            case R.id.container_about_greenDaoContainer:
+                accessLink("https://github.com/greenrobot/greenDAO");
         }
     }
 

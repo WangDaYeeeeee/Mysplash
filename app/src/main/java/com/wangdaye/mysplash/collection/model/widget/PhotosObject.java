@@ -2,9 +2,10 @@ package com.wangdaye.mysplash.collection.model.widget;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 
@@ -37,7 +38,9 @@ public class PhotosObject
 
     public PhotosObject(Context c, Object key, int photosType) {
         this.adapter = new PhotoAdapter(c, new ArrayList<Photo>());
-        adapter.setInMyCollection(Mysplash.getInstance().isMyOwnCollection());
+        adapter.setInMyCollection(
+                AuthManager.getInstance().getUsername() != null
+                        && AuthManager.getInstance().getUsername().equals(((Collection) key).user.username));
 
         this.service = PhotoService.getService();
 

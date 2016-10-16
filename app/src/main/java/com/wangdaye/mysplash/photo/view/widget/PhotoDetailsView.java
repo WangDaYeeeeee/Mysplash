@@ -16,8 +16,8 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;

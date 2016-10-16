@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -68,7 +68,7 @@ public class PreviewPhotoActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().removeActivity();
+        Mysplash.getInstance().removeActivity(this);
     }
 
     private void setTheme() {

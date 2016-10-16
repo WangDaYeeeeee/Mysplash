@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.main.model.widget;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;

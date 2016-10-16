@@ -306,34 +306,6 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/container_about_downloaderContainer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground">
-
-        <TextView
-            android:id="@+id/container_about_downloaderTitle"
-            android:text="@string/downloader"
-            android:layout_marginTop="@dimen/normal_margin"
-            android:layout_marginLeft="@dimen/normal_margin"
-            style="@style/title_text"
-            tools:ignore="RtlHardcoded" />
-
-        <TextView
-            android:id="@+id/container_about_downloaderContent"
-            android:text="@string/about_downloader"
-            android:lineSpacingMultiplier="1.3"
-            android:layout_below="@id/container_about_downloaderTitle"
-            android:layout_marginTop="@dimen/mini_margin"
-            android:layout_marginLeft="@dimen/normal_margin"
-            android:layout_marginRight="@dimen/normal_margin"
-            android:layout_marginBottom="@dimen/normal_margin"
-            style="@style/content_text"
-            tools:ignore="RtlHardcoded" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/container_about_tagContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -408,6 +380,34 @@
             android:text="@string/about_page_indicator"
             android:lineSpacingMultiplier="1.3"
             android:layout_below="@id/container_about_indicatorTitle"
+            android:layout_marginTop="@dimen/mini_margin"
+            android:layout_marginLeft="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
+            style="@style/content_text"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/container_about_greenDaoContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:id="@+id/container_about_greenDaoTitle"
+            android:text="@string/greendao_db"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginLeft="@dimen/normal_margin"
+            style="@style/title_text"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/container_about_greenDaoContent"
+            android:text="@string/about_greendao_db"
+            android:lineSpacingMultiplier="1.3"
+            android:layout_below="@id/container_about_greenDaoTitle"
             android:layout_marginTop="@dimen/mini_margin"
             android:layout_marginLeft="@dimen/normal_margin"
             android:layout_marginRight="@dimen/normal_margin"

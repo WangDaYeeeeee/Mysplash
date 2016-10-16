@@ -18,7 +18,7 @@ public class NotificationUtils {
 
     public static void showSnackbar(String content, int duration) {
         if (Mysplash.getInstance().getActivityCount() > 0) {
-            Activity a = Mysplash.getInstance().getLatestActivity();
+            Activity a = Mysplash.getInstance().getTopActivity();
             View container = ((SnackbarContainer) a).getSnackbarContainer();
 
             Snackbar snackbar = Snackbar
@@ -44,7 +44,7 @@ public class NotificationUtils {
     public static void showActionSnackbar(String content, String action,
                                           int duration, View.OnClickListener l) {
         if (Mysplash.getInstance().getActivityCount() > 0) {
-            Activity a = Mysplash.getInstance().getLatestActivity();
+            Activity a = Mysplash.getInstance().getTopActivity();
             View container = ((SnackbarContainer) a).getSnackbarContainer();
 
             Snackbar snackbar = Snackbar

@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -83,8 +83,8 @@ public class MeCollectionsView extends FrameLayout
         addView(contentView);
 
         initModel(a);
-        initView();
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -120,29 +120,29 @@ public class MeCollectionsView extends FrameLayout
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(collectionsModel.getAdapter());
+        recyclerView.setAdapter(collectionsPresenter.getAdapter());
         recyclerView.addOnScrollListener(scrollListener);
     }
 
     // interface.
 
     public void addCollection(Collection c) {
-        if (loadModel.getState() == LoadObject.LOADING_STATE) {
+        if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
             collectionsPresenter.initRefresh(getContext());
         } else {
-            collectionsModel.getAdapter().insertItem(c, 0);
+            collectionsPresenter.getAdapter().insertItem(c, 0);
         }
     }
 
     public void removeCollection(Collection c) {
-        collectionsModel.getAdapter().removeItem(c);
+        collectionsPresenter.getAdapter().removeItem(c);
     }
 
     public void changeCollection(Collection c) {
-        if (loadModel.getState() == LoadObject.LOADING_STATE) {
+        if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
             collectionsPresenter.initRefresh(getContext());
         } else {
-            collectionsModel.getAdapter().changeItem(c);
+            collectionsPresenter.getAdapter().changeItem(c);
         }
     }
 
@@ -283,7 +283,7 @@ public class MeCollectionsView extends FrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return collectionsModel.getAdapter().getRealItemCount();
+            return collectionsPresenter.getAdapter().getRealItemCount();
         }
     }
 
@@ -367,6 +367,6 @@ public class MeCollectionsView extends FrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || collectionsPresenter.getAdapterItemCount() <= 0;
+                || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
     }
 }

@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.me.model.widget;
 
 import android.app.Activity;
 
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
@@ -29,7 +29,6 @@ public class CollectionsObject
 
     public CollectionsObject(Activity a) {
         this.adapter = new CollectionAdapter(a, new ArrayList<Collection>());
-        adapter.setOwn(true);
         this.service = CollectionService.getService();
 
         this.collectionsPage = 0;

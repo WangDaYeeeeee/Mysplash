@@ -86,7 +86,7 @@ public class SearchFeaturedPopupWindow extends PopupWindow
 
         TextView featuredTxt = (TextView) v.findViewById(R.id.popup_search_featured_featuredTxt);
         TypefaceUtils.setTypeface(v.getContext(), featuredTxt);
-        featuredTxt.setText(v.getContext().getResources().getStringArray(R.array.collection_types)[2]);
+        featuredTxt.setText(v.getContext().getResources().getStringArray(R.array.home_tabs)[1]);
         if (valueNow) {
             if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
                 featuredTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));

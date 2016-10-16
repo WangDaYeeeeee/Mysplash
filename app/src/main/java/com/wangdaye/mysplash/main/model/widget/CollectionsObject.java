@@ -5,7 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;

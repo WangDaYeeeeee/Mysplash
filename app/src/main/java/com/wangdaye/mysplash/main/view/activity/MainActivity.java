@@ -23,8 +23,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
-import com.wangdaye.mysplash._common.data.tools.DownloadManager;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
@@ -108,7 +107,6 @@ public class MainActivity extends MysplashActivity
         super.onDestroy();
         AuthManager.getInstance().removeOnWriteDataListener(this);
         AuthManager.getInstance().cancelRequest();
-        DownloadManager.getInstance().cancelAll();
     }
 
     @Override

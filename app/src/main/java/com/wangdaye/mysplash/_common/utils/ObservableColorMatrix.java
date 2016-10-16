@@ -14,7 +14,7 @@ public class ObservableColorMatrix extends ColorMatrix {
         super();
     }
 
-    public float getSaturation() {
+    private float getSaturation() {
         return saturation;
     }
 

@@ -21,28 +21,36 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.AuthManager;
+import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.EditResultModel;
+import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.presenter.EditResultPresenter;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
+import com.wangdaye.mysplash._common.i.view.BrowsableView;
 import com.wangdaye.mysplash._common.i.view.EditResultView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
+import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash.collection.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.collection.model.activity.EditResultObject;
+import com.wangdaye.mysplash.collection.presenter.activity.BrowsableImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.EditResultImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
@@ -50,14 +58,16 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
  * */
 
 public class CollectionActivity extends MysplashActivity
-        implements SwipeBackManageView, EditResultView,
+        implements SwipeBackManageView, EditResultView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
         UpdateCollectionDialog.OnCollectionChangedListener {
     // model.
     private EditResultModel editResultModel;
-    public static final String DELETE_COLLECTION = "delete_collection";
+    private BrowsableModel browsableModel;
 
     // view.
+    private RequestBrowsableDataDialog requestDialog;
+
     private CoordinatorLayout container;
     private AppBarLayout appBar;
     private RelativeLayout creatorBar;
@@ -68,6 +78,10 @@ public class CollectionActivity extends MysplashActivity
     private ToolbarPresenter toolbarPresenter;
     private SwipeBackManagePresenter swipeBackManagePresenter;
     private EditResultPresenter editResultPresenter;
+    private BrowsablePresenter browsablePresenter;
+
+    // data
+    public static final String DELETE_COLLECTION = "delete_collection";
 
     /** <br> life cycle. */
 
@@ -84,15 +98,17 @@ public class CollectionActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
-            initView();
-            AnimUtils.animInitShow(photosView, 400);
+            initView(true);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        photosView.cancelRequest();
+        browsablePresenter.cancelRequest();
+        if (photosView != null) {
+            photosView.cancelRequest();
+        }
     }
 
     @Override
@@ -144,6 +160,7 @@ public class CollectionActivity extends MysplashActivity
         this.toolbarPresenter = new ToolbarImplementor();
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
         this.editResultPresenter = new EditResultImplementor(editResultModel, this);
+        this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
     }
 
     /** <br> view. */
@@ -151,67 +168,88 @@ public class CollectionActivity extends MysplashActivity
     // init.
 
     @SuppressLint("SetTextI18n")
-    private void initView() {
-        Collection c = (Collection) editResultModel.getEditKey();
-
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_collection_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
-
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
-            statusBar.setBackgroundResource(R.color.colorPrimary_light);
-            statusBar.setMask(true);
-        }
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
-        this.appBar = (AppBarLayout) findViewById(R.id.activity_collection_appBar);
-
-        TextView title = (TextView) findViewById(R.id.activity_collection_title);
-        title.setText(c.title);
-
-        TextView description = (TextView) findViewById(R.id.activity_collection_description);
-        if (TextUtils.isEmpty(c.description)) {
-            description.setVisibility(View.GONE);
+    private void initView(boolean init) {
+        if (init && browsablePresenter.isBrowsable()) {
+            browsablePresenter.requestBrowsableData();
         } else {
-            TypefaceUtils.setTypeface(this, description);
-            description.setText(c.description);
-        }
+            Collection c = (Collection) editResultPresenter.getEditKey();
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_collection_toolbar);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
-            if (Mysplash.getInstance().isMyOwnCollection()) {
+            SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_collection_swipeBackLayout);
+            swipeBackLayout.setOnSwipeListener(this);
+
+            StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
+            if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+                statusBar.setBackgroundResource(R.color.colorPrimary_light);
+                statusBar.setMask(true);
+            }
+
+            this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
+            this.appBar = (AppBarLayout) findViewById(R.id.activity_collection_appBar);
+
+            TextView title = (TextView) findViewById(R.id.activity_collection_title);
+            title.setText(c.title);
+
+            TextView description = (TextView) findViewById(R.id.activity_collection_description);
+            if (TextUtils.isEmpty(c.description)) {
+                description.setVisibility(View.GONE);
+            } else {
+                TypefaceUtils.setTypeface(this, description);
+                description.setText(c.description);
+            }
+
+            Toolbar toolbar = (Toolbar) findViewById(R.id.activity_collection_toolbar);
+            if (ThemeUtils.getInstance(this).isLightTheme()) {
+                if (browsablePresenter.isBrowsable()) {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+                }
                 toolbar.inflateMenu(R.menu.activity_collection_toolbar_light);
                 toolbar.setOnMenuItemClickListener(this);
-            }
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
-            if (Mysplash.getInstance().isMyOwnCollection()) {
+            } else {
+                if (browsablePresenter.isBrowsable()) {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+                }
                 toolbar.inflateMenu(R.menu.activity_collection_toolbar_dark);
                 toolbar.setOnMenuItemClickListener(this);
             }
+            toolbar.setNavigationOnClickListener(this);
+            if (AuthManager.getInstance().getUsername() != null
+                    && AuthManager.getInstance().getUsername().equals(c.user.username)) {
+                toolbar.getMenu().getItem(0).setVisible(true);
+            } else {
+                toolbar.getMenu().getItem(0).setVisible(false);
+            }
+            if (c.curated) {
+                toolbar.getMenu().getItem(2).setVisible(true);
+            } else {
+                toolbar.getMenu().getItem(2).setVisible(false);
+            }
+
+            this.creatorBar = (RelativeLayout) findViewById(R.id.activity_collection_creatorBar);
+            creatorBar.setOnClickListener(this);
+
+            this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
+            avatarImage.setOnClickListener(this);
+            Glide.with(this)
+                    .load(c.user.profile_image.large)
+                    .priority(Priority.HIGH)
+                    .override(128, 128)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(avatarImage);
+
+            TextView subtitle = (TextView) findViewById(R.id.activity_collection_subtitle);
+            TypefaceUtils.setTypeface(this, subtitle);
+            subtitle.setText(getString(R.string.by) + " " + c.user.name);
+
+            this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
+            photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
+            photosView.initRefresh();
+
+            AnimUtils.animInitShow(photosView, 400);
         }
-        toolbar.setNavigationOnClickListener(this);
-
-        this.creatorBar = (RelativeLayout) findViewById(R.id.activity_collection_creatorBar);
-        creatorBar.setOnClickListener(this);
-
-        this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
-        avatarImage.setOnClickListener(this);
-        Glide.with(this)
-                .load(c.user.profile_image.large)
-                .priority(Priority.HIGH)
-                .override(128, 128)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(avatarImage);
-
-        TextView subtitle = (TextView) findViewById(R.id.activity_collection_subtitle);
-        TypefaceUtils.setTypeface(this, subtitle);
-        subtitle.setText("By " + c.user.name);
-
-        this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
-        photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
-        photosView.initRefresh();
     }
 
     // interface.
@@ -226,6 +264,7 @@ public class CollectionActivity extends MysplashActivity
 
     private void initModel() {
         this.editResultModel = new EditResultObject();
+        this.browsableModel = new BorwsableObject(getIntent());
     }
 
     // interface.
@@ -242,6 +281,9 @@ public class CollectionActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
+                if (browsablePresenter.isBrowsable()) {
+                    browsablePresenter.visitParentView();
+                }
                 toolbarPresenter.touchNavigatorIcon(this);
                 break;
 
@@ -250,7 +292,7 @@ public class CollectionActivity extends MysplashActivity
                 break;
 
             case R.id.activity_collection_avatar:
-                User u = User.buildUser((Collection) editResultModel.getEditKey());
+                User u = User.buildUser((Collection) editResultPresenter.getEditKey());
                 Mysplash.getInstance().setUser(u);
 
                 Intent intent = new Intent(this, UserActivity.class);
@@ -348,5 +390,31 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public void drawDeleteResult(Object oldKey) {
         finishActivity(SwipeBackLayout.NULL_DIR, true);
+    }
+
+    // browsable view.
+
+    @Override
+    public void showRequestDialog() {
+        requestDialog = new RequestBrowsableDataDialog();
+        requestDialog.show(getFragmentManager(), null);
+    }
+
+    @Override
+    public void dismissRequestDialog() {
+        requestDialog.dismiss();
+        requestDialog = null;
+    }
+
+    @Override
+    public void drawBrowsableView() {
+        initModel();
+        initPresenter();
+        initView(false);
+    }
+
+    @Override
+    public void visitParentView() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

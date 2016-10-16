@@ -35,7 +35,7 @@ public abstract class MysplashActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().removeActivity();
+        Mysplash.getInstance().removeActivity(this);
     }
 
     /** <br> data. */

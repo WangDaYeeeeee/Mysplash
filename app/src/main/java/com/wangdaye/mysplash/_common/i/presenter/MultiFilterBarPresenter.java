@@ -7,8 +7,9 @@ import android.app.Activity;
  * */
 
 public interface MultiFilterBarPresenter {
-    void touchNavigatorIcon(Activity a);
+    void touchNavigatorIcon();
     void touchToolbar(Activity a);
+    void touchSearchButton();
     void touchMenuContainer(int position);
 
     void showKeyboard();

@@ -1,10 +1,7 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
 import android.app.Activity;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterBarPresenter;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
@@ -31,9 +28,8 @@ public class MultiFilterBarImplementor
     /** <br> presenter. */
 
     @Override
-    public void touchNavigatorIcon(Activity a) {
-        DrawerLayout drawer = (DrawerLayout) a.findViewById(R.id.activity_main_drawerLayout);
-        drawer.openDrawer(GravityCompat.START);
+    public void touchNavigatorIcon() {
+        view.touchNavigationIcon();
     }
 
     @Override
@@ -41,6 +37,11 @@ public class MultiFilterBarImplementor
         MainActivity activity = (MainActivity) a;
         MultiFilterFragment f = (MultiFilterFragment) activity.getTopFragment();
         f.pagerBackToTop();
+    }
+
+    @Override
+    public void touchSearchButton() {
+        view.touchSearchButton();
     }
 
     @Override

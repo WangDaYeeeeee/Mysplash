@@ -19,9 +19,9 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.Me;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
@@ -41,6 +41,7 @@ import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
 import com.wangdaye.mysplash.me.presenter.activity.PagerManageImplementor;
@@ -52,6 +53,7 @@ import com.wangdaye.mysplash.me.view.widget.MePhotosView;
 import com.wangdaye.mysplash.me.view.widget.MeProfileView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,7 +66,6 @@ public class MeActivity extends MysplashActivity
         SwipeBackLayout.OnSwipeListener, AuthManager.OnAuthDataChangedListener {
     // model.
     private PagerManageModel pagerManageModel;
-    public static final int COLLECTION_ACTIVITY = 1;
 
     // view.
     private CoordinatorLayout container;
@@ -84,6 +85,10 @@ public class MeActivity extends MysplashActivity
     private PopupManagePresenter popupManagePresenter;
     private SwipeBackManagePresenter swipeBackManagePresenter;
 
+    // data
+    public static final int COLLECTION_ACTIVITY = 1;
+    public static final String EXTRA_BROWSABLE = "browsable";
+
     /** <br> life cycle. */
 
     @Override
@@ -98,8 +103,8 @@ public class MeActivity extends MysplashActivity
         if (!isStarted()) {
             setStarted();
             initModel();
-            initView();
             initPresenter();
+            initView();
             AnimUtils.animInitShow((View) pagers[0], 400);
             pagers[0].refreshPager();
         }
@@ -184,11 +189,19 @@ public class MeActivity extends MysplashActivity
 
         this.toolbar = (Toolbar) findViewById(R.id.activity_me_toolbar);
         if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)) {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+            }
             toolbar.inflateMenu(R.menu.activity_me_toolbar_light);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
         } else {
+            if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)) {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+            } else {
+                toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+            }
             toolbar.inflateMenu(R.menu.activity_me_toolbar_dark);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
         }
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
@@ -212,10 +225,10 @@ public class MeActivity extends MysplashActivity
             pagers[i] = (PagerView) pageList.get(i);
         }
 
+        String[] userTabs = getResources().getStringArray(R.array.user_tabs);
+
         List<String> tabList = new ArrayList<>();
-        tabList.add("PHOTOS");
-        tabList.add("COLLECTIONS");
-        tabList.add("LIKES");
+        Collections.addAll(tabList, userTabs);
         this.adapter = new MyPagerAdapter(pageList, tabList);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_me_viewPager);
@@ -302,6 +315,9 @@ public class MeActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
+                if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)) {
+                    startActivity(new Intent(this, MainActivity.class));
+                }
                 toolbarPresenter.touchNavigatorIcon(this);
                 break;
         }

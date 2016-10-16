@@ -4,8 +4,8 @@ import android.app.Activity;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;

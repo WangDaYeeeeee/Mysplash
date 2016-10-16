@@ -6,11 +6,12 @@ import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.view.CollectionsView;
+import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
@@ -131,8 +132,8 @@ public class CollectionsImplementor
     }
 
     @Override
-    public int getAdapterItemCount() {
-        return model.getAdapter().getRealItemCount();
+    public CollectionAdapter getAdapter() {
+        return model.getAdapter();
     }
 
     /** <br> utils. */
@@ -221,7 +222,7 @@ public class CollectionsImplementor
             } else {
                 view.requestCollectionsFailed(c.getString(R.string.feedback_load_nothing_tv));
                 RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getLatestActivity(),
+                        Mysplash.getInstance().getTopActivity(),
                         response.headers().get("X-Ratelimit-Remaining"));
             }
         }

@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 231
-        versionName "2.3.1"
+        versionCode 236
+        versionName "2.3.6"
     }
     sourceSets {
         main {
@@ -29,12 +29,6 @@ android {
         }
     }
     buildTypes {
-        /*
-        release {
-            minifyEnabled false
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }*/
         release {
             minifyEnabled false
             shrinkResources false
@@ -46,6 +40,21 @@ android {
     repositories {
         mavenCentral()
     }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
+    }
+}
+
+apply plugin: 'org.greenrobot.greendao'
+greendao {
+    schemaVersion 3
+    generateTests false
 }
 
 dependencies {
@@ -61,7 +70,7 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.zhy:flowlayout-lib:1.0.3'
-    compile files('libs/thindownloadmanager-1.0.1.jar')
     compile 'com.bm.photoview:library:1.4.1'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
+    compile 'org.greenrobot:greendao:3.2.0'
 }

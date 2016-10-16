@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.tools.DownloadManager;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.ui.activity.AboutActivity;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
-import com.wangdaye.mysplash._common.ui.dialog.ConfirmRebootDialog;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 /**
@@ -37,19 +35,7 @@ public class MessageManageImplementor
     public void responseMessage(final Activity a, int what, Object o) {
         switch (what) {
             case R.id.action_change_theme:
-                if (DownloadManager.getInstance().getMissionList().size() > 0) {
-                    ConfirmRebootDialog dialog = ConfirmRebootDialog.buildDialog(
-                            ConfirmRebootDialog.CHANGE_THEME_TYPE);
-                    dialog.setOnConfirmRebootListener(new ConfirmRebootDialog.OnConfirmRebootListener() {
-                        @Override
-                        public void onConfirm() {
-                            ((MainActivity) a).changeTheme();
-                        }
-                    });
-                    dialog.show(a.getFragmentManager(), null);
-                } else {
-                    ((MainActivity) a).changeTheme();
-                }
+                ((MainActivity) a).changeTheme();
                 break;
 
             case R.id.action_download_manage:

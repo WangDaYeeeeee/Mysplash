@@ -29,12 +29,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.LikePhotoResult;
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionPhotoDialog;
@@ -100,8 +100,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                                                        Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache, boolean isFirstResource) {
                             itemList.get(position).loadPhotoSuccess = true;
-                            String titleTxt = "By " + itemList.get(position).user.name + ", On "
-                                    + itemList.get(position).created_at.split("T")[0];
+                            String titleTxt = a.getString(R.string.by) + " " + itemList.get(position).user.name + ", "
+                                    + a.getString(R.string.on) + " " + itemList.get(position).created_at.split("T")[0];
                             holder.title.setText(titleTxt);
                             holder.image.setShowShadow(true);
                             return false;
@@ -151,8 +151,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                                 saturation.start();
                                 itemList.get(position).hasFadedIn = true;
                             }
-                            String titleTxt = "By " + itemList.get(position).user.name + ", On "
-                                    + itemList.get(position).created_at.split("T")[0];
+                            String titleTxt = a.getString(R.string.by) + " " + itemList.get(position).user.name + ", "
+                                    + a.getString(R.string.on) + " " + itemList.get(position).created_at.split("T")[0];
                             holder.title.setText(titleTxt);
                             holder.image.setShowShadow(true);
                             return false;

@@ -1,7 +1,9 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,9 +16,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.tools.DownloadManager;
+import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 
-import java.util.List;
+import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
  * Download adapter. (Recycler view.)
@@ -25,14 +28,11 @@ import java.util.List;
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHolder> {
     // widget
     private Context c;
-    private List<DownloadManager.Mission> itemList;
-    private OnDownloadResponseListener listener;
 
     /** <br> life cycle. */
 
-    public DownloadAdapter(Context c, List<DownloadManager.Mission> list) {
+    public DownloadAdapter(Context c) {
         this.c = c;
-        this.itemList = list;
     }
 
     /** <br> UI. */
@@ -47,17 +47,21 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         Glide.with(c)
-                .load(itemList.get(position).photo.urls.regular)
+                .load(DownloadHelper.getInstance(c).entityList.get(position).photoUri)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.image);
 
-        if (itemList.get(position).failed) {
-            holder.title.setText(c.getString(R.string.feedback_download_failed));
+        Cursor cursor = ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).query(
+                new DownloadManager.Query().setFilterById(
+                                        DownloadHelper.getInstance(c).entityList.get(position).missionId));
+        cursor.moveToFirst();
+        if (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS)) == DownloadManager.STATUS_FAILED) {
+            holder.title.setText(c.getString(R.string.feedback_download_photo_failed));
             holder.retryBtn.setVisibility(View.VISIBLE);
         } else {
             holder.title.setText(
-                    itemList.get(position).photo.id.toUpperCase()
-                            + " : " + itemList.get(position).progress + "%");
+                    DownloadHelper.getInstance(c).entityList.get(position).photoId.toUpperCase()
+                            + " : " + getProcess(cursor) + "%");
             holder.retryBtn.setVisibility(View.GONE);
         }
     }
@@ -66,7 +70,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
     @Override
     public int getItemCount() {
-        return itemList.size();
+        return DownloadHelper.getInstance(c).entityList.size();
     }
 
     @Override
@@ -74,81 +78,18 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         return position;
     }
 
-    public int getItemAdapterPosition(int id) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == id) {
-                return i;
-            }
-        }
-        return DownloadManager.FAILED_CODE;
+    public DownloadMissionEntity getItem(int position) {
+        return DownloadHelper.getInstance(c).entityList.get(position);
     }
 
-    public DownloadManager.Mission getItem(int position) {
-        return itemList.get(position);
-    }
-
-    // add.
-
-    public void insertItem(DownloadManager.Mission item, int position) {
-        itemList.add(position, item);
-        notifyItemInserted(position);
-    }
-
-    // delete.
-
-    public void removeItem(int id) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == id) {
-                removeItemFromList(i);
-                return;
-            }
-        }
-    }
-
-    private void removeItemFromList(int position) {
-        itemList.remove(position);
-        notifyItemRemoved(position);
-    }
-
-    public void clearItem() {
-        itemList.clear();
-        notifyDataSetChanged();
-    }
-
-    // change.
-
-    public void setItemProgress(int id, int percent) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == id) {
-                itemList.get(i).progress = percent;
-                return;
-            }
-        }
-    }
-
-    public void setItemFailed(int id) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == id) {
-                itemList.get(i).failed = true;
-                notifyItemChanged(i);
-                return;
-            }
-        }
+    public int getProcess(Cursor cursor) {
+        int soFar = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+        int total = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+        return (int) (100.0 * soFar / total);
     }
 
     public int getRealItemCount() {
-        return itemList.size();
-    }
-
-    /** <br> interface. */
-
-    public interface OnDownloadResponseListener {
-        void onCancelDownload(DownloadManager.Mission m);
-        void onRetryDownload(DownloadManager.Mission m);
-    }
-
-    public void setOnDownloadResponseListener(OnDownloadResponseListener l) {
-        this.listener = l;
+        return getItemCount();
     }
 
     /** <br> inner class. */
@@ -186,18 +127,18 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.item_download_cancelBtn:
-                    if (listener != null) {
-                        listener.onCancelDownload(itemList.get(getAdapterPosition()));
-                    }
-                    removeItemFromList(getAdapterPosition());
+                    DownloadHelper.getInstance(c)
+                            .removeMission(
+                                    c,
+                                    DownloadHelper.getInstance(c)
+                                            .entityList
+                                            .get(getAdapterPosition()).missionId);
+                    notifyItemRemoved(getAdapterPosition());
                     break;
 
                 case R.id.item_download_retryBtn:
-                    DownloadManager.Mission m = itemList.get(getAdapterPosition());
-                    removeItemFromList(getAdapterPosition());
-                    if (listener != null) {
-                        listener.onRetryDownload(m);
-                    }
+                    DownloadHelper.getInstance(c).restartMission(c, getAdapterPosition());
+                    notifyDataSetChanged();
                     break;
             }
         }

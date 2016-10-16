@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.main.model.widget;
 import android.app.Activity;
 import android.content.Context;
 
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.SearchService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;

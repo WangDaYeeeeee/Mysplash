@@ -22,7 +22,6 @@
             android:scaleType="centerCrop"
             android:transitionName="@string/transition_photo_image"
             android:foreground="?attr/selectableItemBackground"
-            android:src="@drawable/design_about_app"
             app:fiv_cover_mode="true"
             app:layout_behavior="._common.ui.behavior.CoverBehavior"
             tools:ignore="UnusedAttribute" />
@@ -59,32 +58,54 @@
                         android:layout_height="wrap_content">
 
                         <ImageButton
+                            android:id="@+id/activity_photo_backBtn"
+                            android:src="@drawable/ic_toolbar_back_light"
+                            android:layout_alignParentLeft="true"
+                            style="@style/material_image_button"
+                            tools:ignore="ContentDescription,RtlHardcoded" />
+
+                        <ImageButton
                             android:id="@+id/activity_photo_menuBtn"
                             android:src="@drawable/ic_menu_light"
-                            android:layout_alignParentTop="true"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="@dimen/little_margin"
+                            android:layout_marginTop="@dimen/little_margin"
+                            android:layout_marginRight="@dimen/little_margin"
                             android:layout_alignParentRight="true"
-                            style="@style/material_image_button"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            tools:ignore="ContentDescription,RtlHardcoded" />
+
+                        <ImageButton
+                            android:id="@+id/activity_photo_shareUrlBtn"
+                            android:src="@drawable/ic_share_light"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="@dimen/little_margin"
+                            android:layout_marginTop="@dimen/little_margin"
+                            android:layout_marginRight="@dimen/little_margin"
+                            android:layout_toLeftOf="@id/activity_photo_menuBtn"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             tools:ignore="ContentDescription,RtlHardcoded" />
 
                         <TextView
                             android:id="@+id/activity_photo_title"
                             android:textColor="?attr/title_color"
                             android:textStyle="bold"
-                            android:layout_marginTop="@dimen/little_icon_size"
+                            android:layout_marginTop="?attr/actionBarSize"
                             android:layout_marginLeft="@dimen/normal_icon_size"
                             android:layout_marginRight="@dimen/normal_icon_size"
                             android:layout_centerHorizontal="true"
-                            android:singleLine="true"
                             style="@style/large_title_text"
-                            tools:text="TAKEN BY Alfredo Wong"
+                            tools:text="By Wang Yueeeeeee"
                             tools:ignore="RtlHardcoded" />
 
                         <TextView
                             android:id="@+id/activity_photo_subtitle"
+                            android:maxLines="1"
                             android:layout_marginTop="@dimen/normal_margin"
                             android:layout_below="@id/activity_photo_title"
                             android:layout_centerHorizontal="true"
-                            android:singleLine="true"
                             style="@style/subtitle_text"
                             tools:text="ON 2016-07-23"
                             tools:ignore="RtlHardcoded" />
@@ -128,9 +149,8 @@
 
                             <TextView
                                 android:id="@+id/activity_photo_downloadTxt"
-                                android:text="DOWNLOAD"
                                 android:textStyle="bold"
-                                android:singleLine="true"
+                                android:maxLines="1"
                                 android:layout_marginBottom="@dimen/normal_margin"
                                 android:layout_centerHorizontal="true"
                                 android:layout_below="@id/activity_photo_downloadBtn"
@@ -156,9 +176,8 @@
 
                             <TextView
                                 android:id="@+id/activity_photo_shareTxt"
-                                android:text="SHARE"
                                 android:textStyle="bold"
-                                android:singleLine="true"
+                                android:maxLines="1"
                                 android:layout_marginBottom="@dimen/normal_margin"
                                 android:layout_centerHorizontal="true"
                                 android:layout_below="@id/activity_photo_shareBtn"
@@ -184,9 +203,8 @@
 
                             <TextView
                                 android:id="@+id/activity_photo_wallTxt"
-                                android:text="WALLPAPER"
                                 android:textStyle="bold"
-                                android:singleLine="true"
+                                android:maxLines="1"
                                 android:layout_marginBottom="@dimen/normal_margin"
                                 android:layout_centerHorizontal="true"
                                 android:layout_below="@id/activity_photo_wallBtn"

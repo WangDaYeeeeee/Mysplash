@@ -28,7 +28,7 @@ import com.wangdaye.mysplash.collection.model.widget.ScrollObject;
 import com.wangdaye.mysplash.collection.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.collection.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.collection.presenter.widget.ScrollImplementor;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
@@ -350,6 +350,6 @@ public class CollectionPhotosView extends FrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || photosPresenter.getAdapterItemCount() <= 0;
+                || photosPresenter.getAdapter().getRealItemCount() <= 0;
     }
 }

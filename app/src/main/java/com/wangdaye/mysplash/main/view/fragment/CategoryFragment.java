@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
+import com.wangdaye.mysplash._common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -19,6 +20,7 @@ import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
+import com.wangdaye.mysplash.main.presenter.fragment.CategoryManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.widget.CategoryPhotosView;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
@@ -39,6 +41,7 @@ public class CategoryFragment extends Fragment
     private CategoryPhotosView photosView;
 
     // presenter.
+    private CategoryManagePresenter categoryManagePresenter;
     private ToolbarPresenter toolbarPresenter;
     private PopupManagePresenter popupManagePresenter;
 
@@ -47,8 +50,8 @@ public class CategoryFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
-        initView(view);
         initPresenter();
+        initView(view);
         return view;
     }
 
@@ -61,6 +64,7 @@ public class CategoryFragment extends Fragment
     /** <br> presenter. */
 
     private void initPresenter() {
+        this.categoryManagePresenter = new CategoryManageImplementor(categoryManageModel);
         this.toolbarPresenter = new ToolbarImplementor();
         this.popupManagePresenter = new CategoryFragmentPopupManageImplementor(this);
     }
@@ -79,7 +83,7 @@ public class CategoryFragment extends Fragment
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_category_container);
 
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
-        toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryManageModel.getCategoryId()));
+        toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryManagePresenter.getCategoryId()));
         if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
             toolbar.inflateMenu(R.menu.fragment_category_toolbar_light);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
@@ -93,7 +97,7 @@ public class CategoryFragment extends Fragment
 
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
         photosView.setActivity(getActivity());
-        photosView.setCategory(categoryManageModel.getCategoryId());
+        photosView.setCategory(categoryManagePresenter.getCategoryId());
         photosView.initRefresh();
     }
 

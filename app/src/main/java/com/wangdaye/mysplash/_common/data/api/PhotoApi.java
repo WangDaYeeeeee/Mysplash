@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
-import com.wangdaye.mysplash._common.data.data.PhotoStats;
-import com.wangdaye.mysplash._common.data.data.LikePhotoResult;
-import com.wangdaye.mysplash._common.data.data.Photo;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.PhotoStats;
+import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 
 import java.util.List;
 
@@ -55,10 +55,10 @@ public interface PhotoApi {
     Call<LikePhotoResult> unlikeAPhoto(@Path("id") String id);
 
     @GET("photos/{id}")
-    Call<PhotoDetails> getAPhoto(@Path("id") String id,
-                                 @Query("w") int w,
-                                 @Query("h") int h,
-                                 @Query("rect") String rect);
+    Call<PhotoDetails> getPhotoDetails(@Path("id") String id);
+
+    @GET("photos/{id}")
+    Call<Photo> getAPhoto(@Path("id") String id);
 
     @GET("users/{username}/photos")
     Call<List<Photo>> getUserPhotos(@Path("username") String username,

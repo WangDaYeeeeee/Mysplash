@@ -82,8 +82,8 @@ public class MePhotosView extends FrameLayout
         addView(contentView);
 
         initModel(a, type);
-        initView();
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -117,7 +117,7 @@ public class MePhotosView extends FrameLayout
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.setAdapter(photosModel.getAdapter());
+        recyclerView.setAdapter(photosPresenter.getAdapter());
         recyclerView.addOnScrollListener(scrollListener);
     }
 
@@ -245,7 +245,7 @@ public class MePhotosView extends FrameLayout
 
     @Override
     public String getKey() {
-        return photosModel.getPhotosOrder();
+        return photosPresenter.getOrder();
     }
 
     @Override
@@ -258,7 +258,7 @@ public class MePhotosView extends FrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return photosModel.getAdapter().getRealItemCount();
+            return photosPresenter.getAdapter().getRealItemCount();
         }
     }
 
@@ -342,6 +342,6 @@ public class MePhotosView extends FrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || photosPresenter.getAdapterItemCount() <= 0;
+                || photosPresenter.getAdapter().getRealItemCount() <= 0;
     }
 }

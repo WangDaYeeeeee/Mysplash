@@ -57,6 +57,7 @@ public class MultiFilterPhotosView extends FrameLayout
     private CircularProgressView progressView;
     private RelativeLayout feedbackContainer;
     private TextView feedbackText;
+    private Button feedbackButton;
 
     private BothWaySwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
@@ -65,6 +66,9 @@ public class MultiFilterPhotosView extends FrameLayout
     private MultiFilterPresenter multiFilterPresenter;
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
+
+    // interface.
+    private OnMultiFilterDataInputInterface inputInterface;
 
     /** <br> life cycle. */
 
@@ -151,10 +155,12 @@ public class MultiFilterPhotosView extends FrameLayout
 
         this.feedbackText = (TextView) findViewById(R.id.container_filtering_view_large_feedbackTxt);
         feedbackText.setText(R.string.feedback_search_photos_tv);
+        feedbackText.setVisibility(GONE);
 
-        Button retryButton = (Button) findViewById(R.id.container_filtering_view_large_feedbackBtn);
-        retryButton.setVisibility(GONE);
-        retryButton.setOnClickListener(this);
+        this.feedbackButton = (Button) findViewById(R.id.container_filtering_view_large_feedbackBtn);
+        feedbackButton.setText(getContext().getString(R.string.search));
+        feedbackButton.setOnClickListener(this);
+        feedbackButton.setVisibility(VISIBLE);
     }
 
     // interface.
@@ -200,7 +206,19 @@ public class MultiFilterPhotosView extends FrameLayout
 
     /** <br> interface. */
 
-    // view.
+    // on multi-filter data input interface.
+
+    public interface OnMultiFilterDataInputInterface {
+        String onQueryInput();
+        String onUsernameInput();
+        int onCategoryInput();
+        String onOrientationInput();
+        boolean onFeaturedInput();
+    }
+
+    public void setOnMultiFilterDataInputInterface(OnMultiFilterDataInputInterface i) {
+        inputInterface = i;
+    }
 
     // on click listener.
 
@@ -208,7 +226,14 @@ public class MultiFilterPhotosView extends FrameLayout
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.container_filtering_view_large_feedbackBtn:
-                multiFilterPresenter.initRefresh(getContext());
+                if (inputInterface != null) {
+                    multiFilterPresenter.setQuery(inputInterface.onQueryInput());
+                    multiFilterPresenter.setUsername(inputInterface.onUsernameInput());
+                    multiFilterPresenter.setCategory(inputInterface.onCategoryInput());
+                    multiFilterPresenter.setOrientation(inputInterface.onOrientationInput());
+                    multiFilterPresenter.setFeatured(inputInterface.onFeaturedInput());
+                    multiFilterPresenter.initRefresh(getContext());
+                }
                 break;
         }
     }
@@ -235,6 +260,8 @@ public class MultiFilterPhotosView extends FrameLayout
             scrollPresenter.autoLoad(dy);
         }
     };
+
+    // view.
 
     // multi-filter view.
 
@@ -294,6 +321,8 @@ public class MultiFilterPhotosView extends FrameLayout
 
     @Override
     public void setFailedState() {
+        feedbackText.setVisibility(VISIBLE);
+        feedbackButton.setText(getContext().getText(R.string.feedback_click_retry));
         animShow(feedbackContainer);
         animHide(progressView);
     }

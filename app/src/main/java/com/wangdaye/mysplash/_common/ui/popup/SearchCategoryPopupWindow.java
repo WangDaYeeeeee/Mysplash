@@ -165,7 +165,7 @@ public class SearchCategoryPopupWindow extends PopupWindow
             ((ImageView) v.findViewById(R.id.popup_search_category_technologyIcon))
                     .setImageResource(R.drawable.ic_technology_light);
         } else {
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_allIcon))
+            ((ImageView) v.findViewById(R.id.popup_search_category_allIcon))
                     .setImageResource(R.drawable.ic_infinity_dark);
             ((ImageView) v.findViewById(R.id.popup_search_category_buildingsIcon))
                     .setImageResource(R.drawable.ic_building_dark);

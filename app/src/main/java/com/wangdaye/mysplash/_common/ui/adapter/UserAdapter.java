@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -23,10 +24,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.User;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.utils.LinkUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
@@ -64,7 +64,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         holder.title.setText(itemList.get(position).name);
         if (TextUtils.isEmpty(itemList.get(position).bio)) {
             holder.subtitle.setText(
-                    itemList.get(position).total_photos + " Photos, "
+                    itemList.get(position).total_photos + a.getResources().getStringArray(R.array.user_tabs)[0] +
                             + itemList.get(position).total_collections + " Collections, "
                             + itemList.get(position).total_likes + " Likes");
         } else {
@@ -222,7 +222,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                 case R.id.item_user_portfolio:
                     if (!TextUtils.isEmpty(itemList.get(getAdapterPosition()).portfolio_url)) {
-                        LinkUtils.accessLink(a, itemList.get(getAdapterPosition()).portfolio_url);
+                        Uri uri = Uri.parse(itemList.get(getAdapterPosition()).portfolio_url);
+                        a.startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     }
                     break;
             }

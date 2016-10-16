@@ -233,7 +233,7 @@ public class HomeCollectionsView extends FrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return collectionsPresenter.getAdapterItemCount() <= 0
+        return collectionsPresenter.getAdapter().getRealItemCount() <= 0
                 && !collectionsPresenter.isRefreshing() && !collectionsPresenter.isLoading();
     }
 

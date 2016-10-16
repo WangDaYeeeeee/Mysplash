@@ -52,21 +52,40 @@
                         android:maxLines="1"
                         tools:ignore="RtlHardcoded" />
 
-                    <EditText
-                        android:id="@+id/fragment_multi_filter_users_editText"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/normal_margin"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/feedback_search_users_bar"
-                        android:textColorHint="?attr/subtitle_color"
-                        android:textColorHighlight="?attr/subtitle_color"
-                        android:textSize="@dimen/content_text_size"
-                        android:textColor="?attr/content_color"
-                        android:imeOptions="actionSearch"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        tools:ignore="RtlHardcoded" />
+                        android:layout_height="wrap_content">
+
+                        <ImageButton
+                            android:id="@+id/fragment_multi_filter_searchBtn"
+                            android:layout_alignParentRight="true"
+                            android:layout_centerVertical="true"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="@dimen/little_margin"
+                            android:layout_marginRight="@dimen/little_margin"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            tools:src="@drawable/ic_toolbar_search_light"
+                            tools:ignore="ContentDescription,RtlHardcoded" />
+
+                        <EditText
+                            android:id="@+id/fragment_multi_filter_users_editText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="@dimen/normal_margin"
+                            android:layout_toLeftOf="@id/fragment_multi_filter_searchBtn"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/feedback_search_users_bar"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:textColorHighlight="?attr/subtitle_color"
+                            android:textSize="@dimen/content_text_size"
+                            android:textColor="?attr/content_color"
+                            android:imeOptions="actionSearch"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            tools:ignore="RtlHardcoded" />
+
+                    </RelativeLayout>
 
                 </LinearLayout>
 

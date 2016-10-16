@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,13 +19,12 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.AccessToken;
+import com.wangdaye.mysplash._common.data.entity.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.LinkUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
@@ -195,13 +195,17 @@ public class LoginActivity extends MysplashActivity
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
 
-            case R.id.activity_login_loginBtn:
-                LinkUtils.accessLink(this, Mysplash.UNSPLASH_LOGIN_URL);
+            case R.id.activity_login_loginBtn: {
+                Uri uri = Uri.parse(Mysplash.UNSPLASH_LOGIN_URL);
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 break;
+            }
 
-            case R.id.activity_login_joinBtn:
-                LinkUtils.accessLink(this, Mysplash.UNSPLASH_JOIN_URL);
+            case R.id.activity_login_joinBtn: {
+                Uri uri = Uri.parse(Mysplash.UNSPLASH_JOIN_URL);
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 break;
+            }
         }
     }
 

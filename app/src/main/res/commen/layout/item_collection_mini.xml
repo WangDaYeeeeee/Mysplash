@@ -10,7 +10,7 @@
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise"
-    app:cardBackgroundColor="@android:color/black"
+    app:cardBackgroundColor="@color/colorPrimary_dark"
     app:cardCornerRadius="2dp"
     app:cardPreventCornerOverlap="true"
     tools:ignore="UnusedAttribute">
@@ -21,7 +21,6 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:alpha="0.9"
-        tools:src="@drawable/design_about_app"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
@@ -52,7 +51,7 @@
             <TextView
                 android:id="@+id/item_collection_mini_subtitle"
                 android:textColor="@android:color/white"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="1"
@@ -60,12 +59,12 @@
                 android:alpha="0.9"
                 android:layout_marginLeft="@dimen/normal_margin"
                 style="@style/subtitle_text"
-                tools:text="3 photos"/>
+                tools:text="3 photos" />
 
             <TextView
                 android:id="@+id/item_collection_mini_title"
                 android:textColor="@android:color/white"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:textSize="@dimen/large_title_text_size"
                 android:textStyle="bold"
                 android:shadowDx="1"

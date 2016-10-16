@@ -29,8 +29,7 @@ public class PhotoMenuPopupWindow extends PopupWindow
 
     // data
     public static final int ITEM_STATS = 1;
-    public static final int ITEM_BROWSER = 2;
-    public static final int ITEM_DOWNLOAD_PAGE = 3;
+    public static final int ITEM_DOWNLOAD_PAGE = 2;
 
     /** <br> life cycle. */
 
@@ -71,25 +70,19 @@ public class PhotoMenuPopupWindow extends PopupWindow
         View v = getContentView();
 
         v.findViewById(R.id.popup_photo_menu_stats).setOnClickListener(this);
-        v.findViewById(R.id.popup_photo_menu_browser).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_downloadPage).setOnClickListener(this);
 
-        TextView allTxt = (TextView) v.findViewById(R.id.popup_photo_menu_statsTxt);
-        TypefaceUtils.setTypeface(v.getContext(), allTxt);
+        TextView statsTxt = (TextView) v.findViewById(R.id.popup_photo_menu_statsTxt);
+        TypefaceUtils.setTypeface(v.getContext(), statsTxt);
 
-        TextView curatedTxt = (TextView) v.findViewById(R.id.popup_photo_menu_browserTxt);
-        TypefaceUtils.setTypeface(v.getContext(), curatedTxt);
-
-        TextView featuredTxt = (TextView) v.findViewById(R.id.popup_photo_menu_downloadPageTxt);
-        TypefaceUtils.setTypeface(v.getContext(), featuredTxt);
+        TextView downloadPageTxt = (TextView) v.findViewById(R.id.popup_photo_menu_downloadPageTxt);
+        TypefaceUtils.setTypeface(v.getContext(), downloadPageTxt);
 
         if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_light);
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_browserIcon)).setImageResource(R.drawable.ic_earth_light);
             ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_light);
         } else {
             ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_dark);
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_browserIcon)).setImageResource(R.drawable.ic_earth_dark);
             ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_dark);
         }
     }
@@ -110,12 +103,6 @@ public class PhotoMenuPopupWindow extends PopupWindow
             case R.id.popup_photo_menu_stats:
                 if (listener != null) {
                     listener.onSelectItem(ITEM_STATS);
-                }
-                break;
-
-            case R.id.popup_photo_menu_browser:
-                if (listener != null) {
-                    listener.onSelectItem(ITEM_BROWSER);
                 }
                 break;
 

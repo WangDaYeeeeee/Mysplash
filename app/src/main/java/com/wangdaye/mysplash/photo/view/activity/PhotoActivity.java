@@ -30,20 +30,23 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
-import com.wangdaye.mysplash._common.data.tools.DownloadManager;
+import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
+import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
+import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotoInfoPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.i.view.DownloadView;
+import com.wangdaye.mysplash._common.i.view.BrowsableView;
 import com.wangdaye.mysplash._common.i.view.PhotoInfoView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.activity.PreviewPhotoActivity;
+import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 import com.wangdaye.mysplash._common.ui.widget.FreedomTouchView;
@@ -51,14 +54,17 @@ import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
-import com.wangdaye.mysplash._common.ui.dialog.DownloadDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
+import com.wangdaye.mysplash.photo.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.activity.DownloadObject;
 import com.wangdaye.mysplash.photo.model.activity.PhotoInfoObject;
+import com.wangdaye.mysplash.photo.presenter.activity.BrowsableImplementor;
 import com.wangdaye.mysplash.photo.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.photo.presenter.activity.PhotoActivityPopupManageImplementor;
 import com.wangdaye.mysplash.photo.presenter.activity.PhotoInfoImplementor;
@@ -72,23 +78,22 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
  * */
 
 public class PhotoActivity extends AppCompatActivity
-        implements PhotoInfoView, DownloadView, ScrollView, PopupManageView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, DownloadDialog.OnDismissListener,
-        SwipeBackLayout.OnSwipeListener, NotificationUtils.SnackbarContainer {
+        implements PhotoInfoView, ScrollView, PopupManageView, BrowsableView,
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
+        NotificationUtils.SnackbarContainer {
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
     private ScrollModel scrollModel;
+    private BrowsableModel browsableModel;
 
     // view.
-    private DownloadDialog dialog;
+    private RequestBrowsableDataDialog requestDialog;
 
     private CoordinatorLayout container;
     private NestedScrollView scrollView;
-    private RelativeLayout titleBar;
     private ImageButton menuBtn;
     private CircleImageView avatarImage;
-    private LinearLayout buttonBar;
     private PhotoDetailsView detailsView;
 
     // presenter.
@@ -96,6 +101,7 @@ public class PhotoActivity extends AppCompatActivity
     private DownloadPresenter downloadPresenter;
     private ScrollPresenter scrollPresenter;
     private PopupManagePresenter popupManagePresenter;
+    private BrowsablePresenter browsablePresenter;
 
     // data
     private boolean started = false;
@@ -118,11 +124,8 @@ public class PhotoActivity extends AppCompatActivity
         if (!started) {
             started = true;
             initModel();
-            initView();
             initPresenter();
-            AnimUtils.animInitShow(titleBar, 200);
-            AnimUtils.animInitShow(buttonBar, 300);
-            AnimUtils.animInitShow(detailsView, 400);
+            initView(true);
         }
     }
 
@@ -137,9 +140,11 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().removeActivity();
-        DownloadManager.getInstance().removeDownloadListener((DownloadImplementor) downloadPresenter);
-        detailsView.cancelRequest();
+        Mysplash.getInstance().removeActivity(this);
+        browsablePresenter.cancelRequest();
+        if (detailsView != null) {
+            detailsView.cancelRequest();
+        }
     }
 
     private void setTheme() {
@@ -162,9 +167,10 @@ public class PhotoActivity extends AppCompatActivity
 
     private void initPresenter() {
         this.photoInfoPresenter = new PhotoInfoImplementor(photoInfoModel, this);
-        this.downloadPresenter = new DownloadImplementor(downloadModel, this);
+        this.downloadPresenter = new DownloadImplementor(downloadModel);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.popupManagePresenter = new PhotoActivityPopupManageImplementor(this);
+        this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
     }
 
     /** <br> view. */
@@ -172,105 +178,147 @@ public class PhotoActivity extends AppCompatActivity
     // init.
 
     @SuppressLint({"SetTextI18n", "CutPasteId"})
-    private void initView() {
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_photo_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
-
-        FreedomImageView photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
-        photoImage.setSize(photoInfoModel.getPhoto().width, photoInfoModel.getPhoto().height);
-        if (Mysplash.getInstance().getDrawable() != null) {
-            photoImage.setImageDrawable(Mysplash.getInstance().getDrawable());
+    private void initView(boolean init) {
+        if (init && browsablePresenter.isBrowsable()) {
+            browsablePresenter.requestBrowsableData();
         } else {
+            SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_photo_swipeBackLayout);
+            swipeBackLayout.setOnSwipeListener(this);
+
+            this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
+
+            FreedomImageView photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
+            photoImage.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
+            if (Mysplash.getInstance().getDrawable() != null) {
+                photoImage.setImageDrawable(Mysplash.getInstance().getDrawable());
+            } else {
+                Glide.with(this)
+                        .load(photoInfoPresenter.getPhoto().urls.regular)
+                        .priority(Priority.HIGH)
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .into(photoImage);
+            }
+
+            FreedomTouchView touchView = (FreedomTouchView) findViewById(R.id.activity_photo_touchView);
+            touchView.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
+            touchView.setOnClickListener(this);
+
+            this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
+
+            RelativeLayout titleBar = (RelativeLayout) findViewById(R.id.activity_photo_titleBar);
+
+            ImageButton backBtn = (ImageButton) findViewById(R.id.activity_photo_backBtn);
+            backBtn.setOnClickListener(this);
+
+            ImageButton shareUrlBtn = (ImageButton) findViewById(R.id.activity_photo_shareUrlBtn);
+            shareUrlBtn.setOnClickListener(this);
+
+            this.menuBtn = (ImageButton) findViewById(R.id.activity_photo_menuBtn);
+
+            this.avatarImage = (CircleImageView) findViewById(R.id.activity_photo_avatar);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                avatarImage.setTransitionName(photoInfoPresenter.getPhoto().user.username);
+            }
+            avatarImage.setOnClickListener(this);
             Glide.with(this)
-                    .load(photoInfoModel.getPhoto().urls.regular)
-                    .priority(Priority.HIGH)
+                    .load(photoInfoPresenter.getPhoto().user.profile_image.large)
+                    .priority(Priority.NORMAL)
+                    .crossFade(300)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(photoImage);
-        }
+                    .override(128, 128)
+                    .into(avatarImage);
 
-        FreedomTouchView touchView = (FreedomTouchView) findViewById(R.id.activity_photo_touchView);
-        touchView.setSize(photoInfoModel.getPhoto().width, photoInfoModel.getPhoto().height);
-        touchView.setOnClickListener(this);
+            ImageButton menuButton = (ImageButton) findViewById(R.id.activity_photo_menuBtn);
+            menuButton.setOnClickListener(this);
 
-        this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
+            TextView title = (TextView) findViewById(R.id.activity_photo_title);
+            title.setText(getString(R.string.by) + " " + photoInfoPresenter.getPhoto().user.name);
 
-        this.titleBar = (RelativeLayout) findViewById(R.id.activity_photo_titleBar);
+            TextView subtitle = (TextView) findViewById(R.id.activity_photo_subtitle);
+            subtitle.setText(getString(R.string.on) + " " + photoInfoPresenter.getPhoto().created_at.split("T")[0]);
+            TypefaceUtils.setTypeface(this, subtitle);
 
-        this.menuBtn = (ImageButton) findViewById(R.id.activity_photo_menuBtn);
+            LinearLayout buttonBar = (LinearLayout) findViewById(R.id.activity_photo_btnBar);
 
-        this.avatarImage = (CircleImageView) findViewById(R.id.activity_photo_avatar);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            avatarImage.setTransitionName(photoInfoModel.getPhoto().user.username);
-        }
-        avatarImage.setOnClickListener(this);
-        Glide.with(this)
-                .load(photoInfoModel.getPhoto().user.profile_image.large)
-                .priority(Priority.NORMAL)
-                .crossFade(300)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .override(128, 128)
-                .into(avatarImage);
+            ImageButton[] optionButtons = new ImageButton[] {
+                    (ImageButton) findViewById(R.id.activity_photo_downloadBtn),
+                    (ImageButton) findViewById(R.id.activity_photo_shareBtn),
+                    (ImageButton) findViewById(R.id.activity_photo_wallBtn)};
+            for (ImageButton optionButton : optionButtons) {
+                optionButton.setOnClickListener(this);
+            }
 
-        ImageButton menuButton = (ImageButton) findViewById(R.id.activity_photo_menuBtn);
-        menuButton.setOnClickListener(this);
+            TextView[] optionTexts = new TextView[] {
+                    (TextView) findViewById(R.id.activity_photo_downloadTxt),
+                    (TextView) findViewById(R.id.activity_photo_shareTxt),
+                    (TextView) findViewById(R.id.activity_photo_wallTxt)};
+            String[] downloadOptions = getResources().getStringArray(R.array.download_options);
+            for (int i = 0; i < optionTexts.length; i ++) {
+                optionTexts[i].setText(downloadOptions[i]);
+            }
 
-        TextView title = (TextView) findViewById(R.id.activity_photo_title);
-        title.setText("By " + photoInfoModel.getPhoto().user.name);
+            this.detailsView = (PhotoDetailsView) findViewById(R.id.activity_photo_detailsView);
+            detailsView.initMP(photoInfoPresenter.getPhoto());
+            detailsView.requestPhotoDetails();
 
-        TextView subtitle = (TextView) findViewById(R.id.activity_photo_subtitle);
-        subtitle.setText("On " + photoInfoModel.getPhoto().created_at.split("T")[0]);
-        TypefaceUtils.setTypeface(this, subtitle);
+            Toolbar toolbar = (Toolbar) findViewById(R.id.activity_photo_toolbar);
+            toolbar.setTitle(title.getText().toString());
+            if (ThemeUtils.getInstance(this).isLightTheme()) {
+                if (browsablePresenter.isBrowsable()) {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+                }
+                toolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
+            } else {
+                if (browsablePresenter.isBrowsable()) {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+                }
+                toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
+            }
+            toolbar.setNavigationOnClickListener(this);
+            toolbar.setOnMenuItemClickListener(this);
+            toolbar.setOnClickListener(this);
 
-        this.buttonBar = (LinearLayout) findViewById(R.id.activity_photo_btnBar);
+            if (ThemeUtils.getInstance(this).isLightTheme()) {
+                optionButtons[0].setImageResource(R.drawable.ic_download_light);
+                optionButtons[1].setImageResource(R.drawable.ic_send_light);
+                optionButtons[2].setImageResource(R.drawable.ic_mountain_light);
+                shareUrlBtn.setImageResource(R.drawable.ic_share_light);
+                menuBtn.setImageResource(R.drawable.ic_menu_light);
+                if (browsablePresenter.isBrowsable()) {
+                    backBtn.setImageResource(R.drawable.ic_toolbar_home_light);
+                } else {
+                    backBtn.setImageResource(R.drawable.ic_toolbar_back_light);
+                }
+            } else {
+                optionButtons[0].setImageResource(R.drawable.ic_download_dark);
+                optionButtons[1].setImageResource(R.drawable.ic_send_dark);
+                optionButtons[2].setImageResource(R.drawable.ic_mountain_dark);
+                shareUrlBtn.setImageResource(R.drawable.ic_share_dark);
+                menuBtn.setImageResource(R.drawable.ic_menu_dark);
+                if (browsablePresenter.isBrowsable()) {
+                    backBtn.setImageResource(R.drawable.ic_toolbar_home_dark);
+                } else {
+                    backBtn.setImageResource(R.drawable.ic_toolbar_back_dark);
+                }
+            }
 
-        ImageButton[] optionButtons = new ImageButton[] {
-                (ImageButton) findViewById(R.id.activity_photo_downloadBtn),
-                (ImageButton) findViewById(R.id.activity_photo_shareBtn),
-                (ImageButton) findViewById(R.id.activity_photo_wallBtn)};
-        for (ImageButton optionButton : optionButtons) {
-            optionButton.setOnClickListener(this);
-        }
-
-        this.detailsView = (PhotoDetailsView) findViewById(R.id.activity_photo_detailsView);
-        detailsView.initMP(photoInfoModel.getPhoto());
-        detailsView.requestPhotoDetails();
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_photo_toolbar);
-        toolbar.setTitle(title.getText().toString());
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
-            toolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
-            toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
-        }
-        toolbar.setNavigationOnClickListener(this);
-        toolbar.setOnMenuItemClickListener(this);
-        toolbar.setOnClickListener(this);
-
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
-            ((ImageButton) findViewById(R.id.activity_photo_downloadBtn)).setImageResource(R.drawable.ic_download_light);
-            ((ImageButton) findViewById(R.id.activity_photo_shareBtn)).setImageResource(R.drawable.ic_send_light);
-            ((ImageButton) findViewById(R.id.activity_photo_wallBtn)).setImageResource(R.drawable.ic_mountain_light);
-            ((ImageButton) findViewById(R.id.activity_photo_menuBtn)).setImageResource(R.drawable.ic_menu_light);
-        } else {
-            ((ImageButton) findViewById(R.id.activity_photo_downloadBtn)).setImageResource(R.drawable.ic_download_dark);
-            ((ImageButton) findViewById(R.id.activity_photo_shareBtn)).setImageResource(R.drawable.ic_send_dark);
-            ((ImageButton) findViewById(R.id.activity_photo_wallBtn)).setImageResource(R.drawable.ic_mountain_dark);
-            ((ImageButton) findViewById(R.id.activity_photo_menuBtn)).setImageResource(R.drawable.ic_menu_dark);
+            AnimUtils.animInitShow(titleBar, 200);
+            AnimUtils.animInitShow(buttonBar, 300);
+            AnimUtils.animInitShow(detailsView, 400);
         }
     }
 
     /** <br> model. */
 
-    // init.
-
     private void initModel() {
         this.photoInfoModel = new PhotoInfoObject();
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
         this.scrollModel = new ScrollObject();
+        this.browsableModel = new BorwsableObject(getIntent());
     }
 
     /** <br> permission. */
@@ -315,15 +363,15 @@ public class PhotoActivity extends AppCompatActivity
 
     public void downloadByType(int type) {
         switch (type) {
-            case DownloadObject.DOWNLOAD_TYPE:
+            case DownloadHelper.DOWNLOAD_TYPE:
                 downloadPresenter.download();
                 break;
 
-            case DownloadObject.SHARE_TYPE:
+            case DownloadHelper.SHARE_TYPE:
                 downloadPresenter.share();
                 break;
 
-            case DownloadObject.WALLPAPER_TYPE:
+            case DownloadHelper.WALLPAPER_TYPE:
                 downloadPresenter.setWallpaper();
                 break;
         }
@@ -337,6 +385,10 @@ public class PhotoActivity extends AppCompatActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
+            case R.id.activity_photo_backBtn:
+                if (browsablePresenter.isBrowsable()) {
+                    browsablePresenter.visitParentView();
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     finishAfterTransition();
                 } else {
@@ -359,6 +411,10 @@ public class PhotoActivity extends AppCompatActivity
                 photoInfoPresenter.touchAuthorAvatar();
                 break;
 
+            case R.id.activity_photo_shareUrlBtn:
+                ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
+                break;
+
             case R.id.activity_photo_menuBtn:
                 popupManagePresenter.showPopup(this, menuBtn, null, 0);
                 break;
@@ -367,7 +423,7 @@ public class PhotoActivity extends AppCompatActivity
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     downloadPresenter.download();
                 } else {
-                    requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadObject.DOWNLOAD_TYPE);
+                    requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
                 }
                 break;
 
@@ -375,7 +431,7 @@ public class PhotoActivity extends AppCompatActivity
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     downloadPresenter.download();
                 } else {
-                    requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadObject.SHARE_TYPE);
+                    requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.SHARE_TYPE);
                 }
                 break;
 
@@ -383,7 +439,7 @@ public class PhotoActivity extends AppCompatActivity
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     downloadPresenter.download();
                 } else {
-                    requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadObject.WALLPAPER_TYPE);
+                    requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.WALLPAPER_TYPE);
                 }
                 break;
         }
@@ -394,24 +450,15 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.action_share:
+                ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
+                break;
+
             case R.id.action_menu:
                 popupManagePresenter.showPopup(this, menuBtn, null, 0);
                 break;
         }
         return true;
-    }
-
-    // on dismiss listener.
-
-    @Override
-    public void onBackstage() {
-        downloadPresenter.setDialogShowing(false);
-    }
-
-    @Override
-    public void onCancel() {
-        downloadPresenter.setDialogShowing(false);
-        downloadPresenter.cancelDownloading();
     }
 
     // on swipe listener.
@@ -475,13 +522,6 @@ public class PhotoActivity extends AppCompatActivity
                 dialog.show(getFragmentManager(), null);
                 break;
 
-            case PhotoMenuPopupWindow.ITEM_BROWSER:
-                Intent p = new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(photoInfoPresenter.getPhoto().links.html));
-                startActivity(p);
-                break;
-
             case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
                 Intent d = new Intent(
                         Intent.ACTION_VIEW,
@@ -494,26 +534,6 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     public void drawPhotoDetails(PhotoDetails details) {
         // do nothing.
-    }
-
-    // download view.
-
-    @Override
-    public void showDownloadDialog() {
-        this.dialog = new DownloadDialog();
-        dialog.setOnDismissListener(this);
-        dialog.setCancelable(false);
-        dialog.show(getFragmentManager(), null);
-    }
-
-    @Override
-    public void dismissDownloadDialog() {
-        dialog.dismiss();
-    }
-
-    @Override
-    public void onDownloadProcess(int progress) {
-        dialog.setDownloadProgress(progress);
     }
 
     // scroll view.
@@ -538,5 +558,31 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     public void responsePopup(String value, int position) {
         photoInfoPresenter.touchMenuItem(position);
+    }
+
+    // browsable view.
+
+    @Override
+    public void showRequestDialog() {
+        requestDialog = new RequestBrowsableDataDialog();
+        requestDialog.show(getFragmentManager(), null);
+    }
+
+    @Override
+    public void dismissRequestDialog() {
+        requestDialog.dismiss();
+        requestDialog = null;
+    }
+
+    @Override
+    public void drawBrowsableView() {
+        initModel();
+        initPresenter();
+        initView(false);
+    }
+
+    @Override
+    public void visitParentView() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.i.model.UserModel;
 import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
@@ -48,6 +48,16 @@ public class UserImplementor
         model.getService().cancel();
     }
 
+    @Override
+    public void setUser(User u) {
+        model.setUser(u);
+    }
+
+    @Override
+    public User getUser() {
+        return model.getUser();
+    }
+
     /** <br> interface. */
 
     private class OnRequestUserProfileListener implements UserService.OnRequestUserProfileListener {
@@ -74,7 +84,7 @@ public class UserImplementor
             } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
                 RateLimitDialog dialog = new RateLimitDialog();
                 dialog.show(
-                        Mysplash.getInstance().getLatestActivity().getFragmentManager(),
+                        Mysplash.getInstance().getTopActivity().getFragmentManager(),
                         null);
             } else {
                 requestUser();

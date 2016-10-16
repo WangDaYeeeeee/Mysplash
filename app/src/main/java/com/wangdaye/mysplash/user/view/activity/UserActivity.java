@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.user.view.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
@@ -7,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -16,17 +18,23 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.utils.AuthManager;
+import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
+import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.i.view.BrowsableView;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -34,8 +42,12 @@ import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
+import com.wangdaye.mysplash.me.view.activity.MeActivity;
+import com.wangdaye.mysplash.user.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.user.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.user.model.widget.PhotosObject;
+import com.wangdaye.mysplash.user.presenter.activity.BrowsableImplementor;
 import com.wangdaye.mysplash.user.presenter.activity.PagerManageImplementor;
 import com.wangdaye.mysplash.user.presenter.activity.PopupManageImplementor;
 import com.wangdaye.mysplash.user.presenter.activity.SwipeBackManageImplementor;
@@ -45,6 +57,7 @@ import com.wangdaye.mysplash.user.view.widget.UserPhotosView;
 import com.wangdaye.mysplash.user.view.widget.UserProfileView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -52,13 +65,16 @@ import java.util.List;
  * */
 
 public class UserActivity extends MysplashActivity
-        implements PagerManageView, PopupManageView, SwipeBackManageView,
+        implements PagerManageView, PopupManageView, SwipeBackManageView, BrowsableView,
         Toolbar.OnMenuItemClickListener, View.OnClickListener,
         ViewPager.OnPageChangeListener, SwipeBackLayout.OnSwipeListener {
     // model.
     private PagerManageModel pagerManageModel;
+    private BrowsableModel browsableModel;
 
     // view.
+    private RequestBrowsableDataDialog requestDialog;
+
     private CoordinatorLayout container;
     private AppBarLayout appBar;
     private Toolbar toolbar;
@@ -73,6 +89,7 @@ public class UserActivity extends MysplashActivity
     private PagerManagePresenter pagerManagePresenter;
     private PopupManagePresenter popupManagePresenter;
     private SwipeBackManagePresenter swipeBackManagePresenter;
+    private BrowsablePresenter browsablePresenter;
 
     /** <br> life cycle. */
 
@@ -88,19 +105,22 @@ public class UserActivity extends MysplashActivity
         if (!isStarted()) {
             setStarted();
             initModel();
-            initView();
             initPresenter();
-            AnimUtils.animInitShow((View) pagers[0], 400);
-            pagers[0].refreshPager();
+            initView(true);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        userProfileView.cancelRequest();
+        browsablePresenter.cancelRequest();
+        if (userProfileView != null) {
+            userProfileView.cancelRequest();
+        }
         for (PagerView p : pagers) {
-            p.cancelRequest();
+            if (p != null) {
+                p.cancelRequest();
+            }
         }
     }
 
@@ -135,53 +155,76 @@ public class UserActivity extends MysplashActivity
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
         this.popupManagePresenter = new PopupManageImplementor(this);
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
+        this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
     }
 
     /** <br> view. */
 
     // init.
 
-    private void initView() {
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_user_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
-
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_user_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
-            statusBar.setBackgroundResource(R.color.colorPrimary_light);
-            statusBar.setMask(true);
-        }
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_user_container);
-        this.appBar = (AppBarLayout) findViewById(R.id.activity_user_appBar);
-
-        this.toolbar = (Toolbar) findViewById(R.id.activity_user_toolbar);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
-            toolbar.inflateMenu(R.menu.activity_user_toolbar_light);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+    private void initView(boolean init) {
+        if (init && browsablePresenter.isBrowsable()) {
+            browsablePresenter.requestBrowsableData();
         } else {
-            toolbar.inflateMenu(R.menu.activity_user_toolbar_dark);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+            User u = Mysplash.getInstance().getUser();
+
+            SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_user_swipeBackLayout);
+            swipeBackLayout.setOnSwipeListener(this);
+
+            StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_user_statusBar);
+            if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+                statusBar.setBackgroundResource(R.color.colorPrimary_light);
+                statusBar.setMask(true);
+            }
+
+            this.container = (CoordinatorLayout) findViewById(R.id.activity_user_container);
+            this.appBar = (AppBarLayout) findViewById(R.id.activity_user_appBar);
+
+            this.toolbar = (Toolbar) findViewById(R.id.activity_user_toolbar);
+            if (ThemeUtils.getInstance(this).isLightTheme()) {
+                if (browsablePresenter.isBrowsable()) {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+                }
+                toolbar.inflateMenu(R.menu.activity_user_toolbar_light);
+            } else {
+                if (browsablePresenter.isBrowsable()) {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+                } else {
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+                }
+                toolbar.inflateMenu(R.menu.activity_user_toolbar_dark);
+            }
+            toolbar.setOnMenuItemClickListener(this);
+            toolbar.setNavigationOnClickListener(this);
+            if (TextUtils.isEmpty(u.portfolio_url)) {
+                toolbar.getMenu().getItem(0).setVisible(false);
+            } else {
+                toolbar.getMenu().getItem(0).setVisible(true);
+            }
+
+            CircleImageView avatar = (CircleImageView) findViewById(R.id.activity_user_avatar);
+            Glide.with(this)
+                    .load(u.profile_image.large)
+                    .priority(Priority.HIGH)
+                    .override(128, 128)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(avatar);
+
+            TextView title = (TextView) findViewById(R.id.activity_user_title);
+            title.setText(u.name);
+
+            this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
+            initPages();
+
+            userProfileView.setUser(u);
+            userProfileView.requestUserProfile(adapter);
+            this.utils = new DisplayUtils(this);
+
+            AnimUtils.animInitShow((View) pagers[0], 400);
+            pagers[0].refreshPager();
         }
-        toolbar.setOnMenuItemClickListener(this);
-        toolbar.setNavigationOnClickListener(this);
-
-        CircleImageView avatar = (CircleImageView) findViewById(R.id.activity_user_avatar);
-        Glide.with(this)
-                .load(Mysplash.getInstance().getUser().profile_image.large)
-                .priority(Priority.HIGH)
-                .override(128, 128)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(avatar);
-
-        TextView title = (TextView) findViewById(R.id.activity_user_title);
-        title.setText(Mysplash.getInstance().getUser().name);
-
-        this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
-
-        initPages();
-
-        userProfileView.requestUserProfile(adapter);
-        this.utils = new DisplayUtils(this);
     }
 
     private void initPages() {
@@ -193,10 +236,10 @@ public class UserActivity extends MysplashActivity
             pagers[i] = (PagerView) pageList.get(i);
         }
 
+        String[] userTabs = getResources().getStringArray(R.array.user_tabs);
+
         List<String> tabList = new ArrayList<>();
-        tabList.add("PHOTOS");
-        tabList.add("COLLECTIONS");
-        tabList.add("LIKES");
+        Collections.addAll(tabList, userTabs);
         this.adapter = new MyPagerAdapter(pageList, tabList);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.activity_user_viewPager);
@@ -225,9 +268,14 @@ public class UserActivity extends MysplashActivity
 
     private void initModel() {
         this.pagerManageModel = new PagerManageObject(0);
+        this.browsableModel = new BorwsableObject(getIntent());
     }
 
     // interface.
+
+    public User getUser() {
+        return userProfileView.getUser();
+    }
 
     public String getUserPortfolio() {
         return userProfileView.getUserPortfolio();
@@ -241,6 +289,9 @@ public class UserActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
+                if (browsablePresenter.isBrowsable()) {
+                    browsablePresenter.visitParentView();
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     finishAfterTransition();
                 } else {
@@ -333,5 +384,41 @@ public class UserActivity extends MysplashActivity
             return pagerManagePresenter.canPagerSwipeBack(dir)
                     && appBar.getY() >= 0;
         }
+    }
+
+    // browsable view.
+
+    @Override
+    public void showRequestDialog() {
+        requestDialog = new RequestBrowsableDataDialog();
+        requestDialog.show(getFragmentManager(), null);
+    }
+
+    @Override
+    public void dismissRequestDialog() {
+        requestDialog.dismiss();
+        requestDialog = null;
+    }
+
+    @Override
+    public void drawBrowsableView() {
+        User u = Mysplash.getInstance().getUser();
+        if (AuthManager.getInstance().getUsername() != null
+                && AuthManager.getInstance().getUsername().equals(u.username)) {
+            AuthManager.getInstance().writeUserInfo(u);
+            Intent intent = new Intent(this, MeActivity.class);
+            intent.putExtra(MeActivity.EXTRA_BROWSABLE, true);
+            startActivity(intent);
+            finish();
+        } else {
+            initModel();
+            initPresenter();
+            initView(false);
+        }
+    }
+
+    @Override
+    public void visitParentView() {
+        startActivity(new Intent(this, MainActivity.class));
     }
 }

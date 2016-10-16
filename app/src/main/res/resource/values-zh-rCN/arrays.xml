@@ -1,7 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- requestKey order. -->
+    <!-- 主页标签 -->
+    <string-array name="home_tabs">
+        <item>新作</item>
+        <item>精选</item>
+        <item>收藏集</item>
+    </string-array>
+
+    <!-- 搜索标签 -->
+    <string-array name="search_tabs">
+        <item>照片</item>
+        <item>收藏集</item>
+        <item>用户</item>
+    </string-array>
+
+    <!-- 用户标签 -->
+    <string-array name="user_tabs">
+        <item>照片</item>
+        <item>收藏集</item>
+        <item>喜欢</item>
+    </string-array>
+
+    <!-- 下载选项 -->
+    <string-array name="download_options">
+        <item>下载</item>
+        <item>分享</item>
+        <item>壁纸</item>
+    </string-array>
+
+    <!-- 照片顺序 -->
     <string-array name="photo_orders">
         <item>最新的</item>
         <item>最久远的</item>
@@ -15,7 +43,7 @@
         <item>random</item>
     </string-array>
 
-    <!-- collection type. -->
+    <!-- 收藏集类型 -->
     <string-array name="collection_types">
         <item>所有</item>
         <item>画展</item>
@@ -27,7 +55,7 @@
         <item>featured</item>
     </string-array>
 
-    <!-- download type. -->
+    <!-- 下载类型 -->
     <string-array name="download_types">
         <item>压缩过的</item>
         <item>未经压缩</item>
@@ -37,7 +65,7 @@
         <item>raw</item>
     </string-array>
 
-    <!-- back to top. -->
+    <!-- 返回顶部 -->
     <string-array name="back_to_top_type">
         <item>应用于所有的照片列表界面</item>
         <item>只应用于主页列表</item>
@@ -49,7 +77,7 @@
         <item>none</item>
     </string-array>
 
-    <!-- language. -->
+    <!-- 语言 -->
     <string-array name="languages">
         <item>跟随系统</item>
         <item>English</item>
@@ -61,7 +89,7 @@
         <item>chinese</item>
     </string-array>
 
-    <!-- search orientation. -->
+    <!-- 搜索规格 -->
     <string-array name="search_orientations">
         <item>横向</item>
         <item>纵向</item>

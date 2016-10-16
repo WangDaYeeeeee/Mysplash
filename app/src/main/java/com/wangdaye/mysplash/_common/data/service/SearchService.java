@@ -3,10 +3,10 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.SearchApi;
-import com.wangdaye.mysplash._common.data.data.SearchCollectionsResult;
-import com.wangdaye.mysplash._common.data.data.SearchPhotosResult;
-import com.wangdaye.mysplash._common.data.data.SearchUsersResult;
-import com.wangdaye.mysplash._common.data.tools.AuthInterceptor;
+import com.wangdaye.mysplash._common.data.entity.SearchCollectionsResult;
+import com.wangdaye.mysplash._common.data.entity.SearchPhotosResult;
+import com.wangdaye.mysplash._common.data.entity.SearchUsersResult;
+import com.wangdaye.mysplash._common.utils.AuthInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;

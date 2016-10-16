@@ -4,13 +4,15 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.activity.UpdateMeActivity;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 /**
@@ -57,11 +59,17 @@ public class ToolbarImplementor
                         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                         a.startActivity(i);
                     } else {
-                        Toast.makeText(
-                                a,
+                        NotificationUtils.showSnackbar(
                                 a.getString(R.string.feedback_portfolio_is_null),
-                                Toast.LENGTH_SHORT).show();
+                                Snackbar.LENGTH_SHORT);
                     }
+                }
+                break;
+
+            case R.id.action_share:
+                if (AuthManager.getInstance().isAuthorized()
+                        && AuthManager.getInstance().getUser() != null) {
+                    ShareUtils.shareUser(AuthManager.getInstance().getUser());
                 }
                 break;
 

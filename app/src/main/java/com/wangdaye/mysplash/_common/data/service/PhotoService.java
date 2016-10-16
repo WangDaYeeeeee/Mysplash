@@ -3,14 +3,14 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.data.Collection;
-import com.wangdaye.mysplash._common.data.data.LikePhotoResult;
-import com.wangdaye.mysplash._common.data.data.Me;
-import com.wangdaye.mysplash._common.data.data.Photo;
-import com.wangdaye.mysplash._common.data.data.PhotoDetails;
-import com.wangdaye.mysplash._common.data.data.PhotoStats;
-import com.wangdaye.mysplash._common.data.data.User;
-import com.wangdaye.mysplash._common.data.tools.AuthInterceptor;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
+import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.PhotoStats;
+import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.utils.AuthInterceptor;
 
 import java.util.List;
 
@@ -132,7 +132,7 @@ public class PhotoService {
     }
 
     public void requestPhotoDetails(Photo p, final OnRequestPhotoDetailsListener l) {
-        Call<PhotoDetails> getAPhoto = buildApi(buildClient()).getAPhoto(p.id, p.width, p.height, "0,0," + p.width + "," + p.height);
+        Call<PhotoDetails> getAPhoto = buildApi(buildClient()).getPhotoDetails(p.id);
         getAPhoto.enqueue(new Callback<PhotoDetails>() {
             @Override
             public void onResponse(Call<PhotoDetails> call, Response<PhotoDetails> response) {
@@ -145,6 +145,25 @@ public class PhotoService {
             public void onFailure(Call<PhotoDetails> call, Throwable t) {
                 if (l != null) {
                     l.onRequestPhotoDetailsFailed(call, t);
+                }
+            }
+        });
+    }
+
+    public void requestAPhoto(String id, final OnRequestSinglePhotoListener l) {
+        Call<Photo> getAPhoto = buildApi(buildClient()).getAPhoto(id);
+        getAPhoto.enqueue(new Callback<Photo>() {
+            @Override
+            public void onResponse(Call<Photo> call, Response<Photo> response) {
+                if (l != null) {
+                    l.onRequestSinglePhotoSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Photo> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestSinglePhotoFailed(call, t);
                 }
             }
         });
@@ -341,5 +360,10 @@ public class PhotoService {
     public interface OnRequestPhotoDetailsListener {
         void onRequestPhotoDetailsSuccess(Call<PhotoDetails> call, retrofit2.Response<PhotoDetails> response);
         void onRequestPhotoDetailsFailed(Call<PhotoDetails> call, Throwable t);
+    }
+
+    public interface OnRequestSinglePhotoListener {
+        void onRequestSinglePhotoSuccess(Call<Photo> call, retrofit2.Response<Photo> response);
+        void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t);
     }
 }

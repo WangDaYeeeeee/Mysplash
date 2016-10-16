@@ -1,13 +1,14 @@
 <resources>
 
     <!-- 关键字. -->
-    <string name="about_app">ABOUT APP</string>
+    <string name="about_app">概览</string>
     <string name="introduce">介绍</string>
     <string name="gitHub">GITHUB</string>
     <string name="email">邮件</string>
     <string name="source_code">源码</string>
-    <string name="thx">THX</string>
+    <string name="thx">鸣谢</string>
     <string name="enter">确认</string>
+    <string name="copy">复制</string>
     <string name="next">下一步</string>
     <string name="cancel">取消</string>
     <string name="backstage">后台进行</string>
@@ -18,13 +19,17 @@
     <string name="save">保存</string>
     <string name="check">查看</string>
     <string name="set">设置</string>
+    <string name="search">搜索</string>
     <string name="all">不限</string>
     <string name="stats">统计</string>
-    <string name="open_photo_link">在网页中打开</string>
+    <string name="by">来自</string>
+    <string name="on">拍摄于</string>
+    <string name="now">现在</string>
     <string name="open_download_link">访问下载页</string>
 
     <!-- 反馈. -->
     <string name="feedback_click_retry">点击重试</string>
+
     <string name="feedback_load_failed_tv">加载失败</string>
     <string name="feedback_load_failed_toast">加载失败</string>
     <string name="feedback_load_nothing_tv">什么也没加载出来</string>
@@ -34,6 +39,8 @@
     <string name="feedback_search_nothing_tv">什么也没搜索到</string>
     <string name="feedback_search_nothing_toast">什么也没搜索到</string>
     <string name="feedback_search_bar">搜索照片，收藏集或者用户</string>
+    <string name="feedback_search_photos_bar">图片关键字</string>
+    <string name="feedback_search_users_bar">用户关键字</string>
     <string name="feedback_search_photos_tv">搜索图片</string>
     <string name="feedback_search_collections_tv">搜索收藏集</string>
     <string name="feedback_search_users_tv">搜索用户</string>
@@ -41,10 +48,12 @@
 
     <string name="feedback_notify_restart">重启后生效</string>
 
-    <string name="feedback_download_success">下载成功</string>
-    <string name="feedback_download_failed">下载失败</string>
+    <string name="feedback_download_photo_success">下载照片成功\nstorage/emulated/0/Pictures/Mysplash</string>
+    <string name="feedback_download_photo_failed">下载照片失败</string>
+    <string name="feedback_download_collection_success">下载收藏集成功\nstorage/emulated/0/Pictures/Mysplash</string>
+    <string name="feedback_download_collection_failed">下载收藏集失败</string>
     <string name="feedback_downloading">下载中</string>
-    <string name="feedback_connecting">连接中</string>
+    <string name="feedback_download_start">下载开始</string>
     <string name="feedback_no_sd_card">找不到存储设备</string>
     <string name="feedback_create_file_failed">创建存储路径失败</string>
     <string name="feedback_need_permission">获取权限失败</string>
@@ -105,7 +114,16 @@
     <string name="feedback_confirm_restart">确认重启</string>
     <string name="feedback_restart_warning">现在重启将导致下载任务取消</string>
 
-    <string name="feedback_click_again_to_skip">再次点击可以跳过</string>
+    <string name="feedback_click_again_to_exit">再次点击以退出</string>
+
+    <string name="feedback_share_photo_title">一张来自Unsplash.com的照片</string>
+    <string name="feedback_share_photo_extra">拍摄自#, 于$\n</string>
+
+    <string name="feedback_share_collection_title">一组来自Unsplash.com的收藏集</string>
+    <string name="feedback_share_collection_extra">创建自#, 于$\n</string>
+
+    <string name="feedback_share_user_title">一位Unsplash.com用户</string>
+    <string name="feedback_share_user_extra">#\n</string>
 
     <!-- introduce. -->
     <string name="introduce_title_search">全新的搜索界面</string>
@@ -136,12 +154,15 @@
 
     <string name="action_clear_text">清空内容</string>
 
+    <string name="action_share">分享</string>
     <string name="action_menu">菜单</string>
 
     <string name="action_open_portfolio">个人主页</string>
 
     <string name="action_edit">编辑</string>
+    <string name="action_download">下载</string>
 
+    <string name="action_path">下载路径</string>
     <string name="action_cancel_all">全部取消</string>
 
     <!-- 设置项. -->

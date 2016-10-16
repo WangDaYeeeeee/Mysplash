@@ -1,10 +1,8 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.data.Me;
-import com.wangdaye.mysplash._common.data.data.User;
+import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.data.entity.User;
 
-
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
@@ -17,15 +18,19 @@ import android.widget.LinearLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.data.Me;
+import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.data.tools.AuthManager;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.SafeHandler;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -35,9 +40,11 @@ import retrofit2.Response;
  * */
 
 public class UpdateMeActivity extends MysplashActivity
-        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener,
+        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener, SafeHandler.HandlerContainer,
         UserService.OnRequestMeProfileListener {
     // widget
+    private SafeHandler<UpdateMeActivity> handler;
+
     private CoordinatorLayout container;
     private NestedScrollView scrollView;
 
@@ -54,6 +61,7 @@ public class UpdateMeActivity extends MysplashActivity
 
     // data
     private UserService service;
+    private boolean backPressed = false;
 
     private int state;
     private final int INPUT_STATE = 0;
@@ -88,9 +96,21 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public void onBackPressed() {
-        if (state == INPUT_STATE) {
+        if (state == INPUT_STATE && backPressed) {
             super.onBackPressed();
             overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+        } else if (state == INPUT_STATE) {
+            backPressed = true;
+            NotificationUtils.showSnackbar(
+                    getString(R.string.feedback_click_again_to_exit),
+                    Snackbar.LENGTH_SHORT);
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.obtainMessage(1).sendToTarget();
+                }
+            }, 2000);
         }
     }
 
@@ -103,6 +123,8 @@ public class UpdateMeActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
+        this.handler = new SafeHandler<>(this);
+
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_update_me_swipeBackLayout);
         swipeBackLayout.setOnSwipeListener(this);
 
@@ -302,8 +324,21 @@ public class UpdateMeActivity extends MysplashActivity
                 Snackbar.LENGTH_SHORT);
     }
 
+    // snackbar container
+
     @Override
     public View getSnackbarContainer() {
         return container;
+    }
+
+    // handler.
+
+    @Override
+    public void handleMessage(Message message) {
+        switch (message.what) {
+            case 1:
+                backPressed = false;
+                break;
+        }
     }
 }

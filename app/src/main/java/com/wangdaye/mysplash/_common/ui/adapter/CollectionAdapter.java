@@ -26,10 +26,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.AuthManager;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
-import com.wangdaye.mysplash._common.data.data.Collection;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
@@ -45,9 +46,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     // widget
     private Context a;
     private List<Collection> itemList;
-
-    // data
-    private boolean own = false;
 
     /** <br> life cycle. */
 
@@ -81,7 +79,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                                                            boolean isFromMemoryCache, boolean isFirstResource) {
                                 holder.title.setText(itemList.get(position).title.toUpperCase());
                                 int photoNum = itemList.get(position).total_photos;
-                                holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
+                                holder.subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
                                 holder.image.setShowShadow(true);
                                 return false;
                             }
@@ -131,7 +129,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
                                 holder.title.setText(itemList.get(position).title.toUpperCase());
                                 int photoNum = itemList.get(position).total_photos;
-                                holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
+                                holder.subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
                                 holder.image.setShowShadow(true);
                                 return false;
                             }
@@ -213,10 +211,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         return itemList.size();
     }
 
-    public void setOwn(boolean own) {
-        this.own = own;
-    }
-
     /** <br> inner class. */
 
     // view holder.
@@ -253,7 +247,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                     if (a instanceof Activity) {
                         Collection c = itemList.get(getAdapterPosition());
                         Mysplash.getInstance().setCollection(c);
-                        Mysplash.getInstance().setMyOwnCollection(own);
 
                         Intent intent = new Intent(a, CollectionActivity.class);
                         ActivityOptionsCompat options = ActivityOptionsCompat
@@ -261,7 +254,11 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                                         view,
                                         (int) view.getX(), (int) view.getY(),
                                         view.getMeasuredWidth(), view.getMeasuredHeight());
-                        if (own) {
+                        if (AuthManager.getInstance().getUsername() != null
+                                &&
+                                AuthManager.getInstance()
+                                        .getUsername()
+                                        .equals(itemList.get(getAdapterPosition()).user.username)) {
                             ActivityCompat.startActivityForResult(
                                     (Activity) a,
                                     intent,

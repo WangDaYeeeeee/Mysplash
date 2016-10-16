@@ -31,6 +31,7 @@ import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -60,9 +61,8 @@ public class HomeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         initModel();
-        initView(view);
         initPresenter();
-        pagers[0].refreshPager();
+        initView(view);
         return view;
     }
 
@@ -119,10 +119,11 @@ public class HomeFragment extends Fragment
             pagers[i] = (PagerView) pageList.get(i);
         }
 
+        String[] homeTabs = getResources().getStringArray(R.array.home_tabs);
+
         List<String> tabList = new ArrayList<>();
-        tabList.add("NEW");
-        tabList.add("FEATURED");
-        tabList.add("COLLECTIONS");
+        Collections.addAll(tabList, homeTabs);
+
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
         ViewPager viewPager = (ViewPager) v.findViewById(R.id.fragment_home_viewPager);
@@ -132,6 +133,8 @@ public class HomeFragment extends Fragment
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_home_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+
+        pagers[0].refreshPager();
     }
 
     // interface.
