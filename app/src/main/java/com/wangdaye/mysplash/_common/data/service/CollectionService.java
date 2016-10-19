@@ -8,7 +8,7 @@ import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.entity.User;
-import com.wangdaye.mysplash._common.utils.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
 import java.util.List;
 

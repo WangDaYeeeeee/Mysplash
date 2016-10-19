@@ -3,7 +3,6 @@ package com.wangdaye.mysplash;
 import android.app.Activity;
 import android.app.Application;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.Photo;
@@ -51,7 +50,7 @@ public class Mysplash extends Application {
     public static final String MYSPLASH_GITHUB = "https://github.com/WangDaYeeeeee/MySplash";
 
     public static final String DATE_FORMAT = "yyyy/MM/dd";
-    public static final String DOWNLOAD_PATH = Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash/";
+    public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
     public static final String DOWNLOAD_FORMAT = ".jpg";
 
     public static final int DEFAULT_PER_PAGE = 30;

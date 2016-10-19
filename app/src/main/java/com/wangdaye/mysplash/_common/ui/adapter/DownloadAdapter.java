@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 
 import static android.content.Context.DOWNLOAD_SERVICE;

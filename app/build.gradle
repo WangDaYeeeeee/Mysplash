@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 24
-        versionCode 236
-        versionName "2.3.6"
+        versionCode 239
+        versionName "2.3.9"
     }
     sourceSets {
         main {
@@ -24,6 +24,7 @@ android {
                     'src/main/res/collection',
                     'src/main/res/me',
                     'src/main/res/commen',
+                    'src/main/res/about',
                     'src/main/res/resource',
                     'src/main/res']
         }

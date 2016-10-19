@@ -5,7 +5,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.UserApi;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.entity.User;
-import com.wangdaye.mysplash._common.utils.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;

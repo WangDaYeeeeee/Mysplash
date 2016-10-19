@@ -14,12 +14,12 @@ import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.dialog.PathDialog;
-import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
-import com.wangdaye.mysplash._common.utils.SafeHandler;
+import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -95,7 +95,7 @@ public class DownloadManageActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
-        this.handler = new SafeHandler(this);
+        this.handler = new SafeHandler<>(this);
         this.timer = new Timer();
 
         SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_download_manage_swipeBackLayout);

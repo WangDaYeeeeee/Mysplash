@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.collection.presenter.activity;
 import android.app.Activity;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- home tab. -->
+    <string-array name="home_tabs">
+        <item>NUOVI</item>
+        <item>SELEZIONATI</item>
+        <item>RACCOLTE</item>
+    </string-array>
+
+    <!-- search tab. -->
+    <string-array name="search_tabs">
+        <item>FOTOGRAFIE</item>
+        <item>RACCOLTE</item>
+        <item>UTENTI</item>
+    </string-array>
+
+    <!-- user tab. -->
+    <string-array name="user_tabs">
+        <item>FOTOGRAFIE</item>
+        <item>RACCOLTE</item>
+        <item>PIACIUTI</item>
+    </string-array>
+
+    <!-- download option. -->
+    <string-array name="download_options">
+        <item>DOWNLOAD</item>
+        <item>CONDIVIDI</item>
+        <item>SFONDO</item>
+    </string-array>
+
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
+        <item>Ultimo</item>
+        <item>Datato</item>
+        <item>Popolare</item>
+        <item>Casuale</item>
+    </string-array>
+    <string-array name="photo_order_values">
+        <item>ultimo</item>
+        <item>datato</item>
+        <item>popolare</item>
+        <item>casuale</item>
+    </string-array>
+
+    <!-- collection type. -->
+    <string-array name="collection_types">
+        <item>Tutte</item>
+        <item>Curate</item>
+        <item>Selezionate</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>Compatto</item>
+        <item>Originale</item>
+    </string-array>
+
+    <!-- back to top. -->
+    <string-array name="back_to_top_type">
+        <item>Tutta la lista</item>
+        <item>Solo pagina principale</item>
+        <item>Nessuno</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>Lingua di sistema</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>Italiano</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>Orizzontale</item>
+        <item>Verticale</item>
+        <item>Riquadro</item>
+    </string-array>
+
+</resources>

@@ -82,11 +82,13 @@
         <item>Follow system</item>
         <item>English</item>
         <item>中文</item>
+        <item>Italiano</item>
     </string-array>
     <string-array name="language_values">
         <item>follow_system</item>
         <item>english</item>
         <item>chinese</item>
+        <item>italian</item>
     </string-array>
 
     <!-- search orientation. -->

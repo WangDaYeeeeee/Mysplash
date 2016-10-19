@@ -8,7 +8,7 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.AuthManager;
+import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.activity.UpdateMeActivity;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;

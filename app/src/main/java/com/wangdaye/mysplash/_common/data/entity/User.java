@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.data.entity;
 
-import com.wangdaye.mysplash._common.utils.AuthManager;
+import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 
 /**
  * User.

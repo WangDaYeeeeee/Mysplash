@@ -105,7 +105,7 @@
             android:label="@string/action_settings" />
 
         <activity
-            android:name="._common.ui.activity.AboutActivity"
+            android:name=".about.view.activity.AboutActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/action_about"/>
 

@@ -96,21 +96,8 @@ public class ValueUtils {
             case "chinese":
                 return c.getResources().getStringArray(R.array.languages)[2];
 
-            default:
-                return null;
-        }
-    }
-
-    public static String getOrientationName(Context c, String key) {
-        switch (key) {
-            case PhotoApi.LANDSCAPE_ORIENTATION:
-                return c.getResources().getStringArray(R.array.search_orientations)[0];
-
-            case PhotoApi.PORTRAIT_ORIENTATION:
-                return c.getResources().getStringArray(R.array.search_orientations)[1];
-
-            case PhotoApi.SQUARE_ORIENTATION:
-                return c.getResources().getStringArray(R.array.search_orientations)[2];
+            case "italian":
+                return c.getResources().getStringArray(R.array.languages)[3];
 
             default:
                 return null;

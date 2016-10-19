@@ -28,15 +28,16 @@
             app:theme="@style/MysplashToolbarTheme">
 
             <RelativeLayout
+                android:id="@+id/activity_collection_collectionBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|snap">
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/activity_collection_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
-                    app:layout_scrollFlags="scroll|snap"
                     app:popupTheme="@style/MysplashPopupMenuTheme" />
 
                 <TextView

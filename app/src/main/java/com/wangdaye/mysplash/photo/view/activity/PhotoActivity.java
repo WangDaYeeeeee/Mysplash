@@ -30,7 +30,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
@@ -429,7 +429,7 @@ public class PhotoActivity extends AppCompatActivity
 
             case R.id.activity_photo_shareBtn:
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    downloadPresenter.download();
+                    downloadPresenter.share();
                 } else {
                     requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.SHARE_TYPE);
                 }
@@ -437,7 +437,7 @@ public class PhotoActivity extends AppCompatActivity
 
             case R.id.activity_photo_wallBtn:
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    downloadPresenter.download();
+                    downloadPresenter.setWallpaper();
                 } else {
                     requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.WALLPAPER_TYPE);
                 }

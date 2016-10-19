@@ -6,7 +6,8 @@
     <string name="gitHub">GITHUB</string>
     <string name="email">邮件</string>
     <string name="source_code">源码</string>
-    <string name="thx">鸣谢</string>
+    <string name="translators">译者</string>
+    <string name="libraries">开源库</string>
     <string name="enter">确认</string>
     <string name="copy">复制</string>
     <string name="next">下一步</string>

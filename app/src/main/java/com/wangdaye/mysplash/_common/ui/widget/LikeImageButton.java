@@ -11,7 +11,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.AuthManager;
+import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 
 /**

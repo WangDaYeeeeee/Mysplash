@@ -36,7 +36,7 @@ import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.SearchBarImplementor;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash.main.view.widget.HomeSearchView;
-import com.wangdaye.mysplash._common.utils.SafeHandler;
+import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;

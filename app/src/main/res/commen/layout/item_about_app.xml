@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_about_app_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <ImageView
+        android:id="@+id/item_about_app_icon"
+        style="@style/material_icon"
+        tools:src="@drawable/ic_book_light"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/item_about_app_title"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/item_about_app_icon"
+        android:layout_centerVertical="true"
+        style="@style/subtitle_text"
+        tools:text="@string/introduce"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

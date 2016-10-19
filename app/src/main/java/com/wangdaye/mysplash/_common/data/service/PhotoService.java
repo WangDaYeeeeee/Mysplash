@@ -10,7 +10,7 @@ import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.data.entity.PhotoStats;
 import com.wangdaye.mysplash._common.data.entity.User;
-import com.wangdaye.mysplash._common.utils.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
 import java.util.List;
 

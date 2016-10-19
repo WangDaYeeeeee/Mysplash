@@ -31,6 +31,10 @@ public class LanguageUtils {
                 configuration.setLocale(Locale.SIMPLIFIED_CHINESE);
                 break;
 
+            case "italian":
+                configuration.setLocale(Locale.ITALIAN);
+                break;
+
             default:
                 configuration.setLocale(Locale.US);
                 break;

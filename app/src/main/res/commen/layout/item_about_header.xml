@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/item_about_header_titleContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/item_about_header_appIcon"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/ic_launcher"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/item_about_header_appName"
+            android:text="@string/app_name"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/item_about_header_appIcon"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/mini_margin"
+            style="@style/title_text" />
+
+        <TextView
+            android:id="@+id/item_about_header_versionCode"
+            android:text="@string/version_code"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/item_about_header_appName"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_width="wrap_content"
+            style="@style/subtitle_text" />
+
+    </RelativeLayout>
+
+    <ImageButton
+        android:id="@+id/item_about_header_backButton"
+        style="@style/material_image_button"
+        tools:src="@drawable/ic_toolbar_back_light"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:id="@+id/item_about_header_unsplashContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground"
+        android:layout_below="@id/item_about_header_titleContainer">
+
+        <TextView
+            android:id="@+id/item_about_header_unsplashTitle"
+            android:text="@string/unsplash"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginLeft="@dimen/normal_margin"
+            style="@style/title_text"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/item_about_header_unsplashContent"
+            android:text="@string/about_unsplash"
+            android:lineSpacingMultiplier="1.3"
+            android:layout_below="@id/item_about_header_unsplashTitle"
+            android:layout_marginTop="@dimen/mini_margin"
+            android:layout_marginLeft="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
+            style="@style/content_text"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
