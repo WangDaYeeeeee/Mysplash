@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.utils.helper;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
 import android.support.design.widget.Snackbar;
 
@@ -49,7 +50,13 @@ public class DownloadHelper {
                     new DownloadManager.Query()
                             .setFilterById(entityList.get(i).missionId));
             cursor.moveToFirst();
-            if (cursor.getCount() == 0) {
+            int cursorCount = 0;
+            try {
+                cursorCount = cursor.getCount();
+            } catch (CursorIndexOutOfBoundsException ignored) {
+
+            }
+            if (cursorCount == 0) {
                 entityList.clear();
             } else if (DownloadManager.STATUS_SUCCESSFUL
                     == cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
