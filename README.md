@@ -18,15 +18,6 @@
 * Support share photos and set as wallpaper.
 * Support download raw photos.
 
-### Plan
-
-* add Search user.
-* tweak UI.
-* add Daily pictures.
-* add Daily wallpaper.
-* add Set as lock screen wallpaper.
-* add Featured Wallpaper From author.
-
 ### History
 
 * [All APKs](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
@@ -55,16 +46,6 @@
 
 * [所有的安装包都在这里](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
 * 安装包从v1.0.0开始收录
-
-### 近期计划
-
-* 搜索用户
-* UI细节调整
-* 优化代码层对activity生命周期的管理
-* 每日一图功能
-* 每日自动更换壁纸功能
-* 锁屏壁纸功能
-* 作者精选
   
 ### 联系作者
 
