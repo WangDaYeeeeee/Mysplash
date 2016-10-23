@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
@@ -25,8 +26,7 @@ import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.ui.adapter.TagAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash.photo.model.widget.LoadObject;
 import com.wangdaye.mysplash.photo.model.widget.PhotoDetailsObject;
 import com.wangdaye.mysplash.photo.presenter.widget.LoadImplementor;
@@ -117,7 +117,7 @@ public class PhotoDetailsView extends FrameLayout
         this.detailsContainer = (RelativeLayout) findViewById(R.id.container_photo_details_detailsContainer);
         detailsContainer.setVisibility(GONE);
 
-        if (ThemeUtils.getInstance(getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) findViewById(R.id.container_photo_details_sizeIcon)).setImageResource(R.drawable.ic_size_light);
             ((ImageView) findViewById(R.id.container_photo_details_colorIcon)).setImageResource(R.drawable.ic_color_light);
             ((ImageView) findViewById(R.id.container_photo_details_locationIcon)).setImageResource(R.drawable.ic_location_light);
@@ -138,28 +138,28 @@ public class PhotoDetailsView extends FrameLayout
         }
 
         this.sizeText = (TextView) findViewById(R.id.container_photo_details_sizeTxt);
-        TypefaceUtils.setTypeface(getContext(), sizeText);
+        DisplayUtils.setTypeface(getContext(), sizeText);
 
         this.colorText = (TextView) findViewById(R.id.container_photo_details_colorTxt);
-        TypefaceUtils.setTypeface(getContext(), colorText);
+        DisplayUtils.setTypeface(getContext(), colorText);
 
         this.locationText = (TextView) findViewById(R.id.container_photo_details_locationTxt);
-        TypefaceUtils.setTypeface(getContext(), locationText);
+        DisplayUtils.setTypeface(getContext(), locationText);
 
         this.modelText = (TextView) findViewById(R.id.container_photo_details_modelTxt);
-        TypefaceUtils.setTypeface(getContext(), modelText);
+        DisplayUtils.setTypeface(getContext(), modelText);
 
         this.exposureText = (TextView) findViewById(R.id.container_photo_details_exposureTxt);
-        TypefaceUtils.setTypeface(getContext(), exposureText);
+        DisplayUtils.setTypeface(getContext(), exposureText);
 
         this.apertureText = (TextView) findViewById(R.id.container_photo_details_apertureTxt);
-        TypefaceUtils.setTypeface(getContext(), apertureText);
+        DisplayUtils.setTypeface(getContext(), apertureText);
 
         this.focalText = (TextView) findViewById(R.id.container_photo_details_focalTxt);
-        TypefaceUtils.setTypeface(getContext(), focalText);
+        DisplayUtils.setTypeface(getContext(), focalText);
 
         this.isoText = (TextView) findViewById(R.id.container_photo_details_isoTxt);
-        TypefaceUtils.setTypeface(getContext(), isoText);
+        DisplayUtils.setTypeface(getContext(), isoText);
 
         this.colorSample = (FrameLayout) findViewById(R.id.container_photo_details_colorSample);
 

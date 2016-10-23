@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
 
 /**
@@ -41,7 +41,7 @@ public class TranslatorHolder extends RecyclerView.ViewHolder
 
         TextView subtitle = (TextView) itemView.findViewById(R.id.item_about_translator_subtitle);
         subtitle.setText(object.subtitle);
-        TypefaceUtils.setTypeface(itemView.getContext(), subtitle);
+        DisplayUtils.setTypeface(itemView.getContext(), subtitle);
 
         this.email = object.subtitle;
     }

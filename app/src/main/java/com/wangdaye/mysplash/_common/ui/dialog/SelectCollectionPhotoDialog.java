@@ -26,10 +26,10 @@ import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,13 +111,13 @@ public class SelectCollectionPhotoDialog extends DialogFragment
         creatorContainer.setVisibility(View.GONE);
 
         this.nameTxt = (EditText) v.findViewById(R.id.dialog_select_collection_creatorName);
-        TypefaceUtils.setTypeface(getActivity(), nameTxt);
+        DisplayUtils.setTypeface(getActivity(), nameTxt);
 
         this.descriptionTxt = (EditText) v.findViewById(R.id.dialog_select_collection_creatorDescription);
-        TypefaceUtils.setTypeface(getActivity(), descriptionTxt);
+        DisplayUtils.setTypeface(getActivity(), descriptionTxt);
 
         this.checkBox = (CheckBox) v.findViewById(R.id.dialog_select_collection_creatorCheckBox);
-        TypefaceUtils.setTypeface(getActivity(), checkBox);
+        DisplayUtils.setTypeface(getActivity(), checkBox);
 
         Button createBtn = (Button) v.findViewById(R.id.dialog_select_collection_creatorCreateBtn);
         createBtn.setOnClickListener(this);

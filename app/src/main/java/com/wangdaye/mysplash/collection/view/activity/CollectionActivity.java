@@ -21,6 +21,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.EditResultModel;
@@ -34,7 +35,6 @@ import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.collection.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.collection.model.activity.EditResultObject;
 import com.wangdaye.mysplash.collection.presenter.activity.BrowsableImplementor;
@@ -49,7 +49,6 @@ import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
@@ -113,7 +112,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
@@ -126,7 +125,7 @@ public class CollectionActivity extends MysplashActivity
             super.onBackPressed();
         } else if (photosView.needPagerBackToTop()
                 && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
-            photosView.pagerBackToTop();
+            backToTop();
         } else {
             Intent result = new Intent();
             result.putExtra(DELETE_COLLECTION, false);
@@ -136,6 +135,12 @@ public class CollectionActivity extends MysplashActivity
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
             }
         }
+    }
+
+    @Override
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, photosView);
+        photosView.pagerBackToTop();
     }
 
     public void finishActivity(int dir, boolean delete) {
@@ -178,7 +183,7 @@ public class CollectionActivity extends MysplashActivity
             swipeBackLayout.setOnSwipeListener(this);
 
             StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
-            if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+            if (DisplayUtils.isNeedSetStatusBarMask()) {
                 statusBar.setBackgroundResource(R.color.colorPrimary_light);
                 statusBar.setMask(true);
             }
@@ -193,12 +198,12 @@ public class CollectionActivity extends MysplashActivity
             if (TextUtils.isEmpty(c.description)) {
                 description.setVisibility(View.GONE);
             } else {
-                TypefaceUtils.setTypeface(this, description);
+                DisplayUtils.setTypeface(this, description);
                 description.setText(c.description);
             }
 
             Toolbar toolbar = (Toolbar) findViewById(R.id.activity_collection_toolbar);
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 if (browsablePresenter.isBrowsable()) {
                     toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
                 } else {
@@ -231,8 +236,9 @@ public class CollectionActivity extends MysplashActivity
             this.creatorBar = (RelativeLayout) findViewById(R.id.activity_collection_creatorBar);
             creatorBar.setOnClickListener(this);
 
+            findViewById(R.id.activity_collection_touchBar).setOnClickListener(this);
+
             this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
-            avatarImage.setOnClickListener(this);
             Glide.with(this)
                     .load(c.user.profile_image.large)
                     .priority(Priority.HIGH)
@@ -241,7 +247,7 @@ public class CollectionActivity extends MysplashActivity
                     .into(avatarImage);
 
             TextView subtitle = (TextView) findViewById(R.id.activity_collection_subtitle);
-            TypefaceUtils.setTypeface(this, subtitle);
+            DisplayUtils.setTypeface(this, subtitle);
             subtitle.setText(getString(R.string.by) + " " + c.user.name);
 
             this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
@@ -250,12 +256,6 @@ public class CollectionActivity extends MysplashActivity
 
             AnimUtils.animInitShow(photosView, 400);
         }
-    }
-
-    // interface.
-
-    public CollectionPhotosView getPhotosView() {
-        return photosView;
     }
 
     /** <br> model. */
@@ -291,7 +291,7 @@ public class CollectionActivity extends MysplashActivity
                 toolbarPresenter.touchToolbar(this);
                 break;
 
-            case R.id.activity_collection_avatar:
+            case R.id.activity_collection_touchBar:
                 User u = User.buildUser((Collection) editResultPresenter.getEditKey());
                 Mysplash.getInstance().setUser(u);
 
@@ -382,7 +382,7 @@ public class CollectionActivity extends MysplashActivity
         if (TextUtils.isEmpty(c.description)) {
             description.setVisibility(View.GONE);
         } else {
-            TypefaceUtils.setTypeface(this, description);
+            DisplayUtils.setTypeface(this, description);
             description.setText(c.description);
         }
     }

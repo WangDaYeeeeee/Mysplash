@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -17,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
@@ -25,9 +27,9 @@ import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.SearchBarView;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
@@ -57,7 +59,9 @@ public class SearchFragment extends Fragment
 
     // view.
     private CoordinatorLayout container;
+    private AppBarLayout appBar;
     private EditText editText;
+    private ViewPager viewPager;
     private PagerView[] pagers = new PagerView[3];
 
     private SafeHandler<SearchFragment> handler;
@@ -105,15 +109,17 @@ public class SearchFragment extends Fragment
         this.handler = new SafeHandler<>(this);
 
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_search_statusBar);
-        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_search_container);
 
+        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_search_appBar);
+
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_search_toolbar);
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             toolbar.inflateMenu(R.menu.fragment_search_toolbar_light);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
         } else {
@@ -124,7 +130,7 @@ public class SearchFragment extends Fragment
         toolbar.setNavigationOnClickListener(this);
 
         this.editText = (EditText) v.findViewById(R.id.fragment_search_editText);
-        TypefaceUtils.setTypeface(getActivity(), editText);
+        DisplayUtils.setTypeface(getActivity(), editText);
         editText.setOnEditorActionListener(this);
         editText.setFocusable(true);
         editText.requestFocus();
@@ -153,7 +159,7 @@ public class SearchFragment extends Fragment
         Collections.addAll(tabList, searchTabs);
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
-        ViewPager viewPager = (ViewPager) v.findViewById(R.id.fragment_search_viewPager);
+        this.viewPager = (ViewPager) v.findViewById(R.id.fragment_search_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
 
@@ -164,7 +170,8 @@ public class SearchFragment extends Fragment
 
     // interface.
 
-    public void pagerBackToTop() {
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
     }
 

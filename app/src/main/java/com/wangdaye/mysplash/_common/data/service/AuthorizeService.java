@@ -60,7 +60,7 @@ public class AuthorizeService {
 
     private AuthorizeApi buildApi() {
         return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_AUTH_BASE_URL)
+                .baseUrl(Mysplash.UNSPLASH_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create((AuthorizeApi.class));

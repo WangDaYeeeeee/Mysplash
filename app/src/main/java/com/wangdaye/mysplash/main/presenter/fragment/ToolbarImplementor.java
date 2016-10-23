@@ -30,9 +30,9 @@ public class ToolbarImplementor
     public void touchToolbar(Activity a) {
         Fragment f = ((MainActivity) a).getTopFragment();
         if (f instanceof HomeFragment) {
-            ((HomeFragment) f).pagerBackToTop();
+            ((HomeFragment) f).backToTop();
         } else {
-            ((CategoryFragment) f).pagerBackToTop();
+            ((CategoryFragment) f).backToTop();
         }
     }
 

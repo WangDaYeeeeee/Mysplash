@@ -6,12 +6,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * About activity.
@@ -42,11 +43,16 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -62,7 +68,7 @@ public class AboutActivity extends MysplashActivity
         swipeBackLayout.setOnSwipeListener(this);
 
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_about_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }

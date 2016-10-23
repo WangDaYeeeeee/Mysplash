@@ -17,7 +17,7 @@ import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.entity.PhotoStats;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -79,13 +79,13 @@ public class StatsDialog extends DialogFragment
         dataContainer.setVisibility(View.GONE);
 
         this.likeNum = (TextView) v.findViewById(R.id.dialog_stats_likeNum);
-        TypefaceUtils.setTypeface(getActivity(), likeNum);
+        DisplayUtils.setTypeface(getActivity(), likeNum);
 
         this.viewNum = (TextView) v.findViewById(R.id.dialog_stats_viewNum);
-        TypefaceUtils.setTypeface(getActivity(), viewNum);
+        DisplayUtils.setTypeface(getActivity(), viewNum);
 
         this.downloadNum = (TextView) v.findViewById(R.id.dialog_stats_downloadNum);
-        TypefaceUtils.setTypeface(getActivity(), downloadNum);
+        DisplayUtils.setTypeface(getActivity(), downloadNum);
     }
 
     private void setState(int stateTo) {

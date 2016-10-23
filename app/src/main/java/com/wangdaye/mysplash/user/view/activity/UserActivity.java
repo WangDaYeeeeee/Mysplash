@@ -38,7 +38,6 @@ import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
@@ -78,6 +77,7 @@ public class UserActivity extends MysplashActivity
     private CoordinatorLayout container;
     private AppBarLayout appBar;
     private Toolbar toolbar;
+    private ViewPager viewPager;
     private MyPagerAdapter adapter;
     private UserProfileView userProfileView;
 
@@ -125,8 +125,23 @@ public class UserActivity extends MysplashActivity
     }
 
     @Override
+    public void onBackPressed() {
+        if (Mysplash.getInstance().isActivityInBackstage()) {
+            super.onBackPressed();
+        } else if (pagerManagePresenter.needPagerBackToTop()
+                && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
+            backToTop();
+        } else {
+            super.onBackPressed();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+            }
+        }
+    }
+
+    @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_User);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_User);
@@ -134,18 +149,9 @@ public class UserActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
-        if (Mysplash.getInstance().isActivityInBackstage()) {
-            super.onBackPressed();
-        } else if (pagerManagePresenter.needPagerBackToTop()
-                && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
-            pagerManagePresenter.pagerScrollToTop();
-        } else {
-            super.onBackPressed();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-            }
-        }
+    protected void backToTop() {
+        BackToTopUtils.showTopBar(appBar, viewPager);
+        pagerManagePresenter.pagerScrollToTop();
     }
 
     /** <br> presenter. */
@@ -172,7 +178,7 @@ public class UserActivity extends MysplashActivity
             swipeBackLayout.setOnSwipeListener(this);
 
             StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_user_statusBar);
-            if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+            if (DisplayUtils.isNeedSetStatusBarMask()) {
                 statusBar.setBackgroundResource(R.color.colorPrimary_light);
                 statusBar.setMask(true);
             }
@@ -181,7 +187,7 @@ public class UserActivity extends MysplashActivity
             this.appBar = (AppBarLayout) findViewById(R.id.activity_user_appBar);
 
             this.toolbar = (Toolbar) findViewById(R.id.activity_user_toolbar);
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 if (browsablePresenter.isBrowsable()) {
                     toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
                 } else {
@@ -242,7 +248,7 @@ public class UserActivity extends MysplashActivity
         Collections.addAll(tabList, userTabs);
         this.adapter = new MyPagerAdapter(pageList, tabList);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.activity_user_viewPager);
+        this.viewPager = (ViewPager) findViewById(R.id.activity_user_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
 

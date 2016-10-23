@@ -10,8 +10,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Header holder.
@@ -27,7 +26,7 @@ public class HeaderHolder extends RecyclerView.ViewHolder
         super(itemView);
 
         ImageButton backBtn = (ImageButton) itemView.findViewById(R.id.item_about_header_backButton);
-        if (ThemeUtils.getInstance(itemView.getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             backBtn.setImageResource(R.drawable.ic_toolbar_back_light);
         } else {
             backBtn.setImageResource(R.drawable.ic_toolbar_back_dark);
@@ -37,17 +36,17 @@ public class HeaderHolder extends RecyclerView.ViewHolder
         this.appIcon = (ImageView) itemView.findViewById(R.id.item_about_header_appIcon);
 
         TextView version = (TextView) itemView.findViewById(R.id.item_about_header_versionCode);
-        TypefaceUtils.setTypeface(itemView.getContext(), version);
+        DisplayUtils.setTypeface(itemView.getContext(), version);
 
         itemView.findViewById(R.id.item_about_header_unsplashContainer).setOnClickListener(this);
 
         TextView unsplashTitle = (TextView) itemView.findViewById(R.id.item_about_header_unsplashTitle);
         unsplashTitle.setText(itemView.getContext().getString(R.string.unsplash));
-        TypefaceUtils.setTypeface(itemView.getContext(), unsplashTitle);
+        DisplayUtils.setTypeface(itemView.getContext(), unsplashTitle);
 
         TextView unsplashContent = (TextView) itemView.findViewById(R.id.item_about_header_unsplashContent);
         unsplashContent.setText(itemView.getContext().getString(R.string.about_unsplash));
-        TypefaceUtils.setTypeface(itemView.getContext(), unsplashContent);
+        DisplayUtils.setTypeface(itemView.getContext(), unsplashContent);
     }
 
     /** <br> interface. */

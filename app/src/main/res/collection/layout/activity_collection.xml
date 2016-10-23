@@ -73,11 +73,13 @@
                 tools:ignore="UselessParent">
 
                 <RelativeLayout
+                    android:id="@+id/activity_collection_touchBar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/normal_margin"
                     android:layout_marginRight="@dimen/normal_margin"
-                    android:layout_centerHorizontal="true">
+                    android:layout_centerHorizontal="true"
+                    android:background="?attr/selectableItemBackground">
 
                     <com.wangdaye.mysplash._common.ui.widget.CircleImageView
                         android:id="@+id/activity_collection_avatar"

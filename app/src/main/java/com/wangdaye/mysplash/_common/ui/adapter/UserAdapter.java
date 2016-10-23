@@ -25,10 +25,9 @@ import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
@@ -77,7 +76,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.portfolioBtn.setVisibility(View.VISIBLE);
         }
 
-        if (ThemeUtils.getInstance(a).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             holder.portfolioBtn.setImageResource(R.drawable.ic_item_earth_light);
         } else {
             holder.portfolioBtn.setImageResource(R.drawable.ic_item_earth_dark);
@@ -177,7 +176,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             this.title = (TextView) itemView.findViewById(R.id.item_user_title);
 
             this.subtitle = (TextView) itemView.findViewById(R.id.item_user_subtitle);
-            TypefaceUtils.setTypeface(itemView.getContext(), subtitle);
+            DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
         @Override

@@ -2,9 +2,9 @@ package com.wangdaye.mysplash.about.presenter;
 
 import android.content.Context;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.about.model.AppAboutObject;
 import com.wangdaye.mysplash.about.model.CategoryAboutObject;
 import com.wangdaye.mysplash.about.model.HeaderAboutObject;
@@ -22,7 +22,7 @@ public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
         List<AboutModel> modelList = new ArrayList<>(17);
-        boolean light = ThemeUtils.getInstance(c).isLightTheme();
+        boolean light = Mysplash.getInstance().isLightTheme();
 
         // header.
         modelList.add(new HeaderAboutObject());

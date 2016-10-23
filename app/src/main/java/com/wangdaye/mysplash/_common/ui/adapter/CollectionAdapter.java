@@ -26,13 +26,12 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
@@ -101,9 +100,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                                                            boolean isFromMemoryCache, boolean isFirstResource) {
                                 if (!itemList.get(position).cover_photo.hasFadeIn) {
                                     holder.image.setHasTransientState(true);
-                                    final ObservableColorMatrix matrix = new ObservableColorMatrix();
+                                    final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                                     final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                            matrix, ObservableColorMatrix.SATURATION, 0f, 1f);
+                                            matrix, AnimUtils.ObservableColorMatrix.SATURATION, 0f, 1f);
                                     saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
                                             () {
                                         @Override
@@ -144,7 +143,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             }
             holder.background.setBackgroundColor(
                     ColorUtils.calcCardBackgroundColor(
-                            a,
                             itemList.get(position).cover_photo.color));
         } else {
             holder.image.setImageResource(R.color.colorTextContent_light);
@@ -237,7 +235,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             this.title = (TextView) itemView.findViewById(R.id.item_collection_title);
 
             this.subtitle = (TextView) itemView.findViewById(R.id.item_collection_subtitle);
-            TypefaceUtils.setTypeface(itemView.getContext(), subtitle);
+            DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
         @Override

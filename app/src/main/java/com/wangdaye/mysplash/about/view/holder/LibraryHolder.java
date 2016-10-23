@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash.about.model.LibraryObject;
 
 /**
@@ -28,11 +28,11 @@ public class LibraryHolder extends RecyclerView.ViewHolder
 
         TextView title = (TextView) itemView.findViewById(R.id.item_about_library_title);
         title.setText(object.title);
-        TypefaceUtils.setTypeface(itemView.getContext(), title);
+        DisplayUtils.setTypeface(itemView.getContext(), title);
 
         TextView content = (TextView) itemView.findViewById(R.id.item_about_library_content);
         content.setText(object.subtitle);
-        TypefaceUtils.setTypeface(itemView.getContext(), content);
+        DisplayUtils.setTypeface(itemView.getContext(), content);
 
         this.uri = object.uri;
     }

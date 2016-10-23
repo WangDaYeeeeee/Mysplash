@@ -16,8 +16,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Search featured popup window.
@@ -74,10 +73,10 @@ public class SearchFeaturedPopupWindow extends PopupWindow
         v.findViewById(R.id.popup_search_featured_featured).setOnClickListener(this);
 
         TextView allTxt = (TextView) v.findViewById(R.id.popup_search_featured_allTxt);
-        TypefaceUtils.setTypeface(v.getContext(), allTxt);
+        DisplayUtils.setTypeface(v.getContext(), allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (!valueNow) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 allTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 allTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -85,17 +84,17 @@ public class SearchFeaturedPopupWindow extends PopupWindow
         }
 
         TextView featuredTxt = (TextView) v.findViewById(R.id.popup_search_featured_featuredTxt);
-        TypefaceUtils.setTypeface(v.getContext(), featuredTxt);
+        DisplayUtils.setTypeface(v.getContext(), featuredTxt);
         featuredTxt.setText(v.getContext().getResources().getStringArray(R.array.home_tabs)[1]);
         if (valueNow) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 featuredTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 featuredTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
         }
 
-        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_search_featured_allIcon))
                     .setImageResource(R.drawable.ic_infinity_light);
             ((ImageView) v.findViewById(R.id.popup_search_featured_featuredIcon))

@@ -21,13 +21,12 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -71,11 +70,16 @@ public class LoginActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -109,7 +113,7 @@ public class LoginActivity extends MysplashActivity
         swipeBackLayout.setOnSwipeListener(this);
 
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_login_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
@@ -118,7 +122,7 @@ public class LoginActivity extends MysplashActivity
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.activity_login_closeBtn);
         closeBtn.setOnClickListener(this);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             closeBtn.setImageResource(R.drawable.ic_close_light);
         } else {
             closeBtn.setImageResource(R.drawable.ic_close_dark);
@@ -130,7 +134,7 @@ public class LoginActivity extends MysplashActivity
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(icon);
 
-        TypefaceUtils.setTypeface(this, ((TextView) findViewById(R.id.activity_login_content)));
+        DisplayUtils.setTypeface(this, ((TextView) findViewById(R.id.activity_login_content)));
 
         Button loginBtn = (Button) findViewById(R.id.activity_login_loginBtn);
         loginBtn.setOnClickListener(this);
@@ -139,7 +143,7 @@ public class LoginActivity extends MysplashActivity
         joinBtn.setOnClickListener(this);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 loginBtn.setBackgroundResource(R.color.colorTextTitle_light);
                 joinBtn.setBackgroundResource(R.color.colorPrimaryDark_light);
             } else {

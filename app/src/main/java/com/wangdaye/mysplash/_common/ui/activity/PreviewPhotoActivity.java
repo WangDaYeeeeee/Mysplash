@@ -1,9 +1,7 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -19,7 +17,6 @@ import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 
 /**
  * Photo preview activity.
@@ -43,8 +40,8 @@ public class PreviewPhotoActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Mysplash.getInstance().addActivity(this);
-        loadLanguage();
         setTheme();
+        LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
         setContentView(R.layout.activity_preview_photo);
     }
@@ -72,7 +69,7 @@ public class PreviewPhotoActivity extends AppCompatActivity
     }
 
     private void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_PhotoPreview);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_PhotoPreview);
@@ -80,14 +77,6 @@ public class PreviewPhotoActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
-    }
-
-    private void loadLanguage() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String language = sharedPreferences.getString(
-                getString(R.string.key_language),
-                getResources().getStringArray(R.array.language_values)[0]);
-        LanguageUtils.setLanguage(this, language);
     }
 
     /** <br> view. */

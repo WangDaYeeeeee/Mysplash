@@ -36,7 +36,7 @@ public class MultiFilterBarImplementor
     public void touchToolbar(Activity a) {
         MainActivity activity = (MainActivity) a;
         MultiFilterFragment f = (MultiFilterFragment) activity.getTopFragment();
-        f.pagerBackToTop();
+        f.backToTop();
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
@@ -30,7 +31,6 @@ import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
@@ -105,7 +105,7 @@ public class MePhotosView extends FrameLayout
         retryButton.setVisibility(GONE);
 
         this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
-        if (ThemeUtils.getInstance(getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
         } else {
@@ -302,15 +302,7 @@ public class MePhotosView extends FrameLayout
 
     @Override
     public void scrollToTop() {
-        int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-        if (firstVisibleItem > 5) {
-            recyclerView.scrollToPosition(5);
-        }
-        recyclerView.smoothScrollToPosition(0);
-
-        if (!BackToTopUtils.getInstance(getContext()).isNotified()) {
-            BackToTopUtils.getInstance(getContext()).showSetBackToTopSnackbar();
-        }
+        BackToTopUtils.scrollToTop(recyclerView);
     }
 
     @Override

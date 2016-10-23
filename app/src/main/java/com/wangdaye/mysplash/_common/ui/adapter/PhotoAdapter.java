@@ -34,6 +34,7 @@ import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
@@ -42,8 +43,6 @@ import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
-import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
@@ -126,9 +125,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             itemList.get(position).loadPhotoSuccess = true;
                             if (!itemList.get(position).hasFadedIn) {
                                 holder.image.setHasTransientState(true);
-                                final ObservableColorMatrix matrix = new ObservableColorMatrix();
+                                final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                                 final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                        matrix, ObservableColorMatrix.SATURATION, 0f, 1f);
+                                        matrix, AnimUtils.ObservableColorMatrix.SATURATION, 0f, 1f);
                                 saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
                                         () {
                                     @Override
@@ -179,7 +178,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
         holder.background.setBackgroundColor(
                 ColorUtils.calcCardBackgroundColor(
-                        a,
                         itemList.get(position).color));
     }
 
@@ -331,7 +329,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             image.setSize(itemList.get(position).width, itemList.get(position).height);
 
             this.title = (TextView) itemView.findViewById(R.id.item_photo_title);
-            TypefaceUtils.setTypeface(itemView.getContext(), title);
+            DisplayUtils.setTypeface(itemView.getContext(), title);
 
             this.deleteButton = (ImageButton) itemView.findViewById(R.id.item_photo_deleteButton);
             deleteButton.setOnClickListener(this);

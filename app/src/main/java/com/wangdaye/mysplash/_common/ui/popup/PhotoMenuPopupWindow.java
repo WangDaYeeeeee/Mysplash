@@ -15,8 +15,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Photo menu popup window.
@@ -61,7 +60,7 @@ public class PhotoMenuPopupWindow extends PopupWindow
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setElevation(10);
         }
-        showAsDropDown(anchor, 0, 0, Gravity.CENTER);
+        showAsDropDown(anchor, anchor.getMeasuredWidth(), 0, Gravity.CENTER);
     }
 
     /** <br> UI. */
@@ -73,12 +72,12 @@ public class PhotoMenuPopupWindow extends PopupWindow
         v.findViewById(R.id.popup_photo_menu_downloadPage).setOnClickListener(this);
 
         TextView statsTxt = (TextView) v.findViewById(R.id.popup_photo_menu_statsTxt);
-        TypefaceUtils.setTypeface(v.getContext(), statsTxt);
+        DisplayUtils.setTypeface(v.getContext(), statsTxt);
 
         TextView downloadPageTxt = (TextView) v.findViewById(R.id.popup_photo_menu_downloadPageTxt);
-        TypefaceUtils.setTypeface(v.getContext(), downloadPageTxt);
+        DisplayUtils.setTypeface(v.getContext(), downloadPageTxt);
 
-        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_light);
             ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_light);
         } else {

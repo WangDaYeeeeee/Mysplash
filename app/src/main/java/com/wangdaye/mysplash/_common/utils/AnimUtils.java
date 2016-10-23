@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.ColorMatrix;
 import android.os.Build;
 import android.util.Property;
 import android.view.View;
@@ -126,4 +127,39 @@ public class AnimUtils {
         }
     }
 
+    /**
+     * An extension to {@link ColorMatrix} which caches the saturation value for animation purposes.
+     */
+    public static class ObservableColorMatrix extends ColorMatrix {
+
+        private float saturation = 1f;
+
+        public ObservableColorMatrix() {
+            super();
+        }
+
+        private float getSaturation() {
+            return saturation;
+        }
+
+        @Override
+        public void setSaturation(float saturation) {
+            this.saturation = saturation;
+            super.setSaturation(saturation);
+        }
+
+        public static final Property<ObservableColorMatrix, Float> SATURATION
+                = new FloatProperty<ObservableColorMatrix>("saturation") {
+
+            @Override
+            public void setValue(ObservableColorMatrix cm, float value) {
+                cm.setSaturation(value);
+            }
+
+            @Override
+            public Float get(ObservableColorMatrix cm) {
+                return cm.getSaturation();
+            }
+        };
+    }
 }

@@ -49,7 +49,7 @@ public class AppHolder extends RecyclerView.ViewHolder
                         break;
 
                     case 2:
-                        Uri github = Uri.parse(Mysplash.AUTHOR_GITHUB);
+                        Uri github = Uri.parse("https://github.com/WangDaYeeeeee");
                         v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, github));
                         break;
 
@@ -59,7 +59,7 @@ public class AppHolder extends RecyclerView.ViewHolder
                         break;
 
                     case 4:
-                        Uri mysplash = Uri.parse(Mysplash.MYSPLASH_GITHUB);
+                        Uri mysplash = Uri.parse("https://github.com/WangDaYeeeeee/MySplash");
                         v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, mysplash));
                         break;
                 }

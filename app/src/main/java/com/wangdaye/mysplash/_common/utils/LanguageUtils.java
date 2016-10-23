@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 import java.util.Locale;
@@ -15,14 +16,15 @@ import java.util.Locale;
 
 public class LanguageUtils {
 
-    public static void setLanguage(Context c, String key) {
-        if (key.equals(c.getResources().getStringArray(R.array.language_values)[0])) {
+    public static void setLanguage(Context c) {
+        String language = Mysplash.getInstance().getLanguage();
+        if (language.equals(c.getResources().getStringArray(R.array.language_values)[0])) {
             return;
         }
         Resources resources = c.getResources();
         Configuration configuration = resources.getConfiguration();
         DisplayMetrics metrics = resources.getDisplayMetrics();
-        switch (key) {
+        switch (language) {
             case "english":
                 configuration.setLocale(Locale.US);
                 break;

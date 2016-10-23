@@ -1,7 +1,8 @@
 package com.wangdaye.mysplash._common.utils;
 
-import android.content.Context;
 import android.graphics.Color;
+
+import com.wangdaye.mysplash.Mysplash;
 
 /**
  * Color utils.
@@ -9,12 +10,12 @@ import android.graphics.Color;
 
 public class ColorUtils {
 
-    public static int calcCardBackgroundColor(Context c, String color) {
+    public static int calcCardBackgroundColor(String color) {
         int backgroundColor = Color.parseColor(color);
         int red = ((backgroundColor & 0x00FF0000) >> 16);
         int green = ((backgroundColor & 0x0000FF00) >> 8);
         int blue = (backgroundColor & 0x000000FF);
-        if (ThemeUtils.getInstance(c).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             return Color.rgb(
                     (int) (red + (255 - red) * 0.7),
                     (int) (green + (255 - green) * 0.7),

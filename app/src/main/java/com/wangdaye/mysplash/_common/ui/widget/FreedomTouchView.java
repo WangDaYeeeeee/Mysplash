@@ -95,17 +95,18 @@ public class FreedomTouchView extends View {
     private int[] getMeasureSize(int measureWidth) {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
+        int statusBarHeight = DisplayUtils.getStatusBarHeight(getResources());
         float limitHeight = screenHeight
                 - new DisplayUtils(getContext()).dpToPx(300);
 
         if (1.0 * height / width * screenWidth <= limitHeight) {
             return new int[] {
                     (int) (limitHeight * width / height),
-                    (int) limitHeight};
+                    (int) limitHeight - statusBarHeight};
         } else {
             return new int[] {
                     measureWidth,
-                    (int) (measureWidth * height / width)};
+                    (int) (measureWidth * height / width - statusBarHeight)};
         }
     }
 }

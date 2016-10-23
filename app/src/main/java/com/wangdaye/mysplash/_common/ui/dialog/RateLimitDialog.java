@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Rate limit dialog.
@@ -51,7 +51,7 @@ public class RateLimitDialog extends DialogFragment
 
     private void initWidget(View v) {
         TextView content = (TextView) v.findViewById(R.id.dialog_rate_limit_content);
-        TypefaceUtils.setTypeface(getActivity(), content);
+        DisplayUtils.setTypeface(getActivity(), content);
 
         v.findViewById(R.id.dialog_rate_limit_button).setOnClickListener(this);
     }

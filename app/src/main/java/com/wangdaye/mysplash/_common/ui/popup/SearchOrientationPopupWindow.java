@@ -17,8 +17,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Search orientation popup window.
@@ -79,10 +78,10 @@ public class SearchOrientationPopupWindow extends PopupWindow
         v.findViewById(R.id.popup_search_orientation_squarish).setOnClickListener(this);
 
         TextView allTxt = (TextView) v.findViewById(R.id.popup_search_orientation_allTxt);
-        TypefaceUtils.setTypeface(v.getContext(), allTxt);
+        DisplayUtils.setTypeface(v.getContext(), allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (TextUtils.isEmpty(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 allTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 allTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -90,10 +89,10 @@ public class SearchOrientationPopupWindow extends PopupWindow
         }
 
         TextView landscapeTxt = (TextView) v.findViewById(R.id.popup_search_orientation_landscapeTxt);
-        TypefaceUtils.setTypeface(v.getContext(), landscapeTxt);
+        DisplayUtils.setTypeface(v.getContext(), landscapeTxt);
         landscapeTxt.setText(names[0]);
         if (values[0].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 landscapeTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 landscapeTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -101,10 +100,10 @@ public class SearchOrientationPopupWindow extends PopupWindow
         }
 
         TextView portraitTxt = (TextView) v.findViewById(R.id.popup_search_orientation_portraitTxt);
-        TypefaceUtils.setTypeface(v.getContext(), portraitTxt);
+        DisplayUtils.setTypeface(v.getContext(), portraitTxt);
         portraitTxt.setText(names[1]);
         if (values[1].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 portraitTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 portraitTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -112,17 +111,17 @@ public class SearchOrientationPopupWindow extends PopupWindow
         }
 
         TextView squarishTxt = (TextView) v.findViewById(R.id.popup_search_orientation_squarishTxt);
-        TypefaceUtils.setTypeface(v.getContext(), squarishTxt);
+        DisplayUtils.setTypeface(v.getContext(), squarishTxt);
         squarishTxt.setText(names[2]);
         if (values[2].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 squarishTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 squarishTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
         }
 
-        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_search_orientation_allIcon))
                     .setImageResource(R.drawable.ic_infinity_light);
             ((ImageView) v.findViewById(R.id.popup_search_orientation_landscapeIcon))

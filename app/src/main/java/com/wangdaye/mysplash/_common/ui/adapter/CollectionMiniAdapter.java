@@ -23,8 +23,7 @@ import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ObservableColorMatrix;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 import java.util.List;
 
@@ -84,9 +83,9 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                                                            boolean isFromMemoryCache, boolean isFirstResource) {
                                 if (!itemList.get(position - 1).cover_photo.hasFadeIn) {
                                     holder.image.setHasTransientState(true);
-                                    final ObservableColorMatrix matrix = new ObservableColorMatrix();
+                                    final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                                     final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                            matrix, ObservableColorMatrix.SATURATION, 0f, 1f);
+                                            matrix, AnimUtils.ObservableColorMatrix.SATURATION, 0f, 1f);
                                     saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
                                             () {
                                         @Override
@@ -194,7 +193,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             this.title = (TextView) itemView.findViewById(R.id.item_collection_mini_title);
 
             this.subtitle = (TextView) itemView.findViewById(R.id.item_collection_mini_subtitle);
-            TypefaceUtils.setTypeface(itemView.getContext(), subtitle);
+            DisplayUtils.setTypeface(itemView.getContext(), subtitle);
 
             this.lockIcon = (ImageView) itemView.findViewById(R.id.item_collection_privateIcon);
         }

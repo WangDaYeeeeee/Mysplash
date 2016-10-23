@@ -14,16 +14,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 
@@ -100,12 +100,12 @@ public class MeProfileView  extends FrameLayout
         profileContainer.setVisibility(GONE);
 
         this.locationTxt = (TextView) findViewById(R.id.container_user_profile_locationTxt);
-        TypefaceUtils.setTypeface(getContext(), locationTxt);
+        DisplayUtils.setTypeface(getContext(), locationTxt);
 
         this.bioTxt = (TextView) findViewById(R.id.container_user_profile_bio);
-        TypefaceUtils.setTypeface(getContext(), bioTxt);
+        DisplayUtils.setTypeface(getContext(), bioTxt);
 
-        if (ThemeUtils.getInstance(getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) findViewById(R.id.container_user_profile_locationIcon))
                     .setImageResource(R.drawable.ic_location_light);
         } else {

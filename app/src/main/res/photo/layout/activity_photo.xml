@@ -23,7 +23,7 @@
             android:transitionName="@string/transition_photo_image"
             android:foreground="?attr/selectableItemBackground"
             app:fiv_cover_mode="true"
-            app:layout_behavior="._common.ui.behavior.CoverBehavior"
+            app:layout_behavior="._common.ui.behavior.PhotoCoverBehavior"
             tools:ignore="UnusedAttribute" />
 
         <android.support.v4.widget.NestedScrollView
@@ -32,7 +32,8 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay">
+            android:scrollbarStyle="outsideOverlay"
+            app:layout_behavior="._common.ui.behavior.PhotoScrollViewBehavior">
 
             <LinearLayout
                 android:id="@+id/activity_photo_scrollContainer"
@@ -57,36 +58,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <ImageButton
-                            android:id="@+id/activity_photo_backBtn"
-                            android:src="@drawable/ic_toolbar_back_light"
-                            android:layout_alignParentLeft="true"
-                            style="@style/material_image_button"
-                            tools:ignore="ContentDescription,RtlHardcoded" />
-
-                        <ImageButton
-                            android:id="@+id/activity_photo_menuBtn"
-                            android:src="@drawable/ic_menu_light"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:padding="@dimen/little_margin"
-                            android:layout_marginTop="@dimen/little_margin"
-                            android:layout_marginRight="@dimen/little_margin"
-                            android:layout_alignParentRight="true"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            tools:ignore="ContentDescription,RtlHardcoded" />
-
-                        <ImageButton
-                            android:id="@+id/activity_photo_shareUrlBtn"
-                            android:src="@drawable/ic_share_light"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:padding="@dimen/little_margin"
-                            android:layout_marginTop="@dimen/little_margin"
-                            android:layout_marginRight="@dimen/little_margin"
-                            android:layout_toLeftOf="@id/activity_photo_menuBtn"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            tools:ignore="ContentDescription,RtlHardcoded" />
+                        <android.support.v7.widget.Toolbar
+                            android:id="@+id/activity_photo_scrollToolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:background="?attr/colorPrimary"
+                            app:popupTheme="@style/MysplashPopupMenuTheme" />
 
                         <TextView
                             android:id="@+id/activity_photo_title"
@@ -119,6 +96,7 @@
                             android:layout_marginTop="@dimen/normal_margin"
                             android:scaleType="centerCrop"
                             android:src="?attr/line_color"
+                            android:background="?attr/selectableItemBackgroundBorderless"
                             app:civ_fill_color="@color/colorTextGrey"
                             tools:ignore="RtlHardcoded" />
 
@@ -226,26 +204,37 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-        <android.support.design.widget.AppBarLayout
-            android:id="@+id/activity_photo_appBar"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:theme="@style/MysplashToolbarTheme"
-            app:layout_behavior="._common.ui.behavior.OverlapAppBarBehavior">
+            app:layout_behavior="._common.ui.behavior.PhotoOverlapAppBarBehavior">
 
             <com.wangdaye.mysplash._common.ui.widget.StatusBarView
                 android:background="?attr/colorPrimary"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:alpha="0" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/activity_photo_toolbar"
+            <android.support.design.widget.AppBarLayout
+                android:id="@+id/activity_photo_appBar"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:popupTheme="@style/MysplashPopupMenuTheme" />
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/mini_margin"
+                android:visibility="gone"
+                app:theme="@style/MysplashToolbarTheme">
 
-        </android.support.design.widget.AppBarLayout>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_photo_topToolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:theme="@style/MysplashToolbarTheme"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
+
+            </android.support.design.widget.AppBarLayout>
+
+        </LinearLayout>
 
     </android.support.design.widget.CoordinatorLayout>
 

@@ -368,26 +368,4 @@ public class SwipeBackLayout extends CoordinatorLayout {
             // do nothing.
         }
     }
-/*
-    private class OnSwipeOutListener implements Animation.AnimationListener {
-
-        @Override
-        public void onAnimationStart(Animation animation) {
-
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            animating = false;
-            if (listener != null) {
-                listener.onSwipeFinish();
-            }
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-
-        }
-    }
-    */
 }

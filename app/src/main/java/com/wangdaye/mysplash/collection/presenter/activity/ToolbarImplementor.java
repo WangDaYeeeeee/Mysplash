@@ -27,7 +27,7 @@ public class ToolbarImplementor
 
     @Override
     public void touchToolbar(Activity a) {
-        ((CollectionActivity) a).getPhotosView().pagerBackToTop();
+        ((CollectionActivity) a).backToTop();
     }
 
     @Override

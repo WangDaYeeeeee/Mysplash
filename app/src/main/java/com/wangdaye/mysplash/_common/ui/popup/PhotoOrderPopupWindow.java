@@ -16,8 +16,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Order popup window.
@@ -89,10 +88,10 @@ public class PhotoOrderPopupWindow extends PopupWindow
         }
 
         TextView latestTxt = (TextView) v.findViewById(R.id.popup_photo_order_latestTxt);
-        TypefaceUtils.setTypeface(v.getContext(), latestTxt);
+        DisplayUtils.setTypeface(v.getContext(), latestTxt);
         latestTxt.setText(names[0]);
         if (values[0].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 latestTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 latestTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -100,10 +99,10 @@ public class PhotoOrderPopupWindow extends PopupWindow
         }
 
         TextView oldestTxt = (TextView) v.findViewById(R.id.popup_photo_order_oldestTxt);
-        TypefaceUtils.setTypeface(v.getContext(), oldestTxt);
+        DisplayUtils.setTypeface(v.getContext(), oldestTxt);
         oldestTxt.setText(names[1]);
         if (values[1].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 oldestTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 oldestTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -111,10 +110,10 @@ public class PhotoOrderPopupWindow extends PopupWindow
         }
 
         TextView popularTxt = (TextView) v.findViewById(R.id.popup_photo_order_popularTxt);
-        TypefaceUtils.setTypeface(v.getContext(), popularTxt);
+        DisplayUtils.setTypeface(v.getContext(), popularTxt);
         popularTxt.setText(names[2]);
         if (values[2].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 popularTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 popularTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -122,17 +121,17 @@ public class PhotoOrderPopupWindow extends PopupWindow
         }
 
         TextView randomTxt = (TextView) v.findViewById(R.id.popup_photo_order_randomTxt);
-        TypefaceUtils.setTypeface(v.getContext(), randomTxt);
+        DisplayUtils.setTypeface(v.getContext(), randomTxt);
         randomTxt.setText(names[3]);
         if (values[3].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 randomTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 randomTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
         }
 
-        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_photo_order_latestIcon)).setImageResource(R.drawable.ic_timer_light);
             ((ImageView) v.findViewById(R.id.popup_photo_order_oldestIcon)).setImageResource(R.drawable.ic_timer_off_light);
             ((ImageView) v.findViewById(R.id.popup_photo_order_popularIcon)).setImageResource(R.drawable.ic_fire_light);

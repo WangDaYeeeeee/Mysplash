@@ -15,7 +15,7 @@
             android:layout_width="72dp"
             android:layout_height="72dp"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginTop="?attr/actionBarSize"
             android:scaleType="centerCrop"
             tools:src="@drawable/ic_launcher"
             tools:ignore="ContentDescription" />

@@ -16,8 +16,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Collection type popup window.
@@ -77,10 +76,10 @@ public class CollectionTypePopupWindow extends PopupWindow
         v.findViewById(R.id.popup_collection_type_featured).setOnClickListener(this);
 
         TextView allTxt = (TextView) v.findViewById(R.id.popup_collection_type_allTxt);
-        TypefaceUtils.setTypeface(v.getContext(), allTxt);
+        DisplayUtils.setTypeface(v.getContext(), allTxt);
         allTxt.setText(names[0]);
         if (values[0].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 allTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 allTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -88,10 +87,10 @@ public class CollectionTypePopupWindow extends PopupWindow
         }
 
         TextView curatedTxt = (TextView) v.findViewById(R.id.popup_collection_type_curatedTxt);
-        TypefaceUtils.setTypeface(v.getContext(), curatedTxt);
+        DisplayUtils.setTypeface(v.getContext(), curatedTxt);
         curatedTxt.setText(names[1]);
         if (values[1].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 curatedTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 curatedTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
@@ -99,17 +98,17 @@ public class CollectionTypePopupWindow extends PopupWindow
         }
 
         TextView featuredTxt = (TextView) v.findViewById(R.id.popup_collection_type_featuredTxt);
-        TypefaceUtils.setTypeface(v.getContext(), featuredTxt);
+        DisplayUtils.setTypeface(v.getContext(), featuredTxt);
         featuredTxt.setText(names[2]);
         if (values[2].equals(valueNow)) {
-            if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 featuredTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
             } else {
                 featuredTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_dark));
             }
         }
 
-        if (ThemeUtils.getInstance(v.getContext()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_collection_type_allIcon)).setImageResource(R.drawable.ic_mountain_light);
             ((ImageView) v.findViewById(R.id.popup_collection_type_curatedIcon)).setImageResource(R.drawable.ic_star_outline_light);
             ((ImageView) v.findViewById(R.id.popup_collection_type_featuredIcon)).setImageResource(R.drawable.ic_feature_light);

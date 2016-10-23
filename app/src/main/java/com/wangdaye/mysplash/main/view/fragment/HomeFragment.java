@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,12 +12,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
@@ -47,7 +50,9 @@ public class HomeFragment extends Fragment
 
     // view.
     private CoordinatorLayout container;
+    private AppBarLayout appBar;
     private Toolbar toolbar;
+    private ViewPager viewPager;
     private PagerView[] pagers = new PagerView[3];
 
     // presenter.
@@ -90,15 +95,17 @@ public class HomeFragment extends Fragment
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
-        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_home_container);
 
+        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_home_appBar);
+
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_home_toolbar);
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             toolbar.inflateMenu(R.menu.fragment_home_toolbar_light);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
         } else {
@@ -128,7 +135,7 @@ public class HomeFragment extends Fragment
 
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
-        ViewPager viewPager = (ViewPager) v.findViewById(R.id.fragment_home_viewPager);
+        this.viewPager = (ViewPager) v.findViewById(R.id.fragment_home_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
 
@@ -141,7 +148,8 @@ public class HomeFragment extends Fragment
 
     // interface.
 
-    public void pagerBackToTop() {
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
     }
 

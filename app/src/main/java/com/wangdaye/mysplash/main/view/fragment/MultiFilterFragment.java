@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
@@ -27,10 +29,10 @@ import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.model.fragment.MultiFilterBarObject;
 import com.wangdaye.mysplash.main.presenter.fragment.MessageManageImplementor;
@@ -56,6 +58,7 @@ public class MultiFilterFragment extends Fragment
     private SafeHandler<MultiFilterFragment> handler;
 
     private CoordinatorLayout container;
+    private AppBarLayout appBar;
     private EditText[] editTexts;
     private TextView[] menuTexts;
     private ImageButton[] menuIcons;
@@ -101,16 +104,18 @@ public class MultiFilterFragment extends Fragment
         this.handler = new SafeHandler<>(this);
 
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_multi_filter_statusBar);
-        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_multi_filter_container);
 
+        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_multi_filter_appBar);
+
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_multi_filter_toolbar);
         toolbar.setTitle(getString(R.string.action_multi_filter));
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
@@ -123,15 +128,15 @@ public class MultiFilterFragment extends Fragment
                 (EditText) v.findViewById(R.id.fragment_multi_filter_users_editText)};
         editTexts[0].setOnEditorActionListener(this);
         editTexts[1].setOnEditorActionListener(this);
-        TypefaceUtils.setTypeface(getActivity(), editTexts[0]);
-        TypefaceUtils.setTypeface(getActivity(), editTexts[1]);
+        DisplayUtils.setTypeface(getActivity(), editTexts[0]);
+        DisplayUtils.setTypeface(getActivity(), editTexts[1]);
 
         editTexts[0].setFocusable(true);
         editTexts[0].requestFocus();
 
         ImageButton searchBtn = (ImageButton) v.findViewById(R.id.fragment_multi_filter_searchBtn);
         searchBtn.setOnClickListener(this);
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             searchBtn.setImageResource(R.drawable.ic_toolbar_search_light);
         } else {
             searchBtn.setImageResource(R.drawable.ic_toolbar_search_dark);
@@ -147,7 +152,7 @@ public class MultiFilterFragment extends Fragment
                 (TextView) v.findViewById(R.id.fragment_multi_filter_featuredTxt)};
         for (TextView t : menuTexts) {
             t.setText(R.string.all);
-            TypefaceUtils.setTypeface(getActivity(), t);
+            DisplayUtils.setTypeface(getActivity(), t);
         }
 
         this.menuIcons = new ImageButton[] {
@@ -155,7 +160,7 @@ public class MultiFilterFragment extends Fragment
                 (ImageButton) v.findViewById(R.id.fragment_multi_filter_orientationBtn),
                 (ImageButton) v.findViewById(R.id.fragment_multi_filter_featuredBtn)};
         for (ImageButton b : menuIcons) {
-            if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 b.setImageResource(R.drawable.ic_menu_down_light);
             } else {
                 b.setImageResource(R.drawable.ic_menu_down_dark);
@@ -171,7 +176,8 @@ public class MultiFilterFragment extends Fragment
 
     // interface.
 
-    public void pagerBackToTop() {
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, photosView);
         photosView.pagerScrollToTop();
     }
 

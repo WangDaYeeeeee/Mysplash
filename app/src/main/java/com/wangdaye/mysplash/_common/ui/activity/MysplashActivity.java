@@ -1,12 +1,9 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -25,9 +22,10 @@ public abstract class MysplashActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Mysplash.getInstance().addActivity(this);
-        loadLanguage();
         setTheme();
+        LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
         DisplayUtils.setStatusBarTextDark(this);
     }
@@ -48,13 +46,7 @@ public abstract class MysplashActivity extends AppCompatActivity
         return started;
     }
 
-    private void loadLanguage() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String language = sharedPreferences.getString(
-                getString(R.string.key_language),
-                getResources().getStringArray(R.array.language_values)[0]);
-        LanguageUtils.setLanguage(this, language);
-    }
-
     protected abstract void setTheme();
+
+    protected abstract void backToTop();
 }

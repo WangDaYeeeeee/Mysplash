@@ -2,11 +2,9 @@ package com.wangdaye.mysplash.main.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -23,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
@@ -34,11 +33,9 @@ import com.wangdaye.mysplash._common.i.view.MeManageView;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
@@ -110,15 +107,6 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light);
-        } else {
-            setTheme(R.style.MysplashTheme_dark);
-        }
-    }
-
-    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
@@ -131,23 +119,37 @@ public class MainActivity extends MysplashActivity
             if (f instanceof HomeFragment
                     && ((HomeFragment) f).needPagerBackToTop()
                     && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
-                ((HomeFragment) f).pagerBackToTop();
+                ((HomeFragment) f).backToTop();
             } else if (f instanceof SearchFragment
                     && ((SearchFragment) f).needPagerBackToTop()
                     && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
-                ((SearchFragment) f).pagerBackToTop();
+                ((SearchFragment) f).backToTop();
             } else if (f instanceof CategoryFragment
                     && ((CategoryFragment) f).needPagerBackToTop()
                     && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
-                ((CategoryFragment) f).pagerBackToTop();
+                ((CategoryFragment) f).backToTop();
             } else if (f instanceof MultiFilterFragment
                     && ((MultiFilterFragment) f).needPagerBackToTop()
                     && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
-                ((MultiFilterFragment) f).pagerBackToTop();
+                ((MultiFilterFragment) f).backToTop();
             } else {
                 super.onBackPressed();
             }
         }
+    }
+
+    @Override
+    protected void setTheme() {
+        if (Mysplash.getInstance().isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light);
+        } else {
+            setTheme(R.style.MysplashTheme_dark);
+        }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -161,10 +163,7 @@ public class MainActivity extends MysplashActivity
     }
 
     public void changeTheme() {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-        editor.putBoolean(getString(R.string.key_light_theme), !ThemeUtils.getInstance(this).isLightTheme());
-        editor.apply();
-        ThemeUtils.getInstance(this).refresh(this);
+        DisplayUtils.changeTheme(this);
         reboot();
     }
 
@@ -195,7 +194,7 @@ public class MainActivity extends MysplashActivity
         this.handler = new SafeHandler<>(this);
 
         NavigationView nav = (NavigationView) findViewById(R.id.activity_main_navView);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             nav.inflateMenu(R.menu.activity_main_drawer_light);
         } else {
             nav.inflateMenu(R.menu.activity_main_drawer_dark);
@@ -213,10 +212,10 @@ public class MainActivity extends MysplashActivity
                 .into(appIcon);
 
         this.navTitle = (TextView) header.findViewById(R.id.container_nav_header_title);
-        TypefaceUtils.setTypeface(this, navTitle);
+        DisplayUtils.setTypeface(this, navTitle);
 
         this.navSubtitle = (TextView) header.findViewById(R.id.container_nav_header_subtitle);
-        TypefaceUtils.setTypeface(this, navSubtitle);
+        DisplayUtils.setTypeface(this, navSubtitle);
 
         this.navButton = (ImageButton) header.findViewById(R.id.container_nav_header_button);
         navButton.setOnClickListener(this);
@@ -410,13 +409,13 @@ public class MainActivity extends MysplashActivity
     @Override
     public void drawMeButton() {
         if (!AuthManager.getInstance().isAuthorized()) {
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 navButton.setImageResource(R.drawable.ic_plus_mini_light);
             } else {
                 navButton.setImageResource(R.drawable.ic_plus_mini_dark);
             }
         } else {
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 navButton.setImageResource(R.drawable.ic_close_mini_light);
             } else {
                 navButton.setImageResource(R.drawable.ic_close_mini_dark);

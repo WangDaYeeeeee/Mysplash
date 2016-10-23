@@ -2,6 +2,7 @@ package com.wangdaye.mysplash;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 
 import com.wangdaye.mysplash._common.data.entity.Collection;
@@ -27,6 +28,8 @@ public class Mysplash extends Application {
 
     private Drawable drawable = null;
 
+    private boolean lightTheme = true;
+    private String language = "follow_system";
     private boolean activityInBackstage = false;
 
     // Unsplash data.
@@ -35,20 +38,16 @@ public class Mysplash extends Application {
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
-    public static final String UNSPLASH_AUTH_BASE_URL = "https://unsplash.com/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_LOGIN_CALLBACK = "unsplash-auth-callback";
-    public static final String UNSPLASH_LOGIN_URL = Mysplash.UNSPLASH_AUTH_BASE_URL + "oauth/authorize"
+    public static final String UNSPLASH_LOGIN_URL = Mysplash.UNSPLASH_URL + "oauth/authorize"
             + "?client_id=" + Mysplash.APPLICATION_ID
             + "&redirect_uri=" + "mysplash%3A%2F%2F" + UNSPLASH_LOGIN_CALLBACK
             + "&response_type=" + "code"
             + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+read_collections+write_collections";
 
     // application data.
-    public static final String AUTHOR_GITHUB = "https://github.com/WangDaYeeeeee";
-    public static final String MYSPLASH_GITHUB = "https://github.com/WangDaYeeeeee/MySplash";
-
     public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
     public static final String DOWNLOAD_FORMAT = ".jpg";
@@ -65,14 +64,17 @@ public class Mysplash extends Application {
     public static final int CATEGORY_PEOPLE_ID = 6;
     public static final int CATEGORY_TECHNOLOGY_ID = 7;
 
-    public static int TOTAL_NEW_PHOTOS_COUNT = 14500;
-    public static int TOTAL_FEATURED_PHOTOS_COUNT = 900;
+    public static int TOTAL_NEW_PHOTOS_COUNT = 17444;
+    public static int TOTAL_FEATURED_PHOTOS_COUNT = 1192;
     public static int BUILDING_PHOTOS_COUNT = 2720;
     public static int FOOD_DRINK_PHOTOS_COUNT = 650;
-    public static int NATURE_PHOTOS_COUNT = 6910;
+    public static int NATURE_PHOTOS_COUNT = 54208;
     public static int OBJECTS_PHOTOS_COUNT = 2150;
     public static int PEOPLE_PHOTOS_COUNT = 3410;
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
+
+    // share preference.
+    public static final String SP_STARTUP_ITEM = "sp_startup_item";
 
     // activity code.
     public static final int ME_ACTIVITY = 1;
@@ -85,24 +87,13 @@ public class Mysplash extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        initialize();
-        readPhotoCount();
-    }
-
-    private void initialize() {
         instance = this;
         activityList = new ArrayList<>();
-    }
 
-    private void readPhotoCount() {
-        ValueUtils.readPhotoCount(this, CATEGORY_TOTAL_NEW);
-        ValueUtils.readPhotoCount(this, CATEGORY_TOTAL_FEATURED);
-        ValueUtils.readPhotoCount(this, CATEGORY_BUILDINGS_ID);
-        ValueUtils.readPhotoCount(this, CATEGORY_FOOD_DRINK_ID);
-        ValueUtils.readPhotoCount(this, CATEGORY_NATURE_ID);
-        ValueUtils.readPhotoCount(this, CATEGORY_OBJECTS_ID);
-        ValueUtils.readPhotoCount(this, CATEGORY_PEOPLE_ID);
-        ValueUtils.readPhotoCount(this, CATEGORY_TECHNOLOGY_ID);
+        SharedPreferences sharedPreferences = getSharedPreferences(SP_STARTUP_ITEM, MODE_PRIVATE);
+        ValueUtils.readPhotoCount(this, sharedPreferences);
+        lightTheme = sharedPreferences.getBoolean(getString(R.string.key_light_theme), true);
+        language = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
     }
 
     /** <br> data. */
@@ -167,12 +158,28 @@ public class Mysplash extends Application {
         return drawable;
     }
 
+    public void changeTheme() {
+        this.lightTheme = !lightTheme;
+    }
+
+    public boolean isLightTheme() {
+        return lightTheme;
+    }
+
     public void setActivityInBackstage(boolean showing) {
         this.activityInBackstage = showing;
     }
 
     public boolean isActivityInBackstage() {
         return activityInBackstage;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 
     /** <br> singleton. */

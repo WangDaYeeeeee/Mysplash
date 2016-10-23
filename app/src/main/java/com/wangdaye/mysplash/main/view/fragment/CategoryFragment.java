@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -9,13 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
@@ -37,6 +40,7 @@ public class CategoryFragment extends Fragment
 
     // view.
     private CoordinatorLayout container;
+    private AppBarLayout appBar;
     private Toolbar toolbar;
     private CategoryPhotosView photosView;
 
@@ -75,16 +79,18 @@ public class CategoryFragment extends Fragment
 
     private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
-        if (ThemeUtils.getInstance(getActivity()).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_category_container);
 
+        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_category_appBar);
+
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
         toolbar.setTitle(ValueUtils.getToolbarTitleByCategory(getActivity(), categoryManagePresenter.getCategoryId()));
-        if (ThemeUtils.getInstance(getActivity()).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             toolbar.inflateMenu(R.menu.fragment_category_toolbar_light);
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
         } else {
@@ -103,7 +109,8 @@ public class CategoryFragment extends Fragment
 
     // interface.
 
-    public void pagerBackToTop() {
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, photosView);
         photosView.pagerScrollToTop();
     }
 

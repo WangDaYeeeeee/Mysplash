@@ -5,10 +5,11 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.fragment.SettingsFragment;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Settings activity.
@@ -43,11 +44,16 @@ public class SettingsActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Settings);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Settings);
         }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -60,13 +66,13 @@ public class SettingsActivity extends MysplashActivity
 
     private void initWidget() {
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_settings_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_settings_toolbar);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
         } else {
             toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);

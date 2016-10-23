@@ -27,9 +27,9 @@ public class NotificationUtils {
             Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
 
             TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            TypefaceUtils.setTypeface(a, contentTxt);
+            DisplayUtils.setTypeface(a, contentTxt);
 
-            if (ThemeUtils.getInstance(a).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 contentTxt.setTextColor(ContextCompat.getColor(a, R.color.colorTextContent_light));
                 snackbarLayout.setBackgroundResource(R.color.colorRoot_light);
             } else {
@@ -54,11 +54,11 @@ public class NotificationUtils {
             Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
 
             TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            TypefaceUtils.setTypeface(a, contentTxt);
+            DisplayUtils.setTypeface(a, contentTxt);
 
             Button actionBtn = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
 
-            if (ThemeUtils.getInstance(a).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 contentTxt.setTextColor(ContextCompat.getColor(a, R.color.colorTextContent_light));
                 actionBtn.setTextColor(ContextCompat.getColor(a, R.color.colorTextTitle_light));
                 snackbarLayout.setBackgroundResource(R.color.colorRoot_light);

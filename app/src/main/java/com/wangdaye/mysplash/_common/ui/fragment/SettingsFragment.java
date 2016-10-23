@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.ui.fragment;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.ListPreference;
@@ -55,9 +56,12 @@ public class SettingsFragment extends PreferenceFragment
 
         // language.
         ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
-        String languageValue = sharedPreferences.getString(
-                getString(R.string.key_language),
-                "follow_system");
+        String languageValue = getActivity().getSharedPreferences(
+                Mysplash.SP_STARTUP_ITEM,
+                Context.MODE_PRIVATE)
+                .getString(
+                        getString(R.string.key_language),
+                        "follow_system");
         String languageName = ValueUtils.getLanguageName(getActivity(), languageValue);
         language.setSummary(getString(R.string.now) + " : " + languageName);
         language.setOnPreferenceChangeListener(this);
@@ -121,6 +125,14 @@ public class SettingsFragment extends PreferenceFragment
             // language.
             String language = ValueUtils.getLanguageName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + language);
+
+            Mysplash.getInstance().setLanguage((String) o);
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences(
+                    Mysplash.SP_STARTUP_ITEM,
+                    Context.MODE_PRIVATE).edit();
+            editor.putString(getString(R.string.key_language), (String) o);
+            editor.apply();
+
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_default_photo_order))) {
             // default order.

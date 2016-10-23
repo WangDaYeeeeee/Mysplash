@@ -3,16 +3,20 @@ package com.wangdaye.mysplash._common.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 /**
@@ -59,7 +63,7 @@ public class DisplayUtils {
     public static void setWindowTop(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher);
-            if (ThemeUtils.getInstance(activity).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 ActivityManager.TaskDescription taskDescription
                         = new ActivityManager.TaskDescription(
                         activity.getString(R.string.app_name),
@@ -79,7 +83,7 @@ public class DisplayUtils {
     }
 
     public static void setStatusBarTextDark(Activity activity) {
-        if (ThemeUtils.getInstance(activity).isNeedSetStatusBarTextDark()) {
+        if (isNeedSetStatusBarTextDark()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 activity.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -87,6 +91,31 @@ public class DisplayUtils {
         } else {
             activity.getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+    }
+
+    private static boolean isNeedSetStatusBarTextDark() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                && Mysplash.getInstance().isLightTheme();
+    }
+
+    public static boolean isNeedSetStatusBarMask() {
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.M
+                && Mysplash.getInstance().isLightTheme();
+    }
+
+    public static void changeTheme(Context c) {
+        Mysplash.getInstance().changeTheme();
+        SharedPreferences.Editor editor = c.getSharedPreferences(
+                Mysplash.SP_STARTUP_ITEM,
+                Context.MODE_PRIVATE).edit();
+        editor.putBoolean(c.getString(R.string.key_light_theme), Mysplash.getInstance().isLightTheme());
+        editor.apply();
+    }
+
+    public static void setTypeface(Context c, TextView t) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            t.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/Courier.ttf"));
         }
     }
 }

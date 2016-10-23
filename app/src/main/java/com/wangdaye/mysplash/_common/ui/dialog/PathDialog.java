@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Path dialog.
@@ -40,7 +40,7 @@ public class PathDialog extends DialogFragment
 
     private void initWidget(View v) {
         TextView content = (TextView) v.findViewById(R.id.dialog_path_text);
-        TypefaceUtils.setTypeface(getActivity(), content);
+        DisplayUtils.setTypeface(getActivity(), content);
 
         v.findViewById(R.id.dialog_path_copyBtn).setOnClickListener(this);
         v.findViewById(R.id.dialog_path_enterBtn).setOnClickListener(this);

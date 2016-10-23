@@ -20,14 +20,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,11 +113,16 @@ public class IntroduceActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -151,13 +156,13 @@ public class IntroduceActivity extends MysplashActivity
         this.handler = new SafeHandler<>(this);
 
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_introduce_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
         ImageButton backBtn = (ImageButton) findViewById(R.id.activity_introduce_backBtn);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             backBtn.setImageResource(R.drawable.ic_close_light);
         } else {
             backBtn.setImageResource(R.drawable.ic_close_dark);
@@ -194,7 +199,7 @@ public class IntroduceActivity extends MysplashActivity
 
             TextView description = (TextView) v.findViewById(R.id.container_introduce_description);
             description.setText(introduceModelList.get(i).description);
-            TypefaceUtils.setTypeface(this, description);
+            DisplayUtils.setTypeface(this, description);
 
             setPageButtonStyle(v, i);
 
@@ -220,7 +225,7 @@ public class IntroduceActivity extends MysplashActivity
     private void setPageButtonStyle(View page, int position) {
         Button b = (Button) page.findViewById(R.id.container_introduce_button);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 b.setBackgroundResource(R.color.colorPrimary_dark);
             } else {
                 b.setBackgroundResource(R.color.colorPrimary_light);

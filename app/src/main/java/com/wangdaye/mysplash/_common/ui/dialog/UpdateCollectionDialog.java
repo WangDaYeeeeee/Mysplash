@@ -24,7 +24,7 @@ import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -90,16 +90,16 @@ public class UpdateCollectionDialog extends DialogFragment
         contentView.setVisibility(View.VISIBLE);
 
         this.nameTxt = (EditText) v.findViewById(R.id.dialog_update_collection_name);
-        TypefaceUtils.setTypeface(getActivity(), nameTxt);
+        DisplayUtils.setTypeface(getActivity(), nameTxt);
         nameTxt.setText(collection.title);
 
         this.descriptionTxt = (EditText) v.findViewById(R.id.dialog_update_collection_description);
-        TypefaceUtils.setTypeface(getActivity(), descriptionTxt);
+        DisplayUtils.setTypeface(getActivity(), descriptionTxt);
         descriptionTxt.setText(collection.description == null ? "" : collection.description);
 
         this.checkBox = (CheckBox) v.findViewById(R.id.dialog_update_collection_checkBox);
         checkBox.setSelected(collection.privateX);
-        TypefaceUtils.setTypeface(getActivity(), checkBox);
+        DisplayUtils.setTypeface(getActivity(), checkBox);
 
         this.baseBtnContainer = (RelativeLayout) v.findViewById(R.id.dialog_update_collection_baseBtnContainer);
         baseBtnContainer.setVisibility(View.VISIBLE);

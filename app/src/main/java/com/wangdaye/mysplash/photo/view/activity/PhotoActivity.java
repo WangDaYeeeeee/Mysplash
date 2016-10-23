@@ -3,12 +3,10 @@ package com.wangdaye.mysplash.photo.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityCompat;
@@ -55,11 +53,9 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
 import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.activity.DownloadObject;
@@ -79,8 +75,7 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class PhotoActivity extends AppCompatActivity
         implements PhotoInfoView, ScrollView, PopupManageView, BrowsableView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
-        NotificationUtils.SnackbarContainer {
+        View.OnClickListener, SwipeBackLayout.OnSwipeListener, NotificationUtils.SnackbarContainer {
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
@@ -92,9 +87,11 @@ public class PhotoActivity extends AppCompatActivity
 
     private CoordinatorLayout container;
     private NestedScrollView scrollView;
-    private ImageButton menuBtn;
     private CircleImageView avatarImage;
     private PhotoDetailsView detailsView;
+
+    private Toolbar scrollToolbar;
+    private Toolbar topToolbar;
 
     // presenter.
     private PhotoInfoPresenter photoInfoPresenter;
@@ -111,9 +108,10 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         Mysplash.getInstance().addActivity(this);
-        loadLanguage();
         setTheme();
+        LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
         setContentView(R.layout.activity_photo);
     }
@@ -148,19 +146,15 @@ public class PhotoActivity extends AppCompatActivity
     }
 
     private void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Photo);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Photo);
         }
     }
 
-    private void loadLanguage() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        String language = sharedPreferences.getString(
-                getString(R.string.key_language),
-                getResources().getStringArray(R.array.language_values)[0]);
-        LanguageUtils.setLanguage(this, language);
+    private void backToTop() {
+        scrollPresenter.scrollToTop();
     }
 
     /** <br> presenter. */
@@ -199,21 +193,33 @@ public class PhotoActivity extends AppCompatActivity
                         .into(photoImage);
             }
 
+            this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
+
             FreedomTouchView touchView = (FreedomTouchView) findViewById(R.id.activity_photo_touchView);
             touchView.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
             touchView.setOnClickListener(this);
 
-            this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
-
             RelativeLayout titleBar = (RelativeLayout) findViewById(R.id.activity_photo_titleBar);
 
-            ImageButton backBtn = (ImageButton) findViewById(R.id.activity_photo_backBtn);
-            backBtn.setOnClickListener(this);
-
-            ImageButton shareUrlBtn = (ImageButton) findViewById(R.id.activity_photo_shareUrlBtn);
-            shareUrlBtn.setOnClickListener(this);
-
-            this.menuBtn = (ImageButton) findViewById(R.id.activity_photo_menuBtn);
+            this.scrollToolbar = (Toolbar) findViewById(R.id.activity_photo_scrollToolbar);
+            scrollToolbar.setTitle("");
+            if (Mysplash.getInstance().isLightTheme()) {
+                if (browsablePresenter.isBrowsable()) {
+                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+                } else {
+                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+                }
+                scrollToolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
+            } else {
+                if (browsablePresenter.isBrowsable()) {
+                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+                } else {
+                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+                }
+                scrollToolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
+            }
+            scrollToolbar.setNavigationOnClickListener(this);
+            scrollToolbar.setOnMenuItemClickListener(scrollToolbarMenuListener);
 
             this.avatarImage = (CircleImageView) findViewById(R.id.activity_photo_avatar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -228,15 +234,12 @@ public class PhotoActivity extends AppCompatActivity
                     .override(128, 128)
                     .into(avatarImage);
 
-            ImageButton menuButton = (ImageButton) findViewById(R.id.activity_photo_menuBtn);
-            menuButton.setOnClickListener(this);
-
             TextView title = (TextView) findViewById(R.id.activity_photo_title);
             title.setText(getString(R.string.by) + " " + photoInfoPresenter.getPhoto().user.name);
 
             TextView subtitle = (TextView) findViewById(R.id.activity_photo_subtitle);
             subtitle.setText(getString(R.string.on) + " " + photoInfoPresenter.getPhoto().created_at.split("T")[0]);
-            TypefaceUtils.setTypeface(this, subtitle);
+            DisplayUtils.setTypeface(this, subtitle);
 
             LinearLayout buttonBar = (LinearLayout) findViewById(R.id.activity_photo_btnBar);
 
@@ -261,49 +264,34 @@ public class PhotoActivity extends AppCompatActivity
             detailsView.initMP(photoInfoPresenter.getPhoto());
             detailsView.requestPhotoDetails();
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.activity_photo_toolbar);
-            toolbar.setTitle(title.getText().toString());
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            this.topToolbar = (Toolbar) findViewById(R.id.activity_photo_topToolbar);
+            if (Mysplash.getInstance().isLightTheme()) {
                 if (browsablePresenter.isBrowsable()) {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
                 } else {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
                 }
-                toolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
+                topToolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
             } else {
                 if (browsablePresenter.isBrowsable()) {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
                 } else {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
                 }
-                toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
+                topToolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
             }
-            toolbar.setNavigationOnClickListener(this);
-            toolbar.setOnMenuItemClickListener(this);
-            toolbar.setOnClickListener(this);
+            topToolbar.setNavigationOnClickListener(this);
+            topToolbar.setOnMenuItemClickListener(topToolbarMenuListener);
+            topToolbar.setOnClickListener(this);
 
-            if (ThemeUtils.getInstance(this).isLightTheme()) {
+            if (Mysplash.getInstance().isLightTheme()) {
                 optionButtons[0].setImageResource(R.drawable.ic_download_light);
                 optionButtons[1].setImageResource(R.drawable.ic_send_light);
                 optionButtons[2].setImageResource(R.drawable.ic_mountain_light);
-                shareUrlBtn.setImageResource(R.drawable.ic_share_light);
-                menuBtn.setImageResource(R.drawable.ic_menu_light);
-                if (browsablePresenter.isBrowsable()) {
-                    backBtn.setImageResource(R.drawable.ic_toolbar_home_light);
-                } else {
-                    backBtn.setImageResource(R.drawable.ic_toolbar_back_light);
-                }
             } else {
                 optionButtons[0].setImageResource(R.drawable.ic_download_dark);
                 optionButtons[1].setImageResource(R.drawable.ic_send_dark);
                 optionButtons[2].setImageResource(R.drawable.ic_mountain_dark);
-                shareUrlBtn.setImageResource(R.drawable.ic_share_dark);
-                menuBtn.setImageResource(R.drawable.ic_menu_dark);
-                if (browsablePresenter.isBrowsable()) {
-                    backBtn.setImageResource(R.drawable.ic_toolbar_home_dark);
-                } else {
-                    backBtn.setImageResource(R.drawable.ic_toolbar_back_dark);
-                }
             }
 
             AnimUtils.animInitShow(titleBar, 200);
@@ -385,7 +373,6 @@ public class PhotoActivity extends AppCompatActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-            case R.id.activity_photo_backBtn:
                 if (browsablePresenter.isBrowsable()) {
                     browsablePresenter.visitParentView();
                 }
@@ -396,8 +383,8 @@ public class PhotoActivity extends AppCompatActivity
                 }
                 break;
 
-            case R.id.activity_photo_toolbar:
-                scrollPresenter.scrollToTop();
+            case R.id.activity_photo_topToolbar:
+                backToTop();
                 break;
 
             case R.id.activity_photo_touchView:
@@ -409,14 +396,6 @@ public class PhotoActivity extends AppCompatActivity
 
             case R.id.activity_photo_avatar:
                 photoInfoPresenter.touchAuthorAvatar();
-                break;
-
-            case R.id.activity_photo_shareUrlBtn:
-                ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
-                break;
-
-            case R.id.activity_photo_menuBtn:
-                popupManagePresenter.showPopup(this, menuBtn, null, 0);
                 break;
 
             case R.id.activity_photo_downloadBtn:
@@ -447,19 +426,37 @@ public class PhotoActivity extends AppCompatActivity
 
     // on menu item click listener.
 
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_share:
-                ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
-                break;
+    private Toolbar.OnMenuItemClickListener scrollToolbarMenuListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_share:
+                    ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
+                    break;
 
-            case R.id.action_menu:
-                popupManagePresenter.showPopup(this, menuBtn, null, 0);
-                break;
+                case R.id.action_menu:
+                    popupManagePresenter.showPopup(PhotoActivity.this, scrollToolbar, null, 0);
+                    break;
+            }
+            return true;
         }
-        return true;
-    }
+    };
+
+    private Toolbar.OnMenuItemClickListener topToolbarMenuListener = new Toolbar.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_share:
+                    ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
+                    break;
+
+                case R.id.action_menu:
+                    popupManagePresenter.showPopup(PhotoActivity.this, topToolbar, null, 0);
+                    break;
+            }
+            return true;
+        }
+    };
 
     // on swipe listener.
 

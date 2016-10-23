@@ -17,17 +17,17 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.service.UserService;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash._common.utils.ThemeUtils;
-import com.wangdaye.mysplash._common.utils.TypefaceUtils;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -87,11 +87,16 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -129,7 +134,7 @@ public class UpdateMeActivity extends MysplashActivity
         swipeBackLayout.setOnSwipeListener(this);
 
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_update_me_statusBar);
-        if (ThemeUtils.getInstance(this).isNeedSetStatusBarMask()) {
+        if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
@@ -137,7 +142,7 @@ public class UpdateMeActivity extends MysplashActivity
         this.container = (CoordinatorLayout) findViewById(R.id.activity_update_me_container);
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.activity_update_me_closeBtn);
-        if (ThemeUtils.getInstance(this).isLightTheme()) {
+        if (Mysplash.getInstance().isLightTheme()) {
             closeBtn.setImageResource(R.drawable.ic_close_light);
         } else {
             closeBtn.setImageResource(R.drawable.ic_close_dark);
@@ -153,31 +158,31 @@ public class UpdateMeActivity extends MysplashActivity
         contentView.setVisibility(View.VISIBLE);
 
         this.usernameTxt = (EditText) findViewById(R.id.container_update_me_usernameTxt);
-        TypefaceUtils.setTypeface(this, usernameTxt);
+        DisplayUtils.setTypeface(this, usernameTxt);
         usernameTxt.setText(AuthManager.getInstance().getMe().username);
 
         this.firstNameTxt = (EditText) findViewById(R.id.container_update_me_firstNameTxt);
-        TypefaceUtils.setTypeface(this, firstNameTxt);
+        DisplayUtils.setTypeface(this, firstNameTxt);
         firstNameTxt.setText(AuthManager.getInstance().getMe().first_name);
 
         this.lastNameTxt = (EditText) findViewById(R.id.container_update_me_lastNameTxt);
-        TypefaceUtils.setTypeface(this, lastNameTxt);
+        DisplayUtils.setTypeface(this, lastNameTxt);
         lastNameTxt.setText(AuthManager.getInstance().getMe().last_name);
 
         this.emailTxt = (EditText) findViewById(R.id.container_update_me_emailTxt);
-        TypefaceUtils.setTypeface(this, emailTxt);
+        DisplayUtils.setTypeface(this, emailTxt);
         emailTxt.setText(AuthManager.getInstance().getMe().email);
 
         this.portfolioTxt = (EditText) findViewById(R.id.container_update_me_portfolioTxt);
-        TypefaceUtils.setTypeface(this, portfolioTxt);
+        DisplayUtils.setTypeface(this, portfolioTxt);
         portfolioTxt.setText(AuthManager.getInstance().getMe().portfolio_url);
 
         this.locationTxt = (EditText) findViewById(R.id.container_update_me_locationTxt);
-        TypefaceUtils.setTypeface(this, locationTxt);
+        DisplayUtils.setTypeface(this, locationTxt);
         locationTxt.setText(AuthManager.getInstance().getMe().location);
 
         this.bioTxt = (EditText) findViewById(R.id.container_update_me_bioTxt);
-        TypefaceUtils.setTypeface(this, bioTxt);
+        DisplayUtils.setTypeface(this, bioTxt);
         bioTxt.setText(AuthManager.getInstance().getMe().bio);
 
         Button saveBtn = (Button) findViewById(R.id.container_update_me_saveBtn);
