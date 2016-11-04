@@ -21,11 +21,11 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -280,7 +280,7 @@ public class UpdateCollectionDialog extends DialogFragment
     // on delete collection listener.
 
     @Override
-    public void onDeleteCollectionSuccess(Call<DeleteCollectionResult> call, Response<DeleteCollectionResult> response) {
+    public void onDeleteCollectionSuccess(Call<ResponseBody> call, Response<ResponseBody> response) {
         if (response.isSuccessful()) {
             if (listener != null) {
                 listener.onDeleteCollection(collection);
@@ -297,7 +297,7 @@ public class UpdateCollectionDialog extends DialogFragment
     }
 
     @Override
-    public void onDeleteCollectionFailed(Call<DeleteCollectionResult> call, Throwable t) {
+    public void onDeleteCollectionFailed(Call<ResponseBody> call, Throwable t) {
         setState(INPUT_STATE);
         notifyDeleteFailed();
     }

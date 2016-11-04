@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         app:layout_behavior="._common.ui.behavior.PreviewWidgetBehavior">
 
-        <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -222,7 +222,7 @@
 
         </LinearLayout>
 
-        <com.wangdaye.mysplash._common.ui.widget.NavigationBarView
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.NavigationBarView
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

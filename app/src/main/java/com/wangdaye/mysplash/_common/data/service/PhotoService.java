@@ -3,13 +3,9 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
-import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.data.entity.PhotoStats;
-import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
 import java.util.List;
@@ -131,25 +127,6 @@ public class PhotoService {
         });
     }
 
-    public void requestPhotoDetails(Photo p, final OnRequestPhotoDetailsListener l) {
-        Call<PhotoDetails> getAPhoto = buildApi(buildClient()).getPhotoDetails(p.id);
-        getAPhoto.enqueue(new Callback<PhotoDetails>() {
-            @Override
-            public void onResponse(Call<PhotoDetails> call, Response<PhotoDetails> response) {
-                if (l != null) {
-                    l.onRequestPhotoDetailsSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PhotoDetails> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestPhotoDetailsFailed(call, t);
-                }
-            }
-        });
-    }
-
     public void requestAPhoto(String id, final OnRequestSinglePhotoListener l) {
         Call<Photo> getAPhoto = buildApi(buildClient()).getAPhoto(id);
         getAPhoto.enqueue(new Callback<Photo>() {
@@ -169,8 +146,8 @@ public class PhotoService {
         });
     }
 
-    public void requestUserPhotos(User u, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserPhotos = buildApi(buildClient()).getUserPhotos(u.username, page, per_page, order_by);
+    public void requestUserPhotos(String username, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
+        Call<List<Photo>> getUserPhotos = buildApi(buildClient()).getUserPhotos(username, page, per_page, order_by);
         getUserPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -188,27 +165,8 @@ public class PhotoService {
         });
     }
 
-    public void requestUserPhotos(Me me, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserPhotos = buildApi(buildClient()).getUserPhotos(me.username, page, per_page, order_by);
-        getUserPhotos.enqueue(new Callback<List<Photo>>() {
-            @Override
-            public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
-                if (l != null) {
-                    l.onRequestPhotosSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Photo>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestPhotosFailed(call, t);
-                }
-            }
-        });
-    }
-
-    public void requestUserLikes(User u, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserLikes = buildApi(buildClient()).getUserLikes(u.username, page, per_page, order_by);
+    public void requestUserLikes(String username, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
+        Call<List<Photo>> getUserLikes = buildApi(buildClient()).getUserLikes(username, page, per_page, order_by);
         getUserLikes.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
@@ -226,27 +184,8 @@ public class PhotoService {
         });
     }
 
-    public void requestUserLikes(Me me, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getUserLikes = buildApi(buildClient()).getUserLikes(me.username, page, per_page, order_by);
-        getUserLikes.enqueue(new Callback<List<Photo>>() {
-            @Override
-            public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
-                if (l != null) {
-                    l.onRequestPhotosSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Photo>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestPhotosFailed(call, t);
-                }
-            }
-        });
-    }
-
-    public void requestCollectionPhotos(Collection c, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getCollectionPhotos = buildApi(buildClient()).getCollectionPhotos(c.id, page, per_page);
+    public void requestCollectionPhotos(int collectionId, int page, int per_page, final OnRequestPhotosListener l) {
+        Call<List<Photo>> getCollectionPhotos = buildApi(buildClient()).getCollectionPhotos(collectionId, page, per_page);
         getCollectionPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
@@ -264,8 +203,8 @@ public class PhotoService {
         });
     }
 
-    public void requestCuratedCollectionPhotos(Collection c, int page, int per_page, final OnRequestPhotosListener l) {
-        Call<List<Photo>> getCuratedCollectionPhotos = buildApi(buildClient()).getCuratedCollectionPhotos(c.id, page, per_page);
+    public void requestCuratedCollectionPhotos(int collectionId, int page, int per_page, final OnRequestPhotosListener l) {
+        Call<List<Photo>> getCuratedCollectionPhotos = buildApi(buildClient()).getCuratedCollectionPhotos(collectionId, page, per_page);
         getCuratedCollectionPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
@@ -285,9 +224,9 @@ public class PhotoService {
 
 
 
-    public void requestRandwomPhotos(Integer categoryId, Boolean featured,
-                                     String username, String query,
-                                     String orientation, final OnRequestPhotosListener l) {
+    public void requestRandomPhotos(Integer categoryId, Boolean featured,
+                                    String username, String query,
+                                    String orientation, final OnRequestPhotosListener l) {
         Call<List<Photo>> getRandomPhotos = buildApi(buildClient()).getRandomPhotos(
                 categoryId, featured,
                 username, query,
@@ -355,11 +294,6 @@ public class PhotoService {
     public interface OnSetLikeListener {
         void onSetLikeSuccess(Call<LikePhotoResult> call, retrofit2.Response<LikePhotoResult> response);
         void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t);
-    }
-
-    public interface OnRequestPhotoDetailsListener {
-        void onRequestPhotoDetailsSuccess(Call<PhotoDetails> call, retrofit2.Response<PhotoDetails> response);
-        void onRequestPhotoDetailsFailed(Call<PhotoDetails> call, Throwable t);
     }
 
     public interface OnRequestSinglePhotoListener {

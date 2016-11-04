@@ -44,6 +44,10 @@ public class DownloadImplementor
 
     private void doDownload(int type) {
         Activity a = Mysplash.getInstance().getTopActivity();
-        DownloadHelper.getInstance(a).addMission(a, (Photo) model.getDownloadKey(), type);
+        DownloadHelper.getInstance(a)
+                .addMission(
+                        a,
+                        (Photo) model.getDownloadKey(),
+                        type);
     }
 }

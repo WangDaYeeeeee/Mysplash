@@ -2,6 +2,7 @@ package com.wangdaye.mysplash._common.utils.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -256,6 +257,10 @@ public class AuthManager
         for (int i = 0; i < listenerList.size(); i ++) {
             listenerList.get(i).onLogout();
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutsManager.checkAndPublishShortcuts(Mysplash.getInstance());
+        }
     }
 
     /** singleton. */
@@ -318,6 +323,9 @@ public class AuthManager
         if (response.isSuccessful() && response.body() != null) {
             state = FREEDOM_STATE;
             writeUserInfo(response.body());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                ShortcutsManager.checkAndPublishShortcuts(Mysplash.getInstance());
+            }
         } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(

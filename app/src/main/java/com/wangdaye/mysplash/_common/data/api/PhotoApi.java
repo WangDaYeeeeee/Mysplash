@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.data.entity.PhotoStats;
 import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Photo;
@@ -23,10 +22,6 @@ public interface PhotoApi {
     String ORDER_BY_LATEST = "latest";
     String ORDER_BY_OLDEST = "oldest";
     String ORDER_BY_POPULAR = "popular";
-
-    String LANDSCAPE_ORIENTATION = "landscape";
-    String PORTRAIT_ORIENTATION = "portrait";
-    String SQUARE_ORIENTATION = "square";
 
     /** <br> interface. */
 
@@ -53,9 +48,6 @@ public interface PhotoApi {
 
     @DELETE("photos/{id}/like")
     Call<LikePhotoResult> unlikeAPhoto(@Path("id") String id);
-
-    @GET("photos/{id}")
-    Call<PhotoDetails> getPhotoDetails(@Path("id") String id);
 
     @GET("photos/{id}")
     Call<Photo> getAPhoto(@Path("id") String id);

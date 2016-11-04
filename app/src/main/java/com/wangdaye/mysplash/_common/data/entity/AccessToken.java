@@ -12,7 +12,6 @@ public class AccessToken {
      * scope : public read_photos write_photos
      * created_at : 1436544465
      */
-
     public String access_token;
     public String token_type;
     public String scope;

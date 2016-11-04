@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.view;
 
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 
 /**
  * Photo details view.
@@ -8,7 +8,7 @@ import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 
 public interface PhotoDetailsView {
 
-    void drawExif(PhotoDetails details);
+    void drawExif(Photo photo);
 
     void initRefreshStart();
     void requestDetailsSuccess();

@@ -32,7 +32,7 @@ import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.List;
@@ -98,7 +98,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                             public boolean onResourceReady(GlideDrawable resource, String model,
                                                            Target<GlideDrawable> target,
                                                            boolean isFromMemoryCache, boolean isFirstResource) {
-                                if (!itemList.get(position).cover_photo.hasFadeIn) {
+                                if (!itemList.get(position).cover_photo.hasFadedIn) {
                                     holder.image.setHasTransientState(true);
                                     final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                                     final ObjectAnimator saturation = ObjectAnimator.ofFloat(
@@ -123,7 +123,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                                         }
                                     });
                                     saturation.start();
-                                    itemList.get(position).cover_photo.hasFadeIn = true;
+                                    itemList.get(position).cover_photo.hasFadedIn = true;
                                 }
 
                                 holder.title.setText(itemList.get(position).title.toUpperCase());

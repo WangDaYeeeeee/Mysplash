@@ -150,7 +150,7 @@ public class PhotosImplementor
         listener = new OnRequestPhotosListener(context, page, refresh);
         model.getService()
                 .requestCollectionPhotos(
-                        collection,
+                        collection.id,
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         listener);
@@ -161,7 +161,7 @@ public class PhotosImplementor
         listener = new OnRequestPhotosListener(context, page, refresh);
         model.getService()
                 .requestCuratedCollectionPhotos(
-                        collection,
+                        collection.id,
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         listener);

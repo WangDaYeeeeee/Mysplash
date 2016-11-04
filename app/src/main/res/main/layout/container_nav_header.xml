@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground">
 
-    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/container_nav_header_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

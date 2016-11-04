@@ -5,7 +5,6 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.CollectionApi;
 import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
@@ -13,6 +12,7 @@ import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -128,28 +128,8 @@ public class CollectionService {
         call = getACuratedCollection;
     }
 
-    public void requestUserCollections(User u, int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getUserCollections = buildApi(buildClient()).getUserCollections(u.username, page, per_page);
-        getUserCollections.enqueue(new Callback<List<Collection>>() {
-            @Override
-            public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
-                if (l != null) {
-                    l.onRequestCollectionsSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Collection>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestCollectionsFailed(call, t);
-                }
-            }
-        });
-        call = getUserCollections;
-    }
-
-    public void requestUserCollections(Me me, int page, int per_page, final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getUserCollections = buildApi(buildClient()).getUserCollections(me.username, page, per_page);
+    public void requestUserCollections(String username, int page, int per_page, final OnRequestCollectionsListener l) {
+        Call<List<Collection>> getUserCollections = buildApi(buildClient()).getUserCollections(username, page, per_page);
         getUserCollections.enqueue(new Callback<List<Collection>>() {
             @Override
             public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
@@ -194,10 +174,10 @@ public class CollectionService {
         call = createCollection;
     }
 
-    public void addPhotoToCollection(int collection_id, String photo_id,
+    public void addPhotoToCollection(int collectionId, String photoId,
                                      final OnChangeCollectionPhotoListener l) {
         Call<ChangeCollectionPhotoResult> addPhotoToCollection = buildApi(buildClient())
-                .addPhotoToCollection(collection_id, photo_id);
+                .addPhotoToCollection(collectionId, photoId);
         addPhotoToCollection.enqueue(new Callback<ChangeCollectionPhotoResult>() {
             @Override
             public void onResponse(Call<ChangeCollectionPhotoResult> call,
@@ -217,10 +197,10 @@ public class CollectionService {
         call = addPhotoToCollection;
     }
 
-    public void deletePhotoFromCollection(int collection_id, String photo_id,
+    public void deletePhotoFromCollection(int collectionId, String photoId,
                                           final OnChangeCollectionPhotoListener l) {
         Call<ChangeCollectionPhotoResult> deletePhotoFromCollection = buildApi(buildClient())
-                .deletePhotoFromCollection(collection_id, photo_id);
+                .deletePhotoFromCollection(collectionId, photoId);
         deletePhotoFromCollection.enqueue(new Callback<ChangeCollectionPhotoResult>() {
             @Override
             public void onResponse(Call<ChangeCollectionPhotoResult> call,
@@ -262,18 +242,18 @@ public class CollectionService {
     }
 
     public void deleteCollection(int id, final OnDeleteCollectionListener l) {
-        Call<DeleteCollectionResult> deleteCollection = buildApi(buildClient()).deleteCollection(id);
-        deleteCollection.enqueue(new Callback<DeleteCollectionResult>() {
+        Call<ResponseBody> deleteCollection = buildApi(buildClient()).deleteCollection(id);
+        deleteCollection.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<DeleteCollectionResult> call,
-                                   Response<DeleteCollectionResult> response) {
+            public void onResponse(Call<ResponseBody> call,
+                                   Response<ResponseBody> response) {
                 if (l != null) {
                     l.onDeleteCollectionSuccess(call, response);
                 }
             }
 
             @Override
-            public void onFailure(Call<DeleteCollectionResult> call, Throwable t) {
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
                 if (l != null) {
                     l.onDeleteCollectionFailed(call, t);
                 }
@@ -336,7 +316,7 @@ public class CollectionService {
     }
 
     public interface OnDeleteCollectionListener {
-        void onDeleteCollectionSuccess(Call<DeleteCollectionResult> call, Response<DeleteCollectionResult> response);
-        void onDeleteCollectionFailed(Call<DeleteCollectionResult> call, Throwable t);
+        void onDeleteCollectionSuccess(Call<ResponseBody> call, Response<ResponseBody> response);
+        void onDeleteCollectionFailed(Call<ResponseBody> call, Throwable t);
     }
 }

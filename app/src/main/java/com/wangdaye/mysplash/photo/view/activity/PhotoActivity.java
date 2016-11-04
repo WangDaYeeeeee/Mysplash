@@ -29,7 +29,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
@@ -47,13 +46,13 @@ import com.wangdaye.mysplash._common.ui.activity.PreviewPhotoActivity;
 import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
-import com.wangdaye.mysplash._common.ui.widget.FreedomTouchView;
+import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomTouchView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
-import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -526,11 +525,6 @@ public class PhotoActivity extends AppCompatActivity
                 startActivity(d);
                 break;
         }
-    }
-
-    @Override
-    public void drawPhotoDetails(PhotoDetails details) {
-        // do nothing.
     }
 
     // scroll view.

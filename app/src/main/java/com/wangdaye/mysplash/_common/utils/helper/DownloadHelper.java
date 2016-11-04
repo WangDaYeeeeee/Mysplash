@@ -12,6 +12,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.utils.FileUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import java.util.ArrayList;
@@ -68,32 +69,34 @@ public class DownloadHelper {
     /** <br> data. */
 
     public void addMission(Context c, Photo p, int type) {
-        for (int i = 0; i < entityList.size(); i ++) {
-            if (entityList.get(i).photoId.equals(p.id)) {
-                NotificationUtils.showSnackbar(
-                        c.getString(R.string.feedback_download_repeat),
-                        Snackbar.LENGTH_SHORT);
-                return;
+        if (FileUtils.createDownloadPath(c)) {
+            for (int i = 0; i < entityList.size(); i ++) {
+                if (entityList.get(i).photoId.equals(p.id)) {
+                    NotificationUtils.showSnackbar(
+                            c.getString(R.string.feedback_download_repeat),
+                            Snackbar.LENGTH_SHORT);
+                    return;
+                }
             }
+
+            DownloadMissionEntity entity = new DownloadMissionEntity(c, p, type);
+
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
+                    .setTitle(entity.photoId)
+                    .setDescription(c.getString(R.string.feedback_downloading))
+                    .setDestinationInExternalPublicDir(
+                            Mysplash.DOWNLOAD_PATH,
+                            entity.photoId + Mysplash.DOWNLOAD_FORMAT);
+            request.allowScanningByMediaScanner();
+
+            entity.missionId = ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).enqueue(request);
+            entityList.add(entity);
+            DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+
+            NotificationUtils.showSnackbar(
+                    c.getString(R.string.feedback_download_start),
+                    Snackbar.LENGTH_SHORT);
         }
-
-        DownloadMissionEntity entity = new DownloadMissionEntity(c, p, type);
-
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
-                .setTitle(entity.photoId)
-                .setDescription(c.getString(R.string.feedback_downloading))
-                .setDestinationInExternalPublicDir(
-                        Mysplash.DOWNLOAD_PATH,
-                        entity.photoId + Mysplash.DOWNLOAD_FORMAT);
-        request.allowScanningByMediaScanner();
-
-        entity.missionId = ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).enqueue(request);
-        entityList.add(entity);
-        DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
-
-        NotificationUtils.showSnackbar(
-                c.getString(R.string.feedback_download_start),
-                Snackbar.LENGTH_SHORT);
     }
 
     public void restartMission(Context c, int position) {

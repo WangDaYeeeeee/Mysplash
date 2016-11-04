@@ -150,7 +150,7 @@ public class PhotosImplementor
         listener = new OnRequestPhotosListener(c, page, refresh);
         model.getService()
                 .requestUserPhotos(
-                        (User) model.getRequestKey(),
+                        ((User) model.getRequestKey()).username,
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         order,
@@ -162,7 +162,7 @@ public class PhotosImplementor
         listener = new OnRequestPhotosListener(c, page, refresh);
         model.getService()
                 .requestUserLikes(
-                        (User) model.getRequestKey(),
+                        ((User) model.getRequestKey()).username,
                         page,
                         Mysplash.DEFAULT_PER_PAGE,
                         order,

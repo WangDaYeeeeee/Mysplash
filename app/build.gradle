@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
+    compileSdkVersion 25
     buildToolsVersion "24.0.2"
 
     defaultConfig {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
-        targetSdkVersion 24
-        versionCode 242
-        versionName "2.4.2"
+        targetSdkVersion 25
+        versionCode 251
+        versionName "2.5.1"
     }
     sourceSets {
         main {
@@ -54,17 +54,17 @@ buildscript {
 
 apply plugin: 'org.greenrobot.greendao'
 greendao {
-    schemaVersion 3
+    schemaVersion 7
     generateTests false
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:cardview-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
-    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    compile 'com.android.support:cardview-v7:25.0.0'
+    compile 'com.android.support:design:25.0.0'
+    compile 'com.android.support:support-v4:25.0.0'
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.github.bumptech.glide:glide:3.7.0'

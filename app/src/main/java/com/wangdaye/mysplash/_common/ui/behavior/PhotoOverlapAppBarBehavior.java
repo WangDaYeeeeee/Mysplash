@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.LinearLayout;
 
-import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**

@@ -17,8 +17,6 @@ import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
-import static android.content.Context.DOWNLOAD_SERVICE;
-
 /**
  * Download receiver.
  * */
@@ -152,7 +150,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         return false;
     }
 
-    /** <br> listener. */
+    /** <br> interface. */
 
     private class OnCheckPhotoListener implements View.OnClickListener {
         // widget
@@ -201,7 +199,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         @Override
         public void onClick(View v) {
             DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
-            Cursor cursor = ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).query(query);
+            Cursor cursor = ((DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE)).query(query);
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addCategory(Intent.CATEGORY_DEFAULT);

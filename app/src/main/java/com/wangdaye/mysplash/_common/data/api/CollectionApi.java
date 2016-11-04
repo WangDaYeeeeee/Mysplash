@@ -2,10 +2,10 @@ package com.wangdaye.mysplash._common.data.api;
 
 import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.DeleteCollectionResult;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -59,7 +59,7 @@ public interface CollectionApi {
                                       @Query("private") boolean privateX);
 
     @DELETE("collections/{id}")
-    Call<DeleteCollectionResult> deleteCollection(@Path("id") int id);
+    Call<ResponseBody> deleteCollection(@Path("id") int id);
 
     @POST("collections/{collection_id}/add")
     Call<ChangeCollectionPhotoResult> addPhotoToCollection(@Path("collection_id") int collection_id,

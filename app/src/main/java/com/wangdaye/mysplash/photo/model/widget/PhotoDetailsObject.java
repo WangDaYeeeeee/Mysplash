@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.photo.model.widget;
 
 import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 
@@ -14,7 +13,6 @@ public class PhotoDetailsObject
     // data
     private PhotoService service;
     private Photo photo;
-    private PhotoDetails photoDetails;
 
     /** <br> life cycle. */
 
@@ -38,15 +36,5 @@ public class PhotoDetailsObject
     @Override
     public void setPhoto(Photo p) {
         photo = p;
-    }
-
-    @Override
-    public PhotoDetails getPhotoDetails() {
-        return photoDetails;
-    }
-
-    @Override
-    public void setPhotoDetails(PhotoDetails details) {
-        photoDetails = details;
     }
 }

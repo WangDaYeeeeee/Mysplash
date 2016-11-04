@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
+        <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
             android:id="@+id/container_loading_view_large_feedbackImg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

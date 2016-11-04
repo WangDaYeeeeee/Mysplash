@@ -47,7 +47,7 @@ import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
@@ -292,7 +292,7 @@ public class CollectionActivity extends MysplashActivity
                 break;
 
             case R.id.activity_collection_touchBar:
-                User u = User.buildUser((Collection) editResultPresenter.getEditKey());
+                User u = ((Collection) editResultPresenter.getEditKey()).user;
                 Mysplash.getInstance().setUser(u);
 
                 Intent intent = new Intent(this, UserActivity.class);

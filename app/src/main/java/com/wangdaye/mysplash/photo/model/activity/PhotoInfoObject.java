@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.photo.model.activity;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
 
 /**
@@ -13,7 +12,6 @@ public class PhotoInfoObject
         implements PhotoInfoModel {
     // data
     private Photo photo;
-    private PhotoDetails photoDetails;
 
     /** <br> life cycle. */
 
@@ -27,12 +25,7 @@ public class PhotoInfoObject
     }
 
     @Override
-    public PhotoDetails getPhotoDetails() {
-        return photoDetails;
-    }
-
-    @Override
-    public void setPhotoDetails(PhotoDetails details) {
-        photoDetails = details;
+    public void setPhoto(Photo p) {
+        this.photo = p;
     }
 }

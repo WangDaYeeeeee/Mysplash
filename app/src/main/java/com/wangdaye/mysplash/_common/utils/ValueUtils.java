@@ -8,7 +8,6 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
 import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,16 +172,16 @@ public class ValueUtils {
         }
     }
 
-    public static void writePhotoCount(Context c, PhotoDetails details) {
+    public static void writePhotoCount(Context c, Photo p) {
         SharedPreferences.Editor editor = c.getSharedPreferences(
                 Mysplash.SP_STARTUP_ITEM,
                 Context.MODE_PRIVATE).edit();
-        for (int i = 0; i < details.categories.size(); i ++) {
+        for (int i = 0; i < p.categories.size(); i ++) {
             writePhotoCount(
                     c,
                     editor,
-                    details.categories.get(i).id,
-                    details.categories.get(i).photo_count);
+                    p.categories.get(i).id,
+                    p.categories.get(i).photo_count);
         }
         editor.apply();
     }

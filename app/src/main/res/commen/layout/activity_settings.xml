@@ -8,7 +8,7 @@
     android:background="?attr/root_color"
     tools:layout_marginTop="24dp">
     
-    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/activity_settings_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

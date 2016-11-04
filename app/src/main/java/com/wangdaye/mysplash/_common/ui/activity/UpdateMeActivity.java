@@ -24,7 +24,7 @@ import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;

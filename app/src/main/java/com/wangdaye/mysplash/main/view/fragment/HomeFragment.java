@@ -29,7 +29,7 @@ import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImpl
 import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
 

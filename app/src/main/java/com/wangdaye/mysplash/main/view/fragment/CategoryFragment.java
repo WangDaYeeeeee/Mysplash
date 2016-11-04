@@ -20,7 +20,7 @@ import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryManageImplementor;

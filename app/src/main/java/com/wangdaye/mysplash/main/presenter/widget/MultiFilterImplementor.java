@@ -58,7 +58,7 @@ public class MultiFilterImplementor
             String orientation = TextUtils.isEmpty(model.getOrientation()) ? null : model.getOrientation();
 
             model.getService()
-                    .requestRandwomPhotos(
+                    .requestRandomPhotos(
                             category, featured,
                             username, query,
                             orientation, listener);

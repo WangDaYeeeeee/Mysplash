@@ -34,7 +34,7 @@ import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;

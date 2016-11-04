@@ -15,7 +15,7 @@
         android:transitionName="@string/transition_photo_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
+        <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
             android:id="@+id/activity_photo_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.wangdaye.mysplash._common.ui.widget.FreedomTouchView
+                <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomTouchView
                     android:id="@+id/activity_photo_touchView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -210,7 +210,7 @@
             android:layout_height="wrap_content"
             app:layout_behavior="._common.ui.behavior.PhotoOverlapAppBarBehavior">
 
-            <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+            <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
                 android:background="?attr/colorPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

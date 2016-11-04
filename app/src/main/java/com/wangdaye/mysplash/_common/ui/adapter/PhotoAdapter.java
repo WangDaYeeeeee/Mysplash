@@ -33,13 +33,14 @@ import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionPhotoDialog;
-import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
@@ -292,7 +293,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     }
 
     @Override
-    public void onAddPhotoToCollection(Collection c, ChangeCollectionPhotoResult.User u) {
+    public void onAddPhotoToCollection(Collection c, User u) {
         ((MeActivity) a).changeCollection(c);
     }
 

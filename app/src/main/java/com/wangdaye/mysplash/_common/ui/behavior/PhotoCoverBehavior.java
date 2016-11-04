@@ -6,7 +6,7 @@ import android.support.v4.widget.NestedScrollView;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.wangdaye.mysplash._common.ui.widget.FreedomImageView;
+import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 
 /**
  * Cover behavior.

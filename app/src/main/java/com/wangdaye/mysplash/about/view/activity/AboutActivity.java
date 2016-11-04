@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**

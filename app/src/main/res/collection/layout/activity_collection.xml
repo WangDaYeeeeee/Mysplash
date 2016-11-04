@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.mysplash._common.ui.widget.StatusBarView
+    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/activity_collection_statusBar"
         android:background="?attr/colorPrimaryDark"
         android:layout_width="match_parent"
@@ -61,6 +61,7 @@
                     android:layout_width="wrap_content"
                     android:layout_centerInParent="true"
                     android:lineSpacingMultiplier="1.3"
+                    android:textIsSelectable="true"
                     style="@style/content_text"
                     tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 

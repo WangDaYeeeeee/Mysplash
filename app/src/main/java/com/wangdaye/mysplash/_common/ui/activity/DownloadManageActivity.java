@@ -19,7 +19,7 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
-import com.wangdaye.mysplash._common.ui.widget.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;

@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.photo.presenter.activity;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotoInfoPresenter;
@@ -29,7 +28,7 @@ public class PhotoInfoImplementor
 
     @Override
     public void touchAuthorAvatar() {
-        User u = User.buildUser(model.getPhoto());
+        User u = model.getPhoto().user;
         Mysplash.getInstance().setUser(u);
         view.touchAuthorAvatar();
     }
@@ -40,17 +39,7 @@ public class PhotoInfoImplementor
     }
 
     @Override
-    public void drawPhotoDetails() {
-        view.drawPhotoDetails(model.getPhotoDetails());
-    }
-
-    @Override
     public Photo getPhoto() {
         return model.getPhoto();
-    }
-
-    @Override
-    public PhotoDetails getPhotoDetails() {
-        return model.getPhotoDetails();
     }
 }

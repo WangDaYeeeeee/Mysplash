@@ -41,7 +41,7 @@ public class DownloadMissionEntity {
         if (scaleType.equals(Mysplash.getInstance().getResources().getStringArray(R.array.download_type_values)[0])) {
             this.downloadUrl = p.urls.full;
         } else {
-            this.downloadUrl = p.urls.full;
+            this.downloadUrl = p.urls.raw;
         }
         this.downloadType = type;
         this.downloadStatus = DownloadManager.STATUS_PENDING;
@@ -61,33 +61,43 @@ public class DownloadMissionEntity {
     @Generated(hash = 1239001066)
     public DownloadMissionEntity() {
     }
+
     public long getMissionId() {
         return this.missionId;
     }
+
     public void setMissionId(long missionId) {
         this.missionId = missionId;
     }
+
     public String getPhotoId() {
         return this.photoId;
     }
+
     public void setPhotoId(String photoId) {
         this.photoId = photoId;
     }
+
     public String getPhotoUri() {
         return this.photoUri;
     }
+
     public void setPhotoUri(String photoUri) {
         this.photoUri = photoUri;
     }
+
     public String getDownloadUrl() {
         return this.downloadUrl;
     }
+
     public void setDownloadUrl(String downloadUrl) {
         this.downloadUrl = downloadUrl;
     }
+
     public int getDownloadType() {
         return this.downloadType;
     }
+
     public void setDownloadType(int downloadType) {
         this.downloadType = downloadType;
     }

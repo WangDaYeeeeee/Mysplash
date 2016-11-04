@@ -18,7 +18,6 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
@@ -265,37 +264,37 @@ public class PhotoDetailsView extends FrameLayout
     // photo details view.
 
     @Override
-    public void drawExif(PhotoDetails details) {
+    public void drawExif(Photo p) {
         String text;
 
-        text = details.width + " × " + details.height;
+        text = p.width + " × " + p.height;
         sizeText.setText(text);
 
-        text = details.color;
+        text = p.color;
         colorText.setText(text);
 
-        if (details.location == null
-                || (details.location.city == null && details.location.country == null)) {
+        if (p.location == null
+                || (p.location.city == null && p.location.country == null)) {
             text = "Unknown";
         } else {
-            text = details.location.city == null ? "" : details.location.city + ", ";
-            text = text + (details.location.country == null ? "" : details.location.country);
+            text = p.location.city == null ? "" : p.location.city + ", ";
+            text = text + (p.location.country == null ? "" : p.location.country);
         }
         locationText.setText(text);
 
-        modelText.setText(details.exif.model == null ? "Unknown" : details.exif.model);
+        modelText.setText(p.exif.model == null ? "Unknown" : p.exif.model);
 
-        exposureText.setText(details.exif.exposure_time == null ? "Unknown" : details.exif.exposure_time);
+        exposureText.setText(p.exif.exposure_time == null ? "Unknown" : p.exif.exposure_time);
 
-        apertureText.setText(details.exif.aperture == null ? "Unknown" : details.exif.aperture);
+        apertureText.setText(p.exif.aperture == null ? "Unknown" : p.exif.aperture);
 
-        focalText.setText(details.exif.focal_length == null ? "Unknown" : details.exif.focal_length);
+        focalText.setText(p.exif.focal_length == null ? "Unknown" : p.exif.focal_length);
 
-        isoText.setText(details.exif.iso == 0 ? "Unknown" : String.valueOf(details.exif.iso));
+        isoText.setText(p.exif.iso == 0 ? "Unknown" : String.valueOf(p.exif.iso));
 
-        colorSample.setBackground(new ColorDrawable(Color.parseColor(details.color)));
+        colorSample.setBackground(new ColorDrawable(Color.parseColor(p.color)));
 
-        tagView.setAdapter(new TagAdapter(details.categories));
+        tagView.setAdapter(new TagAdapter(p.categories));
     }
 
     @Override

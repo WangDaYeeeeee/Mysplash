@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.wangdaye.mysplash._common.data.entity.DaoMaster;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntityDao;
 
 import java.util.List;
 
@@ -35,10 +36,13 @@ class DatabaseHelper {
     }
 
     void deleteDownloadEntity(DownloadMissionEntity entity) {
-        new DaoMaster(openHelper.getWritableDatabase())
+        List<DownloadMissionEntity> missionList = searchDownloadEntity(entity);
+        DownloadMissionEntityDao dao = new DaoMaster(openHelper.getWritableDatabase())
                 .newSession()
-                .getDownloadMissionEntityDao()
-                .delete(entity);
+                .getDownloadMissionEntityDao();
+        for (DownloadMissionEntity e : missionList) {
+            dao.delete(e);
+        }
     }
 
     void updateDownloadEntity(DownloadMissionEntity entity) {
@@ -53,6 +57,15 @@ class DatabaseHelper {
                 .newSession()
                 .getDownloadMissionEntityDao()
                 .queryBuilder()
+                .list();
+    }
+
+    private List<DownloadMissionEntity> searchDownloadEntity(DownloadMissionEntity entity) {
+        return new DaoMaster(openHelper.getReadableDatabase())
+                .newSession()
+                .getDownloadMissionEntityDao()
+                .queryBuilder()
+                .where(DownloadMissionEntityDao.Properties.PhotoId.eq(entity.photoId))
                 .list();
     }
 

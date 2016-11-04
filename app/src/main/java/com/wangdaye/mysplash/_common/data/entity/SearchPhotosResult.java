@@ -8,6 +8,10 @@ import java.util.List;
 
 public class SearchPhotosResult {
 
+    /**
+     * total : 237
+     * total_pages : 12
+     */
     public int total;
     public int total_pages;
 

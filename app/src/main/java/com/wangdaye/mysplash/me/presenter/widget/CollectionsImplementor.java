@@ -56,7 +56,7 @@ public class CollectionsImplementor
             listener = new OnRequestCollectionsListener(c, page, refresh);
             model.getService()
                     .requestUserCollections(
-                            AuthManager.getInstance().getMe(),
+                            AuthManager.getInstance().getMe().username,
                             page,
                             Mysplash.DEFAULT_PER_PAGE,
                             listener);

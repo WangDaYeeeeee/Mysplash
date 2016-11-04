@@ -4,7 +4,7 @@ import android.content.Context;
 import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.entity.PhotoDetails;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
@@ -42,8 +42,7 @@ public class PhotoDetailsImplementor
     public void requestPhotoDetails(Context c) {
         view.initRefreshStart();
         listener = new OnRequestPhotoDetailsListener(c);
-        model.getService()
-                .requestPhotoDetails(model.getPhoto(), listener);
+        model.getService().requestAPhoto(model.getPhoto().id, listener);
     }
 
     @Override
@@ -63,7 +62,7 @@ public class PhotoDetailsImplementor
 
     /** <br> interface. */
 
-    private class OnRequestPhotoDetailsListener implements PhotoService.OnRequestPhotoDetailsListener {
+    private class OnRequestPhotoDetailsListener implements PhotoService.OnRequestSinglePhotoListener {
         // data
         private Context c;
         private boolean canceled;
@@ -74,11 +73,11 @@ public class PhotoDetailsImplementor
         }
 
         public void cancel() {
-            canceled = true;
+            this.canceled = true;
         }
 
         @Override
-        public void onRequestPhotoDetailsSuccess(Call<PhotoDetails> call, Response<PhotoDetails> response) {
+        public void onRequestSinglePhotoSuccess(Call<Photo> call, Response<Photo> response) {
             if (canceled) {
                 return;
             }
@@ -86,8 +85,8 @@ public class PhotoDetailsImplementor
                 ValueUtils.writePhotoCount(
                         c,
                         response.body());
-                model.setPhotoDetails(response.body());
-                view.drawExif(model.getPhotoDetails());
+                model.setPhoto(response.body());
+                view.drawExif(model.getPhoto());
                 view.requestDetailsSuccess();
             } else {
                 requestPhotoDetails(c);
@@ -98,7 +97,7 @@ public class PhotoDetailsImplementor
         }
 
         @Override
-        public void onRequestPhotoDetailsFailed(Call<PhotoDetails> call, Throwable t) {
+        public void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t) {
             if (canceled) {
                 return;
             }

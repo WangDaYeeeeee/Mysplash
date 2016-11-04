@@ -10,7 +10,7 @@
     android:stateListAnimator="@animator/touch_rise"
     tools:ignore="UnusedAttribute">
 
-    <com.wangdaye.mysplash._common.ui.widget.FreedomImageView
+    <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
         android:id="@+id/item_collection_cover"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

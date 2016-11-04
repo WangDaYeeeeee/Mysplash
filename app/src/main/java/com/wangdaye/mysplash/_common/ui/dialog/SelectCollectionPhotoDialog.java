@@ -25,6 +25,7 @@ import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -230,7 +231,7 @@ public class SelectCollectionPhotoDialog extends DialogFragment
     }
 
     private void requestCollections() {
-        service.requestUserCollections(me, page, 10, this);
+        service.requestUserCollections(me.username, page, 10, this);
     }
 
     private void createCollection() {
@@ -257,7 +258,7 @@ public class SelectCollectionPhotoDialog extends DialogFragment
 
     public interface OnCollectionsChangedListener {
         void onAddCollection(Collection c);
-        void onAddPhotoToCollection(Collection c, ChangeCollectionPhotoResult.User u);
+        void onAddPhotoToCollection(Collection c, User u);
     }
 
     public void setOnCollectionsChangedListener(OnCollectionsChangedListener l) {

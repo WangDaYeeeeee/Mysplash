@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash.about.view.holder;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -10,6 +8,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.dialog.TotalDialog;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -60,8 +59,8 @@ public class HeaderHolder extends RecyclerView.ViewHolder
                 break;
 
             case R.id.item_about_header_unsplashContainer:
-                Uri uri = Uri.parse(Mysplash.UNSPLASH_URL);
-                v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                TotalDialog dialog = new TotalDialog();
+                dialog.show(Mysplash.getInstance().getTopActivity().getFragmentManager(), null);
                 break;
         }
     }

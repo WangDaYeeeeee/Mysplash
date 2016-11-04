@@ -7,6 +7,7 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -86,6 +87,22 @@ public class StatsDialog extends DialogFragment
 
         this.downloadNum = (TextView) v.findViewById(R.id.dialog_stats_downloadNum);
         DisplayUtils.setTypeface(getActivity(), downloadNum);
+
+        if (Mysplash.getInstance().isLightTheme()) {
+            ((ImageView) v.findViewById(R.id.dialog_stats_downloadIcon))
+                    .setImageResource(R.drawable.ic_download_light);
+            ((ImageView) v.findViewById(R.id.dialog_stats_likeIcon))
+                    .setImageResource(R.drawable.ic_heart_outline_light);
+            ((ImageView) v.findViewById(R.id.dialog_stats_viewIcon))
+                    .setImageResource(R.drawable.ic_eye_light);
+        } else {
+            ((ImageView) v.findViewById(R.id.dialog_stats_downloadIcon))
+                    .setImageResource(R.drawable.ic_download_dark);
+            ((ImageView) v.findViewById(R.id.dialog_stats_likeIcon))
+                    .setImageResource(R.drawable.ic_heart_outline_dark);
+            ((ImageView) v.findViewById(R.id.dialog_stats_viewIcon))
+                    .setImageResource(R.drawable.ic_eye_dark);
+        }
     }
 
     private void setState(int stateTo) {

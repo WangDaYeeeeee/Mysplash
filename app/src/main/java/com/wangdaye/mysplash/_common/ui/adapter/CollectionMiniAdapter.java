@@ -81,7 +81,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                             public boolean onResourceReady(GlideDrawable resource, String model,
                                                            Target<GlideDrawable> target,
                                                            boolean isFromMemoryCache, boolean isFirstResource) {
-                                if (!itemList.get(position - 1).cover_photo.hasFadeIn) {
+                                if (!itemList.get(position - 1).cover_photo.hasFadedIn) {
                                     holder.image.setHasTransientState(true);
                                     final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                                     final ObjectAnimator saturation = ObjectAnimator.ofFloat(
@@ -106,7 +106,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                                         }
                                     });
                                     saturation.start();
-                                    itemList.get(position - 1).cover_photo.hasFadeIn = true;
+                                    itemList.get(position - 1).cover_photo.hasFadedIn = true;
                                 }
                                 return false;
                             }
