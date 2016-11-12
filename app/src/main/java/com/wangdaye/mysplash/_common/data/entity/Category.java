@@ -1,10 +1,13 @@
 package com.wangdaye.mysplash._common.data.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Category.
  * */
 
-public class Category {
+public class Category implements Parcelable {
 
     /**
      * id : 2
@@ -17,4 +20,41 @@ public class Category {
     public int photo_count;
 
     public CategoryLinks links;
+
+    /** <br> parcel. */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.title);
+        dest.writeInt(this.photo_count);
+        dest.writeParcelable(this.links, flags);
+    }
+
+    public Category() {
+    }
+
+    protected Category(Parcel in) {
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.photo_count = in.readInt();
+        this.links = in.readParcelable(CategoryLinks.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Category> CREATOR = new Parcelable.Creator<Category>() {
+        @Override
+        public Category createFromParcel(Parcel source) {
+            return new Category(source);
+        }
+
+        @Override
+        public Category[] newArray(int size) {
+            return new Category[size];
+        }
+    };
 }

@@ -125,6 +125,11 @@ public class PhotosImplementor
     }
 
     @Override
+    public int getPhotosType() {
+        return model.getPhotosType();
+    }
+
+    @Override
     public void setOrder(String key) {
         model.setPhotosOrder(key);
     }

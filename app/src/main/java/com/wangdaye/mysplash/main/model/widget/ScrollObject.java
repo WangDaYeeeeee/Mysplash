@@ -13,8 +13,8 @@ public class ScrollObject
 
     /** <br> life cycle. */
 
-    public ScrollObject() {
-        this.toTop = true;
+    public ScrollObject(boolean top) {
+        this.toTop = top;
     }
 
     /** <br> model. */

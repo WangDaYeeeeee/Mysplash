@@ -1,14 +1,15 @@
 package com.wangdaye.mysplash._common.data.entity;
 
-import com.google.gson.annotations.SerializedName;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Collection.
  * */
 
-public class Collection {
+public class Collection implements Parcelable {
 
     /**
      * id : 206
@@ -38,4 +39,57 @@ public class Collection {
     public Photo cover_photo;
     public User user;
     public CollectionLinks links;
+
+    /** <br> parcel. */
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(this.id);
+        dest.writeString(this.title);
+        dest.writeString(this.description);
+        dest.writeString(this.published_at);
+        dest.writeByte(this.curated ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.featured ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.total_photos);
+        dest.writeByte(this.privateX ? (byte) 1 : (byte) 0);
+        dest.writeString(this.share_key);
+        dest.writeParcelable(this.cover_photo, flags);
+        dest.writeParcelable(this.user, flags);
+        dest.writeParcelable(this.links, flags);
+    }
+
+    public Collection() {
+    }
+
+    protected Collection(Parcel in) {
+        this.id = in.readInt();
+        this.title = in.readString();
+        this.description = in.readString();
+        this.published_at = in.readString();
+        this.curated = in.readByte() != 0;
+        this.featured = in.readByte() != 0;
+        this.total_photos = in.readInt();
+        this.privateX = in.readByte() != 0;
+        this.share_key = in.readString();
+        this.cover_photo = in.readParcelable(Photo.class.getClassLoader());
+        this.user = in.readParcelable(User.class.getClassLoader());
+        this.links = in.readParcelable(CollectionLinks.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<Collection> CREATOR = new Parcelable.Creator<Collection>() {
+        @Override
+        public Collection createFromParcel(Parcel source) {
+            return new Collection(source);
+        }
+
+        @Override
+        public Collection[] newArray(int size) {
+            return new Collection[size];
+        }
+    };
 }

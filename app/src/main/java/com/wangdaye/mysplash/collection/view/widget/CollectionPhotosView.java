@@ -21,6 +21,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.collection.model.widget.LoadObject;
@@ -38,7 +39,6 @@ import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 
@@ -203,7 +203,7 @@ public class CollectionPhotosView extends FrameLayout
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.container_loading_view_large_feedbackBtn:
+            case R.id.container_loading_view_mini_retryButton:
                 photosPresenter.initRefresh(getContext());
                 break;
         }
@@ -341,7 +341,13 @@ public class CollectionPhotosView extends FrameLayout
 
     @Override
     public boolean checkCanSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || photosPresenter.getAdapter().getRealItemCount() <= 0;
+        switch (loadPresenter.getLoadState()) {
+            case LoadObject.NORMAL_STATE:
+                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                        || photosPresenter.getAdapter().getRealItemCount() <= 0;
+
+            default:
+                return true;
+        }
     }
 }

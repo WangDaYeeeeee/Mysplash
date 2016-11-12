@@ -37,4 +37,9 @@
         <attr name="fiv_square" format="boolean" />
     </declare-styleable>
 
+    <!-- SwipeBackCoordinatorLayout -->
+    <declare-styleable name="SwipeBackCoordinatorLayout">
+        <attr name="sbl_force_back" format="boolean" />
+    </declare-styleable>
+
 </resources>

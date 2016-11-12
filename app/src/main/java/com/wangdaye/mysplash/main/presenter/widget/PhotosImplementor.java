@@ -133,6 +133,11 @@ public class PhotosImplementor
     }
 
     @Override
+    public int getPhotosType() {
+        return model.getPhotosType();
+    }
+
+    @Override
     public void setOrder(String key) {
         model.setPhotosOrder(key);
     }
@@ -156,7 +161,7 @@ public class PhotosImplementor
 
     private void requestNewPhotosOrders(Context c, int page, boolean refresh) {
         page = refresh ? 1: page + 1;
-        listener = new OnRequestPhotosListener(c, page, Mysplash.CATEGORY_TOTAL_NEW, refresh, false);
+        listener = new OnRequestPhotosListener(c, page, refresh, false);
         model.getService()
                 .requestPhotos(
                         page,
@@ -170,7 +175,7 @@ public class PhotosImplementor
             page = 0;
             model.setPageList(ValueUtils.getPageListByCategory(Mysplash.CATEGORY_TOTAL_NEW));
         }
-        listener = new OnRequestPhotosListener(c, page, Mysplash.CATEGORY_TOTAL_NEW, refresh, true);
+        listener = new OnRequestPhotosListener(c, page, refresh, true);
         model.getService()
                 .requestPhotos(
                         model.getPageList().get(page),
@@ -181,7 +186,7 @@ public class PhotosImplementor
 
     private void requestFeaturePhotosOrders(Context c, int page, boolean refresh) {
         page = refresh ? 1 : page + 1;
-        listener = new OnRequestPhotosListener(c, page, Mysplash.CATEGORY_TOTAL_FEATURED, refresh, false);
+        listener = new OnRequestPhotosListener(c, page, refresh, false);
         model.getService()
                 .requestCuratePhotos(
                         page,
@@ -195,7 +200,7 @@ public class PhotosImplementor
             page = 0;
             model.setPageList(ValueUtils.getPageListByCategory(Mysplash.CATEGORY_TOTAL_FEATURED));
         }
-        listener = new OnRequestPhotosListener(c, page, Mysplash.CATEGORY_TOTAL_FEATURED, refresh, true);
+        listener = new OnRequestPhotosListener(c, page, refresh, true);
         model.getService()
                 .requestCuratePhotos(
                         model.getPageList().get(page),
@@ -210,15 +215,13 @@ public class PhotosImplementor
         // data
         private Context c;
         private int page;
-        private int category;
         private boolean refresh;
         private boolean random;
         private boolean canceled;
 
-        OnRequestPhotosListener(Context c, int page, int category, boolean refresh, boolean random) {
+        OnRequestPhotosListener(Context c, int page, boolean refresh, boolean random) {
             this.c = c;
             this.page = page;
-            this.category = category;
             this.refresh = refresh;
             this.random = random;
             this.canceled = false;
@@ -246,7 +249,7 @@ public class PhotosImplementor
             }
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
-                ValueUtils.writePhotoCount(c, response, category);
+                // ValueUtils.writePhotoCount(c, response, category);
                 if (random) {
                     model.setPhotosPage(page + 1);
                 } else {

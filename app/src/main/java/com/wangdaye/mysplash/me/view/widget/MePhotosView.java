@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,7 +29,7 @@ import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -67,21 +69,25 @@ public class MePhotosView extends FrameLayout
     private ScrollPresenter scrollPresenter;
     private SwipeBackPresenter swipeBackPresenter;
 
+    // data.
+    private final String KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE = "me_photos_view_photo_filter_value";
+    private final String KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE = "me_photos_view_like_filter_value";
+
     /** <br> life cycle. */
 
-    public MePhotosView(Activity a, int type) {
+    public MePhotosView(Activity a, @Nullable Bundle bundle, int type, String defaultOrder) {
         super(a);
-        this.initialize(a, type);
+        this.initialize(a, bundle, type, defaultOrder);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, int type) {
+    private void initialize(Activity a, @Nullable Bundle bundle, int type, String defaultOrder) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, type);
+        initModel(a, bundle, type, defaultOrder);
         initPresenter();
         initView();
     }
@@ -123,8 +129,15 @@ public class MePhotosView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, int type) {
-        this.photosModel = new PhotosObject(a, type);
+    private void initModel(Activity a, @Nullable Bundle bundle, int type, String order) {
+        if (bundle != null) {
+            if (type == PhotosObject.PHOTOS_TYPE_PHOTOS) {
+                order = bundle.getString(KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE, order);
+            } else {
+                order = bundle.getString(KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE, order);
+            }
+        }
+        this.photosModel = new PhotosObject(a, type, order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }
@@ -262,6 +275,19 @@ public class MePhotosView extends FrameLayout
         }
     }
 
+    @Override
+    public void writeBundle(Bundle outState) {
+        switch (photosPresenter.getPhotosType()) {
+            case PhotosObject.PHOTOS_TYPE_PHOTOS:
+                outState.putString(KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE, photosPresenter.getOrder());
+                break;
+
+            case PhotosObject.PHOTOS_TYPE_LIKES:
+                outState.putString(KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE, photosPresenter.getOrder());
+                break;
+        }
+    }
+
     // load view.
 
     @Override
@@ -333,7 +359,13 @@ public class MePhotosView extends FrameLayout
 
     @Override
     public boolean checkCanSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || photosPresenter.getAdapter().getRealItemCount() <= 0;
+        switch (loadPresenter.getLoadState()) {
+            case LoadObject.NORMAL_STATE:
+                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                        || photosPresenter.getAdapter().getRealItemCount() <= 0;
+
+            default:
+                return true;
+        }
     }
 }

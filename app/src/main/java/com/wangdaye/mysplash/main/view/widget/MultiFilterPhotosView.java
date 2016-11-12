@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -22,6 +24,7 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -31,6 +34,7 @@ import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -40,6 +44,8 @@ import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.MultiFilterImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
+
+import java.util.ArrayList;
 
 /**
  * Multi-filter photos view.
@@ -67,8 +73,16 @@ public class MultiFilterPhotosView extends FrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
-    // interface.
+    // widget.
     private OnMultiFilterDataInputInterface inputInterface;
+
+    // data.
+    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_SEARCHING = "key_multi_filter_photos_view_searching";
+    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_QUERY = "key_multi_filter_photos_view_query";
+    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_USER = "key_multi_filter_photos_view_user";
+    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_CATEGORY = "key_multi_filter_photos_view_photo_category";
+    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_ORIENTATION = "key_multi_filter_photos_view_photo_orientation";
+    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_TYPE = "key_multi_filter_photos_view_photo_type";
 
     /** <br> life cycle. */
 
@@ -104,6 +118,28 @@ public class MultiFilterPhotosView extends FrameLayout
         initModel();
         initView();
         initPresenter();
+    }
+
+    public void readBundle(@NonNull Bundle bundle) {
+        multiFilterPresenter.setQuery(bundle.getString(KEY_MULTI_FILTER_PHOTOS_VIEW_QUERY, ""));
+        multiFilterPresenter.setUsername(bundle.getString(KEY_MULTI_FILTER_PHOTOS_VIEW_USER, ""));
+        multiFilterPresenter.setCategory(bundle.getInt(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_CATEGORY, 0));
+        multiFilterPresenter.setOrientation(bundle.getString(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_ORIENTATION, ""));
+        multiFilterPresenter.setFeatured(bundle.getBoolean(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_TYPE, false));
+        if (bundle.getBoolean(KEY_MULTI_FILTER_PHOTOS_VIEW_SEARCHING, false)) {
+            multiFilterPresenter.initRefresh(getContext());
+        }
+    }
+
+    public void writeBundle(Bundle bundle) {
+        bundle.putBoolean(
+                KEY_MULTI_FILTER_PHOTOS_VIEW_SEARCHING,
+                loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
+        bundle.putString(KEY_MULTI_FILTER_PHOTOS_VIEW_QUERY, multiFilterPresenter.getQuery());
+        bundle.putString(KEY_MULTI_FILTER_PHOTOS_VIEW_USER, multiFilterPresenter.getUsername());
+        bundle.putInt(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_CATEGORY, multiFilterPresenter.getCategory());
+        bundle.putString(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_ORIENTATION, multiFilterPresenter.getOrientation());
+        bundle.putBoolean(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_TYPE, multiFilterPresenter.isFeatured());
     }
 
     /** <br> presenter. */
@@ -174,9 +210,10 @@ public class MultiFilterPhotosView extends FrameLayout
     // init
 
     private void initModel() {
-        this.multiFilterModel = new MultiFilterObject(getContext());
+        this.multiFilterModel = new MultiFilterObject(
+                new PhotoAdapter(getContext(), new ArrayList<Photo>()));
         this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-        this.scrollModel = new ScrollObject();
+        this.scrollModel = new ScrollObject(true);
     }
 
     // interface.

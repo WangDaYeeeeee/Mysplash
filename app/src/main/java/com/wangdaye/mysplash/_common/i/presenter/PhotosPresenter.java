@@ -25,8 +25,11 @@ public interface PhotosPresenter {
     Object getRequestKey();
     void setRequestKey(Object k);
 
+    int getPhotosType();
+
     void setOrder(String key);
     String getOrder();
+
     void setActivityForAdapter(Activity a);
     PhotoAdapter getAdapter();
 }

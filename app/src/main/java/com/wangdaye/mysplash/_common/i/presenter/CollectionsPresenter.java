@@ -26,6 +26,7 @@ public interface CollectionsPresenter {
     void setRequestKey(Object k);
 
     void setType(String key);
+    String getType();
     void setActivityForAdapter(Activity a);
     CollectionAdapter getAdapter();
 }

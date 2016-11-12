@@ -274,11 +274,6 @@ public class AuthManager
         return instance;
     }
 
-    public static AuthManager reBuild() {
-        instance = new AuthManager();
-        return instance;
-    }
-
     /** <br> interface. */
 
     // on auth data changed listener.

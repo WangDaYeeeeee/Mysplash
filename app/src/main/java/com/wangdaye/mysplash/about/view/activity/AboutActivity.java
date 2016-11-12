@@ -10,8 +10,8 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -19,9 +19,10 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
  * */
 
 public class AboutActivity extends MysplashActivity
-        implements SwipeBackLayout.OnSwipeListener {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
     // widget
     private CoordinatorLayout container;
+    private StatusBarView statusBar;
     private RecyclerView recyclerView;
 
     /** <br> life cycle. */
@@ -57,6 +58,7 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     public void onBackPressed() {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         super.onBackPressed();
         overridePendingTransition(0, R.anim.activity_slide_out_bottom);
     }
@@ -64,16 +66,17 @@ public class AboutActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_about_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_about_container);
 
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_about_statusBar);
+        SwipeBackCoordinatorLayout swipeBackView
+                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_about_swipeBackView);
+        swipeBackView.setOnSwipeListener(this);
+
+        this.statusBar = (StatusBarView) findViewById(R.id.activity_about_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_about_container);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.activity_about_recyclerView);
         recyclerView.setAdapter(new AboutAdapter(this));
@@ -86,18 +89,25 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(recyclerView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir);
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
     @Override
     public void onSwipeFinish(int dir) {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         finish();
         switch (dir) {
-            case SwipeBackLayout.UP_DIR:
+            case SwipeBackCoordinatorLayout.UP_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_top);
                 break;
 
-            case SwipeBackLayout.DOWN_DIR:
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }

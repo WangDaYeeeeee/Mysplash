@@ -2,8 +2,10 @@ package com.wangdaye.mysplash.me.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -21,6 +23,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
@@ -35,11 +38,9 @@ import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
@@ -62,12 +63,13 @@ import java.util.List;
 public class MeActivity extends MysplashActivity
         implements PagerManageView, PopupManageView, SwipeBackManageView,
         Toolbar.OnMenuItemClickListener, View.OnClickListener, ViewPager.OnPageChangeListener,
-        SwipeBackLayout.OnSwipeListener, AuthManager.OnAuthDataChangedListener {
+        SwipeBackCoordinatorLayout.OnSwipeListener, AuthManager.OnAuthDataChangedListener {
     // model.
     private PagerManageModel pagerManageModel;
 
     // view.
     private CoordinatorLayout container;
+    private StatusBarView statusBar;
     private AppBarLayout appBar;
     private Toolbar toolbar;
     private CircleImageView avatar;
@@ -89,12 +91,19 @@ public class MeActivity extends MysplashActivity
     public static final int COLLECTION_ACTIVITY = 1;
     public static final String EXTRA_BROWSABLE = "browsable";
 
+    public static final String KEY_ME_ACTIVITY_DELETE_COLLECTION = "me_activity_delete_collection";
+    public static final String KEY_ME_ACTIVITY_COLLECTION = "me_activity_collection";
+
+    private final String KEY_ME_ACTIVITY_PAGE_POSITION = "me_activity_page_position";
+
     /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_me);
+        initModel(savedInstanceState);
+        initPresenter();
     }
 
     @Override
@@ -102,11 +111,7 @@ public class MeActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
-            initModel();
-            initPresenter();
             initView();
-            AnimUtils.animInitShow((View) pagers[0], 400);
-            pagers[0].refreshPager();
         }
     }
 
@@ -121,6 +126,16 @@ public class MeActivity extends MysplashActivity
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(KEY_ME_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
+        for (PagerView pager : pagers) {
+            if (pager != null) {
+                pager.writeBundle(outState);
+            }
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (Mysplash.getInstance().isActivityInBackstage()) {
             super.onBackPressed();
@@ -128,6 +143,7 @@ public class MeActivity extends MysplashActivity
                 && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
             backToTop();
         } else {
+            SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
             super.onBackPressed();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
@@ -156,11 +172,15 @@ public class MeActivity extends MysplashActivity
         switch (requestCode) {
             case COLLECTION_ACTIVITY:
                 if (resultCode == RESULT_OK) {
-                    if (data.getBooleanExtra(CollectionActivity.DELETE_COLLECTION, false)) {
+                    if (data.getBooleanExtra(KEY_ME_ACTIVITY_DELETE_COLLECTION, false)) {
                         meProfileView.cutCollection(adapter);
-                        ((MeCollectionsView) pagers[1]).removeCollection(Mysplash.getInstance().getCollection());
+                        ((MeCollectionsView) pagers[1])
+                                .removeCollection(
+                                        (Collection) data.getParcelableExtra(KEY_ME_ACTIVITY_COLLECTION));
                     } else {
-                        ((MeCollectionsView) pagers[1]).changeCollection(Mysplash.getInstance().getCollection());
+                        ((MeCollectionsView) pagers[1])
+                                .changeCollection(
+                                        (Collection) data.getParcelableExtra(KEY_ME_ACTIVITY_COLLECTION));
                     }
                 }
                 break;
@@ -181,10 +201,13 @@ public class MeActivity extends MysplashActivity
     // init.
 
     private void initView() {
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_me_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_me_statusBar);
+        SwipeBackCoordinatorLayout swipeBackView
+                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_me_swipeBackView);
+        swipeBackView.setOnSwipeListener(this);
+
+        this.statusBar = (StatusBarView) findViewById(R.id.activity_me_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
@@ -216,17 +239,26 @@ public class MeActivity extends MysplashActivity
         this.title = (TextView) findViewById(R.id.activity_me_title);
         this.meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
 
-        initPages();
+        initPages(sharedPreferences);
         this.utils = new DisplayUtils(this);
 
         drawProfile();
+
+        AnimUtils.animInitShow(
+                (View) pagers[pagerManagePresenter.getPagerPosition()],
+                400);
+        pagers[pagerManagePresenter.getPagerPosition()].refreshPager();
     }
 
-    private void initPages() {
+    private void initPages(SharedPreferences sharedPreferences) {
+        String defaultOrder = sharedPreferences.getString(
+                getString(R.string.key_default_photo_order),
+                getResources().getStringArray(R.array.photo_order_values)[0]);
+
         List<View> pageList = new ArrayList<>();
-        pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_PHOTOS));
+        pageList.add(new MePhotosView(this, getBundle(), PhotosObject.PHOTOS_TYPE_PHOTOS, defaultOrder));
         pageList.add(new MeCollectionsView(this));
-        pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_LIKES));
+        pageList.add(new MePhotosView(this, getBundle(), PhotosObject.PHOTOS_TYPE_LIKES, defaultOrder));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -240,6 +272,7 @@ public class MeActivity extends MysplashActivity
         this.viewPager = (ViewPager) findViewById(R.id.activity_me_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
+        viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_me_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -305,8 +338,12 @@ public class MeActivity extends MysplashActivity
 
     /** <br> model. */
 
-    private void initModel() {
-        this.pagerManageModel = new PagerManageObject(0);
+    private void initModel(Bundle savedInstanceState) {
+        int page = 0;
+        if (savedInstanceState != null) {
+            page = savedInstanceState.getInt(KEY_ME_ACTIVITY_PAGE_POSITION, page);
+        }
+        this.pagerManageModel = new PagerManageObject(page);
         AuthManager.getInstance().addOnWriteDataListener(this);
         if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE) {
             AuthManager.getInstance().refreshPersonalProfile();
@@ -361,6 +398,12 @@ public class MeActivity extends MysplashActivity
     @Override
     public boolean canSwipeBack(int dir) {
         return swipeBackManagePresenter.checkCanSwipeBack(dir);
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
     @Override
@@ -431,10 +474,7 @@ public class MeActivity extends MysplashActivity
 
     @Override
     public boolean checkCanSwipeBack(int dir) {
-        if (pagerManagePresenter.getPagerItemCount() <= 0) {
-            return true;
-        }
-        if (dir == SwipeBackLayout.UP_DIR) {
+        if (dir == SwipeBackCoordinatorLayout.UP_DIR) {
             return pagerManagePresenter.canPagerSwipeBack(dir)
                     && appBar.getY() <= -appBar.getMeasuredHeight() + utils.dpToPx(48);
         } else {

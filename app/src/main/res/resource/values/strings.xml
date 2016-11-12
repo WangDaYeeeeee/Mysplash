@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.5.1</string>
+    <string name="version_code">2.5.3</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -197,7 +197,9 @@
 
     <string name="transition_photo_image">photo_image</string>
     <string name="transition_photo_background">photo_background</string>
+
     <string name="transition_user_avatar">user_avatar</string>
+
     <string name="transition_me_avatar">me_avatar</string>
 
     <!-- settings. -->

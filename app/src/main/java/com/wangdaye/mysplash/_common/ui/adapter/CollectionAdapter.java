@@ -7,11 +7,8 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,16 +21,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
-import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.List;
 
@@ -243,28 +237,10 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             switch (view.getId()) {
                 case R.id.item_collection_background:
                     if (a instanceof Activity) {
-                        Collection c = itemList.get(getAdapterPosition());
-                        Mysplash.getInstance().setCollection(c);
-
-                        Intent intent = new Intent(a, CollectionActivity.class);
-                        ActivityOptionsCompat options = ActivityOptionsCompat
-                                .makeScaleUpAnimation(
-                                        view,
-                                        (int) view.getX(), (int) view.getY(),
-                                        view.getMeasuredWidth(), view.getMeasuredHeight());
-                        if (AuthManager.getInstance().getUsername() != null
-                                &&
-                                AuthManager.getInstance()
-                                        .getUsername()
-                                        .equals(itemList.get(getAdapterPosition()).user.username)) {
-                            ActivityCompat.startActivityForResult(
-                                    (Activity) a,
-                                    intent,
-                                    MeActivity.COLLECTION_ACTIVITY,
-                                    options.toBundle());
-                        } else {
-                            ActivityCompat.startActivity((Activity) a, intent, options.toBundle());
-                        }
+                        IntentHelper.startCollectionActivity(
+                                (Activity) a,
+                                view,
+                                itemList.get(getAdapterPosition()));
                     }
                     break;
             }

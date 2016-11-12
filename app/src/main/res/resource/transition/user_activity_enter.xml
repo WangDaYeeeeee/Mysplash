@@ -10,7 +10,7 @@
         android:slideEdge="bottom"
         tools:ignore="UnusedAttribute">
         <targets>
-            <target android:targetId="@id/activity_user_container" />
+            <target android:targetId="@id/activity_user_swipeBackView" />
         </targets>
     </slide>
 

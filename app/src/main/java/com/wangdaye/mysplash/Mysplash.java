@@ -3,12 +3,7 @@ package com.wangdaye.mysplash;
 import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 
-import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.User;
-import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -22,15 +17,9 @@ public class Mysplash extends Application {
     // data
     private List<Activity> activityList;
 
-    private Photo photo = null;
-    private Collection collection = null;
-    private User user = null;
-
-    private Drawable drawable = null;
-
-    private boolean lightTheme = true;
-    private String language = "follow_system";
-    private boolean activityInBackstage = false;
+    private boolean lightTheme;
+    private String language;
+    private boolean activityInBackstage;
 
     // Unsplash data.
     public static final String APPLICATION_ID = "7a96a77d719e9967f935da53784d6a3eb58a4fb174dda25e89ec69059e46c815";
@@ -74,7 +63,8 @@ public class Mysplash extends Application {
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
     // share preference.
-    public static final String SP_STARTUP_ITEM = "sp_startup_item";
+    public static final String SP_STARTUP_ITEM = "startup_item";
+    // public static final String SP_PHOTOS_COUNT = "photos_count";
 
     // activity code.
     public static final int ME_ACTIVITY = 1;
@@ -86,19 +76,24 @@ public class Mysplash extends Application {
 
     @Override
     public void onCreate() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SP_STARTUP_ITEM, MODE_PRIVATE);
         super.onCreate();
+
         instance = this;
         activityList = new ArrayList<>();
-
-        SharedPreferences sharedPreferences = getSharedPreferences(SP_STARTUP_ITEM, MODE_PRIVATE);
-        ValueUtils.readPhotoCount(this, sharedPreferences);
         lightTheme = sharedPreferences.getBoolean(getString(R.string.key_light_theme), true);
         language = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
+        activityInBackstage = false;
     }
 
     /** <br> data. */
 
     public void addActivity(Activity a) {
+        for (Activity activity : activityList) {
+            if (activity.equals(a)) {
+                return;
+            }
+        }
         activityList.add(a);
     }
 
@@ -124,38 +119,6 @@ public class Mysplash extends Application {
 
     public int getActivityCount() {
         return activityList.size();
-    }
-
-    public void setPhoto(Photo p) {
-        this.photo = p;
-    }
-
-    public Photo getPhoto() {
-        return photo;
-    }
-
-    public void setCollection(Collection c) {
-        this.collection = c;
-    }
-
-    public Collection getCollection() {
-        return collection;
-    }
-
-    public void setUser(User u) {
-        this.user = u;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setDrawable(Drawable d) {
-        this.drawable = d;
-    }
-
-    public Drawable getDrawable() {
-        return drawable;
     }
 
     public void changeTheme() {

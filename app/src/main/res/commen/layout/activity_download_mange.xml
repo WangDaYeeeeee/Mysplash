@@ -1,49 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_download_manage_swipeBackLayout"
-    android:orientation="vertical"
+    android:id="@+id/activity_download_manage_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-        android:id="@+id/activity_download_manage_statusBar"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark" />
+        android:layout_height="match_parent">
 
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/activity_download_manage_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="?attr/root_color">
-
-        <android.support.design.widget.AppBarLayout
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_download_manage_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:theme="@style/MysplashToolbarTheme">
+            android:background="?attr/colorPrimaryDark" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/activity_download_manage_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:title="@string/action_download_manage"
-                app:popupTheme="@style/MysplashPopupMenuTheme"
-                tools:ignore="UnusedAttribute" />
-
-        </android.support.design.widget.AppBarLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_download_manage_recyclerView"
+        <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_download_manage_swipeBackView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="@dimen/little_margin"
-            android:clipToPadding="false"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:background="?attr/root_color">
 
-    </android.support.design.widget.CoordinatorLayout>
+            <android.support.design.widget.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:theme="@style/MysplashToolbarTheme">
 
-</com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_download_manage_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="@string/action_download_manage"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"
+                    tools:ignore="UnusedAttribute" />
+
+            </android.support.design.widget.AppBarLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_download_manage_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/little_margin"
+                android:clipToPadding="false"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

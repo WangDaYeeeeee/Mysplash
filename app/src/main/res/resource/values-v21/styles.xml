@@ -12,6 +12,7 @@
         <item name="title_color">@color/colorTextTitle_light</item>
         <item name="subtitle_color">@color/colorTextSubtitle_light</item>
         <item name="content_color">@color/colorTextContent_light</item>
+        <item name="android:windowBackground">@color/colorPrimary_light</item>
         <item name="android:textColorPrimary">?attr/content_color</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -29,6 +30,7 @@
         <item name="title_color">@color/colorTextTitle_dark</item>
         <item name="subtitle_color">@color/colorTextSubtitle_dark</item>
         <item name="content_color">@color/colorTextContent_dark</item>
+        <item name="android:windowBackground">@color/colorPrimary_dark</item>
         <item name="android:textColorPrimary">?attr/content_color</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>

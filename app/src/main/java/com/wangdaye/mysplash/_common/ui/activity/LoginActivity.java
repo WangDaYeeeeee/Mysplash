@@ -21,10 +21,10 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
@@ -36,10 +36,11 @@ import retrofit2.Response;
  * */
 
 public class LoginActivity extends MysplashActivity
-        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener,
+        implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
         AuthorizeService.OnRequestAccessTokenListener {
     // widget
     private CoordinatorLayout container;
+    private StatusBarView statusBar;
     private LinearLayout buttonContainer;
     private RelativeLayout progressContainer;
 
@@ -66,6 +67,12 @@ public class LoginActivity extends MysplashActivity
             initData();
             initWidget();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        service.cancel();
     }
 
     @Override
@@ -100,25 +107,20 @@ public class LoginActivity extends MysplashActivity
         overridePendingTransition(0, R.anim.activity_slide_out_bottom);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        service.cancel();
-    }
-
     /** <br> UI. */
 
     private void initWidget() {
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_login_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_login_container);
 
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_login_statusBar);
+        SwipeBackCoordinatorLayout swipeBackView
+                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_login_swipeBackView);
+        swipeBackView.setOnSwipeListener(this);
+
+        this.statusBar = (StatusBarView) findViewById(R.id.activity_login_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_login_container);
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.activity_login_closeBtn);
         closeBtn.setOnClickListener(this);
@@ -221,14 +223,20 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+    }
+
+    @Override
     public void onSwipeFinish(int dir) {
         finish();
         switch (dir) {
-            case SwipeBackLayout.UP_DIR:
+            case SwipeBackCoordinatorLayout.UP_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_top);
                 break;
 
-            case SwipeBackLayout.DOWN_DIR:
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }

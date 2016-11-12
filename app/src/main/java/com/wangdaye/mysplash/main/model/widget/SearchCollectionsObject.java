@@ -1,20 +1,18 @@
 package com.wangdaye.mysplash.main.model.widget;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.service.SearchService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-
-import java.util.ArrayList;
 
 /**
  * Search collections object.
  * */
 
-public class SearchCollectionsObject implements SearchModel {
+public class SearchCollectionsObject
+        implements SearchModel {
     // data
     private CollectionAdapter adapter;
     private SearchService service;
@@ -29,13 +27,13 @@ public class SearchCollectionsObject implements SearchModel {
 
     /** <br> life cycle. */
 
-    public SearchCollectionsObject(Context c) {
-        this.adapter = new CollectionAdapter(c, new ArrayList<Collection>());
+    public SearchCollectionsObject(CollectionAdapter adapter, String query) {
+        this.adapter = adapter;
         this.service = SearchService.getService();
 
-        this.searchQuery = "";
+        this.searchQuery = query;
 
-        this.photosPage = 0;
+        this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
         this.refreshing = false;
         this.loading = false;

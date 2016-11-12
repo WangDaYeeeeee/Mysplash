@@ -6,9 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -21,7 +18,9 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.EditResultModel;
@@ -43,14 +42,12 @@ import com.wangdaye.mysplash.collection.presenter.activity.SwipeBackManageImplem
 import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
 import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.user.view.activity.UserActivity;
+import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 /**
  * Collection activity.
@@ -58,8 +55,8 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class CollectionActivity extends MysplashActivity
         implements SwipeBackManageView, EditResultView, BrowsableView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
-        UpdateCollectionDialog.OnCollectionChangedListener {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener, UpdateCollectionDialog.OnCollectionChangedListener {
     // model.
     private EditResultModel editResultModel;
     private BrowsableModel browsableModel;
@@ -71,6 +68,7 @@ public class CollectionActivity extends MysplashActivity
     private AppBarLayout appBar;
     private RelativeLayout creatorBar;
     private CircleImageView avatarImage;
+    private StatusBarView statusBar;
     private CollectionPhotosView photosView;
     
     // presenter.
@@ -80,7 +78,7 @@ public class CollectionActivity extends MysplashActivity
     private BrowsablePresenter browsablePresenter;
 
     // data
-    public static final String DELETE_COLLECTION = "delete_collection";
+    public static final String KEY_COLLECTION_ACTIVITY_COLLECTION = "collection_activity_collection";
 
     /** <br> life cycle. */
 
@@ -128,8 +126,10 @@ public class CollectionActivity extends MysplashActivity
             backToTop();
         } else {
             Intent result = new Intent();
-            result.putExtra(DELETE_COLLECTION, false);
+            result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, false);
+            result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, (Collection) editResultPresenter.getEditKey());
             setResult(RESULT_OK, result);
+            SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
             super.onBackPressed();
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
@@ -145,15 +145,18 @@ public class CollectionActivity extends MysplashActivity
 
     public void finishActivity(int dir, boolean delete) {
         Intent result = new Intent();
-        result.putExtra(DELETE_COLLECTION, delete);
+        result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, delete);
+        result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, (Collection) editResultPresenter.getEditKey());
+        result.putExtra(KEY_COLLECTION_ACTIVITY_COLLECTION, getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         setResult(RESULT_OK, result);
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         finish();
         switch (dir) {
-            case SwipeBackLayout.UP_DIR:
+            case SwipeBackCoordinatorLayout.UP_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_top);
                 break;
 
-            case SwipeBackLayout.DOWN_DIR:
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }
@@ -179,16 +182,18 @@ public class CollectionActivity extends MysplashActivity
         } else {
             Collection c = (Collection) editResultPresenter.getEditKey();
 
-            SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_collection_swipeBackLayout);
-            swipeBackLayout.setOnSwipeListener(this);
+            this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
 
-            StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
+            SwipeBackCoordinatorLayout swipeBackView
+                    = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_collection_swipeBackView);
+            swipeBackView.setOnSwipeListener(this);
+
+            this.statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
             if (DisplayUtils.isNeedSetStatusBarMask()) {
                 statusBar.setBackgroundResource(R.color.colorPrimary_light);
                 statusBar.setMask(true);
             }
 
-            this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
             this.appBar = (AppBarLayout) findViewById(R.id.activity_collection_appBar);
 
             TextView title = (TextView) findViewById(R.id.activity_collection_title);
@@ -263,7 +268,9 @@ public class CollectionActivity extends MysplashActivity
     // init.
 
     private void initModel() {
-        this.editResultModel = new EditResultObject();
+
+        this.editResultModel = new EditResultObject(
+                (Collection) getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         this.browsableModel = new BorwsableObject(getIntent());
     }
 
@@ -292,21 +299,10 @@ public class CollectionActivity extends MysplashActivity
                 break;
 
             case R.id.activity_collection_touchBar:
-                User u = ((Collection) editResultPresenter.getEditKey()).user;
-                Mysplash.getInstance().setUser(u);
-
-                Intent intent = new Intent(this, UserActivity.class);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.activity_in, 0);
-                } else {
-                    View v = avatarImage;
-                    ActivityOptionsCompat options = ActivityOptionsCompat
-                            .makeSceneTransitionAnimation(
-                                    this,
-                                    Pair.create(v, getString(R.string.transition_user_avatar)));
-                    ActivityCompat.startActivity(this, intent, options.toBundle());
-                }
+                IntentHelper.startUserActivity(
+                        this,
+                        avatarImage,
+                        ((Collection) editResultPresenter.getEditKey()).user);
                 break;
         }
     }
@@ -323,6 +319,12 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public boolean canSwipeBack(int dir) {
         return swipeBackManagePresenter.checkCanSwipeBack(dir);
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
     @Override
@@ -355,7 +357,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public boolean checkCanSwipeBack(int dir) {
-        if (dir == SwipeBackLayout.UP_DIR) {
+        if (dir == SwipeBackCoordinatorLayout.UP_DIR) {
             return photosView.canSwipeBack(dir)
                     && appBar.getY() <= -appBar.getMeasuredHeight() + creatorBar.getMeasuredHeight();
         } else {
@@ -389,7 +391,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void drawDeleteResult(Object oldKey) {
-        finishActivity(SwipeBackLayout.NULL_DIR, true);
+        finishActivity(SwipeBackCoordinatorLayout.NULL_DIR, true);
     }
 
     // browsable view.

@@ -1,16 +1,9 @@
 package com.wangdaye.mysplash.main.model.widget;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-
-import java.util.ArrayList;
 
 /**
  * Collections object.
@@ -32,17 +25,13 @@ public class CollectionsObject
 
     /** <br> life cycle. */
 
-    public CollectionsObject(Activity a) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(a);
-
-        this.adapter = new CollectionAdapter(a, new ArrayList<Collection>());
+    public CollectionsObject(CollectionAdapter adapter, String collectionsType) {
+        this.adapter = adapter;
         this.service = CollectionService.getService();
 
-        this.collectionsType = sharedPreferences.getString(
-                a.getString(R.string.key_default_collection_type),
-                a.getResources().getStringArray(R.array.collection_type_values)[2]);
+        this.collectionsType = collectionsType;
 
-        this.collectionsPage = 0;
+        this.collectionsPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
         this.refreshing = false;
         this.loading = false;

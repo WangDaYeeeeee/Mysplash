@@ -127,6 +127,11 @@ public class CollectionsImplementor
     }
 
     @Override
+    public String getType() {
+        return model.getCollectionsType();
+    }
+
+    @Override
     public void setActivityForAdapter(Activity a) {
         model.getAdapter().setActivity(a);
     }

@@ -18,7 +18,6 @@ public class MultiFilterBarObject
     /** <br> life cycle. */
 
     public MultiFilterBarObject() {
-
         this.searchQuery = "";
         this.searchUser = "";
         this.searchCategory = 0;

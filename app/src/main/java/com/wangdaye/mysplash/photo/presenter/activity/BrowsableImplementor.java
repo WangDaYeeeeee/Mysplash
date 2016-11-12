@@ -8,6 +8,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.view.BrowsableView;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -68,7 +69,10 @@ public class BrowsableImplementor
     @Override
     public void onRequestSinglePhotoSuccess(Call<Photo> call, Response<Photo> response) {
         if (response.isSuccessful() && response.body() != null) {
-            Mysplash.getInstance().setPhoto(response.body());
+            Mysplash.getInstance()
+                    .getTopActivity()
+                    .getIntent()
+                    .putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO, response.body());
             view.dismissRequestDialog();
             view.drawBrowsableView();
         } else {

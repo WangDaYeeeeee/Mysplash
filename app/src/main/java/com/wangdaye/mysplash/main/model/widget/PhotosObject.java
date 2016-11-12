@@ -1,11 +1,9 @@
 package com.wangdaye.mysplash.main.model.widget;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
@@ -38,19 +36,15 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(Activity a, int photosType) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(a);
-
-        this.adapter = new PhotoAdapter(a, new ArrayList<Photo>());
+    public PhotosObject(Activity a, PhotoAdapter adapter, int photosType, String order) {
+        this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.photosType = photosType;
-        this.photosOrder = sharedPreferences.getString(
-                a.getString(R.string.key_default_photo_order),
-                a.getResources().getStringArray(R.array.photo_order_values)[0]);
+        this.photosOrder = order;
         RANDOM_TXT = a.getResources().getStringArray(R.array.photo_order_values)[3];
 
-        this.photosPage = 0;
+        this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
         this.pageList = new ArrayList<>();
 
         this.loading = false;

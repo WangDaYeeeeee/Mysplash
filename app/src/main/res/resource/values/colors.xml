@@ -13,7 +13,7 @@
 
     <!-- UI. -->
     <color name="colorRoot_light">@color/colorPrimary_light</color>
-    <color name="colorLine_light">#e0e0e0</color>
+    <color name="colorLine_light">#f1f1f1</color>
 
     <color name="colorRoot_dark">@color/colorPrimary_dark</color>
     <color name="colorLine_dark">#292929</color>

@@ -2,8 +2,6 @@ package com.wangdaye.mysplash.user.model.widget;
 
 import android.app.Activity;
 
-import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.api.PhotoApi;
 import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
@@ -39,14 +37,14 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(Activity a, int photosType) {
+    public PhotosObject(Activity a, User u, int photosType, String photosOrder) {
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>());
         this.service = PhotoService.getService();
 
-        this.requestKey = Mysplash.getInstance().getUser();
+        this.requestKey = u;
 
         this.photosType = photosType;
-        this.photosOrder = PhotoApi.ORDER_BY_LATEST;
+        this.photosOrder = photosOrder;
 
         this.photosPage = 0;
 

@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.user.model.widget;
 
 import android.app.Activity;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
@@ -30,11 +29,11 @@ public class CollectionsObject
 
     /** <br> life cycle. */
 
-    public CollectionsObject(Activity a) {
+    public CollectionsObject(Activity a, User u) {
         this.adapter = new CollectionAdapter(a, new ArrayList<Collection>());
         this.service = CollectionService.getService();
 
-        this.requestKey = Mysplash.getInstance().getUser();
+        this.requestKey = u;
         this.collectionsPage = 0;
 
         this.refreshing = false;

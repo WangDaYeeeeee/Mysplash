@@ -14,8 +14,8 @@ public class DownloadObject
 
     /** <br> life cycle. */
 
-    public DownloadObject(Photo photo) {
-        this.photo = photo;
+    public DownloadObject(Photo p) {
+        this.photo = p;
     }
 
     /** <br> model. */

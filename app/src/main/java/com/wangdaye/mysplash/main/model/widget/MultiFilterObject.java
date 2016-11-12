@@ -1,13 +1,8 @@
 package com.wangdaye.mysplash.main.model.widget;
 
-import android.content.Context;
-
-import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-
-import java.util.ArrayList;
 
 /**
  * Multi-filter object.
@@ -31,8 +26,8 @@ public class MultiFilterObject
 
     /** <br> life cycle. */
 
-    public MultiFilterObject(Context c) {
-        this.adapter = new PhotoAdapter(c, new ArrayList<Photo>());
+    public MultiFilterObject(PhotoAdapter a) {
+        this.adapter = a;
         this.service = PhotoService.getService();
 
         this.searchQuery = "";

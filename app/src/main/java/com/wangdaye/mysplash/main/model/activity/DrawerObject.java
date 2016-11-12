@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.model.activity;
 
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 
 /**
@@ -14,8 +13,8 @@ public class DrawerObject
 
     /** <br> life cycle. */
 
-    public DrawerObject() {
-        selectedId = R.id.action_home;
+    public DrawerObject(int id) {
+        selectedId = id;
     }
 
     /** <br> model. */

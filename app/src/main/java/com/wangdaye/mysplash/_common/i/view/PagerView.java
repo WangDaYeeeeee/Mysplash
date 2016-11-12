@@ -1,5 +1,7 @@
 package com.wangdaye.mysplash._common.i.view;
 
+import android.os.Bundle;
+
 /**
  * Pager view.
  * */
@@ -19,4 +21,6 @@ public interface PagerView {
 
     boolean canSwipeBack(int dir);
     int getItemCount();
+
+    void writeBundle(Bundle outState);
 }

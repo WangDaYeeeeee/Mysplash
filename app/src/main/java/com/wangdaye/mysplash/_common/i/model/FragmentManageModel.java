@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.model;
 
-import android.support.v4.app.Fragment;
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 
 import java.util.List;
 
@@ -10,11 +10,12 @@ import java.util.List;
 
 public interface FragmentManageModel {
 
-    List<Fragment> getFragmentList();
+    List<SaveInstanceFragment> getFragmentList();
+    List<Integer> getIdList();
 
-    Fragment getFragmentFromList(int position);
+    SaveInstanceFragment getFragmentFromList(int position);
 
     int getFragmentCount();
-    void addFragmentToList(Fragment f);
+    void addFragmentToList(SaveInstanceFragment f, int id);
     void popFragmentFromList();
 }

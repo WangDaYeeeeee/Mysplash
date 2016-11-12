@@ -1,19 +1,14 @@
 package com.wangdaye.mysplash._common.utils;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.entity.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
-import retrofit2.Response;
 
 /**
  * Value utils.
@@ -159,13 +154,13 @@ public class ValueUtils {
                 return getPageList(0);
         }
     }
-
+/*
     public static void writePhotoCount(Context c, Response<List<Photo>> response, int category) {
         String value = response.headers().get("X-Total");
         if (!TextUtils.isEmpty(value)) {
             int count = Integer.parseInt(value);
             SharedPreferences.Editor editor = c.getSharedPreferences(
-                    Mysplash.SP_STARTUP_ITEM,
+                    Mysplash.SP_PHOTOS_COUNT,
                     Context.MODE_PRIVATE).edit();
             writePhotoCount(c, editor, category, count);
             editor.apply();
@@ -174,7 +169,7 @@ public class ValueUtils {
 
     public static void writePhotoCount(Context c, Photo p) {
         SharedPreferences.Editor editor = c.getSharedPreferences(
-                Mysplash.SP_STARTUP_ITEM,
+                Mysplash.SP_PHOTOS_COUNT,
                 Context.MODE_PRIVATE).edit();
         for (int i = 0; i < p.categories.size(); i ++) {
             writePhotoCount(
@@ -269,7 +264,7 @@ public class ValueUtils {
                 c.getString(R.string.key_category_technology_count),
                 Mysplash.TECHNOLOGY_PHOTOS_COUNT);
     }
-
+*/
     private static int getRandomInt(int max) {
         return new Random().nextInt(max);
     }

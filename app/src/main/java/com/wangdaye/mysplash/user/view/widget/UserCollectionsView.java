@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.user.view.widget;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,6 +15,7 @@ import android.widget.FrameLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -27,7 +29,7 @@ import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -69,19 +71,19 @@ public class UserCollectionsView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public UserCollectionsView(Activity a) {
+    public UserCollectionsView(Activity a, User u) {
         super(a);
-        this.initialize(a);
+        this.initialize(a, u);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a) {
+    private void initialize(Activity a, User u) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a);
+        initModel(a, u);
         initPresenter();
         initView();
     }
@@ -123,8 +125,8 @@ public class UserCollectionsView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a) {
-        this.collectionsModel = new CollectionsObject(a);
+    private void initModel(Activity a, User u) {
+        this.collectionsModel = new CollectionsObject(a, u);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }
@@ -262,6 +264,11 @@ public class UserCollectionsView extends FrameLayout
         }
     }
 
+    @Override
+    public void writeBundle(Bundle outState) {
+        // TODO: 2016/11/6
+    }
+
     // load view.
 
     @Override
@@ -333,7 +340,13 @@ public class UserCollectionsView extends FrameLayout
 
     @Override
     public boolean checkCanSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(recyclerView, dir)
-                || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
+        switch (loadPresenter.getLoadState()) {
+            case LoadObject.NORMAL_STATE:
+                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                        || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
+
+            default:
+                return true;
+        }
     }
 }

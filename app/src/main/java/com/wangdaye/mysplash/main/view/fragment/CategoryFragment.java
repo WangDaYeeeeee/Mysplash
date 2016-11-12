@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,6 +16,7 @@ import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -32,7 +33,7 @@ import com.wangdaye.mysplash._common.utils.ValueUtils;
  * Category fragment.
  * */
 
-public class CategoryFragment extends Fragment
+public class CategoryFragment extends SaveInstanceFragment
         implements PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, NotificationUtils.SnackbarContainer {
     // model.
@@ -63,6 +64,17 @@ public class CategoryFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         photosView.cancelRequest();
+    }
+
+    @Override
+    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+        setBundle(savedInstanceState);
+        return this;
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        photosView.writeBundle(outState);
     }
 
     /** <br> presenter. */
@@ -104,7 +116,11 @@ public class CategoryFragment extends Fragment
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
         photosView.setActivity(getActivity());
         photosView.setCategory(categoryManagePresenter.getCategoryId());
-        photosView.initRefresh();
+        if (getBundle() != null) {
+            photosView.readBundle(getBundle());
+        } else {
+            photosView.initRefresh();
+        }
     }
 
     // interface.
@@ -132,7 +148,7 @@ public class CategoryFragment extends Fragment
         return photosView.needPagerBackToTop();
     }
 
-    public Fragment setCategory(int category) {
+    public SaveInstanceFragment setCategory(int category) {
         initModel(category);
         return this;
     }

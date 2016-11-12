@@ -36,4 +36,9 @@ public class DrawerImplementor
             model.setSelectedItemId(id);
         }
     }
+
+    @Override
+    public int getSelectedItemId() {
+        return model.getSelectedItemId();
+    }
 }

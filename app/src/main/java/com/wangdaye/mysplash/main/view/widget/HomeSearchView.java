@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,9 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
@@ -47,6 +52,8 @@ import com.wangdaye.mysplash.main.presenter.widget.SearchPhotosImplementor;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.main.presenter.widget.SearchUsersImplementor;
 
+import java.util.ArrayList;
+
 /**
  * Search content view.
  * */
@@ -75,29 +82,38 @@ public class HomeSearchView extends FrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
-    // data
+    // data.
     public static final int SEARCH_PHOTOS_TYPE = 0;
     public static final int SEARCH_COLLECTIONS_TYPE = 1;
     public static final int SEARCH_USERS_TYPE = 2;
 
+    private final String KEY_HOME_SEARCH_VIEW_SEARCHING_PHOTO = "home_search_view_searching_photo";
+    private final String KEY_HOME_SEARCH_VIEW_SEARCHING_COLLECTION = "home_search_view_searching_collection";
+    private final String KEY_HOME_SEARCH_VIEW_SEARCHING_USER = "home_search_view_searching_user";
+    private final String KEY_HOME_SEARCH_VIEW_QUERY = "home_search_view_query";
+
     /** <br> life cycle. */
 
-    public HomeSearchView(Activity a, int type) {
+    public HomeSearchView(Activity a, @Nullable Bundle bundle, int type) {
         super(a);
-        this.initialize(type);
+        this.initialize(bundle, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(int type) {
+    private void initialize(@Nullable Bundle bundle, int type) {
         View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_searching_view_large, null);
         addView(searchingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(type);
-        initView(type);
+        initModel(bundle, type);
         initPresenter(type);
+        initView(type);
+
+        if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
+            searchPresenter.initRefresh(getContext());
+        }
     }
 
     /** <br> presenter. */
@@ -133,7 +149,6 @@ public class HomeSearchView extends FrameLayout
     private void initContentView() {
         this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
         refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setVisibility(GONE);
         if (Mysplash.getInstance().isLightTheme()) {
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
@@ -141,6 +156,7 @@ public class HomeSearchView extends FrameLayout
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
+        refreshLayout.setVisibility(GONE);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(searchModel.getAdapter());
@@ -150,9 +166,18 @@ public class HomeSearchView extends FrameLayout
 
     private void initSearchingView(int type) {
         this.progressView = (CircularProgressView) findViewById(R.id.container_searching_view_large_progressView);
-        progressView.setVisibility(GONE);
+        if (loadPresenter.getLoadState() == LoadObject.FAILED_STATE) {
+            progressView.setVisibility(GONE);
+        } else {
+            progressView.setVisibility(VISIBLE);
+        }
 
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_searching_view_large_feedbackContainer);
+        if (loadPresenter.getLoadState() == LoadObject.FAILED_STATE) {
+            feedbackContainer.setVisibility(VISIBLE);
+        } else {
+            feedbackContainer.setVisibility(GONE);
+        }
 
         ImageView feedbackImage = (ImageView) findViewById(R.id.container_searching_view_large_feedbackImg);
         Glide.with(getContext())
@@ -201,22 +226,47 @@ public class HomeSearchView extends FrameLayout
 
     // init.
 
-    private void initModel(int type) {
+    private void initModel(@Nullable Bundle bundle, int type) {
+        String query = "";
+        if (bundle != null) {
+            query = bundle.getString(KEY_HOME_SEARCH_VIEW_QUERY, query);
+        }
+        this.scrollModel = new ScrollObject(true);
+
         switch (type) {
             case SEARCH_PHOTOS_TYPE:
-                this.searchModel = new SearchPhotosObject(getContext());
+                if (bundle != null && bundle.getBoolean(KEY_HOME_SEARCH_VIEW_SEARCHING_PHOTO, false)) {
+                    this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+                } else {
+                    this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+                }
+                this.searchModel = new SearchPhotosObject(
+                        new PhotoAdapter(getContext(), new ArrayList<Photo>()),
+                        query);
                 break;
 
             case SEARCH_COLLECTIONS_TYPE:
-                this.searchModel = new SearchCollectionsObject(getContext());
+                if (bundle != null && bundle.getBoolean(KEY_HOME_SEARCH_VIEW_SEARCHING_COLLECTION, false)) {
+                    this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+                } else {
+                    this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+                }
+                this.searchModel = new SearchCollectionsObject(
+                        new CollectionAdapter(getContext(), new ArrayList<Collection>()),
+                        query);
                 break;
 
             case SEARCH_USERS_TYPE:
-                this.searchModel = new SearchUsersObject(getContext());
+                if (bundle != null && bundle.getBoolean(KEY_HOME_SEARCH_VIEW_SEARCHING_USER, false)) {
+                    this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+                } else {
+                    this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+                }
+                this.searchModel = new SearchUsersObject(
+                        new UserAdapter(getContext(), new ArrayList<User>()),
+                        query);
                 break;
         }
-        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-        this.scrollModel = new ScrollObject();
     }
 
     // interface.
@@ -358,6 +408,26 @@ public class HomeSearchView extends FrameLayout
             return 0;
         } else {
             return searchPresenter.getAdapterItemCount();
+        }
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        outState.putString(
+                KEY_HOME_SEARCH_VIEW_QUERY,
+                searchPresenter.getQuery());
+        if (searchModel instanceof SearchPhotosObject) {
+            outState.putBoolean(
+                    KEY_HOME_SEARCH_VIEW_SEARCHING_PHOTO,
+                    loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
+        } else if (searchModel instanceof SearchCollectionsObject) {
+            outState.putBoolean(
+                    KEY_HOME_SEARCH_VIEW_SEARCHING_COLLECTION,
+                    loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
+        } else if (searchModel instanceof SearchUsersObject) {
+            outState.putBoolean(
+                    KEY_HOME_SEARCH_VIEW_SEARCHING_USER,
+                    loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.collection.model.activity;
 
-import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.i.model.EditResultModel;
 
 /**
@@ -14,8 +14,8 @@ public class EditResultObject
 
     /** <br> life cycle. */
 
-    public EditResultObject() {
-        this.key = Mysplash.getInstance().getCollection();
+    public EditResultObject(Collection c) {
+        this.key = c;
     }
 
     /** <br> model. */

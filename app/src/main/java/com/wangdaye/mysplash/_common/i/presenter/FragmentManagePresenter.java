@@ -1,7 +1,9 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
 import android.app.Activity;
-import android.support.v4.app.Fragment;
+import android.os.Bundle;
+
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 
 import java.util.List;
 
@@ -11,10 +13,15 @@ import java.util.List;
 
 public interface FragmentManagePresenter {
 
-    List<Fragment> getFragmentList();
-    Fragment getTopFragment();
+    List<SaveInstanceFragment> getFragmentList();
+    SaveInstanceFragment getTopFragment();
 
-    void addFragment(Activity a, int code);
+    List<Integer> getIdList();
+    void clearIdList();
+
+    void changeFragment(Activity a, Bundle saveInstanceState, int code);
+    void addFragment(Activity a, Bundle saveInstanceState, int code);
     void popFragment(Activity a);
-    void changeFragment(Activity a, int code);
+
+    int getFragmentCount();
 }

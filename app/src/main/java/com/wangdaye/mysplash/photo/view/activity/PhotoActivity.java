@@ -9,9 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +25,10 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
@@ -42,19 +43,17 @@ import com.wangdaye.mysplash._common.i.view.BrowsableView;
 import com.wangdaye.mysplash._common.i.view.PhotoInfoView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.ui.activity.PreviewPhotoActivity;
 import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomTouchView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.activity.DownloadObject;
@@ -66,7 +65,6 @@ import com.wangdaye.mysplash.photo.presenter.activity.PhotoInfoImplementor;
 import com.wangdaye.mysplash.photo.presenter.activity.ScrollImplementor;
 import com.wangdaye.mysplash.photo.view.widget.PhotoDetailsView;
 import com.wangdaye.mysplash.user.model.widget.ScrollObject;
-import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * Photo activity.
@@ -74,7 +72,8 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class PhotoActivity extends AppCompatActivity
         implements PhotoInfoView, ScrollView, PopupManageView, BrowsableView,
-        View.OnClickListener, SwipeBackLayout.OnSwipeListener, NotificationUtils.SnackbarContainer {
+        View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
+        NotificationUtils.SnackbarContainer {
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
@@ -86,11 +85,9 @@ public class PhotoActivity extends AppCompatActivity
 
     private CoordinatorLayout container;
     private NestedScrollView scrollView;
+    private Toolbar toolbar;
     private CircleImageView avatarImage;
     private PhotoDetailsView detailsView;
-
-    private Toolbar scrollToolbar;
-    private Toolbar topToolbar;
 
     // presenter.
     private PhotoInfoPresenter photoInfoPresenter;
@@ -101,6 +98,7 @@ public class PhotoActivity extends AppCompatActivity
 
     // data
     private boolean started = false;
+    public static final String KEY_PHOTO_ACTIVITY_PHOTO = "photo_activity_photo";
 
     /** <br> life cycle. */
 
@@ -112,7 +110,10 @@ public class PhotoActivity extends AppCompatActivity
         setTheme();
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
+
         setContentView(R.layout.activity_photo);
+        initModel();
+        initPresenter();
     }
 
     @Override
@@ -120,14 +121,13 @@ public class PhotoActivity extends AppCompatActivity
         super.onStart();
         if (!started) {
             started = true;
-            initModel();
-            initPresenter();
             initView(true);
         }
     }
 
     @Override
     public void onBackPressed() {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         super.onBackPressed();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             overridePendingTransition(0, R.anim.activity_slide_out_bottom);
@@ -144,7 +144,7 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
-    private void setTheme() {
+    protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Photo);
         } else {
@@ -152,7 +152,7 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
-    private void backToTop() {
+    protected void backToTop() {
         scrollPresenter.scrollToTop();
     }
 
@@ -175,24 +175,31 @@ public class PhotoActivity extends AppCompatActivity
         if (init && browsablePresenter.isBrowsable()) {
             browsablePresenter.requestBrowsableData();
         } else {
-            SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_photo_swipeBackLayout);
-            swipeBackLayout.setOnSwipeListener(this);
-
             this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
+
+            SwipeBackCoordinatorLayout swipeBackView
+                    = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_photo_swipeBackView);
+            swipeBackView.setOnSwipeListener(this);
 
             FreedomImageView photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
             photoImage.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
-            if (Mysplash.getInstance().getDrawable() != null) {
-                photoImage.setImageDrawable(Mysplash.getInstance().getDrawable());
-            } else {
-                Glide.with(this)
-                        .load(photoInfoPresenter.getPhoto().urls.regular)
-                        .priority(Priority.HIGH)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(photoImage);
+            Glide.with(this)
+                    .load(photoInfoPresenter.getPhoto().urls.regular)
+                    .override(
+                            photoInfoPresenter.getPhoto().getRegularWidth(),
+                            photoInfoPresenter.getPhoto().getRegularHeight())
+                    .priority(Priority.HIGH)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(photoImage);
+
+            StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_photo_statusBar);
+            if (DisplayUtils.isNeedSetStatusBarMask()) {
+                statusBar.setBackgroundResource(R.color.colorPrimary_light);
+                statusBar.setMask(true);
             }
 
             this.scrollView = (NestedScrollView) findViewById(R.id.activity_photo_scrollView);
+            scrollView.setPadding(0, DisplayUtils.getStatusBarHeight(getResources()), 0, 0);
 
             FreedomTouchView touchView = (FreedomTouchView) findViewById(R.id.activity_photo_touchView);
             touchView.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
@@ -200,25 +207,25 @@ public class PhotoActivity extends AppCompatActivity
 
             RelativeLayout titleBar = (RelativeLayout) findViewById(R.id.activity_photo_titleBar);
 
-            this.scrollToolbar = (Toolbar) findViewById(R.id.activity_photo_scrollToolbar);
-            scrollToolbar.setTitle("");
+            this.toolbar = (Toolbar) findViewById(R.id.activity_photo_toolbar);
+            toolbar.setTitle("");
             if (Mysplash.getInstance().isLightTheme()) {
                 if (browsablePresenter.isBrowsable()) {
-                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
                 } else {
-                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
                 }
-                scrollToolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
+                toolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
             } else {
                 if (browsablePresenter.isBrowsable()) {
-                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
                 } else {
-                    scrollToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
+                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
                 }
-                scrollToolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
+                toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
             }
-            scrollToolbar.setNavigationOnClickListener(this);
-            scrollToolbar.setOnMenuItemClickListener(scrollToolbarMenuListener);
+            toolbar.setNavigationOnClickListener(this);
+            toolbar.setOnMenuItemClickListener(scrollToolbarMenuListener);
 
             this.avatarImage = (CircleImageView) findViewById(R.id.activity_photo_avatar);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -263,26 +270,6 @@ public class PhotoActivity extends AppCompatActivity
             detailsView.initMP(photoInfoPresenter.getPhoto());
             detailsView.requestPhotoDetails();
 
-            this.topToolbar = (Toolbar) findViewById(R.id.activity_photo_topToolbar);
-            if (Mysplash.getInstance().isLightTheme()) {
-                if (browsablePresenter.isBrowsable()) {
-                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
-                } else {
-                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
-                }
-                topToolbar.inflateMenu(R.menu.activity_photo_toolbar_light);
-            } else {
-                if (browsablePresenter.isBrowsable()) {
-                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
-                } else {
-                    topToolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
-                }
-                topToolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
-            }
-            topToolbar.setNavigationOnClickListener(this);
-            topToolbar.setOnMenuItemClickListener(topToolbarMenuListener);
-            topToolbar.setOnClickListener(this);
-
             if (Mysplash.getInstance().isLightTheme()) {
                 optionButtons[0].setImageResource(R.drawable.ic_download_light);
                 optionButtons[1].setImageResource(R.drawable.ic_send_light);
@@ -302,7 +289,7 @@ public class PhotoActivity extends AppCompatActivity
     /** <br> model. */
 
     private void initModel() {
-        this.photoInfoModel = new PhotoInfoObject();
+        this.photoInfoModel = new PhotoInfoObject((Photo) getIntent().getParcelableExtra(KEY_PHOTO_ACTIVITY_PHOTO));
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
         this.scrollModel = new ScrollObject();
         this.browsableModel = new BorwsableObject(getIntent());
@@ -375,6 +362,7 @@ public class PhotoActivity extends AppCompatActivity
                 if (browsablePresenter.isBrowsable()) {
                     browsablePresenter.visitParentView();
                 }
+                SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     finishAfterTransition();
                 } else {
@@ -382,15 +370,8 @@ public class PhotoActivity extends AppCompatActivity
                 }
                 break;
 
-            case R.id.activity_photo_topToolbar:
-                backToTop();
-                break;
-
             case R.id.activity_photo_touchView:
-                Mysplash.getInstance().setPhoto(photoInfoPresenter.getPhoto());
-                Intent p = new Intent(this, PreviewPhotoActivity.class);
-                startActivity(p);
-                overridePendingTransition(R.anim.activity_in, 0);
+                IntentHelper.startPreviewPhotoActivity(this, photoInfoPresenter.getPhoto());
                 break;
 
             case R.id.activity_photo_avatar:
@@ -434,23 +415,7 @@ public class PhotoActivity extends AppCompatActivity
                     break;
 
                 case R.id.action_menu:
-                    popupManagePresenter.showPopup(PhotoActivity.this, scrollToolbar, null, 0);
-                    break;
-            }
-            return true;
-        }
-    };
-
-    private Toolbar.OnMenuItemClickListener topToolbarMenuListener = new Toolbar.OnMenuItemClickListener() {
-        @Override
-        public boolean onMenuItemClick(MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.action_share:
-                    ShareUtils.sharePhoto(photoInfoPresenter.getPhoto());
-                    break;
-
-                case R.id.action_menu:
-                    popupManagePresenter.showPopup(PhotoActivity.this, topToolbar, null, 0);
+                    popupManagePresenter.showPopup(PhotoActivity.this, toolbar, null, 0);
                     break;
             }
             return true;
@@ -461,21 +426,27 @@ public class PhotoActivity extends AppCompatActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(scrollView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(scrollView, dir);
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
     @Override
     public void onSwipeFinish(int dir) {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
             finish();
             switch (dir) {
-                case SwipeBackLayout.UP_DIR:
+                case SwipeBackCoordinatorLayout.UP_DIR:
                     overridePendingTransition(0, R.anim.activity_slide_out_top);
                     break;
 
-                case SwipeBackLayout.DOWN_DIR:
+                case SwipeBackCoordinatorLayout.DOWN_DIR:
                     overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                     break;
             }
@@ -495,18 +466,10 @@ public class PhotoActivity extends AppCompatActivity
 
     @Override
     public void touchAuthorAvatar() {
-        Intent intent = new Intent(this, UserActivity.class);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            startActivity(intent);
-            overridePendingTransition(R.anim.activity_in, 0);
-        } else {
-            View v = avatarImage;
-            ActivityOptionsCompat options = ActivityOptionsCompat
-                    .makeSceneTransitionAnimation(
-                            this,
-                            Pair.create(v, getString(R.string.transition_user_avatar)));
-            ActivityCompat.startActivity(this, intent, options.toBundle());
-        }
+        IntentHelper.startUserActivity(
+                this,
+                avatarImage,
+                photoInfoPresenter.getPhoto().user);
     }
 
     @Override

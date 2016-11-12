@@ -4,7 +4,8 @@
     android:id="@+id/container_nav_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground">
+    android:background="?attr/root_color"
+    android:foreground="?attr/selectableItemBackground">
 
     <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/container_nav_header_statusBar"
@@ -38,7 +39,7 @@
     <TextView
         android:id="@+id/container_nav_header_title"
         android:text="@string/app_name"
-        android:singleLine="true"
+        android:maxLines="1"
         android:layout_below="@id/container_nav_header_iconContainer"
         android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginRight="66dp"
@@ -48,7 +49,7 @@
     <TextView
         android:id="@+id/container_nav_header_subtitle"
         android:text="@string/feedback_login_text"
-        android:singleLine="true"
+        android:maxLines="1"
         android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginRight="66dp"
         android:layout_marginBottom="@dimen/little_margin"
@@ -72,8 +73,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_below="@id/container_nav_header_subtitle"
         android:background="@android:color/black"
         android:alpha="0.1"
-        android:layout_below="@id/container_nav_header_subtitle" />
+        tools:ignore="UselessLeaf" />
 
 </RelativeLayout>

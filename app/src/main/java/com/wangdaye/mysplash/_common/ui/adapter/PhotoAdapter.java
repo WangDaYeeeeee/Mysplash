@@ -9,11 +9,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,7 +23,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.Collection;
@@ -36,6 +31,7 @@ import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
@@ -47,7 +43,6 @@ import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.List;
 
@@ -93,6 +88,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
+                    .override(
+                            itemList.get(position).getRegularWidth(),
+                            itemList.get(position).getRegularHeight())
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -118,6 +116,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         } else {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
+                    .override(
+                            itemList.get(position).getRegularWidth(),
+                            itemList.get(position).getRegularHeight())
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onResourceReady(GlideDrawable resource, String model,
@@ -163,10 +165,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             return false;
                         }
                     })
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(holder.image);
 
-            holder.image.setTransitionName(itemList.get(position).id);
+            holder.image.setTransitionName(itemList.get(position).id + "-image");
+            holder.background.setTransitionName(itemList.get(position).id + "-background");
         }
 
         if (inMyCollection) {
@@ -346,34 +348,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             switch (view.getId()) {
                 case R.id.item_photo_background:
                     if (a instanceof Activity) {
-                        Photo p = itemList.get(getAdapterPosition());
-                        Mysplash.getInstance().setPhoto(p);
-
-                        if (itemList.get(getAdapterPosition()).loadPhotoSuccess) {
-                            View imageView = ((RelativeLayout) view).getChildAt(0);
-                            Drawable d = ((FreedomImageView) imageView).getDrawable();
-                            Mysplash.getInstance().setDrawable(d);
-                        } else {
-                            Mysplash.getInstance().setDrawable(null);
-                        }
-
-                        Intent intent = new Intent(a, PhotoActivity.class);
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                            ActivityOptionsCompat options = ActivityOptionsCompat
-                                    .makeScaleUpAnimation(
-                                            view,
-                                            (int) view.getX(), (int) view.getY(),
-                                            view.getMeasuredWidth(), view.getMeasuredHeight());
-                            ActivityCompat.startActivity((Activity) a, intent, options.toBundle());
-                        } else {
-                            View imageView = ((RelativeLayout) view).getChildAt(0);
-                            ActivityOptionsCompat options = ActivityOptionsCompat
-                                    .makeSceneTransitionAnimation(
-                                            (Activity) a,
-                                            Pair.create(imageView, a.getString(R.string.transition_photo_image)),
-                                            Pair.create(imageView, a.getString(R.string.transition_photo_background)));
-                            ActivityCompat.startActivity((Activity) a, intent, options.toBundle());
-                        }
+                        View imageView = ((RelativeLayout) view).getChildAt(0);
+                        IntentHelper.startPhotoActivity(
+                                (Activity) a,
+                                imageView,
+                                view,
+                                itemList.get(getAdapterPosition()));
                     }
                     break;
 

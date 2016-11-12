@@ -8,9 +8,11 @@ import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.ui.activity.UpdateMeActivity;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
@@ -26,6 +28,7 @@ public class ToolbarImplementor
 
     @Override
     public void touchNavigatorIcon(Activity a) {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(((MeActivity) a).getSnackbarContainer());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             a.finishAfterTransition();
         } else {
@@ -45,9 +48,7 @@ public class ToolbarImplementor
             case R.id.action_edit:
                 if (AuthManager.getInstance().isAuthorized()
                         && AuthManager.getInstance().getMe() != null) {
-                    Intent u = new Intent(a, UpdateMeActivity.class);
-                    a.startActivity(u);
-                    a.overridePendingTransition(R.anim.activity_in, 0);
+                    IntentHelper.startUpdateMeActivity(a);
                 }
                 break;
 

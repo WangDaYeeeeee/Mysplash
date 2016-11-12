@@ -1,8 +1,7 @@
 package com.wangdaye.mysplash.main.model.activity;
 
-import android.support.v4.app.Fragment;
-
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,23 +13,30 @@ import java.util.List;
 public class FragmentManageObject
         implements FragmentManageModel {
     // data
-    private List<Fragment> fragmentList;
+    private List<SaveInstanceFragment> fragmentList;
+    private List<Integer> idList;
 
     /** <br> life cycle. */
 
     public FragmentManageObject() {
         this.fragmentList = new ArrayList<>();
+        this.idList = new ArrayList<>();
     }
 
     /** <br> model. */
 
     @Override
-    public List<Fragment> getFragmentList() {
+    public List<SaveInstanceFragment> getFragmentList() {
         return fragmentList;
     }
 
     @Override
-    public Fragment getFragmentFromList(int position) {
+    public List<Integer> getIdList() {
+        return idList;
+    }
+
+    @Override
+    public SaveInstanceFragment getFragmentFromList(int position) {
         return fragmentList.get(position);
     }
 
@@ -40,12 +46,14 @@ public class FragmentManageObject
     }
 
     @Override
-    public void addFragmentToList(Fragment f) {
+    public void addFragmentToList(SaveInstanceFragment f, int id) {
         fragmentList.add(f);
+        idList.add(id);
     }
 
     @Override
     public void popFragmentFromList() {
         fragmentList.remove(fragmentList.size() - 1);
+        idList.remove(idList.size() - 1);
     }
 }

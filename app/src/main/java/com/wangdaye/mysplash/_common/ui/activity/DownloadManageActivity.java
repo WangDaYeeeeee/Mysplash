@@ -15,12 +15,12 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.dialog.PathDialog;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -32,13 +32,15 @@ import java.util.TimerTask;
  * */
 
 public class DownloadManageActivity extends MysplashActivity
-        implements View.OnClickListener, Toolbar.OnMenuItemClickListener, SwipeBackLayout.OnSwipeListener,
-        DownloadHelper.OnDownloadListener, SafeHandler.HandlerContainer {
+        implements View.OnClickListener, Toolbar.OnMenuItemClickListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener, DownloadHelper.OnDownloadListener,
+        SafeHandler.HandlerContainer {
     // widget
     private SafeHandler<DownloadManageActivity> handler;
     private Timer timer;
 
     private CoordinatorLayout container;
+    private StatusBarView statusBar;
     private RecyclerView recyclerView;
 
     // data
@@ -104,10 +106,13 @@ public class DownloadManageActivity extends MysplashActivity
         this.handler = new SafeHandler<>(this);
         this.timer = new Timer();
 
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_download_manage_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_download_manage_container);
 
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_download_manage_statusBar);
+        SwipeBackCoordinatorLayout swipeBackView
+                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_download_manage_swipeBackView);
+        swipeBackView.setOnSwipeListener(this);
+
+        this.statusBar = (StatusBarView) findViewById(R.id.activity_download_manage_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
@@ -133,8 +138,6 @@ public class DownloadManageActivity extends MysplashActivity
         }
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnMenuItemClickListener(this);
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_download_manage_container);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.activity_download_manage_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -185,18 +188,24 @@ public class DownloadManageActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(recyclerView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir);
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
     @Override
     public void onSwipeFinish(int dir) {
         finish();
         switch (dir) {
-            case SwipeBackLayout.UP_DIR:
+            case SwipeBackCoordinatorLayout.UP_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_top);
                 break;
 
-            case SwipeBackLayout.DOWN_DIR:
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }

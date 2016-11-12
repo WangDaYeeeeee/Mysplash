@@ -34,6 +34,8 @@ public class PreviewPhotoActivity extends AppCompatActivity
     private boolean showPreview = false;
     private boolean started = false;
 
+    public static final String KEY_PREVIEW_PHOTO_ACTIVITY_PHOTO = "preview_photo_activity_photo";
+
     /** <br> life cycle. */
 
     @Override
@@ -140,7 +142,7 @@ public class PreviewPhotoActivity extends AppCompatActivity
     /** <br> data. */
 
     private void initData() {
-        this.photo = Mysplash.getInstance().getPhoto();
+        this.photo = getIntent().getParcelableExtra(KEY_PREVIEW_PHOTO_ACTIVITY_PHOTO);
     }
 
     private float calcMaxScale() {

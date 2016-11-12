@@ -8,6 +8,7 @@ import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.view.BrowsableView;
+import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -79,7 +80,10 @@ public class BrowsableImplementor
     @Override
     public void onRequestSingleCollectionSuccess(Call<Collection> call, Response<Collection> response) {
         if (response.isSuccessful() && response.body() != null) {
-            Mysplash.getInstance().setCollection(response.body());
+            Mysplash.getInstance()
+                    .getTopActivity()
+                    .getIntent()
+                    .putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, response.body());
             view.dismissRequestDialog();
             view.drawBrowsableView();
         } else {

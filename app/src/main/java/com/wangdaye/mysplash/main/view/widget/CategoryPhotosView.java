@@ -5,6 +5,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,12 +25,14 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.i.model.CategoryModel;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryPresenter;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.i.view.CategoryView;
@@ -40,6 +45,8 @@ import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.presenter.widget.CategoryImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
+
+import java.util.ArrayList;
 
 /**
  * Category photos view.
@@ -65,6 +72,9 @@ public class CategoryPhotosView extends FrameLayout
     private CategoryPresenter categoryPresenter;
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
+
+    // data
+    private final String KEY_CATEGORY_PHOTOS_VIEW_FILTER_TYPE = "category_photos_view_filter_type";
 
     /** <br> life cycle. */
 
@@ -98,8 +108,21 @@ public class CategoryPhotosView extends FrameLayout
         addView(searchingView);
 
         initModel();
-        initView();
         initPresenter();
+        initView();
+    }
+
+    public void readBundle(@NonNull Bundle saveInstanceState) {
+        categoryPresenter.setOrder(saveInstanceState.getString(
+                KEY_CATEGORY_PHOTOS_VIEW_FILTER_TYPE,
+                categoryPresenter.getOrder()));
+        initRefresh();
+    }
+
+    public void writeBundle(Bundle outState) {
+        outState.putString(
+                KEY_CATEGORY_PHOTOS_VIEW_FILTER_TYPE,
+                categoryPresenter.getOrder());
     }
 
     /** <br> presenter. */
@@ -139,6 +162,7 @@ public class CategoryPhotosView extends FrameLayout
 
     private void initLoadingView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_in_category_view_large_progressView);
+        progressView.setVisibility(VISIBLE);
 
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_in_category_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
@@ -166,9 +190,16 @@ public class CategoryPhotosView extends FrameLayout
     // init
 
     private void initModel() {
-        this.categoryModel = new CategoryObject(getContext());
+        String order = PreferenceManager.getDefaultSharedPreferences(getContext())
+                .getString(
+                        getContext().getString(R.string.key_default_photo_order),
+                        getResources().getStringArray(R.array.photo_order_values)[0]);
+        this.categoryModel = new CategoryObject(
+                getContext(),
+                new PhotoAdapter(getContext(), new ArrayList<Photo>()),
+                order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject();
+        this.scrollModel = new ScrollObject(true);
     }
 
     // interface.

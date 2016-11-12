@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -49,6 +50,8 @@ import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -79,13 +82,17 @@ public class MainActivity extends MysplashActivity
     private MeManagePresenter meManagePresenter;
     private DrawerPresenter drawerPresenter;
 
+    // data.
+    private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST = "main_activity_fragment_id_list";
+    private final String KEY_MAIN_ACTIVITY_SELECTED_ID = "main_activity_selected_id";
+
     /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initModel();
+        initModel(savedInstanceState);
         initPresenter();
     }
 
@@ -95,15 +102,38 @@ public class MainActivity extends MysplashActivity
         if (!isStarted()) {
             setStarted();
             initView();
-            fragmentManagePresenter.changeFragment(this, R.id.action_home);
-            if (getIntent() != null && !TextUtils.isEmpty(getIntent().getAction())
-                    && getIntent().getAction().equals("com.wangdaye.mysplash.Search")) {
-                fragmentManagePresenter.addFragment(this, R.id.action_search);
+
+            List<Integer> idList;
+            if (getBundle() != null) {
+                idList = getBundle().getIntegerArrayList(KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST);
+                if (idList == null) {
+                    idList = new ArrayList<>();
+                }
+                if (idList.size() == 0) {
+                    idList.add(R.id.action_home);
+                }
+            } else {
+                idList = new ArrayList<>();
+                idList.add(R.id.action_home);
+                if (getIntent() != null && !TextUtils.isEmpty(getIntent().getAction())
+                        && getIntent().getAction().equals("com.wangdaye.mysplash.Search")) {
+                    idList.add(R.id.action_search);
+                }
+            }
+            fragmentManagePresenter.changeFragment(this, getBundle(), idList.get(0));
+            for (int i = 1; i < idList.size(); i ++) {
+                fragmentManagePresenter.addFragment(this, getBundle(), idList.get(i));
             }
 
             IntroduceActivity.checkAndStartIntroduce(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 ShortcutsManager.checkAndPublishShortcuts(this);
+            }
+
+            AuthManager.getInstance().addOnWriteDataListener(this);
+            if (AuthManager.getInstance().isAuthorized()
+                    && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
+                AuthManager.getInstance().refreshPersonalProfile();
             }
         }
     }
@@ -113,6 +143,20 @@ public class MainActivity extends MysplashActivity
         super.onDestroy();
         AuthManager.getInstance().removeOnWriteDataListener(this);
         AuthManager.getInstance().cancelRequest();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putIntegerArrayList(
+                KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST,
+                (ArrayList<Integer>) fragmentManagePresenter.getIdList());
+        outState.putInt(
+                KEY_MAIN_ACTIVITY_SELECTED_ID,
+                drawerPresenter.getSelectedItemId());
+        for (int i = 0; i < fragmentManagePresenter.getFragmentCount(); i ++) {
+            fragmentManagePresenter.getFragmentList().get(i).writeBundle(outState);
+        }
     }
 
     @Override
@@ -198,7 +242,6 @@ public class MainActivity extends MysplashActivity
 
     // init.
 
-    @SuppressLint("SetTextI18n")
     private void initView() {
         this.handler = new SafeHandler<>(this);
 
@@ -210,6 +253,7 @@ public class MainActivity extends MysplashActivity
         } else {
             nav.inflateMenu(R.menu.activity_main_drawer_dark);
         }
+        nav.setCheckedItem(drawerPresenter.getSelectedItemId());
         nav.setNavigationItemSelectedListener(this);
 
         View header = nav.getHeaderView(0);
@@ -235,25 +279,20 @@ public class MainActivity extends MysplashActivity
         drawMeTitle();
         drawMeSubtitle();
         drawMeButton();
-
-        if (AuthManager.getInstance().isAuthorized()
-                && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
-            AuthManager.getInstance().refreshPersonalProfile();
-        }
     }
 
     // interface.
 
+    public void changeFragment(int code) {
+        fragmentManagePresenter.changeFragment(this, null, code);
+    }
+
     public void insertFragment(int code) {
-        fragmentManagePresenter.addFragment(this, code);
+        fragmentManagePresenter.addFragment(this, null, code);
     }
 
     public void removeFragment() {
         fragmentManagePresenter.popFragment(this);
-    }
-
-    public void changeFragment(int code) {
-        fragmentManagePresenter.changeFragment(this, code);
     }
 
     public Fragment getTopFragment() {
@@ -262,9 +301,14 @@ public class MainActivity extends MysplashActivity
 
     /** <br> model. */
 
-    private void initModel() {
+    private void initModel(@Nullable Bundle savedInstanceState) {
+        int selectedId = R.id.action_home;
+        if (savedInstanceState != null) {
+            selectedId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_SELECTED_ID, selectedId);
+        }
+
         this.fragmentManageModel = new FragmentManageObject();
-        this.drawerModel = new DrawerObject();
+        this.drawerModel = new DrawerObject(selectedId);
     }
 
     /** <br> interface. */

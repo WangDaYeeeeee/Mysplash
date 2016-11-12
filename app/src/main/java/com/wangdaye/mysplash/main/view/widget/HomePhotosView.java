@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -25,6 +28,7 @@ import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -39,6 +43,8 @@ import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
+
+import java.util.ArrayList;
 
 /**
  * Home photos view.
@@ -67,24 +73,28 @@ public class HomePhotosView extends FrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
+    // data.
+    private final String KEY_HOME_PHOTOS_VIEW_NEW_FILTER_TYPE = "key_home_photos_view_new_filter_type";
+    private final String KEY_HOME_PHOTOS_VIEW_FEATURED_FILTER_TYPE = "key_home_photos_view_featured_filter_type";
+
     /** <br> life cycle. */
 
-    public HomePhotosView(Activity a, int photosType) {
+    public HomePhotosView(Activity a, @Nullable Bundle bundle, int photosType, String defaultOrder) {
         super(a);
-        this.initialize(a, photosType);
+        this.initialize(a, bundle, photosType, defaultOrder);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, int photosType) {
+    private void initialize(Activity a, @Nullable Bundle bundle, int photosType, String defaultOrder) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, photosType);
-        initView();
+        initModel(a, bundle, photosType, defaultOrder);
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -106,7 +116,6 @@ public class HomePhotosView extends FrameLayout
     private void initContentView() {
         this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
         refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setVisibility(GONE);
         if (Mysplash.getInstance().isLightTheme()) {
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
@@ -114,6 +123,7 @@ public class HomePhotosView extends FrameLayout
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
+        refreshLayout.setVisibility(GONE);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(photosModel.getAdapter());
@@ -123,6 +133,7 @@ public class HomePhotosView extends FrameLayout
 
     private void initLoadingView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_large_progressView);
+        progressView.setVisibility(VISIBLE);
 
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
@@ -141,10 +152,26 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, int photosType) {
-        this.photosModel = new PhotosObject(a, photosType);
+    private void initModel(Activity a, @Nullable Bundle bundle, int photosType, String order) {
+        if (bundle != null) {
+            switch (photosType) {
+                case PhotosObject.PHOTOS_TYPE_NEW:
+                    order = bundle.getString(KEY_HOME_PHOTOS_VIEW_NEW_FILTER_TYPE, order);
+                    break;
+
+                case PhotosObject.PHOTOS_TYPE_FEATURED:
+                    order = bundle.getString(KEY_HOME_PHOTOS_VIEW_FEATURED_FILTER_TYPE, order);
+                    break;
+            }
+        }
+
+        this.photosModel = new PhotosObject(
+                a,
+                new PhotoAdapter(a, new ArrayList<Photo>()),
+                photosType,
+                order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject();
+        this.scrollModel = new ScrollObject(true);
     }
 
     /** <br> interface. */
@@ -278,6 +305,19 @@ public class HomePhotosView extends FrameLayout
             return 0;
         } else {
             return photosModel.getAdapter().getRealItemCount();
+        }
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        if (photosPresenter.getPhotosType() == PhotosObject.PHOTOS_TYPE_NEW) {
+            outState.putString(
+                    KEY_HOME_PHOTOS_VIEW_NEW_FILTER_TYPE,
+                    photosPresenter.getOrder());
+        } else {
+            outState.putString(
+                    KEY_HOME_PHOTOS_VIEW_FEATURED_FILTER_TYPE,
+                    photosPresenter.getOrder());
         }
     }
 

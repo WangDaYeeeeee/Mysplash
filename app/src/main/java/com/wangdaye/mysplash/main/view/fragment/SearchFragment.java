@@ -3,10 +3,10 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -27,6 +27,7 @@ import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -50,7 +51,7 @@ import java.util.TimerTask;
  * Search Fragment.
  * */
 
-public class SearchFragment extends Fragment
+public class SearchFragment extends SaveInstanceFragment
         implements SearchBarView, MessageManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
         NotificationUtils.SnackbarContainer, ViewPager.OnPageChangeListener, SafeHandler.HandlerContainer {
@@ -71,6 +72,10 @@ public class SearchFragment extends Fragment
     private MessageManagePresenter messageManagePresenter;
     private PagerManagePresenter pagerManagePresenter;
 
+    // data.
+    private final String KEY_SEARCH_FRAGMENT_QUERY = "search_fragment_query";
+    private final String KEY_SEARCH_FRAGMENT_PAGE_POSITION = "search_fragment_page_position";
+
     /** <br> life cycle. */
 
     @Override
@@ -87,10 +92,29 @@ public class SearchFragment extends Fragment
     public void onDestroy() {
         super.onDestroy();
         for (PagerView p : pagers) {
-            p.cancelRequest();
+            if (p != null) {
+                p.cancelRequest();
+            }
         }
         searchBarPresenter.hideKeyboard();
         handler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+        setBundle(savedInstanceState);
+        return this;
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        outState.putString(KEY_SEARCH_FRAGMENT_QUERY, editText.getText().toString());
+        outState.putInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
+        for (PagerView p : pagers) {
+            if (p != null) {
+                p.writeBundle(outState);
+            }
+        }
     }
 
     /** <br> presenter. */
@@ -134,15 +158,18 @@ public class SearchFragment extends Fragment
         editText.setOnEditorActionListener(this);
         editText.setFocusable(true);
         editText.requestFocus();
+        if (getBundle() != null) {
+            editText.setText(getBundle().getString(KEY_SEARCH_FRAGMENT_QUERY));
+        }
 
         initPages(v);
     }
 
     private void initPages(View v) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new HomeSearchView(getActivity(), HomeSearchView.SEARCH_PHOTOS_TYPE));
-        pageList.add(new HomeSearchView(getActivity(), HomeSearchView.SEARCH_COLLECTIONS_TYPE));
-        pageList.add(new HomeSearchView(getActivity(), HomeSearchView.SEARCH_USERS_TYPE));
+        pageList.add(new HomeSearchView(getActivity(), getBundle(), HomeSearchView.SEARCH_PHOTOS_TYPE));
+        pageList.add(new HomeSearchView(getActivity(), getBundle(), HomeSearchView.SEARCH_COLLECTIONS_TYPE));
+        pageList.add(new HomeSearchView(getActivity(), getBundle(), HomeSearchView.SEARCH_USERS_TYPE));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
             pageList.get(i).setOnClickListener(new View.OnClickListener() {
@@ -162,6 +189,7 @@ public class SearchFragment extends Fragment
         this.viewPager = (ViewPager) v.findViewById(R.id.fragment_search_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
+        viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
 
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_search_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -180,7 +208,12 @@ public class SearchFragment extends Fragment
     // init.
 
     private void initModel() {
-        this.pagerManageModel = new PagerManageObject(0);
+        if (getBundle() != null) {
+            this.pagerManageModel = new PagerManageObject(
+                    getBundle().getInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, 0));
+        } else {
+            this.pagerManageModel = new PagerManageObject(0);
+        }
     }
 
     // interface.

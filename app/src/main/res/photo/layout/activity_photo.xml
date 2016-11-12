@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_photo_swipeBackLayout"
+    android:id="@+id/activity_photo_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/activity_photo_container"
+
+    <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_photo_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/root_color"
@@ -26,14 +26,20 @@
             app:layout_behavior="._common.ui.behavior.PhotoCoverBehavior"
             tools:ignore="UnusedAttribute" />
 
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_photo_statusBar"
+            android:background="?attr/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:alpha="0" />
+
         <android.support.v4.widget.NestedScrollView
             android:id="@+id/activity_photo_scrollView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay"
-            app:layout_behavior="._common.ui.behavior.PhotoScrollViewBehavior">
+            android:scrollbarStyle="outsideOverlay">
 
             <LinearLayout
                 android:id="@+id/activity_photo_scrollContainer"
@@ -48,6 +54,7 @@
                     android:background="?attr/selectableItemBackground" />
 
                 <android.support.design.widget.AppBarLayout
+                    android:id="@+id/activity_photo_dataContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?attr/root_color"
@@ -59,7 +66,7 @@
                         android:layout_height="wrap_content">
 
                         <android.support.v7.widget.Toolbar
-                            android:id="@+id/activity_photo_scrollToolbar"
+                            android:id="@+id/activity_photo_toolbar"
                             android:layout_width="match_parent"
                             android:layout_height="?attr/actionBarSize"
                             android:background="?attr/colorPrimary"
@@ -204,38 +211,6 @@
 
         </android.support.v4.widget.NestedScrollView>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_behavior="._common.ui.behavior.PhotoOverlapAppBarBehavior">
+    </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
 
-            <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-                android:background="?attr/colorPrimary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:alpha="0" />
-
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/activity_photo_appBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/mini_margin"
-                android:visibility="gone"
-                app:theme="@style/MysplashToolbarTheme">
-
-                <android.support.v7.widget.Toolbar
-                    android:id="@+id/activity_photo_topToolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:theme="@style/MysplashToolbarTheme"
-                    app:popupTheme="@style/MysplashPopupMenuTheme" />
-
-            </android.support.design.widget.AppBarLayout>
-
-        </LinearLayout>
-
-    </android.support.design.widget.CoordinatorLayout>
-
-</com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout>
+</android.support.design.widget.CoordinatorLayout>

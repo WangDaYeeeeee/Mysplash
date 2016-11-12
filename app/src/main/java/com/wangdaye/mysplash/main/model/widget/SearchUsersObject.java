@@ -1,14 +1,11 @@
 package com.wangdaye.mysplash.main.model.widget;
 
 import android.app.Activity;
-import android.content.Context;
 
-import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.service.SearchService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;
-
-import java.util.ArrayList;
 
 /**
  * Search users object.
@@ -30,13 +27,13 @@ public class SearchUsersObject
 
     /** <br> life cycle. */
 
-    public SearchUsersObject(Context c) {
-        this.adapter = new UserAdapter(c, new ArrayList<User>());
+    public SearchUsersObject(UserAdapter adapter, String query) {
+        this.adapter = adapter;
         this.service = SearchService.getService();
 
-        this.searchQuery = "";
+        this.searchQuery = query;
 
-        this.photosPage = 0;
+        this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
         this.refreshing = false;
         this.loading = false;

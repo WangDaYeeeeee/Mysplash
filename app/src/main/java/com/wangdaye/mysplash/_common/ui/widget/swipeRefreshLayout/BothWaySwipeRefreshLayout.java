@@ -7,6 +7,8 @@ import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -17,12 +19,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
+import android.widget.AbsListView;
 
 /**
  * Both way swipe refresh layout.
  * */
 
-public class BothWaySwipeRefreshLayout extends ViewGroup {
+public class BothWaySwipeRefreshLayout extends ViewGroup
+        implements NestedScrollingParent, NestedScrollingChild {
     // direction
     public static final int DIRECTION_TOP = 0;
     public static final int DIRECTION_BOTTOM = 1;
@@ -61,6 +65,16 @@ public class BothWaySwipeRefreshLayout extends ViewGroup {
     private boolean mPermitLoad = true;
     private int mTouchSlop;
     private float mTotalDragDistance = -1;
+
+    // If nested scrolling is enabled, the total amount that needed to be
+    // consumed by this as the nested scrolling parent is used in place of the
+    // overscroll determined by MOVE events in the onTouch handler
+    //private float mTotalNestedScrollY;
+    //private final NestedScrollingParentHelper mNestedScrollingParentHelper;
+    //private final NestedScrollingChildHelper mNestedScrollingChildHelper;
+    //private final int[] mParentScrollConsumed = new int[2];
+    //private final int[] mParentOffsetInWindow = new int[2];
+    //private boolean mNestedScrollInProgress;
 
     private int mMediumAnimationDuration;
     private int mCurrentTargetOffsetTop;
@@ -142,10 +156,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup {
         setWillNotDraw(false);
         mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
 
-        final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
-        setEnabled(a.getBoolean(0, true));
-        a.recycle();
-
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         mCircleWidth = (int) (CIRCLE_DIAMETER * metrics.density);
         mCircleHeight = (int) (CIRCLE_DIAMETER * metrics.density);
@@ -155,6 +165,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup {
         // the absolute offset has to take into account that the circle starts at an offset
         mSpinnerFinalOffset = DEFAULT_CIRCLE_TARGET * metrics.density;
         mTotalDragDistance = mSpinnerFinalOffset;
+
+        final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
+        setEnabled(a.getBoolean(0, true));
+        a.recycle();
     }
 
     private void createProgressView() {
@@ -468,6 +482,19 @@ public class BothWaySwipeRefreshLayout extends ViewGroup {
         }
 
         return true;
+    }
+
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean b) {
+        // if this is a List < L or another view that doesn't support nested
+        // scrolling, ignore this request so that the vertical scroll event
+        // isn't stolen
+        if ((android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
+                || (mTarget != null && !ViewCompat.isNestedScrollingEnabled(mTarget))) {
+            // Nope.
+        } else {
+            super.requestDisallowInterceptTouchEvent(b);
+        }
     }
 
     /** <br> state. */

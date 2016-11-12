@@ -11,7 +11,6 @@ import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotoDetailsView;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.ValueUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -82,9 +81,7 @@ public class PhotoDetailsImplementor
                 return;
             }
             if (response.isSuccessful() && response.body() != null) {
-                ValueUtils.writePhotoCount(
-                        c,
-                        response.body());
+                // ValueUtils.writePhotoCount(c, response.body());
                 model.setPhoto(response.body());
                 view.drawExif(model.getPhoto());
                 view.requestDetailsSuccess();

@@ -11,6 +11,7 @@ import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.CategoryModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryPresenter;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
@@ -137,11 +138,16 @@ public class CategoryImplementor
         return model.getAdapter().getRealItemCount();
     }
 
+    @Override
+    public PhotoAdapter getAdapter() {
+        return model.getAdapter();
+    }
+
     /** <br> utils. */
 
     private void requestPhotosInCategoryOrders(Context c, int page, boolean refresh) {
         page = refresh ? 1: page + 1;
-        listener = new OnRequestPhotosListener(c, page, model.getPhotosCategory(), refresh, false);
+        listener = new OnRequestPhotosListener(c, page, refresh, false);
         model.getService()
                 .requestPhotosInAGivenCategory(
                         model.getPhotosCategory(),
@@ -155,7 +161,7 @@ public class CategoryImplementor
             page = 0;
             model.setPageList(ValueUtils.getPageListByCategory(Mysplash.CATEGORY_TOTAL_NEW));
         }
-        listener = new OnRequestPhotosListener(c, page, model.getPhotosCategory(), refresh, true);
+        listener = new OnRequestPhotosListener(c, page, refresh, true);
         model.getService()
                 .requestPhotosInAGivenCategory(
                         model.getPhotosCategory(),
@@ -170,15 +176,13 @@ public class CategoryImplementor
         // data
         private Context c;
         private int page;
-        private int category;
         private boolean refresh;
         private boolean random;
         private boolean canceled;
 
-        OnRequestPhotosListener(Context c, int page, int category, boolean refresh, boolean random) {
+        OnRequestPhotosListener(Context c, int page, boolean refresh, boolean random) {
             this.c = c;
             this.page = page;
-            this.category = category;
             this.refresh = refresh;
             this.random = random;
             this.canceled = false;
@@ -206,7 +210,7 @@ public class CategoryImplementor
             }
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
-                ValueUtils.writePhotoCount(c, response, category);
+                // ValueUtils.writePhotoCount(c, response, category);
                 if (random) {
                     model.setPhotosPage(page + 1);
                 } else {

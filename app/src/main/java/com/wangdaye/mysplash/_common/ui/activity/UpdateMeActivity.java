@@ -21,11 +21,11 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Me;
 import com.wangdaye.mysplash._common.data.service.UserService;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 
@@ -40,14 +40,14 @@ import retrofit2.Response;
  * */
 
 public class UpdateMeActivity extends MysplashActivity
-        implements View.OnClickListener, SwipeBackLayout.OnSwipeListener, SafeHandler.HandlerContainer,
-        UserService.OnRequestMeProfileListener {
+        implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
+        SafeHandler.HandlerContainer, UserService.OnRequestMeProfileListener {
     // widget
     private SafeHandler<UpdateMeActivity> handler;
 
     private CoordinatorLayout container;
+    private StatusBarView statusBar;
     private NestedScrollView scrollView;
-
     private CircularProgressView progressView;
     private LinearLayout contentView;
 
@@ -67,6 +67,14 @@ public class UpdateMeActivity extends MysplashActivity
     private final int INPUT_STATE = 0;
     private final int UPDATE_STATE = 1;
 
+    private final String KEY_UPDATE_ME_ACTIVITY_USERNAME = "update_me_activity_username";
+    private final String KEY_UPDATE_ME_ACTIVITY_FIRSTNAME = "update_me_activity_firstname";
+    private final String KEY_UPDATE_ME_ACTIVITY_LASTNAME = "update_me_activity_lastname";
+    private final String KEY_UPDATE_ME_ACTIVITY_EMAIL = "update_me_activity_email";
+    private final String KEY_UPDATE_ME_ACTIVITY_PORTFOLIO = "update_me_activity_portfolio";
+    private final String KEY_UPDATE_ME_ACTIVITY_LOCATION = "update_me_activity_location";
+    private final String KEY_UPDATE_ME_ACTIVITY_BIO = "update_me_activity_bio";
+
     /** <br> life cycle. */
 
     @Override
@@ -83,6 +91,24 @@ public class UpdateMeActivity extends MysplashActivity
             initData();
             initWidget();
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        service.cancel();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_USERNAME, usernameTxt.getText().toString());
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_FIRSTNAME, firstNameTxt.getText().toString());
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_LASTNAME, lastNameTxt.getText().toString());
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_EMAIL, emailTxt.getText().toString());
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_PORTFOLIO, portfolioTxt.getText().toString());
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_LOCATION, locationTxt.getText().toString());
+        outState.putString(KEY_UPDATE_ME_ACTIVITY_BIO, bioTxt.getText().toString());
     }
 
     @Override
@@ -119,37 +145,32 @@ public class UpdateMeActivity extends MysplashActivity
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        service.cancel();
-    }
-
     /** <br> UI. */
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
 
-        SwipeBackLayout swipeBackLayout = (SwipeBackLayout) findViewById(R.id.activity_update_me_swipeBackLayout);
-        swipeBackLayout.setOnSwipeListener(this);
+        this.container = (CoordinatorLayout) findViewById(R.id.activity_update_me_container);
 
-        StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_update_me_statusBar);
+        SwipeBackCoordinatorLayout swipeBackView
+                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_update_me_swipeBackView);
+        swipeBackView.setOnSwipeListener(this);
+
+        this.statusBar = (StatusBarView) findViewById(R.id.activity_update_me_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
             statusBar.setMask(true);
         }
 
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_update_me_container);
+        this.scrollView = (NestedScrollView) findViewById(R.id.activity_update_me_scrollView);
 
-        ImageButton closeBtn = (ImageButton) findViewById(R.id.activity_update_me_closeBtn);
+        ImageButton closeBtn = (ImageButton) findViewById(R.id.container_update_me_closeBtn);
         if (Mysplash.getInstance().isLightTheme()) {
             closeBtn.setImageResource(R.drawable.ic_close_light);
         } else {
             closeBtn.setImageResource(R.drawable.ic_close_dark);
         }
         closeBtn.setOnClickListener(this);
-
-        this.scrollView = (NestedScrollView) findViewById(R.id.activity_update_me_scrollView);
 
         this.progressView = (CircularProgressView) findViewById(R.id.container_update_me_progressView);
         progressView.setVisibility(View.GONE);
@@ -159,37 +180,69 @@ public class UpdateMeActivity extends MysplashActivity
 
         this.usernameTxt = (EditText) findViewById(R.id.container_update_me_usernameTxt);
         DisplayUtils.setTypeface(this, usernameTxt);
-        usernameTxt.setText(AuthManager.getInstance().getMe().username);
 
         this.firstNameTxt = (EditText) findViewById(R.id.container_update_me_firstNameTxt);
         DisplayUtils.setTypeface(this, firstNameTxt);
-        firstNameTxt.setText(AuthManager.getInstance().getMe().first_name);
 
         this.lastNameTxt = (EditText) findViewById(R.id.container_update_me_lastNameTxt);
         DisplayUtils.setTypeface(this, lastNameTxt);
-        lastNameTxt.setText(AuthManager.getInstance().getMe().last_name);
 
         this.emailTxt = (EditText) findViewById(R.id.container_update_me_emailTxt);
         DisplayUtils.setTypeface(this, emailTxt);
-        emailTxt.setText(AuthManager.getInstance().getMe().email);
 
         this.portfolioTxt = (EditText) findViewById(R.id.container_update_me_portfolioTxt);
         DisplayUtils.setTypeface(this, portfolioTxt);
-        portfolioTxt.setText(AuthManager.getInstance().getMe().portfolio_url);
 
         this.locationTxt = (EditText) findViewById(R.id.container_update_me_locationTxt);
         DisplayUtils.setTypeface(this, locationTxt);
-        locationTxt.setText(AuthManager.getInstance().getMe().location);
 
         this.bioTxt = (EditText) findViewById(R.id.container_update_me_bioTxt);
         DisplayUtils.setTypeface(this, bioTxt);
-        bioTxt.setText(AuthManager.getInstance().getMe().bio);
 
         Button saveBtn = (Button) findViewById(R.id.container_update_me_saveBtn);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             saveBtn.setBackgroundResource(R.drawable.button_login);
         }
         saveBtn.setOnClickListener(this);
+
+        if (getBundle() == null) {
+            usernameTxt.setText(AuthManager.getInstance().getMe().username);
+            firstNameTxt.setText(AuthManager.getInstance().getMe().first_name);
+            lastNameTxt.setText(AuthManager.getInstance().getMe().last_name);
+            emailTxt.setText(AuthManager.getInstance().getMe().email);
+            portfolioTxt.setText(AuthManager.getInstance().getMe().portfolio_url);
+            locationTxt.setText(AuthManager.getInstance().getMe().location);
+            bioTxt.setText(AuthManager.getInstance().getMe().bio);
+        } else {
+            usernameTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_USERNAME,
+                            AuthManager.getInstance().getMe().username));
+            firstNameTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_FIRSTNAME,
+                            AuthManager.getInstance().getMe().first_name));
+            lastNameTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_LASTNAME,
+                            AuthManager.getInstance().getMe().last_name));
+            emailTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_EMAIL,
+                            AuthManager.getInstance().getMe().email));
+            portfolioTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_PORTFOLIO,
+                            AuthManager.getInstance().getMe().portfolio_url));
+            locationTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_LOCATION,
+                            AuthManager.getInstance().getMe().location));
+            bioTxt.setText(
+                    getBundle().getString(
+                            KEY_UPDATE_ME_ACTIVITY_BIO,
+                            AuthManager.getInstance().getMe().bio));
+        }
     }
 
     private void setState(int newState) {
@@ -271,7 +324,7 @@ public class UpdateMeActivity extends MysplashActivity
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.activity_update_me_closeBtn:
+            case R.id.container_update_me_closeBtn:
                 finish();
                 break;
 
@@ -285,18 +338,24 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackLayout.canSwipeBack(scrollView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(scrollView, dir);
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
     @Override
     public void onSwipeFinish(int dir) {
         finish();
         switch (dir) {
-            case SwipeBackLayout.UP_DIR:
+            case SwipeBackCoordinatorLayout.UP_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_top);
                 break;
 
-            case SwipeBackLayout.DOWN_DIR:
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }

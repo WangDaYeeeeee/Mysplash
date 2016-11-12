@@ -1,10 +1,12 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -41,7 +44,7 @@ import java.util.List;
  * Home fragment.
  * */
 
-public class HomeFragment extends Fragment
+public class HomeFragment extends SaveInstanceFragment
         implements PopupManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
         NotificationUtils.SnackbarContainer {
@@ -60,14 +63,18 @@ public class HomeFragment extends Fragment
     private HomeFragmentPopupManageImplementor popupManageImplementor;
     private PagerManagePresenter pagerManagePresenter;
 
+    // data.
+    private final String KEY_HOME_FRAGMENT_PAGE_POSITION = "home_fragment_page_position";
+
     /** <br> life cycle. */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         initModel();
         initPresenter();
-        initView(view);
+        initView(view, sharedPreferences);
         return view;
     }
 
@@ -77,6 +84,22 @@ public class HomeFragment extends Fragment
         for (PagerView p : pagers) {
             if (p != null) {
                 p.cancelRequest();
+            }
+        }
+    }
+
+    @Override
+    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+        setBundle(savedInstanceState);
+        return this;
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        outState.putInt(KEY_HOME_FRAGMENT_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
+        for (PagerView p : pagers) {
+            if (p != null) {
+                p.writeBundle(outState);
             }
         }
     }
@@ -93,7 +116,7 @@ public class HomeFragment extends Fragment
 
     // init.
 
-    private void initView(View v) {
+    private void initView(View v, SharedPreferences sharedPreferences) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
@@ -116,14 +139,21 @@ public class HomeFragment extends Fragment
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnClickListener(this);
 
-        initPages(v);
+        initPages(v, sharedPreferences);
     }
 
-    private void initPages(View v) {
+    private void initPages(View v, SharedPreferences sharedPreferences) {
+        String photoOrder = sharedPreferences.getString(
+                getString(R.string.key_default_photo_order),
+                getResources().getStringArray(R.array.photo_order_values)[0]);
+        String collectionType = sharedPreferences.getString(
+                getString(R.string.key_default_collection_type),
+                getResources().getStringArray(R.array.collection_type_values)[2]);
+
         List<View> pageList = new ArrayList<>();
-        pageList.add(new HomePhotosView(getActivity(), PhotosObject.PHOTOS_TYPE_NEW));
-        pageList.add(new HomePhotosView(getActivity(), PhotosObject.PHOTOS_TYPE_FEATURED));
-        pageList.add(new HomeCollectionsView(getActivity()));
+        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW, photoOrder));
+        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED, photoOrder));
+        pageList.add(new HomeCollectionsView(getActivity(), getBundle(), collectionType));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -137,6 +167,7 @@ public class HomeFragment extends Fragment
 
         this.viewPager = (ViewPager) v.findViewById(R.id.fragment_home_viewPager);
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
         viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_home_tabLayout);
@@ -167,7 +198,9 @@ public class HomeFragment extends Fragment
     // init.
 
     private void initModel() {
-        this.pagerManageModel = new PagerManageObject(0);
+        this.pagerManageModel = new PagerManageObject(
+                getBundle() == null ?
+                        0 : getBundle().getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, 0));
     }
 
     // interface.

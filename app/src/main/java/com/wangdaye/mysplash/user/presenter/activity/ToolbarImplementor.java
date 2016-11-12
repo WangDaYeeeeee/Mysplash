@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
@@ -23,11 +25,13 @@ public class ToolbarImplementor
 
     @Override
     public void touchNavigatorIcon(Activity a) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            a.finishAfterTransition();
+        UserActivity activity = (UserActivity) a;
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(activity.getSnackbarContainer());
+        if (!activity.isBrowsable() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.finishAfterTransition();
         } else {
-            a.finish();
-            a.overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+            activity.finish();
+            activity.overridePendingTransition(0, R.anim.activity_slide_out_bottom);
         }
     }
 

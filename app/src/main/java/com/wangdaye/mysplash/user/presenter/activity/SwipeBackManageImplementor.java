@@ -6,7 +6,9 @@ import android.os.Build;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackLayout;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * Swipe back manage implementor.
@@ -32,17 +34,19 @@ public class SwipeBackManageImplementor
 
     @Override
     public void swipeBackFinish(Activity a, int dir) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            a.finishAfterTransition();
+        UserActivity activity = (UserActivity) a;
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(activity.getSnackbarContainer());
+        if (!activity.isBrowsable() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.finishAfterTransition();
         } else {
-            a.finish();
+            activity.finish();
             switch (dir) {
-                case SwipeBackLayout.UP_DIR:
-                    a.overridePendingTransition(0, R.anim.activity_slide_out_top);
+                case SwipeBackCoordinatorLayout.UP_DIR:
+                    activity.overridePendingTransition(0, R.anim.activity_slide_out_top);
                     break;
 
-                case SwipeBackLayout.DOWN_DIR:
-                    a.overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                case SwipeBackCoordinatorLayout.DOWN_DIR:
+                    activity.overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                     break;
             }
         }

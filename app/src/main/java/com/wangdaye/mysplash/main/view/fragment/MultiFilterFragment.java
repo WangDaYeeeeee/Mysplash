@@ -3,9 +3,9 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -47,7 +48,7 @@ import java.util.TimerTask;
  * Multi filter fragment.
  * */
 
-public class MultiFilterFragment extends Fragment
+public class MultiFilterFragment extends SaveInstanceFragment
         implements MultiFilterBarView, PopupManageView, MessageManageView,
         View.OnClickListener, EditText.OnEditorActionListener, SafeHandler.HandlerContainer,
         MultiFilterPhotosView.OnMultiFilterDataInputInterface, NotificationUtils.SnackbarContainer {
@@ -69,6 +70,13 @@ public class MultiFilterFragment extends Fragment
     private PopupManagePresenter popupManagePresenter;
     private MessageManagePresenter messageManagePresenter;
 
+    // data.
+    private final String KEY_MULTI_FILTER_FRAGMENT_QUERY = "key_multi_filter_fragment_query";
+    private final String KEY_MULTI_FILTER_FRAGMENT_USER = "key_multi_filter_fragment_user";
+    private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY = "key_multi_filter_fragment_photo_category";
+    private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION = "key_multi_filter_fragment_photo_orientation";
+    private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE = "key_multi_filter_fragment_photo_type";
+
     /** <br> life cycle. */
 
     @Override
@@ -86,6 +94,22 @@ public class MultiFilterFragment extends Fragment
         super.onDestroy();
         multiFilterBarPresenter.hideKeyboard();
         photosView.cancelRequest();
+    }
+
+    @Override
+    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+        setBundle(savedInstanceState);
+        return this;
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        outState.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, editTexts[0].getText().toString());
+        outState.putString(KEY_MULTI_FILTER_FRAGMENT_USER, editTexts[1].getText().toString());
+        outState.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, multiFilterBarPresenter.getCategory());
+        outState.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, multiFilterBarPresenter.getOrientation());
+        outState.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, multiFilterBarPresenter.isFeatured());
+        photosView.writeBundle(outState);
     }
 
     /** <br> presenter. */
@@ -126,7 +150,9 @@ public class MultiFilterFragment extends Fragment
         this.editTexts = new EditText[] {
                 (EditText) v.findViewById(R.id.fragment_multi_filter_photos_editText),
                 (EditText) v.findViewById(R.id.fragment_multi_filter_users_editText)};
+        editTexts[0].setText(multiFilterBarPresenter.getQuery());
         editTexts[0].setOnEditorActionListener(this);
+        editTexts[1].setText(multiFilterBarPresenter.getUsername());
         editTexts[1].setOnEditorActionListener(this);
         DisplayUtils.setTypeface(getActivity(), editTexts[0]);
         DisplayUtils.setTypeface(getActivity(), editTexts[1]);
@@ -151,9 +177,11 @@ public class MultiFilterFragment extends Fragment
                 (TextView) v.findViewById(R.id.fragment_multi_filter_orientationTxt),
                 (TextView) v.findViewById(R.id.fragment_multi_filter_featuredTxt)};
         for (TextView t : menuTexts) {
-            t.setText(R.string.all);
             DisplayUtils.setTypeface(getActivity(), t);
         }
+        responsePopup(String.valueOf(multiFilterBarPresenter.getCategory()), 0);
+        responsePopup(String.valueOf(multiFilterBarPresenter.getOrientation()), 1);
+        responsePopup(String.valueOf(multiFilterBarPresenter.isFeatured()), 2);
 
         this.menuIcons = new ImageButton[] {
                 (ImageButton) v.findViewById(R.id.fragment_multi_filter_categoryBtn),
@@ -172,6 +200,9 @@ public class MultiFilterFragment extends Fragment
         photosView.setActivity(getActivity());
         photosView.setOnMultiFilterDataInputInterface(this);
         photosView.setOnClickListener(this);
+        if (getBundle() != null) {
+            photosView.readBundle(getBundle());
+        }
     }
 
     // interface.
@@ -215,6 +246,13 @@ public class MultiFilterFragment extends Fragment
 
     private void initModel() {
         this.multiFilterBarModel = new MultiFilterBarObject();
+        if (getBundle() != null) {
+            multiFilterBarPresenter.setQuery(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""));
+            multiFilterBarPresenter.setUsername(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""));
+            multiFilterBarPresenter.setCategory(getBundle().getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, 0));
+            multiFilterBarPresenter.setOrientation(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
+            multiFilterBarPresenter.setFeatured(getBundle().getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
+        }
     }
 
     // interface.

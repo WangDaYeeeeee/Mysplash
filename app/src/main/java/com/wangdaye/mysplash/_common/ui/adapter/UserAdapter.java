@@ -6,15 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -26,10 +24,8 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.User;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.me.view.activity.MeActivity;
-import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
 
@@ -111,7 +107,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.avatar.setTransitionName(itemList.get(position).username);
+            holder.avatar.setTransitionName(itemList.get(position).username + "-avatar");
+            holder.background.setTransitionName(itemList.get(position).username + "-background");
         }
     }
 
@@ -157,6 +154,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         // widget
+        RelativeLayout background;
         CircleImageView avatar;
         ImageButton portfolioBtn;
 
@@ -166,7 +164,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         ViewHolder(View itemView) {
             super(itemView);
 
-            itemView.findViewById(R.id.item_user_background).setOnClickListener(this);
+            this.background = (RelativeLayout) itemView.findViewById(R.id.item_user_background);
+            background.setOnClickListener(this);
 
             this.avatar = (CircleImageView) itemView.findViewById(R.id.item_user_avatar);
 
@@ -184,39 +183,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             switch (view.getId()) {
                 case R.id.item_user_background:
                     Activity activity = (Activity) a;
-                    if (AuthManager.getInstance().isAuthorized()
-                            && !TextUtils.isEmpty(AuthManager.getInstance().getUsername())
-                            && itemList.get(getAdapterPosition()).username.equals(AuthManager.getInstance().getUsername())) {
-                        Intent intent = new Intent(activity, MeActivity.class);
-
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                            activity.startActivity(intent);
-                            activity.overridePendingTransition(R.anim.activity_in, 0);
-                        } else {
-                            View v = avatar;
-                            ActivityOptionsCompat options = ActivityOptionsCompat
-                                    .makeSceneTransitionAnimation(
-                                            activity,
-                                            Pair.create(v, activity.getString(R.string.transition_me_avatar)));
-                            ActivityCompat.startActivity(activity, intent, options.toBundle());
-                        }
-                    } else {
-                        User u = itemList.get(getAdapterPosition());
-                        Mysplash.getInstance().setUser(u);
-                        Intent intent = new Intent(activity, UserActivity.class);
-
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                            activity.startActivity(intent);
-                            activity.overridePendingTransition(R.anim.activity_in, 0);
-                        } else {
-                            View v = avatar;
-                            ActivityOptionsCompat options = ActivityOptionsCompat
-                                    .makeSceneTransitionAnimation(
-                                            activity,
-                                            Pair.create(v, activity.getString(R.string.transition_user_avatar)));
-                            ActivityCompat.startActivity(activity, intent, options.toBundle());
-                        }
-                    }
+                    View avatar = ((RelativeLayout) view).getChildAt(0);
+                    IntentHelper.startUserActivity(
+                            activity,
+                            avatar,
+                            itemList.get(getAdapterPosition()));
                     break;
 
                 case R.id.item_user_portfolio:

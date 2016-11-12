@@ -27,6 +27,7 @@ import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 
 import java.util.ArrayList;
@@ -71,9 +72,7 @@ public class IntroduceActivity extends MysplashActivity
         editor.apply();
 */
         if (sharedPreferences.getInt(KEY_INTRODUCE_VERSION, FIRST_VERSION) < NEW_VERSION) {
-            Intent intent = new Intent(a, IntroduceActivity.class);
-            a.startActivity(intent);
-            a.overridePendingTransition(R.anim.activity_in, 0);
+            IntentHelper.startIntroduceActivity(a);
         }
     }
 

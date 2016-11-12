@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -25,6 +28,7 @@ import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -39,6 +43,8 @@ import com.wangdaye.mysplash.main.presenter.widget.CollectionsImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
+
+import java.util.ArrayList;
 
 /**
  * Home collections view.
@@ -67,24 +73,27 @@ public class HomeCollectionsView extends FrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
+    // data.
+    private final String KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE = "key_home_collections_view_filter_type";
+
     /** <br> life cycle. */
 
-    public HomeCollectionsView(Activity a) {
+    public HomeCollectionsView(Activity a, @Nullable Bundle bundle, String defaultType) {
         super(a);
-        this.initialize(a);
+        this.initialize(a, bundle, defaultType);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a) {
+    private void initialize(Activity a, @Nullable Bundle bundle, String defaultType) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a);
-        initView();
+        initModel(a, bundle, defaultType);
         initPresenter();
+        initView();
     }
 
     /** <br> presenter. */
@@ -106,7 +115,6 @@ public class HomeCollectionsView extends FrameLayout
     private void initContentView() {
         this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
         refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setVisibility(GONE);
         if (Mysplash.getInstance().isLightTheme()) {
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
@@ -114,6 +122,7 @@ public class HomeCollectionsView extends FrameLayout
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
+        refreshLayout.setVisibility(GONE);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(collectionsModel.getAdapter());
@@ -123,6 +132,7 @@ public class HomeCollectionsView extends FrameLayout
 
     private void initLoadingView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_large_progressView);
+        progressView.setVisibility(VISIBLE);
 
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
@@ -141,10 +151,16 @@ public class HomeCollectionsView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a) {
-        this.collectionsModel = new CollectionsObject(a);
+    private void initModel(Activity a, @Nullable Bundle bundle, String type) {
+        if (bundle != null) {
+            type = bundle.getString(KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE, type);
+        }
+
+        this.collectionsModel = new CollectionsObject(
+                new CollectionAdapter(a, new ArrayList<Collection>()),
+                type);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject();
+        this.scrollModel = new ScrollObject(true);
     }
 
     /** <br> interface. */
@@ -279,6 +295,13 @@ public class HomeCollectionsView extends FrameLayout
         } else {
             return collectionsModel.getAdapter().getRealItemCount();
         }
+    }
+
+    @Override
+    public void writeBundle(Bundle outState) {
+        outState.putString(
+                KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE,
+                collectionsPresenter.getType());
     }
 
     // load view.

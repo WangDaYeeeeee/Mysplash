@@ -14,6 +14,9 @@ import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 public abstract class MysplashActivity extends AppCompatActivity
         implements NotificationUtils.SnackbarContainer {
+    // widget
+    private Bundle bundle;
+
     // data.
     private boolean started = false;
 
@@ -28,12 +31,20 @@ public abstract class MysplashActivity extends AppCompatActivity
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
         DisplayUtils.setStatusBarTextDark(this);
+
+        this.bundle = savedInstanceState;
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Mysplash.getInstance().removeActivity(this);
+    }
+
+    /** <br> widget. */
+
+    public Bundle getBundle() {
+        return bundle;
     }
 
     /** <br> data. */
