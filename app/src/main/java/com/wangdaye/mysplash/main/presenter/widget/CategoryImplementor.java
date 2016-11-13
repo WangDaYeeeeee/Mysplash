@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 
@@ -11,6 +10,7 @@ import com.wangdaye.mysplash._common.data.entity.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.CategoryModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryPresenter;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -129,7 +129,7 @@ public class CategoryImplementor
     }
 
     @Override
-    public void setActivityForAdapter(Activity a) {
+    public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
 

@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.presenter.activity;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
@@ -8,8 +7,8 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
 import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
@@ -55,7 +54,7 @@ public class FragmentManageImplementor
     /** <br> presenter. */
 
     @Override
-    public void changeFragment(Activity a, Bundle saveInstanceState, int code) {
+    public void changeFragment(MysplashActivity a, Bundle saveInstanceState, int code) {
         if (model.getFragmentCount() > 1) {
             while (model.getFragmentCount() > 1) {
                 popFragment(a);
@@ -66,7 +65,7 @@ public class FragmentManageImplementor
         model.getFragmentList().clear();
         model.getIdList().clear();
         model.addFragmentToList(f, code);
-        ((MainActivity) a).getSupportFragmentManager()
+        a.getSupportFragmentManager()
                 .beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.activity_main_fragment, f)
@@ -74,11 +73,11 @@ public class FragmentManageImplementor
     }
 
     @Override
-    public void addFragment(Activity a, Bundle saveInstanceState, int code) {
+    public void addFragment(MysplashActivity a, Bundle saveInstanceState, int code) {
         SaveInstanceFragment f = buildFragmentByCode(saveInstanceState, code);
         model.addFragmentToList(f, code);
 
-        ((MainActivity) a).getSupportFragmentManager()
+        a.getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.activity_main_fragment, f)
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -87,10 +86,10 @@ public class FragmentManageImplementor
     }
 
     @Override
-    public void popFragment(Activity a) {
+    public void popFragment(MysplashActivity a) {
         if (model.getFragmentCount() > 0) {
             model.popFragmentFromList();
-            ((MainActivity) a).getSupportFragmentManager().popBackStack();
+            a.getSupportFragmentManager().popBackStack();
         }
     }
 

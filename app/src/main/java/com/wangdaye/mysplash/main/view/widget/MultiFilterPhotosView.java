@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,6 +33,7 @@ import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -218,7 +218,7 @@ public class MultiFilterPhotosView extends FrameLayout
 
     // interface.
 
-    public void setActivity(Activity a) {
+    public void setActivity(MysplashActivity a) {
         multiFilterPresenter.setActivityForAdapter(a);
     }
 

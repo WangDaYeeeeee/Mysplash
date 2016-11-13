@@ -22,6 +22,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
@@ -186,7 +187,7 @@ public class MainActivity extends MysplashActivity
                     && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
                 ((MultiFilterFragment) f).backToTop();
             } else {
-                super.onBackPressed();
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
             }
         }
     }
@@ -203,6 +204,16 @@ public class MainActivity extends MysplashActivity
     @Override
     protected void backToTop() {
         // do nothing.
+    }
+
+    @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
     }
 
     @Override

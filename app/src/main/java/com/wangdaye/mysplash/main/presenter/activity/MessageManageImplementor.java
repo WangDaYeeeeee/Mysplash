@@ -1,10 +1,9 @@
 package com.wangdaye.mysplash.main.presenter.activity;
 
-import android.app.Activity;
-
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -29,7 +28,7 @@ public class MessageManageImplementor
     }
 
     @Override
-    public void responseMessage(Activity a, int what, Object o) {
+    public void responseMessage(MysplashActivity a, int what, Object o) {
         switch (what) {
             case R.id.action_change_theme:
                 ((MainActivity) a).changeTheme();

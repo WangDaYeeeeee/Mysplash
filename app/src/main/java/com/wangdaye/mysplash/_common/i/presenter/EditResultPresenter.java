@@ -11,4 +11,5 @@ public interface EditResultPresenter {
     void deleteSomething(Object oldKey);
 
     Object getEditKey();
+    void setEditKey(Object key);
 }

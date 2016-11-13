@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -21,6 +20,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
@@ -78,7 +78,7 @@ public class UserActivity extends MysplashActivity
 
     private CoordinatorLayout container;
     private StatusBarView statusBar;
-    private AppBarLayout appBar;
+    private NestedScrollAppBarLayout appBar;
     private Toolbar toolbar;
     private ViewPager viewPager;
     private MyPagerAdapter adapter;
@@ -150,11 +150,7 @@ public class UserActivity extends MysplashActivity
                 && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
             backToTop();
         } else {
-            SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-            super.onBackPressed();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-            }
+           finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         }
     }
 
@@ -171,6 +167,31 @@ public class UserActivity extends MysplashActivity
     protected void backToTop() {
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
+    }
+
+    @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
+        if (!browsablePresenter.isBrowsable()
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        } else {
+            finish();
+            switch (dir) {
+                case SwipeBackCoordinatorLayout.UP_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_top);
+                    break;
+
+                case SwipeBackCoordinatorLayout.DOWN_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                    break;
+            }
+        }
     }
 
     /** <br> presenter. */
@@ -207,7 +228,7 @@ public class UserActivity extends MysplashActivity
                 statusBar.setMask(true);
             }
 
-            this.appBar = (AppBarLayout) findViewById(R.id.activity_user_appBar);
+            this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_user_appBar);
 
             this.toolbar = (Toolbar) findViewById(R.id.activity_user_toolbar);
             if (Mysplash.getInstance().isLightTheme()) {

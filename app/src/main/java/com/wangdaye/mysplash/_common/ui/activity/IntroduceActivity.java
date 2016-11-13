@@ -23,6 +23,7 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -125,10 +126,20 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    }
+
+    @Override
     public void onBackPressed() {
         if (backPressed) {
-            super.onBackPressed();
-            overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else {
             backPressed = true;
             NotificationUtils.showSnackbar(
@@ -142,11 +153,6 @@ public class IntroduceActivity extends MysplashActivity
                 }
             }, 2000);
         }
-    }
-
-    private void finishActivity() {
-        finish();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
     }
 
     /** <br> UI. */
@@ -306,12 +312,12 @@ public class IntroduceActivity extends MysplashActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_introduce_backBtn:
-                finishActivity();
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
 
             case R.id.activity_introduce_button:
                 if (viewPager.getCurrentItem() == introduceModelList.size() - 1) {
-                    finishActivity();
+                    finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 } else {
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                 }

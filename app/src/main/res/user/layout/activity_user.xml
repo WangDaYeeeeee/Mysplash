@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_user_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
 
     <LinearLayout
         android:orientation="vertical"
@@ -25,7 +26,7 @@
             android:background="?attr/root_color"
             tools:ignore="UnusedAttribute">
 
-            <android.support.design.widget.AppBarLayout
+            <com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout
                 android:id="@+id/activity_user_appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,7 +87,7 @@
                     app:tabSelectedTextColor="?attr/content_color"
                     app:tabTextColor="?attr/subtitle_color" />
 
-            </android.support.design.widget.AppBarLayout>
+            </com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/activity_user_viewPager"

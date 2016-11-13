@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import android.app.Activity;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**
  * Toolbar presenter.
@@ -8,7 +8,7 @@ import android.app.Activity;
 
 public interface ToolbarPresenter {
 
-    void touchNavigatorIcon(Activity a);
-    void touchToolbar(Activity a);
-    boolean touchMenuItem(Activity a, int itemId);
+    void touchNavigatorIcon(MysplashActivity a);
+    void touchToolbar(MysplashActivity a);
+    boolean touchMenuItem(MysplashActivity a, int itemId);
 }

@@ -90,6 +90,17 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    }
+
+    @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null
@@ -103,8 +114,7 @@ public class LoginActivity extends MysplashActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     /** <br> UI. */
@@ -197,8 +207,7 @@ public class LoginActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.activity_login_closeBtn:
-                finish();
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
 
             case R.id.activity_login_loginBtn: {

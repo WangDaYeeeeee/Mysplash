@@ -191,18 +191,19 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 */
     private int onPreScroll(int dy) {
-        int dyUnconsumed = 0;
-        swipeDistance -= dy;
-        if ((swipeDir == DOWN_DIR && swipeDistance <= 0)
-                || (swipeDir == UP_DIR && swipeDistance >= 0)) {
+        int consumed;
+        if (swipeDistance * (swipeDistance - dy) < 0) {
             swipeDir = NULL_DIR;
-            dyUnconsumed = -swipeDistance;
+            consumed = swipeDistance;
             swipeDistance = 0;
+        } else {
+            consumed = dy;
+            swipeDistance -= dy;
         }
 
         setSwipeTranslation();
 
-        return dy - dyUnconsumed;
+        return consumed;
     }
 
     private void onScroll(int dy) {

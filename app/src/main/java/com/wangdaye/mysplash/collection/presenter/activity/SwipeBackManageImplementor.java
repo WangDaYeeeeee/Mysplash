@@ -1,10 +1,8 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
-import android.app.Activity;
-
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**
  * Swipe back manage implementor.
@@ -29,7 +27,7 @@ public class SwipeBackManageImplementor
     }
 
     @Override
-    public void swipeBackFinish(Activity a, int dir) {
-        ((CollectionActivity) a).finishActivity(dir, false);
+    public void swipeBackFinish(MysplashActivity a, int dir) {
+        a.finishActivity(dir);
     }
 }

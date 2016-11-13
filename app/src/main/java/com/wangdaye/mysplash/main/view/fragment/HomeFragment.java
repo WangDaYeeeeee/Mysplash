@@ -19,6 +19,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -217,11 +218,11 @@ public class HomeFragment extends SaveInstanceFragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.touchNavigatorIcon(getActivity());
+                toolbarPresenter.touchNavigatorIcon((MysplashActivity) getActivity());
                 break;
 
             case R.id.fragment_home_toolbar:
-                toolbarPresenter.touchToolbar(getActivity());
+                toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
                 break;
         }
     }
@@ -230,7 +231,7 @@ public class HomeFragment extends SaveInstanceFragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        return toolbarPresenter.touchMenuItem(getActivity(), item.getItemId());
+        return toolbarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
     }
 
     // on page changed listener.

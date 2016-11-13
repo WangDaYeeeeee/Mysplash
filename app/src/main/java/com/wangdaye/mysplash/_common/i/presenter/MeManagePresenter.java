@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import android.app.Activity;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**
  * Auth response presenter.
@@ -8,8 +8,8 @@ import android.app.Activity;
 
 public interface MeManagePresenter {
 
-    void touchMeAvatar(Activity a);
-    void touchMeButton(Activity a);
+    void touchMeAvatar(MysplashActivity a);
+    void touchMeButton(MysplashActivity a);
 
     void responseWriteAccessToken();
     void responseWriteUserInfo();

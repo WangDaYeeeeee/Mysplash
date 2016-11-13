@@ -30,7 +30,9 @@ public abstract class MysplashActivity extends AppCompatActivity
         setTheme();
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
-        DisplayUtils.setStatusBarTextDark(this);
+        if (needSetStatusBarTextDark()) {
+            DisplayUtils.setStatusBarTextDark(this);
+        }
 
         this.bundle = savedInstanceState;
     }
@@ -40,6 +42,8 @@ public abstract class MysplashActivity extends AppCompatActivity
         super.onDestroy();
         Mysplash.getInstance().removeActivity(this);
     }
+
+    public abstract void finishActivity(int dir);
 
     /** <br> widget. */
 
@@ -60,4 +64,6 @@ public abstract class MysplashActivity extends AppCompatActivity
     protected abstract void setTheme();
 
     protected abstract void backToTop();
+
+    protected abstract boolean needSetStatusBarTextDark();
 }

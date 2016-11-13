@@ -3,7 +3,6 @@ package com.wangdaye.mysplash._common.ui.activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
@@ -14,15 +13,15 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 /**
  * Photo preview activity.
  * */
 
-public class PreviewPhotoActivity extends AppCompatActivity
+public class PreviewPhotoActivity extends MysplashActivity
         implements View.OnClickListener, NotificationUtils.SnackbarContainer {
     // widget
     private CoordinatorLayout container;
@@ -32,7 +31,6 @@ public class PreviewPhotoActivity extends AppCompatActivity
     // data
     private Photo photo;
     private boolean showPreview = false;
-    private boolean started = false;
 
     public static final String KEY_PREVIEW_PHOTO_ACTIVITY_PHOTO = "preview_photo_activity_photo";
 
@@ -41,18 +39,14 @@ public class PreviewPhotoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mysplash.getInstance().addActivity(this);
-        setTheme();
-        LanguageUtils.setLanguage(this);
-        DisplayUtils.setWindowTop(this);
         setContentView(R.layout.activity_preview_photo);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (!started) {
-            started = true;
+        if (!isStarted()) {
+            setStarted();
             initData();
             initView();
         }
@@ -60,8 +54,7 @@ public class PreviewPhotoActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
@@ -70,7 +63,8 @@ public class PreviewPhotoActivity extends AppCompatActivity
         Mysplash.getInstance().removeActivity(this);
     }
 
-    private void setTheme() {
+    @Override
+    protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_PhotoPreview);
         } else {
@@ -79,6 +73,22 @@ public class PreviewPhotoActivity extends AppCompatActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
+    }
+
+    @Override
+    protected boolean needSetStatusBarTextDark() {
+        return false;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
     }
 
     /** <br> view. */

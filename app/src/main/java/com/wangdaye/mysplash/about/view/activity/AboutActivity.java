@@ -57,10 +57,28 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        super.onBackPressed();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+        finish();
+        switch (dir) {
+            case SwipeBackCoordinatorLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     /** <br> UI. */
@@ -100,17 +118,7 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
+        finishActivity(dir);
     }
 
     // snackbar container.

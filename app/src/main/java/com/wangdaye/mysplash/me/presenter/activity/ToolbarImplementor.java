@@ -1,15 +1,13 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
@@ -27,23 +25,17 @@ public class ToolbarImplementor
     /** <br> presenter. */
 
     @Override
-    public void touchNavigatorIcon(Activity a) {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(((MeActivity) a).getSnackbarContainer());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            a.finishAfterTransition();
-        } else {
-            a.finish();
-            a.overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-        }
+    public void touchNavigatorIcon(MysplashActivity a) {
+        a.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
-    public void touchToolbar(Activity a) {
+    public void touchToolbar(MysplashActivity a) {
         // do nothing.
     }
 
     @Override
-    public boolean touchMenuItem(Activity a, int itemId) {
+    public boolean touchMenuItem(MysplashActivity a, int itemId) {
         switch (itemId) {
             case R.id.action_edit:
                 if (AuthManager.getInstance().isAuthorized()

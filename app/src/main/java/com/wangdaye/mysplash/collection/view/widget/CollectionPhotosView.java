@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.collection.view.widget;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -21,6 +20,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -101,7 +101,7 @@ public class CollectionPhotosView extends FrameLayout
         initView();
     }
 
-    public void initMP(Activity a, Collection c) {
+    public void initMP(MysplashActivity a, Collection c) {
         initModel(a, c);
         initPresenter();
         recyclerView.setAdapter(photosModel.getAdapter());
@@ -161,7 +161,7 @@ public class CollectionPhotosView extends FrameLayout
 
     // init.
 
-    private void initModel(Activity a, Collection c) {
+    private void initModel(MysplashActivity a, Collection c) {
         this.photosModel = new PhotosObject(
                 a,
                 c,
@@ -172,7 +172,7 @@ public class CollectionPhotosView extends FrameLayout
 
     // interface.
 
-    public void setActivity(Activity a) {
+    public void setActivity(MysplashActivity a) {
         photosPresenter.setActivityForAdapter(a);
     }
 

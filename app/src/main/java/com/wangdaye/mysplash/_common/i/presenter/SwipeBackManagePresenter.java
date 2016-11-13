@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import android.app.Activity;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**
  * Swipe back manage presenter.
@@ -9,5 +9,5 @@ import android.app.Activity;
 public interface SwipeBackManagePresenter {
 
     boolean checkCanSwipeBack(int dir);
-    void swipeBackFinish(Activity a, int dir);
+    void swipeBackFinish(MysplashActivity a, int dir);
 }

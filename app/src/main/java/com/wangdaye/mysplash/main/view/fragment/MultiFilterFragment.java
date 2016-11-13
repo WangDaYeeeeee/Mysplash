@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -197,7 +198,7 @@ public class MultiFilterFragment extends SaveInstanceFragment
         }
 
         this.photosView = (MultiFilterPhotosView) v.findViewById(R.id.fragment_multi_filter_photosView);
-        photosView.setActivity(getActivity());
+        photosView.setActivity((MysplashActivity) getActivity());
         photosView.setOnMultiFilterDataInputInterface(this);
         photosView.setOnClickListener(this);
         if (getBundle() != null) {
@@ -273,7 +274,7 @@ public class MultiFilterFragment extends SaveInstanceFragment
                 break;
 
             case R.id.fragment_multi_filter_toolbar:
-                multiFilterBarPresenter.touchToolbar(getActivity());
+                multiFilterBarPresenter.touchToolbar((MysplashActivity) getActivity());
                 break;
 
             case R.id.fragment_multi_filter_searchBtn:
@@ -352,7 +353,7 @@ public class MultiFilterFragment extends SaveInstanceFragment
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(getActivity(), message.what, message.obj);
+        messageManagePresenter.responseMessage((MysplashActivity) getActivity(), message.what, message.obj);
     }
 
     // view.

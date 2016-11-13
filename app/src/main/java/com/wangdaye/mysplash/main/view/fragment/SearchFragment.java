@@ -26,6 +26,7 @@ import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -230,7 +231,7 @@ public class SearchFragment extends SaveInstanceFragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                searchBarPresenter.touchNavigatorIcon(getActivity());
+                searchBarPresenter.touchNavigatorIcon((MysplashActivity) getActivity());
                 break;
         }
     }
@@ -239,7 +240,7 @@ public class SearchFragment extends SaveInstanceFragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        return searchBarPresenter.touchMenuItem(getActivity(), item.getItemId());
+        return searchBarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
     }
 
     // on editor action clickListener.
@@ -283,7 +284,7 @@ public class SearchFragment extends SaveInstanceFragment
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(getActivity(), message.what, message.obj);
+        messageManagePresenter.responseMessage((MysplashActivity) getActivity(), message.what, message.obj);
     }
 
     // view.

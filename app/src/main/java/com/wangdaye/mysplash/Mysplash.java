@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.SharedPreferences;
 
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Mysplash extends Application {
     // data
-    private List<Activity> activityList;
+    private List<MysplashActivity> activityList;
 
     private boolean lightTheme;
     private String language;
@@ -88,8 +88,8 @@ public class Mysplash extends Application {
 
     /** <br> data. */
 
-    public void addActivity(Activity a) {
-        for (Activity activity : activityList) {
+    public void addActivity(MysplashActivity a) {
+        for (MysplashActivity activity : activityList) {
             if (activity.equals(a)) {
                 return;
             }
@@ -97,11 +97,11 @@ public class Mysplash extends Application {
         activityList.add(a);
     }
 
-    public void removeActivity(Activity a) {
+    public void removeActivity(MysplashActivity a) {
         activityList.remove(a);
     }
 
-    public Activity getTopActivity() {
+    public MysplashActivity getTopActivity() {
         if (activityList.size() > 0) {
             return activityList.get(activityList.size() - 1);
         } else {

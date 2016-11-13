@@ -1,8 +1,7 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
-import android.app.Activity;
-
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.Collection;
@@ -21,17 +20,17 @@ public class ToolbarImplementor
     /** <br> presenter. */
 
     @Override
-    public void touchNavigatorIcon(Activity a) {
-        ((CollectionActivity) a).finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR, false);
+    public void touchNavigatorIcon(MysplashActivity a) {
+        a.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
-    public void touchToolbar(Activity a) {
+    public void touchToolbar(MysplashActivity a) {
         ((CollectionActivity) a).backToTop();
     }
 
     @Override
-    public boolean touchMenuItem(Activity a, int itemId) {
+    public boolean touchMenuItem(MysplashActivity a, int itemId) {
         switch (itemId) {
             case R.id.action_edit:
                 UpdateCollectionDialog dialog = new UpdateCollectionDialog();

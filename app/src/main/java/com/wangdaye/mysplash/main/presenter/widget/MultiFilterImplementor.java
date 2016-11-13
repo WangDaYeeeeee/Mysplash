@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -12,6 +11,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterPresenter;
 import com.wangdaye.mysplash._common.i.view.MultiFilterView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
@@ -170,7 +170,7 @@ public class MultiFilterImplementor
     }
 
     @Override
-    public void setActivityForAdapter(Activity a) {
+    public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
 

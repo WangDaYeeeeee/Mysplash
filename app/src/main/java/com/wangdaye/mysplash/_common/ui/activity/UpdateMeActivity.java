@@ -126,10 +126,28 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        switch (dir) {
+            case SwipeBackCoordinatorLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
+    }
+
+    @Override
     public void onBackPressed() {
         if (state == INPUT_STATE && backPressed) {
-            super.onBackPressed();
-            overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else if (state == INPUT_STATE) {
             backPressed = true;
             NotificationUtils.showSnackbar(
@@ -325,7 +343,7 @@ public class UpdateMeActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.container_update_me_closeBtn:
-                finish();
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
 
             case R.id.container_update_me_saveBtn:
@@ -349,16 +367,7 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
+        finishActivity(dir);
     }
 
     // on request me profile listener.

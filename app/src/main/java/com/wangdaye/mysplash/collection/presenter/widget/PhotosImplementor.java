@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.collection.presenter.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 
@@ -12,6 +11,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -139,7 +139,7 @@ public class PhotosImplementor
     }
 
     @Override
-    public void setActivityForAdapter(Activity a) {
+    public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
 

@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.dialog.TotalDialog;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -54,8 +55,9 @@ public class HeaderHolder extends RecyclerView.ViewHolder
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_about_header_backButton:
-                Mysplash.getInstance().getTopActivity().finish();
-                Mysplash.getInstance().getTopActivity().overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                Mysplash.getInstance()
+                        .getTopActivity()
+                        .finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
 
             case R.id.item_about_header_unsplashContainer:

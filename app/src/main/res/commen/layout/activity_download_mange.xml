@@ -24,7 +24,7 @@
             android:layout_height="match_parent"
             android:background="?attr/root_color">
 
-            <android.support.design.widget.AppBarLayout
+            <com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:theme="@style/MysplashToolbarTheme">
@@ -38,7 +38,7 @@
                     app:popupTheme="@style/MysplashPopupMenuTheme"
                     tools:ignore="UnusedAttribute" />
 
-            </android.support.design.widget.AppBarLayout>
+            </com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/activity_download_manage_recyclerView"

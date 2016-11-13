@@ -16,6 +16,7 @@ import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -114,7 +115,7 @@ public class CategoryFragment extends SaveInstanceFragment
         toolbar.setOnClickListener(this);
 
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
-        photosView.setActivity(getActivity());
+        photosView.setActivity((MysplashActivity) getActivity());
         photosView.setCategory(categoryManagePresenter.getCategoryId());
         if (getBundle() != null) {
             photosView.readBundle(getBundle());
@@ -161,11 +162,11 @@ public class CategoryFragment extends SaveInstanceFragment
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                toolbarPresenter.touchNavigatorIcon(getActivity());
+                toolbarPresenter.touchNavigatorIcon((MysplashActivity) getActivity());
                 break;
 
             case R.id.fragment_category_toolbar:
-                toolbarPresenter.touchToolbar(getActivity());
+                toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
                 break;
         }
     }
@@ -174,7 +175,7 @@ public class CategoryFragment extends SaveInstanceFragment
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        return toolbarPresenter.touchMenuItem(getActivity(), item.getItemId());
+        return toolbarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
     }
 
     // snackbar container.

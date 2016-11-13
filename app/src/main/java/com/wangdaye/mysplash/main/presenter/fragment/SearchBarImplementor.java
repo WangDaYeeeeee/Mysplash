@@ -1,10 +1,9 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
-import android.app.Activity;
-
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.SearchBarView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 /**
@@ -25,12 +24,12 @@ public class SearchBarImplementor
     /** <br> presenter. */
 
     @Override
-    public void touchNavigatorIcon(Activity a) {
+    public void touchNavigatorIcon(MysplashActivity a) {
         ((MainActivity) a).removeFragment();
     }
 
     @Override
-    public boolean touchMenuItem(Activity a, int itemId) {
+    public boolean touchMenuItem(MysplashActivity a, int itemId) {
         switch (itemId) {
             case R.id.action_clear_text:
                 view.clearSearchBarText();

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,9 +25,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.LanguageUtils;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
@@ -70,7 +69,7 @@ import com.wangdaye.mysplash.user.model.widget.ScrollObject;
  * Photo activity.
  * */
 
-public class PhotoActivity extends AppCompatActivity
+public class PhotoActivity extends MysplashActivity
         implements PhotoInfoView, ScrollView, PopupManageView, BrowsableView,
         View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
         NotificationUtils.SnackbarContainer {
@@ -97,7 +96,6 @@ public class PhotoActivity extends AppCompatActivity
     private BrowsablePresenter browsablePresenter;
 
     // data
-    private boolean started = false;
     public static final String KEY_PHOTO_ACTIVITY_PHOTO = "photo_activity_photo";
 
     /** <br> life cycle. */
@@ -105,12 +103,6 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        Mysplash.getInstance().addActivity(this);
-        setTheme();
-        LanguageUtils.setLanguage(this);
-        DisplayUtils.setWindowTop(this);
-
         setContentView(R.layout.activity_photo);
         initModel();
         initPresenter();
@@ -119,19 +111,15 @@ public class PhotoActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if (!started) {
-            started = true;
+        if (!isStarted()) {
+            setStarted();
             initView(true);
         }
     }
 
     @Override
     public void onBackPressed() {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        super.onBackPressed();
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-        }
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
@@ -144,6 +132,7 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
+    @Override
     protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Photo);
@@ -152,8 +141,34 @@ public class PhotoActivity extends AppCompatActivity
         }
     }
 
+    @Override
     protected void backToTop() {
         scrollPresenter.scrollToTop();
+    }
+
+    @Override
+    protected boolean needSetStatusBarTextDark() {
+        return false;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
+        if (!browsablePresenter.isBrowsable()
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            finishAfterTransition();
+        } else {
+            finish();
+            switch (dir) {
+                case SwipeBackCoordinatorLayout.UP_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_top);
+                    break;
+
+                case SwipeBackCoordinatorLayout.DOWN_DIR:
+                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                    break;
+            }
+        }
     }
 
     /** <br> presenter. */
@@ -362,12 +377,7 @@ public class PhotoActivity extends AppCompatActivity
                 if (browsablePresenter.isBrowsable()) {
                     browsablePresenter.visitParentView();
                 }
-                SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    finishAfterTransition();
-                } else {
-                    finish();
-                }
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
 
             case R.id.activity_photo_touchView:
@@ -436,21 +446,7 @@ public class PhotoActivity extends AppCompatActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
-        } else {
-            finish();
-            switch (dir) {
-                case SwipeBackCoordinatorLayout.UP_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_top);
-                    break;
-
-                case SwipeBackCoordinatorLayout.DOWN_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                    break;
-            }
-        }
+        finishActivity(dir);
     }
 
     // snackbar container.

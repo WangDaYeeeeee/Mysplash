@@ -1,10 +1,9 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
-import android.app.Activity;
-
 import com.wangdaye.mysplash._common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterBarPresenter;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 
@@ -33,7 +32,7 @@ public class MultiFilterBarImplementor
     }
 
     @Override
-    public void touchToolbar(Activity a) {
+    public void touchToolbar(MysplashActivity a) {
         MainActivity activity = (MainActivity) a;
         MultiFilterFragment f = (MultiFilterFragment) activity.getTopFragment();
         f.backToTop();

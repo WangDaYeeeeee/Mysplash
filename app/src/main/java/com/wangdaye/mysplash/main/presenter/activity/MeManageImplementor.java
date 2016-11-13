@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.main.presenter.activity;
 
-import android.app.Activity;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
@@ -30,7 +30,7 @@ public class MeManageImplementor
     /** <br> presenter. */
 
     @Override
-    public void touchMeAvatar(Activity a) {
+    public void touchMeAvatar(MysplashActivity a) {
         NavigationView nav = (NavigationView) a.findViewById(R.id.activity_main_navView);
         View header = nav.getHeaderView(0);
         IntentHelper.startMeActivity(
@@ -39,7 +39,7 @@ public class MeManageImplementor
     }
 
     @Override
-    public void touchMeButton(Activity a) {
+    public void touchMeButton(MysplashActivity a) {
         if (!AuthManager.getInstance().isAuthorized()) {
             IntentHelper.startLoginActivity(a);
         } else {

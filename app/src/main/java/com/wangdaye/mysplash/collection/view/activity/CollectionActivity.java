@@ -2,9 +2,7 @@ package com.wangdaye.mysplash.collection.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -18,6 +16,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
@@ -65,7 +64,7 @@ public class CollectionActivity extends MysplashActivity
     private RequestBrowsableDataDialog requestDialog;
 
     private CoordinatorLayout container;
-    private AppBarLayout appBar;
+    private NestedScrollAppBarLayout appBar;
     private RelativeLayout creatorBar;
     private CircleImageView avatarImage;
     private StatusBarView statusBar;
@@ -125,15 +124,7 @@ public class CollectionActivity extends MysplashActivity
                 && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
             backToTop();
         } else {
-            Intent result = new Intent();
-            result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, false);
-            result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, (Collection) editResultPresenter.getEditKey());
-            setResult(RESULT_OK, result);
-            SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-            super.onBackPressed();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-            }
+            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         }
     }
 
@@ -143,9 +134,15 @@ public class CollectionActivity extends MysplashActivity
         photosView.pagerBackToTop();
     }
 
-    public void finishActivity(int dir, boolean delete) {
+    @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
         Intent result = new Intent();
-        result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, delete);
+        result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, editResultPresenter.getEditKey() == null);
         result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, (Collection) editResultPresenter.getEditKey());
         result.putExtra(KEY_COLLECTION_ACTIVITY_COLLECTION, getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         setResult(RESULT_OK, result);
@@ -194,7 +191,7 @@ public class CollectionActivity extends MysplashActivity
                 statusBar.setMask(true);
             }
 
-            this.appBar = (AppBarLayout) findViewById(R.id.activity_collection_appBar);
+            this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_collection_appBar);
 
             TextView title = (TextView) findViewById(R.id.activity_collection_title);
             title.setText(c.title);
@@ -391,7 +388,8 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void drawDeleteResult(Object oldKey) {
-        finishActivity(SwipeBackCoordinatorLayout.NULL_DIR, true);
+        editResultPresenter.setEditKey(null);
+        finishActivity(SwipeBackCoordinatorLayout.NULL_DIR);
     }
 
     // browsable view.

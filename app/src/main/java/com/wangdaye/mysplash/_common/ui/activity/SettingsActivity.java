@@ -8,6 +8,7 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.fragment.SettingsFragment;
+import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
@@ -57,9 +58,19 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
         overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     /** <br> UI.. */
@@ -88,7 +99,7 @@ public class SettingsActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                finish();
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
         }
     }

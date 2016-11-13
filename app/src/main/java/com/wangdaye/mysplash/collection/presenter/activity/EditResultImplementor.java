@@ -43,4 +43,9 @@ public class EditResultImplementor
     public Object getEditKey() {
         return model.getEditKey();
     }
+
+    @Override
+    public void setEditKey(Object k) {
+        model.setEditKey(k);
+    }
 }

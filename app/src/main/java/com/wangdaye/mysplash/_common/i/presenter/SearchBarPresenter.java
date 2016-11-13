@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import android.app.Activity;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**
  * Search bar presenter.
@@ -8,8 +8,8 @@ import android.app.Activity;
 
 public interface SearchBarPresenter {
 
-    void touchNavigatorIcon(Activity a);
-    boolean touchMenuItem(Activity a, int itemId);
+    void touchNavigatorIcon(MysplashActivity a);
+    boolean touchMenuItem(MysplashActivity a, int itemId);
 
     void showKeyboard();
     void hideKeyboard();

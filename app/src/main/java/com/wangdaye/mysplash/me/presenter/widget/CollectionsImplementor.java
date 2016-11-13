@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.me.presenter.widget;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 
@@ -8,6 +7,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
@@ -132,7 +132,7 @@ public class CollectionsImplementor
     }
 
     @Override
-    public void setActivityForAdapter(Activity a) {
+    public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
 

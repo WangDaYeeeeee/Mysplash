@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import android.app.Activity;
+import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**
  * Multi-filter bar presenter.
@@ -8,7 +8,7 @@ import android.app.Activity;
 
 public interface MultiFilterBarPresenter {
     void touchNavigatorIcon();
-    void touchToolbar(Activity a);
+    void touchToolbar(MysplashActivity a);
     void touchSearchButton();
     void touchMenuContainer(int position);
 

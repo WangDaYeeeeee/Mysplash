@@ -100,6 +100,25 @@ public class DownloadManageActivity extends MysplashActivity
         // do nothing.
     }
 
+    @Override
+    protected boolean needSetStatusBarTextDark() {
+        return true;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        switch (dir) {
+            case SwipeBackCoordinatorLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
+    }
+
     /** <br> UI. */
 
     private void initWidget() {
@@ -161,7 +180,7 @@ public class DownloadManageActivity extends MysplashActivity
                 if (getIntent().getBooleanExtra(EXTRA_NOTIFICATION, false)) {
                     startActivity(new Intent(this, MainActivity.class));
                 }
-                finish();
+                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
                 break;
         }
     }
@@ -199,16 +218,7 @@ public class DownloadManageActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
+        finishActivity(dir);
     }
 
     // on download listener.
