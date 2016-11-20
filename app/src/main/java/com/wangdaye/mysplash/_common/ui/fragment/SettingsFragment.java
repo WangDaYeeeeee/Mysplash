@@ -13,7 +13,6 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -37,39 +36,36 @@ public class SettingsFragment extends PreferenceFragment
     /** <br> UI. */
 
     private void initView() {
-        initBasicPart();
-        initFilterPart();
-        initDownloadPart();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        initBasicPart(sharedPreferences);
+        initFilterPart(sharedPreferences);
+        initDownloadPart(sharedPreferences);
     }
 
-    private void initBasicPart() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+    private void initBasicPart(SharedPreferences sharedPreferences) {
         // back to top.
         ListPreference backToTop = (ListPreference) findPreference(getString(R.string.key_back_to_top));
-        String backToTopValue = sharedPreferences.getString(
-                getString(R.string.key_back_to_top),
-                "all");
+        String backToTopValue = getActivity().getSharedPreferences(
+                Mysplash.PREFERENCE_BACK_TO_TOP,
+                Mysplash.MODE_PRIVATE)
+                .getString(
+                        getString(R.string.key_back_to_top),
+                        "all");
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
         backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
 
         // language.
         ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
-        String languageValue = getActivity().getSharedPreferences(
-                Mysplash.SP_STARTUP_ITEM,
-                Context.MODE_PRIVATE)
-                .getString(
-                        getString(R.string.key_language),
-                        "follow_system");
+        String languageValue = sharedPreferences.getString(
+                getString(R.string.key_language),
+                "follow_system");
         String languageName = ValueUtils.getLanguageName(getActivity(), languageValue);
         language.setSummary(getString(R.string.now) + " : " + languageName);
         language.setOnPreferenceChangeListener(this);
     }
 
-    private void initFilterPart() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+    private void initFilterPart(SharedPreferences sharedPreferences) {
         // default order.
         ListPreference defaultOrder = (ListPreference) findPreference(getString(R.string.key_default_photo_order));
         String orderValue = sharedPreferences.getString(
@@ -89,9 +85,7 @@ public class SettingsFragment extends PreferenceFragment
         collectionType.setOnPreferenceChangeListener(this);
     }
 
-    private void initDownloadPart() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-
+    private void initDownloadPart(SharedPreferences sharedPreferences) {
         // download scale.
         ListPreference downloadScale = (ListPreference) findPreference(getString(R.string.key_download_scale));
         String scaleValue = sharedPreferences.getString(
@@ -118,34 +112,36 @@ public class SettingsFragment extends PreferenceFragment
     public boolean onPreferenceChange(Preference preference, Object o) {
         if (preference.getKey().equals(getString(R.string.key_back_to_top))) {
             // back to top.
-            String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
-            preference.setSummary(getString(R.string.now) + " : " + backType);
-            BackToTopUtils.getInstance(getActivity()).changeBackValue((String) o);
-        } else if (preference.getKey().equals(getString(R.string.key_language))) {
-            // language.
-            String language = ValueUtils.getLanguageName(getActivity(), (String) o);
-            preference.setSummary(getString(R.string.now) + " : " + language);
-
-            Mysplash.getInstance().setLanguage((String) o);
             SharedPreferences.Editor editor = getActivity().getSharedPreferences(
-                    Mysplash.SP_STARTUP_ITEM,
+                    Mysplash.PREFERENCE_BACK_TO_TOP,
                     Context.MODE_PRIVATE).edit();
-            editor.putString(getString(R.string.key_language), (String) o);
+            editor.putString(getString(R.string.key_back_to_top), (String) o);
             editor.apply();
 
+            Mysplash.getInstance().setBackToTopType((String) o);
+            String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
+            preference.setSummary(getString(R.string.now) + " : " + backType);
+        } else if (preference.getKey().equals(getString(R.string.key_language))) {
+            // language.
+            Mysplash.getInstance().setLanguage((String) o);
+            String language = ValueUtils.getLanguageName(getActivity(), (String) o);
+            preference.setSummary(getString(R.string.now) + " : " + language);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_default_photo_order))) {
             // default order.
+            Mysplash.getInstance().setDefaultPhotoOrder((String) o);
             String order = ValueUtils.getOrderName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + order);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_default_collection_type))) {
             // collection type.
+            Mysplash.getInstance().setDefaultCollectionType((String) o);
             String type = ValueUtils.getCollectionName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + type);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {
             // download scale.
+            Mysplash.getInstance().setDownloadScale((String) o);
             String scale = ValueUtils.getScaleName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + scale);
         }

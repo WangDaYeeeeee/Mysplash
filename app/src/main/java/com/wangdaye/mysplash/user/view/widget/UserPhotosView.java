@@ -76,19 +76,19 @@ public class UserPhotosView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public UserPhotosView(Activity a, @Nullable Bundle bundle, User u, int type, String defaultOrder) {
+    public UserPhotosView(Activity a, @Nullable Bundle bundle, User u, int type) {
         super(a);
-        this.initialize(a, bundle, u, type, defaultOrder);
+        this.initialize(a, bundle, u, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle, User u, int type, String defaultOrder) {
+    private void initialize(Activity a, @Nullable Bundle bundle, User u, int type) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle, u, type, defaultOrder);
+        initModel(a, bundle, u, type);
         initPresenter();
         initView();
     }
@@ -130,7 +130,8 @@ public class UserPhotosView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle, User u, int type, String order) {
+    private void initModel(Activity a, @Nullable Bundle bundle, User u, int type) {
+        String order = Mysplash.getInstance().getDefaultPhotoOrder();
         if (bundle != null) {
             if (type == PhotosObject.PHOTOS_TYPE_PHOTOS) {
                 order = bundle.getString(KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE, order);

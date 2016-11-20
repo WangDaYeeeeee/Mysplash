@@ -107,8 +107,8 @@ public class DisplayUtils {
     public static void changeTheme(Context c) {
         Mysplash.getInstance().changeTheme();
         SharedPreferences.Editor editor = c.getSharedPreferences(
-                Mysplash.SP_STARTUP_ITEM,
-                Context.MODE_PRIVATE).edit();
+                Mysplash.PREFERENCE_THEME,
+                Mysplash.MODE_PRIVATE).edit();
         editor.putBoolean(c.getString(R.string.key_light_theme), Mysplash.getInstance().isLightTheme());
         editor.apply();
     }

@@ -79,20 +79,20 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomePhotosView(Activity a, @Nullable Bundle bundle, int photosType, String defaultOrder) {
+    public HomePhotosView(Activity a, @Nullable Bundle bundle, int photosType) {
         super(a);
-        this.initialize(a, bundle, photosType, defaultOrder);
+        this.initialize(a, bundle, photosType);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle, int photosType, String defaultOrder) {
+    private void initialize(Activity a, @Nullable Bundle bundle, int photosType) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle, photosType, defaultOrder);
+        initModel(a, bundle, photosType);
         initPresenter();
         initView();
     }
@@ -152,7 +152,8 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle, int photosType, String order) {
+    private void initModel(Activity a, @Nullable Bundle bundle, int photosType) {
+        String order = Mysplash.getInstance().getDefaultPhotoOrder();
         if (bundle != null) {
             switch (photosType) {
                 case PhotosObject.PHOTOS_TYPE_NEW:

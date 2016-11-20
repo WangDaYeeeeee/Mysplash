@@ -25,8 +25,7 @@ import android.widget.AbsListView;
  * Both way swipe refresh layout.
  * */
 
-public class BothWaySwipeRefreshLayout extends ViewGroup
-        implements NestedScrollingParent, NestedScrollingChild {
+public class BothWaySwipeRefreshLayout extends ViewGroup {
     // direction
     public static final int DIRECTION_TOP = 0;
     public static final int DIRECTION_BOTTOM = 1;

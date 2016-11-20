@@ -3,8 +3,8 @@ package com.wangdaye.mysplash._common.utils.helper;
 import android.app.DownloadManager;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -15,71 +15,34 @@ import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.utils.FileUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.Context.DOWNLOAD_SERVICE;
 
 /**
  * Download helper.
  * */
 
 public class DownloadHelper {
-    // data
-    public List<DownloadMissionEntity> entityList;
-    public List<Long> collectionIdList;
+    // widget
+    private DownloadManager downloadManager;
 
+    // data
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
     public static final int WALLPAPER_TYPE = 3;
 
-    private OnDownloadListener listener;
-
     /** <br> life cycle. */
 
     private DownloadHelper(Context c) {
-        initEntityList(c);
-        this.collectionIdList = new ArrayList<>();
-    }
-
-    private void initEntityList(Context c) {
-        this.entityList = DatabaseHelper.getInstance(c).readDownloadEntity();
-
-        DownloadManager manager = (DownloadManager) c.getSystemService(DOWNLOAD_SERVICE);
-        for (int i = 0; i < entityList.size(); i ++) {
-            Cursor cursor = manager.query(
-                    new DownloadManager.Query()
-                            .setFilterById(entityList.get(i).missionId));
-            cursor.moveToFirst();
-            int cursorCount = 0;
-            try {
-                cursorCount = cursor.getCount();
-            } catch (CursorIndexOutOfBoundsException ignored) {
-
-            }
-            if (cursorCount == 0) {
-                entityList.clear();
-            } else if (DownloadManager.STATUS_SUCCESSFUL
-                    == cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
-                entityList.remove(i --);
-            }
-        }
+        this.downloadManager = (DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
     /** <br> data. */
 
+    // photo.
+
     public void addMission(Context c, Photo p, int type) {
         if (FileUtils.createDownloadPath(c)) {
-            for (int i = 0; i < entityList.size(); i ++) {
-                if (entityList.get(i).photoId.equals(p.id)) {
-                    NotificationUtils.showSnackbar(
-                            c.getString(R.string.feedback_download_repeat),
-                            Snackbar.LENGTH_SHORT);
-                    return;
-                }
-            }
-
-            DownloadMissionEntity entity = new DownloadMissionEntity(c, p, type);
+            DownloadMissionEntity entity = new DownloadMissionEntity(p, type);
 
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
                     .setTitle(entity.photoId)
@@ -89,8 +52,7 @@ public class DownloadHelper {
                             entity.photoId + Mysplash.DOWNLOAD_FORMAT);
             request.allowScanningByMediaScanner();
 
-            entity.missionId = ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).enqueue(request);
-            entityList.add(entity);
+            entity.missionId = downloadManager.enqueue(request);
             DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
 
             NotificationUtils.showSnackbar(
@@ -99,12 +61,7 @@ public class DownloadHelper {
         }
     }
 
-    public void restartMission(Context c, int position) {
-        DownloadMissionEntity entity = entityList.get(position);
-        ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).remove(entity.missionId);
-        DatabaseHelper.getInstance(c).deleteDownloadEntity(entity);
-        entityList.remove(position);
-
+    private void addMission(Context c, DownloadMissionEntity entity) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
                 .setTitle(entity.photoId)
                 .setDescription(c.getString(R.string.feedback_downloading))
@@ -113,8 +70,7 @@ public class DownloadHelper {
                         entity.photoId + Mysplash.DOWNLOAD_FORMAT);
         request.allowScanningByMediaScanner();
 
-        entity.missionId = ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).enqueue(request);
-        entityList.add(entity);
+        entity.missionId = downloadManager.enqueue(request);
         DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
 
         NotificationUtils.showSnackbar(
@@ -122,24 +78,33 @@ public class DownloadHelper {
                 Snackbar.LENGTH_SHORT);
     }
 
-    public void removeMission(Context c, long id) {
-        for (int i = 0; i < entityList.size(); i ++) {
-            if (entityList.get(i).missionId == id) {
-                ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).remove(id);
-                DatabaseHelper.getInstance(c).deleteDownloadEntity(entityList.get(i));
-                entityList.remove(i);
-                return;
-            }
+    public void restartMission(Context c, long missionId) {
+        DownloadMissionEntity entity = removeMissionAndGetMission(c, missionId);
+        if (entity != null) {
+            addMission(c, entity);
         }
     }
 
-    public void clearMission(Context c) {
-        for (int i = 0; i < entityList.size(); i ++) {
-            ((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).remove(entityList.get(i).missionId);
-            DatabaseHelper.getInstance(c).deleteDownloadEntity(entityList.get(i));
-            entityList.remove(i --);
-        }
+    public void removeMission(Context c, long id) {
+        downloadManager.remove(id);
+        DatabaseHelper.getInstance(c).deleteDownloadEntity(id);
     }
+
+    @Nullable
+    private DownloadMissionEntity removeMissionAndGetMission(Context c, long id) {
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(id);
+        removeMission(c, id);
+        return entity;
+    }
+
+    public void clearMission(Context c, List<DownloadMissionEntity> entityList) {
+        for (int i = 0; i < entityList.size(); i ++) {
+            downloadManager.remove(entityList.get(i).missionId);
+        }
+        DatabaseHelper.getInstance(c).clearDownloadEntity();
+    }
+
+    // collection.
 
     public void downloadCollection(Context c, Collection collection) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(collection.links.download))
@@ -149,63 +114,39 @@ public class DownloadHelper {
                         Mysplash.DOWNLOAD_PATH,
                         "#" + collection.id + Mysplash.DOWNLOAD_FORMAT);
 
-        collectionIdList.add(((DownloadManager) c.getSystemService(DOWNLOAD_SERVICE)).enqueue(request));
+        ((DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request);
 
         NotificationUtils.showSnackbar(
                 c.getString(R.string.feedback_download_start),
                 Snackbar.LENGTH_SHORT);
     }
 
-    public void refreshEntityList() {
-        DownloadManager manager = (DownloadManager) Mysplash
-                .getInstance()
-                .getSystemService(DOWNLOAD_SERVICE);
-        for (int i = 0; i < entityList.size(); i ++) {
-            Cursor cursor = manager.query(
-                    new DownloadManager.Query()
-                            .setFilterById(entityList.get(i).missionId));
-            cursor.moveToFirst();
+    // option.
 
-            int statusNow = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
-            if (entityList.get(i).downloadStatus != statusNow) {
-                switch (statusNow) {
-                    case DownloadManager.STATUS_SUCCESSFUL:
-                        // do nothing.
-                        break;
-
-                    case DownloadManager.STATUS_FAILED:
-                        entityList.get(i).downloadStatus = statusNow;
-                        DatabaseHelper
-                                .getInstance(Mysplash.getInstance())
-                                .updateDownloadEntity(entityList.get(i));
-                        if (listener != null) {
-                            listener.onFailed(entityList.get(i).missionId, i);
-                        }
-                        break;
-
-                    default:
-                        if (listener != null) {
-                            listener.onProcess(entityList.get(i).missionId, i);
-                        }
-                        break;
-                }
-            } else if (statusNow == DownloadManager.STATUS_RUNNING) {
-                if (listener != null) {
-                    listener.onProcess(entityList.get(i).missionId, i);
-                }
-            }
+    @Nullable
+    public Cursor getMissionCursor(long id) {
+        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(id));
+        if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            return null;
         }
     }
 
-    public void downloadPhotoSuccess(int position) {
-        DatabaseHelper
-                .getInstance(Mysplash.getInstance())
-                .deleteDownloadEntity(entityList.get(position));
-        long id = entityList.get(position).missionId;
-        entityList.remove(position);
-        if (listener != null) {
-            listener.onSuccess(id, position);
-        }
+    public static boolean isMissionSuccess(Cursor cursor) {
+        return cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                == DownloadManager.STATUS_SUCCESSFUL;
+    }
+
+    public static boolean isMissionFailed(Cursor cursor) {
+        return cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                == DownloadManager.STATUS_FAILED;
+    }
+
+    public static float getMissionProcess(Cursor cursor) {
+        long soFar = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+        long total = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+        return (int) (100.0 * soFar / total);
     }
 
     /** <br> singleton. */
@@ -221,22 +162,5 @@ public class DownloadHelper {
             }
         }
         return instance;
-    }
-
-    public static DownloadHelper refresh(Context c) {
-        instance = new DownloadHelper(c);
-        return instance;
-    }
-
-    /** <br> interface. */
-
-    public interface OnDownloadListener {
-        void onProcess(long id, int position);
-        void onSuccess(long id, int position);
-        void onFailed(long id, int position);
-    }
-
-    public void setOnDownloadListener(OnDownloadListener l) {
-        listener = l;
     }
 }

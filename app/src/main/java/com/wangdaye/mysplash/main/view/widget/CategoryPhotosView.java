@@ -5,7 +5,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -101,11 +100,11 @@ public class CategoryPhotosView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
-        addView(contentView);
-
         View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_in_category_view_large, null);
         addView(searchingView);
+
+        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
+        addView(contentView);
 
         initModel();
         initPresenter();
@@ -190,14 +189,9 @@ public class CategoryPhotosView extends FrameLayout
     // init
 
     private void initModel() {
-        String order = PreferenceManager.getDefaultSharedPreferences(getContext())
-                .getString(
-                        getContext().getString(R.string.key_default_photo_order),
-                        getResources().getStringArray(R.array.photo_order_values)[0]);
         this.categoryModel = new CategoryObject(
                 getContext(),
-                new PhotoAdapter(getContext(), new ArrayList<Photo>()),
-                order);
+                new PhotoAdapter(getContext(), new ArrayList<Photo>()));
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
     }

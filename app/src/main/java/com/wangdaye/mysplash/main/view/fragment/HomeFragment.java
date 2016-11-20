@@ -1,8 +1,6 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -71,11 +69,10 @@ public class HomeFragment extends SaveInstanceFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         initModel();
         initPresenter();
-        initView(view, sharedPreferences);
+        initView(view);
         return view;
     }
 
@@ -117,7 +114,7 @@ public class HomeFragment extends SaveInstanceFragment
 
     // init.
 
-    private void initView(View v, SharedPreferences sharedPreferences) {
+    private void initView(View v) {
         StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
         if (DisplayUtils.isNeedSetStatusBarMask()) {
             statusBar.setBackgroundResource(R.color.colorPrimary_light);
@@ -140,21 +137,14 @@ public class HomeFragment extends SaveInstanceFragment
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnClickListener(this);
 
-        initPages(v, sharedPreferences);
+        initPages(v);
     }
 
-    private void initPages(View v, SharedPreferences sharedPreferences) {
-        String photoOrder = sharedPreferences.getString(
-                getString(R.string.key_default_photo_order),
-                getResources().getStringArray(R.array.photo_order_values)[0]);
-        String collectionType = sharedPreferences.getString(
-                getString(R.string.key_default_collection_type),
-                getResources().getStringArray(R.array.collection_type_values)[2]);
-
+    private void initPages(View v) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW, photoOrder));
-        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED, photoOrder));
-        pageList.add(new HomeCollectionsView(getActivity(), getBundle(), collectionType));
+        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW));
+        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED));
+        pageList.add(new HomeCollectionsView(getActivity(), getBundle()));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }

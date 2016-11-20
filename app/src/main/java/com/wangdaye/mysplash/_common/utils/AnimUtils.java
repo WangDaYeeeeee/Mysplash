@@ -9,7 +9,6 @@ import android.graphics.ColorMatrix;
 import android.os.Build;
 import android.util.Property;
 import android.view.View;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;

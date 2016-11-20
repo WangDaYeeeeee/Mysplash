@@ -2,6 +2,7 @@ package com.wangdaye.mysplash;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -19,6 +20,11 @@ public class Mysplash extends Application {
 
     private boolean lightTheme;
     private String language;
+    private String defaultPhotoOrder;
+    private String defaultCollectionType;
+    private String downloadScale;
+    private String backToTopType;
+    private boolean notifiedSetBackToTop;
     private boolean activityInBackstage;
 
     // Unsplash data.
@@ -62,9 +68,9 @@ public class Mysplash extends Application {
     public static int PEOPLE_PHOTOS_COUNT = 3410;
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
-    // share preference.
-    public static final String SP_STARTUP_ITEM = "startup_item";
-    // public static final String SP_PHOTOS_COUNT = "photos_count";
+    // preference.
+    public static final String PREFERENCE_THEME = "theme";
+    public static final String PREFERENCE_BACK_TO_TOP = "back_to_top";
 
     // activity code.
     public static final int ME_ACTIVITY = 1;
@@ -76,13 +82,22 @@ public class Mysplash extends Application {
 
     @Override
     public void onCreate() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SP_STARTUP_ITEM, MODE_PRIVATE);
+        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences themePreferences = getSharedPreferences(PREFERENCE_THEME, MODE_PRIVATE);
+        SharedPreferences backToTopPreferences = getSharedPreferences(PREFERENCE_BACK_TO_TOP, MODE_PRIVATE);
         super.onCreate();
 
         instance = this;
         activityList = new ArrayList<>();
-        lightTheme = sharedPreferences.getBoolean(getString(R.string.key_light_theme), true);
-        language = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
+        lightTheme = themePreferences.getBoolean(getString(R.string.key_light_theme), true);
+        language = defaultSharedPreferences.getString(getString(R.string.key_language), "follow_system");
+        defaultPhotoOrder = defaultSharedPreferences.getString(getString(R.string.key_default_photo_order), "latest");
+        defaultCollectionType = defaultSharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
+        downloadScale = defaultSharedPreferences.getString(getString(R.string.key_download_scale), "compact");
+
+        backToTopType = backToTopPreferences.getString(getString(R.string.key_back_to_top), "null");
+        notifiedSetBackToTop = backToTopPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
+
         activityInBackstage = false;
     }
 
@@ -102,7 +117,7 @@ public class Mysplash extends Application {
     }
 
     public MysplashActivity getTopActivity() {
-        if (activityList.size() > 0) {
+        if (activityList != null && activityList.size() > 0) {
             return activityList.get(activityList.size() - 1);
         } else {
             return null;
@@ -110,7 +125,8 @@ public class Mysplash extends Application {
     }
 
     public MainActivity getMainActivity() {
-        if (activityList.get(0) instanceof MainActivity) {
+        if (activityList != null && activityList.size() > 0
+                && activityList.get(0) instanceof MainActivity) {
             return (MainActivity) activityList.get(0);
         } else {
             return null;
@@ -118,15 +134,67 @@ public class Mysplash extends Application {
     }
 
     public int getActivityCount() {
-        return activityList.size();
+        if (activityList != null) {
+            return activityList.size();
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean isLightTheme() {
+        return lightTheme;
     }
 
     public void changeTheme() {
         this.lightTheme = !lightTheme;
     }
 
-    public boolean isLightTheme() {
-        return lightTheme;
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    public String getDefaultPhotoOrder() {
+        return defaultPhotoOrder;
+    }
+
+    public void setDefaultPhotoOrder(String order) {
+        this.defaultPhotoOrder = order;
+    }
+
+    public String getDefaultCollectionType() {
+        return defaultCollectionType;
+    }
+
+    public void setDefaultCollectionType(String type) {
+        this.defaultCollectionType = type;
+    }
+
+    public String getDownloadScale() {
+        return downloadScale;
+    }
+
+    public void setDownloadScale(String scale) {
+        this.downloadScale = scale;
+    }
+
+    public String getBackToTopType() {
+        return backToTopType;
+    }
+
+    public void setBackToTopType(String type) {
+        this.backToTopType = type;
+    }
+
+    public boolean isNotifiedSetBackToTop() {
+        return notifiedSetBackToTop;
+    }
+
+    public void setNotifiedSetBackToTop() {
+        this.notifiedSetBackToTop = true;
     }
 
     public void setActivityInBackstage(boolean showing) {
@@ -135,14 +203,6 @@ public class Mysplash extends Application {
 
     public boolean isActivityInBackstage() {
         return activityInBackstage;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getLanguage() {
-        return language;
     }
 
     /** <br> singleton. */

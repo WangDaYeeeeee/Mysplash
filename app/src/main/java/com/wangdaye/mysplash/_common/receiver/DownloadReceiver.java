@@ -12,10 +12,11 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
-import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 
 /**
  * Download receiver.
@@ -30,17 +31,26 @@ public class DownloadReceiver extends BroadcastReceiver {
         switch (intent.getAction()) {
             case DownloadManager.ACTION_DOWNLOAD_COMPLETE:
                 long missionId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                if (!downloadCollectionSuccess(context, missionId)) {
-                    downloadPhotoSuccess(context, missionId);
-                    DownloadHelper.getInstance(context).refreshEntityList();
+                DownloadManager.Query query = new DownloadManager.Query().setFilterById(missionId);
+                Cursor cursor = ((DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE)).query(query);
+
+                int cursorCount = cursor.getCount();
+                if (cursorCount > 0) {
+                    cursor.moveToFirst();
+                    if (DownloadHelper.isMissionSuccess(cursor)) {
+                        if (!cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)).matches("#.+")) {
+                            downloadPhotoSuccess(context, missionId);
+                        } else {
+                            downloadCollectionSuccess(context, missionId);
+                        }
+                    }
+                } else {
+                    DatabaseHelper.getInstance(context).deleteDownloadEntity(missionId);
                 }
                 break;
 
             case DownloadManager.ACTION_NOTIFICATION_CLICKED:
-                Intent manageActivity = new Intent(context, DownloadManageActivity.class);
-                manageActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                manageActivity.putExtra(DownloadManageActivity.EXTRA_NOTIFICATION, true);
-                context.startActivity(manageActivity);
+                IntentHelper.startDownloadManageActivityFromNotification(context);
                 break;
         }
     }
@@ -48,45 +58,37 @@ public class DownloadReceiver extends BroadcastReceiver {
     /** <br> feedback. */
 
     private void downloadPhotoSuccess(Context c, long missionId) {
-        for (int i = 0; i < DownloadHelper.getInstance(c).entityList.size(); i ++) {
-            if (DownloadHelper.getInstance(c).entityList.get(i).missionId == missionId) {
-                DownloadMissionEntity entity = DownloadHelper.getInstance(c).entityList.get(i);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(missionId);
+        if (entity != null) {
+            c.sendBroadcast(
+                    new Intent(
+                            Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                            Uri.parse("file://"
+                                    + Environment.getExternalStorageDirectory()
+                                    + Mysplash.DOWNLOAD_PATH
+                                    + entity.photoId + Mysplash.DOWNLOAD_FORMAT)));
 
-                c.sendBroadcast(
-                        new Intent(
-                                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                                Uri.parse("file://"
-                                        + Environment.getExternalStorageDirectory()
-                                        + Mysplash.DOWNLOAD_PATH
-                                        + entity.photoId + Mysplash.DOWNLOAD_FORMAT)));
-
+            if (Mysplash.getInstance() != null
+                    && Mysplash.getInstance().getTopActivity() != null) {
                 switch (entity.downloadType) {
                     case DownloadHelper.DOWNLOAD_TYPE:
-                        if (Mysplash.getInstance() != null
-                                && Mysplash.getInstance().getTopActivity() != null) {
-                            simpleDownloadSuccess(entity);
-                        }
+                        simpleDownloadSuccess(entity);
                         break;
 
                     case DownloadHelper.SHARE_TYPE: {
-                        if (Mysplash.getInstance() != null
-                                && Mysplash.getInstance().getTopActivity() != null) {
-                            shareDownloadSuccess(entity);
-                        }
+                        shareDownloadSuccess(entity);
                         break;
                     }
 
                     case DownloadHelper.WALLPAPER_TYPE: {
-                        if (Mysplash.getInstance() != null
-                                && Mysplash.getInstance().getTopActivity() != null) {
-                            wallpaperDownloadSuccess(entity);
-                        }
+                        wallpaperDownloadSuccess(entity);
                         break;
                     }
                 }
-                DownloadHelper.getInstance(c).downloadPhotoSuccess(i);
-                return;
+            } else {
+                NotificationUtils.sendDownloadPhotoSuccessNotification(c, entity);
             }
+            DatabaseHelper.getInstance(c).deleteDownloadEntity(missionId);
         }
     }
 
@@ -133,21 +135,17 @@ public class DownloadReceiver extends BroadcastReceiver {
                                         .getString(R.string.feedback_choose_wallpaper_app)));
     }
 
-    private boolean downloadCollectionSuccess(Context c, long missionId) {
-        for (int i = 0; i < DownloadHelper.getInstance(c).collectionIdList.size(); i ++) {
-            if (DownloadHelper.getInstance(c).collectionIdList.get(i) == missionId) {
-                if (Mysplash.getInstance() != null
-                        && Mysplash.getInstance().getTopActivity() != null) {
-                    NotificationUtils.showActionSnackbar(
-                            c.getString(R.string.feedback_download_collection_success),
-                            c.getString(R.string.check),
-                            Snackbar.LENGTH_LONG,
-                            new OnCheckCollectionListener(c, missionId));
-                }
-                return true;
-            }
+    private void downloadCollectionSuccess(Context c, long missionId) {
+        if (Mysplash.getInstance() != null
+                && Mysplash.getInstance().getTopActivity() != null) {
+            NotificationUtils.showActionSnackbar(
+                    c.getString(R.string.feedback_download_collection_success),
+                    c.getString(R.string.check),
+                    Snackbar.LENGTH_LONG,
+                    new OnCheckCollectionListener(c, missionId));
+        } else {
+            NotificationUtils.sendDownloadCollectionSuccessNotification(c, missionId);
         }
-        return false;
     }
 
     /** <br> interface. */

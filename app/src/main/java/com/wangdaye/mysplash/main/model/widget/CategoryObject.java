@@ -36,13 +36,14 @@ public class CategoryObject
 
     /** <br> life cycle. */
 
-    public CategoryObject(Context c, PhotoAdapter adapter, String order) {
+    public CategoryObject(Context c, PhotoAdapter adapter) {
         this.adapter = adapter;
         this.service = PhotoService.getService();
 
         RANDOM_TXT = c.getResources().getStringArray(R.array.photo_order_values)[3];
         this.photosCategory = Mysplash.CATEGORY_BUILDINGS_ID;
-        this.photosOrder = order.equals(RANDOM_TXT) ? RANDOM_TXT : PhotoApi.ORDER_BY_LATEST;
+        this.photosOrder = Mysplash.getInstance()
+                .getDefaultPhotoOrder().equals(RANDOM_TXT) ? RANDOM_TXT : PhotoApi.ORDER_BY_LATEST;
 
         this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
         this.pageList = new ArrayList<>();

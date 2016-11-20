@@ -1,10 +1,8 @@
 package com.wangdaye.mysplash.user.view.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -147,7 +145,7 @@ public class UserActivity extends MysplashActivity
         if (Mysplash.getInstance().isActivityInBackstage()) {
             super.onBackPressed();
         } else if (pagerManagePresenter.needPagerBackToTop()
-                && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
+                && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
@@ -212,8 +210,6 @@ public class UserActivity extends MysplashActivity
         if (init && browsablePresenter.isBrowsable()) {
             browsablePresenter.requestBrowsableData();
         } else {
-            SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
             User u = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
 
             this.container = (CoordinatorLayout) findViewById(R.id.activity_user_container);
@@ -266,7 +262,7 @@ public class UserActivity extends MysplashActivity
             title.setText(u.name);
 
             this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
-            initPages(sharedPreferences, u);
+            initPages(u);
 
             userProfileView.setUser(u);
             userProfileView.requestUserProfile(adapter);
@@ -279,15 +275,11 @@ public class UserActivity extends MysplashActivity
         }
     }
 
-    private void initPages(SharedPreferences sharedPreferences, User u) {
-        String defaultOrder = sharedPreferences.getString(
-                getString(R.string.key_default_photo_order),
-                getResources().getStringArray(R.array.photo_order_values)[0]);
-
+    private void initPages(User u) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new UserPhotosView(this, getBundle(), u, PhotosObject.PHOTOS_TYPE_PHOTOS, defaultOrder));
+        pageList.add(new UserPhotosView(this, getBundle(), u, PhotosObject.PHOTOS_TYPE_PHOTOS));
         pageList.add(new UserCollectionsView(this, u));
-        pageList.add(new UserPhotosView(this, getBundle(), u, PhotosObject.PHOTOS_TYPE_LIKES, defaultOrder));
+        pageList.add(new UserPhotosView(this, getBundle(), u, PhotosObject.PHOTOS_TYPE_LIKES));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }

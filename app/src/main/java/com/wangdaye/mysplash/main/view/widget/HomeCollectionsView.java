@@ -78,20 +78,20 @@ public class HomeCollectionsView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomeCollectionsView(Activity a, @Nullable Bundle bundle, String defaultType) {
+    public HomeCollectionsView(Activity a, @Nullable Bundle bundle) {
         super(a);
-        this.initialize(a, bundle, defaultType);
+        this.initialize(a, bundle);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle, String defaultType) {
+    private void initialize(Activity a, @Nullable Bundle bundle) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle, defaultType);
+        initModel(a, bundle);
         initPresenter();
         initView();
     }
@@ -151,7 +151,8 @@ public class HomeCollectionsView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle, String type) {
+    private void initModel(Activity a, @Nullable Bundle bundle) {
+        String type = Mysplash.getInstance().getDefaultCollectionType();
         if (bundle != null) {
             type = bundle.getString(KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE, type);
         }

@@ -3,7 +3,6 @@ package com.wangdaye.mysplash._common.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -22,36 +21,33 @@ import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
  * */
 
 public class BackToTopUtils {
-    // data
-    private String backValue;
-    private boolean notified;
 
-    /** <br> life cycle. */
+    /** <br> data. */
 
-    private BackToTopUtils(Context c) {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
-        backValue = sharedPreferences.getString(c.getString(R.string.key_back_to_top), "all");
-        notified = sharedPreferences.getBoolean(c.getString(R.string.key_notified_set_back_to_top), false);
-    }
-
-    public void changeBackValue(String newValue) {
-        backValue = newValue;
+    public static boolean isSetBackToTop(boolean home) {
+        if (home) {
+            return !Mysplash.getInstance().getBackToTopType().equals("none");
+        } else {
+            return Mysplash.getInstance().getBackToTopType().equals("all");
+        }
     }
 
     /** <br> UI. */
 
-    private void showSetBackToTopSnackbar() {
-        final Context c = Mysplash.getInstance().getTopActivity();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(c);
-        if (!notified) {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+    private static void showSetBackToTopSnackbar() {
+        if (!Mysplash.getInstance().isNotifiedSetBackToTop()) {
+            final Context c = Mysplash.getInstance().getTopActivity();
+            SharedPreferences.Editor editor = Mysplash.getInstance()
+                    .getSharedPreferences(
+                            Mysplash.PREFERENCE_BACK_TO_TOP,
+                            Mysplash.MODE_PRIVATE)
+                    .edit();
             editor.putBoolean(
                     c.getString(R.string.key_notified_set_back_to_top),
                     true);
             editor.apply();
 
-            notified = true;
+            Mysplash.getInstance().setNotifiedSetBackToTop();
 
             NotificationUtils.showActionSnackbar(
                     c.getString(R.string.feedback_notify_set_back_to_top),
@@ -75,8 +71,8 @@ public class BackToTopUtils {
         }
         recyclerView.smoothScrollToPosition(0);
 
-        if (!BackToTopUtils.getInstance(recyclerView.getContext()).isNotified()) {
-            BackToTopUtils.getInstance(recyclerView.getContext()).showSetBackToTopSnackbar();
+        if (!Mysplash.getInstance().isNotifiedSetBackToTop()) {
+            BackToTopUtils.showSetBackToTopSnackbar();
         }
     }
 
@@ -95,31 +91,6 @@ public class BackToTopUtils {
             topBar.startAnimation(topBarAnim);
             contentView.startAnimation(contentAnim);
         }
-    }
-
-    /** <br> data. */
-
-    public boolean isSetBackToTop(boolean home) {
-        if (home) {
-            return !backValue.equals("none");
-        } else {
-            return backValue.equals("all");
-        }
-    }
-
-    private boolean isNotified() {
-        return notified;
-    }
-
-    /** <br> singleton. */
-
-    private static BackToTopUtils instance;
-
-    public static synchronized BackToTopUtils getInstance(Context c) {
-        if (instance == null) {
-            instance = new BackToTopUtils(c);
-        }
-        return instance;
     }
 
     /** <br> inner class. */

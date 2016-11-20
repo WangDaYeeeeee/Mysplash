@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 
 import java.util.Locale;
 
@@ -18,7 +17,7 @@ public class LanguageUtils {
 
     public static void setLanguage(Context c) {
         String language = Mysplash.getInstance().getLanguage();
-        if (language.equals(c.getResources().getStringArray(R.array.language_values)[0])) {
+        if (language.equals("follow_system")) {
             return;
         }
         Resources resources = c.getResources();

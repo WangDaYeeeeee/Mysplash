@@ -77,6 +77,7 @@
 
     <string name="feedback_notify_restart">Riavvia.</string>
 
+    <string name="feedback_download_success">Fotografia correttamente.</string>
     <string name="feedback_download_photo_success">Fotografia scaricata correttamente.\nstorage/emulated/0/Pictures/Mysplash</string>
     <string name="feedback_download_photo_failed">Download fotografia fallito.</string>
     <string name="feedback_download_collection_success">Raccolta scaricata correttamente.\nstorage/emulated/0/Pictures/Mysplash</string>

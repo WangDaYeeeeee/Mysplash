@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Environment;
 import android.widget.Toast;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 import java.io.File;

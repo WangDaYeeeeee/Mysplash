@@ -121,7 +121,7 @@ public class CollectionActivity extends MysplashActivity
         if (Mysplash.getInstance().isActivityInBackstage()) {
             super.onBackPressed();
         } else if (photosView.needPagerBackToTop()
-                && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
+                && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);

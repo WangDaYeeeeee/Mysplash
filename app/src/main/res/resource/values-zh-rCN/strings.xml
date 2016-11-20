@@ -49,6 +49,7 @@
 
     <string name="feedback_notify_restart">重启后生效</string>
 
+    <string name="feedback_download_success">下载成功</string>
     <string name="feedback_download_photo_success">下载照片成功\nstorage/emulated/0/Pictures/Mysplash</string>
     <string name="feedback_download_photo_failed">下载照片失败</string>
     <string name="feedback_download_collection_success">下载收藏集成功\nstorage/emulated/0/Pictures/Mysplash</string>

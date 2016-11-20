@@ -8,6 +8,8 @@
     <TextView
         android:id="@+id/dialog_path_text"
         android:text="storage/emulated/0/Pictures/Mysplash"
+        android:layout_centerInParent="true"
+        android:lineSpacingMultiplier="1.3"
         android:layout_marginTop="@dimen/normal_margin"
         android:layout_marginBottom="@dimen/normal_margin"
         android:layout_marginLeft="@dimen/mini_icon_size"

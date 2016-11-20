@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash._common.utils.helper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
@@ -138,6 +139,13 @@ public class IntentHelper {
         Intent intent = new Intent(a, DownloadManageActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
+    }
+
+    public static void startDownloadManageActivityFromNotification(Context context) {
+        Intent manageActivity = new Intent(context, DownloadManageActivity.class);
+        manageActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        manageActivity.putExtra(DownloadManageActivity.EXTRA_NOTIFICATION, true);
+        context.startActivity(manageActivity);
     }
 
     public static void startSettingsActivity(Activity a) {

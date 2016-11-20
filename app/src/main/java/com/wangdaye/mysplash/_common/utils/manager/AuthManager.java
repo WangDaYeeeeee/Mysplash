@@ -40,7 +40,7 @@ public class AuthManager
     private String avatar_path;
     private boolean authorized;
 
-    private static final String PREFERENCE_NAME = "mysplash_authorize_manager";
+    private static final String PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER = "mysplash_authorize_manager";
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_FIRST_NAME = "first_name";
@@ -68,7 +68,7 @@ public class AuthManager
         updateVersion();
 
         SharedPreferences sharedPreferences = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE);
 
         this.listenerList = new ArrayList<>();
 
@@ -92,20 +92,20 @@ public class AuthManager
 
     private void updateVersion() {
         int versionNow = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE)
                 .getInt(KEY_VERSION, 0);
         int buildTypeNow = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE)
                 .getInt(KEY_BUILD_TYPE, BUILD_TYPE_RELEASE);
         String token = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE)
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE)
                 .getString(KEY_ACCESS_TOKEN, null);
 
         if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
                 && !TextUtils.isEmpty(token)) {
 
             SharedPreferences.Editor editor = Mysplash.getInstance()
-                    .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                    .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
             editor.putInt(KEY_VERSION, VERSION_CODE);
             editor.putInt(KEY_BUILD_TYPE, CORRECT_BUILD_TYPE);
             editor.putString(KEY_ACCESS_TOKEN, null);
@@ -180,7 +180,7 @@ public class AuthManager
 
     public void writeAccessToken(AccessToken token) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_ACCESS_TOKEN, token.access_token);
         editor.apply();
 
@@ -194,7 +194,7 @@ public class AuthManager
 
     public void writeUserInfo(Me me) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_USERNAME, me.username);
         editor.putString(KEY_FIRST_NAME, me.first_name);
         editor.putString(KEY_LAST_NAME, me.last_name);
@@ -214,7 +214,7 @@ public class AuthManager
 
     public void writeUserInfo(User user) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_USERNAME, user.username);
         editor.putString(KEY_FIRST_NAME, user.first_name);
         editor.putString(KEY_LAST_NAME, user.last_name);
@@ -233,7 +233,7 @@ public class AuthManager
         service.cancel();
 
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_ACCESS_TOKEN, null);
         editor.putString(KEY_USERNAME, null);
         editor.putString(KEY_FIRST_NAME, null);

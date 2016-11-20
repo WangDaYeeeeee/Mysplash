@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.5.3</string>
+    <string name="version_code">2.5.7</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -77,6 +77,7 @@
 
     <string name="feedback_notify_restart">Restart to work.</string>
 
+    <string name="feedback_download_success">Download success.</string>
     <string name="feedback_download_photo_success">Download photo success.\nstorage/emulated/0/Pictures/Mysplash</string>
     <string name="feedback_download_photo_failed">Download photo failed.</string>
     <string name="feedback_download_collection_success">Download collection success.\nstorage/emulated/0/Pictures/Mysplash</string>
@@ -222,15 +223,6 @@
     <string name="key_default_photo_order">default_photo_order</string>
     <string name="key_default_collection_type">default_collection_type</string>
     <string name="key_download_scale">download_scale</string>
-
-    <string name="key_category_total_new_count">category_total_new_count</string>
-    <string name="key_category_total_feature_count">category_total_feature_count</string>
-    <string name="key_category_buildings_count">category_buildings_count</string>
-    <string name="key_category_food_drink_count">category_buildings_count</string>
-    <string name="key_category_nature_count">category_nature_count</string>
-    <string name="key_category_objects_count">category_objects_count</string>
-    <string name="key_category_people_count">category_people_count</string>
-    <string name="key_category_technology_count">category_technology_count</string>
 
     <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 

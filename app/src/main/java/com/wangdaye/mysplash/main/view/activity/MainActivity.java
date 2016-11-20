@@ -24,6 +24,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
@@ -172,19 +173,19 @@ public class MainActivity extends MysplashActivity
             Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
             if (f instanceof HomeFragment
                     && ((HomeFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
+                    && BackToTopUtils.isSetBackToTop(true)) {
                 ((HomeFragment) f).backToTop();
             } else if (f instanceof SearchFragment
                     && ((SearchFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.getInstance(this).isSetBackToTop(true)) {
+                    && BackToTopUtils.isSetBackToTop(true)) {
                 ((SearchFragment) f).backToTop();
             } else if (f instanceof CategoryFragment
                     && ((CategoryFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
+                    && BackToTopUtils.isSetBackToTop(false)) {
                 ((CategoryFragment) f).backToTop();
             } else if (f instanceof MultiFilterFragment
                     && ((MultiFilterFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.getInstance(this).isSetBackToTop(false)) {
+                    && BackToTopUtils.isSetBackToTop(false)) {
                 ((MultiFilterFragment) f).backToTop();
             } else {
                 finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
@@ -381,6 +382,8 @@ public class MainActivity extends MysplashActivity
             return ((HomeFragment) f).getSnackbarContainer();
         } else if (f instanceof SearchFragment) {
             return ((SearchFragment) f).getSnackbarContainer();
+        } else if (f instanceof MultiFilterFragment) {
+            return ((MultiFilterFragment) f).getSnackbarContainer();
         } else if (f instanceof CategoryFragment) {
             return ((CategoryFragment) f).getSnackbarContainer();
         } else {
