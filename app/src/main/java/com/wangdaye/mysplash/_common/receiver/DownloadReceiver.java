@@ -14,7 +14,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 

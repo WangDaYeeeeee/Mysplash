@@ -25,7 +25,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 
@@ -201,6 +201,10 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     public int getRealItemCount() {
         return itemList.size();
+    }
+
+    public List<Collection> getItemList() {
+        return itemList;
     }
 
     /** <br> inner class. */

@@ -28,7 +28,7 @@ public class MessageManageImplementor
     }
 
     @Override
-    public void responseMessage(MysplashActivity a, int what, Object o) {
+    public void responseMessage(final MysplashActivity a, int what, Object o) {
         switch (what) {
             case R.id.action_change_theme:
                 ((MainActivity) a).changeTheme();

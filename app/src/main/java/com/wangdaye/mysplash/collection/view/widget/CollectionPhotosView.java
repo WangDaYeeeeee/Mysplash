@@ -30,7 +30,7 @@ import com.wangdaye.mysplash.collection.model.widget.ScrollObject;
 import com.wangdaye.mysplash.collection.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.collection.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.collection.presenter.widget.ScrollImplementor;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;

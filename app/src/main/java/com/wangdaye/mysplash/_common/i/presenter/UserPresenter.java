@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 
 /**
  * User presenter.

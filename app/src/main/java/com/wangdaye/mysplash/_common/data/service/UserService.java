@@ -3,8 +3,8 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.UserApi;
-import com.wangdaye.mysplash._common.data.entity.Me;
-import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
 import okhttp3.OkHttpClient;

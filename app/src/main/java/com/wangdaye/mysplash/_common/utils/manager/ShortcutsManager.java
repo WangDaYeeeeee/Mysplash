@@ -3,7 +3,6 @@ package com.wangdaye.mysplash._common.utils.manager;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
@@ -21,29 +20,12 @@ import java.util.List;
  * */
 
 public class ShortcutsManager {
-    // data
-    private static final String PREFERENCE_NAME = "mysplash_shortcuts_manager";
-    private static final String KEY_HAS_AUTH = "has_auth";
-    private static final String KEY_HAS_PUBLISHED = "has_published";
 
     /** <br> utils. */
 
-    @RequiresApi(api = 25)
-    public static void checkAndPublishShortcuts(Context c) {
-        if (needRefresh(c)) {
-            refreshShortcuts(c);
-        }
-    }
-
-    private static boolean needRefresh(Context c) {
-        SharedPreferences sharedPreferences = c.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        return !sharedPreferences.getBoolean(KEY_HAS_PUBLISHED, false)
-                || AuthManager.getInstance().isAuthorized() != sharedPreferences.getBoolean(KEY_HAS_AUTH, false);
-    }
-
     @TargetApi(25)
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
-    private static void refreshShortcuts(Context c) {
+    public static void refreshShortcuts(Context c) {
         ShortcutManager shortcutManager = c.getSystemService(ShortcutManager.class);
 
         List<ShortcutInfo> shortcutList = new ArrayList<>();

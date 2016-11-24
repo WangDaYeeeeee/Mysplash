@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.entity.SearchCollectionsResult;
-import com.wangdaye.mysplash._common.data.entity.SearchPhotosResult;
-import com.wangdaye.mysplash._common.data.entity.SearchUsersResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.SearchCollectionsResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.SearchPhotosResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.SearchUsersResult;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

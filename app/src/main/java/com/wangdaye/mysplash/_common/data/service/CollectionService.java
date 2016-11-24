@@ -3,10 +3,8 @@ package com.wangdaye.mysplash._common.data.service;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.CollectionApi;
-import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.Me;
-import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
 import java.util.List;

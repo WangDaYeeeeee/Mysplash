@@ -21,14 +21,32 @@
         android:id="@+id/dialog_select_collection_selectorContainer"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="320dp">
+        android:layout_height="320dp"
+        android:background="?attr/root_color">
 
-        <TextView
-            android:text="@string/feedback_add_to_collection"
-            android:textStyle="bold"
-            android:textSize="@dimen/design_title_text_size"
-            android:layout_margin="@dimen/normal_margin"
-            style="@style/title_text" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="@string/feedback_add_to_collection"
+                android:textStyle="bold"
+                android:textSize="@dimen/design_title_text_size"
+                android:layout_margin="@dimen/normal_margin"
+                style="@style/title_text" />
+
+            <ImageButton
+                android:id="@+id/dialog_select_collection_selectorRefreshBtn"
+                android:layout_width="@dimen/mini_icon_size"
+                android:layout_height="@dimen/mini_icon_size"
+                android:layout_margin="@dimen/normal_margin"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                tools:src="@drawable/ic_refresh_light"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+        </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/dialog_select_collection_selectorRecyclerView"
@@ -62,7 +80,7 @@
             android:textSize="@dimen/content_text_size"
             android:textColor="?attr/content_color"
             android:background="@android:color/transparent"
-            android:singleLine="true"
+            android:maxLines="1"
             android:maxLength="30"
             android:layout_marginLeft="@dimen/normal_margin"
             android:layout_marginRight="@dimen/normal_margin"

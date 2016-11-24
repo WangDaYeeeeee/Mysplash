@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.me.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -18,8 +20,8 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.Me;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -252,6 +254,14 @@ public class MeActivity extends MysplashActivity
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
 
+        ImageButton submitBtn = (ImageButton) findViewById(R.id.activity_me_submitBtn);
+        if (Mysplash.getInstance().isLightTheme()) {
+            submitBtn.setImageResource(R.drawable.ic_plus_circle_light);
+        } else {
+            submitBtn.setImageResource(R.drawable.ic_plus_circle_dark);
+        }
+        submitBtn.setOnClickListener(this);
+
         this.avatar = (CircleImageView) findViewById(R.id.activity_me_avatar);
         this.title = (TextView) findViewById(R.id.activity_me_title);
         this.meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
@@ -375,6 +385,11 @@ public class MeActivity extends MysplashActivity
                     startActivity(new Intent(this, MainActivity.class));
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
+                break;
+
+            case R.id.activity_me_submitBtn:
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://unsplash.com/submit"));
+                startActivity(intent);
                 break;
         }
     }

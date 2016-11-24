@@ -24,18 +24,18 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.LikePhotoResult;
-import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
-import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionPhotoDialog;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -54,7 +54,7 @@ import retrofit2.Response;
  * */
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
-        implements SelectCollectionPhotoDialog.OnCollectionsChangedListener,
+        implements SelectCollectionDialog.OnCollectionsChangedListener,
         DeleteCollectionPhotoDialog.OnDeleteCollectionListener {
     // widget
     private Context a;
@@ -375,7 +375,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             Intent i = new Intent(a, LoginActivity.class);
                             a.startActivity(i);
                         } else {
-                            SelectCollectionPhotoDialog dialog = new SelectCollectionPhotoDialog();
+                            SelectCollectionDialog dialog = new SelectCollectionDialog();
                             dialog.setPhoto(itemList.get(getAdapterPosition()));
                             if (own) {
                                 dialog.setOnCollectionsChangedListener(PhotoAdapter.this);

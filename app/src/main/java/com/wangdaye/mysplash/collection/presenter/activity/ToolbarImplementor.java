@@ -4,7 +4,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
@@ -35,7 +35,7 @@ public class ToolbarImplementor
             case R.id.action_edit:
                 UpdateCollectionDialog dialog = new UpdateCollectionDialog();
                 dialog.setCollection(((CollectionActivity) a).getCollection());
-                dialog.setOnCollectionChangedListener((UpdateCollectionDialog.OnCollectionChangedListener) a);
+                dialog.setOnCollectionChangedListener((CollectionActivity) a);
                 dialog.show(a.getFragmentManager(), null);
                 break;
 

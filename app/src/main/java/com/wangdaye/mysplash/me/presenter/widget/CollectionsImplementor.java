@@ -5,7 +5,7 @@ import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -189,6 +189,9 @@ public class CollectionsImplementor
                                 c.getString(R.string.feedback_is_over),
                                 Snackbar.LENGTH_SHORT);
                     }
+                    AuthManager.getInstance().getCollectionsManager().getCollectionList().clear();
+                    AuthManager.getInstance().getCollectionsManager().addCollections(model.getAdapter().getItemList());
+                    AuthManager.getInstance().getCollectionsManager().setLoadFinish(true);
                 }
                 view.requestCollectionsSuccess();
             } else {

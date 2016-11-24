@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.collection.model.activity;
 
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.model.EditResultModel;
 
 /**

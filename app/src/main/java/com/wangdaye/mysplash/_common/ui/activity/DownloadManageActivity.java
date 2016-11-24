@@ -13,12 +13,12 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.DownloadMission;
+import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash._common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;

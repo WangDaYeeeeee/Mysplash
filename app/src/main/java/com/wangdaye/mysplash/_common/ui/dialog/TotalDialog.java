@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Total;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Total;
 import com.wangdaye.mysplash._common.data.service.StatusService;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;

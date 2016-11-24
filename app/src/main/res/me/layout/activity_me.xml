@@ -58,24 +58,44 @@
                         app:civ_fill_color="@color/colorTextGrey"
                         tools:ignore="RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/activity_me_title"
-                        android:text="..."
-                        android:textStyle="bold"
-                        android:textSize="@dimen/large_title_text_size"
-                        android:textColor="?attr/title_color"
+                    <RelativeLayout
+                        android:id="@+id/activity_me_titleBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/activity_me_avatar"
                         android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginLeft="@dimen/normal_margin"
                         android:layout_marginRight="@dimen/normal_margin"
-                        android:layout_centerHorizontal="true"
-                        style="@style/title_text"
-                        tools:ignore="HardcodedText,RtlHardcoded" />
+                        android:layout_centerHorizontal="true">
+
+                        <TextView
+                            android:id="@+id/activity_me_title"
+                            android:text="..."
+                            android:textStyle="bold"
+                            android:textSize="@dimen/large_title_text_size"
+                            android:textColor="?attr/title_color"
+                            android:layout_marginRight="@dimen/little_margin"
+                            android:layout_centerVertical="true"
+                            style="@style/title_text"
+                            tools:ignore="HardcodedText,RtlHardcoded" />
+
+                        <ImageButton
+                            android:id="@+id/activity_me_submitBtn"
+                            android:layout_width="@dimen/mini_icon_size"
+                            android:layout_height="@dimen/mini_icon_size"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:layout_toRightOf="@id/activity_me_title"
+                            android:layout_centerVertical="true"
+                            tools:src="@drawable/ic_plus_circle_light"
+                            tools:ignore="ContentDescription,RtlHardcoded" />
+
+                    </RelativeLayout>
 
                     <com.wangdaye.mysplash.me.view.widget.MeProfileView
                         android:id="@+id/activity_me_profileView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/activity_me_title" />
+                        android:layout_below="@id/activity_me_titleBar" />
 
                 </RelativeLayout>
 

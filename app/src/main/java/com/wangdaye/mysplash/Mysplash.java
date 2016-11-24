@@ -89,13 +89,14 @@ public class Mysplash extends Application {
 
         instance = this;
         activityList = new ArrayList<>();
+
         lightTheme = themePreferences.getBoolean(getString(R.string.key_light_theme), true);
         language = defaultSharedPreferences.getString(getString(R.string.key_language), "follow_system");
         defaultPhotoOrder = defaultSharedPreferences.getString(getString(R.string.key_default_photo_order), "latest");
         defaultCollectionType = defaultSharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
         downloadScale = defaultSharedPreferences.getString(getString(R.string.key_download_scale), "compact");
 
-        backToTopType = backToTopPreferences.getString(getString(R.string.key_back_to_top), "null");
+        backToTopType = backToTopPreferences.getString(getString(R.string.key_back_to_top), "all");
         notifiedSetBackToTop = backToTopPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
 
         activityInBackstage = false;

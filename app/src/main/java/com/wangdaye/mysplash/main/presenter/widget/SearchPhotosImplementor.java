@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.SearchPhotosResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.SearchPhotosResult;
 import com.wangdaye.mysplash._common.data.service.SearchService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;

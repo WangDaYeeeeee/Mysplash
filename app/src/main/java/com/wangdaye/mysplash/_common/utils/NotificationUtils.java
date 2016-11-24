@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 
 /**

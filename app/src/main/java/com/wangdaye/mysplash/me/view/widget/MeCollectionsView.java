@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -136,14 +136,26 @@ public class MeCollectionsView extends FrameLayout
     }
 
     public void removeCollection(Collection c) {
-        collectionsPresenter.getAdapter().removeItem(c);
+        switch (loadPresenter.getLoadState()) {
+            case LoadObject.LOADING_STATE:
+                collectionsPresenter.initRefresh(getContext());
+                break;
+
+            case LoadObject.NORMAL_STATE:
+                collectionsPresenter.getAdapter().removeItem(c);
+                break;
+        }
     }
 
     public void changeCollection(Collection c) {
-        if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
-            collectionsPresenter.initRefresh(getContext());
-        } else {
-            collectionsPresenter.getAdapter().changeItem(c);
+        switch (loadPresenter.getLoadState()) {
+            case LoadObject.LOADING_STATE:
+                collectionsPresenter.initRefresh(getContext());
+                break;
+
+            case LoadObject.NORMAL_STATE:
+                collectionsPresenter.getAdapter().changeItem(c);
+                break;
         }
     }
 

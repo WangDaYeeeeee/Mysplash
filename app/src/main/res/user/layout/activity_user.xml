@@ -64,6 +64,7 @@
                         android:textColor="?attr/title_color"
                         android:layout_below="@id/activity_user_avatar"
                         android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginLeft="@dimen/normal_margin"
                         android:layout_marginRight="@dimen/normal_margin"
                         android:layout_centerHorizontal="true"
                         style="@style/title_text"

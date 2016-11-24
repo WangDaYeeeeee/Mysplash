@@ -6,9 +6,9 @@ import android.os.Build;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.entity.AccessToken;
-import com.wangdaye.mysplash._common.data.entity.Me;
-import com.wangdaye.mysplash._common.data.entity.User;
+import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
@@ -40,6 +40,8 @@ public class AuthManager
     private String avatar_path;
     private boolean authorized;
 
+    private UserCollectionsManager collectionsManager;
+
     private static final String PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER = "mysplash_authorize_manager";
     private static final String KEY_ACCESS_TOKEN = "access_token";
     private static final String KEY_USERNAME = "username";
@@ -65,10 +67,10 @@ public class AuthManager
     /** <br> life cycle. */
 
     private AuthManager() {
-        updateVersion();
-
         SharedPreferences sharedPreferences = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE);
+
+        updateVersion(sharedPreferences);
 
         this.listenerList = new ArrayList<>();
 
@@ -82,6 +84,7 @@ public class AuthManager
             this.email = sharedPreferences.getString(KEY_EMAIL, null);
             this.avatar_path = sharedPreferences.getString(KEY_AVATAR_PATH, null);
         }
+        this.collectionsManager = new UserCollectionsManager();
 
         this.me = null;
         this.user = null;
@@ -90,22 +93,15 @@ public class AuthManager
         this.state = FREEDOM_STATE;
     }
 
-    private void updateVersion() {
-        int versionNow = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE)
-                .getInt(KEY_VERSION, 0);
-        int buildTypeNow = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE)
-                .getInt(KEY_BUILD_TYPE, BUILD_TYPE_RELEASE);
-        String token = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE)
-                .getString(KEY_ACCESS_TOKEN, null);
+    private void updateVersion(SharedPreferences sharedPreferences) {
+        int versionNow = sharedPreferences.getInt(KEY_VERSION, 0);
+        int buildTypeNow = sharedPreferences.getInt(KEY_BUILD_TYPE, BUILD_TYPE_RELEASE);
+        String token = sharedPreferences.getString(KEY_ACCESS_TOKEN, null);
 
         if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
                 && !TextUtils.isEmpty(token)) {
 
-            SharedPreferences.Editor editor = Mysplash.getInstance()
-                    .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(KEY_VERSION, VERSION_CODE);
             editor.putInt(KEY_BUILD_TYPE, CORRECT_BUILD_TYPE);
             editor.putString(KEY_ACCESS_TOKEN, null);
@@ -174,6 +170,10 @@ public class AuthManager
 
     public int getState() {
         return state;
+    }
+
+    public UserCollectionsManager getCollectionsManager() {
+        return collectionsManager;
     }
 
     // setter.
@@ -249,6 +249,7 @@ public class AuthManager
         this.email = null;
         this.avatar_path = null;
         this.authorized = false;
+        this.collectionsManager.clearCollections();
 
         this.me = null;
         this.user = null;
@@ -259,7 +260,7 @@ public class AuthManager
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            ShortcutsManager.checkAndPublishShortcuts(Mysplash.getInstance());
+            ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
         }
     }
 
@@ -319,7 +320,7 @@ public class AuthManager
             state = FREEDOM_STATE;
             writeUserInfo(response.body());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                ShortcutsManager.checkAndPublishShortcuts(Mysplash.getInstance());
+                ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
             }
         } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             RateLimitDialog dialog = new RateLimitDialog();

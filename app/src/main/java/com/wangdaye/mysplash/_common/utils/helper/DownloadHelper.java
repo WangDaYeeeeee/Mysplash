@@ -9,9 +9,9 @@ import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Collection;
-import com.wangdaye.mysplash._common.data.entity.Photo;
-import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.utils.FileUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 

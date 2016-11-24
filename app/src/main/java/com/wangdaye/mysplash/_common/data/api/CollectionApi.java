@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash._common.data.api;
 
-import com.wangdaye.mysplash._common.data.entity.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 
 import java.util.List;
 

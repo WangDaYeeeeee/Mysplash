@@ -3,9 +3,9 @@ package com.wangdaye.mysplash._common.utils.helper;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import com.wangdaye.mysplash._common.data.entity.DaoMaster;
-import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntity;
-import com.wangdaye.mysplash._common.data.entity.DownloadMissionEntityDao;
+import com.wangdaye.mysplash._common.data.entity.database.DaoMaster;
+import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntityDao;
 
 import java.util.List;
 

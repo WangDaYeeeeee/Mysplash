@@ -40,7 +40,7 @@ import com.wangdaye.mysplash.collection.presenter.activity.EditResultImplementor
 import com.wangdaye.mysplash.collection.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
-import com.wangdaye.mysplash._common.data.entity.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
@@ -143,8 +143,7 @@ public class CollectionActivity extends MysplashActivity
     public void finishActivity(int dir) {
         Intent result = new Intent();
         result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, editResultPresenter.getEditKey() == null);
-        result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, (Collection) editResultPresenter.getEditKey());
-        result.putExtra(KEY_COLLECTION_ACTIVITY_COLLECTION, getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
+        result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         setResult(RESULT_OK, result);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         finish();

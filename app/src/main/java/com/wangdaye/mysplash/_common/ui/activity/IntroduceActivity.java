@@ -58,12 +58,12 @@ public class IntroduceActivity extends MysplashActivity
     private static final int MULTI_FILTER_NEW_SEARCH_VERSION = 1;
     private static final int NEW_VERSION = MULTI_FILTER_NEW_SEARCH_VERSION;
 
-    private static final String PREFERENCE_NAME = "mysplash_introduce";
+    public static final String PREFERENCE_NAME = "mysplash_introduce";
     private static final String KEY_INTRODUCE_VERSION = "introduce_version";
 
     /** <br> life cycle. */
 
-    public static void checkAndStartIntroduce(Activity a) {
+    public static void checkAndStartIntroduce(final Activity a) {
         SharedPreferences sharedPreferences = a.getSharedPreferences(
                 PREFERENCE_NAME,
                 Context.MODE_PRIVATE);

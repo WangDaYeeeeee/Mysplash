@@ -24,7 +24,6 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
@@ -104,39 +103,23 @@ public class MainActivity extends MysplashActivity
         if (!isStarted()) {
             setStarted();
             initView();
+            buildFragmentStack();
 
-            List<Integer> idList;
-            if (getBundle() != null) {
-                idList = getBundle().getIntegerArrayList(KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST);
-                if (idList == null) {
-                    idList = new ArrayList<>();
-                }
-                if (idList.size() == 0) {
-                    idList.add(R.id.action_home);
-                }
-            } else {
-                idList = new ArrayList<>();
-                idList.add(R.id.action_home);
-                if (getIntent() != null && !TextUtils.isEmpty(getIntent().getAction())
-                        && getIntent().getAction().equals("com.wangdaye.mysplash.Search")) {
-                    idList.add(R.id.action_search);
-                }
-            }
-            fragmentManagePresenter.changeFragment(this, getBundle(), idList.get(0));
-            for (int i = 1; i < idList.size(); i ++) {
-                fragmentManagePresenter.addFragment(this, getBundle(), idList.get(i));
-            }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
+                    if (AuthManager.getInstance().isAuthorized()
+                            && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
+                        AuthManager.getInstance().refreshPersonalProfile();
+                    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                        ShortcutsManager.refreshShortcuts(MainActivity.this);
+                    }
+                    IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
+                    handler.obtainMessage(1).sendToTarget();
 
-            IntroduceActivity.checkAndStartIntroduce(this);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                ShortcutsManager.checkAndPublishShortcuts(this);
-            }
-
-            AuthManager.getInstance().addOnWriteDataListener(this);
-            if (AuthManager.getInstance().isAuthorized()
-                    && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
-                AuthManager.getInstance().refreshPersonalProfile();
-            }
+                }
+            }).start();
         }
     }
 
@@ -286,11 +269,30 @@ public class MainActivity extends MysplashActivity
 
         this.navButton = (ImageButton) header.findViewById(R.id.container_nav_header_button);
         navButton.setOnClickListener(this);
+    }
 
-        drawMeAvatar();
-        drawMeTitle();
-        drawMeSubtitle();
-        drawMeButton();
+    private void buildFragmentStack() {
+        List<Integer> idList;
+        if (getBundle() != null) {
+            idList = getBundle().getIntegerArrayList(KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST);
+            if (idList == null) {
+                idList = new ArrayList<>();
+            }
+            if (idList.size() == 0) {
+                idList.add(R.id.action_home);
+            }
+        } else {
+            idList = new ArrayList<>();
+            idList.add(R.id.action_home);
+            if (getIntent() != null && !TextUtils.isEmpty(getIntent().getAction())
+                    && getIntent().getAction().equals("com.wangdaye.mysplash.Search")) {
+                idList.add(R.id.action_search);
+            }
+        }
+        fragmentManagePresenter.changeFragment(this, getBundle(), idList.get(0));
+        for (int i = 1; i < idList.size(); i ++) {
+            fragmentManagePresenter.addFragment(this, getBundle(), idList.get(i));
+        }
     }
 
     // interface.
@@ -395,7 +397,14 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(this, message.what, message.obj);
+        if (message.what == 1) {
+            drawMeAvatar();
+            drawMeTitle();
+            drawMeSubtitle();
+            drawMeButton();
+        } else {
+            messageManagePresenter.responseMessage(this, message.what, message.obj);
+        }
     }
 
     // view.

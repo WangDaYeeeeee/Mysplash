@@ -6,7 +6,7 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterPresenter;
