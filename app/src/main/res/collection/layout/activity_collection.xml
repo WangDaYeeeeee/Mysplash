@@ -25,7 +25,7 @@
             android:background="?attr/root_color"
             tools:ignore="UnusedAttribute">
 
-            <com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout
+            <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
                 android:id="@+id/activity_collection_appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
 
                 </RelativeLayout>
 
-            </com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout>
+            </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
             <com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView
                 android:id="@+id/activity_collection_photosView"

@@ -39,7 +39,7 @@ import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 
 /**

@@ -44,32 +44,17 @@ public class ToolbarImplementor
                 }
                 break;
 
-            case R.id.action_open_portfolio:
-                if (AuthManager.getInstance().isAuthorized()
-                        && AuthManager.getInstance().getMe() != null) {
-                    String url = AuthManager.getInstance().getMe().portfolio_url;
-                    if (!TextUtils.isEmpty(url)) {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        a.startActivity(i);
-                    } else {
-                        NotificationUtils.showSnackbar(
-                                a.getString(R.string.feedback_portfolio_is_null),
-                                Snackbar.LENGTH_SHORT);
-                    }
-                }
-                break;
-
-            case R.id.action_share:
-                if (AuthManager.getInstance().isAuthorized()
-                        && AuthManager.getInstance().getUser() != null) {
-                    ShareUtils.shareUser(AuthManager.getInstance().getUser());
-                }
-                break;
-
             case R.id.action_filter:
                 if (AuthManager.getInstance().isAuthorized()
                         && AuthManager.getInstance().getMe() != null) {
-                    ((MeActivity) a).showPopup();
+                    ((MeActivity) a).showPopup(true);
+                }
+                break;
+
+            case R.id.action_menu:
+                if (AuthManager.getInstance().isAuthorized()
+                        && AuthManager.getInstance().getMe() != null) {
+                    ((MeActivity) a).showPopup(false);
                 }
                 break;
         }

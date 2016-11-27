@@ -26,7 +26,6 @@
     <string name="by">来自</string>
     <string name="on">拍摄于</string>
     <string name="now">现在</string>
-    <string name="open_download_link">访问下载页</string>
 
     <!-- 反馈. -->
     <string name="feedback_click_retry">点击重试</string>
@@ -156,10 +155,12 @@
 
     <string name="action_clear_text">清空内容</string>
 
+    <string name="action_open_download_link">访问下载页</string>
     <string name="action_share">分享</string>
     <string name="action_menu">菜单</string>
 
     <string name="action_open_portfolio">个人主页</string>
+    <string name="action_submit">提交照片</string>
 
     <string name="action_edit">编辑</string>
     <string name="action_download">下载</string>

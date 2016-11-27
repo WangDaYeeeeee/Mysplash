@@ -32,7 +32,6 @@
     <string name="by">By</string>
     <string name="on">On</string>
     <string name="now">Now</string>
-    <string name="open_download_link">Open Download Web Page</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
@@ -182,10 +181,12 @@
 
     <string name="action_clear_text">Clear text</string>
 
+    <string name="action_open_download_link">Open Download Web Page</string>
     <string name="action_share">Share</string>
     <string name="action_menu">Menu</string>
 
     <string name="action_open_portfolio">Open Portfolio Link</string>
+    <string name="action_submit">Submit Photo</string>
 
     <string name="action_edit">Edit</string>
     <string name="action_download">Download</string>

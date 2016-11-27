@@ -38,7 +38,7 @@ import com.wangdaye.mysplash._common.i.view.CategoryView;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash.main.model.widget.CategoryObject;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.presenter.widget.CategoryImplementor;

@@ -29,7 +29,7 @@ import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.i.view.CollectionsView;

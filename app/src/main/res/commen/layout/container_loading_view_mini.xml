@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView
+<com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollRelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_loading_view_mini_loadingContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:fillViewport="true">
+    android:background="?attr/root_color">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/root_color">
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/container_loading_view_mini_progressView"
+        android:layout_width="@dimen/circular_progress_height"
+        android:layout_height="@dimen/circular_progress_height"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="24dp"
+        app:cpv_animAutostart="true"
+        app:cpv_color="?attr/content_color"
+        app:cpv_indeterminate="true" />
 
-        <com.github.rahatarmanahmed.cpv.CircularProgressView
-            android:id="@+id/container_loading_view_mini_progressView"
-            android:layout_width="@dimen/circular_progress_height"
-            android:layout_height="@dimen/circular_progress_height"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="24dp"
-            app:cpv_animAutostart="true"
-            app:cpv_color="?attr/content_color"
-            app:cpv_indeterminate="true" />
+    <Button
+        android:id="@+id/container_loading_view_mini_retryButton"
+        android:text="@string/feedback_click_retry"
+        android:textStyle="bold"
+        android:textColor="?attr/content_color"
+        android:layout_margin="24dp"
+        android:layout_centerHorizontal="true"
+        style="@style/material_button" />
 
-        <Button
-            android:id="@+id/container_loading_view_mini_retryButton"
-            android:text="@string/feedback_click_retry"
-            android:textStyle="bold"
-            android:textColor="?attr/content_color"
-            android:layout_margin="24dp"
-            android:layout_centerHorizontal="true"
-            style="@style/material_button" />
-
-    </RelativeLayout>
-
-</android.support.v4.widget.NestedScrollView>
+</com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollRelativeLayout>

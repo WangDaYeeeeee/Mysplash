@@ -16,7 +16,7 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;

@@ -168,10 +168,12 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                     break;
 
                 case R.id.item_download_retryBtn:
-                    DownloadHelper.getInstance(c).restartMission(c, getAdapterPosition());
-                    itemList.add(itemList.get(getAdapterPosition()));
+                    DownloadMissionEntity entity =DownloadHelper.getInstance(c)
+                            .restartMission(c, getAdapterPosition());
+                    DownloadMission mission = new DownloadMission(entity);
                     itemList.remove(getAdapterPosition());
-                    notifyDataSetChanged();
+                    itemList.add(mission);
+                    notifyItemChanged(getAdapterPosition());
                     break;
             }
         }

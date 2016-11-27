@@ -30,7 +30,7 @@ import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.user.model.widget.CollectionsObject;

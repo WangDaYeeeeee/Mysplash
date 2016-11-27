@@ -49,7 +49,7 @@ import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.SearchCollectionsImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.SearchPhotosImplementor;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.main.presenter.widget.SearchUsersImplementor;
 
 import java.util.ArrayList;

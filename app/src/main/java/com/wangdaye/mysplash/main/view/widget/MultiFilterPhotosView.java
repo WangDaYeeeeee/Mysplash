@@ -35,7 +35,7 @@ import com.wangdaye.mysplash._common.i.view.MultiFilterView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshLayout.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;

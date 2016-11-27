@@ -44,7 +44,7 @@
 
         <TextView
             android:id="@+id/popup_photo_menu_downloadPageTxt"
-            android:text="@string/open_download_link"
+            android:text="@string/action_open_download_link"
             android:layout_marginRight="@dimen/normal_margin"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/popup_photo_menu_downloadPageIcon"

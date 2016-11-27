@@ -26,7 +26,7 @@
             android:background="?attr/root_color"
             tools:ignore="UnusedAttribute">
 
-            <com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout
+            <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
                 android:id="@+id/activity_me_appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -58,44 +58,26 @@
                         app:civ_fill_color="@color/colorTextGrey"
                         tools:ignore="RtlHardcoded" />
 
-                    <RelativeLayout
-                        android:id="@+id/activity_me_titleBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <TextView
+                        android:id="@+id/activity_me_title"
+                        android:text="..."
+                        android:textStyle="bold"
+                        android:textSize="@dimen/large_title_text_size"
+                        android:textColor="?attr/title_color"
+                        android:maxLines="1"
                         android:layout_below="@id/activity_me_avatar"
                         android:layout_marginTop="@dimen/normal_margin"
                         android:layout_marginLeft="@dimen/normal_margin"
                         android:layout_marginRight="@dimen/normal_margin"
-                        android:layout_centerHorizontal="true">
-
-                        <TextView
-                            android:id="@+id/activity_me_title"
-                            android:text="..."
-                            android:textStyle="bold"
-                            android:textSize="@dimen/large_title_text_size"
-                            android:textColor="?attr/title_color"
-                            android:layout_marginRight="@dimen/little_margin"
-                            android:layout_centerVertical="true"
-                            style="@style/title_text"
-                            tools:ignore="HardcodedText,RtlHardcoded" />
-
-                        <ImageButton
-                            android:id="@+id/activity_me_submitBtn"
-                            android:layout_width="@dimen/mini_icon_size"
-                            android:layout_height="@dimen/mini_icon_size"
-                            android:background="?attr/selectableItemBackgroundBorderless"
-                            android:layout_toRightOf="@id/activity_me_title"
-                            android:layout_centerVertical="true"
-                            tools:src="@drawable/ic_plus_circle_light"
-                            tools:ignore="ContentDescription,RtlHardcoded" />
-
-                    </RelativeLayout>
+                        android:layout_centerHorizontal="true"
+                        style="@style/title_text"
+                        tools:ignore="HardcodedText,RtlHardcoded" />
 
                     <com.wangdaye.mysplash.me.view.widget.MeProfileView
                         android:id="@+id/activity_me_profileView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/activity_me_titleBar" />
+                        android:layout_below="@id/activity_me_title" />
 
                 </RelativeLayout>
 
@@ -108,7 +90,7 @@
                     app:tabSelectedTextColor="?attr/content_color"
                     app:tabTextColor="?attr/subtitle_color" />
 
-            </com.wangdaye.mysplash._common.ui.widget.NestedScrollAppBarLayout>
+            </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/activity_me_viewPager"

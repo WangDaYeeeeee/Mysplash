@@ -21,6 +21,7 @@ import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash._common.utils.widget.FlagThread;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -48,6 +49,12 @@ public class DownloadManageActivity extends MysplashActivity
     private DownloadAdapter adapter;
     public static final String EXTRA_NOTIFICATION = "notification";
 
+    private final int CHECK_START = 0;
+    private final int CHECK_AND_UPDATE = 1;
+    private final int CHECK_FINISH = -1;
+
+    private final String KEY_DOWNLOAD_MANAGE_ACTIVITY_MISSION_ID = "download_manage_activity_mission_id";
+
     /** <br> life cycle. */
 
     @Override
@@ -68,14 +75,9 @@ public class DownloadManageActivity extends MysplashActivity
             recyclerView.setAdapter(adapter);
         }
 
-        this.handler = new SafeHandler<>(this);
         this.timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.obtainMessage(1).sendToTarget();
-            }
-        }, 500, 500);
+        this.handler = new SafeHandler<>(this);
+        handler.obtainMessage(CHECK_START).sendToTarget();
     }
 
     @Override
@@ -87,6 +89,7 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     protected void onStop() {
         super.onStop();
+        thread.setRunning(false);
         timer.cancel();
         handler.removeCallbacksAndMessages(null);
     }
@@ -275,39 +278,91 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     public void handleMessage(Message message) {
         switch (message.what) {
-            case 1:
-                Cursor cursor;
-                long missionId;
+            case CHECK_START:
+                thread.setRunning(true);
+                thread.start();
+                break;
+
+            case CHECK_FINISH:
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        handler.obtainMessage(CHECK_START).sendToTarget();
+                    }
+                }, 500);
+                break;
+
+            case CHECK_AND_UPDATE:
+                long id = message.getData().getLong(KEY_DOWNLOAD_MANAGE_ACTIVITY_MISSION_ID, -1);
+                if (id == -1) {
+                    break;
+                }
+                int index = -1;
                 for (int i = 0; i < adapter.getRealItemCount(); i ++) {
-                    missionId = adapter.itemList.get(i).entity.missionId;
-                    cursor = DownloadHelper.getInstance(this).getMissionCursor(missionId);
-                    if (cursor != null) {
-                        if (DownloadHelper.isMissionFailed(cursor)) {
-                            if (adapter.itemList.get(i).process != -1) {
-                                adapter.itemList.get(i).process = -1;
-                                makeRecyclerItemDrawFailed(i);
-                            }
-                        } else if (DownloadHelper.isMissionSuccess(cursor)) {
-                            if (adapter.itemList.get(i).process != 100) {
-                                adapter.itemList.get(i).process = 100;
-                                makeRecyclerItemDrawSuccess(i);
-                                i --;
-                            }
-                        } else {
-                            float percent = DownloadHelper.getMissionProcess(cursor);
-                            if (adapter.itemList.get(i).process != percent) {
-                                adapter.itemList.get(i).process = percent;
-                                makeRecyclerItemDrawProcess(i, adapter.itemList.get(i), cursor);
-                            }
+                    if (adapter.itemList.get(i).entity.missionId == id) {
+                        index = i;
+                        break;
+                    }
+                }
+                if (index == -1) {
+                    break;
+                }
+                Cursor cursor = message.obj == null ? null : (Cursor) message.obj;
+                if (cursor != null) {
+                    if (DownloadHelper.isMissionFailed(cursor)) {
+                        if (adapter.itemList.get(index).process != -1) {
+                            adapter.itemList.get(index).process = -1;
+                            makeRecyclerItemDrawFailed(index);
+                        }
+                    } else if (DownloadHelper.isMissionSuccess(cursor)) {
+                        if (adapter.itemList.get(index).process != 100) {
+                            adapter.itemList.get(index).process = 100;
+                            makeRecyclerItemDrawSuccess(index);
                         }
                     } else {
-                        if (adapter.itemList.get(i).process != 0) {
-                            adapter.itemList.get(i).process = 0;
-                            makeRecyclerItemDrawProcess(i, adapter.itemList.get(i), null);
+                        float percent = DownloadHelper.getMissionProcess(cursor);
+                        if (adapter.itemList.get(index).process != percent) {
+                            adapter.itemList.get(index).process = percent;
+                            makeRecyclerItemDrawProcess(index, adapter.itemList.get(index), cursor);
                         }
+                    }
+                } else {
+                    if (adapter.itemList.get(index).process != 0) {
+                        adapter.itemList.get(index).process = 0;
+                        makeRecyclerItemDrawProcess(index, adapter.itemList.get(index), null);
                     }
                 }
                 break;
         }
     }
+
+    /** <br> thread. */
+
+    private FlagThread thread = new FlagThread(new Runnable() {
+        @Override
+        public void run() {
+            Cursor cursor;
+            long missionIds[] = new long[adapter.getRealItemCount()];
+            for (int i = 0; i < adapter.getItemCount(); i ++) {
+                missionIds[i] = adapter.itemList.get(i).entity.missionId;
+            }
+            for (long id : missionIds) {
+                if (!thread.isRunning()) {
+                    break;
+                }
+                cursor = DownloadHelper.getInstance(DownloadManageActivity.this).getMissionCursor(id);
+                Bundle bundle = new Bundle();
+                bundle.putLong(KEY_DOWNLOAD_MANAGE_ACTIVITY_MISSION_ID, id);
+
+                Message msg = new Message();
+                msg.what = CHECK_AND_UPDATE;
+                msg.obj = cursor;
+                msg.setData(bundle);
+
+                msg.setTarget(handler);
+                msg.sendToTarget();
+            }
+            handler.obtainMessage(CHECK_FINISH).sendToTarget();
+        }
+    });
 }

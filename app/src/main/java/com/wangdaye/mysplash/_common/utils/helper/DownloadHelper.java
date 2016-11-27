@@ -61,7 +61,7 @@ public class DownloadHelper {
         }
     }
 
-    private void addMission(Context c, DownloadMissionEntity entity) {
+    private long addMission(Context c, DownloadMissionEntity entity) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
                 .setTitle(entity.photoId)
                 .setDescription(c.getString(R.string.feedback_downloading))
@@ -76,13 +76,17 @@ public class DownloadHelper {
         NotificationUtils.showSnackbar(
                 c.getString(R.string.feedback_download_start),
                 Snackbar.LENGTH_SHORT);
+
+        return entity.missionId;
     }
 
-    public void restartMission(Context c, long missionId) {
+    @Nullable
+    public DownloadMissionEntity restartMission(Context c, long missionId) {
         DownloadMissionEntity entity = removeMissionAndGetMission(c, missionId);
         if (entity != null) {
-            addMission(c, entity);
+            entity.missionId = addMission(c, entity);
         }
+        return entity;
     }
 
     public void removeMission(Context c, long id) {

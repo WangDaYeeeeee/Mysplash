@@ -50,7 +50,6 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     private void initialize() {
         SWIPE_TRIGGER = (float) (getResources().getDisplayMetrics().heightPixels / 5.0);
-        // this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     /** <br> touch. */
