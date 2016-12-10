@@ -37,6 +37,15 @@ public class UserCollectionsManager {
         collectionList.add(0, c);
     }
 
+    public void updateCollection(Collection collection) {
+        for (int i = 0; i < collectionList.size(); i ++) {
+            if (collection.id == collectionList.get(i).id) {
+                collectionList.set(i, collection);
+                return;
+            }
+        }
+    }
+
     public void clearCollections() {
         collectionList.clear();
         setLoadFinish(false);

@@ -33,7 +33,7 @@ import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -141,10 +141,8 @@ public class UserActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
-        if (Mysplash.getInstance().isActivityInBackstage()) {
-            super.onBackPressed();
-        } else if (pagerManagePresenter.needPagerBackToTop()
+    public void handleBackPressed() {
+        if (pagerManagePresenter.needPagerBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
@@ -190,6 +188,11 @@ public class UserActivity extends MysplashActivity
                     break;
             }
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> presenter. */
@@ -394,13 +397,6 @@ public class UserActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         swipeBackManagePresenter.swipeBackFinish(this, dir);
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // view.

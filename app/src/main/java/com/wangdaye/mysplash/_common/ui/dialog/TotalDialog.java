@@ -3,8 +3,8 @@ package com.wangdaye.mysplash._common.ui.dialog;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +16,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Total;
 import com.wangdaye.mysplash._common.data.service.StatusService;
+import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
@@ -26,9 +27,10 @@ import retrofit2.Response;
  * Total dialog.
  * */
 
-public class TotalDialog extends DialogFragment
+public class TotalDialog extends MysplashDialogFragment
         implements StatusService.OnRequestTotalListener {
     // widget
+    private CoordinatorLayout container;
     private CircularProgressView progress;
     private LinearLayout dataContainer;
     private TextView photoNum;
@@ -46,7 +48,7 @@ public class TotalDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Mysplash.getInstance().setActivityInBackstage(true);
+        super.onCreateDialog(savedInstanceState);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_total, null, false);
         initWidget(view);
         service.requestTotal(this);
@@ -58,15 +60,21 @@ public class TotalDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().setActivityInBackstage(false);
         if (service != null) {
             service.cancel();
         }
     }
 
+    @Override
+    public View getSnackbarContainer() {
+        return container;
+    }
+
     /** <br> UI. */
 
     private void initWidget(View v) {
+        this.container = (CoordinatorLayout) v.findViewById(R.id.dialog_total_container);
+
         state = LOADING_STATE;
         this.service = StatusService.getService();
 

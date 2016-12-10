@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.popup.MeMenuPopupWindow;
 import com.wangdaye.mysplash._common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;

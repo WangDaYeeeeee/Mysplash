@@ -40,7 +40,7 @@ import com.wangdaye.mysplash._common.utils.widget.FlagThread;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
@@ -133,12 +133,10 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else if (Mysplash.getInstance().isActivityInBackstage()) {
-            super.onBackPressed();
         } else {
             int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
             Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
@@ -146,10 +144,12 @@ public class MainActivity extends MysplashActivity
                     && ((HomeFragment) f).needPagerBackToTop()
                     && BackToTopUtils.isSetBackToTop(true)) {
                 ((HomeFragment) f).backToTop();
-            } else if (f instanceof SearchFragment
-                    && ((SearchFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.isSetBackToTop(true)) {
-                ((SearchFragment) f).backToTop();
+            } else if (f instanceof SearchFragment) {
+                if (((SearchFragment) f).needPagerBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
+                    ((SearchFragment) f).backToTop();
+                } else {
+                    fragmentManagePresenter.popFragment(this);
+                }
             } else if (f instanceof CategoryFragment
                     && ((CategoryFragment) f).needPagerBackToTop()
                     && BackToTopUtils.isSetBackToTop(false)) {
@@ -186,6 +186,23 @@ public class MainActivity extends MysplashActivity
     @Override
     public void finishActivity(int dir) {
         finish();
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
+        Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
+        if (f instanceof HomeFragment) {
+            return ((HomeFragment) f).getSnackbarContainer();
+        } else if (f instanceof SearchFragment) {
+            return ((SearchFragment) f).getSnackbarContainer();
+        } else if (f instanceof MultiFilterFragment) {
+            return ((MultiFilterFragment) f).getSnackbarContainer();
+        } else if (f instanceof CategoryFragment) {
+            return ((CategoryFragment) f).getSnackbarContainer();
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -360,25 +377,6 @@ public class MainActivity extends MysplashActivity
     @Override
     public void onLogout() {
         meManagePresenter.responseLogout();
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
-        Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
-        if (f instanceof HomeFragment) {
-            return ((HomeFragment) f).getSnackbarContainer();
-        } else if (f instanceof SearchFragment) {
-            return ((SearchFragment) f).getSnackbarContainer();
-        } else if (f instanceof MultiFilterFragment) {
-            return ((MultiFilterFragment) f).getSnackbarContainer();
-        } else if (f instanceof CategoryFragment) {
-            return ((CategoryFragment) f).getSnackbarContainer();
-        } else {
-            return null;
-        }
     }
 
     // handler.

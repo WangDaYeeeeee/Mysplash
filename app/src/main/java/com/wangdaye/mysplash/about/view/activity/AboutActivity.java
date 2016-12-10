@@ -8,7 +8,7 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
@@ -77,8 +77,13 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
@@ -119,12 +124,5 @@ public class AboutActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishActivity(dir);
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 }

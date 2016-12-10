@@ -16,11 +16,10 @@ import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash._common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
@@ -34,9 +33,9 @@ import com.wangdaye.mysplash._common.utils.ValueUtils;
  * Category fragment.
  * */
 
-public class CategoryFragment extends SaveInstanceFragment
+public class CategoryFragment extends MysplashFragment
         implements PopupManageView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, NotificationUtils.SnackbarContainer {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener {
     // model.
     private CategoryManageModel categoryManageModel;
 
@@ -68,7 +67,12 @@ public class CategoryFragment extends SaveInstanceFragment
     }
 
     @Override
-    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+    public View getSnackbarContainer() {
+        return container;
+    }
+
+    @Override
+    public MysplashFragment readBundle(@Nullable Bundle savedInstanceState) {
         setBundle(savedInstanceState);
         return this;
     }
@@ -149,7 +153,7 @@ public class CategoryFragment extends SaveInstanceFragment
         return photosView.needPagerBackToTop();
     }
 
-    public SaveInstanceFragment setCategory(int category) {
+    public MysplashFragment setCategory(int category) {
         initModel(category);
         return this;
     }
@@ -176,13 +180,6 @@ public class CategoryFragment extends SaveInstanceFragment
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // view.

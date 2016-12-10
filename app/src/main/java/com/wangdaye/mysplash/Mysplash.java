@@ -4,7 +4,7 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -25,7 +25,6 @@ public class Mysplash extends Application {
     private String downloadScale;
     private String backToTopType;
     private boolean notifiedSetBackToTop;
-    private boolean activityInBackstage;
 
     // Unsplash data.
     public static final String APPLICATION_ID = "7a96a77d719e9967f935da53784d6a3eb58a4fb174dda25e89ec69059e46c815";
@@ -98,8 +97,6 @@ public class Mysplash extends Application {
 
         backToTopType = backToTopPreferences.getString(getString(R.string.key_back_to_top), "all");
         notifiedSetBackToTop = backToTopPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
-
-        activityInBackstage = false;
     }
 
     /** <br> data. */
@@ -196,14 +193,6 @@ public class Mysplash extends Application {
 
     public void setNotifiedSetBackToTop() {
         this.notifiedSetBackToTop = true;
-    }
-
-    public void setActivityInBackstage(boolean showing) {
-        this.activityInBackstage = showing;
-    }
-
-    public boolean isActivityInBackstage() {
-        return activityInBackstage;
     }
 
     /** <br> singleton. */

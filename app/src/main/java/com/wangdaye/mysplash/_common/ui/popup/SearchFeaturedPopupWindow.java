@@ -11,18 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Search featured popup window.
  * */
 
-public class SearchFeaturedPopupWindow extends PopupWindow
+public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
     // widget
     private OnSearchFeaturedChangedListener listener;
@@ -35,13 +35,6 @@ public class SearchFeaturedPopupWindow extends PopupWindow
     public SearchFeaturedPopupWindow(Context c, View anchor, String valueNow) {
         super(c);
         this.initialize(c, anchor, valueNow);
-        Mysplash.getInstance().setActivityInBackstage(true);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                Mysplash.getInstance().setActivityInBackstage(false);
-            }
-        });
     }
 
     @SuppressLint("InflateParams")

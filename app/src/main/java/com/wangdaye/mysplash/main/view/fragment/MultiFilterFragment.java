@@ -28,12 +28,11 @@ import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.model.fragment.MultiFilterBarObject;
@@ -49,10 +48,10 @@ import java.util.TimerTask;
  * Multi filter fragment.
  * */
 
-public class MultiFilterFragment extends SaveInstanceFragment
+public class MultiFilterFragment extends MysplashFragment
         implements MultiFilterBarView, PopupManageView, MessageManageView,
         View.OnClickListener, EditText.OnEditorActionListener, SafeHandler.HandlerContainer,
-        MultiFilterPhotosView.OnMultiFilterDataInputInterface, NotificationUtils.SnackbarContainer {
+        MultiFilterPhotosView.OnMultiFilterDataInputInterface {
     // model.
     private MultiFilterBarModel multiFilterBarModel;
 
@@ -98,7 +97,12 @@ public class MultiFilterFragment extends SaveInstanceFragment
     }
 
     @Override
-    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+    public View getSnackbarContainer() {
+        return container;
+    }
+
+    @Override
+    public MysplashFragment readBundle(@Nullable Bundle savedInstanceState) {
         setBundle(savedInstanceState);
         return this;
     }
@@ -340,13 +344,6 @@ public class MultiFilterFragment extends SaveInstanceFragment
     @Override
     public boolean onFeaturedInput() {
         return multiFilterBarPresenter.isFeatured();
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // handler container.

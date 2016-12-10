@@ -134,6 +134,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                         })
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
+                holder.background.setTransitionName(itemList.get(position).id + "-background");
             }
             holder.background.setBackgroundColor(
                     ColorUtils.calcCardBackgroundColor(

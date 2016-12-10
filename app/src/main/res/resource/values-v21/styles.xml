@@ -111,6 +111,22 @@
         <item name="android:windowSharedElementReturnTransition">@transition/me_activity_shared_return</item>
     </style>
 
+    <!-- collection activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Collection" parent="MysplashTheme_light.Translucent">
+        <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/collection_activity_shared_return</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.Collection" parent="MysplashTheme_dark.Translucent">
+        <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/collection_activity_shared_return</item>
+    </style>
+
     <!-- settings activity. -->
 
     <style name="MysplashTheme_light.Translucent.Settings" parent="MysplashTheme_light.Translucent">

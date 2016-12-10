@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.main.presenter.fragment;
 
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 
 /**
  * Message manage implementor.

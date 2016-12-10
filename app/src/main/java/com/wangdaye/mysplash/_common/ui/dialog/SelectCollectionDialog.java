@@ -3,9 +3,9 @@ package com.wangdaye.mysplash._common.ui.dialog;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
+import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
@@ -42,11 +43,13 @@ import retrofit2.Response;
  * Select collection dialog.
  * */
 
-public class SelectCollectionDialog extends DialogFragment
+public class SelectCollectionDialog extends MysplashDialogFragment
         implements View.OnClickListener, AuthManager.OnAuthDataChangedListener,
         CollectionMiniAdapter.OnCollectionResponseListener, CollectionService.OnRequestACollectionListener,
         CollectionService.OnChangeCollectionPhotoListener {
     // widget
+    private CoordinatorLayout container;
+
     private CircularProgressView progressView;
 
     private LinearLayout selectorContainer;
@@ -77,7 +80,7 @@ public class SelectCollectionDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Mysplash.getInstance().setActivityInBackstage(true);
+        super.onCreateDialog(savedInstanceState);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_select_collection, null, false);
         initData();
         initWidget(view);
@@ -94,15 +97,21 @@ public class SelectCollectionDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().setActivityInBackstage(false);
         AuthManager.getInstance().removeOnWriteDataListener(this);
         service.cancel();
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
 
     private void initWidget(View v) {
         setCancelable(true);
+
+        this.container = (CoordinatorLayout) v.findViewById(R.id.dialog_select_collection_container);
 
         this.progressView = (CircularProgressView) v.findViewById(R.id.dialog_select_collection_progressView);
         progressView.setVisibility(View.GONE);
@@ -440,13 +449,14 @@ public class SelectCollectionDialog extends DialogFragment
         notifyCreateFailed();
     }
 
-    // on add photo to collection listener.
+    // on change collection photo listener.
 
     @Override
     public void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call,
                                      Response<ChangeCollectionPhotoResult> response) {
         if (response.isSuccessful()) {
             if (listener != null) {
+                AuthManager.getInstance().getCollectionsManager().updateCollection(response.body().collection);
                 listener.onAddPhotoToCollection(response.body().collection, response.body().user);
             }
             dismiss();

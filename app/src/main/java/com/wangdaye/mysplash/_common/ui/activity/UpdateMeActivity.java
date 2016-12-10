@@ -21,6 +21,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.service.UserService;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -145,7 +146,7 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         if (state == INPUT_STATE && backPressed) {
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else if (state == INPUT_STATE) {
@@ -161,6 +162,11 @@ public class UpdateMeActivity extends MysplashActivity
                 }
             }, 2000);
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
@@ -395,13 +401,6 @@ public class UpdateMeActivity extends MysplashActivity
         NotificationUtils.showSnackbar(
                 getString(R.string.feedback_update_profile_failed),
                 Snackbar.LENGTH_SHORT);
-    }
-
-    // snackbar container
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // handler.

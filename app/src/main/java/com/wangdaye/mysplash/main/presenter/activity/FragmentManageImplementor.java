@@ -7,8 +7,8 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
 import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
@@ -32,12 +32,12 @@ public class FragmentManageImplementor
     }
 
     @Override
-    public List<SaveInstanceFragment> getFragmentList() {
+    public List<MysplashFragment> getFragmentList() {
         return model.getFragmentList();
     }
 
     @Override
-    public SaveInstanceFragment getTopFragment() {
+    public MysplashFragment getTopFragment() {
         return model.getFragmentFromList(model.getFragmentCount() - 1);
     }
 
@@ -61,7 +61,7 @@ public class FragmentManageImplementor
             }
         }
 
-        SaveInstanceFragment f = buildFragmentByCode(saveInstanceState, code);
+        MysplashFragment f = buildFragmentByCode(saveInstanceState, code);
         model.getFragmentList().clear();
         model.getIdList().clear();
         model.addFragmentToList(f, code);
@@ -74,7 +74,7 @@ public class FragmentManageImplementor
 
     @Override
     public void addFragment(MysplashActivity a, Bundle saveInstanceState, int code) {
-        SaveInstanceFragment f = buildFragmentByCode(saveInstanceState, code);
+        MysplashFragment f = buildFragmentByCode(saveInstanceState, code);
         model.addFragmentToList(f, code);
 
         a.getSupportFragmentManager()
@@ -100,7 +100,7 @@ public class FragmentManageImplementor
 
     /** <br> utils. */
 
-    private SaveInstanceFragment buildFragmentByCode(Bundle saveInstanceState, int code) {
+    private MysplashFragment buildFragmentByCode(Bundle saveInstanceState, int code) {
         switch (code) {
             case R.id.action_home:
                 return new HomeFragment()

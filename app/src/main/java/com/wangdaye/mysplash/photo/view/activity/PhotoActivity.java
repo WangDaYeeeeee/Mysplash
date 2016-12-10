@@ -25,7 +25,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
@@ -48,7 +48,6 @@ import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomTouchView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
@@ -71,8 +70,7 @@ import com.wangdaye.mysplash.user.model.widget.ScrollObject;
 
 public class PhotoActivity extends MysplashActivity
         implements PhotoInfoView, ScrollView, PopupManageView, BrowsableView,
-        View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        NotificationUtils.SnackbarContainer {
+        View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener {
     // model.
     private PhotoInfoModel photoInfoModel;
     private DownloadModel downloadModel;
@@ -118,7 +116,7 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
@@ -169,6 +167,11 @@ public class PhotoActivity extends MysplashActivity
                     break;
             }
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> presenter. */
@@ -447,13 +450,6 @@ public class PhotoActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishActivity(dir);
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // view.

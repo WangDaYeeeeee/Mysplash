@@ -204,7 +204,11 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                     if (getAdapterPosition() == 0 && listener != null) {
                         listener.onCreateCollection();
                     } else if (listener != null) {
-                        listener.onAddToCollection(AuthManager.getInstance().getCollectionsManager().getCollectionList().get(getAdapterPosition() - 1).id);
+                        listener.onAddToCollection(
+                                AuthManager.getInstance()
+                                        .getCollectionsManager()
+                                        .getCollectionList()
+                                        .get(getAdapterPosition() - 1).id);
                     }
                     break;
             }

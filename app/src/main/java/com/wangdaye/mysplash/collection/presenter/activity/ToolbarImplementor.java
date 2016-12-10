@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;

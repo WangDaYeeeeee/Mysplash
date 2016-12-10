@@ -20,7 +20,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;

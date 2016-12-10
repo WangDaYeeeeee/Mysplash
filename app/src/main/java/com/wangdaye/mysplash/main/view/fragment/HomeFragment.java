@@ -17,11 +17,10 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
@@ -43,10 +42,9 @@ import java.util.List;
  * Home fragment.
  * */
 
-public class HomeFragment extends SaveInstanceFragment
+public class HomeFragment extends MysplashFragment
         implements PopupManageView, PagerManageView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
-        NotificationUtils.SnackbarContainer {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener {
     // model.
     private PagerManageModel pagerManageModel;
 
@@ -87,7 +85,12 @@ public class HomeFragment extends SaveInstanceFragment
     }
 
     @Override
-    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+    public View getSnackbarContainer() {
+        return container;
+    }
+
+    @Override
+    public MysplashFragment readBundle(@Nullable Bundle savedInstanceState) {
         setBundle(savedInstanceState);
         return this;
     }
@@ -240,13 +243,6 @@ public class HomeFragment extends SaveInstanceFragment
     @Override
     public void onPageScrollStateChanged(int state) {
         // do nothing.
-    }
-
-    // snackbar container;
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // view.

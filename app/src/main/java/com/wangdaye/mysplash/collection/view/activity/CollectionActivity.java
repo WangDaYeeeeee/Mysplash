@@ -42,7 +42,7 @@ import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -110,17 +110,15 @@ public class CollectionActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent_Collection);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Collection);
         }
     }
 
     @Override
-    public void onBackPressed() {
-        if (Mysplash.getInstance().isActivityInBackstage()) {
-            super.onBackPressed();
-        } else if (photosView.needPagerBackToTop()
+    public void handleBackPressed() {
+        if (photosView.needPagerBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
@@ -156,6 +154,11 @@ public class CollectionActivity extends MysplashActivity
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> presenter. */
@@ -338,13 +341,6 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public void onDeleteCollection(Collection c) {
         editResultPresenter.deleteSomething(c);
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // view.

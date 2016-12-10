@@ -14,6 +14,7 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -39,6 +40,7 @@ public class DownloadManageActivity extends MysplashActivity
         SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
     // widget
     private SafeHandler<DownloadManageActivity> handler;
+    private FlagThread thread;
     private Timer timer;
 
     private CoordinatorLayout container;
@@ -81,9 +83,8 @@ public class DownloadManageActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    public void handleBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
@@ -125,6 +126,11 @@ public class DownloadManageActivity extends MysplashActivity
                 overridePendingTransition(0, R.anim.activity_slide_out_bottom);
                 break;
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
@@ -266,19 +272,13 @@ public class DownloadManageActivity extends MysplashActivity
         finishActivity(dir);
     }
 
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
-    }
-
     // handler.
 
     @Override
     public void handleMessage(Message message) {
         switch (message.what) {
             case CHECK_START:
+                thread = new FlagThread(new CheckDownloadsRunnable());
                 thread.setRunning(true);
                 thread.start();
                 break;
@@ -338,7 +338,8 @@ public class DownloadManageActivity extends MysplashActivity
 
     /** <br> thread. */
 
-    private FlagThread thread = new FlagThread(new Runnable() {
+    private class CheckDownloadsRunnable implements Runnable {
+
         @Override
         public void run() {
             Cursor cursor;
@@ -364,5 +365,5 @@ public class DownloadManageActivity extends MysplashActivity
             }
             handler.obtainMessage(CHECK_FINISH).sendToTarget();
         }
-    });
+    }
 }

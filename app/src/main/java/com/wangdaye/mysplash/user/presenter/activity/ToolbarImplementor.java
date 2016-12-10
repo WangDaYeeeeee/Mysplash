@@ -7,7 +7,7 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
@@ -40,7 +40,7 @@ public class ToolbarImplementor
                 String url = activity.getUserPortfolio();
                 if (!TextUtils.isEmpty(url)) {
                     Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    a.startActivity(i);
+                    activity.startActivity(i);
                 } else {
                     Toast.makeText(
                             activity,

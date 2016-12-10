@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.model.activity;
 
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class FragmentManageObject
         implements FragmentManageModel {
     // data
-    private List<SaveInstanceFragment> fragmentList;
+    private List<MysplashFragment> fragmentList;
     private List<Integer> idList;
 
     /** <br> life cycle. */
@@ -26,7 +26,7 @@ public class FragmentManageObject
     /** <br> model. */
 
     @Override
-    public List<SaveInstanceFragment> getFragmentList() {
+    public List<MysplashFragment> getFragmentList() {
         return fragmentList;
     }
 
@@ -36,7 +36,7 @@ public class FragmentManageObject
     }
 
     @Override
-    public SaveInstanceFragment getFragmentFromList(int position) {
+    public MysplashFragment getFragmentFromList(int position) {
         return fragmentList.get(position);
     }
 
@@ -46,7 +46,7 @@ public class FragmentManageObject
     }
 
     @Override
-    public void addFragmentToList(SaveInstanceFragment f, int id) {
+    public void addFragmentToList(MysplashFragment f, int id) {
         fragmentList.add(f);
         idList.add(id);
     }

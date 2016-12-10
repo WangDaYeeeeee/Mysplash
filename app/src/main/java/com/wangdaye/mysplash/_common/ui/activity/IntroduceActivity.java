@@ -22,6 +22,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
@@ -137,7 +138,7 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         if (backPressed) {
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else {
@@ -153,6 +154,11 @@ public class IntroduceActivity extends MysplashActivity
                 }
             }, 2000);
         }
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
@@ -350,13 +356,6 @@ public class IntroduceActivity extends MysplashActivity
     @Override
     public void onPageScrollStateChanged(int state) {
         // do nothing.
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // handler.

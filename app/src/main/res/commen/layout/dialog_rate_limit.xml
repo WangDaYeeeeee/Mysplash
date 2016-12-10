@@ -1,35 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_rate_limit_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/root_color">
 
-    <TextView
-        android:id="@+id/dialog_rate_limit_title"
-        android:text="@string/feedback_overload"
-        android:textStyle="bold"
-        android:textColor="@color/colorAccentRed"
-        android:textSize="@dimen/design_title_text_size"
-        android:layout_margin="@dimen/normal_margin"
-        style="@style/title_text" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/dialog_rate_limit_content"
-        android:text="@string/feedback_exceed_rate_limit"
-        android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginBottom="@dimen/normal_margin"
-        android:layout_marginLeft="@dimen/mini_icon_size"
-        android:layout_marginRight="@dimen/mini_icon_size"
-        android:layout_below="@id/dialog_rate_limit_title"
-        style="@style/content_text" />
+        <TextView
+            android:id="@+id/dialog_rate_limit_title"
+            android:text="@string/feedback_overload"
+            android:textStyle="bold"
+            android:textColor="@color/colorAccentRed"
+            android:textSize="@dimen/design_title_text_size"
+            android:layout_margin="@dimen/normal_margin"
+            style="@style/title_text" />
 
-    <Button
-        android:id="@+id/dialog_rate_limit_button"
-        android:text="@string/enter"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/dialog_rate_limit_content"
-        style="@style/material_button"
-        tools:ignore="RtlHardcoded" />
+        <TextView
+            android:id="@+id/dialog_rate_limit_content"
+            android:text="@string/feedback_exceed_rate_limit"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_marginLeft="@dimen/mini_icon_size"
+            android:layout_marginRight="@dimen/mini_icon_size"
+            android:layout_below="@id/dialog_rate_limit_title"
+            style="@style/content_text" />
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/dialog_rate_limit_button"
+            android:text="@string/enter"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/dialog_rate_limit_content"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -74,6 +74,12 @@
 
     <style name="MysplashTheme_dark.Translucent.Me" parent="MysplashTheme_dark.Translucent" />
 
+    <!-- collection activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Collection" parent="MysplashTheme_light.Translucent" />
+
+    <style name="MysplashTheme_dark.Translucent.Collection" parent="MysplashTheme_dark.Translucent" />
+
     <!-- settings activity. -->
 
     <style name="MysplashTheme_light.Translucent.Settings" parent="MysplashTheme_light.Translucent">

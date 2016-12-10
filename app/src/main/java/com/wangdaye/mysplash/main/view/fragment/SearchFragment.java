@@ -26,12 +26,11 @@ import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.SearchBarView;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
@@ -52,10 +51,10 @@ import java.util.TimerTask;
  * Search Fragment.
  * */
 
-public class SearchFragment extends SaveInstanceFragment
+public class SearchFragment extends MysplashFragment
         implements SearchBarView, MessageManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
-        NotificationUtils.SnackbarContainer, ViewPager.OnPageChangeListener, SafeHandler.HandlerContainer {
+        ViewPager.OnPageChangeListener, SafeHandler.HandlerContainer {
     // model.
     private PagerManageModel pagerManageModel;
 
@@ -102,7 +101,12 @@ public class SearchFragment extends SaveInstanceFragment
     }
 
     @Override
-    public SaveInstanceFragment readBundle(@Nullable Bundle savedInstanceState) {
+    public View getSnackbarContainer() {
+        return container;
+    }
+
+    @Override
+    public MysplashFragment readBundle(@Nullable Bundle savedInstanceState) {
         setBundle(savedInstanceState);
         return this;
     }
@@ -271,13 +275,6 @@ public class SearchFragment extends SaveInstanceFragment
     @Override
     public void onPageScrollStateChanged(int state) {
         // do nothing.
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 
     // handler.

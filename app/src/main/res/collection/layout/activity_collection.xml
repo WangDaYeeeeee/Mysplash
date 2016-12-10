@@ -23,6 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="?attr/root_color"
+            android:transitionName="@string/transition_collection_background"
             tools:ignore="UnusedAttribute">
 
             <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout

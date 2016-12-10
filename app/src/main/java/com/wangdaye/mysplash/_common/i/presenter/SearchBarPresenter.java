@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.presenter;
 
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 
 /**
  * Search bar presenter.

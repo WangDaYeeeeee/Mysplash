@@ -21,6 +21,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -113,8 +114,13 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
@@ -273,12 +279,5 @@ public class LoginActivity extends MysplashActivity
                 getString(R.string.feedback_request_token_failed),
                 Snackbar.LENGTH_SHORT);
         setState(NORMAL_STATE);
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 }

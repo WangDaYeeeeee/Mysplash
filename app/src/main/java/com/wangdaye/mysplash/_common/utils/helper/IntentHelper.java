@@ -64,11 +64,21 @@ public class IntentHelper {
     public static void startCollectionActivity(Activity a, View background, Collection c) {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
-        ActivityOptionsCompat options = ActivityOptionsCompat
-                .makeScaleUpAnimation(
-                        background,
-                        (int) background.getX(), (int) background.getY(),
-                        background.getMeasuredWidth(), background.getMeasuredHeight());
+
+        ActivityOptionsCompat options;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            options = ActivityOptionsCompat
+                    .makeScaleUpAnimation(
+                            background,
+                            (int) background.getX(), (int) background.getY(),
+                            background.getMeasuredWidth(), background.getMeasuredHeight());
+        } else {
+            options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(
+                            a,
+                            Pair.create(background, a.getString(R.string.transition_collection_background)));
+        }
+
         if (AuthManager.getInstance().getUsername() != null
                 &&
                 AuthManager.getInstance()

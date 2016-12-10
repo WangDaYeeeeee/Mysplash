@@ -2,8 +2,8 @@ package com.wangdaye.mysplash._common.i.presenter;
 
 import android.os.Bundle;
 
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.SaveInstanceFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
 
 import java.util.List;
 
@@ -13,8 +13,8 @@ import java.util.List;
 
 public interface FragmentManagePresenter {
 
-    List<SaveInstanceFragment> getFragmentList();
-    SaveInstanceFragment getTopFragment();
+    List<MysplashFragment> getFragmentList();
+    MysplashFragment getTopFragment();
 
     List<Integer> getIdList();
     void clearIdList();

@@ -33,7 +33,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialog;
+import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
 import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
@@ -55,7 +55,7 @@ import retrofit2.Response;
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         implements SelectCollectionDialog.OnCollectionsChangedListener,
-        DeleteCollectionPhotoDialog.OnDeleteCollectionListener {
+        DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener {
     // widget
     private Context a;
     private List<Photo> itemList;
@@ -359,7 +359,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
                 case R.id.item_photo_deleteButton:
                     if (a instanceof CollectionActivity) {
-                        DeleteCollectionPhotoDialog dialog = new DeleteCollectionPhotoDialog();
+                        DeleteCollectionPhotoDialogFragment dialog = new DeleteCollectionPhotoDialogFragment();
                         dialog.setDeleteInfo(
                                 ((CollectionActivity) a).getCollection(),
                                 itemList.get(getAdapterPosition()),

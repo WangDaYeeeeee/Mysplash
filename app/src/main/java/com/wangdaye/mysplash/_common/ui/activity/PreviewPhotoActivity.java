@@ -13,16 +13,16 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 /**
  * Photo preview activity.
  * */
 
 public class PreviewPhotoActivity extends MysplashActivity
-        implements View.OnClickListener, NotificationUtils.SnackbarContainer {
+        implements View.OnClickListener {
     // widget
     private CoordinatorLayout container;
     private LinearLayout widgetContainer;
@@ -53,7 +53,7 @@ public class PreviewPhotoActivity extends MysplashActivity
     }
 
     @Override
-    public void onBackPressed() {
+    public void handleBackPressed() {
         finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
@@ -89,6 +89,11 @@ public class PreviewPhotoActivity extends MysplashActivity
     public void finishActivity(int dir) {
         finish();
         overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> view. */
@@ -189,12 +194,5 @@ public class PreviewPhotoActivity extends MysplashActivity
                 }
                 break;
         }
-    }
-
-    // snackbar container.
-
-    @Override
-    public View getSnackbarContainer() {
-        return container;
     }
 }

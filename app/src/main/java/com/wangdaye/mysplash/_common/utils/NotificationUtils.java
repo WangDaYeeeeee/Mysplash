@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.utils;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.Notification;
 import android.content.Context;
@@ -18,7 +17,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 
 /**
  * Snackbar utils.
@@ -31,6 +30,8 @@ public class NotificationUtils {
     private static final String PREFERENCE_NOTIFICATION = "notification";
     private static final String KEY_NOTIFICATION_ID = "notification_id";
     private static final int NOTIFICATION_GROUP_SUMMARY_ID = 1001;
+
+    /** <br> notification. */
 
     public static void sendDownloadPhotoSuccessNotification(Context c, DownloadMissionEntity entity) {
         NotificationManagerCompat.from(c)
@@ -100,10 +101,12 @@ public class NotificationUtils {
         return id;
     }
 
+    /** <br> snackbar & toast. */
+
     public static void showSnackbar(String content, int duration) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (Mysplash.getInstance().getActivityCount() > 0) {
-            Activity a = Mysplash.getInstance().getTopActivity();
-            View container = ((SnackbarContainer) a).getSnackbarContainer();
+            View container = a.provideSnackbarContainer();
 
             Snackbar snackbar = Snackbar
                     .make(container, content, duration);
@@ -129,7 +132,7 @@ public class NotificationUtils {
                                           int duration, View.OnClickListener l) {
         if (Mysplash.getInstance().getActivityCount() > 0) {
             MysplashActivity a = Mysplash.getInstance().getTopActivity();
-            View container = a.getSnackbarContainer();
+            View container = a.provideSnackbarContainer();
 
             Snackbar snackbar = Snackbar
                     .make(container, content, duration)
@@ -154,9 +157,5 @@ public class NotificationUtils {
 
             snackbar.show();
         }
-    }
-
-    public interface SnackbarContainer {
-        View getSnackbarContainer();
     }
 }

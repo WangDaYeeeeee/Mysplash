@@ -3,9 +3,9 @@ package com.wangdaye.mysplash._common.ui.dialog;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
+import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
@@ -33,10 +33,12 @@ import retrofit2.Response;
  * Update collection dialog.
  * */
 
-public class UpdateCollectionDialog extends DialogFragment
+public class UpdateCollectionDialog extends MysplashDialogFragment
         implements View.OnClickListener, CollectionService.OnRequestACollectionListener,
         CollectionService.OnDeleteCollectionListener {
     // widget
+    private CoordinatorLayout container;
+
     private CircularProgressView progressView;
 
     private LinearLayout contentView;
@@ -64,7 +66,7 @@ public class UpdateCollectionDialog extends DialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Mysplash.getInstance().setActivityInBackstage(true);
+        super.onCreateDialog(savedInstanceState);
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_update_collection, null, false);
         initData();
         initWidget(view);
@@ -76,13 +78,19 @@ public class UpdateCollectionDialog extends DialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().setActivityInBackstage(false);
         service.cancel();
+    }
+
+    @Override
+    public View getSnackbarContainer() {
+        return container;
     }
 
     /** <br> UI. */
 
     private void initWidget(View v) {
+        this.container = (CoordinatorLayout) v.findViewById(R.id.dialog_update_collection_container);
+
         this.progressView = (CircularProgressView) v.findViewById(R.id.dialog_update_collection_progressView);
         progressView.setVisibility(View.GONE);
 

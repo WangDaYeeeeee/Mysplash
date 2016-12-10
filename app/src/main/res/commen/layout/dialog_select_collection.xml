@@ -1,135 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    android:id="@+id/dialog_select_collection_container"
     android:background="?attr/root_color"
     android:layout_width="match_parent"
     android:layout_height="320dp">
 
-    <com.github.rahatarmanahmed.cpv.CircularProgressView
-        android:id="@+id/dialog_select_collection_progressView"
-        android:layout_width="@dimen/circular_progress_height"
-        android:layout_height="@dimen/circular_progress_height"
-        android:layout_centerInParent="true"
-        android:layout_margin="24dp"
-        app:cpv_animAutostart="true"
-        app:cpv_color="?attr/content_color"
-        app:cpv_indeterminate="true" />
-
-    <LinearLayout
-        android:id="@+id/dialog_select_collection_selectorContainer"
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:background="?attr/root_color">
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/dialog_select_collection_progressView"
+            android:layout_width="@dimen/circular_progress_height"
+            android:layout_height="@dimen/circular_progress_height"
+            android:layout_centerInParent="true"
+            android:layout_margin="24dp"
+            app:cpv_animAutostart="true"
+            app:cpv_color="?attr/content_color"
+            app:cpv_indeterminate="true" />
+
+        <LinearLayout
+            android:id="@+id/dialog_select_collection_selectorContainer"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="320dp"
+            android:background="?attr/root_color">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@string/feedback_add_to_collection"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/design_title_text_size"
+                    android:layout_margin="@dimen/normal_margin"
+                    style="@style/title_text" />
+
+                <ImageButton
+                    android:id="@+id/dialog_select_collection_selectorRefreshBtn"
+                    android:layout_width="@dimen/mini_icon_size"
+                    android:layout_height="@dimen/mini_icon_size"
+                    android:layout_margin="@dimen/normal_margin"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    tools:src="@drawable/ic_refresh_light"
+                    tools:ignore="ContentDescription,RtlHardcoded" />
+
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/dialog_select_collection_selectorRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="@dimen/little_margin"
+                android:clipToPadding="false" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dialog_select_collection_creatorContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="320dp">
 
             <TextView
-                android:text="@string/feedback_add_to_collection"
+                android:text="@string/feedback_create_collection"
                 android:textStyle="bold"
                 android:textSize="@dimen/design_title_text_size"
                 android:layout_margin="@dimen/normal_margin"
                 style="@style/title_text" />
 
-            <ImageButton
-                android:id="@+id/dialog_select_collection_selectorRefreshBtn"
-                android:layout_width="@dimen/mini_icon_size"
-                android:layout_height="@dimen/mini_icon_size"
-                android:layout_margin="@dimen/normal_margin"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                tools:src="@drawable/ic_refresh_light"
-                tools:ignore="ContentDescription,RtlHardcoded" />
-
-        </RelativeLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/dialog_select_collection_selectorRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="@dimen/little_margin"
-            android:clipToPadding="false" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/dialog_select_collection_creatorContainer"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="320dp">
-
-        <TextView
-            android:text="@string/feedback_create_collection"
-            android:textStyle="bold"
-            android:textSize="@dimen/design_title_text_size"
-            android:layout_margin="@dimen/normal_margin"
-            style="@style/title_text" />
-
-        <EditText
-            android:id="@+id/dialog_select_collection_creatorName"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/little_icon_size"
-            android:hint="@string/feedback_name"
-            android:textColorHint="?attr/subtitle_color"
-            android:textColorHighlight="?attr/subtitle_color"
-            android:textSize="@dimen/content_text_size"
-            android:textColor="?attr/content_color"
-            android:background="@android:color/transparent"
-            android:maxLines="1"
-            android:maxLength="30"
-            android:layout_marginLeft="@dimen/normal_margin"
-            android:layout_marginRight="@dimen/normal_margin"
-            android:layout_marginTop="@dimen/little_margin" />
-
-        <EditText
-            android:id="@+id/dialog_select_collection_creatorDescription"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/design_icon_size"
-            android:hint="@string/feedback_description"
-            android:textColorHint="?attr/subtitle_color"
-            android:textColorHighlight="?attr/subtitle_color"
-            android:textSize="@dimen/content_text_size"
-            android:textColor="?attr/content_color"
-            android:background="@android:color/transparent"
-            android:maxLength="250"
-            android:layout_margin="@dimen/normal_margin" />
-
-        <CheckBox
-            android:id="@+id/dialog_select_collection_creatorCheckBox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/normal_margin"
-            android:text="@string/feedback_collection_private"
-            android:textSize="@dimen/subtitle_text_size"
-            android:textColor="?attr/subtitle_color" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <Button
-                android:id="@+id/dialog_select_collection_creatorCreateBtn"
-                android:text="@string/create"
+            <EditText
+                android:id="@+id/dialog_select_collection_creatorName"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/little_icon_size"
+                android:hint="@string/feedback_name"
+                android:textColorHint="?attr/subtitle_color"
+                android:textColorHighlight="?attr/subtitle_color"
+                android:textSize="@dimen/content_text_size"
                 android:textColor="?attr/content_color"
-                android:layout_alignParentRight="true"
-                style="@style/material_button"
-                tools:ignore="RtlHardcoded" />
+                android:background="@android:color/transparent"
+                android:maxLines="1"
+                android:maxLength="30"
+                android:layout_marginLeft="@dimen/normal_margin"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/little_margin" />
 
-            <Button
-                android:id="@+id/dialog_select_collection_creatorCancelBtn"
-                android:text="@string/cancel"
-                android:textColor="?attr/subtitle_color"
-                android:layout_toLeftOf="@id/dialog_select_collection_creatorCreateBtn"
-                style="@style/material_button"
-                tools:ignore="RtlHardcoded" />
+            <EditText
+                android:id="@+id/dialog_select_collection_creatorDescription"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/design_icon_size"
+                android:hint="@string/feedback_description"
+                android:textColorHint="?attr/subtitle_color"
+                android:textColorHighlight="?attr/subtitle_color"
+                android:textSize="@dimen/content_text_size"
+                android:textColor="?attr/content_color"
+                android:background="@android:color/transparent"
+                android:maxLength="250"
+                android:layout_margin="@dimen/normal_margin" />
 
-        </RelativeLayout>
+            <CheckBox
+                android:id="@+id/dialog_select_collection_creatorCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/normal_margin"
+                android:text="@string/feedback_collection_private"
+                android:textSize="@dimen/subtitle_text_size"
+                android:textColor="?attr/subtitle_color" />
 
-    </LinearLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-</RelativeLayout>
+                <Button
+                    android:id="@+id/dialog_select_collection_creatorCreateBtn"
+                    android:text="@string/create"
+                    android:textColor="?attr/content_color"
+                    android:layout_alignParentRight="true"
+                    style="@style/material_button"
+                    tools:ignore="RtlHardcoded" />
+
+                <Button
+                    android:id="@+id/dialog_select_collection_creatorCancelBtn"
+                    android:text="@string/cancel"
+                    android:textColor="?attr/subtitle_color"
+                    android:layout_toLeftOf="@id/dialog_select_collection_creatorCreateBtn"
+                    style="@style/material_button"
+                    tools:ignore="RtlHardcoded" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

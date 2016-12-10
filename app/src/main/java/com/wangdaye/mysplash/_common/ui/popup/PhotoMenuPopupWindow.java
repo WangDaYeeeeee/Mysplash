@@ -10,18 +10,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
  * Photo menu popup window.
  * */
 
-public class PhotoMenuPopupWindow extends PopupWindow
+public class PhotoMenuPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
     // widget
     private OnSelectItemListener listener;
@@ -35,13 +35,6 @@ public class PhotoMenuPopupWindow extends PopupWindow
     public PhotoMenuPopupWindow(Context c, View anchor) {
         super(c);
         this.initialize(c, anchor);
-        Mysplash.getInstance().setActivityInBackstage(true);
-        setOnDismissListener(new OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                Mysplash.getInstance().setActivityInBackstage(false);
-            }
-        });
     }
 
     @SuppressLint("InflateParams")

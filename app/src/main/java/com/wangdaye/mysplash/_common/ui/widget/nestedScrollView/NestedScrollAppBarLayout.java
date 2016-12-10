@@ -7,7 +7,6 @@ import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 
 /**
@@ -16,10 +15,9 @@ import android.view.MotionEvent;
 
 @CoordinatorLayout.DefaultBehavior(NestedScrollAppBarLayout.Behavior.class)
 public class NestedScrollAppBarLayout extends AppBarLayout
-        implements NestedScrollingChild, GestureDetector.OnGestureListener {
+        implements NestedScrollingChild {
     // widget
     private NestedScrollingChildHelper nestedScrollingChildHelper;
-    private GestureDetector detector;
 
     /** <br> life cycle. */
 
@@ -35,7 +33,6 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
     private void initialize() {
         this.nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
-        this.detector = new GestureDetector(getContext(), this);
 
         setNestedScrollingEnabled(true);
     }
@@ -92,48 +89,11 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         return nestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
     }
 
-    // on gesture listener.
-
-    @Override
-    public boolean onDown(MotionEvent motionEvent) {
-        startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
-        return false;
-    }
-
-    @Override
-    public void onShowPress(MotionEvent motionEvent) {
-        // do nothing.
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent motionEvent) {
-        return false;
-    }
-
-    @Override
-    public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        int[] total = new int[] {(int) v, (int) v1};
-        int[] consumed = new int[] {0, 0};
-        dispatchNestedPreScroll(total[0], total[1], consumed, null);
-        dispatchNestedScroll(0, 0, total[0] - consumed[0], total[1] - consumed[1], null);
-        return true;
-    }
-
-    @Override
-    public void onLongPress(MotionEvent motionEvent) {
-        // do nothing.
-    }
-
-    @Override
-    public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-        dispatchNestedPreFling(v, v1);
-        dispatchNestedFling(v, v1, false);
-        return true;
-    }
-
     /** <br> inner class. */
 
     public static class Behavior extends AppBarLayout.Behavior {
+        // data
+        private float oldY;
 
         public Behavior() {
             super();
@@ -150,10 +110,24 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
         @Override
         public boolean onTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
-            NestedScrollAppBarLayout appBarLayout = (NestedScrollAppBarLayout) child;
-            final boolean handled = appBarLayout.detector.onTouchEvent(ev);
-            if (!handled && ev.getAction() == MotionEvent.ACTION_UP) {
-                appBarLayout.stopNestedScroll();
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    ((NestedScrollAppBarLayout) child).startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+                    oldY = ev.getY();
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    int[] total = new int[] {0, (int) (oldY - ev.getY())};
+                    int[] consumed = new int[] {0, 0};
+                    ((NestedScrollAppBarLayout) child).dispatchNestedPreScroll(total[0], total[1], consumed, null);
+                    ((NestedScrollAppBarLayout) child).dispatchNestedScroll(0, 0, total[0] - consumed[0], total[1] - consumed[1], null);
+                    oldY = ev.getY();
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    ((NestedScrollAppBarLayout) child).stopNestedScroll();
+                    break;
             }
 
             return super.onTouchEvent(parent, child, ev);

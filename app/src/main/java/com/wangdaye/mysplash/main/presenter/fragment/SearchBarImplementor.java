@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.main.presenter.fragment;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash._common.i.view.SearchBarView;
-import com.wangdaye.mysplash._common.ui.activity.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 /**
