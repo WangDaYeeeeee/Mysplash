@@ -36,7 +36,8 @@ import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.manager.ShortcutsManager;
-import com.wangdaye.mysplash._common.utils.widget.FlagThread;
+import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash._common.utils.widget.PriorityRunnable;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
@@ -105,15 +106,13 @@ public class MainActivity extends MysplashActivity
             setStarted();
             initView();
             buildFragmentStack();
-
-            thread.start();
+            ThreadManager.getInstance().execute(runnable);
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        thread.setRunning(false);
         AuthManager.getInstance().removeOnWriteDataListener(this);
         AuthManager.getInstance().cancelRequest();
     }
@@ -496,20 +495,18 @@ public class MainActivity extends MysplashActivity
 
     /** <br> thread. */
 
-    private FlagThread thread = new FlagThread(new Runnable() {
+    private PriorityRunnable runnable = new PriorityRunnable(false) {
         @Override
         public void run() {
-            if (thread.isRunning()) {
-                AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
-                if (AuthManager.getInstance().isAuthorized()
-                        && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
-                    AuthManager.getInstance().refreshPersonalProfile();
-                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                    ShortcutsManager.refreshShortcuts(MainActivity.this);
-                }
-                IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
-                handler.obtainMessage(1).sendToTarget();
+            AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
+            if (AuthManager.getInstance().isAuthorized()
+                    && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
+                AuthManager.getInstance().refreshPersonalProfile();
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                ShortcutsManager.refreshShortcuts(MainActivity.this);
             }
+            IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
+            handler.obtainMessage(1).sendToTarget();
         }
-    });
+    };
 }

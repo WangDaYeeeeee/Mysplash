@@ -37,22 +37,6 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/fragment_multi_filter_photos_editText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/normal_margin"
-                        android:background="@android:color/transparent"
-                        android:hint="@string/feedback_search_photos_bar"
-                        android:textColorHint="?attr/subtitle_color"
-                        android:textColorHighlight="?attr/subtitle_color"
-                        android:textSize="@dimen/content_text_size"
-                        android:textColor="?attr/content_color"
-                        android:imeOptions="actionSearch"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        tools:ignore="RtlHardcoded" />
-
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -70,13 +54,13 @@
                             tools:ignore="ContentDescription,RtlHardcoded" />
 
                         <EditText
-                            android:id="@+id/fragment_multi_filter_users_editText"
+                            android:id="@+id/fragment_multi_filter_photos_editText"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/normal_margin"
                             android:layout_toLeftOf="@id/fragment_multi_filter_searchBtn"
                             android:background="@android:color/transparent"
-                            android:hint="@string/feedback_search_users_bar"
+                            android:hint="@string/feedback_search_photos_bar"
                             android:textColorHint="?attr/subtitle_color"
                             android:textColorHighlight="?attr/subtitle_color"
                             android:textSize="@dimen/content_text_size"
@@ -87,6 +71,22 @@
                             tools:ignore="RtlHardcoded" />
 
                     </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/fragment_multi_filter_users_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/normal_margin"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/feedback_search_users_bar"
+                        android:textColorHint="?attr/subtitle_color"
+                        android:textColorHighlight="?attr/subtitle_color"
+                        android:textSize="@dimen/content_text_size"
+                        android:textColor="?attr/content_color"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        tools:ignore="RtlHardcoded" />
 
                 </LinearLayout>
 

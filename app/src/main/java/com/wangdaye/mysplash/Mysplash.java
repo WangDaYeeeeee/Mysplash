@@ -44,10 +44,10 @@ public class Mysplash extends Application {
     // application data.
     public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
-    public static final String DOWNLOAD_FORMAT = ".jpg";
+    public static final String DOWNLOAD_PHOTO_FORMAT = ".jpg";
+    public static final String DOWNLOAD_COLLECTION_FORMAT = ".zip";
 
-    public static final int DEFAULT_PER_PAGE = 30;
-    public static final int SEARCH_PER_PAGE = 20;
+    public static final int DEFAULT_PER_PAGE = 15;
 
     public static final int CATEGORY_TOTAL_NEW = 0;
     public static final int CATEGORY_TOTAL_FEATURED = 1;

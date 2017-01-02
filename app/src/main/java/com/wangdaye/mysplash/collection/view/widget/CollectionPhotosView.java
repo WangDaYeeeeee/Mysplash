@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash.collection.view.widget;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,13 +17,18 @@ import android.widget.FrameLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
 import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.collection.model.widget.LoadObject;
 import com.wangdaye.mysplash.collection.model.widget.PhotosObject;
 import com.wangdaye.mysplash.collection.model.widget.ScrollObject;
@@ -42,13 +47,16 @@ import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 
+import java.util.ArrayList;
+
 /**
  * Collection photos view.
  * */
 
 public class CollectionPhotosView extends FrameLayout
         implements PhotosView, LoadView, ScrollView, SwipeBackView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        SelectCollectionDialog.OnCollectionsChangedListener {
     // model.
     private PhotosModel photosModel;
     private LoadModel loadModel;
@@ -84,7 +92,7 @@ public class CollectionPhotosView extends FrameLayout
         this.initialize();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public CollectionPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.initialize();
@@ -162,8 +170,14 @@ public class CollectionPhotosView extends FrameLayout
     // init.
 
     private void initModel(MysplashActivity a, Collection c) {
+        PhotoAdapter adapter = new PhotoAdapter(
+                a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this);
+        adapter.setInMyCollection(
+                AuthManager.getInstance().getUsername() != null
+                        && AuthManager.getInstance().getUsername().equals(c.user.username));
+
         this.photosModel = new PhotosObject(
-                a,
+                adapter,
                 c,
                 c.curated ? PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
@@ -230,6 +244,27 @@ public class CollectionPhotosView extends FrameLayout
             scrollPresenter.autoLoad(dy);
         }
     };
+
+    // on collections change listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        photosPresenter.getAdapter().updatePhoto(p, false);
+        if (((Collection) photosPresenter.getRequestKey()).id == c.id) {
+            for (int i = 0; i < p.current_user_collections.size(); i ++) {
+                if (p.current_user_collections.get(i).id == c.id) {
+                    photosPresenter.getAdapter().insertItemToFirst(p);
+                    return;
+                }
+            }
+            photosPresenter.getAdapter().removeItem(p);
+        }
+    }
 
     // view.
 

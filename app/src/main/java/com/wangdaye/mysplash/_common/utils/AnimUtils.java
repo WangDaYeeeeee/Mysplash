@@ -21,8 +21,6 @@ public class AnimUtils {
     private AnimUtils() {}
 
     private static Interpolator fastOutSlowIn;
-    private static Interpolator fastOutLinearIn;
-    private static Interpolator linearOutSlowIn;
 
     /** <br> view anim. */
 
@@ -80,25 +78,6 @@ public class AnimUtils {
         }
         return fastOutSlowIn;
     }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static Interpolator getFastOutLinearInInterpolator(Context context) {
-        if (fastOutLinearIn == null) {
-            fastOutLinearIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_linear_in);
-        }
-        return fastOutLinearIn;
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static Interpolator getLinearOutSlowInInterpolator(Context context) {
-        if (linearOutSlowIn == null) {
-            linearOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.linear_out_slow_in);
-        }
-        return linearOutSlowIn;
-    }
-
 
     /**
      * An implementation of {@link android.util.Property} to be used specifically with fields of

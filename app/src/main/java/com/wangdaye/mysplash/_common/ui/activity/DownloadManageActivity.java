@@ -22,7 +22,8 @@ import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.utils.widget.FlagThread;
+import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash._common.utils.widget.FlagRunnable;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -40,7 +41,6 @@ public class DownloadManageActivity extends MysplashActivity
         SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
     // widget
     private SafeHandler<DownloadManageActivity> handler;
-    private FlagThread thread;
     private Timer timer;
 
     private CoordinatorLayout container;
@@ -90,7 +90,6 @@ public class DownloadManageActivity extends MysplashActivity
     @Override
     protected void onStop() {
         super.onStop();
-        thread.setRunning(false);
         timer.cancel();
         handler.removeCallbacksAndMessages(null);
     }
@@ -278,9 +277,7 @@ public class DownloadManageActivity extends MysplashActivity
     public void handleMessage(Message message) {
         switch (message.what) {
             case CHECK_START:
-                thread = new FlagThread(new CheckDownloadsRunnable());
-                thread.setRunning(true);
-                thread.start();
+                ThreadManager.getInstance().execute(checkRunnable);
                 break;
 
             case CHECK_FINISH:
@@ -338,8 +335,7 @@ public class DownloadManageActivity extends MysplashActivity
 
     /** <br> thread. */
 
-    private class CheckDownloadsRunnable implements Runnable {
-
+    private FlagRunnable checkRunnable = new FlagRunnable(true) {
         @Override
         public void run() {
             Cursor cursor;
@@ -348,7 +344,7 @@ public class DownloadManageActivity extends MysplashActivity
                 missionIds[i] = adapter.itemList.get(i).entity.missionId;
             }
             for (long id : missionIds) {
-                if (!thread.isRunning()) {
+                if (!checkRunnable.isRunning()) {
                     break;
                 }
                 cursor = DownloadHelper.getInstance(DownloadManageActivity.this).getMissionCursor(id);
@@ -365,5 +361,5 @@ public class DownloadManageActivity extends MysplashActivity
             }
             handler.obtainMessage(CHECK_FINISH).sendToTarget();
         }
-    }
+    };
 }

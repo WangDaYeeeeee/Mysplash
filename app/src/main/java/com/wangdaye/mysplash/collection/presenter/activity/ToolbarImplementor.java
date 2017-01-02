@@ -1,8 +1,14 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
+import android.os.Build;
+import android.support.design.widget.Snackbar;
+
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
@@ -46,8 +52,11 @@ public class ToolbarImplementor
             }
 
             case R.id.action_download:
-                Collection c = ((CollectionActivity) a).getCollection();
-                DownloadHelper.getInstance(a).downloadCollection(a, c);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    ((CollectionActivity) a).downloadCollection();
+                } else {
+                    ((CollectionActivity) a).requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, itemId);
+                }
                 break;
         }
         return true;

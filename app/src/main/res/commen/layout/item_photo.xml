@@ -8,7 +8,6 @@
     android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise"
-    tools:layout_marginTop="24dp"
     tools:ignore="UnusedAttribute">
 
     <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
@@ -16,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:fiv_text_position="bottom" />
+        app:fiv_text_position="bottom"
+        tools:background="@color/colorPrimary_dark" />
 
     <ImageButton
         android:id="@+id/item_photo_deleteButton"
@@ -48,7 +48,7 @@
 
     <ImageButton
         android:id="@+id/item_photo_collectionButton"
-        android:src="@drawable/ic_item_plus"
+        android:src="@drawable/ic_item_added"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:padding="@dimen/little_margin"

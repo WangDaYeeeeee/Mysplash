@@ -21,6 +21,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -34,10 +35,14 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
     private Context c;
     private OnCollectionResponseListener listener;
 
+    // data
+    private Photo photo;
+
     /** <br> life cycle. */
 
-    public CollectionMiniAdapter(Context c) {
+    public CollectionMiniAdapter(Context c, Photo p) {
         this.c = c;
+        updatePhoto(p);
     }
 
     /** <br> UI. */
@@ -62,7 +67,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             holder.image.setImageResource(R.color.colorTextSubtitle_light);
             holder.title.setText(c.getString(R.string.feedback_create_collection).toUpperCase());
             holder.subtitle.setVisibility(View.GONE);
-            holder.lockIcon.setVisibility(View.GONE);
+            holder.icon.setVisibility(View.GONE);
             return;
         } else if (position == getRealItemCount() + 1) {
             return;
@@ -127,10 +132,25 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         } else {
             holder.image.setImageResource(R.color.colorTextContent_light);
         }
+
+        for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+            if (AuthManager.getInstance()
+                    .getCollectionsManager()
+                    .getCollectionList()
+                    .get(position - 1).id == photo.current_user_collections.get(i).id) {
+                Glide.with(c)
+                        .load(R.drawable.ic_item_checked)
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .into(holder.icon);
+                holder.icon.setVisibility(View.VISIBLE);
+                return;
+            }
+        }
         if (AuthManager.getInstance().getCollectionsManager().getCollectionList().get(position - 1).privateX) {
-            holder.lockIcon.setVisibility(View.VISIBLE);
+            holder.icon.setImageResource(R.drawable.ic_item_lock);
+            holder.icon.setVisibility(View.VISIBLE);
         } else {
-            holder.lockIcon.setVisibility(View.GONE);
+            holder.icon.setVisibility(View.GONE);
         }
     }
 
@@ -154,14 +174,18 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         return AuthManager.getInstance().getCollectionsManager().getCollectionList().size();
     }
 
+    public void updatePhoto(Photo p) {
+        this.photo = p;
+    }
+
     /** <br> interface. */
 
     public interface OnCollectionResponseListener {
         void onCreateCollection();
-        void onAddToCollection(int collection_id);
+        void onClickCollectionItem(int collection_id);
     }
 
-    public void setOnClickCreateItemListener(OnCollectionResponseListener l) {
+    public void setOnCollectionResponseListener(OnCollectionResponseListener l) {
         this.listener = l;
     }
 
@@ -175,7 +199,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         public ImageView image;
         public TextView title;
         public TextView subtitle;
-        ImageView lockIcon;
+        ImageView icon;
 
         ViewHolder(View itemView, boolean loadingView) {
             super(itemView);
@@ -189,7 +213,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                 this.subtitle = (TextView) itemView.findViewById(R.id.item_collection_mini_subtitle);
                 DisplayUtils.setTypeface(itemView.getContext(), subtitle);
 
-                this.lockIcon = (ImageView) itemView.findViewById(R.id.item_collection_privateIcon);
+                this.icon = (ImageView) itemView.findViewById(R.id.item_collection_icon);
 
                 setIsRecyclable(true);
             } else {
@@ -204,7 +228,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                     if (getAdapterPosition() == 0 && listener != null) {
                         listener.onCreateCollection();
                     } else if (listener != null) {
-                        listener.onAddToCollection(
+                        listener.onClickCollectionItem(
                                 AuthManager.getInstance()
                                         .getCollectionsManager()
                                         .getCollectionList()

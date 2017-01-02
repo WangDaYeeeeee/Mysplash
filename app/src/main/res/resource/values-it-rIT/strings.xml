@@ -2,9 +2,7 @@
     tools:ignore="MissingTranslation">
 
     <!-- application. -->
-    <string name="app_name">Mysplash</string>
     <string name="powered">Fornito da Unsplash.com</string>
-    <string name="version_code">2.3.8</string>
 
     <!-- key words. -->
     <string name="about_app">INFORMAZIONI</string>

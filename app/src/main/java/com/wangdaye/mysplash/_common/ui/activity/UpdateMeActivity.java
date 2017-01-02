@@ -380,7 +380,7 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response) {
-        if (response.isSuccessful()) {
+        if (response.isSuccessful() && response.body() != null) {
             AuthManager.getInstance().writeUserInfo(response.body());
             finish();
             overridePendingTransition(0, R.anim.activity_slide_out_bottom);

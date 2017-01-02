@@ -25,7 +25,7 @@ public class SearchService {
     /** <br> data. */
 
     public void searchPhotos(String query, int page, final OnRequestPhotosListener l) {
-        Call<SearchPhotosResult> searchPhotos = buildApi(buildClient()).searchPhotos(query, page);
+        Call<SearchPhotosResult> searchPhotos = buildApi(buildClient()).searchPhotos(query, page, Mysplash.DEFAULT_PER_PAGE);
         searchPhotos.enqueue(new Callback<SearchPhotosResult>() {
             @Override
             public void onResponse(Call<SearchPhotosResult> call, retrofit2.Response<SearchPhotosResult> response) {
@@ -45,7 +45,7 @@ public class SearchService {
     }
 
     public void searchUsers(String query, int page, final OnRequestUsersListener l) {
-        Call<SearchUsersResult> searchUsers = buildApi(buildClient()).searchUsers(query, page);
+        Call<SearchUsersResult> searchUsers = buildApi(buildClient()).searchUsers(query, page, Mysplash.DEFAULT_PER_PAGE);
         searchUsers.enqueue(new Callback<SearchUsersResult>() {
             @Override
             public void onResponse(Call<SearchUsersResult> call, retrofit2.Response<SearchUsersResult> response) {
@@ -65,7 +65,7 @@ public class SearchService {
     }
 
     public void searchCollections(String query, int page, final OnRequestCollectionsListener l) {
-        Call<SearchCollectionsResult> searchCollections = buildApi(buildClient()).searchCollections(query, page);
+        Call<SearchCollectionsResult> searchCollections = buildApi(buildClient()).searchCollections(query, page, Mysplash.DEFAULT_PER_PAGE);
         searchCollections.enqueue(new Callback<SearchCollectionsResult>() {
             @Override
             public void onResponse(Call<SearchCollectionsResult> call, retrofit2.Response<SearchCollectionsResult> response) {

@@ -16,13 +16,16 @@ public interface SearchApi {
 
     @GET("search/photos")
     Call<SearchPhotosResult> searchPhotos(@Query("query") String query,
-                                          @Query("page") int page);
+                                          @Query("page") int page,
+                                          @Query("per_page") int per_page);
 
     @GET("search/users")
     Call<SearchUsersResult> searchUsers(@Query("query") String query,
-                                        @Query("page") int page);
+                                        @Query("page") int page,
+                                        @Query("per_page") int per_page);
 
     @GET("search/collections")
     Call<SearchCollectionsResult> searchCollections(@Query("query") String query,
-                                                    @Query("page") int page);
+                                                    @Query("page") int page,
+                                                    @Query("per_page") int per_page);
 }

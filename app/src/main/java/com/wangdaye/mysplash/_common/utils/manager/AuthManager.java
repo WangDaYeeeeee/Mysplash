@@ -178,6 +178,10 @@ public class AuthManager
 
     // setter.
 
+    public void updateUser(User u) {
+        this.user = u;
+    }
+
     public void writeAccessToken(AccessToken token) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();

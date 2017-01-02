@@ -1,15 +1,22 @@
 package com.wangdaye.mysplash.collection.view.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -19,6 +26,9 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
@@ -277,6 +287,54 @@ public class CollectionActivity extends MysplashActivity
 
     public Collection getCollection() {
         return (Collection) editResultPresenter.getEditKey();
+    }
+
+    public void downloadCollection() {
+        if (DatabaseHelper.getInstance(this).readDownloadEntityCount(String.valueOf(getCollection().id)) == 0) {
+            DownloadHelper.getInstance(this).addMission(this, getCollection());
+        } else {
+            NotificationUtils.showSnackbar(
+                    getString(R.string.feedback_download_repeat),
+                    Snackbar.LENGTH_SHORT);
+        }
+    }
+
+    /** <br> permission. */
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public void requestPermission(int permissionCode, int itemId) {
+        switch (permissionCode) {
+            case Mysplash.WRITE_EXTERNAL_STORAGE:
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    this.requestPermissions(
+                            new String[] {
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            itemId);
+                } else {
+                    downloadCollection();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
+        super.onRequestPermissionsResult(requestCode, permission, grantResult);
+        for (int i = 0; i < permission.length; i ++) {
+            switch (permission[i]) {
+                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
+                        downloadCollection();
+                    } else {
+                        Toast.makeText(
+                                this,
+                                getString(R.string.feedback_need_permission),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
+        }
     }
 
     /** <br> interface. */

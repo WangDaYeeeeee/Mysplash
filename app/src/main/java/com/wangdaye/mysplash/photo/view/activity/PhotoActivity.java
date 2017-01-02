@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
@@ -315,10 +316,8 @@ public class PhotoActivity extends MysplashActivity
 
     /** <br> permission. */
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void requestPermission(int permissionCode, int type) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            return;
-        }
         switch (permissionCode) {
             case Mysplash.WRITE_EXTERNAL_STORAGE:
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)

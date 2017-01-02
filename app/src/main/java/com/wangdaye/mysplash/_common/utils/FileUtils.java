@@ -2,7 +2,7 @@ package com.wangdaye.mysplash._common.utils;
 
 import android.content.Context;
 import android.os.Environment;
-import android.widget.Toast;
+import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.R;
 
@@ -16,27 +16,27 @@ public class FileUtils {
 
     public static boolean createDownloadPath(Context c) {
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            Toast.makeText(c,
+            NotificationUtils.showSnackbar(
                     c.getString(R.string.feedback_no_sd_card),
-                    Toast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
             return false;
         }
 
         File dirFile1 = new File(Environment.getExternalStorageDirectory(), "Pictures");
         if (!dirFile1.exists()) {
             if (!dirFile1.mkdir()) {
-                Toast.makeText(c,
+                NotificationUtils.showSnackbar(
                         c.getString(R.string.feedback_create_file_failed) + " -1",
-                        Toast.LENGTH_SHORT).show();
+                        Snackbar.LENGTH_SHORT);
                 return false;
             }
         }
         File dirFile2 = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash");
         if (!dirFile2.exists()) {
             if (!dirFile2.mkdir()) {
-                Toast.makeText(c,
+                NotificationUtils.showSnackbar(
                         c.getString(R.string.feedback_create_file_failed) + " -2",
-                        Toast.LENGTH_SHORT).show();
+                        Snackbar.LENGTH_SHORT);
                 return false;
             }
         }

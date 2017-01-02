@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.user.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +15,7 @@ import android.widget.FrameLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
@@ -42,6 +42,7 @@ import com.wangdaye.mysplash.user.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.user.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.user.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.user.presenter.widget.SwipeBackImplementor;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * User photos view.
@@ -76,13 +77,13 @@ public class UserPhotosView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public UserPhotosView(Activity a, @Nullable Bundle bundle, User u, int type) {
+    public UserPhotosView(UserActivity a, @Nullable Bundle bundle, User u, int type) {
         super(a);
         this.initialize(a, bundle, u, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle, User u, int type) {
+    private void initialize(UserActivity a, @Nullable Bundle bundle, User u, int type) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
@@ -104,6 +105,8 @@ public class UserPhotosView extends FrameLayout
     }
 
     /** <br> view. */
+
+    // init.
 
     private void initView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_mini_progressView);
@@ -128,9 +131,15 @@ public class UserPhotosView extends FrameLayout
         recyclerView.addOnScrollListener(scrollListener);
     }
 
+    // interface.
+
+    public void updatePhoto(Photo p) {
+        photosPresenter.getAdapter().updatePhoto(p, false);
+    }
+
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle, User u, int type) {
+    private void initModel(UserActivity a, @Nullable Bundle bundle, User u, int type) {
         String order = Mysplash.getInstance().getDefaultPhotoOrder();
         if (bundle != null) {
             if (type == PhotosObject.PHOTOS_TYPE_PHOTOS) {
@@ -155,7 +164,9 @@ public class UserPhotosView extends FrameLayout
                 photosPresenter.initRefresh(getContext());
                 break;
         }
-    }// on refresh an load listener.
+    }
+
+    // on refresh an load listener.
 
     @Override
     public void onRefresh() {

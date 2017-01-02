@@ -50,8 +50,7 @@ public class DownloadImplementor
         Activity a = Mysplash.getInstance().getTopActivity();
         Photo p = (Photo) model.getDownloadKey();
         if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
-            DownloadHelper.getInstance(a)
-                    .addMission(a, p, type);
+            DownloadHelper.getInstance(a).addMission(a, p, type);
         } else {
             NotificationUtils.showSnackbar(
                     a.getString(R.string.feedback_download_repeat),

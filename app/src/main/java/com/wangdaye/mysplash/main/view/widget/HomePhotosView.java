@@ -20,7 +20,9 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -29,6 +31,7 @@ import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -53,7 +56,8 @@ import java.util.ArrayList;
 @SuppressLint("ViewConstructor")
 public class HomePhotosView extends FrameLayout
         implements PhotosView, PagerView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        SelectCollectionDialog.OnCollectionsChangedListener {
     // model.
     private PhotosModel photosModel;
     private LoadModel loadModel;
@@ -168,7 +172,7 @@ public class HomePhotosView extends FrameLayout
 
         this.photosModel = new PhotosObject(
                 a,
-                new PhotoAdapter(a, new ArrayList<Photo>()),
+                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this),
                 photosType,
                 order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
@@ -209,6 +213,18 @@ public class HomePhotosView extends FrameLayout
             scrollPresenter.autoLoad(dy);
         }
     };
+
+    // on collection changed listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        photosPresenter.getAdapter().updatePhoto(p, false);
+    }
 
     // view.
 

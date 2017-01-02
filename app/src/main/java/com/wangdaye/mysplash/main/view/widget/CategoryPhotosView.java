@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -23,7 +23,9 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.i.model.CategoryModel;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -32,6 +34,7 @@ import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.i.view.CategoryView;
@@ -53,7 +56,8 @@ import java.util.ArrayList;
 
 public class CategoryPhotosView extends FrameLayout
         implements CategoryView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        SelectCollectionDialog.OnCollectionsChangedListener {
     // model.
     private CategoryModel categoryModel;
     private LoadModel loadModel;
@@ -92,7 +96,7 @@ public class CategoryPhotosView extends FrameLayout
         this.initialize();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public CategoryPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.initialize();
@@ -191,7 +195,10 @@ public class CategoryPhotosView extends FrameLayout
     private void initModel() {
         this.categoryModel = new CategoryObject(
                 getContext(),
-                new PhotoAdapter(getContext(), new ArrayList<Photo>()));
+                new PhotoAdapter(
+                        getContext(),
+                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                        this));
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
     }
@@ -261,6 +268,18 @@ public class CategoryPhotosView extends FrameLayout
             scrollPresenter.autoLoad(dy);
         }
     };
+
+    // on collections changed listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        categoryPresenter.getAdapter().updatePhoto(p, false);
+    }
 
     // view.
 

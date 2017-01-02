@@ -126,7 +126,8 @@ public class TotalDialog extends MysplashDialogFragment
             photoNum.setText(response.body().total_photos + " PHOTOS");
             downloadNum.setText(response.body().photo_downloads + " DOWNLOADS");
             setState(SUCCESS_STATE);
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+        } else if (response.isSuccessful()
+                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             dismiss();
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(getFragmentManager(), null);

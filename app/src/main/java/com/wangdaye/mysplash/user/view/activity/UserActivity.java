@@ -17,7 +17,10 @@ import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -43,6 +46,7 @@ import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
+import com.wangdaye.mysplash.me.view.widget.MePhotosView;
 import com.wangdaye.mysplash.user.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.user.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.user.model.widget.PhotosObject;
@@ -65,8 +69,8 @@ import java.util.List;
 
 public class UserActivity extends MysplashActivity
         implements PagerManageView, PopupManageView, SwipeBackManageView, BrowsableView,
-        Toolbar.OnMenuItemClickListener, View.OnClickListener, ViewPager.OnPageChangeListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener {
     // model.
     private PagerManageModel pagerManageModel;
     private BrowsableModel browsableModel;
@@ -397,6 +401,19 @@ public class UserActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         swipeBackManagePresenter.swipeBackFinish(this, dir);
+    }
+
+    // on collections changed listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        ((MePhotosView) pagers[0]).updatePhoto(p);
+        ((MePhotosView) pagers[2]).updatePhoto(p);
     }
 
     // view.

@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +15,7 @@ import android.widget.FrameLayout;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -29,6 +29,7 @@ import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -41,6 +42,9 @@ import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.ScrollImplementor;
+import com.wangdaye.mysplash.me.view.activity.MeActivity;
+
+import java.util.ArrayList;
 
 /**
  * Me photo view.
@@ -75,13 +79,13 @@ public class MePhotosView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public MePhotosView(Activity a, @Nullable Bundle bundle, int type) {
+    public MePhotosView(MeActivity a, @Nullable Bundle bundle, int type) {
         super(a);
         this.initialize(a, bundle, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle, int type) {
+    private void initialize(MeActivity a, @Nullable Bundle bundle, int type) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
@@ -103,6 +107,8 @@ public class MePhotosView extends FrameLayout
     }
 
     /** <br> view. */
+
+    // init.
 
     private void initView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_mini_progressView);
@@ -127,9 +133,15 @@ public class MePhotosView extends FrameLayout
         recyclerView.addOnScrollListener(scrollListener);
     }
 
+    // interface.
+
+    public void updatePhoto(Photo p) {
+        photosPresenter.getAdapter().updatePhoto(p, false);
+    }
+
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle, int type) {
+    private void initModel(MeActivity a, @Nullable Bundle bundle, int type) {
         String order = Mysplash.getInstance().getDefaultPhotoOrder();
         if (bundle != null) {
             if (type == PhotosObject.PHOTOS_TYPE_PHOTOS) {
@@ -138,7 +150,10 @@ public class MePhotosView extends FrameLayout
                 order = bundle.getString(KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE, order);
             }
         }
-        this.photosModel = new PhotosObject(a, type, order);
+        this.photosModel = new PhotosObject(
+                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a),
+                type,
+                order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }

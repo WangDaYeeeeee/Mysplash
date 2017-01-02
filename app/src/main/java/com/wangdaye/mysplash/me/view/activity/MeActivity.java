@@ -20,6 +20,9 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -60,8 +63,9 @@ import java.util.List;
 
 public class MeActivity extends MysplashActivity
         implements PagerManageView, PopupManageView, SwipeBackManageView,
-        Toolbar.OnMenuItemClickListener, View.OnClickListener, ViewPager.OnPageChangeListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener, AuthManager.OnAuthDataChangedListener {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener,
+        AuthManager.OnAuthDataChangedListener {
     // model.
     private PagerManageModel pagerManageModel;
 
@@ -334,15 +338,6 @@ public class MeActivity extends MysplashActivity
 
     // interface.
 
-    public void addCollection(Collection c) {
-        meProfileView.addCollection(adapter);
-        ((MeCollectionsView) pagers[1]).addCollection(c);
-    }
-
-    public void changeCollection(Collection c) {
-        ((MeCollectionsView) pagers[1]).changeCollection(c);
-    }
-
     public void showPopup(boolean filter) {
         if (filter) {
             int page = pagerManagePresenter.getPagerPosition();
@@ -433,6 +428,21 @@ public class MeActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         swipeBackManagePresenter.swipeBackFinish(this, dir);
+    }
+
+    // on collections changed listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        meProfileView.addCollection(adapter);
+        ((MeCollectionsView) pagers[1]).addCollection(c);
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        ((MePhotosView) pagers[0]).updatePhoto(p);
+        ((MeCollectionsView) pagers[1]).changeCollection(c);
+        ((MePhotosView) pagers[2]).updatePhoto(p);
     }
 
     // on author data changed listener.

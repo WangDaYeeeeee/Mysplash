@@ -129,14 +129,14 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
         public void drawProcessStatus(DownloadMissionEntity entity, Cursor cursor) {
             title.setText(
-                    entity.photoId.toUpperCase() + " : " + DownloadHelper.getMissionProcess(cursor) + "%");
+                    entity.getRealTitle().toUpperCase() + " : " + DownloadHelper.getMissionProcess(cursor) + "%");
             retryBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.VISIBLE);
         }
 
         public void drawProcessStatus(DownloadMissionEntity entity) {
             title.setText(
-                    entity.photoId.toUpperCase() + " : " + "0.0%");
+                    entity.getRealTitle().toUpperCase() + " : " + "0.0%");
             retryBtn.setVisibility(View.GONE);
             cancelBtn.setVisibility(View.VISIBLE);
         }
@@ -169,7 +169,9 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
                 case R.id.item_download_retryBtn:
                     DownloadMissionEntity entity = DownloadHelper.getInstance(c)
-                            .restartMission(c, getAdapterPosition());
+                            .restartMission(
+                                    c,
+                                    itemList.get(getAdapterPosition()).entity.missionId);
                     DownloadMission mission = new DownloadMission(entity);
                     itemList.remove(getAdapterPosition());
                     itemList.add(mission);

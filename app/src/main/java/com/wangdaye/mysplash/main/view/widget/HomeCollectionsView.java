@@ -158,7 +158,7 @@ public class HomeCollectionsView extends FrameLayout
         }
 
         this.collectionsModel = new CollectionsObject(
-                new CollectionAdapter(a, new ArrayList<Collection>()),
+                new CollectionAdapter(a, new ArrayList<Collection>(Mysplash.DEFAULT_PER_PAGE)),
                 type);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);

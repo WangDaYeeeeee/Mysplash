@@ -171,7 +171,7 @@ public class SearchPhotosImplementor
                 for (int i = 0; i < response.body().results.size(); i ++) {
                     adapter.insertItem(response.body().results.get(i));
                 }
-                if (response.body().results.size() < Mysplash.SEARCH_PER_PAGE) {
+                if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
                     view.setPermitLoading(false);
                     if (response.body().results.size() == 0) {

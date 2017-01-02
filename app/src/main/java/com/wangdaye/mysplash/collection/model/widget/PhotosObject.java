@@ -1,23 +1,16 @@
 package com.wangdaye.mysplash.collection.model.widget;
 
-import android.content.Context;
-
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Photos object.
  * */
 
-public class PhotosObject
-        implements PhotosModel {
+public class PhotosObject implements PhotosModel {
     // data
     private PhotoAdapter adapter;
     private PhotoService service;
@@ -36,12 +29,8 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(Context c, Object key, int photosType) {
-        this.adapter = new PhotoAdapter(c, new ArrayList<Photo>());
-        adapter.setInMyCollection(
-                AuthManager.getInstance().getUsername() != null
-                        && AuthManager.getInstance().getUsername().equals(((Collection) key).user.username));
-
+    public PhotosObject(PhotoAdapter adapter, Object key, int photosType) {
+        this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.key = key;

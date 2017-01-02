@@ -34,6 +34,7 @@ import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.i.view.LoadView;
@@ -61,7 +62,8 @@ import java.util.ArrayList;
 @SuppressLint("ViewConstructor")
 public class HomeSearchView extends FrameLayout
         implements SearchView, PagerView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        SelectCollectionDialog.OnCollectionsChangedListener{
     // model.
     private SearchModel searchModel;
     private LoadModel loadModel;
@@ -241,7 +243,10 @@ public class HomeSearchView extends FrameLayout
                     this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
                 }
                 this.searchModel = new SearchPhotosObject(
-                        new PhotoAdapter(getContext(), new ArrayList<Photo>()),
+                        new PhotoAdapter(
+                                getContext(),
+                                new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                                this),
                         query);
                 break;
 
@@ -310,6 +315,20 @@ public class HomeSearchView extends FrameLayout
             scrollPresenter.autoLoad(dy);
         }
     };
+
+    // on change collections listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true);
+        }
+    }
 
     // view.
 

@@ -1,10 +1,8 @@
 package com.wangdaye.mysplash._common.utils;
 
-import android.app.DownloadManager;
 import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
@@ -37,7 +35,7 @@ public class NotificationUtils {
         NotificationManagerCompat.from(c)
                 .notify(
                         getNotificationId(c),
-                        buildSingleNotification(c, "Photo", entity.photoId));
+                        buildSingleNotification(c, "Photo", entity.getRealTitle()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)
@@ -45,17 +43,12 @@ public class NotificationUtils {
         }
     }
 
-    public static void sendDownloadCollectionSuccessNotification(Context c, long downloadId) {
-        DownloadManager.Query query = new DownloadManager.Query().setFilterById(downloadId);
-        Cursor cursor = ((DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE)).query(query);
-
+    public static void sendDownloadCollectionSuccessNotification(Context c, DownloadMissionEntity entity) {
         NotificationManagerCompat.from(c)
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(
-                                c,
-                                "Collection",
-                                cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))));
+                                c, "Collection", entity.getRealTitle()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)

@@ -28,8 +28,8 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:id="@+id/item_collection_privateIcon"
-            android:src="@drawable/ic_item_lock"
+            android:id="@+id/item_collection_icon"
+            android:src="@drawable/ic_item_checked"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
@@ -45,7 +45,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/item_collection_privateIcon"
+            android:layout_toLeftOf="@id/item_collection_icon"
             tools:ignore="RtlHardcoded,UselessParent">
 
             <TextView

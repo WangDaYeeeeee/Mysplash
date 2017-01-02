@@ -5,11 +5,11 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
@@ -19,6 +19,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -112,10 +113,9 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
     }
 
     private void notifyFailed() {
-        Toast.makeText(
-                getActivity(),
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_delete_photo_failed),
-                Toast.LENGTH_SHORT).show();
+                Snackbar.LENGTH_SHORT);
     }
 
     /** <br> data. */
@@ -169,7 +169,8 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
                 listener.onDeletePhotoSuccess(response.body(), position);
             }
             dismiss();
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+        } else if (response.isSuccessful()
+                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             dismiss();
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(getFragmentManager(), null);

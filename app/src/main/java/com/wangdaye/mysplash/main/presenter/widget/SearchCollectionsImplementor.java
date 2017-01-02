@@ -173,7 +173,7 @@ public class SearchCollectionsImplementor
                             response.body().results.get(i),
                             adapter.getRealItemCount());
                 }
-                if (response.body().results.size() < Mysplash.SEARCH_PER_PAGE) {
+                if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
                     view.setPermitLoading(false);
                     if (response.body().results.size() == 0) {

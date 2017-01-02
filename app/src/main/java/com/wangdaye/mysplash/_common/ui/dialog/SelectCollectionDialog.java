@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -17,7 +18,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -30,6 +30,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -45,8 +46,7 @@ import retrofit2.Response;
 
 public class SelectCollectionDialog extends MysplashDialogFragment
         implements View.OnClickListener, AuthManager.OnAuthDataChangedListener,
-        CollectionMiniAdapter.OnCollectionResponseListener, CollectionService.OnRequestACollectionListener,
-        CollectionService.OnChangeCollectionPhotoListener {
+        CollectionMiniAdapter.OnCollectionResponseListener, CollectionService.OnRequestACollectionListener {
     // widget
     private CoordinatorLayout container;
 
@@ -73,7 +73,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private final int SHOW_COLLECTIONS_STATE = 0;
     private final int INPUT_COLLECTION_STATE = 1;
     private final int CREATE_COLLECTION_STATE = 2;
-    private final int ADD_PHOTO_STATE = 3;
+    private final int PROGRESS_STATE = 3;
 
     /** <br> life cycle. */
 
@@ -98,6 +98,9 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     public void onDestroy() {
         super.onDestroy();
         AuthManager.getInstance().removeOnWriteDataListener(this);
+        if (serviceListener != null) {
+            serviceListener.cancel();
+        }
         service.cancel();
     }
 
@@ -160,7 +163,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 } else if (state == INPUT_COLLECTION_STATE) {
                     AnimUtils.animShow(selectorContainer);
                     AnimUtils.animHide(creatorContainer);
-                } else if (state == ADD_PHOTO_STATE) {
+                } else if (state == PROGRESS_STATE) {
                     AnimUtils.animShow(selectorContainer);
                     AnimUtils.animHide(progressView);
                 }
@@ -185,7 +188,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 }
                 break;
 
-            case ADD_PHOTO_STATE:
+            case PROGRESS_STATE:
                 setCancelable(false);
                 if (state == SHOW_COLLECTIONS_STATE) {
                     AnimUtils.animShow(progressView);
@@ -203,17 +206,21 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     }
 
     private void notifyCreateFailed() {
-        Toast.makeText(
-                getActivity(),
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_create_collection_failed),
-                Toast.LENGTH_SHORT).show();
+                Snackbar.LENGTH_SHORT);
     }
 
     private void notifyAddFailed() {
-        Toast.makeText(
-                getActivity(),
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_add_photo_failed),
-                Toast.LENGTH_SHORT).show();
+                Snackbar.LENGTH_SHORT);
+    }
+
+    private void notifyDeleteFailed() {
+        NotificationUtils.showSnackbar(
+                getString(R.string.feedback_delete_photo_failed),
+                Snackbar.LENGTH_SHORT);
     }
 
     /** <br> data. */
@@ -224,12 +231,13 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         this.state = SHOW_COLLECTIONS_STATE;
         this.page = 1;
 
-        this.adapter = new CollectionMiniAdapter(getActivity());
-        adapter.setOnClickCreateItemListener(this);
+        this.adapter = new CollectionMiniAdapter(getActivity(), photo);
+        adapter.setOnCollectionResponseListener(this);
     }
 
-    public void setPhoto(Photo p) {
+    public void setPhotoAndListener(Photo p, OnCollectionsChangedListener l) {
         photo = p;
+        setOnCollectionsChangedListener(l);
     }
 
     private void initRefresh() {
@@ -269,10 +277,9 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private void createCollection() {
         String title = nameTxt.getText().toString();
         if (TextUtils.isEmpty(title)) {
-            Toast.makeText(
-                    getActivity(),
+            NotificationUtils.showSnackbar(
                     getString(R.string.feedback_name_is_required),
-                    Toast.LENGTH_SHORT).show();
+                    Snackbar.LENGTH_SHORT);
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
@@ -290,10 +297,10 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     public interface OnCollectionsChangedListener {
         void onAddCollection(Collection c);
-        void onAddPhotoToCollection(Collection c, User u);
+        void onUpdateCollection(Collection c, User u, Photo p);
     }
 
-    public void setOnCollectionsChangedListener(OnCollectionsChangedListener l) {
+    private void setOnCollectionsChangedListener(OnCollectionsChangedListener l) {
         listener = l;
     }
 
@@ -343,7 +350,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         // do nothing.
     }
 
-    // on click create item listener.
+    // on collection response listener (recycler view adapter item click).
 
     @Override
     public void onCreateCollection() {
@@ -351,12 +358,25 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     }
 
     @Override
-    public void onAddToCollection(int collection_id) {
-        service.addPhotoToCollection(collection_id, photo.id, this);
-        setState(ADD_PHOTO_STATE);
+    public void onClickCollectionItem(int collection_id) {
+        for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+            if (collection_id == photo.current_user_collections.get(i).id) {
+                setState(PROGRESS_STATE);
+                service.deletePhotoFromCollection(
+                        collection_id,
+                        photo.id,
+                        new OnChangeCollectionPhotoListener(false));
+                return;
+            }
+        }
+        setState(PROGRESS_STATE);
+        service.addPhotoToCollection(
+                collection_id,
+                photo.id,
+                new OnChangeCollectionPhotoListener(true));
     }
 
-    // on request collections listener.
+    // on request collections listener (request collections list.).
 
     private class OnRequestCollectionsListener
             implements CollectionService.OnRequestCollectionsListener {
@@ -401,7 +421,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     page ++;
                     requestCollections();
                 }
-            } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+            } else if (response.isSuccessful()
+                    && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
                 dismiss();
                 RateLimitDialog dialog = new RateLimitDialog();
                 dialog.show(getFragmentManager(), null);
@@ -419,7 +440,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
     }
 
-    // on request a collection listener.
+    // on request a collection listener (create collection).
 
     @Override
     public void onRequestACollectionSuccess(Call<Collection> call, Response<Collection> response) {
@@ -433,7 +454,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
             if (listener != null) {
                 listener.onAddCollection(response.body());
             }
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+        } else if (response.isSuccessful()
+                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             dismiss();
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(getFragmentManager(), null);
@@ -449,30 +471,57 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         notifyCreateFailed();
     }
 
-    // on change collection photo listener.
+    // on change collection photo listener (add photo or delete photo).
 
-    @Override
-    public void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call,
-                                     Response<ChangeCollectionPhotoResult> response) {
-        if (response.isSuccessful()) {
-            if (listener != null) {
-                AuthManager.getInstance().getCollectionsManager().updateCollection(response.body().collection);
-                listener.onAddPhotoToCollection(response.body().collection, response.body().user);
-            }
-            dismiss();
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-            dismiss();
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(getFragmentManager(), null);
-        } else {
-            setState(SHOW_COLLECTIONS_STATE);
-            notifyAddFailed();
+    private class OnChangeCollectionPhotoListener
+            implements CollectionService.OnChangeCollectionPhotoListener {
+        // data
+        private boolean add;
+
+        OnChangeCollectionPhotoListener(boolean add) {
+            this.add = add;
         }
-    }
 
-    @Override
-    public void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t) {
-        setState(SHOW_COLLECTIONS_STATE);
-        notifyAddFailed();
+        @Override
+        public void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call,
+                                         Response<ChangeCollectionPhotoResult> response) {
+            if (response.isSuccessful() && response.body() != null) {
+                if (listener != null) {
+                    listener.onUpdateCollection(response.body().collection, response.body().user, response.body().photo);
+                }
+                // update collection.
+                AuthManager.getInstance().getCollectionsManager().updateCollection(response.body().collection);
+                // update user.
+                AuthManager.getInstance().updateUser(response.body().user);
+                // update photo.
+                photo = response.body().photo;
+                adapter.updatePhoto(photo);
+                adapter.notifyDataSetChanged();
+                // show collections list.
+                setState(SHOW_COLLECTIONS_STATE);
+            } else if (response.isSuccessful()
+                    && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+                dismiss();
+                RateLimitDialog dialog = new RateLimitDialog();
+                dialog.show(getFragmentManager(), null);
+            } else {
+                setState(SHOW_COLLECTIONS_STATE);
+                if (add) {
+                    notifyAddFailed();
+                } else {
+                    notifyDeleteFailed();
+                }
+            }
+        }
+
+        @Override
+        public void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t) {
+            setState(SHOW_COLLECTIONS_STATE);
+            if (add) {
+                notifyAddFailed();
+            } else {
+                notifyDeleteFailed();
+            }
+        }
     }
 }

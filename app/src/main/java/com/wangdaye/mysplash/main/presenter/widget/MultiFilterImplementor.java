@@ -219,7 +219,7 @@ public class MultiFilterImplementor
                 for (int i = 0; i < response.body().size(); i ++) {
                     model.getAdapter().insertItem(response.body().get(i));
                 }
-                if (response.body().size() < Mysplash.SEARCH_PER_PAGE) {
+                if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
                     view.setPermitLoading(false);
                     if (response.body().size() == 0) {

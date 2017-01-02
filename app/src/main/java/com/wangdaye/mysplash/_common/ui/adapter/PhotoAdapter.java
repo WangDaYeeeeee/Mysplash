@@ -25,10 +25,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
@@ -42,7 +40,6 @@ import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
-import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.List;
 
@@ -54,22 +51,23 @@ import retrofit2.Response;
  * */
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
-        implements SelectCollectionDialog.OnCollectionsChangedListener,
-        DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener {
+        implements DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener {
     // widget
     private Context a;
     private List<Photo> itemList;
     private PhotoService service;
+    private SelectCollectionDialog.OnCollectionsChangedListener listener;
 
     // data
-    private boolean own = false;
     private boolean inMyCollection = false;
 
     /** <br> life cycle. */
 
-    public PhotoAdapter(Context a, List<Photo> list) {
+    public PhotoAdapter(Context a, List<Photo> list,
+                        SelectCollectionDialog.OnCollectionsChangedListener l) {
         this.a = a;
         this.itemList = list;
+        this.listener = l;
     }
 
     /** <br> UI. */
@@ -176,6 +174,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         } else {
             holder.deleteButton.setVisibility(View.GONE);
         }
+        if (itemList.get(position).current_user_collections.size() != 0) {
+            holder.collectionButton.setImageResource(R.drawable.ic_item_added);
+        } else {
+            holder.collectionButton.setImageResource(R.drawable.ic_item_plus);
+        }
 
         holder.likeButton.initLikeState(itemList.get(position).liked_by_user);
 
@@ -210,6 +213,21 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         notifyItemInserted(itemList.size() - 1);
     }
 
+    public void insertItemToFirst(Photo item) {
+        itemList.add(0, item);
+        notifyItemInserted(0);
+    }
+
+    public void removeItem(Photo item) {
+        for (int i = 0; i < itemList.size(); i ++) {
+            if (itemList.get(i).id .equals(item.id)) {
+                itemList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
+    }
+
     public void clearItem() {
         itemList.clear();
         notifyDataSetChanged();
@@ -235,12 +253,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         return itemList.size();
     }
 
-    public void setOwn(boolean own) {
-        this.own = own;
-    }
-
     public void setInMyCollection(boolean in) {
         this.inMyCollection = in;
+    }
+
+    public void updatePhoto(Photo p, boolean probablyRepeat) {
+        for (int i = 0; i < getRealItemCount(); i ++) {
+            if (itemList.get(i).id.equals(p.id)) {
+                itemList.set(i, p);
+                notifyItemChanged(i);
+                if (!probablyRepeat) {
+                    return;
+                }
+            }
+        }
     }
 
     /** <br> interface. */
@@ -287,18 +313,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         }
     }
 
-    // on collections changed listener.
-
-    @Override
-    public void onAddCollection(Collection c) {
-        ((MeActivity) a).addCollection(c);
-    }
-
-    @Override
-    public void onAddPhotoToCollection(Collection c, User u) {
-        ((MeActivity) a).changeCollection(c);
-    }
-
     // on delete collection photo listener.
 
     @Override
@@ -320,6 +334,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         public FreedomImageView image;
         public TextView title;
         ImageButton deleteButton;
+        ImageButton collectionButton;
         LikeImageButton likeButton;
 
         ViewHolder(View itemView, int position) {
@@ -337,10 +352,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             this.deleteButton = (ImageButton) itemView.findViewById(R.id.item_photo_deleteButton);
             deleteButton.setOnClickListener(this);
 
+            this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_photo_collectionButton);
+            collectionButton.setOnClickListener(this);
+
             this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_photo_likeButton);
             likeButton.setOnLikeListener(this);
-
-            itemView.findViewById(R.id.item_photo_collectionButton).setOnClickListener(this);
         }
 
         @Override
@@ -376,10 +392,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             a.startActivity(i);
                         } else {
                             SelectCollectionDialog dialog = new SelectCollectionDialog();
-                            dialog.setPhoto(itemList.get(getAdapterPosition()));
-                            if (own) {
-                                dialog.setOnCollectionsChangedListener(PhotoAdapter.this);
-                            }
+                            dialog.setPhotoAndListener(itemList.get(getAdapterPosition()), listener);
                             dialog.show(((Activity) a).getFragmentManager(), null);
                         }
                     }

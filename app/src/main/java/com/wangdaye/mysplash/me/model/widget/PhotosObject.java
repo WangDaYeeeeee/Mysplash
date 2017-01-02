@@ -1,13 +1,9 @@
 package com.wangdaye.mysplash.me.model.widget;
 
-import android.app.Activity;
-
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,9 +30,8 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(Activity a, int photosType, String photosOrder) {
-        this.adapter = new PhotoAdapter(a, new ArrayList<Photo>());
-        adapter.setOwn(true);
+    public PhotosObject(PhotoAdapter adapter, int photosType, String photosOrder) {
+        this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.photosType = photosType;

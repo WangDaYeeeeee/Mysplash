@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 261
-        versionName "2.6.1"
+        versionCode 266
+        versionName "2.6.6"
     }
     sourceSets {
         main {
@@ -54,7 +54,7 @@ buildscript {
 
 apply plugin: 'org.greenrobot.greendao'
 greendao {
-    schemaVersion 9
+    schemaVersion 10
     generateTests false
 }
 

@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 
 import com.wangdaye.mysplash._common.data.entity.database.DaoMaster;
 import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
-import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntityDao;
 
 import java.util.List;
 
@@ -28,62 +27,29 @@ public class DatabaseHelper {
 
     /** <br> data. */
 
-    void writeDownloadEntity(DownloadMissionEntity entity) {
-        deleteDownloadEntity(entity.missionId);
-        new DaoMaster(openHelper.getWritableDatabase())
-                .newSession()
-                .getDownloadMissionEntityDao()
-                .insert(entity);
+    public void writeDownloadEntity(DownloadMissionEntity entity) {
+        DownloadMissionEntity.insertDownloadEntity(openHelper.getWritableDatabase(), entity);
     }
 
     public void deleteDownloadEntity(long missionId) {
-        DownloadMissionEntity entity = readDownloadEntity(missionId);
-        if (entity != null) {
-            new DaoMaster(openHelper.getWritableDatabase())
-                    .newSession()
-                    .getDownloadMissionEntityDao()
-                    .delete(entity);
-        }
+        DownloadMissionEntity.deleteDownloadEntity(openHelper.getWritableDatabase(), missionId);
     }
 
-    void clearDownloadEntity() {
-        new DaoMaster(openHelper.getWritableDatabase())
-                .newSession()
-                .getDownloadMissionEntityDao()
-                .deleteAll();
+    public void clearDownloadEntity() {
+        DownloadMissionEntity.clearDownloadEntity(openHelper.getWritableDatabase());
     }
 
     public List<DownloadMissionEntity> readDownloadEntity() {
-        return new DaoMaster(openHelper.getReadableDatabase())
-                .newSession()
-                .getDownloadMissionEntityDao()
-                .queryBuilder()
-                .list();
+        return DownloadMissionEntity.searchDownloadEntityList(openHelper.getReadableDatabase());
     }
 
     @Nullable
     public DownloadMissionEntity readDownloadEntity(long missionId) {
-        List<DownloadMissionEntity> entityList = new DaoMaster(openHelper.getReadableDatabase())
-                .newSession()
-                .getDownloadMissionEntityDao()
-                .queryBuilder()
-                .where(DownloadMissionEntityDao.Properties.MissionId.eq(missionId))
-                .list();
-        if (entityList != null && entityList.size() > 0) {
-            return entityList.get(0);
-        } else {
-            return null;
-        }
+        return DownloadMissionEntity.searchDownloadEntity(openHelper.getReadableDatabase(), missionId);
     }
 
-    public int readDownloadEntityCount(String photoId) {
-        return new DaoMaster(openHelper.getReadableDatabase())
-                .newSession()
-                .getDownloadMissionEntityDao()
-                .queryBuilder()
-                .where(DownloadMissionEntityDao.Properties.PhotoId.eq(photoId))
-                .list()
-                .size();
+    public int readDownloadEntityCount(String title) {
+        return DownloadMissionEntity.searchDownloadEntityCount(openHelper.getReadableDatabase(), title);
     }
 
     /** <br> singleton. */

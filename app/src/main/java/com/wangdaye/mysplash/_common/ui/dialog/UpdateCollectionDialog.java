@@ -24,6 +24,7 @@ import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -175,17 +176,15 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
     }
 
     private void notifyUpdateFailed() {
-        Toast.makeText(
-                getActivity(),
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_update_collection_failed),
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_SHORT);
     }
 
     private void notifyDeleteFailed() {
-        Toast.makeText(
-                getActivity(),
+        NotificationUtils.showSnackbar(
                 getString(R.string.feedback_delete_collection_failed),
-                Toast.LENGTH_SHORT).show();
+                Toast.LENGTH_SHORT);
     }
 
     /** <br> data. */
@@ -264,12 +263,13 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
 
     @Override
     public void onRequestACollectionSuccess(Call<Collection> call, Response<Collection> response) {
-        if (response.isSuccessful()) {
+        if (response.isSuccessful() && response.body() != null) {
             if (listener != null) {
                 listener.onEditCollection(response.body());
             }
             dismiss();
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
+        } else if (response.isSuccessful()
+                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
             dismiss();
             RateLimitDialog dialog = new RateLimitDialog();
             dialog.show(getFragmentManager(), null);

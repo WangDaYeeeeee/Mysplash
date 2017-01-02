@@ -29,6 +29,7 @@ public class DownloadHelper {
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
     public static final int WALLPAPER_TYPE = 3;
+    public static final int COLLECTION_TYPE = 4;
 
     /** <br> life cycle. */
 
@@ -45,11 +46,32 @@ public class DownloadHelper {
             DownloadMissionEntity entity = new DownloadMissionEntity(p, type);
 
             DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
-                    .setTitle(entity.photoId)
+                    .setTitle(entity.getRealTitle())
                     .setDescription(c.getString(R.string.feedback_downloading))
                     .setDestinationInExternalPublicDir(
                             Mysplash.DOWNLOAD_PATH,
-                            entity.photoId + Mysplash.DOWNLOAD_FORMAT);
+                            entity.title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+            request.allowScanningByMediaScanner();
+
+            entity.missionId = downloadManager.enqueue(request);
+            DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+
+            NotificationUtils.showSnackbar(
+                    c.getString(R.string.feedback_download_start),
+                    Snackbar.LENGTH_SHORT);
+        }
+    }
+
+    public void addMission(Context c, Collection collection) {
+        if (FileUtils.createDownloadPath(c)) {
+            DownloadMissionEntity entity = new DownloadMissionEntity(collection);
+
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
+                    .setTitle(entity.getRealTitle())
+                    .setDescription(c.getString(R.string.feedback_downloading))
+                    .setDestinationInExternalPublicDir(
+                            Mysplash.DOWNLOAD_PATH,
+                            entity.title + Mysplash.DOWNLOAD_COLLECTION_FORMAT);
             request.allowScanningByMediaScanner();
 
             entity.missionId = downloadManager.enqueue(request);
@@ -63,11 +85,11 @@ public class DownloadHelper {
 
     private long addMission(Context c, DownloadMissionEntity entity) {
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
-                .setTitle(entity.photoId)
+                .setTitle(entity.getRealTitle())
                 .setDescription(c.getString(R.string.feedback_downloading))
                 .setDestinationInExternalPublicDir(
                         Mysplash.DOWNLOAD_PATH,
-                        entity.photoId + Mysplash.DOWNLOAD_FORMAT);
+                        entity.title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
         request.allowScanningByMediaScanner();
 
         entity.missionId = downloadManager.enqueue(request);
@@ -106,23 +128,6 @@ public class DownloadHelper {
             downloadManager.remove(entityList.get(i).missionId);
         }
         DatabaseHelper.getInstance(c).clearDownloadEntity();
-    }
-
-    // collection.
-
-    public void downloadCollection(Context c, Collection collection) {
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(collection.links.download))
-                .setTitle("#" + collection.id)
-                .setDescription(c.getString(R.string.feedback_downloading))
-                .setDestinationInExternalPublicDir(
-                        Mysplash.DOWNLOAD_PATH,
-                        "#" + collection.id + Mysplash.DOWNLOAD_FORMAT);
-
-        ((DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request);
-
-        NotificationUtils.showSnackbar(
-                c.getString(R.string.feedback_download_start),
-                Snackbar.LENGTH_SHORT);
     }
 
     // option.

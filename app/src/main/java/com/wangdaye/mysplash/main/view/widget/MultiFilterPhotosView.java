@@ -23,7 +23,9 @@ import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.i.model.ScrollModel;
@@ -35,6 +37,7 @@ import com.wangdaye.mysplash._common.i.view.MultiFilterView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -53,7 +56,8 @@ import java.util.ArrayList;
 
 public class MultiFilterPhotosView extends FrameLayout
         implements MultiFilterView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        SelectCollectionDialog.OnCollectionsChangedListener {
     // model.
     private MultiFilterModel multiFilterModel;
     private LoadModel loadModel;
@@ -211,7 +215,10 @@ public class MultiFilterPhotosView extends FrameLayout
 
     private void initModel() {
         this.multiFilterModel = new MultiFilterObject(
-                new PhotoAdapter(getContext(), new ArrayList<Photo>()));
+                new PhotoAdapter(
+                        getContext(),
+                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                        this));
         this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
         this.scrollModel = new ScrollObject(true);
     }
@@ -297,6 +304,18 @@ public class MultiFilterPhotosView extends FrameLayout
             scrollPresenter.autoLoad(dy);
         }
     };
+
+    // on collections changed listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        multiFilterPresenter.getAdapter().updatePhoto(p, true);
+    }
 
     // view.
 

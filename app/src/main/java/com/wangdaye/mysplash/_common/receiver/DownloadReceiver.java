@@ -38,7 +38,8 @@ public class DownloadReceiver extends BroadcastReceiver {
                 if (cursorCount > 0) {
                     cursor.moveToFirst();
                     if (DownloadHelper.isMissionSuccess(cursor)) {
-                        if (!cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE)).matches("#.+")) {
+                        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadEntity(missionId);
+                        if (entity != null && entity.downloadType != DownloadHelper.COLLECTION_TYPE) {
                             downloadPhotoSuccess(context, missionId);
                         } else {
                             downloadCollectionSuccess(context, missionId);
@@ -66,7 +67,7 @@ public class DownloadReceiver extends BroadcastReceiver {
                             Uri.parse("file://"
                                     + Environment.getExternalStorageDirectory()
                                     + Mysplash.DOWNLOAD_PATH
-                                    + entity.photoId + Mysplash.DOWNLOAD_FORMAT)));
+                                    + entity.title + Mysplash.DOWNLOAD_PHOTO_FORMAT)));
 
             if (Mysplash.getInstance() != null
                     && Mysplash.getInstance().getTopActivity() != null) {
@@ -98,14 +99,14 @@ public class DownloadReceiver extends BroadcastReceiver {
                 c.getString(R.string.feedback_download_photo_success),
                 c.getString(R.string.check),
                 Snackbar.LENGTH_LONG,
-                new OnCheckPhotoListener(Mysplash.getInstance().getTopActivity(), entity.photoId));
+                new OnCheckPhotoListener(Mysplash.getInstance().getTopActivity(), entity.title));
     }
 
     private void shareDownloadSuccess(DownloadMissionEntity entity) {
         Uri file = Uri.parse("file://"
                 + Environment.getExternalStorageDirectory()
                 + Mysplash.DOWNLOAD_PATH
-                + entity.photoId + Mysplash.DOWNLOAD_FORMAT);
+                + entity.title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
         Intent action = new Intent(Intent.ACTION_SEND);
         action.putExtra(Intent.EXTRA_STREAM, file);
         action.setType("image/*");
@@ -122,7 +123,7 @@ public class DownloadReceiver extends BroadcastReceiver {
         Uri file = Uri.parse("file://"
                 + Environment.getExternalStorageDirectory()
                 + Mysplash.DOWNLOAD_PATH
-                + entity.photoId + Mysplash.DOWNLOAD_FORMAT);
+                + entity.title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
         Intent action = new Intent(Intent.ACTION_ATTACH_DATA);
         action.setDataAndType(file, "image/jpg");
         action.putExtra("mimeType", "image/jpg");
@@ -136,16 +137,20 @@ public class DownloadReceiver extends BroadcastReceiver {
     }
 
     private void downloadCollectionSuccess(Context c, long missionId) {
-        if (Mysplash.getInstance() != null
-                && Mysplash.getInstance().getTopActivity() != null) {
-            NotificationUtils.showActionSnackbar(
-                    c.getString(R.string.feedback_download_collection_success),
-                    c.getString(R.string.check),
-                    Snackbar.LENGTH_LONG,
-                    new OnCheckCollectionListener(c, missionId));
-        } else {
-            NotificationUtils.sendDownloadCollectionSuccessNotification(c, missionId);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(missionId);
+        if (entity != null) {
+            if (Mysplash.getInstance() != null
+                    && Mysplash.getInstance().getTopActivity() != null) {
+                NotificationUtils.showActionSnackbar(
+                        c.getString(R.string.feedback_download_collection_success),
+                        c.getString(R.string.check),
+                        Snackbar.LENGTH_LONG,
+                        new OnCheckCollectionListener(c, entity.title));
+            } else {
+                NotificationUtils.sendDownloadCollectionSuccessNotification(c, entity);
+            }
         }
+        DatabaseHelper.getInstance(c).deleteDownloadEntity(missionId);
     }
 
     /** <br> interface. */
@@ -155,12 +160,12 @@ public class DownloadReceiver extends BroadcastReceiver {
         private Context c;
 
         // data
-        private String id;
+        private String title;
 
         // life cycle.
-        OnCheckPhotoListener(Context c, String id) {
+        OnCheckPhotoListener(Context c, String title) {
             this.c = c;
-            this.id = id;
+            this.title = title;
         }
 
         @Override
@@ -171,7 +176,7 @@ public class DownloadReceiver extends BroadcastReceiver {
             Uri uri = Uri.parse("file://"
                     + Environment.getExternalStorageDirectory()
                     + Mysplash.DOWNLOAD_PATH
-                    + id + Mysplash.DOWNLOAD_FORMAT);
+                    + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
             intent.setDataAndType(uri, "image/jpg");
 
             c.startActivity(
@@ -186,26 +191,23 @@ public class DownloadReceiver extends BroadcastReceiver {
         private Context c;
 
         // data
-        private long id;
+        private String title;
 
         // life cycle.
-        OnCheckCollectionListener(Context c, long id) {
+        OnCheckCollectionListener(Context c, String title) {
             this.c = c;
-            this.id = id;
+            this.title = title;
         }
 
         @Override
         public void onClick(View v) {
-            DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
-            Cursor cursor = ((DownloadManager) c.getSystemService(Context.DOWNLOAD_SERVICE)).query(query);
-
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             Uri uri = Uri.parse("file://"
                     + Environment.getExternalStorageDirectory()
                     + Mysplash.DOWNLOAD_PATH
-                    + cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_TITLE))
+                    + title
                     + ".zip");
             intent.setDataAndType(uri, "application/x-zip-compressed");
 
