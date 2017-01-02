@@ -169,11 +169,6 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
                 listener.onDeletePhotoSuccess(response.body(), position);
             }
             dismiss();
-        } else if (response.isSuccessful()
-                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-            dismiss();
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(getFragmentManager(), null);
         } else {
             setState(CONFIRM_STATE);
             notifyFailed();

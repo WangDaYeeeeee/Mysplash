@@ -12,7 +12,6 @@ import com.wangdaye.mysplash._common.i.model.SearchModel;
 import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;
 import com.wangdaye.mysplash._common.i.view.SearchView;
 import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -186,9 +185,6 @@ public class SearchUsersImplementor
                 view.requestPhotosSuccess();
             } else {
                 view.requestPhotosFailed(c.getString(R.string.feedback_search_nothing_tv));
-                RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getTopActivity(),
-                        response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 

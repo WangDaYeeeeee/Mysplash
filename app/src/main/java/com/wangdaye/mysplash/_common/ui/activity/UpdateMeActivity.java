@@ -25,7 +25,6 @@ import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
@@ -389,9 +388,6 @@ public class UpdateMeActivity extends MysplashActivity
             NotificationUtils.showSnackbar(
                     getString(R.string.feedback_update_profile_failed),
                     Snackbar.LENGTH_SHORT);
-            RateLimitDialog.checkAndNotify(
-                    this,
-                    response.headers().get("X-Ratelimit-Remaining"));
         }
     }
 

@@ -12,7 +12,6 @@ import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.view.CollectionsView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import java.util.List;
@@ -226,9 +225,6 @@ public class CollectionsImplementor
                 view.requestCollectionsSuccess();
             } else {
                 view.requestCollectionsFailed(c.getString(R.string.feedback_load_nothing_tv));
-                RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getTopActivity(),
-                        response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 

@@ -32,7 +32,6 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
@@ -293,9 +292,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     itemList.get(position).liked_by_user = response.body().photo.liked_by_user;
                     itemList.get(position).likes = response.body().photo.likes;
                 }
-            } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-                RateLimitDialog dialog = new RateLimitDialog();
-                dialog.show(((Activity) a).getFragmentManager(), null);
             } else {
                 service.setLikeForAPhoto(
                         id,

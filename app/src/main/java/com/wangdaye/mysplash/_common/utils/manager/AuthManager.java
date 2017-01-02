@@ -10,7 +10,6 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -326,11 +325,6 @@ public class AuthManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
             }
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(
-                    Mysplash.getInstance().getTopActivity().getFragmentManager(),
-                    null);
         } else {
             service.requestUserProfile(me.username, this);
         }

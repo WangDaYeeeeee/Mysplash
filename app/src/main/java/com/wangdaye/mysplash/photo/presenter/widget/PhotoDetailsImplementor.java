@@ -9,7 +9,6 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotoDetailsModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotoDetailsPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotoDetailsView;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import retrofit2.Call;
@@ -87,9 +86,6 @@ public class PhotoDetailsImplementor
                 view.requestDetailsSuccess();
             } else {
                 requestPhotoDetails(c);
-                RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getTopActivity(),
-                        response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 

@@ -268,11 +268,6 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
                 listener.onEditCollection(response.body());
             }
             dismiss();
-        } else if (response.isSuccessful()
-                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-            dismiss();
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(getFragmentManager(), null);
         } else {
             setState(INPUT_STATE);
             notifyUpdateFailed();
@@ -294,10 +289,6 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
                 listener.onDeleteCollection(collection);
             }
             dismiss();
-        } else if (Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-            dismiss();
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(getFragmentManager(), null);
         } else {
             setState(INPUT_STATE);
             notifyDeleteFailed();

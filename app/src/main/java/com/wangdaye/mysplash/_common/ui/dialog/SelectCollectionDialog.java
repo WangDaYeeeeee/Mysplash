@@ -421,11 +421,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     page ++;
                     requestCollections();
                 }
-            } else if (response.isSuccessful()
-                    && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-                dismiss();
-                RateLimitDialog dialog = new RateLimitDialog();
-                dialog.show(getFragmentManager(), null);
             } else {
                 requestCollections();
             }
@@ -454,11 +449,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
             if (listener != null) {
                 listener.onAddCollection(response.body());
             }
-        } else if (response.isSuccessful()
-                && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-            dismiss();
-            RateLimitDialog dialog = new RateLimitDialog();
-            dialog.show(getFragmentManager(), null);
         } else {
             setState(INPUT_COLLECTION_STATE);
             notifyCreateFailed();
@@ -499,11 +489,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 adapter.notifyDataSetChanged();
                 // show collections list.
                 setState(SHOW_COLLECTIONS_STATE);
-            } else if (response.isSuccessful()
-                    && Integer.parseInt(response.headers().get("X-Ratelimit-Remaining")) < 0) {
-                dismiss();
-                RateLimitDialog dialog = new RateLimitDialog();
-                dialog.show(getFragmentManager(), null);
             } else {
                 setState(SHOW_COLLECTIONS_STATE);
                 if (add) {

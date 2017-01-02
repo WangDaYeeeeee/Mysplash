@@ -46,7 +46,6 @@ import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
-import com.wangdaye.mysplash.me.view.widget.MePhotosView;
 import com.wangdaye.mysplash.user.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.user.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.user.model.widget.PhotosObject;
@@ -412,8 +411,8 @@ public class UserActivity extends MysplashActivity
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        ((MePhotosView) pagers[0]).updatePhoto(p);
-        ((MePhotosView) pagers[2]).updatePhoto(p);
+        ((UserPhotosView) pagers[0]).updatePhoto(p);
+        ((UserPhotosView) pagers[2]).updatePhoto(p);
     }
 
     // view.

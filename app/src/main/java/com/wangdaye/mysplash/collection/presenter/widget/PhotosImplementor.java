@@ -13,7 +13,6 @@ import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.ui.dialog.RateLimitDialog;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash.collection.model.widget.PhotosObject;
 
@@ -224,9 +223,6 @@ public class PhotosImplementor
                 view.requestPhotosSuccess();
             } else {
                 view.requestPhotosFailed(c.getString(R.string.feedback_load_nothing_tv));
-                RateLimitDialog.checkAndNotify(
-                        Mysplash.getInstance().getTopActivity(),
-                        response.headers().get("X-Ratelimit-Remaining"));
             }
         }
 
