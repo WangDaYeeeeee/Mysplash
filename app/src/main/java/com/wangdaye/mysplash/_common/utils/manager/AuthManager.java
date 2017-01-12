@@ -55,13 +55,7 @@ public class AuthManager
     public static final int LOADING_USER_STATE = 2;
 
     private static final String KEY_VERSION = "version";
-    private static final int VERSION_CODE = 4;
-
-    private static final String KEY_BUILD_TYPE = "build_type";
-    private static final int BUILD_TYPE_BETA = 1;
-    private static final int BUILD_TYPE_RELEASE = 2;
-    private final int CORRECT_BUILD_TYPE = BUILD_TYPE_BETA;
-    // TODO: Need change APPLICATION_ID & SECRET when build type is change.
+    private static final int VERSION_CODE = 5;
 
     /** <br> life cycle. */
 
@@ -94,15 +88,12 @@ public class AuthManager
 
     private void updateVersion(SharedPreferences sharedPreferences) {
         int versionNow = sharedPreferences.getInt(KEY_VERSION, 0);
-        int buildTypeNow = sharedPreferences.getInt(KEY_BUILD_TYPE, BUILD_TYPE_RELEASE);
         String token = sharedPreferences.getString(KEY_ACCESS_TOKEN, null);
 
-        if ((versionNow < VERSION_CODE || buildTypeNow != CORRECT_BUILD_TYPE)
-                && !TextUtils.isEmpty(token)) {
+        if ((versionNow < VERSION_CODE) && !TextUtils.isEmpty(token)) {
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(KEY_VERSION, VERSION_CODE);
-            editor.putInt(KEY_BUILD_TYPE, CORRECT_BUILD_TYPE);
             editor.putString(KEY_ACCESS_TOKEN, null);
             editor.putString(KEY_USERNAME, null);
             editor.putString(KEY_FIRST_NAME, null);

@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -72,6 +73,7 @@ public class MainActivity extends MysplashActivity
 
     // view
     private DrawerLayout drawer;
+    private NavigationView nav;
     private ImageView appIcon;
     private CircleImageView navAvatar;
     private TextView navTitle;
@@ -125,7 +127,7 @@ public class MainActivity extends MysplashActivity
                 (ArrayList<Integer>) fragmentManagePresenter.getIdList());
         outState.putInt(
                 KEY_MAIN_ACTIVITY_SELECTED_ID,
-                drawerPresenter.getSelectedItemId());
+                drawerPresenter.getCheckedItemId());
         for (int i = 0; i < fragmentManagePresenter.getFragmentCount(); i ++) {
             fragmentManagePresenter.getFragmentList().get(i).writeBundle(outState);
         }
@@ -246,13 +248,13 @@ public class MainActivity extends MysplashActivity
 
         this.drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
 
-        NavigationView nav = (NavigationView) findViewById(R.id.activity_main_navView);
+        this.nav = (NavigationView) findViewById(R.id.activity_main_navView);
         if (Mysplash.getInstance().isLightTheme()) {
             nav.inflateMenu(R.menu.activity_main_drawer_light);
         } else {
             nav.inflateMenu(R.menu.activity_main_drawer_dark);
         }
-        nav.setCheckedItem(drawerPresenter.getSelectedItemId());
+        nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
 
         View header = nav.getHeaderView(0);
@@ -491,6 +493,12 @@ public class MainActivity extends MysplashActivity
     public void touchNavItem(int id) {
         messageManagePresenter.sendMessage(id, null);
         drawer.closeDrawer(GravityCompat.START);
+    }
+
+    @Override
+    public void setCheckedItem(int id) {
+        Log.d("MAIN", "SET CHECKED ITEM");
+        nav.setCheckedItem(id);
     }
 
     /** <br> thread. */

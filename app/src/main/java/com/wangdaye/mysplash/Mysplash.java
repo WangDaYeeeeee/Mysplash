@@ -1,7 +1,9 @@
 package com.wangdaye.mysplash;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
@@ -27,19 +29,14 @@ public class Mysplash extends Application {
     private boolean notifiedSetBackToTop;
 
     // Unsplash data.
-    public static final String APPLICATION_ID = "7a96a77d719e9967f935da53784d6a3eb58a4fb174dda25e89ec69059e46c815";
-    public static final String SECRET = "dd766f4ee6e01599ca6db2e97c306a883a024f7322f92d4f7ab4aeae3be7924e";
+    public static final String APP_ID_BETA = "72bf3302b0fb868d8822332a8dad712341c48a5bec5af94b7beea4d1cc030ee6";
+    public static final String SECRET_BETA = "da8217d65b3a76ca3c94710a33287dbe2fee53892595917339b9dcef2eaf94e6";
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_LOGIN_CALLBACK = "unsplash-auth-callback";
-    public static final String UNSPLASH_LOGIN_URL = Mysplash.UNSPLASH_URL + "oauth/authorize"
-            + "?client_id=" + Mysplash.APPLICATION_ID
-            + "&redirect_uri=" + "mysplash%3A%2F%2F" + UNSPLASH_LOGIN_CALLBACK
-            + "&response_type=" + "code"
-            + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+read_collections+write_collections";
 
     // application data.
     public static final String DATE_FORMAT = "yyyy/MM/dd";
@@ -100,6 +97,32 @@ public class Mysplash extends Application {
     }
 
     /** <br> data. */
+
+    public static String getAppId(Context c) {
+        return isDebug(c) ? APP_ID_BETA : BuildConfig.APP_ID_RELEASE;
+    }
+
+    public static String getSecret(Context c) {
+        return isDebug(c) ? SECRET_BETA : BuildConfig.SECRET_RELEASE;
+    }
+
+    public static boolean isDebug(Context c) {
+        try {
+            return (c.getApplicationInfo().flags
+                    & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
+        } catch (Exception ignored) {
+
+        }
+        return false;
+    }
+
+    public static String getLoginUrl(Context c) {
+        return Mysplash.UNSPLASH_URL + "oauth/authorize"
+                + "?client_id=" + getAppId(c)
+                + "&redirect_uri=" + "mysplash%3A%2F%2F" + UNSPLASH_LOGIN_CALLBACK
+                + "&response_type=" + "code"
+                + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+read_collections+write_collections";
+    }
 
     public void addActivity(MysplashActivity a) {
         for (MysplashActivity activity : activityList) {

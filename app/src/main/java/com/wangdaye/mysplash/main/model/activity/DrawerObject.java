@@ -9,23 +9,23 @@ import com.wangdaye.mysplash._common.i.model.DrawerModel;
 public class DrawerObject
         implements DrawerModel {
     // data
-    private int selectedId;
+    private int checkedId;
 
     /** <br> life cycle. */
 
     public DrawerObject(int id) {
-        selectedId = id;
+        checkedId = id;
     }
 
     /** <br> model. */
 
     @Override
-    public int getSelectedItemId() {
-        return selectedId;
+    public int getCheckedItemId() {
+        return checkedId;
     }
 
     @Override
-    public void setSelectedItemId(int id) {
-        selectedId = id;
+    public void setCheckedItemId(int id) {
+        checkedId = id;
     }
 }

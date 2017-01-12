@@ -108,7 +108,10 @@ public class LoginActivity extends MysplashActivity
                 && intent.getData() != null
                 && !TextUtils.isEmpty(intent.getData().getAuthority())
                 && Mysplash.UNSPLASH_LOGIN_CALLBACK.equals(intent.getData().getAuthority())) {
-            service.requestAccessToken(intent.getData().getQueryParameter("code"), this);
+            service.requestAccessToken(
+                    Mysplash.getInstance(),
+                    intent.getData().getQueryParameter("code"),
+                    this);
             setState(AUTH_STATE);
         }
     }
@@ -217,7 +220,7 @@ public class LoginActivity extends MysplashActivity
                 break;
 
             case R.id.activity_login_loginBtn: {
-                Uri uri = Uri.parse(Mysplash.UNSPLASH_LOGIN_URL);
+                Uri uri = Uri.parse(Mysplash.getLoginUrl(Mysplash.getInstance()));
                 startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 break;
             }

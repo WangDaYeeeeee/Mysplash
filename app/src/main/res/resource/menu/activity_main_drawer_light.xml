@@ -16,8 +16,7 @@
             android:id="@+id/action_multi_filter"
             android:orderInCategory="100"
             android:icon="@drawable/ic_filter_outline_light"
-            android:title="@string/action_multi_filter"
-            android:checkable="true" />
+            android:title="@string/action_multi_filter" />
 
         <item
             android:id="@+id/action_category_buildings"
@@ -58,7 +57,7 @@
     </group>
 
     <group
-        android:id="@+id/options"
+        android:id="@+id/option"
         android:checkableBehavior="none">
 
         <item

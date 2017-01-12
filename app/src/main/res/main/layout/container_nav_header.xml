@@ -70,12 +70,4 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/container_nav_header_subtitle"
-        android:background="@android:color/black"
-        android:alpha="0.1"
-        tools:ignore="UselessLeaf" />
-
 </RelativeLayout>

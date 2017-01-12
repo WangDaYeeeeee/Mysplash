@@ -26,19 +26,24 @@ public class DrawerImplementor
 
     @Override
     public void touchNavItem(int id) {
-        if (model.getSelectedItemId() != id) {
+        int oldId = model.getCheckedItemId();
+        if (oldId != id) {
             view.touchNavItem(id);
         }
         if (id != R.id.action_change_theme
                 && id != R.id.action_download_manage
                 && id != R.id.action_settings
                 && id != R.id.action_about) {
-            model.setSelectedItemId(id);
+            model.setCheckedItemId(id);
+            view.setCheckedItem(id);
+        } else {
+            model.setCheckedItemId(oldId);
+            view.setCheckedItem(oldId);
         }
     }
 
     @Override
-    public int getSelectedItemId() {
-        return model.getSelectedItemId();
+    public int getCheckedItemId() {
+        return model.getCheckedItemId();
     }
 }

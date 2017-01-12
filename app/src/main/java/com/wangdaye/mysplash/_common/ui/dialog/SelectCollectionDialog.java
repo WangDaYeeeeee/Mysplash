@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,6 +20,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -53,6 +56,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private CircularProgressView progressView;
 
     private LinearLayout selectorContainer;
+    private RelativeLayout selectorTitleBar;
 
     private LinearLayout creatorContainer;
     private EditText nameTxt;
@@ -122,6 +126,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         this.selectorContainer = (LinearLayout) v.findViewById(R.id.dialog_select_collection_selectorContainer);
         selectorContainer.setVisibility(View.VISIBLE);
 
+        this.selectorTitleBar = (RelativeLayout) v.findViewById(R.id.dialog_select_collection_titleBar);
+
         ImageButton refreshBtn = (ImageButton) v.findViewById(R.id.dialog_select_collection_selectorRefreshBtn);
         if (Mysplash.getInstance().isLightTheme()) {
             refreshBtn.setImageResource(R.drawable.ic_refresh_light);
@@ -133,6 +139,9 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.dialog_select_collection_selectorRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            recyclerView.addOnScrollListener(new CollectionListScrollListener());
+        }
 
         this.creatorContainer = (LinearLayout) v.findViewById(R.id.dialog_select_collection_creatorContainer);
         creatorContainer.setVisibility(View.GONE);
@@ -221,6 +230,11 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         NotificationUtils.showSnackbar(
                 getString(R.string.feedback_delete_photo_failed),
                 Snackbar.LENGTH_SHORT);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void setTitleBarElevation(float elevation) {
+        selectorTitleBar.setElevation(elevation);
     }
 
     /** <br> data. */
@@ -322,6 +336,18 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 hideKeyboard();
                 setState(SHOW_COLLECTIONS_STATE);
                 break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private class CollectionListScrollListener extends RecyclerView.OnScrollListener {
+        // data
+        private int totalY = 0;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+            totalY += dy;
+            setTitleBarElevation(Math.min(5, totalY));
         }
     }
 

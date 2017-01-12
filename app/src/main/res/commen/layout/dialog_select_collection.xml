@@ -29,8 +29,10 @@
             android:background="?attr/root_color">
 
             <RelativeLayout
+                android:id="@+id/dialog_select_collection_titleBar"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="?attr/root_color">
 
                 <TextView
                     android:text="@string/feedback_add_to_collection"

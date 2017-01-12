@@ -1,5 +1,7 @@
 package com.wangdaye.mysplash._common.data.service;
 
+import android.content.Context;
+
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.AuthorizeApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
@@ -20,11 +22,11 @@ public class AuthorizeService {
 
     /** <br> data. */
 
-    public void requestAccessToken(String code, final OnRequestAccessTokenListener l) {
+    public void requestAccessToken(Context c, String code, final OnRequestAccessTokenListener l) {
         Call<AccessToken> getAccessToken = buildApi()
                 .getAccessToken(
-                        Mysplash.APPLICATION_ID,
-                        Mysplash.SECRET,
+                        Mysplash.getAppId(c),
+                        Mysplash.getSecret(c),
                         "mysplash://" + Mysplash.UNSPLASH_LOGIN_CALLBACK,
                         code,
                         "authorization_code");

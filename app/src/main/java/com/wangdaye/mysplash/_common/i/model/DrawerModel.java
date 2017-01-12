@@ -6,6 +6,6 @@ package com.wangdaye.mysplash._common.i.model;
 
 public interface DrawerModel {
 
-    int getSelectedItemId();
-    void setSelectedItemId(int id);
+    int getCheckedItemId();
+    void setCheckedItemId(int id);
 }
