@@ -17,29 +17,28 @@ public class LanguageUtils {
 
     public static void setLanguage(Context c) {
         String language = Mysplash.getInstance().getLanguage();
-        if (language.equals("follow_system")) {
-            return;
+        if (!language.equals("follow_system")) {
+            Resources resources = c.getResources();
+            Configuration configuration = resources.getConfiguration();
+            DisplayMetrics metrics = resources.getDisplayMetrics();
+            switch (language) {
+                case "chinese":
+                    configuration.setLocale(new Locale("zh"));
+                    break;
+
+                case "italian":
+                    configuration.setLocale(new Locale("it"));
+                    break;
+
+                case "turkish":
+                    configuration.setLocale(new Locale("tr"));
+                    break;
+
+                default:
+                    configuration.setLocale(new Locale("en"));
+                    break;
+            }
+            resources.updateConfiguration(configuration, metrics);
         }
-        Resources resources = c.getResources();
-        Configuration configuration = resources.getConfiguration();
-        DisplayMetrics metrics = resources.getDisplayMetrics();
-        switch (language) {
-            case "english":
-                configuration.setLocale(Locale.US);
-                break;
-
-            case "chinese":
-                configuration.setLocale(Locale.SIMPLIFIED_CHINESE);
-                break;
-
-            case "italian":
-                configuration.setLocale(Locale.ITALIAN);
-                break;
-
-            default:
-                configuration.setLocale(Locale.US);
-                break;
-        }
-        resources.updateConfiguration(configuration, metrics);
     }
 }

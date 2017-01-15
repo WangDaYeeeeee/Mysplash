@@ -1,0 +1,183 @@
+<resources>
+
+    <!-- 关键字. -->
+    <string name="about_app">概览</string>
+    <string name="introduce">介绍</string>
+    <string name="gitHub">GITHUB</string>
+    <string name="email">邮件</string>
+    <string name="source_code">源码</string>
+    <string name="translators">译者</string>
+    <string name="libraries">开源库</string>
+    <string name="enter">确认</string>
+    <string name="copy">复制</string>
+    <string name="next">下一步</string>
+    <string name="cancel">取消</string>
+    <string name="backstage">后台进行</string>
+    <string name="details">详情</string>
+    <string name="restart">重启</string>
+    <string name="create">创建</string>
+    <string name="delete">删除</string>
+    <string name="save">保存</string>
+    <string name="check">查看</string>
+    <string name="set">设置</string>
+    <string name="search">搜索</string>
+    <string name="all">不限</string>
+    <string name="stats">统计</string>
+    <string name="by">来自</string>
+    <string name="on">拍摄于</string>
+    <string name="now">现在</string>
+
+    <!-- 反馈. -->
+    <string name="feedback_click_retry">点击重试</string>
+
+    <string name="feedback_load_failed_tv">加载失败</string>
+    <string name="feedback_load_failed_toast">加载失败</string>
+    <string name="feedback_load_nothing_tv">什么也没加载出来</string>
+    <string name="feedback_load_nothing_toast">什么也没加载出来</string>
+    <string name="feedback_search_failed_tv">搜索失败</string>
+    <string name="feedback_search_failed_toast">搜索失败</string>
+    <string name="feedback_search_nothing_tv">什么也没搜索到</string>
+    <string name="feedback_search_nothing_toast">什么也没搜索到</string>
+    <string name="feedback_search_bar">搜索照片，收藏集或者用户</string>
+    <string name="feedback_search_photos_bar">图片关键字</string>
+    <string name="feedback_search_users_bar">用户关键字</string>
+    <string name="feedback_search_photos_tv">搜索图片</string>
+    <string name="feedback_search_collections_tv">搜索收藏集</string>
+    <string name="feedback_search_users_tv">搜索用户</string>
+    <string name="feedback_is_over">全部加载结束</string>
+
+    <string name="feedback_notify_restart">重启后生效</string>
+
+    <string name="feedback_download_success">下载成功</string>
+    <string name="feedback_download_photo_success">下载照片成功</string>
+    <string name="feedback_download_photo_failed">下载照片失败</string>
+    <string name="feedback_download_collection_success">下载收藏集成功</string>
+    <string name="feedback_download_collection_failed">下载收藏集失败</string>
+    <string name="feedback_downloading">下载中</string>
+    <string name="feedback_download_start">下载开始</string>
+    <string name="feedback_no_sd_card">找不到存储设备</string>
+    <string name="feedback_create_file_failed">创建存储路径失败</string>
+    <string name="feedback_need_permission">获取权限失败</string>
+    <string name="feedback_choose_share_app">分享照片</string>
+    <string name="feedback_choose_wallpaper_app">设为壁纸</string>
+    <string name="feedback_download_repeat">下载任务重复</string>
+
+    <string name="feedback_size">尺寸</string>
+    <string name="feedback_color">颜色</string>
+    <string name="feedback_location">位置</string>
+    <string name="feedback_model">器材</string>
+    <string name="feedback_exposure">快门时间</string>
+    <string name="feedback_aperture">光圈</string>
+    <string name="feedback_focal">焦距</string>
+    <string name="feedback_iso">曝光度</string>
+
+    <string name="feedback_portfolio_is_null">个人主页为空</string>
+    <string name="feedback_no_filter">不存在过滤项</string>
+
+    <string name="feedback_request_token_failed">获取访问权限失败</string>
+    <string name="feedback_login_text">登录你的Unsplash账号</string>
+    <string name="feedback_please_login">请登录您的账号</string>
+
+    <string name="feedback_edit_my_profile">编辑个人信息</string>
+    <string name="feedback_edit_username">用户名 (字母、数字、下划线)</string>
+    <string name="feedback_edit_first_name">名字</string>
+    <string name="feedback_edit_last_name">姓氏</string>
+    <string name="feedback_edit_email">邮箱</string>
+    <string name="feedback_edit_portfolio">个人主页</string>
+    <string name="feedback_edit_location">位置</string>
+    <string name="feedback_edit_bio">个人简介</string>
+    <string name="feedback_update_profile_failed">编辑个人信息失败</string>
+
+    <string name="feedback_add_to_collection">添加至收藏集</string>
+    <string name="feedback_delete_from_collection">从收藏集中删除</string>
+    <string name="feedback_create_collection">创建收藏集</string>
+    <string name="feedback_edit_collection">编辑收藏集</string>
+    <string name="feedback_name">名称</string>
+    <string name="feedback_description">描述 (可选)</string>
+    <string name="feedback_collection_private">私有收藏集</string>
+
+    <string name="feedback_name_is_required">标题不能为空</string>
+    <string name="feedback_sure">确认要进行删除么</string>
+
+    <string name="feedback_notify_set_back_to_top">你可以设置按下返回键时的效果</string>
+
+    <string name="feedback_add_photo_failed">添加照片失败</string>
+    <string name="feedback_delete_photo_failed">删除照片失败</string>
+    <string name="feedback_create_collection_failed">创建收藏集失败</string>
+    <string name="feedback_update_collection_failed">编辑收藏集失败</string>
+    <string name="feedback_delete_collection_failed">删除收藏集失败</string>
+
+    <string name="feedback_overload">过载</string>
+    <string name="feedback_exceed_rate_limit">由于本小时的接口访问数超过了Unsplash官方的限制次数，所以我们将暂时无法加载数据。\n\n请于下个小时进行重试。</string>
+
+    <string name="feedback_confirm_change_theme">确认切换主题</string>
+    <string name="feedback_change_theme_warning">现在切换主题将导致下载任务取消</string>
+    <string name="feedback_confirm_restart">确认重启</string>
+    <string name="feedback_restart_warning">现在重启将导致下载任务取消</string>
+
+    <string name="feedback_click_again_to_exit">再次点击以退出</string>
+
+    <string name="feedback_share_photo_title">一张来自Unsplash.com的照片</string>
+    <string name="feedback_share_photo_extra">拍摄自#, 于$\n</string>
+
+    <string name="feedback_share_collection_title">一组来自Unsplash.com的收藏集</string>
+    <string name="feedback_share_collection_extra">创建自#, 于$\n</string>
+
+    <string name="feedback_share_user_title">一位Unsplash.com用户</string>
+    <string name="feedback_share_user_extra">#\n</string>
+
+    <!-- introduce. -->
+    <string name="introduce_title_search">全新的搜索界面</string>
+    <string name="introduce_description_search">更强大的搜索界面，从现在起，除了照片，你还可以搜索用户和收藏集</string>
+    <string name="introduce_title_filter">多项过滤</string>
+    <string name="introduce_description_filter">通过多个条件过滤图片，你可以在侧滑抽屉里看到这项新功能</string>
+    <string name="introduce_title_back_top">回滚至顶部</string>
+    <string name="introduce_description_back_top">点击顶栏或返回键，照片列表页面将会自动回滚到顶部</string>
+    <string name="introduce_title_start">开始使用</string>
+    <string name="introduce_description_start">希望您能喜欢Mysplash</string>
+
+    <!-- 菜单项. -->
+    <string name="action_home">主页</string>
+    <string name="action_multi_filter">多项筛选</string>
+    <string name="action_category_buildings">建筑</string>
+    <string name="action_category_food_drink">饮食</string>
+    <string name="action_category_nature">自然</string>
+    <string name="action_category_objects">物品</string>
+    <string name="action_category_people">人物</string>
+    <string name="action_category_technology">科技</string>
+    <string name="action_change_theme">更换主题</string>
+    <string name="action_download_manage">下载管理</string>
+    <string name="action_settings">设置</string>
+    <string name="action_about">关于</string>
+
+    <string name="action_search">搜索</string>
+    <string name="action_filter">筛选</string>
+
+    <string name="action_clear_text">清空内容</string>
+
+    <string name="action_open_download_link">访问下载页</string>
+    <string name="action_share">分享</string>
+    <string name="action_menu">菜单</string>
+
+    <string name="action_open_portfolio">个人主页</string>
+    <string name="action_submit">提交照片</string>
+
+    <string name="action_edit">编辑</string>
+    <string name="action_download">下载</string>
+
+    <string name="action_path">下载路径</string>
+    <string name="action_cancel_all">全部取消</string>
+
+    <!-- 设置项. -->
+    <string name="settings_category_basic">基础</string>
+    <string name="settings_title_back_to_top">点击返回键回到顶部</string>
+    <string name="settings_title_language">语言</string>
+
+    <string name="settings_category_filter">筛选</string>
+    <string name="settings_title_default_order">照片默认排序</string>
+    <string name="settings_title_default_collection_type">收藏默认类型</string>
+
+    <string name="settings_category_download">下载</string>
+    <string name="settings_title_download_scale">下载规格</string>
+
+</resources>

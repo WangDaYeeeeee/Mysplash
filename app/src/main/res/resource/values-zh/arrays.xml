@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 主页标签 -->
+    <string-array name="home_tabs">
+        <item>新作</item>
+        <item>精选</item>
+        <item>收藏集</item>
+    </string-array>
+
+    <!-- 搜索标签 -->
+    <string-array name="search_tabs">
+        <item>照片</item>
+        <item>收藏集</item>
+        <item>用户</item>
+    </string-array>
+
+    <!-- 用户标签 -->
+    <string-array name="user_tabs">
+        <item>照片</item>
+        <item>收藏集</item>
+        <item>喜欢</item>
+    </string-array>
+
+    <!-- 下载选项 -->
+    <string-array name="download_options">
+        <item>下载</item>
+        <item>分享</item>
+        <item>壁纸</item>
+    </string-array>
+
+    <!-- 照片顺序 -->
+    <string-array name="photo_orders">
+        <item>最新的</item>
+        <item>最久远的</item>
+        <item>最受欢迎的</item>
+        <item>随机</item>
+    </string-array>
+
+    <!-- 收藏集类型 -->
+    <string-array name="collection_types">
+        <item>所有</item>
+        <item>画展</item>
+        <item>精选</item>
+    </string-array>
+
+    <!-- 下载类型 -->
+    <string-array name="download_types">
+        <item>压缩过的</item>
+        <item>未经压缩</item>
+    </string-array>
+
+    <!-- 返回顶部 -->
+    <string-array name="back_to_top_type">
+        <item>应用于所有的照片列表界面</item>
+        <item>只应用于主页列表</item>
+        <item>关闭</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>跟随系统</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>Italiano</item>
+        <item>Türk</item>
+    </string-array>
+
+    <!-- 搜索规格 -->
+    <string-array name="search_orientations">
+        <item>横向</item>
+        <item>纵向</item>
+        <item>方正</item>
+    </string-array>
+
+</resources>

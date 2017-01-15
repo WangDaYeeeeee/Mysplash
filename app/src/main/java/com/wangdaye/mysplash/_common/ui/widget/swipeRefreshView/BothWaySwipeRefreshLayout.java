@@ -322,7 +322,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     }
 
     private void finishSpinner(final int dir, float dragDistance) {
-        if (dragDistance > mDragTriggerDistance) {
+        if (Math.abs(dragDistance) > mDragTriggerDistance) {
             if (dir == DIRECTION_TOP) {
                 setRefreshing(true, true /* notify */);
             } else {

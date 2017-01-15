@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.6.9</string>
+    <string name="version_code">2.7.0</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -77,9 +77,9 @@
     <string name="feedback_notify_restart">Restart to work.</string>
 
     <string name="feedback_download_success">Download success.</string>
-    <string name="feedback_download_photo_success">Download photo success.\nstorage/emulated/0/Pictures/Mysplash</string>
+    <string name="feedback_download_photo_success">Download photo success.</string>
     <string name="feedback_download_photo_failed">Download photo failed.</string>
-    <string name="feedback_download_collection_success">Download collection success.\nstorage/emulated/0/Pictures/Mysplash</string>
+    <string name="feedback_download_collection_success">Download collection success.</string>
     <string name="feedback_download_collection_failed">Download collection failed.</string>
     <string name="feedback_downloading">DOWNLOADING</string>
     <string name="feedback_download_start">Download start.</string>

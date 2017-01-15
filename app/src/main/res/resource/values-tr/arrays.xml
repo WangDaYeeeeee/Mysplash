@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- home tab. -->
+    <string-array name="home_tabs">
+        <item>YENİ</item>
+        <item>ÖNE ÇIKANLAR</item>
+        <item>KOLEKSİYONLAR</item>
+    </string-array>
+
+    <!-- search tab. -->
+    <string-array name="search_tabs">
+        <item>FOTOĞRAFLAR</item>
+        <item>KOLEKSİYONLAR</item>
+        <item>KULLANICILAR</item>
+    </string-array>
+
+    <!-- user tab. -->
+    <string-array name="user_tabs">
+        <item>FOTOĞRAFLAR</item>
+        <item>KOLEKSİYONLAR</item>
+        <item>BEĞENİLER</item>
+    </string-array>
+
+    <!-- download option. -->
+    <string-array name="download_options">
+        <item>İNDİR</item>
+        <item>PAYLAŞ</item>
+        <item>DUVARKAĞIDI</item>
+    </string-array>
+
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
+        <item>Yeniler</item>
+        <item>Eskiler</item>
+        <item>Popüler</item>
+        <item>Rastgele</item>
+    </string-array>
+
+    <!-- collection type. -->
+    <string-array name="collection_types">
+        <item>Tümü</item>
+        <item>Tasarım</item>
+        <item>Öne Çıkanlar</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>Kompakt</item>
+        <item>Raw</item>
+    </string-array>
+
+    <!-- back to top. -->
+    <string-array name="back_to_top_type">
+        <item>Liste görünümünün tamamı</item>
+        <item>Sadece giriş</item>
+        <item>Hiçbiri</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>Sistem dili</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>Italiano</item>
+        <item>Türk</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>Manzara</item>
+        <item>Portre</item>
+        <item>Kare</item>
+    </string-array>
+	
+</resources>

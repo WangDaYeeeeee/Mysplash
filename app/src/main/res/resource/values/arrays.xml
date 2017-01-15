@@ -84,12 +84,14 @@
         <item>English</item>
         <item>中文</item>
         <item>Italiano</item>
+        <item>Türk</item>
     </string-array>
     <string-array name="language_values">
         <item>follow_system</item>
         <item>english</item>
         <item>chinese</item>
         <item>italian</item>
+        <item>turkish</item>
     </string-array>
 
     <!-- search orientation. -->
