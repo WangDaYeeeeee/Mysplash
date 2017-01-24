@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.i.model;
 
-import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 
 import java.util.List;
 

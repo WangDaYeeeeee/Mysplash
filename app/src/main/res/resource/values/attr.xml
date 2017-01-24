@@ -33,7 +33,12 @@
     <!-- FreedomImageView -->
     <declare-styleable name="FreedomImageView">
         <attr name="fiv_cover_mode" format="boolean" />
-        <attr name="fiv_text_position" format="string" />
+        <attr name="fiv_shadow_position">
+            <enum name="top" value="1" />
+            <enum name="bottom" value="-1" />
+            <enum name="both" value="2" />
+            <enum name="none" value="0" />
+        </attr>
         <attr name="fiv_square" format="boolean" />
     </declare-styleable>
 

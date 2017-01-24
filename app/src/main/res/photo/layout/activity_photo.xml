@@ -104,6 +104,7 @@
                             android:scaleType="centerCrop"
                             android:src="?attr/line_color"
                             android:background="?attr/selectableItemBackgroundBorderless"
+                            android:stateListAnimator="@animator/touch_rise"
                             app:civ_fill_color="@color/colorTextGrey"
                             tools:ignore="RtlHardcoded" />
 

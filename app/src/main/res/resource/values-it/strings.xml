@@ -162,16 +162,18 @@
     <!-- menu. -->
     <string name="action_home">Home</string>
     <string name="action_multi_filter">Multi-filtro</string>
+    <string name="action_category">Categoria</string>
+    <string name="action_change_theme">Cambia tema</string>
+    <string name="action_download_manage">Download</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="action_about">Informazioni</string>
+
     <string name="action_category_buildings">Edifici</string>
     <string name="action_category_food_drink">Cibo &amp; Bevande</string>
     <string name="action_category_nature">Natura</string>
     <string name="action_category_objects">Oggetti</string>
     <string name="action_category_people">Persone</string>
     <string name="action_category_technology">Tecnologia</string>
-    <string name="action_change_theme">Cambia tema</string>
-    <string name="action_download_manage">Download</string>
-    <string name="action_settings">Impostazioni</string>
-    <string name="action_about">Informazioni</string>
 
     <string name="action_search">Cerca</string>
     <string name="action_filter">Filtro</string>

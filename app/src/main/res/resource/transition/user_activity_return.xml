@@ -2,22 +2,15 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:duration="350"
+    android:duration="300"
     android:transitionOrdering="together"
     tools:ignore="NewApi">
-
-    <slide
-        android:slideEdge="bottom"
-        tools:ignore="UnusedAttribute">
-        <targets>
-            <target android:targetId="@id/activity_user_container" />
-        </targets>
-    </slide>
 
     <fade>
         <targets>
             <target android:targetId="@android:id/navigationBarBackground" />
             <target android:targetId="@android:id/statusBarBackground" />
+            <target android:targetId="@id/activity_user_container" />
         </targets>
     </fade>
 

@@ -96,6 +96,7 @@
                             android:layout_centerVertical="true"
                             android:scaleType="centerCrop"
                             android:src="?attr/line_color"
+                            android:transitionName="@string/transition_collection_avatar"
                             app:civ_fill_color="@color/colorTextGrey"
                             tools:ignore="RtlHardcoded" />
 

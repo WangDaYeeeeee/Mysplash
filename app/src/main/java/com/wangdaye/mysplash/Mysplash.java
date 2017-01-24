@@ -7,6 +7,7 @@ import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
@@ -64,10 +65,6 @@ public class Mysplash extends Application {
     public static int PEOPLE_PHOTOS_COUNT = 3410;
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
-    // preference.
-    public static final String PREFERENCE_THEME = "theme";
-    public static final String PREFERENCE_BACK_TO_TOP = "back_to_top";
-
     // activity code.
     public static final int ME_ACTIVITY = 1;
 
@@ -78,22 +75,20 @@ public class Mysplash extends Application {
 
     @Override
     public void onCreate() {
-        SharedPreferences defaultSharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences themePreferences = getSharedPreferences(PREFERENCE_THEME, MODE_PRIVATE);
-        SharedPreferences backToTopPreferences = getSharedPreferences(PREFERENCE_BACK_TO_TOP, MODE_PRIVATE);
         super.onCreate();
 
         instance = this;
         activityList = new ArrayList<>();
 
-        lightTheme = themePreferences.getBoolean(getString(R.string.key_light_theme), true);
-        language = defaultSharedPreferences.getString(getString(R.string.key_language), "follow_system");
-        defaultPhotoOrder = defaultSharedPreferences.getString(getString(R.string.key_default_photo_order), "latest");
-        defaultCollectionType = defaultSharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
-        downloadScale = defaultSharedPreferences.getString(getString(R.string.key_download_scale), "compact");
-
-        backToTopType = backToTopPreferences.getString(getString(R.string.key_back_to_top), "all");
-        notifiedSetBackToTop = backToTopPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
+        AuthManager.getInstance();
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        lightTheme = sharedPreferences.getBoolean(getString(R.string.key_light_theme), true);
+        language = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
+        defaultPhotoOrder = sharedPreferences.getString(getString(R.string.key_default_photo_order), "latest");
+        defaultCollectionType = sharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
+        downloadScale = sharedPreferences.getString(getString(R.string.key_download_scale), "compact");
+        backToTopType = sharedPreferences.getString(getString(R.string.key_back_to_top), "all");
+        notifiedSetBackToTop = sharedPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
     }
 
     /** <br> data. */

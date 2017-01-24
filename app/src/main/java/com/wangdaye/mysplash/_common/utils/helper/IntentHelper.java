@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.utils.helper;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -14,6 +13,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
@@ -33,7 +33,7 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class IntentHelper {
 
-    public static void startPhotoActivity(Activity a, View image, View background, Photo p) {
+    public static void startPhotoActivity(MysplashActivity a, View image, View background, Photo p) {
         Intent intent = new Intent(a, PhotoActivity.class);
         intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO, p);
 
@@ -54,14 +54,48 @@ public class IntentHelper {
         }
     }
 
-    public static void startPreviewPhotoActivity(Activity a, Photo p) {
+    public static void startPreviewPhotoActivity(MysplashActivity a, Photo p) {
         Intent intent = new Intent(a, PreviewPhotoActivity.class);
         intent.putExtra(PreviewPhotoActivity.KEY_PREVIEW_PHOTO_ACTIVITY_PHOTO, p);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startCollectionActivity(Activity a, View background, Collection c) {
+    public static void startCollectionActivity(MysplashActivity a, View avatar, View background, Collection c) {
+        Intent intent = new Intent(a, CollectionActivity.class);
+        intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
+
+        ActivityOptionsCompat options;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            options = ActivityOptionsCompat
+                    .makeScaleUpAnimation(
+                            background,
+                            (int) background.getX(), (int) background.getY(),
+                            background.getMeasuredWidth(), background.getMeasuredHeight());
+        } else {
+            options = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(
+                            a,
+                            Pair.create(avatar, a.getString(R.string.transition_collection_avatar)),
+                            Pair.create(background, a.getString(R.string.transition_collection_background)));
+        }
+
+        if (AuthManager.getInstance().getUsername() != null
+                &&
+                AuthManager.getInstance()
+                        .getUsername()
+                        .equals(c.user.username)) {
+            ActivityCompat.startActivityForResult(
+                    a,
+                    intent,
+                    MeActivity.COLLECTION_ACTIVITY,
+                    options.toBundle());
+        } else {
+            ActivityCompat.startActivity(a, intent, options.toBundle());
+        }
+    }
+
+    public static void startCollectionActivity(MysplashActivity a, View background, Collection c) {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
 
@@ -94,7 +128,7 @@ public class IntentHelper {
         }
     }
 
-    public static void startUserActivity(Activity a, View avatar, User u) {
+    public static void startUserActivity(MysplashActivity a, View avatar, User u) {
         if (AuthManager.getInstance().isAuthorized()
                 && !TextUtils.isEmpty(AuthManager.getInstance().getUsername())
                 && u.username.equals(AuthManager.getInstance().getUsername())) {
@@ -116,13 +150,26 @@ public class IntentHelper {
         }
     }
 
-    public static void startLoginActivity(Activity a) {
+    public static void startUserActivity(MysplashActivity a, User u) {
+        if (AuthManager.getInstance().isAuthorized()
+                && !TextUtils.isEmpty(AuthManager.getInstance().getUsername())
+                && u.username.equals(AuthManager.getInstance().getUsername())) {
+            startMeActivity(a);
+        } else {
+            Intent intent = new Intent(a, UserActivity.class);
+            intent.putExtra(UserActivity.KEY_USER_ACTIVITY_USER, u);
+            a.startActivity(intent);
+            a.overridePendingTransition(R.anim.activity_in, 0);
+        }
+    }
+
+    public static void startLoginActivity(MysplashActivity a) {
         Intent intent = new Intent(a, LoginActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startMeActivity(Activity a, View avatar) {
+    public static void startMeActivity(MysplashActivity a, View avatar) {
         if (!AuthManager.getInstance().isAuthorized()) {
             startLoginActivity(a);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -139,13 +186,23 @@ public class IntentHelper {
         }
     }
 
-    public static void startUpdateMeActivity(Activity a) {
+    private static void startMeActivity(MysplashActivity a) {
+        if (!AuthManager.getInstance().isAuthorized()) {
+            startLoginActivity(a);
+        } else {
+            Intent intent = new Intent(a, MeActivity.class);
+            a.startActivity(intent);
+            a.overridePendingTransition(R.anim.activity_in, 0);
+        }
+    }
+
+    public static void startUpdateMeActivity(MysplashActivity a) {
         Intent intent = new Intent(a, UpdateMeActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startDownloadManageActivity(Activity a) {
+    public static void startDownloadManageActivity(MysplashActivity a) {
         Intent intent = new Intent(a, DownloadManageActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
@@ -158,19 +215,19 @@ public class IntentHelper {
         context.startActivity(manageActivity);
     }
 
-    public static void startSettingsActivity(Activity a) {
+    public static void startSettingsActivity(MysplashActivity a) {
         Intent intent = new Intent(a, SettingsActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startAboutActivity(Activity a) {
+    public static void startAboutActivity(MysplashActivity a) {
         Intent intent = new Intent(a, AboutActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startIntroduceActivity(Activity a) {
+    public static void startIntroduceActivity(MysplashActivity a) {
         Intent intent = new Intent(a, IntroduceActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);

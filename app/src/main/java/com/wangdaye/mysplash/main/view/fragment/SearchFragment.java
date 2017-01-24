@@ -28,7 +28,7 @@ import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
@@ -122,6 +122,17 @@ public class SearchFragment extends MysplashFragment
         }
     }
 
+    @Override
+    public boolean needPagerBackToTop() {
+        return pagerManagePresenter.needPagerBackToTop();
+    }
+
+    @Override
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, viewPager);
+        pagerManagePresenter.pagerScrollToTop();
+    }
+
     /** <br> presenter. */
 
     private void initPresenter() {
@@ -131,8 +142,6 @@ public class SearchFragment extends MysplashFragment
     }
 
     /** <br> view. */
-
-    // init.
 
     private void initView(View v) {
         this.handler = new SafeHandler<>(this);
@@ -201,16 +210,7 @@ public class SearchFragment extends MysplashFragment
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    // interface.
-
-    public void backToTop() {
-        BackToTopUtils.showTopBar(appBar, viewPager);
-        pagerManagePresenter.pagerScrollToTop();
-    }
-
     /** <br> model. */
-
-    // init.
 
     private void initModel() {
         if (getBundle() != null) {
@@ -219,12 +219,6 @@ public class SearchFragment extends MysplashFragment
         } else {
             this.pagerManageModel = new PagerManageObject(0);
         }
-    }
-
-    // interface.
-
-    public boolean needPagerBackToTop() {
-        return pagerManagePresenter.needPagerBackToTop();
     }
 
     /** <br> interface. */

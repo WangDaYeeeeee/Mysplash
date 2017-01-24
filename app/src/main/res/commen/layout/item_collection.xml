@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:fiv_text_position="top"
+        app:fiv_shadow_position="both"
         tools:src="?attr/title_color" />
 
     <TextView
@@ -48,5 +48,36 @@
         android:layout_below="@id/item_collection_subtitle"
         style="@style/title_text"
         tools:text="LET THE INSPIRATION BEGIN"/>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/item_collection_cover">
+
+        <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+            android:id="@+id/item_collection_avatar"
+            android:layout_width="@dimen/mini_icon_size"
+            android:layout_height="@dimen/mini_icon_size"
+            android:layout_margin="@dimen/normal_margin"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            tools:src="@drawable/default_avatar"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/item_collection_name"
+            android:textColor="@color/colorTextLight"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/colorTextDark2nd"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/item_collection_avatar"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:maxLines="1"
+            style="@style/subtitle_text"
+            tools:text="Wang Yueeeeee"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

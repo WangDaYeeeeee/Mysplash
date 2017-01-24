@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_following_more_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary_dark"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise"
+    tools:ignore="UnusedAttribute">
+
+    <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
+        android:id="@+id/item_following_more_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop"
+        android:alpha="0.7"
+        tools:background="@color/colorRoot_light" />
+
+    <TextView
+        android:id="@+id/item_following_more_title"
+        android:textColor="@color/colorTextLight"
+        android:textStyle="bold"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:shadowColor="@color/colorTextDark2nd"
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_centerInParent="true"
+        android:maxLines="1"
+        style="@style/subtitle_text"
+        tools:text="3 MORE"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

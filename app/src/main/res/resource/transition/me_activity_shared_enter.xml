@@ -13,4 +13,10 @@
         </targets>
     </changeBounds>
 
+    <arcMotion
+        android:minimumHorizontalAngle="15"
+        android:minimumVerticalAngle="0"
+        android:maximumAngle="90"
+        tools:ignore="UnusedAttribute" />
+
 </transitionSet>

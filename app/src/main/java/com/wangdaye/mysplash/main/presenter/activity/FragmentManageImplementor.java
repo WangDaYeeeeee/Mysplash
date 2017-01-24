@@ -3,13 +3,13 @@ package com.wangdaye.mysplash.main.presenter.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
 import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
+import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
@@ -110,38 +110,16 @@ public class FragmentManageImplementor
                 return new SearchFragment()
                         .readBundle(saveInstanceState);
 
+            case R.id.action_following:
+                return new FollowingFragment()
+                        .readBundle(saveInstanceState);
+
             case R.id.action_multi_filter:
                 return new MultiFilterFragment()
                         .readBundle(saveInstanceState);
 
-            case R.id.action_category_buildings:
+            case R.id.action_category:
                 return new CategoryFragment()
-                        .setCategory(Mysplash.CATEGORY_BUILDINGS_ID)
-                        .readBundle(saveInstanceState);
-
-            case R.id.action_category_food_drink:
-                return new CategoryFragment()
-                        .setCategory(Mysplash.CATEGORY_FOOD_DRINK_ID)
-                        .readBundle(saveInstanceState);
-
-            case R.id.action_category_nature:
-                return new CategoryFragment()
-                        .setCategory(Mysplash.CATEGORY_NATURE_ID)
-                        .readBundle(saveInstanceState);
-
-            case R.id.action_category_objects:
-                return new CategoryFragment()
-                        .setCategory(Mysplash.CATEGORY_OBJECTS_ID)
-                        .readBundle(saveInstanceState);
-
-            case R.id.action_category_people:
-                return new CategoryFragment()
-                        .setCategory(Mysplash.CATEGORY_PEOPLE_ID)
-                        .readBundle(saveInstanceState);
-
-            case R.id.action_category_technology:
-                return new CategoryFragment()
-                        .setCategory(Mysplash.CATEGORY_TECHNOLOGY_ID)
                         .readBundle(saveInstanceState);
 
             default:

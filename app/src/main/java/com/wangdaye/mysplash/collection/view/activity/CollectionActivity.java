@@ -277,7 +277,6 @@ public class CollectionActivity extends MysplashActivity
     // init.
 
     private void initModel() {
-
         this.editResultModel = new EditResultObject(
                 (Collection) getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         this.browsableModel = new BorwsableObject(getIntent());

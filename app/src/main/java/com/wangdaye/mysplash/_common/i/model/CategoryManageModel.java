@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.i.model;
 
+
 /**
  * Category manage model.
  * */

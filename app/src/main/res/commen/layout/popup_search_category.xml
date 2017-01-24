@@ -26,7 +26,7 @@
 
             <TextView
                 android:id="@+id/popup_search_category_allTxt"
-                android:text="ALL"
+                android:text="@string/all"
                 android:layout_marginRight="@dimen/normal_margin"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/popup_search_category_allIcon"

@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:layout_marginTop="24dp">
+    android:layout_height="match_parent">
 
     <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/fragment_category_statusBar"
@@ -30,8 +29,34 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/MysplashPopupMenuTheme"
-                tools:title="Building"
-                tools:ignore="UnusedAttribute" />
+                tools:ignore="UnusedAttribute">
+
+                <RelativeLayout
+                    android:id="@+id/fragment_category_touchBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:foreground="?attr/selectableItemBackground">
+
+                    <TextView
+                        android:id="@+id/fragment_category_title"
+                        android:textColor="?attr/content_color"
+                        android:textStyle="bold"
+                        android:layout_centerVertical="true"
+                        style="@style/large_title_text"
+                        tools:text="Buildings" />
+
+                    <ImageButton
+                        android:id="@+id/fragment_category_titleBtn"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/fragment_category_title"
+                        android:layout_marginRight="@dimen/normal_margin"
+                        style="@style/material_image_button"
+                        tools:src="@drawable/ic_menu_down_light"
+                        tools:ignore="ContentDescription,RtlHardcoded" />
+
+                </RelativeLayout>
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.AppBarLayout>
 

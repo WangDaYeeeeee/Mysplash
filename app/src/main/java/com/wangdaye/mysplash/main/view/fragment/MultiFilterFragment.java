@@ -29,7 +29,7 @@ import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -115,6 +115,17 @@ public class MultiFilterFragment extends MysplashFragment
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, multiFilterBarPresenter.getOrientation());
         outState.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, multiFilterBarPresenter.isFeatured());
         photosView.writeBundle(outState);
+    }
+
+    @Override
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, photosView);
+        photosView.pagerScrollToTop();
+    }
+
+    @Override
+    public boolean needPagerBackToTop() {
+        return photosView.needPagerBackToTop();
     }
 
     /** <br> presenter. */
@@ -212,11 +223,6 @@ public class MultiFilterFragment extends MysplashFragment
 
     // interface.
 
-    public void backToTop() {
-        BackToTopUtils.showTopBar(appBar, photosView);
-        photosView.pagerScrollToTop();
-    }
-
     public void showPopup(int position) {
         switch (position) {
             case 0:
@@ -247,8 +253,6 @@ public class MultiFilterFragment extends MysplashFragment
 
     /** <br> model. */
 
-    // init.
-
     private void initModel() {
         this.multiFilterBarModel = new MultiFilterBarObject();
         if (getBundle() != null) {
@@ -258,12 +262,6 @@ public class MultiFilterFragment extends MysplashFragment
             multiFilterBarPresenter.setOrientation(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
             multiFilterBarPresenter.setFeatured(getBundle().getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
         }
-    }
-
-    // interface.
-
-    public boolean needPagerBackToTop() {
-        return photosView.needPagerBackToTop();
     }
 
     /** <br> interface. */

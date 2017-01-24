@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -106,9 +107,7 @@ public class DisplayUtils {
 
     public static void changeTheme(Context c) {
         Mysplash.getInstance().changeTheme();
-        SharedPreferences.Editor editor = c.getSharedPreferences(
-                Mysplash.PREFERENCE_THEME,
-                Mysplash.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(c).edit();
         editor.putBoolean(c.getString(R.string.key_light_theme), Mysplash.getInstance().isLightTheme());
         editor.apply();
     }

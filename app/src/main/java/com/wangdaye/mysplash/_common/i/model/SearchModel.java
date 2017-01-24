@@ -1,11 +1,9 @@
 package com.wangdaye.mysplash._common.i.model;
 
-import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 
-import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.data.service.SearchService;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 
 /**
  * Search model.
@@ -15,7 +13,7 @@ public interface SearchModel {
 
     RecyclerView.Adapter getAdapter();
     SearchService getService();
-    void setActivity(Activity a);
+    void setActivity(MysplashActivity a);
 
     String getSearchQuery();
     void setSearchQuery(String query);

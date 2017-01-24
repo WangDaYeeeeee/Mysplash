@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_following_title_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    android:stateListAnimator="@animator/touch_rise"
+    tools:ignore="UnusedAttribute">
+
+    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+        android:id="@+id/item_following_title_avatar"
+        android:layout_width="@dimen/mini_icon_size"
+        android:layout_height="@dimen/mini_icon_size"
+        android:layout_margin="@dimen/normal_margin"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        tools:src="@drawable/default_avatar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/item_following_title_avatar"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/normal_margin"
+        android:foreground="?attr/selectableItemBackground"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@+id/item_following_title_actor"
+            android:maxLines="1"
+            android:textStyle="bold"
+            style="@style/title_text"
+            tools:text="Wang Yueeeeee"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/item_following_title_verb"
+            android:layout_below="@id/item_following_title_actor"
+            android:drawablePadding="2dp"
+            style="@style/subtitle_text"
+            tools:text="added 3 photos to Unsplash Instant 2"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

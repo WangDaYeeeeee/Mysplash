@@ -9,8 +9,15 @@
         android:duration="350"
         tools:ignore="NewApi">
         <targets>
+            <target android:targetId="@id/activity_collection_avatar" />
             <target android:targetId="@id/activity_collection_swipeBackView" />
         </targets>
     </changeBounds>
+
+    <arcMotion
+        android:minimumHorizontalAngle="15"
+        android:minimumVerticalAngle="0"
+        android:maximumAngle="90"
+        tools:ignore="UnusedAttribute" />
 
 </transitionSet>

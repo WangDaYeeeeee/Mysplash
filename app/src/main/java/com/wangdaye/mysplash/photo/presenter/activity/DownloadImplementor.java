@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.photo.presenter.activity;
 
-import android.app.Activity;
 import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
@@ -47,7 +47,7 @@ public class DownloadImplementor
     /** <br> utils. */
 
     private void doDownload(int type) {
-        Activity a = Mysplash.getInstance().getTopActivity();
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
         Photo p = (Photo) model.getDownloadKey();
         if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
             DownloadHelper.getInstance(a).addMission(a, p, type);

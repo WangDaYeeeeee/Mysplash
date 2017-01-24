@@ -22,4 +22,13 @@
         </targets>
     </changeBounds>
 
+    <changeImageTransform
+        android:interpolator="@android:interpolator/fast_out_slow_in"
+        android:duration="350"
+        tools:ignore="NewApi">
+        <targets>
+            <target android:targetId="@id/activity_photo_image" />
+        </targets>
+    </changeImageTransform>
+
 </transitionSet>

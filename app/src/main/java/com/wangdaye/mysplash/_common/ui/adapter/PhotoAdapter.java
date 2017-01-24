@@ -5,11 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +27,11 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoR
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
@@ -37,7 +40,6 @@ import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
-import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import java.util.List;
@@ -53,11 +55,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         implements DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener {
     // widget
     private Context a;
-    private List<Photo> itemList;
-    private PhotoService service;
     private SelectCollectionDialog.OnCollectionsChangedListener listener;
 
     // data
+    private List<Photo> itemList;
+    private PhotoService service;
     private boolean inMyCollection = false;
 
     /** <br> life cycle. */
@@ -85,9 +87,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
-                    .override(
-                            itemList.get(position).getRegularWidth(),
-                            itemList.get(position).getRegularHeight())
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -95,9 +94,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                                                        Target<GlideDrawable> target,
                                                        boolean isFromMemoryCache, boolean isFirstResource) {
                             itemList.get(position).loadPhotoSuccess = true;
-                            String titleTxt = a.getString(R.string.by) + " " + itemList.get(position).user.name + ", "
-                                    + a.getString(R.string.on) + " " + itemList.get(position).created_at.split("T")[0];
-                            holder.title.setText(titleTxt);
+                            holder.title.setText(itemList.get(position).user.name);
                             holder.image.setShowShadow(true);
                             return false;
                         }
@@ -113,9 +110,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         } else {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
-                    .override(
-                            itemList.get(position).getRegularWidth(),
-                            itemList.get(position).getRegularHeight())
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -150,9 +144,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                                 saturation.start();
                                 itemList.get(position).hasFadedIn = true;
                             }
-                            String titleTxt = a.getString(R.string.by) + " " + itemList.get(position).user.name + ", "
-                                    + a.getString(R.string.on) + " " + itemList.get(position).created_at.split("T")[0];
-                            holder.title.setText(titleTxt);
+                            holder.title.setText(itemList.get(position).user.name);
                             holder.image.setShowShadow(true);
                             return false;
                         }
@@ -191,7 +183,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         Glide.clear(holder.image);
     }
 
-    public void setActivity(Activity a) {
+    public void setActivity(MysplashActivity a) {
         this.a = a;
     }
 
@@ -353,18 +345,19 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
             this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_photo_likeButton);
             likeButton.setOnLikeListener(this);
+
+            itemView.findViewById(R.id.item_photo_downloadButton).setOnClickListener(this);
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.item_photo_background:
-                    if (a instanceof Activity) {
-                        View imageView = ((RelativeLayout) view).getChildAt(0);
+                    if (a instanceof MysplashActivity) {
                         IntentHelper.startPhotoActivity(
-                                (Activity) a,
-                                imageView,
-                                view,
+                                (MysplashActivity) a,
+                                image,
+                                background,
                                 itemList.get(getAdapterPosition()));
                     }
                     break;
@@ -382,15 +375,25 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     break;
 
                 case R.id.item_photo_collectionButton:
-                    if (a instanceof Activity) {
+                    if (a instanceof MysplashActivity) {
                         if (!AuthManager.getInstance().isAuthorized()) {
-                            Intent i = new Intent(a, LoginActivity.class);
-                            a.startActivity(i);
+                            IntentHelper.startLoginActivity((MysplashActivity) a);
                         } else {
                             SelectCollectionDialog dialog = new SelectCollectionDialog();
                             dialog.setPhotoAndListener(itemList.get(getAdapterPosition()), listener);
-                            dialog.show(((Activity) a).getFragmentManager(), null);
+                            dialog.show(((MysplashActivity) a).getFragmentManager(), null);
                         }
+                    }
+                    break;
+
+                case R.id.item_photo_downloadButton:
+                    Photo p = itemList.get(getAdapterPosition());
+                    if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
+                        DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
+                    } else {
+                        NotificationUtils.showSnackbar(
+                                a.getString(R.string.feedback_download_repeat),
+                                Snackbar.LENGTH_SHORT);
                     }
                     break;
             }

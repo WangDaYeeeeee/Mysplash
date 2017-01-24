@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash._common.ui.widget.freedomSizeView;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +34,7 @@ public class FreedomTouchView extends View {
         super(context, attrs, defStyleAttr);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public FreedomTouchView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -88,7 +88,7 @@ public class FreedomTouchView extends View {
 
         if (1.0 * height / width * screenWidth <= limitHeight) {
             return new int[] {
-                    (int) (limitHeight * width / height),
+                    screenWidth,
                     (int) limitHeight - statusBarHeight};
         } else {
             return new int[] {

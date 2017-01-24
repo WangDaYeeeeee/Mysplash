@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:scaleType="centerCrop"
-        app:fiv_text_position="bottom"
+        app:fiv_shadow_position="bottom"
         tools:background="@color/colorPrimary_dark" />
 
     <ImageButton
@@ -59,6 +59,19 @@
         android:layout_toLeftOf="@id/item_photo_likeButton"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
+    <ImageButton
+        android:id="@+id/item_photo_downloadButton"
+        android:src="@drawable/ic_item_download"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:padding="@dimen/little_margin"
+        android:layout_marginBottom="@dimen/little_margin"
+        android:background="@android:color/transparent"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:layout_alignBottom="@+id/item_photo_image"
+        android:layout_toLeftOf="@id/item_photo_collectionButton"
+        tools:ignore="ContentDescription,RtlHardcoded" />
+
     <TextView
         android:id="@+id/item_photo_title"
         android:textColor="@color/colorTextLight"
@@ -71,10 +84,10 @@
         android:layout_marginBottom="@dimen/little_margin"
         android:layout_alignBottom="@+id/item_photo_image"
         android:layout_alignParentLeft="true"
-        android:layout_toLeftOf="@id/item_photo_collectionButton"
+        android:layout_toLeftOf="@id/item_photo_downloadButton"
         android:maxLines="1"
         style="@style/subtitle_text"
-        tools:text="By Alfredo Wong, On 2016-7-21"
+        tools:text="Alfredo Wong, 2016-7-21"
         tools:ignore="RtlHardcoded" />
 
 </RelativeLayout>

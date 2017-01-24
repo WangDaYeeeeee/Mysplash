@@ -26,6 +26,11 @@
     <string name="by">来自</string>
     <string name="on">拍摄于</string>
     <string name="now">现在</string>
+    <string name="added">添加了</string>
+    <string name="liked">喜欢了</string>
+    <string name="released">发布了</string>
+    <string name="photos">照片</string>
+    <string name="more">MORE</string>
 
     <!-- 反馈. -->
     <string name="feedback_click_retry">点击重试</string>
@@ -138,17 +143,20 @@
 
     <!-- 菜单项. -->
     <string name="action_home">主页</string>
+    <string name="action_following">动态</string>
     <string name="action_multi_filter">多项筛选</string>
+    <string name="action_category">标签</string>
+    <string name="action_change_theme">更换主题</string>
+    <string name="action_download_manage">下载管理</string>
+    <string name="action_settings">设置</string>
+    <string name="action_about">关于</string>
+
     <string name="action_category_buildings">建筑</string>
     <string name="action_category_food_drink">饮食</string>
     <string name="action_category_nature">自然</string>
     <string name="action_category_objects">物品</string>
     <string name="action_category_people">人物</string>
     <string name="action_category_technology">科技</string>
-    <string name="action_change_theme">更换主题</string>
-    <string name="action_download_manage">下载管理</string>
-    <string name="action_settings">设置</string>
-    <string name="action_about">关于</string>
 
     <string name="action_search">搜索</string>
     <string name="action_filter">筛选</string>

@@ -48,11 +48,10 @@ public class PhotoCoverBehavior<V extends FreedomImageView> extends CoordinatorL
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
-        int startX = (int) (-(child.getMeasuredWidth() - parent.getMeasuredWidth()) / 2.0);
         child.layout(
-                startX,
                 0,
-                startX + child.getMeasuredWidth(),
+                0,
+                child.getMeasuredWidth(),
                 child.getMeasuredHeight());
         return true;
     }

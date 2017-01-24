@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -28,6 +27,7 @@ import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -78,13 +78,13 @@ public class HomeCollectionsView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomeCollectionsView(Activity a, @Nullable Bundle bundle) {
+    public HomeCollectionsView(MysplashActivity a, @Nullable Bundle bundle) {
         super(a);
         this.initialize(a, bundle);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle) {
+    private void initialize(MysplashActivity a, @Nullable Bundle bundle) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
@@ -151,7 +151,7 @@ public class HomeCollectionsView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle) {
+    private void initModel(MysplashActivity a, @Nullable Bundle bundle) {
         String type = Mysplash.getInstance().getDefaultCollectionType();
         if (bundle != null) {
             type = bundle.getString(KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE, type);

@@ -18,7 +18,7 @@ import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.i.view.PagerManageView;
@@ -105,6 +105,17 @@ public class HomeFragment extends MysplashFragment
         }
     }
 
+    @Override
+    public boolean needPagerBackToTop() {
+        return pagerManagePresenter.needPagerBackToTop();
+    }
+
+    @Override
+    public void backToTop() {
+        BackToTopUtils.showTopBar(appBar, viewPager);
+        pagerManagePresenter.pagerScrollToTop();
+    }
+
     /** <br> presenter. */
 
     private void initPresenter() {
@@ -145,9 +156,9 @@ public class HomeFragment extends MysplashFragment
 
     private void initPages(View v) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW));
-        pageList.add(new HomePhotosView(getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED));
-        pageList.add(new HomeCollectionsView(getActivity(), getBundle()));
+        pageList.add(new HomePhotosView((MysplashActivity) getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW));
+        pageList.add(new HomePhotosView((MysplashActivity) getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED));
+        pageList.add(new HomeCollectionsView((MysplashActivity) getActivity(), getBundle()));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -173,11 +184,6 @@ public class HomeFragment extends MysplashFragment
 
     // interface.
 
-    public void backToTop() {
-        BackToTopUtils.showTopBar(appBar, viewPager);
-        pagerManagePresenter.pagerScrollToTop();
-    }
-
     public void showPopup() {
         int page = pagerManagePresenter.getPagerPosition();
         popupManageImplementor.showPopup(
@@ -189,18 +195,10 @@ public class HomeFragment extends MysplashFragment
 
     /** <br> model. */
 
-    // init.
-
     private void initModel() {
         this.pagerManageModel = new PagerManageObject(
                 getBundle() == null ?
                         0 : getBundle().getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, 0));
-    }
-
-    // interface.
-
-    public boolean needPagerBackToTop() {
-        return pagerManagePresenter.needPagerBackToTop();
     }
 
     /** <br> interface. */

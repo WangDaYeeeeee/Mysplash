@@ -162,16 +162,18 @@
     <!-- menu. -->
     <string name="action_home">Home</string>
     <string name="action_multi_filter">Çoklu-Filtre</string>
+    <string name="action_category">Kategori</string>
+    <string name="action_change_theme">Tema Değiştir</string>
+    <string name="action_download_manage">İndirilenler</string>
+    <string name="action_settings">Ayarlar</string>
+    <string name="action_about">Hakkında</string>
+
     <string name="action_category_buildings">Yapılar</string>
     <string name="action_category_food_drink">Yemek &amp; İçecek</string>
     <string name="action_category_nature">Doğa</string>
     <string name="action_category_objects">Nesneler</string>
     <string name="action_category_people">İnsanlar</string>
     <string name="action_category_technology">Teknoloji</string>
-    <string name="action_change_theme">Tema Değiştir</string>
-    <string name="action_download_manage">İndirilenler</string>
-    <string name="action_settings">Ayarlar</string>
-    <string name="action_about">Hakkında</string>
 
     <string name="action_search">Ara</string>
     <string name="action_filter">Filtre</string>

@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -30,6 +29,7 @@ import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -83,13 +83,13 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomePhotosView(Activity a, @Nullable Bundle bundle, int photosType) {
+    public HomePhotosView(MysplashActivity a, @Nullable Bundle bundle, int photosType) {
         super(a);
         this.initialize(a, bundle, photosType);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a, @Nullable Bundle bundle, int photosType) {
+    private void initialize(MysplashActivity a, @Nullable Bundle bundle, int photosType) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
@@ -156,7 +156,7 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(Activity a, @Nullable Bundle bundle, int photosType) {
+    private void initModel(MysplashActivity a, @Nullable Bundle bundle, int photosType) {
         String order = Mysplash.getInstance().getDefaultPhotoOrder();
         if (bundle != null) {
             switch (photosType) {

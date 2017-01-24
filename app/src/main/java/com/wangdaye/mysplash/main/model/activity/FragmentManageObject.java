@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.model.activity;
 
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common.ui.fragment.MysplashFragment;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 
 import java.util.ArrayList;
 import java.util.List;

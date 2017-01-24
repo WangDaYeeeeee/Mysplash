@@ -33,7 +33,8 @@ public class MultiFilterFragmentPopupManageImplementor
                 SearchCategoryPopupWindow category = new SearchCategoryPopupWindow(
                         c,
                         anchor,
-                        Integer.parseInt(value));
+                        Integer.parseInt(value),
+                        true);
                 category.setOnSearchCategoryChangedListener(new SearchCategoryPopupWindow.OnSearchCategoryChangedListener() {
                     @Override
                     public void onSearchCategoryChanged(int categoryId) {

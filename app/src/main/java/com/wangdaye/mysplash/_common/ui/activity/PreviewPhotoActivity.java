@@ -8,6 +8,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
 import com.bm.library.PhotoView;
+import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
@@ -107,9 +108,14 @@ public class PreviewPhotoActivity extends MysplashActivity
         photoView.setMaxScale(calcMaxScale());
         photoView.enable();
         photoView.setOnClickListener(this);
-        Glide.with(this)
+        DrawableRequestBuilder<String> thumbnailRequest = Glide
+                .with(this)
                 .load(photo.urls.regular)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+        Glide.with(this)
+                .load(photo.urls.full)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .thumbnail(thumbnailRequest)
                 .into(photoView);
 
         this.widgetContainer = (LinearLayout) findViewById(R.id.activity_preview_photo_widgetContainer);

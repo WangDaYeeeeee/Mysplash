@@ -8,11 +8,9 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -23,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -48,11 +47,7 @@ import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
-import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
-import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
-import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -140,25 +135,12 @@ public class MainActivity extends MysplashActivity
             drawer.closeDrawer(GravityCompat.START);
         } else {
             int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
-            Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
-            if (f instanceof HomeFragment
-                    && ((HomeFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.isSetBackToTop(true)) {
-                ((HomeFragment) f).backToTop();
-            } else if (f instanceof SearchFragment) {
-                if (((SearchFragment) f).needPagerBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
-                    ((SearchFragment) f).backToTop();
-                } else {
-                    fragmentManagePresenter.popFragment(this);
-                }
-            } else if (f instanceof CategoryFragment
-                    && ((CategoryFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.isSetBackToTop(false)) {
-                ((CategoryFragment) f).backToTop();
-            } else if (f instanceof MultiFilterFragment
-                    && ((MultiFilterFragment) f).needPagerBackToTop()
-                    && BackToTopUtils.isSetBackToTop(false)) {
-                ((MultiFilterFragment) f).backToTop();
+            MysplashFragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
+            if (f != null
+                    && f.needPagerBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
+                f.backToTop();
+            } else if (fragmentCounts > 1) {
+                fragmentManagePresenter.popFragment(this);
             } else {
                 finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
             }
@@ -191,19 +173,8 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public View getSnackbarContainer() {
-        int fragmentCounts = fragmentManagePresenter.getFragmentList().size();
-        Fragment f = fragmentManagePresenter.getFragmentList().get(fragmentCounts - 1);
-        if (f instanceof HomeFragment) {
-            return ((HomeFragment) f).getSnackbarContainer();
-        } else if (f instanceof SearchFragment) {
-            return ((SearchFragment) f).getSnackbarContainer();
-        } else if (f instanceof MultiFilterFragment) {
-            return ((MultiFilterFragment) f).getSnackbarContainer();
-        } else if (f instanceof CategoryFragment) {
-            return ((CategoryFragment) f).getSnackbarContainer();
-        } else {
-            return null;
-        }
+        int count = fragmentManagePresenter.getFragmentList().size();
+        return fragmentManagePresenter.getFragmentList().get(count - 1).getSnackbarContainer();
     }
 
     @Override
@@ -256,6 +227,12 @@ public class MainActivity extends MysplashActivity
         }
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
+
+        if (Mysplash.isDebug(this)) {
+            nav.getMenu().getItem(1).setVisible(true);
+        } else {
+            nav.getMenu().getItem(1).setVisible(false);
+        }
 
         View header = nav.getHeaderView(0);
         header.setOnClickListener(this);
@@ -315,7 +292,7 @@ public class MainActivity extends MysplashActivity
         fragmentManagePresenter.popFragment(this);
     }
 
-    public Fragment getTopFragment() {
+    public MysplashFragment getTopFragment() {
         return fragmentManagePresenter.getTopFragment();
     }
 
@@ -497,7 +474,6 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void setCheckedItem(int id) {
-        Log.d("MAIN", "SET CHECKED ITEM");
         nav.setCheckedItem(id);
     }
 

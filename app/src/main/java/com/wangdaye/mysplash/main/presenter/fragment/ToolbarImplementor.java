@@ -1,12 +1,12 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
@@ -28,12 +28,7 @@ public class ToolbarImplementor
 
     @Override
     public void touchToolbar(MysplashActivity a) {
-        Fragment f = ((MainActivity) a).getTopFragment();
-        if (f instanceof HomeFragment) {
-            ((HomeFragment) f).backToTop();
-        } else {
-            ((CategoryFragment) f).backToTop();
-        }
+        ((MainActivity) a).getTopFragment().backToTop();
     }
 
     @Override
@@ -45,11 +40,10 @@ public class ToolbarImplementor
                 break;
 
             case R.id.action_filter:
-                Fragment f = activity.getTopFragment();
-
+                MysplashFragment f = activity.getTopFragment();
                 if (f instanceof HomeFragment) {
                     ((HomeFragment) f).showPopup();
-                } else {
+                } else if (f instanceof CategoryFragment) {
                     ((CategoryFragment) f).showPopup();
                 }
                 break;

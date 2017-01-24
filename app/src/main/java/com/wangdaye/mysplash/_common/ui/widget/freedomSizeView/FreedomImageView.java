@@ -10,7 +10,6 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Build;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -33,10 +32,11 @@ public class FreedomImageView extends ImageView {
     private boolean squareMode = false;
     private boolean showShadow = false;
 
-    private String textPosition;
-    private static final String POSITION_NONE = "none";
-    private static final String POSITION_TOP = "top";
-    private static final String POSITION_BOTTOM = "bottom";
+    private int textPosition;
+    private static final int POSITION_NONE = 0;
+    private static final int POSITION_TOP = 1;
+    private static final int POSITION_BOTTOM = -1;
+    private static final int POSITION_BOTH = 2;
 
     /** <br> life cycle. */
 
@@ -66,13 +66,7 @@ public class FreedomImageView extends ImageView {
         this.coverMode = a.getBoolean(R.styleable.FreedomImageView_fiv_cover_mode, false);
         this.squareMode = a.getBoolean(R.styleable.FreedomImageView_fiv_square, false);
 
-        this.textPosition = a.getString(R.styleable.FreedomImageView_fiv_text_position);
-        if (TextUtils.isEmpty(textPosition)
-                || (!textPosition.equals(POSITION_TOP)
-                && !textPosition.equals(POSITION_BOTTOM)
-                && !textPosition.equals(POSITION_NONE))) {
-            textPosition = POSITION_NONE;
-        }
+        this.textPosition = a.getInt(R.styleable.FreedomImageView_fiv_shadow_position, POSITION_NONE);
 
         a.recycle();
 
@@ -94,15 +88,12 @@ public class FreedomImageView extends ImageView {
         super.onDraw(canvas);
         if (showShadow) {
             switch (textPosition) {
-                case POSITION_NONE:
-                    break;
-
-                case POSITION_TOP:
+                case POSITION_TOP: {
                     int topTextHeight = (int) new DisplayUtils(getContext()).dpToPx(128);
                     paint.setShader(new LinearGradient(
                             0, 0,
                             0, topTextHeight,
-                            new int[] {
+                            new int[]{
                                     Color.argb((int) (255 * 0.25), 0, 0, 0),
                                     Color.argb((int) (255 * 0.09), 0, 0, 0),
                                     Color.argb((int) (255 * 0.03), 0, 0, 0),
@@ -111,13 +102,13 @@ public class FreedomImageView extends ImageView {
                             Shader.TileMode.CLAMP));
                     canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
                     break;
-
-                case POSITION_BOTTOM:
+                }
+                case POSITION_BOTTOM: {
                     int bottomTextHeight = (int) new DisplayUtils(getContext()).dpToPx(72);
                     paint.setShader(new LinearGradient(
                             0, getMeasuredHeight(),
                             0, getMeasuredHeight() - bottomTextHeight,
-                            new int[] {
+                            new int[]{
                                     Color.argb((int) (255 * 0.3), 0, 0, 0),
                                     Color.argb((int) (255 * 0.1), 0, 0, 0),
                                     Color.argb((int) (255 * 0.03), 0, 0, 0),
@@ -126,6 +117,35 @@ public class FreedomImageView extends ImageView {
                             Shader.TileMode.CLAMP));
                     canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
                     break;
+                }
+                case POSITION_BOTH: {
+                    int topTextHeight = (int) new DisplayUtils(getContext()).dpToPx(128);
+                    paint.setShader(new LinearGradient(
+                            0, 0,
+                            0, topTextHeight,
+                            new int[]{
+                                    Color.argb((int) (255 * 0.25), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.09), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.03), 0, 0, 0),
+                                    Color.argb(0, 0, 0, 0)},
+                            null,
+                            Shader.TileMode.CLAMP));
+                    canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
+
+                    int bottomTextHeight = (int) new DisplayUtils(getContext()).dpToPx(72);
+                    paint.setShader(new LinearGradient(
+                            0, getMeasuredHeight(),
+                            0, getMeasuredHeight() - bottomTextHeight,
+                            new int[]{
+                                    Color.argb((int) (255 * 0.3), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.1), 0, 0, 0),
+                                    Color.argb((int) (255 * 0.03), 0, 0, 0),
+                                    Color.argb(0, 0, 0, 0)},
+                            null,
+                            Shader.TileMode.CLAMP));
+                    canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
+                    break;
+                }
             }
         }
     }
@@ -163,7 +183,7 @@ public class FreedomImageView extends ImageView {
 
             if (1.0 * height / width * screenWidth <= limitHeight) {
                 return new int[] {
-                        (int) (limitHeight * width / height),
+                        screenWidth,
                         (int) limitHeight};
             }
         }

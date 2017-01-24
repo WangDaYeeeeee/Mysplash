@@ -1,89 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group
-        android:id="@+id/category"
-        android:checkableBehavior="single">
+    <item
+        android:id="@+id/action_home"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_mountain_dark"
+        android:title="@string/action_home"
+        android:checkable="true"
+        android:checked="true" />
 
-        <item
-            android:id="@+id/action_home"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_mountain_dark"
-            android:title="@string/action_home"
-            android:checked="true" />
+    <item
+        android:id="@+id/action_following"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_feed_dark"
+        android:title="@string/action_following"
+        android:checkable="true" />
 
-        <item
-            android:id="@+id/action_multi_filter"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_filter_outline_dark"
-            android:title="@string/action_multi_filter" />
+    <item
+        android:id="@+id/action_multi_filter"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_filter_outline_dark"
+        android:title="@string/action_multi_filter"
+        android:checkable="true" />
 
-        <item
-            android:id="@+id/action_category_buildings"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_building_dark"
-            android:title="@string/action_category_buildings" />
+    <item
+        android:id="@+id/action_category"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_tag_dark"
+        android:title="@string/action_category"
+        android:checkable="true" />
 
-        <item
-            android:id="@+id/action_category_food_drink"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_drink_dark"
-            android:title="@string/action_category_food_drink" />
+    <item
+        android:id="@+id/action_change_theme"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_theme_dark"
+        android:title="@string/action_change_theme"
+        android:checkable="false" />
 
-        <item
-            android:id="@+id/action_category_nature"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_duck_dark"
-            android:title="@string/action_category_nature" />
+    <item
+        android:id="@+id/action_download_manage"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_download_dark"
+        android:title="@string/action_download_manage"
+        android:checkable="false" />
 
-        <item
-            android:id="@+id/action_category_objects"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_cube_dark"
-            android:title="@string/action_category_objects" />
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_settings_dark"
+        android:title="@string/action_settings"
+        android:checkable="false" />
 
-        <item
-            android:id="@+id/action_category_people"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_face_dark"
-            android:title="@string/action_category_people" />
-
-        <item
-            android:id="@+id/action_category_technology"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_technology_dark"
-            android:title="@string/action_category_technology" />
-
-    </group>
-
-    <group
-        android:id="@+id/option"
-        android:checkableBehavior="none">
-
-        <item
-            android:id="@+id/action_change_theme"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_theme_dark"
-            android:title="@string/action_change_theme" />
-
-        <item
-            android:id="@+id/action_download_manage"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_download_dark"
-            android:title="@string/action_download_manage" />
-
-        <item
-            android:id="@+id/action_settings"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_settings_dark"
-            android:title="@string/action_settings" />
-
-        <item
-            android:id="@+id/action_about"
-            android:orderInCategory="100"
-            android:icon="@drawable/ic_information_dark"
-            android:title="@string/action_about" />
-
-    </group>
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_information_dark"
+        android:title="@string/action_about"
+        android:checkable="false" />
 
 </menu>

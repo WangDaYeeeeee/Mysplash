@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
@@ -22,6 +21,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.ColorUtils;
@@ -134,7 +135,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                         })
                         .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                         .into(holder.image);
-                holder.background.setTransitionName(itemList.get(position).id + "-background");
             }
             holder.background.setBackgroundColor(
                     ColorUtils.calcCardBackgroundColor(
@@ -145,6 +145,26 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             int photoNum = itemList.get(position).total_photos;
             holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
         }
+
+        if (itemList.get(position).user.profile_image != null) {
+            Glide.with(a)
+                    .load(itemList.get(position).user.profile_image.large)
+                    .override(128, 128)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.avatar);
+        } else {
+            Glide.with(a)
+                    .load(R.drawable.default_avatar)
+                    .override(128, 128)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.avatar);
+        }
+        holder.name.setText(itemList.get(position).user.name);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            holder.background.setTransitionName(itemList.get(position).id + "-background");
+            holder.avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
+        }
     }
 
     @Override
@@ -152,7 +172,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         Glide.clear(holder.image);
     }
 
-    public void setActivity(Activity a) {
+    public void setActivity(MysplashActivity a) {
         this.a = a;
     }
 
@@ -219,6 +239,8 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         public FreedomImageView image;
         public TextView title;
         public TextView subtitle;
+        CircleImageView avatar;
+        TextView name;
 
         ViewHolder(View itemView, int position) {
             super(itemView);
@@ -235,17 +257,33 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
             this.subtitle = (TextView) itemView.findViewById(R.id.item_collection_subtitle);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
+
+            this.avatar = (CircleImageView) itemView.findViewById(R.id.item_collection_avatar);
+            avatar.setOnClickListener(this);
+
+            this.name = (TextView) itemView.findViewById(R.id.item_collection_name);
+            DisplayUtils.setTypeface(itemView.getContext(), name);
         }
 
         @Override
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.item_collection_background:
-                    if (a instanceof Activity) {
+                    if (a instanceof MysplashActivity) {
                         IntentHelper.startCollectionActivity(
-                                (Activity) a,
-                                view,
+                                (MysplashActivity) a,
+                                avatar,
+                                background,
                                 itemList.get(getAdapterPosition()));
+                    }
+                    break;
+
+                case R.id.item_collection_avatar:
+                    if (a instanceof MysplashActivity) {
+                        IntentHelper.startUserActivity(
+                                (MysplashActivity) a,
+                                avatar,
+                                itemList.get(getAdapterPosition()).user);
                     }
                     break;
             }

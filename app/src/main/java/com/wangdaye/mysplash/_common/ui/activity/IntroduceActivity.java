@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -64,7 +63,7 @@ public class IntroduceActivity extends MysplashActivity
 
     /** <br> life cycle. */
 
-    public static void checkAndStartIntroduce(final Activity a) {
+    public static void checkAndStartIntroduce(final MysplashActivity a) {
         SharedPreferences sharedPreferences = a.getSharedPreferences(
                 PREFERENCE_NAME,
                 Context.MODE_PRIVATE);
@@ -78,7 +77,7 @@ public class IntroduceActivity extends MysplashActivity
         }
     }
 
-    public static void watchAllIntroduce(Activity a) {
+    public static void watchAllIntroduce(MysplashActivity a) {
         SharedPreferences.Editor editor = a.getSharedPreferences(
                 PREFERENCE_NAME,
                 Context.MODE_PRIVATE).edit();

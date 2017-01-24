@@ -29,22 +29,23 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
 
     // data
     private int valueNow;
+    private boolean showAll = true;
 
     /** <br> life cycle. */
 
-    public SearchCategoryPopupWindow(Context c, View anchor, int valueNow) {
+    public SearchCategoryPopupWindow(Context c, View anchor, int valueNow, boolean showAll) {
         super(c);
-        this.initialize(c, anchor, valueNow);
+        this.initialize(c, anchor, valueNow, showAll);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Context c, View anchor, int valueNow) {
+    private void initialize(Context c, View anchor, int valueNow, boolean showAll) {
         View v = LayoutInflater.from(c).inflate(R.layout.popup_search_category, null);
         setContentView(v);
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        initData(valueNow);
+        initData(valueNow, showAll);
         initWidget();
 
         setFocusable(true);
@@ -172,12 +173,19 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
             ((ImageView) v.findViewById(R.id.popup_search_category_technologyIcon))
                     .setImageResource(R.drawable.ic_technology_dark);
         }
+
+        if (showAll) {
+            v.findViewById(R.id.popup_search_category_all).setVisibility(View.VISIBLE);
+        } else {
+            v.findViewById(R.id.popup_search_category_all).setVisibility(View.GONE);
+        }
     }
 
     /** <br> data. */
 
-    private void initData(int valueNow) {
+    private void initData(int valueNow, boolean showAll) {
         this.valueNow = valueNow;
+        this.showAll = showAll;
     }
 
     /** <br> interface. */

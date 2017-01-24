@@ -3,6 +3,7 @@ package com.wangdaye.mysplash._common.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -37,10 +38,8 @@ public class BackToTopUtils {
     private static void showSetBackToTopSnackbar() {
         if (!Mysplash.getInstance().isNotifiedSetBackToTop()) {
             final Context c = Mysplash.getInstance().getTopActivity();
-            SharedPreferences.Editor editor = Mysplash.getInstance()
-                    .getSharedPreferences(
-                            Mysplash.PREFERENCE_BACK_TO_TOP,
-                            Mysplash.MODE_PRIVATE)
+            SharedPreferences.Editor editor = PreferenceManager
+                    .getDefaultSharedPreferences(Mysplash.getInstance())
                     .edit();
             editor.putBoolean(
                     c.getString(R.string.key_notified_set_back_to_top),

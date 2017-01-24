@@ -21,7 +21,11 @@ public class AuthInterceptor implements Interceptor {
         if (AuthManager.getInstance().isAuthorized()) {
             request = chain.request()
                     .newBuilder()
+                    .addHeader("x-unsplash-client", "web")
+                    .addHeader("accept-version", "v1")
                     .addHeader("Authorization", "Bearer " + AuthManager.getInstance().getAccessToken())
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Referer", "https://unsplash.com/following")
                     .build();
         } else {
             request = chain.request()

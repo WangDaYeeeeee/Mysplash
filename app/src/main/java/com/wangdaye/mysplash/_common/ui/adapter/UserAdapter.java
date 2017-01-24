@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -23,6 +22,7 @@ import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
@@ -81,20 +81,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         if (itemList.get(position).profile_image != null) {
             Glide.with(a)
                     .load(itemList.get(position).profile_image.large)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model,
-                                                       Target<GlideDrawable> target,
-                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
-                    })
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .override(128, 128)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(holder.avatar);
@@ -117,7 +103,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         Glide.clear(holder.avatar);
     }
 
-    public void setActivity(Activity a) {
+    public void setActivity(MysplashActivity a) {
         this.a = a;
     }
 
@@ -182,12 +168,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.item_user_background:
-                    Activity activity = (Activity) a;
-                    View avatar = ((RelativeLayout) view).getChildAt(0);
-                    IntentHelper.startUserActivity(
-                            activity,
-                            avatar,
-                            itemList.get(getAdapterPosition()));
+                    if (a instanceof MysplashActivity) {
+                        IntentHelper.startUserActivity(
+                                (MysplashActivity) a,
+                                avatar,
+                                itemList.get(getAdapterPosition()));
+                    }
                     break;
 
                 case R.id.item_user_portfolio:
