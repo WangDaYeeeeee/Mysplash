@@ -58,13 +58,14 @@
 
 ## PREVIEW
 
-
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_home.png)
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_photo.png)
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_user.png)
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_collection.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_hom_collection.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_filter.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_search.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_category.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_photo.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_collection.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_user.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_download.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_preview.png)
 
