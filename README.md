@@ -59,7 +59,7 @@
 ## PREVIEW
 
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_home.png)
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_hom_collection.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/medium/preview_home_collection.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_filter.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_search.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_category.png)
