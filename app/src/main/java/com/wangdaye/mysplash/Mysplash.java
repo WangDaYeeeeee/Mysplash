@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
 
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -20,7 +21,6 @@ import java.util.List;
 public class Mysplash extends Application {
     // data
     private List<MysplashActivity> activityList;
-
     private boolean lightTheme;
     private String language;
     private String defaultPhotoOrder;
@@ -28,6 +28,9 @@ public class Mysplash extends Application {
     private String downloadScale;
     private String backToTopType;
     private boolean notifiedSetBackToTop;
+
+    // transfer
+    private Photo photo;
 
     // Unsplash data.
     public static final String APP_ID_BETA = "72bf3302b0fb868d8822332a8dad712341c48a5bec5af94b7beea4d1cc030ee6";
@@ -211,6 +214,14 @@ public class Mysplash extends Application {
 
     public void setNotifiedSetBackToTop() {
         this.notifiedSetBackToTop = true;
+    }
+
+    public Photo getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
     }
 
     /** <br> singleton. */

@@ -124,7 +124,7 @@
                                 android:layout_height="@dimen/circular_progress_height"
                                 android:layout_margin="@dimen/little_icon_size"
                                 android:layout_centerInParent="true"
-                                app:cpv_color="?attr/content_color"
+                                app:cpv_color="?attr/title_color"
                                 app:cpv_indeterminate="true"
                                 app:cpv_animAutostart="true" />
 

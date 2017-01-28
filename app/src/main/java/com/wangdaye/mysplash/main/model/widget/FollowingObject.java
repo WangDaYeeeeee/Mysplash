@@ -26,7 +26,7 @@ public class FollowingObject implements FollowingModel {
         this.adapter = adapter;
         this.service = FollowingService.getService();
 
-        this.nextPage = Mysplash.UNSPLASH_URL + "napi/feeds/following";
+        this.nextPage = getFirstPage();
 
         this.refreshing = false;
         this.loading = false;
@@ -43,6 +43,11 @@ public class FollowingObject implements FollowingModel {
     @Override
     public FollowingService getService() {
         return service;
+    }
+
+    @Override
+    public String getFirstPage() {
+        return Mysplash.UNSPLASH_URL + "napi/feeds/following";
     }
 
     @Override

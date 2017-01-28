@@ -39,6 +39,7 @@ import com.wangdaye.mysplash.main.model.fragment.MultiFilterBarObject;
 import com.wangdaye.mysplash.main.presenter.fragment.MessageManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterBarImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterFragmentPopupManageImplementor;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView;
 
 import java.util.Timer;
@@ -213,7 +214,7 @@ public class MultiFilterFragment extends MysplashFragment
         }
 
         this.photosView = (MultiFilterPhotosView) v.findViewById(R.id.fragment_multi_filter_photosView);
-        photosView.setActivity((MysplashActivity) getActivity());
+        photosView.setActivity((MainActivity) getActivity());
         photosView.setOnMultiFilterDataInputInterface(this);
         photosView.setOnClickListener(this);
         if (getBundle() != null) {

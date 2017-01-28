@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -52,6 +51,7 @@ import com.wangdaye.mysplash.main.presenter.widget.SearchCollectionsImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.SearchPhotosImplementor;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.main.presenter.widget.SearchUsersImplementor;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
 
@@ -96,20 +96,20 @@ public class HomeSearchView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomeSearchView(Activity a, @Nullable Bundle bundle, int type) {
+    public HomeSearchView(MainActivity a, @Nullable Bundle bundle, int type) {
         super(a);
-        this.initialize(bundle, type);
+        this.initialize(a, bundle, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(@Nullable Bundle bundle, int type) {
+    private void initialize(MainActivity a, @Nullable Bundle bundle, int type) {
         View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_searching_view_large, null);
         addView(searchingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(bundle, type);
+        initModel(a, bundle, type);
         initPresenter(type);
         initView(type);
 
@@ -228,7 +228,7 @@ public class HomeSearchView extends FrameLayout
 
     // init.
 
-    private void initModel(@Nullable Bundle bundle, int type) {
+    private void initModel(MainActivity a, @Nullable Bundle bundle, int type) {
         String query = "";
         if (bundle != null) {
             query = bundle.getString(KEY_HOME_SEARCH_VIEW_QUERY, query);
@@ -246,7 +246,8 @@ public class HomeSearchView extends FrameLayout
                         new PhotoAdapter(
                                 getContext(),
                                 new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
-                                this),
+                                this,
+                                a),
                         query);
                 break;
 

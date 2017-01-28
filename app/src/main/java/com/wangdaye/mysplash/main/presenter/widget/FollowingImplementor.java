@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.main.presenter.widget;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingFeedResult;
@@ -127,7 +128,10 @@ public class FollowingImplementor implements FollowingPresenter {
 
     private void requestFollowingFeed(Context c, String nextPage, boolean refresh) {
         listener = new OnRequestFollowingFeedListener(c, refresh);
-        model.getService().requestFollowingFeed(nextPage, listener);
+        model.getService()
+                .requestFollowingFeed(
+                        refresh ? model.getFirstPage() : nextPage,
+                        listener);
     }
 
     /** <br> interface. */
@@ -201,6 +205,7 @@ public class FollowingImplementor implements FollowingPresenter {
             NotificationUtils.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     Snackbar.LENGTH_SHORT);
+            Log.d("FOLLOWING", t.getMessage());
             view.requestFollowingFeedFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }

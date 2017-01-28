@@ -16,18 +16,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.i.model.DownloadModel;
+import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -44,8 +46,10 @@ import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.collection.model.activity.BorwsableObject;
+import com.wangdaye.mysplash.collection.model.activity.DownloadObject;
 import com.wangdaye.mysplash.collection.model.activity.EditResultObject;
 import com.wangdaye.mysplash.collection.presenter.activity.BrowsableImplementor;
+import com.wangdaye.mysplash.collection.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.EditResultImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
@@ -57,6 +61,7 @@ import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * Collection activity.
@@ -64,11 +69,12 @@ import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 public class CollectionActivity extends MysplashActivity
         implements SwipeBackManageView, EditResultView, BrowsableView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener,
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, PhotoAdapter.OnDownloadPhotoListener,
         SwipeBackCoordinatorLayout.OnSwipeListener, UpdateCollectionDialog.OnCollectionChangedListener {
     // model.
     private EditResultModel editResultModel;
     private BrowsableModel browsableModel;
+    private DownloadModel downloadModel;
 
     // view.
     private RequestBrowsableDataDialog requestDialog;
@@ -85,6 +91,7 @@ public class CollectionActivity extends MysplashActivity
     private SwipeBackManagePresenter swipeBackManagePresenter;
     private EditResultPresenter editResultPresenter;
     private BrowsablePresenter browsablePresenter;
+    private DownloadPresenter downloadPresenter;
 
     // data
     public static final String KEY_COLLECTION_ACTIVITY_COLLECTION = "collection_activity_collection";
@@ -178,6 +185,7 @@ public class CollectionActivity extends MysplashActivity
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
         this.editResultPresenter = new EditResultImplementor(editResultModel, this);
         this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
+        this.downloadPresenter = new DownloadImplementor(downloadModel);
     }
 
     /** <br> view. */
@@ -280,6 +288,7 @@ public class CollectionActivity extends MysplashActivity
         this.editResultModel = new EditResultObject(
                 (Collection) getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         this.browsableModel = new BorwsableObject(getIntent());
+        this.downloadModel = new DownloadObject();
     }
 
     // interface.
@@ -289,19 +298,18 @@ public class CollectionActivity extends MysplashActivity
     }
 
     public void downloadCollection() {
-        if (DatabaseHelper.getInstance(this).readDownloadEntityCount(String.valueOf(getCollection().id)) == 0) {
-            DownloadHelper.getInstance(this).addMission(this, getCollection());
+        downloadPresenter.setDownloadKey(getCollection());
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            downloadPresenter.download();
         } else {
-            NotificationUtils.showSnackbar(
-                    getString(R.string.feedback_download_repeat),
-                    Snackbar.LENGTH_SHORT);
+            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, 2);
         }
     }
 
     /** <br> permission. */
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    public void requestPermission(int permissionCode, int itemId) {
+    public void requestPermission(int permissionCode, int requestCode) {
         switch (permissionCode) {
             case Mysplash.WRITE_EXTERNAL_STORAGE:
                 if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -309,9 +317,9 @@ public class CollectionActivity extends MysplashActivity
                     this.requestPermissions(
                             new String[] {
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            itemId);
+                            requestCode);
                 } else {
-                    downloadCollection();
+                    downloadPresenter.download();
                 }
                 break;
         }
@@ -324,12 +332,11 @@ public class CollectionActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadCollection();
+                        downloadPresenter.download();
                     } else {
-                        Toast.makeText(
-                                this,
+                        NotificationUtils.showSnackbar(
                                 getString(R.string.feedback_need_permission),
-                                Toast.LENGTH_SHORT).show();
+                                Snackbar.LENGTH_SHORT);
                     }
                     break;
             }
@@ -358,7 +365,8 @@ public class CollectionActivity extends MysplashActivity
                 IntentHelper.startUserActivity(
                         this,
                         avatarImage,
-                        ((Collection) editResultPresenter.getEditKey()).user);
+                        ((Collection) editResultPresenter.getEditKey()).user,
+                        UserActivity.PAGE_PHOTO);
                 break;
         }
     }
@@ -368,6 +376,18 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem(this, item.getItemId());
+    }
+
+    // on download photo listener. (photo adapter)
+
+    @Override
+    public void onDownload(Photo photo) {
+        downloadPresenter.setDownloadKey(photo);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            downloadPresenter.download();
+        } else {
+            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
+        }
     }
 
     // on swipe listener.

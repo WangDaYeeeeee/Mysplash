@@ -3,7 +3,6 @@ package com.wangdaye.mysplash._common.data.service;
 import android.net.Uri;
 
 import com.google.gson.GsonBuilder;
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.FollowingApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingFeedResult;
 import com.wangdaye.mysplash._common.utils.widget.FollowingInterceptor;

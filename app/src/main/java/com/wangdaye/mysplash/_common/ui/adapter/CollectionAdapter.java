@@ -29,6 +29,7 @@ import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
 
@@ -258,8 +259,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             this.subtitle = (TextView) itemView.findViewById(R.id.item_collection_subtitle);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
 
+            itemView.findViewById(R.id.item_collection_avatarContainer).setOnClickListener(this);
+
             this.avatar = (CircleImageView) itemView.findViewById(R.id.item_collection_avatar);
-            avatar.setOnClickListener(this);
 
             this.name = (TextView) itemView.findViewById(R.id.item_collection_name);
             DisplayUtils.setTypeface(itemView.getContext(), name);
@@ -278,12 +280,13 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                     }
                     break;
 
-                case R.id.item_collection_avatar:
+                case R.id.item_collection_avatarContainer:
                     if (a instanceof MysplashActivity) {
                         IntentHelper.startUserActivity(
                                 (MysplashActivity) a,
                                 avatar,
-                                itemList.get(getAdapterPosition()).user);
+                                itemList.get(getAdapterPosition()).user,
+                                UserActivity.PAGE_PHOTO);
                     }
                     break;
             }

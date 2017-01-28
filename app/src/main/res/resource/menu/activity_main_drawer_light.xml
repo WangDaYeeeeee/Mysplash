@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_following"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_feed_light"
+        android:icon="@drawable/ic_account_multiple_light"
         android:title="@string/action_following"
         android:checkable="true" />
 

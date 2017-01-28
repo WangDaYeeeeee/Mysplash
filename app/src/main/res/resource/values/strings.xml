@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.7.3</string>
+    <string name="version_code">2.7.8</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -32,10 +32,16 @@
     <string name="by">By</string>
     <string name="on">On</string>
     <string name="now">Now</string>
-    <string name="added">added</string>
-    <string name="liked">liked</string>
-    <string name="released">released</string>
+
+    <string name="liked">Liked</string>
+    <string name="collected">Collected</string>
+    <string name="followed">Followed</string>
+    <string name="released">Released</string>
+    <string name="published">Published</string>
+    <string name="curated">Curated</string>
     <string name="photos">photos</string>
+    <string name="users">users</string>
+    <string name="to">to</string>
     <string name="more">MORE</string>
 
     <!-- about. -->

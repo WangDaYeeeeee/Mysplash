@@ -13,22 +13,19 @@
         </targets>
     </changeBounds>
 
-    <changeBounds
+    <transition
+        class="com.wangdaye.mysplash._common.ui.transition.PhotoSharedEnter"
         android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:duration="350"
         tools:ignore="NewApi">
         <targets>
             <target android:targetId="@id/activity_photo_image" />
         </targets>
-    </changeBounds>
+    </transition>
 
-    <changeImageTransform
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:duration="350"
-        tools:ignore="NewApi">
-        <targets>
-            <target android:targetId="@id/activity_photo_image" />
-        </targets>
-    </changeImageTransform>
+    <arcMotion
+        android:minimumHorizontalAngle="15"
+        android:minimumVerticalAngle="0"
+        android:maximumAngle="90"
+        tools:ignore="UnusedAttribute" />
 
 </transitionSet>

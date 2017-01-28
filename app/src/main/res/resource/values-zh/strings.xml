@@ -26,10 +26,16 @@
     <string name="by">来自</string>
     <string name="on">拍摄于</string>
     <string name="now">现在</string>
-    <string name="added">添加了</string>
+
     <string name="liked">喜欢了</string>
+    <string name="collected">添加了</string>
+    <string name="followed">关注了</string>
     <string name="released">发布了</string>
-    <string name="photos">照片</string>
+    <string name="published">提交了</string>
+    <string name="curated">展览了</string>
+    <string name="photos">张照片</string>
+    <string name="users">位用户</string>
+    <string name="to">至</string>
     <string name="more">MORE</string>
 
     <!-- 反馈. -->

@@ -8,7 +8,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +28,6 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
-import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
@@ -55,7 +51,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         implements DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener {
     // widget
     private Context a;
-    private SelectCollectionDialog.OnCollectionsChangedListener listener;
+    private SelectCollectionDialog.OnCollectionsChangedListener collectionsChangedListener;
+    private OnDownloadPhotoListener downloadPhotoListener;
 
     // data
     private List<Photo> itemList;
@@ -65,10 +62,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     /** <br> life cycle. */
 
     public PhotoAdapter(Context a, List<Photo> list,
-                        SelectCollectionDialog.OnCollectionsChangedListener l) {
+                        SelectCollectionDialog.OnCollectionsChangedListener sl,
+                        OnDownloadPhotoListener dl) {
         this.a = a;
         this.itemList = list;
-        this.listener = l;
+        this.collectionsChangedListener = sl;
+        this.downloadPhotoListener = dl;
     }
 
     /** <br> UI. */
@@ -87,6 +86,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
+                    .override(itemList.get(position).getRegularWidth(), itemList.get(position).getRegularHeight())
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -110,6 +110,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         } else {
             Glide.with(a)
                     .load(itemList.get(position).urls.regular)
+                    .override(itemList.get(position).getRegularWidth(), itemList.get(position).getRegularHeight())
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
@@ -127,7 +128,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                                     @Override
                                     public void onAnimationUpdate(ValueAnimator valueAnimator) {
                                         // just animating the color matrix does not invalidate the
-                                        // drawable so need this update listener.  Also have to create a
+                                        // drawable so need this update collectionsChangedListener.  Also have to create a
                                         // new CMCF as the matrix is immutable :(
                                         holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
                                     }
@@ -176,11 +177,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         holder.background.setBackgroundColor(
                 ColorUtils.calcCardBackgroundColor(
                         itemList.get(position).color));
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        Glide.clear(holder.image);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -262,7 +258,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     /** <br> interface. */
 
-    // on set like listener.
+    // on download photo listener.
+
+    public interface OnDownloadPhotoListener {
+        void onDownload(Photo photo);
+    }
+
+    public void setOnDownloadPhotoListener(OnDownloadPhotoListener l) {
+        this.downloadPhotoListener = l;
+    }
+
+    // on set like collectionsChangedListener.
 
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
         // data
@@ -301,7 +307,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         }
     }
 
-    // on delete collection photo listener.
+    // on delete collection photo collectionsChangedListener.
 
     @Override
     public void onDeletePhotoSuccess(ChangeCollectionPhotoResult result, int position) {
@@ -380,7 +386,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                             IntentHelper.startLoginActivity((MysplashActivity) a);
                         } else {
                             SelectCollectionDialog dialog = new SelectCollectionDialog();
-                            dialog.setPhotoAndListener(itemList.get(getAdapterPosition()), listener);
+                            dialog.setPhotoAndListener(itemList.get(getAdapterPosition()), collectionsChangedListener);
                             dialog.show(((MysplashActivity) a).getFragmentManager(), null);
                         }
                     }
@@ -388,12 +394,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
                 case R.id.item_photo_downloadButton:
                     Photo p = itemList.get(getAdapterPosition());
-                    if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
-                        DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
-                    } else {
-                        NotificationUtils.showSnackbar(
-                                a.getString(R.string.feedback_download_repeat),
-                                Snackbar.LENGTH_SHORT);
+                    if (downloadPhotoListener != null) {
+                        downloadPhotoListener.onDownload(p);
                     }
                     break;
             }

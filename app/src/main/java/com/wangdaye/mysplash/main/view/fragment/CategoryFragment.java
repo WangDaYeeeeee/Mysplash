@@ -30,6 +30,7 @@ import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.CategoryPhotosView;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 
@@ -146,7 +147,7 @@ public class CategoryFragment extends MysplashFragment
         titleBtn.setOnClickListener(this);
 
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
-        photosView.setActivity((MysplashActivity) getActivity());
+        photosView.setActivity((MainActivity) getActivity());
         photosView.setCategory(categoryManagePresenter.getCategoryId());
         if (getBundle() != null) {
             photosView.readBundle(getBundle());

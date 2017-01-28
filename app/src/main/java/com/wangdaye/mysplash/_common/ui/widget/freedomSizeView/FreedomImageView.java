@@ -183,7 +183,7 @@ public class FreedomImageView extends ImageView {
 
             if (1.0 * height / width * screenWidth <= limitHeight) {
                 return new int[] {
-                        screenWidth,
+                        (int) (limitHeight * width / height),
                         (int) limitHeight};
             }
         }

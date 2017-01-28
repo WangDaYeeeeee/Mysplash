@@ -29,7 +29,6 @@ import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -46,6 +45,7 @@ import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
 
@@ -83,13 +83,13 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> life cycle. */
 
-    public HomePhotosView(MysplashActivity a, @Nullable Bundle bundle, int photosType) {
+    public HomePhotosView(MainActivity a, @Nullable Bundle bundle, int photosType) {
         super(a);
         this.initialize(a, bundle, photosType);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(MysplashActivity a, @Nullable Bundle bundle, int photosType) {
+    private void initialize(MainActivity a, @Nullable Bundle bundle, int photosType) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
         addView(loadingView);
 
@@ -156,7 +156,7 @@ public class HomePhotosView extends FrameLayout
 
     /** <br> model. */
 
-    private void initModel(MysplashActivity a, @Nullable Bundle bundle, int photosType) {
+    private void initModel(MainActivity a, @Nullable Bundle bundle, int photosType) {
         String order = Mysplash.getInstance().getDefaultPhotoOrder();
         if (bundle != null) {
             switch (photosType) {
@@ -172,7 +172,7 @@ public class HomePhotosView extends FrameLayout
 
         this.photosModel = new PhotosObject(
                 a,
-                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this),
+                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this, a),
                 photosType,
                 order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);

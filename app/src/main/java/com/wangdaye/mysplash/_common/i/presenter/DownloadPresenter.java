@@ -9,4 +9,7 @@ public interface DownloadPresenter {
     void download();
     void share();
     void setWallpaper();
+
+    Object getDownloadKey();
+    void setDownloadKey(Object key);
 }

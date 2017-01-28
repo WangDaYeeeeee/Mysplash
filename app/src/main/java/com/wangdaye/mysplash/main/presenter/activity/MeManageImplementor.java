@@ -11,6 +11,7 @@ import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * Me manage implementor.
@@ -35,7 +36,8 @@ public class MeManageImplementor
         View header = nav.getHeaderView(0);
         IntentHelper.startMeActivity(
                 a,
-                header.findViewById(R.id.container_nav_header_avatar));
+                header.findViewById(R.id.container_nav_header_avatar),
+                UserActivity.PAGE_PHOTO);
     }
 
     @Override

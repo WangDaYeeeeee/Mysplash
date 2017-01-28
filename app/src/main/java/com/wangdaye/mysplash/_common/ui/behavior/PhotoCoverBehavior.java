@@ -48,17 +48,18 @@ public class PhotoCoverBehavior<V extends FreedomImageView> extends CoordinatorL
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
+        int deltaWidth = child.getMeasuredWidth() - parent.getMeasuredWidth();
         child.layout(
+                (int) (-deltaWidth / 2.0),
                 0,
-                0,
-                child.getMeasuredWidth(),
+                (int) (parent.getMeasuredWidth() + deltaWidth / 2.0),
                 child.getMeasuredHeight());
         return true;
     }
 
     private void setChildTop(V child, int scrollY) {
         float top = (float) (-scrollY * 0.5);
-        child.setY(top);
+        child.setTranslationY(top);
     }
 
     /** <br> interface. */

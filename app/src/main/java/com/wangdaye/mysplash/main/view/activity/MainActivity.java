@@ -1,13 +1,17 @@
 package com.wangdaye.mysplash.main.view.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
@@ -21,9 +25,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash._common.i.model.DownloadModel;
+import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
+import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
@@ -38,11 +48,13 @@ import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.manager.ShortcutsManager;
 import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash._common.utils.widget.PriorityRunnable;
+import com.wangdaye.mysplash.main.model.activity.DownloadObject;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
+import com.wangdaye.mysplash.main.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
@@ -61,10 +73,12 @@ import java.util.TimerTask;
 public class MainActivity extends MysplashActivity
         implements MessageManageView, MeManageView, DrawerView,
         View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
-        AuthManager.OnAuthDataChangedListener, SafeHandler.HandlerContainer {
+        PhotoAdapter.OnDownloadPhotoListener, AuthManager.OnAuthDataChangedListener,
+        SafeHandler.HandlerContainer {
     // model.
     private FragmentManageModel fragmentManageModel;
     private DrawerModel drawerModel;
+    private DownloadModel downloadModel;
 
     // view
     private DrawerLayout drawer;
@@ -81,6 +95,7 @@ public class MainActivity extends MysplashActivity
     private MessageManagePresenter messageManagePresenter;
     private MeManagePresenter meManagePresenter;
     private DrawerPresenter drawerPresenter;
+    private DownloadPresenter downloadPresenter;
 
     // data.
     private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST = "main_activity_fragment_id_list";
@@ -208,6 +223,7 @@ public class MainActivity extends MysplashActivity
         this.messageManagePresenter = new MessageManageImplementor(this);
         this.meManagePresenter = new MeManageImplementor(this);
         this.drawerPresenter = new DrawerImplementor(drawerModel, this);
+        this.downloadPresenter = new DownloadImplementor(downloadModel);
     }
 
     /** <br> view. */
@@ -228,7 +244,7 @@ public class MainActivity extends MysplashActivity
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
 
-        if (Mysplash.isDebug(this)) {
+        if (AuthManager.getInstance().isAuthorized()) {
             nav.getMenu().getItem(1).setVisible(true);
         } else {
             nav.getMenu().getItem(1).setVisible(false);
@@ -306,6 +322,44 @@ public class MainActivity extends MysplashActivity
 
         this.fragmentManageModel = new FragmentManageObject();
         this.drawerModel = new DrawerObject(selectedId);
+        this.downloadModel = new DownloadObject();
+    }
+
+    /** <br> permission. */
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestPermission(int permissionCode, int type) {
+        switch (permissionCode) {
+            case Mysplash.WRITE_EXTERNAL_STORAGE:
+                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    this.requestPermissions(
+                            new String[] {
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            type);
+                } else {
+                    downloadPresenter.download();
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
+        super.onRequestPermissionsResult(requestCode, permission, grantResult);
+        for (int i = 0; i < permission.length; i ++) {
+            switch (permission[i]) {
+                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
+                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
+                        downloadPresenter.download();
+                    } else {
+                        NotificationUtils.showSnackbar(
+                                getString(R.string.feedback_need_permission),
+                                Snackbar.LENGTH_SHORT);
+                    }
+                    break;
+            }
+        }
     }
 
     /** <br> interface. */
@@ -333,11 +387,24 @@ public class MainActivity extends MysplashActivity
         return true;
     }
 
+    // on download photo listener. (photo adapter)
+
+    @Override
+    public void onDownload(Photo photo) {
+        downloadPresenter.setDownloadKey(photo);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            downloadPresenter.download();
+        } else {
+            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
+        }
+    }
+
     // on write data listener. (authorize manager)
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onWriteAccessToken() {
+        nav.getMenu().getItem(1).setVisible(true);
         meManagePresenter.responseWriteAccessToken();
     }
 
@@ -354,6 +421,7 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void onLogout() {
+        nav.getMenu().getItem(1).setVisible(false);
         meManagePresenter.responseLogout();
     }
 

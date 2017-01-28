@@ -16,9 +16,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
@@ -26,6 +23,7 @@ import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
 
@@ -60,8 +58,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         if (TextUtils.isEmpty(itemList.get(position).bio)) {
             holder.subtitle.setText(
                     itemList.get(position).total_photos + a.getResources().getStringArray(R.array.user_tabs)[0] +
-                            + itemList.get(position).total_collections + " Collections, "
-                            + itemList.get(position).total_likes + " Likes");
+                            + itemList.get(position).total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
+                            + itemList.get(position).total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
         } else {
             holder.subtitle.setText(itemList.get(position).bio);
         }
@@ -172,7 +170,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                         IntentHelper.startUserActivity(
                                 (MysplashActivity) a,
                                 avatar,
-                                itemList.get(getAdapterPosition()));
+                                itemList.get(getAdapterPosition()),
+                                UserActivity.PAGE_PHOTO);
                     }
                     break;
 

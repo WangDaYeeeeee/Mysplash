@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash._common.utils.widget;
 
-import android.util.Log;
-
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 
@@ -23,7 +21,11 @@ public class FollowingInterceptor implements Interceptor {
         if (AuthManager.getInstance().isAuthorized()) {
             request = chain.request()
                     .newBuilder()
+                    .addHeader("x-unsplash-client", "web")
+                    .addHeader("accept-version", "v1")
                     .addHeader("Authorization", "Bearer " + AuthManager.getInstance().getAccessToken())
+                    .addHeader("Accept", "*/*")
+                    .addHeader("Referer", "https://unsplash.com/following?onboarding=true")
                     .build();
         } else {
             request = chain.request()
@@ -31,9 +33,6 @@ public class FollowingInterceptor implements Interceptor {
                     .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance()))
                     .build();
         }
-
-        Response response = chain.proceed(chain.request());
-        Log.w("Retrofit@Response", response.body().string());
 
         return chain.proceed(request);
     }

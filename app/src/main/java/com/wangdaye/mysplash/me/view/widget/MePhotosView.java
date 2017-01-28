@@ -151,7 +151,7 @@ public class MePhotosView extends FrameLayout
             }
         }
         this.photosModel = new PhotosObject(
-                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a),
+                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a),
                 type,
                 order);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);

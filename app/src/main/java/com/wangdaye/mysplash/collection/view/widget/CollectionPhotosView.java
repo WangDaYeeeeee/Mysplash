@@ -46,6 +46,7 @@ import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
+import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import java.util.ArrayList;
 
@@ -109,7 +110,7 @@ public class CollectionPhotosView extends FrameLayout
         initView();
     }
 
-    public void initMP(MysplashActivity a, Collection c) {
+    public void initMP(CollectionActivity a, Collection c) {
         initModel(a, c);
         initPresenter();
         recyclerView.setAdapter(photosModel.getAdapter());
@@ -169,9 +170,9 @@ public class CollectionPhotosView extends FrameLayout
 
     // init.
 
-    private void initModel(MysplashActivity a, Collection c) {
+    private void initModel(CollectionActivity a, Collection c) {
         PhotoAdapter adapter = new PhotoAdapter(
-                a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this);
+                a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this, a);
         adapter.setInMyCollection(
                 AuthManager.getInstance().getUsername() != null
                         && AuthManager.getInstance().getUsername().equals(c.user.username));

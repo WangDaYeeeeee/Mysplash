@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -18,7 +19,6 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -29,6 +29,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
@@ -64,6 +65,7 @@ import com.wangdaye.mysplash.photo.presenter.activity.PhotoInfoImplementor;
 import com.wangdaye.mysplash.photo.presenter.activity.ScrollImplementor;
 import com.wangdaye.mysplash.photo.view.widget.PhotoDetailsView;
 import com.wangdaye.mysplash.user.model.widget.ScrollObject;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * Photo activity.
@@ -208,6 +210,7 @@ public class PhotoActivity extends MysplashActivity
                             photoInfoPresenter.getPhoto().getRegularWidth(),
                             photoInfoPresenter.getPhoto().getRegularHeight())
                     .priority(Priority.HIGH)
+                    .centerCrop()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(photoImage);
 
@@ -342,10 +345,9 @@ public class PhotoActivity extends MysplashActivity
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
                         downloadByType(requestCode);
                     } else {
-                        Toast.makeText(
-                                this,
+                        NotificationUtils.showSnackbar(
                                 getString(R.string.feedback_need_permission),
-                                Toast.LENGTH_SHORT).show();
+                                Snackbar.LENGTH_SHORT);
                     }
                     break;
             }
@@ -460,7 +462,8 @@ public class PhotoActivity extends MysplashActivity
         IntentHelper.startUserActivity(
                 this,
                 avatarImage,
-                photoInfoPresenter.getPhoto().user);
+                photoInfoPresenter.getPhoto().user,
+                UserActivity.PAGE_PHOTO);
     }
 
     @Override

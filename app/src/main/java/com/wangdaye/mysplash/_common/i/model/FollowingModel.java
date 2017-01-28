@@ -12,6 +12,7 @@ public interface FollowingModel {
     FollowingAdapter getAdapter();
     FollowingService getService();
 
+    String getFirstPage();
     String getNextPage();
     void setNextPage(String nextPage);
 

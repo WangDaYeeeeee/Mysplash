@@ -38,6 +38,7 @@ import com.wangdaye.mysplash.main.presenter.fragment.MessageManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.SearchBarImplementor;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomeSearchView;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 
@@ -181,9 +182,9 @@ public class SearchFragment extends MysplashFragment
 
     private void initPages(View v) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new HomeSearchView(getActivity(), getBundle(), HomeSearchView.SEARCH_PHOTOS_TYPE));
-        pageList.add(new HomeSearchView(getActivity(), getBundle(), HomeSearchView.SEARCH_COLLECTIONS_TYPE));
-        pageList.add(new HomeSearchView(getActivity(), getBundle(), HomeSearchView.SEARCH_USERS_TYPE));
+        pageList.add(new HomeSearchView((MainActivity) getActivity(), getBundle(), HomeSearchView.SEARCH_PHOTOS_TYPE));
+        pageList.add(new HomeSearchView((MainActivity) getActivity(), getBundle(), HomeSearchView.SEARCH_COLLECTIONS_TYPE));
+        pageList.add(new HomeSearchView((MainActivity) getActivity(), getBundle(), HomeSearchView.SEARCH_USERS_TYPE));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
             pageList.get(i).setOnClickListener(new View.OnClickListener() {

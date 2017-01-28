@@ -10,7 +10,7 @@
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/normal_margin"
         app:cpv_animAutostart="true"
-        app:cpv_color="?attr/content_color"
+        app:cpv_color="?attr/title_color"
         app:cpv_indeterminate="true" />
 
 </RelativeLayout>

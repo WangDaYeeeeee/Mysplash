@@ -10,7 +10,8 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/root_color">
+        android:background="?attr/root_color"
+        tools:ignore="UselessParent">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -24,7 +25,7 @@
                 android:layout_height="@dimen/circular_progress_height"
                 android:layout_centerInParent="true"
                 app:cpv_animAutostart="true"
-                app:cpv_color="?attr/content_color"
+                app:cpv_color="?attr/title_color"
                 app:cpv_indeterminate="true" />
 
             <RelativeLayout

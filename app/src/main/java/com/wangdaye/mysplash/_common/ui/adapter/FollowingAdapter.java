@@ -9,8 +9,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +46,7 @@ import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,14 +69,11 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     private PhotoService photoService;
 
     private static final int VIEW_TYPE_TITLE = 0;
-    private static final int VIEW_TYPE_CONTENT_1 = 1;
-    private static final int VIEW_TYPE_CONTENT_2 = 2;
-    private static final int VIEW_TYPE_CONTENT_3 = 3;
-    private static final int VIEW_TYPE_MORE = 4;
+    private static final int VIEW_TYPE_PHOTO = 1;
+    private static final int VIEW_TYPE_USER = 2;
+    private static final int VIEW_TYPE_MORE = 3;
 
-    private static final String VERB_RELEASED = "released";
-    private static final String VERB_LIKED = "liked";
-    private static final String VERB_COLLECTED = "collected";
+    private static final int MAX_DISPLAY_PHOTO_COUNT = 7;
 
     /** <br> life cycle. */
 
@@ -93,10 +94,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_title, parent, false);
                 return new ViewHolder(v, position);
             }
-            case VIEW_TYPE_CONTENT_1:
-            case VIEW_TYPE_CONTENT_2:
-            case VIEW_TYPE_CONTENT_3: {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_content, parent, false);
+            case VIEW_TYPE_PHOTO: {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_photo, parent, false);
+                return new ViewHolder(v, position);
+            }
+            case VIEW_TYPE_USER: {
+                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_user, parent, false);
                 return new ViewHolder(v, position);
             }
             default: { // VIEW_TYPE_MORE.
@@ -111,7 +114,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         switch (typeList.get(position).type) {
             case VIEW_TYPE_TITLE: {
-                holder.actor.setText(getUser(position).first_name + " " + getUser(position).last_name);
+                holder.actor.setText(getUser(position).name);
                 if (getUser(position).profile_image != null) {
                     Glide.with(a)
                             .load(getUser(position).profile_image.large)
@@ -139,29 +142,62 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                             .into(holder.avatar);
                 }
                 switch (resultList.get(typeList.get(position).resultPosition).verb) {
-                    case VERB_RELEASED:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                a.getString(R.string.released)
-                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                        + " " + a.getString(R.string.photos));
-                        break;
-
-                    case VERB_LIKED:
+                    case FollowingResult.VERB_LIKED:
                         holder.verb.setVisibility(View.VISIBLE);
                         holder.verb.setText(
                                 a.getString(R.string.liked)
                                         + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                        + " " + a.getString(R.string.photos));
+                                        + " " + a.getString(R.string.photos)
+                                        + ".");
                         break;
 
-                    case VERB_COLLECTED:
+                    case FollowingResult.VERB_COLLECTED:
                         holder.verb.setVisibility(View.VISIBLE);
                         holder.verb.setText(
-                                a.getString(R.string.added)
+                                Html.fromHtml(
+                                        a.getString(R.string.collected)
+                                                + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                                + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
+                                                + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
+                                                + "."));
+                        break;
+
+                    case FollowingResult.VERB_FOLLOWED:
+                        holder.verb.setVisibility(View.VISIBLE);
+                        holder.verb.setText(
+                                a.getString(R.string.followed)
+                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                        + " " + a.getString(R.string.users)
+                                        + ".");
+                        break;
+
+                    case FollowingResult.VERB_RELEASE:
+                        holder.verb.setVisibility(View.VISIBLE);
+                        holder.verb.setText(
+                                a.getString(R.string.released)
                                         + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
                                         + " " + a.getString(R.string.photos)
-                                        + " to " + resultList.get(typeList.get(position).resultPosition).targets.get(0).title);
+                                        + ".");
+                        break;
+
+                    case FollowingResult.VERB_PUBLISHED:
+                        holder.verb.setVisibility(View.VISIBLE);
+                        holder.verb.setText(
+                                a.getString(R.string.published)
+                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                        + " " + a.getString(R.string.photos)
+                                        + ".");
+                        break;
+
+                    case FollowingResult.VERB_CURATED:
+                        holder.verb.setVisibility(View.VISIBLE);
+                        holder.verb.setText(
+                                Html.fromHtml(
+                                        a.getString(R.string.curated)
+                                                + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                                + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
+                                                + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
+                                                + "."));
                         break;
 
                     default:
@@ -170,10 +206,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 }
                 break;
             }
-            case VIEW_TYPE_CONTENT_1:
-            case VIEW_TYPE_CONTENT_2:
-            case VIEW_TYPE_CONTENT_3: {
+            case VIEW_TYPE_PHOTO: {
                 final Photo photo = getPhoto(position);
+                assert photo != null;
                 holder.title.setText("");
                 holder.image.setShowShadow(false);
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -250,8 +285,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                             })
                             .into(holder.image);
 
-                    holder.image.setTransitionName(photo.id + "-image");
-                    holder.background.setTransitionName(photo.id + "-background");
+                    holder.image.setTransitionName(photo.id + "-" + position + "-image");
+                    holder.background.setTransitionName(photo.id + "-" + position + "-background");
                 }
 
                 if (photo.current_user_collections.size() != 0) {
@@ -265,10 +300,42 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 holder.background.setBackgroundColor(ColorUtils.calcCardBackgroundColor(photo.color));
                 break;
             }
+            case VIEW_TYPE_USER:
+                User user = getUser(position);
+                holder.actor.setText(user.name);
+                if (TextUtils.isEmpty(user.bio)) {
+                    holder.verb.setText(
+                            user.total_photos + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
+                                    + user.total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
+                                    + user.total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
+                } else {
+                    holder.verb.setText(user.bio);
+                }
+
+                if (user.profile_image != null) {
+                    Glide.with(a)
+                            .load(user.profile_image.large)
+                            .override(128, 128)
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .into(holder.avatar);
+                } else {
+                    Glide.with(a)
+                            .load(R.drawable.default_avatar)
+                            .override(128, 128)
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .into(holder.avatar);
+                }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    holder.avatar.setTransitionName(user.username + "-" + position + "-avatar");
+                    holder.background.setTransitionName(user.username + "-" + position + "-background");
+                }
+                break;
             case VIEW_TYPE_MORE: {
                 final Photo photo = getPhoto(position);
+                assert photo != null;
                 holder.more.setText(
-                        (resultList.get(typeList.get(position).resultPosition).objects.size() - 3)
+                        (resultList.get(typeList.get(position).resultPosition).objects.size() - MAX_DISPLAY_PHOTO_COUNT)
                                 + " " + a.getString(R.string.more));
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                     Glide.with(a)
@@ -341,15 +408,27 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                 }
                             })
                             .into(holder.image);
+                    if (getUser(position).profile_image != null) {
+                        Glide.with(a)
+                                .load(getUser(position).profile_image.large)
+                                .override(128, 128)
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .into(holder.avatar);
+                    } else {
+                        Glide.with(a)
+                                .load(R.drawable.default_avatar)
+                                .override(128, 128)
+                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                                .into(holder.avatar);
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        holder.avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
+                        holder.background.setTransitionName(getUser(position).username + "-" + position + "-background");
+                    }
                 }
                 break;
             }
         }
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        Glide.clear(holder.image);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -384,10 +463,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         if (photoService == null) {
             photoService = PhotoService.getService();
         }
+        Photo photo = getPhoto(position);
+        assert photo != null;
         photoService.setLikeForAPhoto(
-                getPhoto(position).id,
+                photo.id,
                 like,
-                new OnSetLikeListener(getPhoto(position).id, like, position));
+                new OnSetLikeListener(photo.id, like, position));
     }
 
     public void cancelService() {
@@ -401,25 +482,29 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     }
 
     public void updatePhoto(Photo p, boolean probablyRepeat) {
-        int position = 0;
+        int position = -1;
         for (int i = 0; i < resultList.size(); i ++) {
             position ++;
-            int j;
-            for (j = 0; j < resultList.get(i).objects.size(); j ++) {
-                if (j < 3) {
-                    position ++;
-                }
-                if (resultList.get(i).objects.get(j).id.equals(p.id)) {
-                    resultList.get(i).objects.set(j, p);
-                    if (j < 3) {
-                        notifyItemChanged(position);
+            int j = 0;
+            if (resultList.get(i).verb.equals(FollowingResult.VERB_FOLLOWED)) {
+                position += resultList.get(i).objects.size();
+            } else {
+                for (j = 0; j < resultList.get(i).objects.size(); j ++) {
+                    if (j < MAX_DISPLAY_PHOTO_COUNT) {
+                        position ++;
                     }
-                    if (!probablyRepeat) {
-                        break;
+                    if (resultList.get(i).objects.get(j).id.equals(p.id)) {
+                        resultList.get(i).objects.set(j, new FollowingResult.Object(p));
+                        if (j < MAX_DISPLAY_PHOTO_COUNT) {
+                            notifyItemChanged(position);
+                        }
+                        if (!probablyRepeat) {
+                            return;
+                        }
                     }
                 }
             }
-            if (j > 3) {
+            if (j > MAX_DISPLAY_PHOTO_COUNT) {
                 position ++;
             }
         }
@@ -432,43 +517,69 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     }
 
     private void addType(FollowingResult result, int i) {
-        if (result.objects.size() > 3) {
+        if (result.verb.equals(FollowingResult.VERB_FOLLOWED)) {
             typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
-            typeList.add(new ViewType(i, 0, VIEW_TYPE_CONTENT_1));
-            typeList.add(new ViewType(i, 1, VIEW_TYPE_CONTENT_2));
-            typeList.add(new ViewType(i, 2, VIEW_TYPE_CONTENT_3));
-            typeList.add(new ViewType(i, 3, VIEW_TYPE_MORE));
-        } else if (result.objects.size() == 3) {
+            for (int j = 0; j < result.objects.size(); j ++) {
+                typeList.add(new ViewType(i, j, VIEW_TYPE_USER));
+            }
+        } else {
             typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
-            typeList.add(new ViewType(i, 0, VIEW_TYPE_CONTENT_1));
-            typeList.add(new ViewType(i, 1, VIEW_TYPE_CONTENT_2));
-            typeList.add(new ViewType(i, 2, VIEW_TYPE_CONTENT_3));
-        } else if (result.objects.size() == 2) {
-            typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
-            typeList.add(new ViewType(i, 0, VIEW_TYPE_CONTENT_1));
-            typeList.add(new ViewType(i, 1, VIEW_TYPE_CONTENT_2));
-        } else if (result.objects.size() == 1) {
-            typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
-            typeList.add(new ViewType(i, 0, VIEW_TYPE_CONTENT_1));
-        } else if (result.objects.size() == 0) {
-            typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
+            for (int j = 0; j < MAX_DISPLAY_PHOTO_COUNT && j < result.objects.size(); j ++) {
+                typeList.add(new ViewType(i, j, VIEW_TYPE_PHOTO));
+            }
+            if (result.objects.size() > MAX_DISPLAY_PHOTO_COUNT) {
+                typeList.add(new ViewType(i, MAX_DISPLAY_PHOTO_COUNT, VIEW_TYPE_MORE));
+            }
         }
     }
 
     private User getUser(int position) {
-        return resultList.get(typeList.get(position).resultPosition)
-                .actors.get(0);
+        ViewType viewType = typeList.get(position);
+        switch (viewType.type) {
+            case VIEW_TYPE_TITLE:
+            case VIEW_TYPE_PHOTO:
+            case VIEW_TYPE_MORE:
+                return resultList.get(viewType.resultPosition)
+                        .actors.get(0);
+
+            default: // VIEW_TYPE_USER.
+                return resultList.get(viewType.resultPosition)
+                        .objects.get(viewType.objectPosition)
+                        .castToUser();
+        }
     }
 
+    @Nullable
     private Photo getPhoto(int position) {
-        return resultList.get(typeList.get(position).resultPosition)
-                .objects.get(typeList.get(position).objectPosition);
+        ViewType viewType = typeList.get(position);
+        switch (viewType.type) {
+            case VIEW_TYPE_PHOTO:
+            case VIEW_TYPE_MORE:
+                return resultList.get(viewType.resultPosition)
+                        .objects.get(viewType.objectPosition)
+                        .castToPhoto();
 
+            default: // VIEW_TYPE_USER, VIEW_TYPE_TITLE.
+                return null;
+        }
     }
 
     private Collection getCollection(int position) {
         return resultList.get(typeList.get(position).resultPosition)
                 .targets.get(0);
+    }
+
+    public boolean isHeaderView(int position) {
+        return typeList.get(position).type == VIEW_TYPE_TITLE;
+    }
+
+    public boolean isFooterView(int position) {
+        return typeList.size() <= position + 1
+                || typeList.get(position + 1).type == VIEW_TYPE_TITLE;
+    }
+
+    public User getActor(int position) {
+        return resultList.get(typeList.get(position).resultPosition).actors.get(0);
     }
 
     /** <br> interface. */
@@ -490,15 +601,18 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
             if (response.isSuccessful() && response.body() != null) {
-                if (typeList.size() >= position
-                        && getPhoto(position).id.equals(response.body().photo.id)) {
-                    Photo p = getPhoto(position);
+                if (typeList.size() < position) {
+                    return;
+                }
 
-                    p.liked_by_user = response.body().photo.liked_by_user;
-                    p.likes = response.body().photo.likes;
+                Photo photo = getPhoto(position);
+                if (photo != null
+                        && photo.id.equals(response.body().photo.id)) {
+                    photo.liked_by_user = response.body().photo.liked_by_user;
+                    photo.likes = response.body().photo.likes;
 
                     resultList.get(typeList.get(position).resultPosition)
-                            .objects.set(typeList.get(position).objectPosition, p);
+                            .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
                 }
             } else {
                 photoService.setLikeForAPhoto(
@@ -571,49 +685,68 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
             super(itemView);
             this.position = position;
             switch (typeList.get(position).type) {
-                case VIEW_TYPE_TITLE:
+                case VIEW_TYPE_TITLE: {
                     this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_title_background);
 
+                    itemView.findViewById(R.id.item_following_title_avatarContainer).setOnClickListener(this);
+
                     this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_title_avatar);
-                    avatar.setOnClickListener(this);
 
                     this.actor = (TextView) itemView.findViewById(R.id.item_following_title_actor);
                     actor.setOnClickListener(this);
 
                     this.verb = (TextView) itemView.findViewById(R.id.item_following_title_verb);
+                    DisplayUtils.setTypeface(itemView.getContext(), verb);
                     verb.setOnClickListener(this);
                     break;
+                }
+                case VIEW_TYPE_PHOTO: {
+                    Photo photo = getPhoto(position);
+                    assert photo != null;
 
-                case VIEW_TYPE_CONTENT_1:
-                case VIEW_TYPE_CONTENT_2:
-                case VIEW_TYPE_CONTENT_3:
-                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_content_background);
+                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_photo_background);
                     background.setOnClickListener(this);
 
-                    this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_content_image);
-                    image.setSize(getPhoto(position).width, getPhoto(position).height);
+                    this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_photo_image);
+                    image.setSize(photo.width, photo.height);
 
-                    this.title = (TextView) itemView.findViewById(R.id.item_following_content_title);
+                    this.title = (TextView) itemView.findViewById(R.id.item_following_photo_title);
                     DisplayUtils.setTypeface(itemView.getContext(), title);
 
-                    this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_following_content_collectionButton);
+                    this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_following_photo_collectionButton);
                     collectionButton.setOnClickListener(this);
 
-                    this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_following_content_likeButton);
+                    this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_following_photo_likeButton);
                     likeButton.setOnLikeListener(this);
 
-                    itemView.findViewById(R.id.item_following_content_downloadButton).setOnClickListener(this);
+                    itemView.findViewById(R.id.item_following_photo_downloadButton).setOnClickListener(this);
                     break;
+                }
+                case VIEW_TYPE_USER: {
+                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_user_background);
+                    background.setOnClickListener(this);
 
-                case VIEW_TYPE_MORE:
+                    this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_user_avatar);
+                    this.actor = (TextView) itemView.findViewById(R.id.item_following_user_title);
+
+                    this.verb = (TextView) itemView.findViewById(R.id.item_following_user_subtitle);
+                    DisplayUtils.setTypeface(a, verb);
+                    break;
+                }
+                case VIEW_TYPE_MORE: {
+                    Photo photo = getPhoto(position);
+                    assert photo != null;
+
                     this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_more_background);
                     background.setOnClickListener(this);
 
                     this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_more_image);
-                    image.setSize(getPhoto(position).width, getPhoto(position).height);
+                    image.setSize(photo.width, photo.height);
 
                     this.more = (TextView) itemView.findViewById(R.id.item_following_more_title);
+                    this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_more_avatar);
                     break;
+                }
             }
         }
 
@@ -622,38 +755,45 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
             switch (typeList.get(position).type) {
                 case VIEW_TYPE_TITLE:
                     switch (view.getId()) {
-                        case R.id.item_following_title_avatar:
+                        case R.id.item_following_title_avatarContainer:
                         case R.id.item_following_title_actor: {
                             IntentHelper.startUserActivity(
                                     (MysplashActivity) a,
                                     avatar,
-                                    getUser(position));
+                                    getUser(position),
+                                    UserActivity.PAGE_PHOTO);
                             break;
                         }
                         case R.id.item_following_title_verb: {
-                            if (resultList.get(typeList.get(position).resultPosition).verb.equals(VERB_COLLECTED)) {
+                            if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_COLLECTED)
+                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_CURATED)) {
                                 IntentHelper.startCollectionActivity(
                                         (MysplashActivity) a,
                                         avatar,
                                         background,
                                         getCollection(position));
-                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(VERB_RELEASED)
-                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(VERB_LIKED)) {
+                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_RELEASE)
+                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_PUBLISHED)) {
                                 IntentHelper.startUserActivity(
                                         (MysplashActivity) a,
                                         avatar,
-                                        getUser(position));
+                                        getUser(position),
+                                        UserActivity.PAGE_PHOTO);
+                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_LIKED)) {
+                                IntentHelper.startUserActivity(
+                                        (MysplashActivity) a,
+                                        avatar,
+                                        getUser(position),
+                                        UserActivity.PAGE_LIKE);
                             }
                             break;
                         }
                     }
                     break;
 
-                case VIEW_TYPE_CONTENT_1:
-                case VIEW_TYPE_CONTENT_2:
-                case VIEW_TYPE_CONTENT_3:
+                case VIEW_TYPE_PHOTO:
                     switch (view.getId()) {
-                        case R.id.item_following_content_background:
+                        case R.id.item_following_photo_background:
                             IntentHelper.startPhotoActivity(
                                     (MysplashActivity) a,
                                     image,
@@ -661,7 +801,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                     getPhoto(position));
                             break;
 
-                        case R.id.item_following_content_collectionButton:
+                        case R.id.item_following_photo_collectionButton:
                             if (!AuthManager.getInstance().isAuthorized()) {
                                 IntentHelper.startLoginActivity((MysplashActivity) a);
                             } else {
@@ -671,8 +811,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                             }
                             break;
 
-                        case R.id.item_following_content_downloadButton:
+                        case R.id.item_following_photo_downloadButton:
                             Photo p = getPhoto(position);
+                            assert p != null;
                             if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
                                 DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
                             } else {
@@ -684,19 +825,41 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                     }
                     break;
 
+                case VIEW_TYPE_USER:
+                    switch (view.getId()) {
+                        case R.id.item_following_user_background:
+                            IntentHelper.startUserActivity(
+                                    (MysplashActivity) a,
+                                    avatar,
+                                    getUser(position),
+                                    UserActivity.PAGE_PHOTO);
+                            break;
+                    }
+                    break;
+
                 case VIEW_TYPE_MORE:
                     switch (view.getId()) {
                         case R.id.item_following_more_background:
-                            if (resultList.get(typeList.get(position).resultPosition).verb.equals(VERB_COLLECTED)) {
+                            if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_COLLECTED)
+                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_CURATED)) {
                                 IntentHelper.startCollectionActivity(
                                         (MysplashActivity) a,
+                                        avatar,
                                         background,
                                         getCollection(position));
-                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(VERB_RELEASED)
-                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(VERB_LIKED)) {
+                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_RELEASE)
+                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_PUBLISHED)) {
                                 IntentHelper.startUserActivity(
                                         (MysplashActivity) a,
-                                        getUser(position));
+                                        avatar,
+                                        getUser(position),
+                                        UserActivity.PAGE_PHOTO);
+                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_LIKED)) {
+                                IntentHelper.startUserActivity(
+                                        (MysplashActivity) a,
+                                        avatar,
+                                        getUser(position),
+                                        UserActivity.PAGE_LIKE);
                             }
                             break;
                     }
@@ -706,7 +869,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
 
         @Override
         public void onClickLikeButton(boolean newLikeState) {
-            setLikeForAPhoto(newLikeState, getAdapterPosition());
+            setLikeForAPhoto(newLikeState, position);
         }
     }
 }

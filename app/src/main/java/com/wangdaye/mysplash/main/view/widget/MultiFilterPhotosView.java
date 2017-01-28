@@ -35,7 +35,6 @@ import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.MultiFilterView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -47,6 +46,7 @@ import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.MultiFilterImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
 
@@ -218,15 +218,17 @@ public class MultiFilterPhotosView extends FrameLayout
                 new PhotoAdapter(
                         getContext(),
                         new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
-                        this));
+                        this,
+                        null));
         this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
         this.scrollModel = new ScrollObject(true);
     }
 
     // interface.
 
-    public void setActivity(MysplashActivity a) {
+    public void setActivity(MainActivity a) {
         multiFilterPresenter.setActivityForAdapter(a);
+        multiFilterPresenter.getAdapter().setOnDownloadPhotoListener(a);
     }
 
     public void doSearch(int categoryId, boolean featured,

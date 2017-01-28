@@ -31,6 +31,7 @@ import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
 
@@ -156,8 +157,8 @@ public class HomeFragment extends MysplashFragment
 
     private void initPages(View v) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new HomePhotosView((MysplashActivity) getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW));
-        pageList.add(new HomePhotosView((MysplashActivity) getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED));
+        pageList.add(new HomePhotosView((MainActivity) getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_NEW));
+        pageList.add(new HomePhotosView((MainActivity) getActivity(), getBundle(), PhotosObject.PHOTOS_TYPE_FEATURED));
         pageList.add(new HomeCollectionsView((MysplashActivity) getActivity(), getBundle()));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);

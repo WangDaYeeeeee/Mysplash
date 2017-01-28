@@ -44,6 +44,16 @@ public class DownloadImplementor
         doDownload(DownloadHelper.WALLPAPER_TYPE);
     }
 
+    @Override
+    public Object getDownloadKey() {
+        return model.getDownloadKey();
+    }
+
+    @Override
+    public void setDownloadKey(Object key) {
+        model.setDownloadKey(key);
+    }
+
     /** <br> utils. */
 
     private void doDownload(int type) {

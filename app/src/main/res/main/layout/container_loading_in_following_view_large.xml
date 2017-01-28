@@ -7,14 +7,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="?attr/actionBarSize"
-    android:background="?attr/root_color"><com.github.rahatarmanahmed.cpv.CircularProgressView
-    android:id="@+id/container_loading_in_following_view_large_progressView"
-    android:layout_width="@dimen/circular_progress_height"
-    android:layout_height="@dimen/circular_progress_height"
-    android:layout_centerInParent="true"
-    app:cpv_animAutostart="true"
-    app:cpv_color="?attr/content_color"
-    app:cpv_indeterminate="true" />
+    android:background="?attr/root_color">
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/container_loading_in_following_view_large_progressView"
+        android:layout_width="@dimen/circular_progress_height"
+        android:layout_height="@dimen/circular_progress_height"
+        android:layout_centerInParent="true"
+        app:cpv_animAutostart="true"
+        app:cpv_color="?attr/title_color"
+        app:cpv_indeterminate="true" />
 
     <RelativeLayout
         android:id="@+id/container_loading_in_following_view_large_feedbackContainer"
