@@ -60,6 +60,8 @@
 
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_home.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_home_collection.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_following.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_drawer.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_filter.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_search.png)
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/preview/thumbnails/preview_category.png)
