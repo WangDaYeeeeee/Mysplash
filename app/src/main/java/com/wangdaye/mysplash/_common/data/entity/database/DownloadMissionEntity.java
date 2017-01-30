@@ -29,6 +29,12 @@ public class DownloadMissionEntity {
     public String downloadUrl;
     public int downloadType;
 
+    public int result;
+
+    public static final int RESULT_SUCCEED = 1;
+    public static final int RESULT_FAILED = -1;
+    public static final int RESULT_DOWNLOADING = 0;
+
     public DownloadMissionEntity(Photo p, int type) {
         this.title = p.id;
         this.photoUri = p.urls.regular;
@@ -40,6 +46,7 @@ public class DownloadMissionEntity {
             this.downloadUrl = p.urls.raw;
         }
         this.downloadType = type;
+        this.result = RESULT_DOWNLOADING;
     }
 
     public DownloadMissionEntity(Collection c) {
@@ -47,16 +54,18 @@ public class DownloadMissionEntity {
         this.photoUri = c.cover_photo.urls.regular;
         this.downloadUrl = c.links.download;
         this.downloadType = DownloadHelper.COLLECTION_TYPE;
+        this.result = RESULT_DOWNLOADING;
     }
 
-    @Generated(hash = 1354542985)
+    @Generated(hash = 616575969)
     public DownloadMissionEntity(long missionId, String title, String photoUri, String downloadUrl,
-            int downloadType) {
+            int downloadType, int result) {
         this.missionId = missionId;
         this.title = title;
         this.photoUri = photoUri;
         this.downloadUrl = downloadUrl;
         this.downloadType = downloadType;
+        this.result = result;
     }
 
     @Generated(hash = 1239001066)
@@ -76,7 +85,7 @@ public class DownloadMissionEntity {
     // insert.
 
     public static void insertDownloadEntity(SQLiteDatabase database, DownloadMissionEntity entity) {
-        DownloadMissionEntity e = searchDownloadEntity(database, entity.title);
+        DownloadMissionEntity e = searchDownloadEntity(database, entity.missionId);
         if (e != null) {
             deleteDownloadEntity(database, e.missionId);
         }
@@ -107,7 +116,7 @@ public class DownloadMissionEntity {
 
     // update.
 
-    private static void updateDownloadEntity(SQLiteDatabase database, DownloadMissionEntity entity) {
+    public static void updateDownloadEntity(SQLiteDatabase database, DownloadMissionEntity entity) {
         new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
@@ -116,11 +125,20 @@ public class DownloadMissionEntity {
 
     // search.
 
-    public static List<DownloadMissionEntity> searchDownloadEntityList(SQLiteDatabase database) {
+    public static List<DownloadMissionEntity> readDownloadEntityList(SQLiteDatabase database) {
         return new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
                 .queryBuilder()
+                .list();
+    }
+
+    public static List<DownloadMissionEntity> readDownloadEntityList(SQLiteDatabase database, int result) {
+        return new DaoMaster(database)
+                .newSession()
+                .getDownloadMissionEntityDao()
+                .queryBuilder()
+                .where(DownloadMissionEntityDao.Properties.Result.eq(result))
                 .list();
     }
 
@@ -140,12 +158,13 @@ public class DownloadMissionEntity {
     }
 
     @Nullable
-    public static DownloadMissionEntity searchDownloadEntity(SQLiteDatabase database, String title) {
+    public static DownloadMissionEntity searchDownloadingEntity(SQLiteDatabase database, String title) {
         List<DownloadMissionEntity> entityList = new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
                 .queryBuilder()
                 .where(DownloadMissionEntityDao.Properties.Title.eq(title))
+                .where(DownloadMissionEntityDao.Properties.Result.eq(RESULT_DOWNLOADING))
                 .list();
         if (entityList != null && entityList.size() > 0) {
             return entityList.get(0);
@@ -154,12 +173,13 @@ public class DownloadMissionEntity {
         }
     }
 
-    public static int searchDownloadEntityCount(SQLiteDatabase database, String photoId) {
+    public static int searchDownloadingEntityCount(SQLiteDatabase database, String photoId) {
         return new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
                 .queryBuilder()
                 .where(DownloadMissionEntityDao.Properties.Title.eq(photoId))
+                .where(DownloadMissionEntityDao.Properties.Result.eq(RESULT_DOWNLOADING))
                 .list()
                 .size();
     }
@@ -202,5 +222,13 @@ public class DownloadMissionEntity {
 
     public void setDownloadType(int downloadType) {
         this.downloadType = downloadType;
+    }
+
+    public int getResult() {
+        return this.result;
+    }
+
+    public void setResult(int result) {
+        this.result = result;
     }
 }

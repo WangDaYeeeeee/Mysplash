@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -29,6 +28,7 @@ import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
@@ -61,7 +61,7 @@ public class SearchFragment extends MysplashFragment
 
     // view.
     private CoordinatorLayout container;
-    private AppBarLayout appBar;
+    private NestedScrollAppBarLayout appBar;
     private EditText editText;
     private ViewPager viewPager;
     private PagerView[] pagers = new PagerView[3];
@@ -155,7 +155,7 @@ public class SearchFragment extends MysplashFragment
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_search_container);
 
-        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_search_appBar);
+        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_search_appBar);
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_search_toolbar);
         if (Mysplash.getInstance().isLightTheme()) {

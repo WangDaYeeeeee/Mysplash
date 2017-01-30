@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.design.widget.Snackbar;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 import java.io.File;
@@ -21,7 +22,6 @@ public class FileUtils {
                     Snackbar.LENGTH_SHORT);
             return false;
         }
-
         File dirFile1 = new File(Environment.getExternalStorageDirectory(), "Pictures");
         if (!dirFile1.exists()) {
             if (!dirFile1.mkdir()) {
@@ -41,5 +41,49 @@ public class FileUtils {
             }
         }
         return true;
+    }
+
+    public static boolean isPhotoExists(Context c, String title) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            NotificationUtils.showSnackbar(
+                    c.getString(R.string.feedback_no_sd_card),
+                    Snackbar.LENGTH_SHORT);
+            return false;
+        }
+        File f;
+        f = new File(Environment.getExternalStorageDirectory(), "Pictures");
+        if (!f.exists()) {
+            return false;
+        }
+        f = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash");
+        if (!f.exists()) {
+            return false;
+        }
+        f = new File(Environment.getExternalStorageDirectory().toString()
+                + Mysplash.DOWNLOAD_PATH
+                + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+        return f.exists();
+    }
+
+    public static boolean isCollectionExists(Context c, String title) {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            NotificationUtils.showSnackbar(
+                    c.getString(R.string.feedback_no_sd_card),
+                    Snackbar.LENGTH_SHORT);
+            return false;
+        }
+        File f;
+        f = new File(Environment.getExternalStorageDirectory(), "Pictures");
+        if (!f.exists()) {
+            return false;
+        }
+        f = new File(Environment.getExternalStorageDirectory().toString() + "/Pictures/Mysplash");
+        if (!f.exists()) {
+            return false;
+        }
+        f = new File(Environment.getExternalStorageDirectory().toString()
+                + Mysplash.DOWNLOAD_PATH
+                + title + Mysplash.DOWNLOAD_COLLECTION_FORMAT);
+        return f.exists();
     }
 }

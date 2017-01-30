@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
+        <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
             android:id="@+id/fragment_home_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
                 app:tabSelectedTextColor="?attr/content_color"
                 app:tabTextColor="?attr/subtitle_color" />
 
-        </android.support.design.widget.AppBarLayout>
+        </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/fragment_home_viewPager"

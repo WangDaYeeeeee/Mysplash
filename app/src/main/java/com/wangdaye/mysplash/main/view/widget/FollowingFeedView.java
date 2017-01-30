@@ -36,6 +36,7 @@ import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -55,7 +56,7 @@ import java.util.ArrayList;
  * Following feed view.
  * */
 
-public class FollowingFeedView extends FrameLayout
+public class FollowingFeedView extends NestedScrollFrameLayout
         implements FollowingView, LoadView, ScrollView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
@@ -104,7 +105,7 @@ public class FollowingFeedView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_in_following_view_large, null);
+        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_in_following_view_large, this, false);
         addView(searchingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
@@ -116,6 +117,11 @@ public class FollowingFeedView extends FrameLayout
         initModel();
         initPresenter();
         initView();
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
     }
 
     /** <br> presenter. */

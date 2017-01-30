@@ -107,6 +107,7 @@ public class DownloadHelper {
         DownloadMissionEntity entity = removeMissionAndGetMission(c, missionId);
         if (entity != null) {
             entity.missionId = addMission(c, entity);
+            entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
         }
         return entity;
     }

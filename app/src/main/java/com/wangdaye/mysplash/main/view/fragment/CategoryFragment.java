@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -22,6 +21,7 @@ import com.wangdaye.mysplash._common.i.view.CategoryManageView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.popup.SearchCategoryPopupWindow;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
@@ -47,7 +47,7 @@ public class CategoryFragment extends MysplashFragment
 
     // view.
     private CoordinatorLayout container;
-    private AppBarLayout appBar;
+    private NestedScrollAppBarLayout appBar;
     private Toolbar toolbar;
     private TextView title;
     private ImageButton titleBtn;
@@ -116,7 +116,7 @@ public class CategoryFragment extends MysplashFragment
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_category_container);
 
-        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_category_appBar);
+        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_category_appBar);
 
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
         if (Mysplash.getInstance().isLightTheme()) {

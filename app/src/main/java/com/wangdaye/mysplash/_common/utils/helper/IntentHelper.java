@@ -2,7 +2,9 @@ package com.wangdaye.mysplash._common.utils.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -21,7 +23,6 @@ import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 import com.wangdaye.mysplash._common.ui.activity.PreviewPhotoActivity;
 import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash._common.ui.activity.UpdateMeActivity;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.about.view.activity.AboutActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
@@ -56,6 +57,13 @@ public class IntentHelper {
                             Pair.create(background, a.getString(R.string.transition_photo_background)));
             ActivityCompat.startActivity(a, intent, options.toBundle());
         }
+    }
+
+    public static void startPhotoActivity(MysplashActivity a, String photoId) {
+        Intent intent = new Intent(a, PhotoActivity.class);
+        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photoId);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startPreviewPhotoActivity(MysplashActivity a, Photo p) {
@@ -97,6 +105,13 @@ public class IntentHelper {
         } else {
             ActivityCompat.startActivity(a, intent, options.toBundle());
         }
+    }
+
+    public static void startCollectionActivity(MysplashActivity a, String collectionId) {
+        Intent intent = new Intent(a, CollectionActivity.class);
+        intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_ID, collectionId);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startUserActivity(MysplashActivity a, View avatar, User u, int page) {
@@ -182,5 +197,38 @@ public class IntentHelper {
         Intent intent = new Intent(a, IntroduceActivity.class);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
+    }
+
+    public static void startCheckPhotoActivity(Context c, String title) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.parse("file://"
+                + Environment.getExternalStorageDirectory()
+                + Mysplash.DOWNLOAD_PATH
+                + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+        intent.setDataAndType(uri, "image/jpg");
+
+        c.startActivity(
+                Intent.createChooser(
+                        intent,
+                        c.getString(R.string.check)));
+    }
+
+    public static void startCheckCollectionActivity(Context c, String title) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.parse("file://"
+                + Environment.getExternalStorageDirectory()
+                + Mysplash.DOWNLOAD_PATH
+                + title
+                + ".zip");
+        intent.setDataAndType(uri, "application/x-zip-compressed");
+
+        c.startActivity(
+                Intent.createChooser(
+                        intent,
+                        c.getString(R.string.check)));
     }
 }

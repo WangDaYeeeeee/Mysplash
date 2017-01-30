@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -15,6 +14,7 @@ import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
@@ -28,7 +28,7 @@ public class FollowingFragment extends MysplashFragment
         implements View.OnClickListener {
     // view.
     private CoordinatorLayout container;
-    private AppBarLayout appBar;
+    private NestedScrollAppBarLayout appBar;
     private FollowingFeedView feedView;
 
     // presenter.
@@ -96,7 +96,7 @@ public class FollowingFragment extends MysplashFragment
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_following_container);
 
-        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_following_appBar);
+        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_following_appBar);
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_following_toolbar);
         toolbar.setTitle(getString(R.string.action_following));

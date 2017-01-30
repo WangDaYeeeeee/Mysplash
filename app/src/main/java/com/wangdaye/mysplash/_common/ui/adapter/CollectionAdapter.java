@@ -168,11 +168,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         }
     }
 
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        Glide.clear(holder.image);
-    }
-
     public void setActivity(MysplashActivity a) {
         this.a = a;
     }
@@ -187,6 +182,13 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        Glide.clear(holder.image);
+        Glide.clear(holder.avatar);
     }
 
     public void insertItem(Collection c, int position) {

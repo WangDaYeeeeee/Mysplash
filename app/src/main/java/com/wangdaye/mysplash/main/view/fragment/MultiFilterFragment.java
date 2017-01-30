@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -31,6 +30,7 @@ import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
@@ -60,7 +60,7 @@ public class MultiFilterFragment extends MysplashFragment
     private SafeHandler<MultiFilterFragment> handler;
 
     private CoordinatorLayout container;
-    private AppBarLayout appBar;
+    private NestedScrollAppBarLayout appBar;
     private EditText[] editTexts;
     private TextView[] menuTexts;
     private ImageButton[] menuIcons;
@@ -152,7 +152,7 @@ public class MultiFilterFragment extends MysplashFragment
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_multi_filter_container);
 
-        this.appBar = (AppBarLayout) v.findViewById(R.id.fragment_multi_filter_appBar);
+        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_multi_filter_appBar);
 
         Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_multi_filter_toolbar);
         toolbar.setTitle(getString(R.string.action_multi_filter));

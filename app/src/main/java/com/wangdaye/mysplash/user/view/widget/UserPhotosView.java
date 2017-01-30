@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -31,6 +30,7 @@ import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -49,7 +49,7 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
  * */
 
 @SuppressLint("ViewConstructor")
-public class UserPhotosView extends FrameLayout
+public class UserPhotosView extends NestedScrollFrameLayout
         implements PhotosView, PagerView, LoadView, ScrollView, SwipeBackView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
@@ -84,7 +84,7 @@ public class UserPhotosView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize(UserActivity a, @Nullable Bundle bundle, User u, int type) {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
+        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, this, false);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
@@ -380,5 +380,10 @@ public class UserPhotosView extends FrameLayout
             default:
                 return true;
         }
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 }

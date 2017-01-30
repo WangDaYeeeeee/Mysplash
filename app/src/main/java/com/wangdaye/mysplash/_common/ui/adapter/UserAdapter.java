@@ -96,11 +96,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         }
     }
 
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        Glide.clear(holder.avatar);
-    }
-
     public void setActivity(MysplashActivity a) {
         this.a = a;
     }
@@ -115,6 +110,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        Glide.clear(holder.avatar);
     }
 
     public void insertItem(User u, int position) {

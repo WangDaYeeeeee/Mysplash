@@ -12,7 +12,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -26,6 +25,7 @@ import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -54,7 +54,7 @@ import java.util.ArrayList;
  * Collection photos view.
  * */
 
-public class CollectionPhotosView extends FrameLayout
+public class CollectionPhotosView extends NestedScrollFrameLayout
         implements PhotosView, LoadView, ScrollView, SwipeBackView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
@@ -101,13 +101,18 @@ public class CollectionPhotosView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, null);
+        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, this, false);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
         initView();
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
     }
 
     public void initMP(CollectionActivity a, Collection c) {

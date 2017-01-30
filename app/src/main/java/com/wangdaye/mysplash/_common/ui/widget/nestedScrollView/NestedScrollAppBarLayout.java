@@ -95,6 +95,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         // data
         private float oldY;
 
+        // life cycle.
+
         public Behavior() {
             super();
         }
@@ -102,6 +104,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         public Behavior(Context context, AttributeSet attrs) {
             super(context, attrs);
         }
+
+        // touch.
 
         @Override
         public boolean onInterceptTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
@@ -130,7 +134,7 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                     break;
             }
 
-            return super.onTouchEvent(parent, child, ev);
+            return parent.getTranslationY() > 0 || super.onTouchEvent(parent, child, ev);
         }
     }
 }

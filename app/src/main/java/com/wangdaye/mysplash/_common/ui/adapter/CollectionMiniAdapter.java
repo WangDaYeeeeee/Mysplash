@@ -139,7 +139,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                     .getCollectionList()
                     .get(position - 1).id == photo.current_user_collections.get(i).id) {
                 Glide.with(c)
-                        .load(R.drawable.ic_item_checked)
+                        .load(R.drawable.ic_item_state_succeed)
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .into(holder.icon);
                 holder.icon.setVisibility(View.VISIBLE);
@@ -168,6 +168,12 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        Glide.clear(holder.image);
     }
 
     public int getRealItemCount() {

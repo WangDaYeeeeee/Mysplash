@@ -195,8 +195,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                 Html.fromHtml(
                                         a.getString(R.string.curated)
                                                 + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                                + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
-                                                + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
+                                                + " " + a.getString(R.string.photos)
+                                                + (resultList.get(typeList.get(position).resultPosition).targets.size() > 0 ?
+                                                " " + a.getString(R.string.to)
+                                                        + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
+                                                :
+                                                "")
                                                 + "."));
                         break;
 
@@ -445,6 +449,17 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder.image != null) {
+            Glide.clear(holder.image);
+        }
+        if (holder.avatar != null) {
+            Glide.clear(holder.avatar);
+        }
     }
 
     public void insertItem(FollowingResult item) {
@@ -814,7 +829,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                         case R.id.item_following_photo_downloadButton:
                             Photo p = getPhoto(position);
                             assert p != null;
-                            if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
+                            if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(p.id) == 0) {
                                 DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
                             } else {
                                 NotificationUtils.showSnackbar(

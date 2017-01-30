@@ -95,6 +95,7 @@ public class CollectionActivity extends MysplashActivity
 
     // data
     public static final String KEY_COLLECTION_ACTIVITY_COLLECTION = "collection_activity_collection";
+    public static final String KEY_COLLECTION_ACTIVITY_ID = "collection_activity_id";
 
     /** <br> life cycle. */
 

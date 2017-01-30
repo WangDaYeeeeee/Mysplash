@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:alpha="0.9"
+        android:alpha="0.5"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
@@ -28,7 +28,7 @@
         android:layout_height="match_parent">
 
         <ImageButton
-            android:id="@+id/item_download_cancelBtn"
+            android:id="@+id/item_download_closeBtn"
             android:src="@drawable/ic_item_close"
             android:layout_width="34dp"
             android:layout_height="34dp"
@@ -42,8 +42,7 @@
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <ImageButton
-            android:id="@+id/item_download_retryBtn"
-            android:src="@drawable/ic_item_retry"
+            android:id="@+id/item_download_retry_check_btn"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
@@ -51,7 +50,19 @@
             android:background="@android:color/transparent"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/item_download_cancelBtn"
+            android:layout_toLeftOf="@id/item_download_closeBtn"
+            tools:src="@drawable/ic_item_check"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/item_download_stateIcon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="@dimen/little_margin"
+            android:layout_margin="@dimen/little_margin"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            tools:src="@drawable/ic_item_state_succeed"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <TextView
@@ -64,11 +75,10 @@
             android:shadowDy="1"
             android:shadowRadius="1"
             android:shadowColor="@color/colorTextDark2nd"
-            android:layout_marginLeft="@dimen/normal_margin"
             android:layout_marginRight="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/item_download_retryBtn"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@id/item_download_stateIcon"
+            android:layout_toLeftOf="@id/item_download_retry_check_btn"
             style="@style/title_text"
             tools:text="30adf9f8sla98fgs : 92%"
             tools:ignore="RtlHardcoded" />

@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,13 +22,18 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.FileUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
@@ -48,7 +54,8 @@ import retrofit2.Response;
  * */
 
 public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
-        implements DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener {
+        implements DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener,
+        DownloadRepeatDialog.OnCheckOrDownloadListener {
     // widget
     private Context a;
     private SelectCollectionDialog.OnCollectionsChangedListener collectionsChangedListener;
@@ -195,6 +202,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         return position;
     }
 
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        Glide.clear(holder.image);
+    }
+
     public void insertItem(Photo item) {
         itemList.add(item);
         notifyItemInserted(itemList.size() - 1);
@@ -317,6 +330,20 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         }
     }
 
+    // on check or download listener. (download repeat dialog)
+
+    @Override
+    public void onCheck(Object obj) {
+        IntentHelper.startCheckPhotoActivity(a, ((Photo) obj).id);
+    }
+
+    @Override
+    public void onDownload(Object obj) {
+        if (downloadPhotoListener != null) {
+            downloadPhotoListener.onDownload((Photo) obj);
+        }
+    }
+
     /** <br> inner class. */
 
     // view holder.
@@ -394,8 +421,19 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
                 case R.id.item_photo_downloadButton:
                     Photo p = itemList.get(getAdapterPosition());
-                    if (downloadPhotoListener != null) {
-                        downloadPhotoListener.onDownload(p);
+                    if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(p.id) > 0) {
+                        NotificationUtils.showSnackbar(
+                                a.getString(R.string.feedback_download_repeat),
+                                Snackbar.LENGTH_SHORT);
+                    } else if (FileUtils.isPhotoExists(a, p.id)) {
+                        DownloadRepeatDialog dialog = new DownloadRepeatDialog();
+                        dialog.setDownlaodKey(p);
+                        dialog.setOnCheckOrDownloadListener(PhotoAdapter.this);
+                        dialog.show(Mysplash.getInstance().getTopActivity().getFragmentManager(), null);
+                    } else {
+                        if (downloadPhotoListener != null) {
+                            downloadPhotoListener.onDownload(p);
+                        }
                     }
                     break;
             }

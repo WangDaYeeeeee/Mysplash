@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollRelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_loading_in_category_view_large"
@@ -54,4 +53,4 @@
 
     </RelativeLayout>
 
-</com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollRelativeLayout>
+</RelativeLayout>

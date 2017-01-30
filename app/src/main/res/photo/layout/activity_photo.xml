@@ -110,12 +110,18 @@
 
                     </RelativeLayout>
 
+                    <com.wangdaye.mysplash._common.ui.widget.PhotoDownloadView
+                        android:id="@+id/activity_photo_btnBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <!--
                     <LinearLayout
                         android:id="@+id/activity_photo_btnBar"
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/normal_margin"
+                        android:paddingTop="@dimen/normal_margin"
                         tools:ignore="DisableBaselineAlignment">
 
                         <RelativeLayout
@@ -200,6 +206,7 @@
                         </RelativeLayout>
 
                     </LinearLayout>
+                    -->
 
                     <com.wangdaye.mysplash.photo.view.widget.PhotoDetailsView
                         android:id="@+id/activity_photo_detailsView"

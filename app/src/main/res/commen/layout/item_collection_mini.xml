@@ -29,7 +29,7 @@
 
         <ImageView
             android:id="@+id/item_collection_icon"
-            android:src="@drawable/ic_item_checked"
+            android:src="@drawable/ic_item_state_succeed"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"

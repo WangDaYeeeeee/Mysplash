@@ -14,7 +14,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -37,6 +36,7 @@ import com.wangdaye.mysplash._common.i.view.MultiFilterView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -54,7 +54,7 @@ import java.util.ArrayList;
  * Multi-filter photos view.
  * */
 
-public class MultiFilterPhotosView extends FrameLayout
+public class MultiFilterPhotosView extends NestedScrollFrameLayout
         implements MultiFilterView, LoadView, ScrollView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
@@ -113,7 +113,7 @@ public class MultiFilterPhotosView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_filtering_view_large, null);
+        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_filtering_view_large, this, false);
         addView(searchingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
@@ -122,6 +122,11 @@ public class MultiFilterPhotosView extends FrameLayout
         initModel();
         initView();
         initPresenter();
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
     }
 
     public void readBundle(@NonNull Bundle bundle) {

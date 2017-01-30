@@ -1,15 +1,10 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
-import android.support.design.widget.Snackbar;
-
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
-import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 
 /**
@@ -32,13 +27,7 @@ public class DownloadImplementor implements DownloadPresenter {
     public void download() {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         Photo p = (Photo) model.getDownloadKey();
-        if (DatabaseHelper.getInstance(a).readDownloadEntityCount(p.id) == 0) {
-            DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
-        } else {
-            NotificationUtils.showSnackbar(
-                    a.getString(R.string.feedback_download_repeat),
-                    Snackbar.LENGTH_SHORT);
-        }
+        DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
     }
 
     @Override

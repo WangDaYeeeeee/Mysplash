@@ -39,8 +39,16 @@ public class DatabaseHelper {
         DownloadMissionEntity.clearDownloadEntity(openHelper.getWritableDatabase());
     }
 
-    public List<DownloadMissionEntity> readDownloadEntity() {
-        return DownloadMissionEntity.searchDownloadEntityList(openHelper.getReadableDatabase());
+    public void updateDownloadEntity(DownloadMissionEntity entity) {
+        DownloadMissionEntity.updateDownloadEntity(openHelper.getWritableDatabase(), entity);
+    }
+
+    public List<DownloadMissionEntity> readDownloadEntityList() {
+        return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase());
+    }
+
+    public List<DownloadMissionEntity> readDownloadEntityList(int result) {
+        return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase(), result);
     }
 
     @Nullable
@@ -48,8 +56,13 @@ public class DatabaseHelper {
         return DownloadMissionEntity.searchDownloadEntity(openHelper.getReadableDatabase(), missionId);
     }
 
-    public int readDownloadEntityCount(String title) {
-        return DownloadMissionEntity.searchDownloadEntityCount(openHelper.getReadableDatabase(), title);
+    @Nullable
+    public DownloadMissionEntity readDownloadingEntity(String title) {
+        return DownloadMissionEntity.searchDownloadingEntity(openHelper.getReadableDatabase(), title);
+    }
+
+    public int readDownloadingEntityCount(String title) {
+        return DownloadMissionEntity.searchDownloadingEntityCount(openHelper.getReadableDatabase(), title);
     }
 
     /** <br> singleton. */

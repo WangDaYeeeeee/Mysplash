@@ -276,7 +276,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
     private void moveSpinner(int dir, float dragDistance) {
         mProgress[dir].showArrow(true);
-        float originalDragPercent = dragDistance / mDragTriggerDistance;
+        float originalDragPercent = Math.abs(dragDistance) / mDragTriggerDistance;
 
         float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
         float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
@@ -300,7 +300,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         if (mScale) {
             setAnimationProgress(dir, Math.min(1f, Math.abs(dragDistance / mDragTriggerDistance)));
         }
-        if (dragDistance < mDragTriggerDistance) {
+        if (Math.abs(dragDistance) < mDragTriggerDistance) {
             if (mProgress[dir].getAlpha() > STARTING_PROGRESS_ALPHA
                     && !isAnimationRunning(mAlphaStartAnimation)) {
                 // Animate the alpha

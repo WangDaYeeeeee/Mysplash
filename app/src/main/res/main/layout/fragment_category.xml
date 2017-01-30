@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.design.widget.AppBarLayout
+        <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
             android:id="@+id/fragment_category_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
 
             </android.support.v7.widget.Toolbar>
 
-        </android.support.design.widget.AppBarLayout>
+        </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
         <com.wangdaye.mysplash.main.view.widget.CategoryPhotosView
             android:id="@+id/fragment_category_categoryPhotosView"

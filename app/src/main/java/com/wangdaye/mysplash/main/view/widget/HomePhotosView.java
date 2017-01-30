@@ -31,6 +31,7 @@ import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -54,7 +55,7 @@ import java.util.ArrayList;
  * */
 
 @SuppressLint("ViewConstructor")
-public class HomePhotosView extends FrameLayout
+public class HomePhotosView extends NestedScrollFrameLayout
         implements PhotosView, PagerView, LoadView, ScrollView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
@@ -90,7 +91,7 @@ public class HomePhotosView extends FrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize(MainActivity a, @Nullable Bundle bundle, int photosType) {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, null);
+        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
@@ -403,5 +404,10 @@ public class HomePhotosView extends FrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 }

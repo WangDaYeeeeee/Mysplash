@@ -35,11 +35,11 @@ public class NotificationUtils {
         NotificationManagerCompat.from(c)
                 .notify(
                         getNotificationId(c),
-                        buildSingleNotification(c, "Photo", entity.getRealTitle()));
+                        buildSingleNotification(c, "Photo", entity.getRealTitle(), true, true));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)
-                    .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c));
+                    .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, true, true));
         }
     }
 
@@ -48,18 +48,54 @@ public class NotificationUtils {
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(
-                                c, "Collection", entity.getRealTitle()));
+                                c, "Collection", entity.getRealTitle(), false, true));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)
-                    .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c));
+                    .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, false, true));
         }
     }
 
-    private static Notification buildSingleNotification(Context c, String subText, String contentText) {
+    public static void sendDownloadPhotoFailedNotification(Context c, DownloadMissionEntity entity) {
+        NotificationManagerCompat.from(c)
+                .notify(
+                        getNotificationId(c),
+                        buildSingleNotification(c, "Photo", entity.getRealTitle(), true, false));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            NotificationManagerCompat.from(c)
+                    .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, true, false));
+        }
+    }
+
+    public static void sendDownloadCollectionFailedNotification(Context c, DownloadMissionEntity entity) {
+        NotificationManagerCompat.from(c)
+                .notify(
+                        getNotificationId(c),
+                        buildSingleNotification(
+                                c, "Collection", entity.getRealTitle(), false, false));
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            NotificationManagerCompat.from(c)
+                    .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, false, false));
+        }
+    }
+
+    private static Notification buildSingleNotification(Context c, String subText, String contentText,
+                                                        boolean photo, boolean succeed) {
+        String title;
+        if (photo && succeed) {
+            title = c.getString(R.string.feedback_download_photo_success);
+        } else if (photo) {
+            title = c.getString(R.string.feedback_download_photo_failed);
+        } else if (succeed) {
+            title = c.getString(R.string.feedback_download_collection_success);
+        } else {
+            title = c.getString(R.string.feedback_delete_collection_failed);
+        }
         NotificationCompat.Builder builder = new NotificationCompat.Builder(c)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(c.getString(R.string.feedback_download_success))
+                .setContentTitle(title)
                 .setSubText(subText)
                 .setContentText(contentText);
 
@@ -69,10 +105,20 @@ public class NotificationUtils {
         return builder.build();
     }
 
-    private static Notification buildGroupSummaryNotification(Context c) {
+    private static Notification buildGroupSummaryNotification(Context c, boolean photo, boolean succeed) {
+        String title;
+        if (photo && succeed) {
+            title = c.getString(R.string.feedback_download_photo_success);
+        } else if (photo) {
+            title = c.getString(R.string.feedback_download_photo_failed);
+        } else if (succeed) {
+            title = c.getString(R.string.feedback_download_collection_success);
+        } else {
+            title = c.getString(R.string.feedback_delete_collection_failed);
+        }
         return new NotificationCompat.Builder(c)
                 .setSmallIcon(R.drawable.ic_notification)
-                .setContentTitle(c.getString(R.string.feedback_download_success))
+                .setContentTitle(title)
                 .setGroup(NOTIFICATION_GROUP_KEY)
                 .setGroupSummary(true)
                 .build();
