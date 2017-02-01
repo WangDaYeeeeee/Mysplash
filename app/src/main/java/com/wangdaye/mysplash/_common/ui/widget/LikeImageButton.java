@@ -1,18 +1,18 @@
 package com.wangdaye.mysplash._common.ui.widget;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
 
 /**
  * Like image button.
@@ -44,7 +44,7 @@ public class LikeImageButton extends ImageButton
         this.initialize();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public LikeImageButton(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         this.initialize();
@@ -140,8 +140,7 @@ public class LikeImageButton extends ImageButton
     @Override
     public void onClick(View v) {
         if (!AuthManager.getInstance().isAuthorized()) {
-            Intent i = new Intent(getContext(), LoginActivity.class);
-            getContext().startActivity(i);
+            IntentHelper.startLoginActivity(Mysplash.getInstance().getTopActivity());
         } else if (!animating) {
             animating = true;
             animHide();

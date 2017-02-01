@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -518,10 +517,7 @@ public class PhotoActivity extends MysplashActivity
                 break;
 
             case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
-                Intent d = new Intent(
-                        Intent.ACTION_VIEW,
-                        Uri.parse(photoInfoPresenter.getPhoto().links.download));
-                startActivity(d);
+                IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().links.download, true);
                 break;
         }
     }

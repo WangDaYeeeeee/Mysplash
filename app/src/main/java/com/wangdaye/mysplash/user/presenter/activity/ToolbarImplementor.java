@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash.user.presenter.activity;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -10,6 +8,7 @@ import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
@@ -39,8 +38,7 @@ public class ToolbarImplementor
             case R.id.action_open_portfolio:
                 String url = activity.getUserPortfolio();
                 if (!TextUtils.isEmpty(url)) {
-                    Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    activity.startActivity(i);
+                    IntentHelper.startWebActivity(a, url, true);
                 } else {
                     Toast.makeText(
                             activity,

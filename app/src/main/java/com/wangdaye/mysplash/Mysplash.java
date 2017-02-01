@@ -33,13 +33,14 @@ public class Mysplash extends Application {
     private Photo photo;
 
     // Unsplash data.
-    public static final String APP_ID_BETA = "72bf3302b0fb868d8822332a8dad712341c48a5bec5af94b7beea4d1cc030ee6";
-    public static final String SECRET_BETA = "da8217d65b3a76ca3c94710a33287dbe2fee53892595917339b9dcef2eaf94e6";
+    public static final String APP_ID_BETA = "7a96a77d719e9967f935da53784d6a3eb58a4fb174dda25e89ec69059e46c815";
+    public static final String SECRET_BETA = "dd766f4ee6e01599ca6db2e97c306a883a024f7322f92d4f7ab4aeae3be7924e";
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
+    public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
     public static final String UNSPLASH_LOGIN_CALLBACK = "unsplash-auth-callback";
 
     // application data.

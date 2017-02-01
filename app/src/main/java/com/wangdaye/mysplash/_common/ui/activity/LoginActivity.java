@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,6 +23,7 @@ import com.wangdaye.mysplash._common.data.service.AuthorizeService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -220,14 +220,12 @@ public class LoginActivity extends MysplashActivity
                 break;
 
             case R.id.activity_login_loginBtn: {
-                Uri uri = Uri.parse(Mysplash.getLoginUrl(Mysplash.getInstance()));
-                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                IntentHelper.startWebActivity(this, Mysplash.getLoginUrl(this), true);
                 break;
             }
 
             case R.id.activity_login_joinBtn: {
-                Uri uri = Uri.parse(Mysplash.UNSPLASH_JOIN_URL);
-                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                IntentHelper.startWebActivity(this, Mysplash.UNSPLASH_JOIN_URL, true);
                 break;
             }
         }
@@ -267,6 +265,7 @@ public class LoginActivity extends MysplashActivity
         if (response.isSuccessful()) {
             AuthManager.getInstance().writeAccessToken(response.body());
             AuthManager.getInstance().refreshPersonalProfile();
+            IntentHelper.startMainActivity(this);
             finish();
         } else {
             NotificationUtils.showSnackbar(

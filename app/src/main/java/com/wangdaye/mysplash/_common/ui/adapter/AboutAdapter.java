@@ -88,6 +88,7 @@ public class AboutAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                 TranslatorObject object = (TranslatorObject) itemList.get(position);
                 Glide.with(a)
                         .load(object.avatarUrl)
+                        .error(R.drawable.default_avatar)
                         .diskCacheStrategy(DiskCacheStrategy.RESULT)
                         .into(translator.avatar);
                 Glide.with(a)

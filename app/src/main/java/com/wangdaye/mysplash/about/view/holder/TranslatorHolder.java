@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash.about.view.holder;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +8,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
 
 /**
@@ -50,8 +49,7 @@ public class TranslatorHolder extends RecyclerView.ViewHolder
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_about_translator_container:
-                Uri email = Uri.parse("mailto:" + this.email);
-                v.getContext().startActivity(new Intent(Intent.ACTION_SENDTO, email));
+                IntentHelper.startWebActivity(v.getContext(), "mailto:" + this.email, false);
                 break;
         }
     }

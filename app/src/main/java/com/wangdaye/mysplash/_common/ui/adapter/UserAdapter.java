@@ -2,8 +2,6 @@ package com.wangdaye.mysplash._common.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -177,8 +175,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                 case R.id.item_user_portfolio:
                     if (!TextUtils.isEmpty(itemList.get(getAdapterPosition()).portfolio_url)) {
-                        Uri uri = Uri.parse(itemList.get(getAdapterPosition()).portfolio_url);
-                        a.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                        IntentHelper.startWebActivity(a, itemList.get(getAdapterPosition()).portfolio_url, true);
                     }
                     break;
             }

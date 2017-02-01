@@ -292,37 +292,41 @@ public class AuthManager
 
     @Override
     public void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response) {
-        if (response.isSuccessful() && response.body() != null) {
+        if (response.isSuccessful() && response.body() != null && isAuthorized()) {
             state = LOADING_USER_STATE;
             writeUserInfo(response.body());
             service.requestUserProfile(response.body().username, this);
-        } else {
+        } else if (isAuthorized()) {
             service.requestMeProfile(this);
         }
     }
 
     @Override
     public void onRequestMeProfileFailed(Call<Me> call, Throwable t) {
-        service.requestMeProfile(this);
+        if (isAuthorized()) {
+            service.requestMeProfile(this);
+        }
     }
 
     // on request user profile listener.
 
     @Override
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {
-        if (response.isSuccessful() && response.body() != null) {
+        if (response.isSuccessful() && response.body() != null && isAuthorized()) {
             state = FREEDOM_STATE;
             writeUserInfo(response.body());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
             }
-        } else {
+        } else if (isAuthorized()) {
             service.requestUserProfile(me.username, this);
         }
     }
 
     @Override
     public void onRequestUserProfileFailed(Call<User> call, Throwable t) {
-        service.requestUserProfile(me.username, this);
+        if (isAuthorized()) {
+            service.requestUserProfile(me.username, this);
+        }
     }
 }

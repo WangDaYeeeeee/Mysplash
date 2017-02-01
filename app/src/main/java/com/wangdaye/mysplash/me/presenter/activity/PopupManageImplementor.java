@@ -1,8 +1,6 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
@@ -16,6 +14,7 @@ import com.wangdaye.mysplash._common.ui.popup.MeMenuPopupWindow;
 import com.wangdaye.mysplash._common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 
 /**
@@ -69,8 +68,7 @@ public class PopupManageImplementor
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         switch (id) {
             case MeMenuPopupWindow.ITEM_SUBMIT:
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://unsplash.com/submit"));
-                a.startActivity(intent);
+                IntentHelper.startWebActivity(a, Mysplash.UNSPLASH_SUBMIT_URL, true);
                 break;
 
             case MeMenuPopupWindow.ITEM_PORTFOLIO:
@@ -78,8 +76,7 @@ public class PopupManageImplementor
                         && AuthManager.getInstance().getMe() != null) {
                     String url = AuthManager.getInstance().getMe().portfolio_url;
                     if (!TextUtils.isEmpty(url)) {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        a.startActivity(i);
+                        IntentHelper.startWebActivity(a, url, true);
                     } else {
                         NotificationUtils.showSnackbar(
                                 a.getString(R.string.feedback_portfolio_is_null),

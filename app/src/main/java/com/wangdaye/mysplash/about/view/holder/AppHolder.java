@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash.about.view.holder;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -10,6 +8,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.AppAboutObject;
 
 /**
@@ -49,18 +48,15 @@ public class AppHolder extends RecyclerView.ViewHolder
                         break;
 
                     case 2:
-                        Uri github = Uri.parse("https://github.com/WangDaYeeeeee");
-                        v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, github));
+                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee", false);
                         break;
 
                     case 3:
-                        Uri email = Uri.parse("mailto:wangdayeeeeee@gmail.com");
-                        v.getContext().startActivity(new Intent(Intent.ACTION_SENDTO, email));
+                        IntentHelper.startWebActivity(v.getContext(), "mailto:wangdayeeeeee@gmail.com", false);
                         break;
 
                     case 4:
-                        Uri mysplash = Uri.parse("https://github.com/WangDaYeeeeee/MySplash");
-                        v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, mysplash));
+                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee/MySplash", false);
                         break;
                 }
                 break;

@@ -2,6 +2,7 @@ package com.wangdaye.mysplash._common.utils.helper;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -26,15 +27,24 @@ import com.wangdaye.mysplash._common.ui.activity.UpdateMeActivity;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.about.view.activity.AboutActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
+
+import java.util.List;
 
 /**
  * Intent helper.
  * */
 
 public class IntentHelper {
+
+    public static void startMainActivity(MysplashActivity a) {
+        Intent intent = new Intent(a, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        a.startActivity(intent);
+    }
 
     public static void startPhotoActivity(MysplashActivity a, View image, View background, Photo p) {
         Mysplash.getInstance().setPhoto(p);
@@ -230,5 +240,22 @@ public class IntentHelper {
                 Intent.createChooser(
                         intent,
                         c.getString(R.string.check)));
+    }
+
+    public static void startWebActivity(Context c, String url, boolean forceStartupWeb) {
+        if (forceStartupWeb) {
+            String packageName = "com.android.chrome";
+            Intent browserIntent = new Intent();
+            browserIntent.setPackage(packageName);
+            List<ResolveInfo> activitiesList = c.getPackageManager().queryIntentActivities(
+                    browserIntent, -1);
+            if (activitiesList.size() > 0) {
+                CustomTabHelper.startCustomTabActivity(c, url);
+            } else {
+                c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
+        } else {
+            c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+        }
     }
 }

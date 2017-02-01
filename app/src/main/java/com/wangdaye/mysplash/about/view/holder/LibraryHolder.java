@@ -1,13 +1,12 @@
 package com.wangdaye.mysplash.about.view.holder;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.LibraryObject;
 
 /**
@@ -43,8 +42,7 @@ public class LibraryHolder extends RecyclerView.ViewHolder
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_about_library_container:
-                Uri uri = Uri.parse(this.uri);
-                v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                IntentHelper.startWebActivity(v.getContext(), uri, false);
                 break;
         }
     }

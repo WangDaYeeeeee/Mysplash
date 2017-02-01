@@ -226,6 +226,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                                                Target<GlideDrawable> target,
                                                                boolean isFromMemoryCache, boolean isFirstResource) {
                                     photo.loadPhotoSuccess = true;
+                                    updatePhoto(photo, position);
                                     holder.title.setText(photo.user.name);
                                     holder.image.setShowShadow(true);
                                     return false;
@@ -276,6 +277,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                         });
                                         saturation.start();
                                         photo.hasFadedIn = true;
+                                        updatePhoto(photo, position);
                                     }
                                     holder.title.setText(photo.user.name);
                                     holder.image.setShowShadow(true);
@@ -352,6 +354,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                                                Target<GlideDrawable> target,
                                                                boolean isFromMemoryCache, boolean isFirstResource) {
                                     photo.loadPhotoSuccess = true;
+                                    updatePhoto(photo, position);
                                     holder.title.setText(photo.user.name);
                                     holder.image.setShowShadow(true);
                                     return false;
@@ -402,6 +405,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                         });
                                         saturation.start();
                                         photo.hasFadedIn = true;
+                                        updatePhoto(photo, position);
                                     }
                                     return false;
                                 }
@@ -577,6 +581,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
             default: // VIEW_TYPE_USER, VIEW_TYPE_TITLE.
                 return null;
         }
+    }
+
+    private void updatePhoto(Photo photo, int position) {
+        FollowingResult result = resultList.get(typeList.get(position).resultPosition);
+        result.objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+        resultList.set(typeList.get(position).resultPosition, result);
     }
 
     private Collection getCollection(int position) {
