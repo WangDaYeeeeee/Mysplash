@@ -10,17 +10,22 @@ import android.os.Parcelable;
 public class UserLinks implements Parcelable {
 
     /**
-     * self : https://api.unsplash.com/users/jimmyexample
-     * html : https://unsplash.com/jimmyexample
-     * photos : https://api.unsplash.com/users/jimmyexample/photos
-     * likes : https://api.unsplash.com/users/jimmyexample/likes
-     * portfolio : https://api.unsplash.com/users/jimmyexample/portfolio
+     * self : https://api.unsplash.com/users/mattrobinjones
+     * html : http://unsplash.com/@mattrobinjones
+     * photos : https://api.unsplash.com/users/mattrobinjones/photos
+     * likes : https://api.unsplash.com/users/mattrobinjones/likes
+     * portfolio : https://api.unsplash.com/users/mattrobinjones/portfolio
+     * following : https://api.unsplash.com/users/mattrobinjones/following
+     * followers : https://api.unsplash.com/users/mattrobinjones/followers
      */
+
     public String self;
     public String html;
     public String photos;
     public String likes;
     public String portfolio;
+    public String following;
+    public String followers;
 
     /** <br> parcel. */
 
@@ -36,6 +41,8 @@ public class UserLinks implements Parcelable {
         dest.writeString(this.photos);
         dest.writeString(this.likes);
         dest.writeString(this.portfolio);
+        dest.writeString(this.following);
+        dest.writeString(this.followers);
     }
 
     public UserLinks() {
@@ -47,9 +54,11 @@ public class UserLinks implements Parcelable {
         this.photos = in.readString();
         this.likes = in.readString();
         this.portfolio = in.readString();
+        this.following = in.readString();
+        this.followers = in.readString();
     }
 
-    public static final Parcelable.Creator<UserLinks> CREATOR = new Parcelable.Creator<UserLinks>() {
+    public static final Creator<UserLinks> CREATOR = new Creator<UserLinks>() {
         @Override
         public UserLinks createFromParcel(Parcel source) {
             return new UserLinks(source);

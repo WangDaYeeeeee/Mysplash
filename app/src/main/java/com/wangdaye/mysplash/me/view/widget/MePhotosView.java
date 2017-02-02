@@ -34,7 +34,6 @@ import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFram
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
@@ -42,6 +41,7 @@ import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.PhotosImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.ScrollImplementor;
+import com.wangdaye.mysplash.me.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.ArrayList;
@@ -94,6 +94,11 @@ public class MePhotosView extends NestedScrollFrameLayout
         initModel(a, bundle, type);
         initPresenter();
         initView();
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 
     /** <br> presenter. */
@@ -383,10 +388,5 @@ public class MePhotosView extends NestedScrollFrameLayout
             default:
                 return true;
         }
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
     }
 }

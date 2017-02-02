@@ -63,7 +63,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         holder.title.setText("");
         holder.subtitle.setText("");
         holder.image.setShowShadow(false);
-        if (itemList.get(position).cover_photo != null) {
+        if (itemList.get(position).cover_photo != null
+                && itemList.get(position).cover_photo.width != 0
+                && itemList.get(position).cover_photo.height != 0) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 Glide.with(a)
                         .load(itemList.get(position).cover_photo.urls.regular)
@@ -252,7 +254,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             background.setOnClickListener(this);
 
             this.image = (FreedomImageView) itemView.findViewById(R.id.item_collection_cover);
-            if (itemList.get(position).cover_photo != null) {
+            if (itemList.get(position).cover_photo != null
+                    && itemList.get(position).cover_photo.width != 0
+                    && itemList.get(position).cover_photo.height != 0) {
                 image.setSize(itemList.get(position).cover_photo.width, itemList.get(position).cover_photo.height);
             }
 

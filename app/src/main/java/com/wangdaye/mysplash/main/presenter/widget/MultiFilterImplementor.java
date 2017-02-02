@@ -72,7 +72,6 @@ public class MultiFilterImplementor
         model.getService().cancel();
         model.setRefreshing(false);
         model.setLoading(false);
-        model.getAdapter().cancelService();
     }
 
     @Override
@@ -221,12 +220,6 @@ public class MultiFilterImplementor
                 if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
                     view.setPermitLoading(false);
-                    if (response.body().size() == 0) {
-                        Toast.makeText(
-                                c,
-                                c.getString(R.string.feedback_is_over) + "\n" + response.message(),
-                                Toast.LENGTH_SHORT).show();
-                    }
                 }
                 view.requestPhotosSuccess();
             } else {

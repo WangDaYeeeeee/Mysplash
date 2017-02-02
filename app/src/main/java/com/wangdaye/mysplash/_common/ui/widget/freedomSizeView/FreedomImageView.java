@@ -62,12 +62,9 @@ public class FreedomImageView extends ImageView {
 
     private void initialize(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.FreedomImageView, defStyleAttr, defStyleRes);
-
         this.coverMode = a.getBoolean(R.styleable.FreedomImageView_fiv_cover_mode, false);
         this.squareMode = a.getBoolean(R.styleable.FreedomImageView_fiv_square, false);
-
         this.textPosition = a.getInt(R.styleable.FreedomImageView_fiv_shadow_position, POSITION_NONE);
-
         a.recycle();
 
         this.paint = new Paint();

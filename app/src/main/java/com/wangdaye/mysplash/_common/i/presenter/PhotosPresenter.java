@@ -26,6 +26,7 @@ public interface PhotosPresenter {
     void setRequestKey(Object k);
 
     int getPhotosType();
+    String getPhotosOrder();
 
     void setOrder(String key);
     String getOrder();

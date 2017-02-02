@@ -55,7 +55,7 @@ public class AuthManager
     public static final int LOADING_USER_STATE = 2;
 
     private static final String KEY_VERSION = "version";
-    private static final int VERSION_CODE = 5;
+    private static final int VERSION_CODE = 7;
 
     /** <br> life cycle. */
 

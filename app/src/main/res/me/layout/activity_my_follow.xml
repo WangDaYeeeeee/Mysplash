@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_my_follow_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_my_follow_statusBar"
+            android:background="?attr/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_my_follow_swipeBackView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/root_color"
+            tools:ignore="UnusedAttribute">
+
+            <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+                android:id="@+id/activity_my_follow_appBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                app:theme="@style/MysplashToolbarTheme">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_my_follow_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:layout_scrollFlags="scroll|snap"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/activity_my_follow_tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_layout_height"
+                    app:tabIndicatorHeight="3dp"
+                    app:tabIndicatorColor="?attr/title_color"
+                    app:tabSelectedTextColor="?attr/content_color"
+                    app:tabTextColor="?attr/subtitle_color" />
+
+            </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/activity_my_follow_viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

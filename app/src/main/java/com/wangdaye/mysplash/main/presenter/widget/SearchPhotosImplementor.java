@@ -63,7 +63,6 @@ public class SearchPhotosImplementor
         model.getService().cancel();
         model.setRefreshing(false);
         model.setLoading(false);
-        ((PhotoAdapter) model.getAdapter()).cancelService();
     }
 
     @Override
@@ -173,12 +172,6 @@ public class SearchPhotosImplementor
                 if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
                     view.setPermitLoading(false);
-                    if (response.body().results.size() == 0) {
-                        Toast.makeText(
-                                c,
-                                c.getString(R.string.feedback_is_over) + "\n" + response.message(),
-                                Toast.LENGTH_SHORT).show();
-                    }
                 }
                 view.requestPhotosSuccess();
             } else {

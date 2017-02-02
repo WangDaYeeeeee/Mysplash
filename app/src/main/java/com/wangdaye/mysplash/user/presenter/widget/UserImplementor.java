@@ -1,11 +1,13 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
+import com.wangdaye.mysplash._common.data.service.FollowingService;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.i.model.UserModel;
 import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash._common.i.view.UserView;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -20,7 +22,8 @@ public class UserImplementor
     private UserView view;
 
     // data
-    private OnRequestUserProfileListener listener;
+    private OnRequestUserProfileListener requestUserProfileListener;
+    private OnFollowListener followListener;
 
     /** <br> life cycle. */
 
@@ -34,16 +37,32 @@ public class UserImplementor
     @Override
     public void requestUser() {
         view.initRefreshStart();
-        listener = new OnRequestUserProfileListener();
-        model.getService().requestUserProfile(model.getUser().username, listener);
+        requestUserProfileListener = new OnRequestUserProfileListener();
+        model.getUserService().requestUserProfile(model.getUser().username, requestUserProfileListener);
+    }
+
+    @Override
+    public void followUser() {
+        followListener = new OnFollowListener();
+        model.getFollowingService().setFollowUser(model.getUser().username, true, followListener);
+    }
+
+    @Override
+    public void cancelFollowUser() {
+        followListener = new OnFollowListener();
+        model.getFollowingService().setFollowUser(model.getUser().username, true, followListener);
     }
 
     @Override
     public void cancelRequest() {
-        if (listener != null) {
-            listener.cancel();
+        if (requestUserProfileListener != null) {
+            requestUserProfileListener.cancel();
         }
-        model.getService().cancel();
+        if (followListener != null) {
+            followListener.cancel();
+        }
+        model.getUserService().cancel();
+        model.getFollowingService().cancel();
     }
 
     @Override
@@ -57,6 +76,8 @@ public class UserImplementor
     }
 
     /** <br> interface. */
+
+    // on request user profile listener.
 
     private class OnRequestUserProfileListener implements UserService.OnRequestUserProfileListener {
         // data
@@ -75,7 +96,7 @@ public class UserImplementor
             if (canceled) {
                 return;
             }
-            if (response.isSuccessful() && response.body() != null) {
+            if (response.isSuccessful()) {
                 model.setUser(response.body());
                 view.drawUserInfo(response.body());
                 view.requestDetailsSuccess();
@@ -92,4 +113,57 @@ public class UserImplementor
             requestUser();
         }
     }
+
+    // on follow listener.
+
+    private class OnFollowListener implements FollowingService.OnFollowListener {
+        // data
+        private boolean canceled;
+
+        OnFollowListener() {
+            canceled = false;
+        }
+
+        public void cancel() {
+            canceled = true;
+        }
+
+        @Override
+        public void onFollowSuccess(Call<ResponseBody> call, Response<ResponseBody> response) {
+            if (canceled) {
+                return;
+            }
+            if (response.isSuccessful()) {
+                view.followRequestSuccess(true);
+            } else {
+                view.followRequestFailed(true);
+            }
+        }
+
+        @Override
+        public void onCancelFollowSuccess(Call<ResponseBody> call, Response<ResponseBody> response) {
+            if (canceled) {
+                return;
+            }
+            if (response.isSuccessful()) {
+                view.followRequestSuccess(false);
+            } else {
+                view.followRequestFailed(false);
+            }
+        }
+
+        @Override
+        public void onFollowFailed(Call<ResponseBody> call, Throwable t) {
+            if (canceled) {
+                return;
+            }
+            view.followRequestFailed(true);
+        }
+
+        @Override
+        public void onCancelFollowFailed(Call<ResponseBody> call, Throwable t) {
+            view.followRequestFailed(false);
+        }
+    }
+
 }

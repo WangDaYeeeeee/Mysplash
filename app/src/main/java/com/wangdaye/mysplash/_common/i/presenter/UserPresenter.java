@@ -9,8 +9,12 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 public interface UserPresenter {
 
     void requestUser();
+    void followUser();
+    void cancelFollowUser();
     void cancelRequest();
 
     void setUser(User u);
     User getUser();
+
+
 }

@@ -69,8 +69,6 @@
     <string name="feedback_search_collections_tv">CERCA RACCOLTE</string>
     <string name="feedback_search_users_tv">CERCA UTENTI</string>
 
-    <string name="feedback_is_over">Fine.</string>
-
     <string name="feedback_notify_restart">Riavvia.</string>
 
     <string name="feedback_download_success">Fotografia correttamente.</string>

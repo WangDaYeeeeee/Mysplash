@@ -47,4 +47,10 @@
         <attr name="sbl_force_back" format="boolean" />
     </declare-styleable>
 
+    <!-- RippleButton -->
+    <declare-styleable name="RippleButton">
+        <attr name="rb_title_on" format="string" />
+        <attr name="rb_title_off" format="string" />
+    </declare-styleable>
+
 </resources>

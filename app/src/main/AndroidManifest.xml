@@ -110,6 +110,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".me.view.activity.MyFollowActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:label="@string/app_name" />
+
         <activity android:name="._common.ui.activity.UpdateMeActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />

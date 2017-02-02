@@ -22,6 +22,12 @@
         <item>喜欢</item>
     </string-array>
 
+    <!-- 我的关注标签 -->
+    <string-array name="my_follow_tabs">
+        <item>关注我的</item>
+        <item>我关注的</item>
+    </string-array>
+
     <!-- 下载选项 -->
     <string-array name="download_options">
         <item>下载</item>

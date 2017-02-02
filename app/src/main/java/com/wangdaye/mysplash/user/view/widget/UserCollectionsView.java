@@ -88,6 +88,11 @@ public class UserCollectionsView extends NestedScrollFrameLayout
         initView();
     }
 
+    @Override
+    public boolean isParentOffset() {
+        return true;
+    }
+
     /** <br> presenter. */
 
     private void initPresenter() {
@@ -348,10 +353,5 @@ public class UserCollectionsView extends NestedScrollFrameLayout
             default:
                 return true;
         }
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
     }
 }

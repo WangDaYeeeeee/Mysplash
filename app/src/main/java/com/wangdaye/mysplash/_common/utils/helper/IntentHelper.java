@@ -29,6 +29,7 @@ import com.wangdaye.mysplash.about.view.activity.AboutActivity;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
+import com.wangdaye.mysplash.me.view.activity.MyFollowActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
@@ -167,6 +168,16 @@ public class IntentHelper {
         } else {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);
+            a.startActivity(intent);
+            a.overridePendingTransition(R.anim.activity_in, 0);
+        }
+    }
+
+    public static void startMyFollowActivity(MysplashActivity a) {
+        if (!AuthManager.getInstance().isAuthorized()) {
+            startLoginActivity(a);
+        } else {
+            Intent intent = new Intent(a, MyFollowActivity.class);
             a.startActivity(intent);
             a.overridePendingTransition(R.anim.activity_in, 0);
         }

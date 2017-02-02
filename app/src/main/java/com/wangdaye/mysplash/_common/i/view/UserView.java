@@ -13,4 +13,7 @@ public interface UserView {
     void initRefreshStart();
     void requestDetailsSuccess();
     void requestDetailsFailed();
+
+    void followRequestSuccess(boolean follow);
+    void followRequestFailed(boolean follow);
 }

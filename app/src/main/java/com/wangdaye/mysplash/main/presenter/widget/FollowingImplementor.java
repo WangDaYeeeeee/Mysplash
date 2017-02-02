@@ -177,11 +177,6 @@ public class FollowingImplementor implements FollowingPresenter {
                 if (TextUtils.isEmpty(response.body().next_page)) {
                     model.setOver(true);
                     view.setPermitLoading(false);
-                    if (response.body().results.size() == 0) {
-                        NotificationUtils.showSnackbar(
-                                c.getString(R.string.feedback_is_over),
-                                Snackbar.LENGTH_SHORT);
-                    }
                 }
                 model.setNextPage(response.body().next_page);
                 view.requestFollowingFeedSuccess();

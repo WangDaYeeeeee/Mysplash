@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -119,6 +118,11 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
+    @Override
+    public boolean isParentOffset() {
+        return true;
+    }
+
     /** <br> presenter. */
 
     private void initPresenter(int type) {
@@ -162,7 +166,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
         refreshLayout.setVisibility(GONE);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
-        recyclerView.setAdapter(searchModel.getAdapter());
+        recyclerView.setAdapter(searchPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
     }
@@ -518,10 +522,5 @@ public class HomeSearchView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
     }
 }

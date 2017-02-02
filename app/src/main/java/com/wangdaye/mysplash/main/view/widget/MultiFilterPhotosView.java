@@ -120,8 +120,8 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         addView(contentView);
 
         initModel();
-        initView();
         initPresenter();
+        initView();
     }
 
     @Override
@@ -181,7 +181,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         }
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
-        recyclerView.setAdapter(multiFilterModel.getAdapter());
+        recyclerView.setAdapter(multiFilterPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
     }

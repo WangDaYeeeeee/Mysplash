@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.8.1</string>
+    <string name="version_code">2.8.3</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -27,6 +27,9 @@
     <string name="check">CHECK</string>
     <string name="set">SET</string>
     <string name="search">SEARCH</string>
+    <string name="follow">FOLLOW</string>
+    <string name="following">FOLLOWING</string>
+    <string name="my_follow">My follow</string>
     <string name="all">ALL</string>
     <string name="stats">Stats</string>
     <string name="by">By</string>
@@ -83,14 +86,12 @@
     <string name="feedback_search_collections_tv">SEARCH COLLECTIONS</string>
     <string name="feedback_search_users_tv">SEARCH USERS</string>
 
-    <string name="feedback_is_over">Is over.</string>
-
     <string name="feedback_notify_restart">Restart to work.</string>
 
-    <string name="feedback_download_success">Download success.</string>
-    <string name="feedback_download_photo_success">Download photo success.</string>
+    <string name="feedback_download_success">Download succeed.</string>
+    <string name="feedback_download_photo_success">Download photo succeed.</string>
     <string name="feedback_download_photo_failed">Download photo failed.</string>
-    <string name="feedback_download_collection_success">Download collection success.</string>
+    <string name="feedback_download_collection_success">Download collection succeed.</string>
     <string name="feedback_download_collection_failed">Download collection failed.</string>
     <string name="feedback_downloading">DOWNLOADING</string>
     <string name="feedback_download_start">Download start.</string>
@@ -162,6 +163,11 @@
     <string name="feedback_share_collection_extra">Created by # on #\n</string>
     <string name="feedback_share_user_title">A user profile from Unsplash.com</string>
     <string name="feedback_share_user_extra">#\n</string>
+
+    <string name="feedback_follow_success">Follow succeed.</string>
+    <string name="feedback_follow_failed">Follow failed.</string>
+    <string name="feedback_cancel_follow_success">Cancel follow succeed.</string>
+    <string name="feedback_cancel_follow_failed">Cancel follow failed.</string>
 
     <!-- introduce. -->
     <string name="introduce_title_search">New Search View</string>

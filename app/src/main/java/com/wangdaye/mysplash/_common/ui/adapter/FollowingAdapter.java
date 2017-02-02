@@ -542,12 +542,20 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 typeList.add(new ViewType(i, j, VIEW_TYPE_USER));
             }
         } else {
-            typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
-            for (int j = 0; j < MAX_DISPLAY_PHOTO_COUNT && j < result.objects.size(); j ++) {
-                typeList.add(new ViewType(i, j, VIEW_TYPE_PHOTO));
+            for (int j = 0; j < result.objects.size(); j ++) {
+                if (result.objects.get(j).width == 0 || result.objects.get(j).height == 0) {
+                    result.objects.remove(j);
+                    j --;
+                }
             }
-            if (result.objects.size() > MAX_DISPLAY_PHOTO_COUNT) {
-                typeList.add(new ViewType(i, MAX_DISPLAY_PHOTO_COUNT, VIEW_TYPE_MORE));
+            if (result.objects.size() > 0) {
+                typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
+                for (int j = 0; j < MAX_DISPLAY_PHOTO_COUNT && j < result.objects.size(); j ++) {
+                    typeList.add(new ViewType(i, j, VIEW_TYPE_PHOTO));
+                }
+                if (result.objects.size() > MAX_DISPLAY_PHOTO_COUNT) {
+                    typeList.add(new ViewType(i, MAX_DISPLAY_PHOTO_COUNT, VIEW_TYPE_MORE));
+                }
             }
         }
     }

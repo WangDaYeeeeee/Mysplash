@@ -69,7 +69,6 @@ public class CategoryImplementor
             listener.cancel();
         }
         model.getService().cancel();
-        model.getAdapter().cancelService();
         model.setRefreshing(false);
         model.setLoading(false);
     }
@@ -221,11 +220,6 @@ public class CategoryImplementor
                 if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
                     view.setPermitLoading(false);
-                    if (response.body().size() == 0) {
-                        NotificationUtils.showSnackbar(
-                                c.getString(R.string.feedback_is_over),
-                                Snackbar.LENGTH_SHORT);
-                    }
                 }
                 view.requestPhotosSuccess();
             } else {

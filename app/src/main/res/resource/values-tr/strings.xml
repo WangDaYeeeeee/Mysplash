@@ -69,8 +69,6 @@
     <string name="feedback_search_collections_tv">KOLEKSİYON ARA</string>
     <string name="feedback_search_users_tv">KULLANICI ARA</string>
 
-    <string name="feedback_is_over">Bitti.</string>
-
     <string name="feedback_notify_restart">Çalışma için tekrar başlat.</string>
 
     <string name="feedback_download_success">İndirme Başarılı.</string>

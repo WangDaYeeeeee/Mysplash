@@ -19,9 +19,22 @@
         android:id="@+id/container_user_profile_profileContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        
+        <com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton
+            android:id="@+id/container_user_profile_followBtn"
+            android:layout_width="128dp"
+            android:layout_height="@dimen/little_icon_size"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@animator/touch_rise_mini"
+            app:rb_title_off="@string/follow"
+            app:rb_title_on="@string/following"
+            tools:ignore="UnusedAttribute" />
 
         <RelativeLayout
             android:id="@+id/container_user_profile_locationContainer"
+            android:layout_below="@id/container_user_profile_followBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/normal_icon_size"

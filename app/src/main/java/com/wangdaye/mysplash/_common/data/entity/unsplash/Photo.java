@@ -63,8 +63,7 @@ public class Photo
     }
 
     public int getRegularHeight() {
-        int w = getRegularWidth();
-        return (int) (1.0 * height * w / width);
+        return (int) (1.0 * height * getRegularWidth() / width);
     }
 
     /** <br> parcel. */

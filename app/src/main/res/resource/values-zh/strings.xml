@@ -21,6 +21,9 @@
     <string name="check">查看</string>
     <string name="set">设置</string>
     <string name="search">搜索</string>
+    <string name="follow">关注</string>
+    <string name="following">已关注</string>
+    <string name="my_follow">我的关注</string>
     <string name="all">不限</string>
     <string name="stats">统计</string>
     <string name="by">来自</string>
@@ -55,7 +58,6 @@
     <string name="feedback_search_photos_tv">搜索图片</string>
     <string name="feedback_search_collections_tv">搜索收藏集</string>
     <string name="feedback_search_users_tv">搜索用户</string>
-    <string name="feedback_is_over">全部加载结束</string>
 
     <string name="feedback_notify_restart">重启后生效</string>
 
@@ -136,6 +138,11 @@
 
     <string name="feedback_share_user_title">一位Unsplash.com用户</string>
     <string name="feedback_share_user_extra">#\n</string>
+
+    <string name="feedback_follow_success">关注成功</string>
+    <string name="feedback_follow_failed">关注失败</string>
+    <string name="feedback_cancel_follow_success">取消关注成功</string>
+    <string name="feedback_cancel_follow_failed">取消关注失败</string>
 
     <!-- introduce. -->
     <string name="introduce_title_search">全新的搜索界面</string>

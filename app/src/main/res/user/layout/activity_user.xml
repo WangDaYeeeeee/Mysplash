@@ -67,6 +67,7 @@
                         android:layout_marginLeft="@dimen/normal_margin"
                         android:layout_marginRight="@dimen/normal_margin"
                         android:layout_centerHorizontal="true"
+                        android:foreground="?attr/selectableItemBackground"
                         style="@style/title_text"
                         tools:text="Alfredo Wong"
                         tools:ignore="RtlHardcoded" />

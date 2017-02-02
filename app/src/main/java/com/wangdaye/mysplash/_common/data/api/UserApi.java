@@ -4,6 +4,8 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.PUT;
@@ -32,4 +34,14 @@ public interface UserApi {
                              @Query("url") String url,
                              @Query("location") String location,
                              @Query("bio") String bio);
+
+    @GET("users/{username}/following")
+    Call<List<User>> getFolloweing(@Path("username") String username,
+                                  @Query("page") int page,
+                                  @Query("per_page") int per_page);
+
+    @GET("users/{username}/followers")
+    Call<List<User>> getFollowers(@Path("username") String username,
+                                  @Query("page") int page,
+                                  @Query("per_page") int per_page);
 }

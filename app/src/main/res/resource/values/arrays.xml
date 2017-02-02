@@ -23,6 +23,12 @@
         <item>LIKES</item>
     </string-array>
 
+    <!-- my follow tab. -->
+    <string-array name="my_follow_tabs">
+        <item>FOLLOWERS</item>
+        <item>FOLLOWING</item>
+    </string-array>
+
     <!-- download option. -->
     <string-array name="download_options">
         <item>DOWNLOAD</item>

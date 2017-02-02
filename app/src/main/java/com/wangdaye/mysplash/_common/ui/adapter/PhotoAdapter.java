@@ -209,13 +209,17 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     }
 
     public void insertItem(Photo item) {
-        itemList.add(item);
-        notifyItemInserted(itemList.size() - 1);
+        if (item.width != 0 && item.height != 0) {
+            itemList.add(item);
+            notifyItemInserted(itemList.size() - 1);
+        }
     }
 
     public void insertItemToFirst(Photo item) {
-        itemList.add(0, item);
-        notifyItemInserted(0);
+        if (item.width != 0 && item.height != 0) {
+            itemList.add(0, item);
+            notifyItemInserted(0);
+        }
     }
 
     public void removeItem(Photo item) {
@@ -241,12 +245,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                 itemList.get(position).id,
                 like,
                 new OnSetLikeListener(itemList.get(position).id, like, position));
-    }
-
-    public void cancelService() {
-        if (service != null) {
-            service.cancel();
-        }
     }
 
     public int getRealItemCount() {

@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
@@ -284,6 +285,9 @@ public class UserActivity extends MysplashActivity
 
             TextView title = (TextView) findViewById(R.id.activity_user_title);
             title.setText(u.name);
+            if (AuthManager.getInstance().isAuthorized()) {
+                title.setOnClickListener(this);
+            }
 
             this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
             initPages(u);
@@ -413,6 +417,15 @@ public class UserActivity extends MysplashActivity
                     browsablePresenter.visitParentView();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
+                break;
+
+            case R.id.activity_user_title:
+                if (AuthManager.getInstance().isAuthorized()) {
+                    User user = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
+                    ProfileDialog dialog = new ProfileDialog();
+                    dialog.setUsername(user.username);
+                    dialog.show(getFragmentManager(), null);
+                }
                 break;
         }
     }

@@ -7,6 +7,9 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -88,6 +91,46 @@ public class UserService {
         call = updateMeProfile;
     }
 
+    public void requestFollowers(String username, int page, int perPage, final OnRequestUsersListener l) {
+        Call<List<User>> requestFollowers = buildApi(buildClient()).getFollowers(username, page, perPage);
+        requestFollowers.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (l != null) {
+                    l.onRequestUsersSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestUsersFailed(call, t);
+                }
+            }
+        });
+        call = requestFollowers;
+    }
+
+    public void requestFollowing(String username, int page, int perPage, final OnRequestUsersListener l) {
+        Call<List<User>> requestFollowing = buildApi(buildClient()).getFolloweing(username, page, perPage);
+        requestFollowing.enqueue(new Callback<List<User>>() {
+            @Override
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                if (l != null) {
+                    l.onRequestUsersSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<User>> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestUsersFailed(call, t);
+                }
+            }
+        });
+        call = requestFollowing;
+    }
+
     public void cancel() {
         if (call != null) {
             call.cancel();
@@ -103,6 +146,8 @@ public class UserService {
     private OkHttpClient buildClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor())
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -129,5 +174,10 @@ public class UserService {
     public interface OnRequestMeProfileListener {
         void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response);
         void onRequestMeProfileFailed(Call<Me> call, Throwable t);
+    }
+
+    public interface OnRequestUsersListener {
+        void onRequestUsersSuccess(Call<List<User>> call, Response<List<User>> response);
+        void onRequestUsersFailed(Call<List<User>> call, Throwable t);
     }
 }

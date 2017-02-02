@@ -33,7 +33,6 @@ import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFram
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.me.model.widget.CollectionsObject;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
@@ -41,6 +40,7 @@ import com.wangdaye.mysplash.me.presenter.widget.CollectionsImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.ScrollImplementor;
+import com.wangdaye.mysplash.me.presenter.widget.SwipeBackImplementor;
 
 /**
  * Me collection view.
@@ -86,6 +86,11 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         initModel(a);
         initPresenter();
         initView();
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 
     /** <br> presenter. */
@@ -384,10 +389,5 @@ public class MeCollectionsView extends NestedScrollFrameLayout
             default:
                 return true;
         }
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
     }
 }

@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -24,8 +25,11 @@ import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.UserView;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.user.model.widget.LoadObject;
 import com.wangdaye.mysplash.user.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.user.model.widget.UserObject;
@@ -39,7 +43,8 @@ import java.util.List;
  * */
 
 public class UserProfileView extends FrameLayout
-        implements UserView, LoadView {
+        implements UserView, LoadView,
+        RippleButton.OnSwitchListener {
     // model.
     private UserModel userModel;
     private LoadModel loadModel;
@@ -48,6 +53,7 @@ public class UserProfileView extends FrameLayout
     private CircularProgressView progressView;
 
     private RelativeLayout profileContainer;
+    private RippleButton rippleButton;
     private TextView locationTxt;
     private TextView bioTxt;
 
@@ -103,6 +109,13 @@ public class UserProfileView extends FrameLayout
         this.progressView = (CircularProgressView) findViewById(R.id.container_user_profile_progressView);
         progressView.setVisibility(VISIBLE);
 
+        this.rippleButton = (RippleButton) findViewById(R.id.container_user_profile_followBtn);
+        if (AuthManager.getInstance().isAuthorized()) {
+            rippleButton.setOnSwitchListener(this);
+        } else {
+            rippleButton.setVisibility(GONE);
+        }
+
         this.profileContainer = (RelativeLayout) findViewById(R.id.container_user_profile_profileContainer);
         profileContainer.setVisibility(GONE);
 
@@ -153,6 +166,17 @@ public class UserProfileView extends FrameLayout
 
     /** <br> interface. */
 
+    // on switch listener.
+
+    @Override
+    public void onSwitch(boolean switchTo) {
+        if (switchTo) {
+            userPresenter.followUser();
+        } else {
+            userPresenter.cancelFollowUser();
+        }
+    }
+
     // view.
 
     // user data view.
@@ -160,6 +184,8 @@ public class UserProfileView extends FrameLayout
     @SuppressLint("SetTextI18n")
     @Override
     public void drawUserInfo(User u) {
+        rippleButton.forceSwitch(u.followed_by_user);
+
         if (!TextUtils.isEmpty(u.location)) {
             locationTxt.setText(u.location);
         } else {
@@ -193,6 +219,33 @@ public class UserProfileView extends FrameLayout
     @Override
     public void requestDetailsFailed() {
         loadPresenter.setFailedState();
+    }
+
+    @Override
+    public void followRequestSuccess(boolean follow) {
+        User user = getUser();
+        user.followed_by_user = follow;
+        if (follow) {
+            user.followers_count ++;
+        } else {
+            user.followers_count --;
+        }
+        setUser(user);
+        rippleButton.setSwitchResult(true);
+    }
+
+    @Override
+    public void followRequestFailed(boolean follow) {
+        rippleButton.setSwitchResult(false);
+        if (follow) {
+            NotificationUtils.showSnackbar(
+                    getContext().getString(R.string.feedback_follow_failed),
+                    Snackbar.LENGTH_SHORT);
+        } else {
+            NotificationUtils.showSnackbar(
+                    getContext().getString(R.string.feedback_cancel_follow_failed),
+                    Snackbar.LENGTH_SHORT);
+        }
     }
 
     // load view.

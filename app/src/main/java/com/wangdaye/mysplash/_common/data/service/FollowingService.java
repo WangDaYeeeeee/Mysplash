@@ -8,8 +8,10 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingFeedResult;
 import com.wangdaye.mysplash._common.utils.widget.FollowingInterceptor;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -25,7 +27,7 @@ public class FollowingService {
 
     public void requestFollowingFeed(String url, final OnRequestFollowingFeedListener l) {
         String after = Uri.parse(url).getQueryParameter("after");
-        Call<FollowingFeedResult> getFeed = buildApi(buildClient()).getFeedFollowingResult(after);
+        Call<FollowingFeedResult> getFeed = buildApi(buildClient()).getFollowingFeed(after);
         getFeed.enqueue(new Callback<FollowingFeedResult>() {
             @Override
             public void onResponse(Call<FollowingFeedResult> call, retrofit2.Response<FollowingFeedResult> response) {
@@ -42,6 +44,39 @@ public class FollowingService {
             }
         });
         call = getFeed;
+    }
+
+    public void setFollowUser(String username, final boolean follow, final OnFollowListener l) {
+        Call<ResponseBody> followRequest;
+        if (follow) {
+            followRequest = buildApi(buildClient()).follow(username);
+        } else {
+            followRequest = buildApi(buildClient()).cancelFollow(username);
+        }
+        followRequest.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (l != null) {
+                    if (follow) {
+                        l.onFollowSuccess(call, response);
+                    } else {
+                        l.onCancelFollowSuccess(call, response);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (l != null) {
+                    if (follow) {
+                        l.onFollowFailed(call, t);
+                    } else {
+                        l.onCancelFollowFailed(call, t);
+                    }
+                }
+            }
+        });
+        call = followRequest;
     }
 
     public void cancel() {
@@ -78,5 +113,12 @@ public class FollowingService {
     public interface OnRequestFollowingFeedListener {
         void onRequestFollowingFeedSuccess(Call<FollowingFeedResult> call, retrofit2.Response<FollowingFeedResult> response);
         void onRequestFollowingFeedFailed(Call<FollowingFeedResult> call, Throwable t);
+    }
+
+    public interface OnFollowListener {
+        void onFollowSuccess(Call<ResponseBody> call, Response<ResponseBody> response);
+        void onCancelFollowSuccess(Call<ResponseBody> call, Response<ResponseBody> response);
+        void onFollowFailed(Call<ResponseBody> call, Throwable t);
+        void onCancelFollowFailed(Call<ResponseBody> call, Throwable t);
     }
 }

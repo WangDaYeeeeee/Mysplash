@@ -17,7 +17,9 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
+import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.LoadModel;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
@@ -35,7 +37,8 @@ import java.util.List;
  * */
 
 public class MeProfileView  extends FrameLayout
-        implements LoadView {
+        implements LoadView,
+        RippleButton.OnSwitchListener {
     // model.
     private LoadModel loadModel;
 
@@ -43,6 +46,7 @@ public class MeProfileView  extends FrameLayout
     private CircularProgressView progressView;
 
     private RelativeLayout profileContainer;
+    private RippleButton rippleButton;
     private TextView locationTxt;
     private TextView bioTxt;
 
@@ -96,6 +100,10 @@ public class MeProfileView  extends FrameLayout
         this.progressView = (CircularProgressView) findViewById(R.id.container_user_profile_progressView);
         progressView.setVisibility(VISIBLE);
 
+        this.rippleButton = (RippleButton) findViewById(R.id.container_user_profile_followBtn);
+        rippleButton.setDontAnimate(true);
+        rippleButton.setOnSwitchListener(this);
+
         this.profileContainer = (RelativeLayout) findViewById(R.id.container_user_profile_profileContainer);
         profileContainer.setVisibility(GONE);
 
@@ -118,6 +126,12 @@ public class MeProfileView  extends FrameLayout
 
     @SuppressLint("SetTextI18n")
     public void drawMeProfile(Me me, MyPagerAdapter adapter) {
+        rippleButton.forceSwitch(true);
+        rippleButton.setButtonTitles(
+                new String[] {
+                        getContext().getString(R.string.my_follow).toUpperCase(),
+                        getContext().getString(R.string.my_follow).toUpperCase()});
+
         if (!TextUtils.isEmpty(me.location)) {
             locationTxt.setText(me.location);
         } else {
@@ -167,6 +181,15 @@ public class MeProfileView  extends FrameLayout
     }
 
     /** <br> interface. */
+
+    // on switch listener.
+
+    @Override
+    public void onSwitch(boolean switchTo) {
+        if (AuthManager.getInstance().isAuthorized()) {
+            IntentHelper.startMyFollowActivity(Mysplash.getInstance().getTopActivity());
+        }
+    }
 
     // view.
 

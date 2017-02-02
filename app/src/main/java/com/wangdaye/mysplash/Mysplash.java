@@ -120,7 +120,7 @@ public class Mysplash extends Application {
                 + "?client_id=" + getAppId(c)
                 + "&redirect_uri=" + "mysplash%3A%2F%2F" + UNSPLASH_LOGIN_CALLBACK
                 + "&response_type=" + "code"
-                + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+read_collections+write_collections";
+                + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+write_followers+read_collections+write_collections";
     }
 
     public void addActivity(MysplashActivity a) {

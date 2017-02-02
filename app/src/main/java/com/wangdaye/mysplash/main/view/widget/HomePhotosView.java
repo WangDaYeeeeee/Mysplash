@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -102,6 +101,11 @@ public class HomePhotosView extends NestedScrollFrameLayout
         initView();
     }
 
+    @Override
+    public boolean isParentOffset() {
+        return true;
+    }
+
     /** <br> presenter. */
 
     private void initPresenter() {
@@ -131,7 +135,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
         refreshLayout.setVisibility(GONE);
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
-        recyclerView.setAdapter(photosModel.getAdapter());
+        recyclerView.setAdapter(photosPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(onScrollListener);
     }
@@ -309,7 +313,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
 
     @Override
     public String getKey() {
-        return photosModel.getPhotosOrder();
+        return photosPresenter.getPhotosOrder();
     }
 
     @Override
@@ -322,7 +326,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return photosModel.getAdapter().getRealItemCount();
+            return photosPresenter.getAdapter().getRealItemCount();
         }
     }
 
@@ -404,10 +408,5 @@ public class HomePhotosView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
     }
 }
