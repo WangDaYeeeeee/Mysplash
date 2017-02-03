@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.utils;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -8,6 +7,7 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
@@ -20,10 +20,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Display utils.
@@ -120,6 +116,24 @@ public class DisplayUtils {
     public static void setTypeface(Context c, TextView t) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             t.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/Courier.ttf"));
+        }
+    }
+
+    public static int calcCardBackgroundColor(String color) {
+        int backgroundColor = Color.parseColor(color);
+        int red = ((backgroundColor & 0x00FF0000) >> 16);
+        int green = ((backgroundColor & 0x0000FF00) >> 8);
+        int blue = (backgroundColor & 0x000000FF);
+        if (Mysplash.getInstance().isLightTheme()) {
+            return Color.rgb(
+                    (int) (red + (255 - red) * 0.7),
+                    (int) (green + (255 - green) * 0.7),
+                    (int) (blue + (255 - blue) * 0.7));
+        } else {
+            return Color.rgb(
+                    (int) (red * 0.3),
+                    (int) (green * 0.3),
+                    (int) (blue * 0.3));
         }
     }
 }

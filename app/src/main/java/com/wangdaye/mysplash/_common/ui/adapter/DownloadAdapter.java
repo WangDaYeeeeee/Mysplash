@@ -131,6 +131,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
         Glide.clear(holder.image);
+        Glide.clear(holder.stateIcon);
     }
 
     public int getRealItemCount() {

@@ -1,12 +1,7 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -18,17 +13,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
+import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
@@ -66,81 +59,28 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         if (itemList.get(position).cover_photo != null
                 && itemList.get(position).cover_photo.width != 0
                 && itemList.get(position).cover_photo.height != 0) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                Glide.with(a)
-                        .load(itemList.get(position).cover_photo.urls.regular)
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFromMemoryCache, boolean isFirstResource) {
-                                holder.title.setText(itemList.get(position).title.toUpperCase());
-                                int photoNum = itemList.get(position).total_photos;
-                                holder.subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
-                                holder.image.setShowShadow(true);
-                                return false;
+            Glide.with(a)
+                    .load(itemList.get(position).cover_photo.urls.regular)
+                    .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model,
+                                                       Target<GlideDrawable> target,
+                                                       boolean isFromMemoryCache, boolean isFirstResource) {
+                            if (!itemList.get(position).cover_photo.hasFadedIn) {
+                                itemList.get(position).cover_photo.hasFadedIn = true;
+                                startColorAnimation(a, holder.image);
                             }
-
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(holder.image);
-            } else {
-                Glide.with(a)
-                        .load(itemList.get(position).cover_photo.urls.regular)
-                        .listener(new RequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFromMemoryCache, boolean isFirstResource) {
-                                if (!itemList.get(position).cover_photo.hasFadedIn) {
-                                    holder.image.setHasTransientState(true);
-                                    final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
-                                    final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                            matrix, AnimUtils.ObservableColorMatrix.SATURATION, 0f, 1f);
-                                    saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
-                                            () {
-                                        @Override
-                                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                            // just animating the color matrix does not invalidate the
-                                            // drawable so need this update listener.  Also have to create a
-                                            // new CMCF as the matrix is immutable :(
-                                            holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
-                                        }
-                                    });
-                                    saturation.setDuration(2000L);
-                                    saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(a));
-                                    saturation.addListener(new AnimatorListenerAdapter() {
-                                        @Override
-                                        public void onAnimationEnd(Animator animation) {
-                                            holder.image.clearColorFilter();
-                                            holder.image.setHasTransientState(false);
-                                        }
-                                    });
-                                    saturation.start();
-                                    itemList.get(position).cover_photo.hasFadedIn = true;
-                                }
-
-                                holder.title.setText(itemList.get(position).title.toUpperCase());
-                                int photoNum = itemList.get(position).total_photos;
-                                holder.subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
-                                holder.image.setShowShadow(true);
-                                return false;
-                            }
-
-                            @Override
-                            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                return false;
-                            }
-                        })
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(holder.image);
-            }
+                            holder.title.setText(itemList.get(position).title.toUpperCase());
+                            int photoNum = itemList.get(position).total_photos;
+                            holder.subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+                            holder.image.setShowShadow(true);
+                            return false;
+                        }
+                    })
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(holder.image);
             holder.background.setBackgroundColor(
-                    ColorUtils.calcCardBackgroundColor(
+                    DisplayUtils.calcCardBackgroundColor(
                             itemList.get(position).cover_photo.color));
         } else {
             holder.image.setImageResource(R.color.colorTextContent_light);

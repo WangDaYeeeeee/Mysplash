@@ -1,13 +1,8 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -24,7 +19,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
@@ -38,14 +32,13 @@ import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.ColorUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
@@ -118,19 +111,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 if (getUser(position).profile_image != null) {
                     Glide.with(a)
                             .load(getUser(position).profile_image.large)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model,
-                                                               Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache, boolean isFirstResource) {
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
                             .override(128, 128)
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                             .into(holder.avatar);
@@ -215,85 +195,27 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 assert photo != null;
                 holder.title.setText("");
                 holder.image.setShowShadow(false);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    Glide.with(a)
-                            .load(photo.urls.regular)
-                            .override(photo.getRegularWidth(), photo.getRegularHeight())
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model,
-                                                               Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache, boolean isFirstResource) {
-                                    photo.loadPhotoSuccess = true;
-                                    updatePhoto(photo, position);
-                                    holder.title.setText(photo.user.name);
-                                    holder.image.setShowShadow(true);
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onException(Exception e, String model,
+                Glide.with(a)
+                        .load(photo.urls.regular)
+                        .override(photo.getRegularWidth(), photo.getRegularHeight())
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model,
                                                            Target<GlideDrawable> target,
-                                                           boolean isFirstResource) {
-                                    return false;
+                                                           boolean isFromMemoryCache, boolean isFirstResource) {
+                                photo.loadPhotoSuccess = true;
+                                if (!photo.hasFadedIn) {
+                                    photo.hasFadedIn = true;
+                                    updatePhoto(photo, position);
+                                    startColorAnimation(a, holder.image);
                                 }
-                            })
-                            .into(holder.image);
-                } else {
-                    Glide.with(a)
-                            .load(photo.urls.regular)
-                            .override(photo.getRegularWidth(), photo.getRegularHeight())
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model,
-                                                               Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache, boolean isFirstResource) {
-                                    photo.loadPhotoSuccess = true;
-                                    if (!photo.hasFadedIn) {
-                                        holder.image.setHasTransientState(true);
-                                        final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
-                                        final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                                matrix, AnimUtils.ObservableColorMatrix.SATURATION, 0f, 1f);
-                                        saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
-                                                () {
-                                            @Override
-                                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                                // just animating the color matrix does not invalidate the
-                                                // drawable so need this update listener.  Also have to create a
-                                                // new CMCF as the matrix is immutable :(
-                                                holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
-                                            }
-                                        });
-                                        saturation.setDuration(2000L);
-                                        saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(a));
-                                        saturation.addListener(new AnimatorListenerAdapter() {
-                                            @Override
-                                            public void onAnimationEnd(Animator animation) {
-                                                holder.image.clearColorFilter();
-                                                holder.image.setHasTransientState(false);
-                                            }
-                                        });
-                                        saturation.start();
-                                        photo.hasFadedIn = true;
-                                        updatePhoto(photo, position);
-                                    }
-                                    holder.title.setText(photo.user.name);
-                                    holder.image.setShowShadow(true);
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
-                            .into(holder.image);
-
-                    holder.image.setTransitionName(photo.id + "-" + position + "-image");
-                    holder.background.setTransitionName(photo.id + "-" + position + "-background");
-                }
+                                holder.title.setText(photo.user.name);
+                                holder.image.setShowShadow(true);
+                                return false;
+                            }
+                        })
+                        .into(holder.image);
 
                 if (photo.current_user_collections.size() != 0) {
                     holder.collectionButton.setImageResource(R.drawable.ic_item_added);
@@ -303,7 +225,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
 
                 holder.likeButton.initLikeState(photo.liked_by_user);
 
-                holder.background.setBackgroundColor(ColorUtils.calcCardBackgroundColor(photo.color));
+                holder.background.setBackgroundColor(DisplayUtils.calcCardBackgroundColor(photo.color));
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    holder.image.setTransitionName(photo.id + "-" + position + "-image");
+                    holder.background.setTransitionName(photo.id + "-" + position + "-background");
+                }
                 break;
             }
             case VIEW_TYPE_USER:
@@ -343,96 +270,41 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 holder.more.setText(
                         (resultList.get(typeList.get(position).resultPosition).objects.size() - MAX_DISPLAY_PHOTO_COUNT)
                                 + " " + a.getString(R.string.more));
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                    Glide.with(a)
-                            .load(photo.urls.regular)
-                            .override(photo.getRegularWidth(), photo.getRegularHeight())
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model,
-                                                               Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache, boolean isFirstResource) {
-                                    photo.loadPhotoSuccess = true;
-                                    updatePhoto(photo, position);
-                                    holder.title.setText(photo.user.name);
-                                    holder.image.setShowShadow(true);
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onException(Exception e, String model,
+                Glide.with(a)
+                        .load(photo.urls.regular)
+                        .override(photo.getRegularWidth(), photo.getRegularHeight())
+                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                        .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
+                            @Override
+                            public boolean onResourceReady(GlideDrawable resource, String model,
                                                            Target<GlideDrawable> target,
-                                                           boolean isFirstResource) {
-                                    return false;
+                                                           boolean isFromMemoryCache, boolean isFirstResource) {
+                                photo.loadPhotoSuccess = true;
+                                if (!photo.hasFadedIn) {
+                                    photo.hasFadedIn = true;
+                                    updatePhoto(photo, position);
+                                    startColorAnimation(a, holder.image);
                                 }
-                            })
-                            .into(holder.image);
+                                return false;
+                            }
+                        })
+                        .into(holder.image);
+                if (getUser(position).profile_image != null) {
+                    Glide.with(a)
+                            .load(getUser(position).profile_image.large)
+                            .override(128, 128)
+                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                            .into(holder.avatar);
                 } else {
                     Glide.with(a)
-                            .load(photo.urls.regular)
-                            .override(photo.getRegularWidth(), photo.getRegularHeight())
+                            .load(R.drawable.default_avatar)
+                            .override(128, 128)
                             .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .listener(new RequestListener<String, GlideDrawable>() {
-                                @Override
-                                public boolean onResourceReady(GlideDrawable resource, String model,
-                                                               Target<GlideDrawable> target,
-                                                               boolean isFromMemoryCache, boolean isFirstResource) {
-                                    photo.loadPhotoSuccess = true;
-                                    if (!photo.hasFadedIn) {
-                                        holder.image.setHasTransientState(true);
-                                        final AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
-                                        final ObjectAnimator saturation = ObjectAnimator.ofFloat(
-                                                matrix, AnimUtils.ObservableColorMatrix.SATURATION, 0f, 1f);
-                                        saturation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener
-                                                () {
-                                            @Override
-                                            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                                                // just animating the color matrix does not invalidate the
-                                                // drawable so need this update listener.  Also have to create a
-                                                // new CMCF as the matrix is immutable :(
-                                                holder.image.setColorFilter(new ColorMatrixColorFilter(matrix));
-                                            }
-                                        });
-                                        saturation.setDuration(2000L);
-                                        saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(a));
-                                        saturation.addListener(new AnimatorListenerAdapter() {
-                                            @Override
-                                            public void onAnimationEnd(Animator animation) {
-                                                holder.image.clearColorFilter();
-                                                holder.image.setHasTransientState(false);
-                                            }
-                                        });
-                                        saturation.start();
-                                        photo.hasFadedIn = true;
-                                        updatePhoto(photo, position);
-                                    }
-                                    return false;
-                                }
-
-                                @Override
-                                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                                    return false;
-                                }
-                            })
-                            .into(holder.image);
-                    if (getUser(position).profile_image != null) {
-                        Glide.with(a)
-                                .load(getUser(position).profile_image.large)
-                                .override(128, 128)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .into(holder.avatar);
-                    } else {
-                        Glide.with(a)
-                                .load(R.drawable.default_avatar)
-                                .override(128, 128)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .into(holder.avatar);
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        holder.avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
-                        holder.background.setTransitionName(getUser(position).username + "-" + position + "-background");
-                    }
+                            .into(holder.avatar);
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    holder.avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
+                    holder.background.setTransitionName(getUser(position).username + "-" + position + "-background");
                 }
                 break;
             }
