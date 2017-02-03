@@ -121,10 +121,13 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    int[] total = new int[] {0, (int) (oldY - ev.getY())};
-                    int[] consumed = new int[] {0, 0};
-                    ((NestedScrollAppBarLayout) child).dispatchNestedPreScroll(total[0], total[1], consumed, null);
-                    ((NestedScrollAppBarLayout) child).dispatchNestedScroll(0, 0, total[0] - consumed[0], total[1] - consumed[1], null);
+                    if ((child.getY() >= 0 && ev.getY() > oldY)
+                            || (parent.getTranslationY() > 0 && ev.getY() < oldY)) {
+                        int[] total = new int[] {0, (int) (oldY - ev.getY())};
+                        int[] consumed = new int[] {0, 0};
+                        ((NestedScrollAppBarLayout) child).dispatchNestedPreScroll(total[0], total[1], consumed, null);
+                        ((NestedScrollAppBarLayout) child).dispatchNestedScroll(0, 0, total[0] - consumed[0], total[1] - consumed[1], null);
+                    }
                     oldY = ev.getY();
                     break;
 
