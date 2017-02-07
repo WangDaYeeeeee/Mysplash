@@ -1,7 +1,10 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/work/cover_github.png)
 
 ## <a href="#chinese">中文</a> | <a href="#english">English</a>
-* [Google Play](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
+<a href="https://f-droid.org/repository/browse/?fdid=com.wangdaye.mysplash" target="_blank">
+<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></a>
+<a href="https://play.google.com/store/apps/details?id=com.wangdaye.mysplash" target="_blank">
+<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80"/></a>
 * [Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 
 -----
