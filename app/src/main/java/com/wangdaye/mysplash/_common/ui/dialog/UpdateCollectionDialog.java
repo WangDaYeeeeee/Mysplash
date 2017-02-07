@@ -107,7 +107,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         descriptionTxt.setText(collection.description == null ? "" : collection.description);
 
         this.checkBox = (CheckBox) v.findViewById(R.id.dialog_update_collection_checkBox);
-        checkBox.setSelected(collection.privateX);
+        checkBox.setChecked(collection.privateX);
         DisplayUtils.setTypeface(getActivity(), checkBox);
 
         this.baseBtnContainer = (RelativeLayout) v.findViewById(R.id.dialog_update_collection_baseBtnContainer);
@@ -208,7 +208,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
-            boolean privateX = checkBox.isSelected();
+            boolean privateX = checkBox.isChecked();
             service.updateCollection(
                     collection.id,
                     title,

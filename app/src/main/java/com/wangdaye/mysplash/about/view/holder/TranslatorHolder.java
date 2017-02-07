@@ -49,7 +49,7 @@ public class TranslatorHolder extends RecyclerView.ViewHolder
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_about_translator_container:
-                IntentHelper.startWebActivity(v.getContext(), "mailto:" + this.email, false);
+                IntentHelper.startWebActivity(v.getContext(), "mailto:" + this.email);
                 break;
         }
     }

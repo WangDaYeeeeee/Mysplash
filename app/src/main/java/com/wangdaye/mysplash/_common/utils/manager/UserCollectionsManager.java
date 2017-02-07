@@ -46,6 +46,15 @@ public class UserCollectionsManager {
         }
     }
 
+    public void deleteCollection(Collection collection) {
+        for (int i = 0; i < collectionList.size(); i ++) {
+            if (collection.id == collectionList.get(i).id) {
+                collectionList.remove(i);
+                return;
+            }
+        }
+    }
+
     public void clearCollections() {
         collectionList.clear();
         setLoadFinish(false);

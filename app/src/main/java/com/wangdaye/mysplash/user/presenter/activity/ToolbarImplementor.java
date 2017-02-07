@@ -38,7 +38,7 @@ public class ToolbarImplementor
             case R.id.action_open_portfolio:
                 String url = activity.getUserPortfolio();
                 if (!TextUtils.isEmpty(url)) {
-                    IntentHelper.startWebActivity(a, url, true);
+                    IntentHelper.startWebActivity(a, url);
                 } else {
                     Toast.makeText(
                             activity,

@@ -220,12 +220,12 @@ public class LoginActivity extends MysplashActivity
                 break;
 
             case R.id.activity_login_loginBtn: {
-                IntentHelper.startWebActivity(this, Mysplash.getLoginUrl(this), true);
+                IntentHelper.startWebActivity(this, Mysplash.getLoginUrl(this));
                 break;
             }
 
             case R.id.activity_login_joinBtn: {
-                IntentHelper.startWebActivity(this, Mysplash.UNSPLASH_JOIN_URL, true);
+                IntentHelper.startWebActivity(this, Mysplash.UNSPLASH_JOIN_URL);
                 break;
             }
         }

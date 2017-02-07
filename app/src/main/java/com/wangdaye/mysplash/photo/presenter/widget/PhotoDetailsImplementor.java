@@ -58,6 +58,11 @@ public class PhotoDetailsImplementor
                 Snackbar.LENGTH_SHORT);
     }
 
+    @Override
+    public Photo getPhoto() {
+        return model.getPhoto();
+    }
+
     /** <br> interface. */
 
     private class OnRequestPhotoDetailsListener implements PhotoService.OnRequestSinglePhotoListener {

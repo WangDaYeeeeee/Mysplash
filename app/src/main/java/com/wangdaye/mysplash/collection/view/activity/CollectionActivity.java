@@ -413,11 +413,13 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void onEditCollection(Collection c) {
+        AuthManager.getInstance().getCollectionsManager().updateCollection(c);
         editResultPresenter.updateSomething(c);
     }
 
     @Override
     public void onDeleteCollection(Collection c) {
+        AuthManager.getInstance().getCollectionsManager().deleteCollection(c);
         editResultPresenter.deleteSomething(c);
     }
 

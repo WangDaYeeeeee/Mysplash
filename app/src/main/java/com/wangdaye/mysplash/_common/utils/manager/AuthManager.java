@@ -258,17 +258,6 @@ public class AuthManager
         }
     }
 
-    /** singleton. */
-
-    private static AuthManager instance;
-
-    public static AuthManager getInstance() {
-        if (instance == null) {
-            instance = new AuthManager();
-        }
-        return instance;
-    }
-
     /** <br> interface. */
 
     // on auth data changed listener.
@@ -328,5 +317,18 @@ public class AuthManager
         if (isAuthorized()) {
             service.requestUserProfile(me.username, this);
         }
+    }
+
+    /** singleton. */
+
+    private static AuthManager instance;
+
+    public static AuthManager getInstance() {
+        synchronized (AuthManager.class) {
+            if (instance == null) {
+                instance = new AuthManager();
+            }
+        }
+        return instance;
     }
 }

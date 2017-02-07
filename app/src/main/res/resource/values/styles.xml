@@ -174,18 +174,20 @@
 
     <!-- dialog. -->
     <style name="MysplashDialogTheme_light" parent="@android:style/Theme.Holo.Light.Dialog">
-        <item name="android:textColorPrimary">@color/colorTextTitle_light</item>
-        <item name="android:textColorAlertDialogListItem">@color/colorTextContent_light</item>
-        <item name="android:textColorSecondary">@color/colorTextContent_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColorPrimary">@color/colorTextSubtitle_light</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextTitle_light</item>
+        <item name="android:textColorSecondary">@color/colorTextTitle_light</item>
         <item name="colorAccent">@color/colorTextTitle_light</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="MysplashDialogTheme_dark" parent="@android:style/Theme.Holo.Dialog">
-        <item name="android:textColorPrimary">@color/colorTextTitle_dark</item>
-        <item name="android:textColorAlertDialogListItem">@color/colorTextContent_dark</item>
-        <item name="android:textColorSecondary">@color/colorTextContent_dark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColorPrimary">@color/colorTextSubtitle_dark</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextTitle_dark</item>
+        <item name="android:textColorSecondary">@color/colorTextTitle_dark</item>
         <item name="colorAccent">@color/colorTextTitle_dark</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>

@@ -26,7 +26,7 @@ public class AuthInterceptor implements Interceptor {
         } else {
             request = chain.request()
                     .newBuilder()
-                    .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance()))
+                    .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance(), false))
                     .build();
         }
         return chain.proceed(request);

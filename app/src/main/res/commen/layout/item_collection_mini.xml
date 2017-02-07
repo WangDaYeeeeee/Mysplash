@@ -20,24 +20,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:alpha="0.9"
+        android:alpha="0.5"
         tools:ignore="ContentDescription" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon
             android:id="@+id/item_collection_icon"
-            android:src="@drawable/ic_item_state_succeed"
-            android:layout_width="34dp"
-            android:layout_height="34dp"
-            android:padding="@dimen/little_margin"
-            android:layout_margin="@dimen/little_margin"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@android:color/transparent"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <LinearLayout
@@ -48,18 +43,35 @@
             android:layout_toLeftOf="@id/item_collection_icon"
             tools:ignore="RtlHardcoded,UselessParent">
 
-            <TextView
-                android:id="@+id/item_collection_mini_subtitle"
-                android:textColor="@android:color/white"
-                android:maxLines="1"
-                android:shadowDx="1"
-                android:shadowDy="1"
-                android:shadowRadius="1"
-                android:shadowColor="@color/colorTextDark2nd"
-                android:alpha="0.9"
-                android:layout_marginLeft="@dimen/normal_margin"
-                style="@style/subtitle_text"
-                tools:text="3 photos" />
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/item_collection_mini_subtitle"
+                    android:textColor="@android:color/white"
+                    android:maxLines="1"
+                    android:shadowDx="1"
+                    android:shadowDy="1"
+                    android:shadowRadius="1"
+                    android:shadowColor="@color/colorTextDark2nd"
+                    android:alpha="0.9"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/normal_margin"
+                    style="@style/subtitle_text"
+                    tools:text="3 photos" />
+
+                <ImageView
+                    android:id="@+id/item_collection_mini_lockIcon"
+                    android:src="@drawable/ic_item_lock"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/item_collection_mini_subtitle"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
+                    android:layout_marginLeft="4dp"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/item_collection_mini_title"

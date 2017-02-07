@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.8.4</string>
+    <string name="version_code">2.8.7</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -230,6 +230,8 @@
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_back_to_top">Press back button to scroll to top</string>
+    <string name="settings_title_custom_api_key">Custom API key</string>
+    <string name="settings_summary_custom_api_key">Set your own API key and Secret.</string>
     <string name="settings_title_language">Language</string>
 
     <string name="settings_category_filter">Filter</string>
@@ -243,6 +245,7 @@
     <string name="key_light_theme">light_theme</string>
 
     <string name="key_back_to_top">back_to_top</string>
+    <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
     <string name="key_default_photo_order">default_photo_order</string>
     <string name="key_default_collection_type">default_collection_type</string>

@@ -525,6 +525,8 @@ public class UserActivity extends MysplashActivity
         pagers[position].refreshPager();
     }
 
+    // swipe back manage view.
+
     @Override
     public boolean checkCanSwipeBack(int dir) {
         if (dir == SwipeBackCoordinatorLayout.UP_DIR) {

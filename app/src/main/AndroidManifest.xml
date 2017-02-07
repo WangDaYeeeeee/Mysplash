@@ -144,6 +144,10 @@
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
+        <activity android:name=".category.view.activity.CategoryActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:label="@string/app_name" />
+
         <receiver
             android:name="._common.receiver.DownloadReceiver">
             <intent-filter android:priority="1000">

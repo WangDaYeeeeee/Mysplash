@@ -19,6 +19,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.utils.FileUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
@@ -84,19 +85,13 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                 .into(holder.image);
         switch (itemList.get(position).entity.result) {
             case DownloadMissionEntity.RESULT_SUCCEED:
-                Glide.with(c)
-                        .load(R.drawable.ic_item_state_succeed)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(holder.stateIcon);
+                holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
                 holder.title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
                 holder.retryCheckBtn.setImageResource(R.drawable.ic_item_check);
                 break;
 
             case DownloadMissionEntity.RESULT_DOWNLOADING:
-                Glide.with(c)
-                        .load(R.drawable.ic_item_state_downloading)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(holder.stateIcon);
+                holder.stateIcon.forceSetProgressState();
                 holder.title.setText(
                         itemList.get(position).entity.getRealTitle().toUpperCase()
                                 + " : "
@@ -105,10 +100,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                 break;
 
             case DownloadMissionEntity.RESULT_FAILED:
-                Glide.with(c)
-                        .load(R.drawable.ic_item_state_error)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(holder.stateIcon);
+                holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_error);
                 holder.title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
                 holder.retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
                 break;
@@ -131,7 +123,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
         Glide.clear(holder.image);
-        Glide.clear(holder.stateIcon);
+        holder.stateIcon.recycleImageView();
     }
 
     public int getRealItemCount() {
@@ -173,7 +165,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             implements View.OnClickListener {
         // widget
         ImageView image;
-        ImageView stateIcon;
+        CircularProgressIcon stateIcon;
         TextView title;
         ImageButton closeBtn;
         ImageButton retryCheckBtn;
@@ -186,7 +178,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             itemView.findViewById(R.id.item_download_card).setOnClickListener(this);
 
             this.image = (ImageView) itemView.findViewById(R.id.item_download_image);
-            this.stateIcon = (ImageView) itemView.findViewById(R.id.item_download_stateIcon);
+            this.stateIcon = (CircularProgressIcon) itemView.findViewById(R.id.item_download_stateIcon);
             this.title = (TextView) itemView.findViewById(R.id.item_download_title);
 
             this.closeBtn = (ImageButton) itemView.findViewById(R.id.item_download_closeBtn);
@@ -202,10 +194,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             float process = (cursor == null || cursor.getCount() == 0) ?
                     0 : DownloadHelper.getMissionProcess(cursor);
             if (switchState) {
-                Glide.with(c)
-                        .load(R.drawable.ic_item_state_downloading)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(stateIcon);
+                stateIcon.setProgressState();
                 retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
             }
             title.setText(
@@ -250,7 +239,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
                         default:
                             DownloadMissionEntity entity = itemList.get(getAdapterPosition()).entity;
-                            if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > 0) {
+                            if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > 1) {
                                 NotificationUtils.showSnackbar(
                                         c.getString(R.string.feedback_download_repeat),
                                         Snackbar.LENGTH_SHORT);

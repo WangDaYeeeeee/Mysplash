@@ -517,7 +517,7 @@ public class PhotoActivity extends MysplashActivity
                 break;
 
             case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
-                IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().links.download, true);
+                IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().links.download);
                 break;
         }
     }

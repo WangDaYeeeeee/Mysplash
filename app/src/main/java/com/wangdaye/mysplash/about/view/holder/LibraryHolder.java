@@ -42,7 +42,7 @@ public class LibraryHolder extends RecyclerView.ViewHolder
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_about_library_container:
-                IntentHelper.startWebActivity(v.getContext(), uri, false);
+                IntentHelper.startWebActivity(v.getContext(), uri);
                 break;
         }
     }

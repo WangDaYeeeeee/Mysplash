@@ -48,15 +48,15 @@ public class AppHolder extends RecyclerView.ViewHolder
                         break;
 
                     case 2:
-                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee", false);
+                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee");
                         break;
 
                     case 3:
-                        IntentHelper.startWebActivity(v.getContext(), "mailto:wangdayeeeeee@gmail.com", false);
+                        IntentHelper.startWebActivity(v.getContext(), "mailto:wangdayeeeeee@gmail.com");
                         break;
 
                     case 4:
-                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee/MySplash", false);
+                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee/MySplash");
                         break;
                 }
                 break;

@@ -5,21 +5,24 @@
         android:title="@string/settings_category_basic"
         android:layout="@layout/preference_category">
 
-        <ListPreference
+        <com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_back_to_top"
             android:key="@string/key_back_to_top"
             android:entries="@array/back_to_top_type"
             android:entryValues="@array/back_to_top_type_values"
-            android:defaultValue="all"
-            android:layout="@layout/preference_widget_list" />
+            android:defaultValue="all" />
 
-        <ListPreference
+        <com.wangdaye.mysplash._common.ui.widget.preference.MysplashPreference
+            android:title="@string/settings_title_custom_api_key"
+            android:key="@string/key_custom_api_key"
+            android:summary="@string/settings_summary_custom_api_key" />
+
+        <com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_language"
             android:key="@string/key_language"
             android:entries="@array/languages"
             android:entryValues="@array/language_values"
-            android:defaultValue="follow_system"
-            android:layout="@layout/preference_widget_list" />
+            android:defaultValue="follow_system" />
 
     </PreferenceCategory>
 
@@ -27,21 +30,19 @@
         android:title="@string/settings_category_filter"
         android:layout="@layout/preference_category">
 
-        <ListPreference
+        <com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_default_order"
             android:key="@string/key_default_photo_order"
             android:entries="@array/photo_orders"
             android:entryValues="@array/photo_order_values"
-            android:defaultValue="latest"
-            android:layout="@layout/preference_widget_list" />
+            android:defaultValue="latest" />
 
-        <ListPreference
+        <com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_default_collection_type"
             android:key="@string/key_default_collection_type"
             android:entries="@array/collection_types"
             android:entryValues="@array/collection_type_values"
-            android:defaultValue="featured"
-            android:layout="@layout/preference_widget_list" />
+            android:defaultValue="featured" />
 
     </PreferenceCategory>
 
@@ -49,13 +50,12 @@
         android:title="@string/settings_category_download"
         android:layout="@layout/preference_category">
 
-        <ListPreference
+        <com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_download_scale"
             android:key="@string/key_download_scale"
             android:entries="@array/download_types"
             android:entryValues="@array/download_type_values"
-            android:defaultValue="compact"
-            android:layout="@layout/preference_widget_list" />
+            android:defaultValue="compact" />
 
     </PreferenceCategory>
 

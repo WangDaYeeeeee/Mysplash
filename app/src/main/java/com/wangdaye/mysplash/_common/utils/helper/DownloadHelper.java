@@ -126,7 +126,9 @@ public class DownloadHelper {
 
     public void clearMission(Context c, List<DownloadMissionEntity> entityList) {
         for (int i = 0; i < entityList.size(); i ++) {
-            downloadManager.remove(entityList.get(i).missionId);
+            if (entityList.get(i).result == DownloadMissionEntity.RESULT_DOWNLOADING) {
+                downloadManager.remove(entityList.get(i).missionId);
+            }
         }
         DatabaseHelper.getInstance(c).clearDownloadEntity();
     }

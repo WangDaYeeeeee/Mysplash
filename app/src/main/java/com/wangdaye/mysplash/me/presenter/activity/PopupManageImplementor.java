@@ -68,7 +68,7 @@ public class PopupManageImplementor
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         switch (id) {
             case MeMenuPopupWindow.ITEM_SUBMIT:
-                IntentHelper.startWebActivity(a, Mysplash.UNSPLASH_SUBMIT_URL, true);
+                IntentHelper.startWebActivity(a, Mysplash.UNSPLASH_SUBMIT_URL);
                 break;
 
             case MeMenuPopupWindow.ITEM_PORTFOLIO:
@@ -76,7 +76,7 @@ public class PopupManageImplementor
                         && AuthManager.getInstance().getMe() != null) {
                     String url = AuthManager.getInstance().getMe().portfolio_url;
                     if (!TextUtils.isEmpty(url)) {
-                        IntentHelper.startWebActivity(a, url, true);
+                        IntentHelper.startWebActivity(a, url);
                     } else {
                         NotificationUtils.showSnackbar(
                                 a.getString(R.string.feedback_portfolio_is_null),

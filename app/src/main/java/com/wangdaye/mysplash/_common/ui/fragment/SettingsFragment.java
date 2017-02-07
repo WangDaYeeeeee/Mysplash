@@ -2,16 +2,18 @@ package com.wangdaye.mysplash._common.ui.fragment;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.preference.PreferenceScreen;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
+import com.wangdaye.mysplash._common.ui.dialog.CustomApiDialog;
+import com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -43,14 +45,14 @@ public class SettingsFragment extends PreferenceFragment
 
     private void initBasicPart(SharedPreferences sharedPreferences) {
         // back to top.
-        ListPreference backToTop = (ListPreference) findPreference(getString(R.string.key_back_to_top));
+        MysplashListPreference backToTop = (MysplashListPreference) findPreference(getString(R.string.key_back_to_top));
         String backToTopValue = sharedPreferences.getString(getString(R.string.key_back_to_top), "all");
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
         backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
 
         // language.
-        ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
+        MysplashListPreference language = (MysplashListPreference) findPreference(getString(R.string.key_language));
         String languageValue = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
         String languageName = ValueUtils.getLanguageName(getActivity(), languageValue);
         language.setSummary(getString(R.string.now) + " : " + languageName);
@@ -59,14 +61,14 @@ public class SettingsFragment extends PreferenceFragment
 
     private void initFilterPart(SharedPreferences sharedPreferences) {
         // default order.
-        ListPreference defaultOrder = (ListPreference) findPreference(getString(R.string.key_default_photo_order));
+        MysplashListPreference defaultOrder = (MysplashListPreference) findPreference(getString(R.string.key_default_photo_order));
         String orderValue = sharedPreferences.getString(getString(R.string.key_default_photo_order), PhotoApi.ORDER_BY_LATEST);
         String orderName = ValueUtils.getOrderName(getActivity(), orderValue);
         defaultOrder.setSummary(getString(R.string.now) + " : " + orderName);
         defaultOrder.setOnPreferenceChangeListener(this);
 
         // collection type.
-        ListPreference collectionType = (ListPreference) findPreference(getString(R.string.key_default_collection_type));
+        MysplashListPreference collectionType = (MysplashListPreference) findPreference(getString(R.string.key_default_collection_type));
         String typeValue = sharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
         String valueName = ValueUtils.getCollectionName(getActivity(), typeValue);
         collectionType.setSummary(getString(R.string.now) + " : " + valueName);
@@ -75,7 +77,7 @@ public class SettingsFragment extends PreferenceFragment
 
     private void initDownloadPart(SharedPreferences sharedPreferences) {
         // download scale.
-        ListPreference downloadScale = (ListPreference) findPreference(getString(R.string.key_download_scale));
+        MysplashListPreference downloadScale = (MysplashListPreference) findPreference(getString(R.string.key_download_scale));
         String scaleValue = sharedPreferences.getString(getString(R.string.key_download_scale), "compact");
         String scaleName = ValueUtils.getScaleName(getActivity(), scaleValue);
         downloadScale.setSummary(getString(R.string.now) + " : " + scaleName);
@@ -90,9 +92,18 @@ public class SettingsFragment extends PreferenceFragment
                 rebootListener);
     }
 
+    @Override
+    public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
+        if (preference.getKey().equals(getString(R.string.key_custom_api_key))) {
+            CustomApiDialog dialog = new CustomApiDialog();
+            dialog.show(getFragmentManager(), null);
+        }
+        return true;
+    }
+
     /** <br> interface. */
 
-    // on preference changed listener.
+    // on preference_widget changed listener.
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {

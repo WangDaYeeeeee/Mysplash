@@ -18,6 +18,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash.category.view.activity.CategoryActivity;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
@@ -253,20 +254,23 @@ public class IntentHelper {
                         c.getString(R.string.check)));
     }
 
-    public static void startWebActivity(Context c, String url, boolean forceStartupWeb) {
-        if (forceStartupWeb) {
-            String packageName = "com.android.chrome";
-            Intent browserIntent = new Intent();
-            browserIntent.setPackage(packageName);
-            List<ResolveInfo> activitiesList = c.getPackageManager().queryIntentActivities(
-                    browserIntent, -1);
-            if (activitiesList.size() > 0) {
-                CustomTabHelper.startCustomTabActivity(c, url);
-            } else {
-                c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
-            }
+    public static void startWebActivity(Context c, String url) {
+        String packageName = "com.android.chrome";
+        Intent browserIntent = new Intent();
+        browserIntent.setPackage(packageName);
+        List<ResolveInfo> activitiesList = c.getPackageManager().queryIntentActivities(
+                browserIntent, -1);
+        if (activitiesList.size() > 0) {
+            CustomTabHelper.startCustomTabActivity(c, url);
         } else {
             c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         }
+    }
+
+    public static void startCategoryActivity(MysplashActivity a, int categoryId) {
+        Intent intent = new Intent(a, CategoryActivity.class);
+        intent.putExtra(CategoryActivity.KEY_CATEGORY_ACTIVITY_ID, categoryId);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 }

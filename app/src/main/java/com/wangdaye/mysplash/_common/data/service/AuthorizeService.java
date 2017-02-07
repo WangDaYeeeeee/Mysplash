@@ -25,7 +25,7 @@ public class AuthorizeService {
     public void requestAccessToken(Context c, String code, final OnRequestAccessTokenListener l) {
         Call<AccessToken> getAccessToken = buildApi()
                 .getAccessToken(
-                        Mysplash.getAppId(c),
+                        Mysplash.getAppId(c, true),
                         Mysplash.getSecret(c),
                         "mysplash://" + Mysplash.UNSPLASH_LOGIN_CALLBACK,
                         code,

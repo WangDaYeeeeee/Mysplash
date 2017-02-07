@@ -175,7 +175,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
                 case R.id.item_user_portfolio:
                     if (!TextUtils.isEmpty(itemList.get(getAdapterPosition()).portfolio_url)) {
-                        IntentHelper.startWebActivity(a, itemList.get(getAdapterPosition()).portfolio_url, true);
+                        IntentHelper.startWebActivity(a, itemList.get(getAdapterPosition()).portfolio_url);
                     }
                     break;
             }

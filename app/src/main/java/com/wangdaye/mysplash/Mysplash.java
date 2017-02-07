@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.utils.manager.ApiManager;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -29,12 +31,15 @@ public class Mysplash extends Application {
     private String backToTopType;
     private boolean notifiedSetBackToTop;
 
+    private String customApiKey;
+    private String customApiSecret;
+
     // transfer
     private Photo photo;
 
     // Unsplash data.
-    public static final String APP_ID_BETA = "7a96a77d719e9967f935da53784d6a3eb58a4fb174dda25e89ec69059e46c815";
-    public static final String SECRET_BETA = "dd766f4ee6e01599ca6db2e97c306a883a024f7322f92d4f7ab4aeae3be7924e";
+    public static final String APP_ID_NEW = "41f1f23556b01d63b1ae823bdf008cc32ce446f77c843e2daa2a80c770015df3";
+    public static final String SECRET_NEW = "dec952db51b50babd1ba55e26b7dbbd596ae03554a59c0055864826f7565c94e";
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
@@ -84,7 +89,9 @@ public class Mysplash extends Application {
         instance = this;
         activityList = new ArrayList<>();
 
+        ApiManager.getInstance(this);
         AuthManager.getInstance();
+
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
         lightTheme = sharedPreferences.getBoolean(getString(R.string.key_light_theme), true);
         language = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
@@ -93,16 +100,39 @@ public class Mysplash extends Application {
         downloadScale = sharedPreferences.getString(getString(R.string.key_download_scale), "compact");
         backToTopType = sharedPreferences.getString(getString(R.string.key_back_to_top), "all");
         notifiedSetBackToTop = sharedPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
+
+        String[] customApis = ApiManager.getInstance(this).readCustomApi();
+        ApiManager.getInstance(this).destroy();
+        customApiKey = customApis[0];
+        customApiSecret = customApis[1];
     }
 
     /** <br> data. */
 
-    public static String getAppId(Context c) {
-        return isDebug(c) ? APP_ID_BETA : BuildConfig.APP_ID_RELEASE;
+    public static String getAppId(Context c, boolean auth) {
+        if (isDebug(c)) {
+            return APP_ID_NEW;
+        } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
+                || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
+            if (auth) {
+                return BuildConfig.APP_ID_RELEASE;
+            } else {
+                return BuildConfig.APP_ID_NEW;
+            }
+        } else {
+            return getInstance().getCustomApiKey();
+        }
     }
 
     public static String getSecret(Context c) {
-        return isDebug(c) ? SECRET_BETA : BuildConfig.SECRET_RELEASE;
+        if (isDebug(c)) {
+            return SECRET_NEW;
+        } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
+                || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
+            return BuildConfig.SECRET_RELEASE;
+        } else {
+            return getInstance().getCustomApiSecret();
+        }
     }
 
     public static boolean isDebug(Context c) {
@@ -117,7 +147,7 @@ public class Mysplash extends Application {
 
     public static String getLoginUrl(Context c) {
         return Mysplash.UNSPLASH_URL + "oauth/authorize"
-                + "?client_id=" + getAppId(c)
+                + "?client_id=" + getAppId(c, true)
                 + "&redirect_uri=" + "mysplash%3A%2F%2F" + UNSPLASH_LOGIN_CALLBACK
                 + "&response_type=" + "code"
                 + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+write_followers+read_collections+write_collections";
@@ -223,6 +253,22 @@ public class Mysplash extends Application {
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
+    }
+
+    public String getCustomApiKey() {
+        return customApiKey;
+    }
+
+    public void setCustomApiKey(String customApiKey) {
+        this.customApiKey = customApiKey;
+    }
+
+    public String getCustomApiSecret() {
+        return customApiSecret;
+    }
+
+    public void setCustomApiSecret(String customApiSecret) {
+        this.customApiSecret = customApiSecret;
     }
 
     /** <br> singleton. */

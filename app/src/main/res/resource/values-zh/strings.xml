@@ -192,6 +192,8 @@
     <!-- 设置项. -->
     <string name="settings_category_basic">基础</string>
     <string name="settings_title_back_to_top">点击返回键回到顶部</string>
+    <string name="settings_title_custom_api_key">自定义API key</string>
+    <string name="settings_summary_custom_api_key">设置你自己的API key及Secret</string>
     <string name="settings_title_language">语言</string>
 
     <string name="settings_category_filter">筛选</string>

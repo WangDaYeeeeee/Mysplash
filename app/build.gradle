@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 284
-        versionName "2.8.4"
+        versionCode 287
+        versionName "2.8.7"
     }
     sourceSets {
         main {
@@ -25,6 +25,7 @@ android {
                     'src/main/res/me',
                     'src/main/res/commen',
                     'src/main/res/about',
+                    'src/main/res/category',
                     'src/main/res/resource',
                     'src/main/res']
         }
@@ -41,6 +42,7 @@ android {
     buildTypes.each {
         it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
         it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
+        it.buildConfigField 'String', 'APP_ID_NEW', APP_ID_NEW
     }
     repositories {
         mavenCentral()

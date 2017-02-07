@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_custom_api_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/dialog_custom_api_key"
+            android:hint="api KEY"
+            android:textColorHint="?attr/subtitle_color"
+            android:background="@android:color/transparent"
+            android:lineSpacingMultiplier="1.3"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/little_margin"
+            android:layout_marginLeft="@dimen/mini_icon_size"
+            android:layout_marginRight="@dimen/mini_icon_size"
+            android:maxLines="1"
+            style="@style/content_text"
+            tools:ignore="HardcodedText" />
+
+        <EditText
+            android:id="@+id/dialog_custom_api_secret"
+            android:hint="Secret"
+            android:textColorHint="?attr/subtitle_color"
+            android:background="@android:color/transparent"
+            android:lineSpacingMultiplier="1.3"
+            android:layout_marginTop="@dimen/little_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_marginLeft="@dimen/mini_icon_size"
+            android:layout_marginRight="@dimen/mini_icon_size"
+            android:layout_below="@id/dialog_custom_api_key"
+            android:maxLines="1"
+            style="@style/content_text"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/dialog_custom_api_enterBtn"
+            android:text="@string/enter"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/dialog_custom_api_secret"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+        <Button
+            android:id="@+id/dialog_custom_api_cancelBtn"
+            android:text="@string/cancel"
+            android:textColor="?attr/subtitle_color"
+            android:layout_toLeftOf="@id/dialog_custom_api_enterBtn"
+            android:layout_below="@id/dialog_custom_api_secret"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

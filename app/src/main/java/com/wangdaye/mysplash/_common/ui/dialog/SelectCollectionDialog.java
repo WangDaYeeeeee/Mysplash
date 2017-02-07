@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -32,6 +34,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
@@ -57,6 +60,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private LinearLayout selectorContainer;
     private RelativeLayout selectorTitleBar;
+    private BothWaySwipeRefreshLayout refreshLayout;
+    private RecyclerView recyclerView;
 
     private LinearLayout creatorContainer;
     private EditText nameTxt;
@@ -77,7 +82,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private final int SHOW_COLLECTIONS_STATE = 0;
     private final int INPUT_COLLECTION_STATE = 1;
     private final int CREATE_COLLECTION_STATE = 2;
-    private final int PROGRESS_STATE = 3;
 
     /** <br> life cycle. */
 
@@ -105,7 +109,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         if (serviceListener != null) {
             serviceListener.cancel();
         }
-        service.cancel();
     }
 
     @Override
@@ -136,12 +139,24 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
         refreshBtn.setOnClickListener(this);
 
-        RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.dialog_select_collection_selectorRecyclerView);
+        this.refreshLayout = (BothWaySwipeRefreshLayout) v.findViewById(R.id.dialog_select_collection_selectorRefreshView);
+        if (Mysplash.getInstance().isLightTheme()) {
+            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getActivity(), R.color.colorTextContent_light));
+            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
+        } else {
+            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getActivity(), R.color.colorTextContent_dark));
+            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
+        }
+        refreshLayout.setPermitRefresh(false);
+        refreshLayout.setPermitLoad(false);
+
+        this.recyclerView = (RecyclerView) v.findViewById(R.id.dialog_select_collection_selectorRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            recyclerView.addOnScrollListener(new CollectionListScrollListener());
+            recyclerView.addOnScrollListener(new ElevationScrollListener());
         }
+        recyclerView.addOnScrollListener(new LoadScrollListener());
 
         this.creatorContainer = (LinearLayout) v.findViewById(R.id.dialog_select_collection_creatorContainer);
         creatorContainer.setVisibility(View.GONE);
@@ -172,9 +187,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 } else if (state == INPUT_COLLECTION_STATE) {
                     AnimUtils.animShow(selectorContainer);
                     AnimUtils.animHide(creatorContainer);
-                } else if (state == PROGRESS_STATE) {
-                    AnimUtils.animShow(selectorContainer);
-                    AnimUtils.animHide(progressView);
                 }
                 break;
 
@@ -196,14 +208,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     AnimUtils.animHide(creatorContainer);
                 }
                 break;
-
-            case PROGRESS_STATE:
-                setCancelable(false);
-                if (state == SHOW_COLLECTIONS_STATE) {
-                    AnimUtils.animShow(progressView);
-                    AnimUtils.animHide(selectorContainer);
-                }
-                break;
         }
         state = newState;
     }
@@ -220,21 +224,43 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 Snackbar.LENGTH_SHORT);
     }
 
-    private void notifyAddFailed() {
-        NotificationUtils.showSnackbar(
-                getString(R.string.feedback_add_photo_failed),
-                Snackbar.LENGTH_SHORT);
-    }
-
-    private void notifyDeleteFailed() {
-        NotificationUtils.showSnackbar(
-                getString(R.string.feedback_delete_photo_failed),
-                Snackbar.LENGTH_SHORT);
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private void setTitleBarElevation(float elevation) {
-        selectorTitleBar.setElevation(elevation);
+    private void notifySelectCollectionResult(int collectionId, boolean add, boolean succeed) {
+        for (int i = 0;
+             i < AuthManager.getInstance().getCollectionsManager().getCollectionList().size();
+             i ++) {
+            if (AuthManager.getInstance().getCollectionsManager().getCollectionList().get(i).id == collectionId) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int position = i + 1;
+                int firstPosition = layoutManager.findFirstVisibleItemPosition();
+                int lastPosition = layoutManager.findLastVisibleItemPosition();
+                if (firstPosition <= position && position <= lastPosition) {
+                    CollectionMiniAdapter.ViewHolder holder
+                            = (CollectionMiniAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                    holder.reloadCoverImage(
+                            AuthManager.getInstance().getCollectionsManager().getCollectionList().get(i));
+                    if (succeed) {
+                        if (add) {
+                            holder.setResultState(R.drawable.ic_item_state_succeed);
+                        } else {
+                            holder.setResultState(android.R.color.transparent);
+                        }
+                    } else {
+                        if (add) {
+                            holder.setResultState(android.R.color.transparent);
+                            NotificationUtils.showSnackbar(
+                                    getString(R.string.feedback_add_photo_failed),
+                                    Snackbar.LENGTH_SHORT);
+                        } else {
+                            holder.setResultState(R.drawable.ic_item_state_succeed);
+                            NotificationUtils.showSnackbar(
+                                    getString(R.string.feedback_delete_photo_failed),
+                                    Snackbar.LENGTH_SHORT);
+                        }
+                    }
+                    return;
+                }
+            }
+        }
     }
 
     /** <br> data. */
@@ -285,7 +311,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         service.cancel();
 
         serviceListener = new OnRequestCollectionsListener();
-        service.requestUserCollections(me.username, page, 10, serviceListener);
+        service.requestUserCollections(me.username, page, Mysplash.DEFAULT_PER_PAGE, serviceListener);
     }
 
     private void createCollection() {
@@ -297,7 +323,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
-            boolean privateX = checkBox.isSelected();
+            boolean privateX = checkBox.isChecked();
             service.createCollection(
                     title,
                     description,
@@ -325,6 +351,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         switch (view.getId()) {
             case R.id.dialog_select_collection_selectorRefreshBtn:
                 initRefresh();
+                refreshLayout.setLoading(true);
                 break;
 
             case R.id.dialog_select_collection_creatorCreateBtn:
@@ -339,15 +366,26 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
     }
 
+    // on scroll listener.
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    private class CollectionListScrollListener extends RecyclerView.OnScrollListener {
-        // data
-        private int totalY = 0;
+    private class ElevationScrollListener extends RecyclerView.OnScrollListener {
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-            totalY += dy;
-            setTitleBarElevation(Math.min(5, totalY));
+            selectorTitleBar.setElevation(
+                    Math.min(5, selectorTitleBar.getElevation() + dy));
+        }
+    }
+
+    private class LoadScrollListener extends RecyclerView.OnScrollListener {
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+            if (!ViewCompat.canScrollVertically(recyclerView, 1)
+                    && !AuthManager.getInstance().getCollectionsManager().isLoadFinish()) {
+                refreshLayout.setLoading(true);
+            }
         }
     }
 
@@ -384,22 +422,23 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     }
 
     @Override
-    public void onClickCollectionItem(int collection_id) {
+    public void onClickCollectionItem(int collectionId, int adapterPosition) {
+        CollectionMiniAdapter.ViewHolder holder
+                = (CollectionMiniAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(adapterPosition);
+        holder.setProgressState();
         for (int i = 0; i < photo.current_user_collections.size(); i ++) {
-            if (collection_id == photo.current_user_collections.get(i).id) {
-                setState(PROGRESS_STATE);
+            if (collectionId == photo.current_user_collections.get(i).id) {
                 service.deletePhotoFromCollection(
-                        collection_id,
+                        collectionId,
                         photo.id,
-                        new OnChangeCollectionPhotoListener(false));
+                        new OnChangeCollectionPhotoListener(collectionId, false));
                 return;
             }
         }
-        setState(PROGRESS_STATE);
         service.addPhotoToCollection(
-                collection_id,
+                collectionId,
                 photo.id,
-                new OnChangeCollectionPhotoListener(true));
+                new OnChangeCollectionPhotoListener(collectionId, true));
     }
 
     // on request collections listener (request collections list.).
@@ -426,6 +465,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 return;
             }
             if (response.isSuccessful() && response.body() != null) {
+                refreshLayout.setLoading(false);
                 if (response.body().size() > 0) {
                     int startPosition = AuthManager.getInstance()
                             .getCollectionsManager()
@@ -436,13 +476,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                             .addCollections(response.body());
                     adapter.notifyItemRangeInserted(startPosition, response.body().size());
                 }
-                if (response.body().size() < 10) {
+                if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     AuthManager.getInstance().getCollectionsManager().setLoadFinish(true);
-                    adapter.notifyItemRemoved(
-                            AuthManager.getInstance()
-                                    .getCollectionsManager()
-                                    .getCollectionList()
-                                    .size() + 1);
                 } else {
                     page ++;
                     requestCollections();
@@ -492,9 +527,11 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private class OnChangeCollectionPhotoListener
             implements CollectionService.OnChangeCollectionPhotoListener {
         // data
+        private int collectionId;
         private boolean add;
 
-        OnChangeCollectionPhotoListener(boolean add) {
+        OnChangeCollectionPhotoListener(int collectionId, boolean add) {
+            this.collectionId = collectionId;
             this.add = add;
         }
 
@@ -512,27 +549,16 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 // update photo.
                 photo = response.body().photo;
                 adapter.updatePhoto(photo);
-                adapter.notifyDataSetChanged();
-                // show collections list.
-                setState(SHOW_COLLECTIONS_STATE);
+                // update view.
+                notifySelectCollectionResult(response.body().collection.id, add, true);
             } else {
-                setState(SHOW_COLLECTIONS_STATE);
-                if (add) {
-                    notifyAddFailed();
-                } else {
-                    notifyDeleteFailed();
-                }
+                notifySelectCollectionResult(response.body().collection.id, add, false);
             }
         }
 
         @Override
         public void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t) {
-            setState(SHOW_COLLECTIONS_STATE);
-            if (add) {
-                notifyAddFailed();
-            } else {
-                notifyDeleteFailed();
-            }
+            notifySelectCollectionResult(collectionId, add, false);
         }
     }
 }

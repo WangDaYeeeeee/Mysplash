@@ -60,7 +60,7 @@
                 android:layout_toRightOf="@id/container_photo_details_sizeIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="4390 × 1980"
                 tools:ignore="RtlHardcoded" />
@@ -88,7 +88,7 @@
                 android:layout_toRightOf="@id/container_photo_details_colorIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/little_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:text="#34a67c"
@@ -126,7 +126,7 @@
                 android:layout_toRightOf="@id/container_photo_details_locationIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="Montreal, Canada"
                 tools:ignore="RtlHardcoded" />
@@ -153,7 +153,7 @@
                 android:layout_toRightOf="@id/container_photo_details_modelIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="Canon EOS 40D"
                 tools:ignore="RtlHardcoded" />
@@ -180,7 +180,7 @@
                 android:layout_toRightOf="@id/container_photo_details_exposureIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="0.011111111"
                 tools:ignore="RtlHardcoded" />
@@ -207,7 +207,7 @@
                 android:layout_toRightOf="@id/container_photo_details_apertureIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="4.970854"
                 tools:ignore="RtlHardcoded" />
@@ -234,7 +234,7 @@
                 android:layout_toRightOf="@id/container_photo_details_focalIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="37"
                 tools:ignore="RtlHardcoded" />
@@ -261,7 +261,7 @@
                 android:layout_toRightOf="@id/container_photo_details_isoIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/normal_margin"
-                android:singleLine="true"
+                android:maxLines="1"
                 style="@style/content_text"
                 tools:text="100"
                 tools:ignore="RtlHardcoded" />

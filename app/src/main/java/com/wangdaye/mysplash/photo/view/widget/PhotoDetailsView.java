@@ -26,10 +26,12 @@ import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.ui.adapter.TagAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo.model.widget.LoadObject;
 import com.wangdaye.mysplash.photo.model.widget.PhotoDetailsObject;
 import com.wangdaye.mysplash.photo.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.photo.presenter.widget.PhotoDetailsImplementor;
+import com.zhy.view.flowlayout.FlowLayout;
 import com.zhy.view.flowlayout.TagFlowLayout;
 
 /**
@@ -38,7 +40,7 @@ import com.zhy.view.flowlayout.TagFlowLayout;
 
 public class PhotoDetailsView extends FrameLayout
         implements com.wangdaye.mysplash._common.i.view.PhotoDetailsView, LoadView,
-        View.OnClickListener {
+        View.OnClickListener, TagFlowLayout.OnTagClickListener {
     // model.
     private PhotoDetailsModel photoDetailsModel;
     private LoadModel loadModel;
@@ -172,6 +174,7 @@ public class PhotoDetailsView extends FrameLayout
         findViewById(R.id.container_photo_details_isoContainer).setOnClickListener(this);
 
         this.tagView = (TagFlowLayout) findViewById(R.id.container_photo_details_tagView);
+        tagView.setOnTagClickListener(this);
     }
 
     /** <br> model. */
@@ -257,6 +260,16 @@ public class PhotoDetailsView extends FrameLayout
                 break;
 
         }
+    }
+
+    // on tag click listener.
+
+    @Override
+    public boolean onTagClick(View view, int position, FlowLayout parent) {
+        IntentHelper.startCategoryActivity(
+                Mysplash.getInstance().getTopActivity(),
+                photoDetailsPresenter.getPhoto().categories.get(position).id);
+        return true;
     }
 
     // view.
