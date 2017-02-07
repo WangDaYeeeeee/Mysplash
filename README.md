@@ -19,13 +19,8 @@
 * Material design.
 * Support select photos as tags.
 * Support share photos and set as wallpaper.
-* Support download raw photos.
+* Support download raw photo.
 
-### History
-
-* [All APKs](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
-* begin with v1.0.0.
-  
 ### Contact Me
 
 * wangdayeeeeee@gmail.com
@@ -43,13 +38,8 @@
 * 遵循material design设计
 * 支持标签分类
 * 支持设置壁纸与分享
-* 支持下原片下载
+* 支持原片下载
 
-### 历史纪录
-
-* [所有的安装包都在这里](https://github.com/WangDaYeeeeee/MySplash/tree/master/history)
-* 安装包从v1.0.0开始收录
-  
 ### 联系作者
 
 * wangdayeeeeee@gmail.com
