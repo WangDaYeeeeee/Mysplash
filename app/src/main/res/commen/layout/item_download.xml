@@ -56,8 +56,9 @@
 
         <com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon
             android:id="@+id/item_download_stateIcon"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_margin="@dimen/little_margin"
             android:layout_centerVertical="true"
             android:background="@android:color/transparent" />
 

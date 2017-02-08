@@ -138,6 +138,8 @@ public class HomePhotosView extends NestedScrollFrameLayout
         recyclerView.setAdapter(photosPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(onScrollListener);
+
+        photosPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
     private void initLoadingView() {

@@ -184,6 +184,8 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         recyclerView.setAdapter(multiFilterPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
+
+        multiFilterPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
     private void initLoadingView() {

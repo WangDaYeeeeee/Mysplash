@@ -1,9 +1,13 @@
 package com.wangdaye.mysplash._common.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -21,6 +25,9 @@ public class SettingsActivity extends MysplashActivity
         implements View.OnClickListener {
     // widget
     private CoordinatorLayout container;
+
+    // data
+    public static final int SETTINGS_ACTIVITY = 1;
 
     /** <br> life cycle. */
 
@@ -79,7 +86,21 @@ public class SettingsActivity extends MysplashActivity
         return container;
     }
 
-    /** <br> UI.. */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case SETTINGS_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    showSnackbar(
+                            getString(R.string.feedback_please_login),
+                            Snackbar.LENGTH_LONG);
+                }
+                break;
+        }
+    }
+
+    /** <br> UI. */
 
     private void initWidget() {
         StatusBarView statusBar = (StatusBarView) findViewById(R.id.activity_settings_statusBar);
@@ -97,6 +118,28 @@ public class SettingsActivity extends MysplashActivity
         toolbar.setNavigationOnClickListener(this);
 
         this.container = (CoordinatorLayout) findViewById(R.id.activity_settings_container);
+    }
+
+    private void showSnackbar(String content, int duration) {
+        View container = provideSnackbarContainer();
+
+        Snackbar snackbar = Snackbar
+                .make(container, content, duration);
+
+        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+
+        TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
+        DisplayUtils.setTypeface(this, contentTxt);
+
+        if (Mysplash.getInstance().isLightTheme()) {
+            contentTxt.setTextColor(ContextCompat.getColor(this, R.color.colorTextContent_light));
+            snackbarLayout.setBackgroundResource(R.color.colorRoot_light);
+        } else {
+            contentTxt.setTextColor(ContextCompat.getColor(this, R.color.colorTextContent_dark));
+            snackbarLayout.setBackgroundResource(R.color.colorRoot_dark);
+        }
+
+        snackbar.show();
     }
 
     /** <br> interface. */

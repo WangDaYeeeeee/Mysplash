@@ -12,10 +12,11 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.ui.dialog.CustomApiDialog;
+import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 /**
@@ -95,8 +96,7 @@ public class SettingsFragment extends PreferenceFragment
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
         if (preference.getKey().equals(getString(R.string.key_custom_api_key))) {
-            CustomApiDialog dialog = new CustomApiDialog();
-            dialog.show(getFragmentManager(), null);
+            IntentHelper.startCustomApiActivity((SettingsActivity) getActivity());
         }
         return true;
     }

@@ -84,13 +84,17 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             holder.lockIcon.setAlpha(0f);
         }
 
-        for (int i = 0; i < photo.current_user_collections.size(); i ++) {
-            if (collection.id == photo.current_user_collections.get(i).id) {
-                holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
-                return;
+        if (collection.insertingPhoto) {
+            holder.stateIcon.forceSetProgressState();
+        } else {
+            for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+                if (collection.id == photo.current_user_collections.get(i).id) {
+                    holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
+                    return;
+                }
             }
+            holder.stateIcon.forceSetResultState(android.R.color.transparent);
         }
-        holder.stateIcon.forceSetResultState(android.R.color.transparent);
     }
 
     /** <br> data. */
@@ -206,6 +210,14 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                     if (getAdapterPosition() == 0 && listener != null) {
                         listener.onCreateCollection();
                     } else if (stateIcon.isUsable() && listener != null) {
+                        Collection collection = AuthManager.getInstance()
+                                .getCollectionsManager()
+                                .getCollectionList()
+                                .get(getAdapterPosition() - 1);
+                        collection.insertingPhoto = true;
+                        AuthManager.getInstance()
+                                .getCollectionsManager()
+                                .updateCollection(collection);
                         listener.onClickCollectionItem(
                                 AuthManager.getInstance()
                                         .getCollectionsManager()

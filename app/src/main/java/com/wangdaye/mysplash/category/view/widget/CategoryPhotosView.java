@@ -173,6 +173,8 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         recyclerView.setAdapter(categoryPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
+
+        categoryPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
     private void initLoadingView() {

@@ -2,11 +2,9 @@ package com.wangdaye.mysplash._common.utils.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 
 /**
  * Api manager.
@@ -36,10 +34,10 @@ public class ApiManager {
                 sharedPreferences.getString(KEY_CUSTOM_API_SECRET, null)};
     }
 
-    public void writeCustomApi(String key, String secret) {
+    public boolean writeCustomApi(String key, String secret) {
         if ((TextUtils.isEmpty(Mysplash.getInstance().getCustomApiKey()) && TextUtils.isEmpty(key))
                 && (TextUtils.isEmpty(Mysplash.getInstance().getCustomApiSecret()) && TextUtils.isEmpty(secret))) {
-            // do nothing.
+            return false;
         } else if (!TextUtils.equals(Mysplash.getInstance().getCustomApiKey(), key)
                 || !TextUtils.equals(Mysplash.getInstance().getCustomApiSecret(), secret)) {
             // write.
@@ -48,13 +46,10 @@ public class ApiManager {
             editor.putString(KEY_CUSTOM_API_SECRET, secret);
             editor.apply();
 
-            // re login.
             AuthManager.getInstance().logout();
-            Snackbar.make(
-                    Mysplash.getInstance().getTopActivity().getSnackbarContainer(),
-                    Mysplash.getInstance().getString(R.string.feedback_please_login),
-                    Snackbar.LENGTH_SHORT).show();
+            return true;
         }
+        return false;
     }
 
     public void destroy() {

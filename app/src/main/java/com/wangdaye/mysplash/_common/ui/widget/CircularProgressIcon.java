@@ -78,8 +78,16 @@ public class CircularProgressIcon extends FrameLayout {
         cancelAllAnimation();
         setState(STATE_PROGRESS);
         setAnimating(false);
+
         image.setAlpha(0f);
+        image.setScaleX(1f);
+        image.setScaleY(1f);
+        image.setRotation(0);
+
         progress.setAlpha(1f);
+        progress.setScaleX(1f);
+        progress.setScaleY(1f);
+        progress.setRotation(0);
     }
 
     public void forceSetResultState(@DrawableRes int imageId) {
@@ -90,8 +98,16 @@ public class CircularProgressIcon extends FrameLayout {
                 .load(imageId)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(image);
+
         image.setAlpha(1f);
+        image.setScaleX(1f);
+        image.setScaleY(1f);
+        image.setRotation(0);
+
         progress.setAlpha(0f);
+        progress.setScaleX(1f);
+        progress.setScaleY(1f);
+        progress.setRotation(0);
     }
 
     public void setProgressState() {

@@ -139,9 +139,10 @@
     <string name="feedback_share_user_title">一位Unsplash.com用户</string>
     <string name="feedback_share_user_extra">#\n</string>
 
-    <string name="feedback_follow_success">关注成功</string>
+    <string name="feedback_like_failed">喜欢失败</string>
+    <string name="feedback_unlike_failed">取消喜欢失败</string>
+
     <string name="feedback_follow_failed">关注失败</string>
-    <string name="feedback_cancel_follow_success">取消关注成功</string>
     <string name="feedback_cancel_follow_failed">取消关注失败</string>
 
     <!-- introduce. -->

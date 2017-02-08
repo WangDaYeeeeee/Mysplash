@@ -136,6 +136,8 @@ public class MePhotosView extends NestedScrollFrameLayout
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(photosPresenter.getAdapter());
         recyclerView.addOnScrollListener(scrollListener);
+
+        photosPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
     // interface.

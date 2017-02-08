@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.FileUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -33,7 +35,6 @@ import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
 import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
@@ -51,6 +52,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         DownloadRepeatDialog.OnCheckOrDownloadListener {
     // widget
     private Context a;
+    private RecyclerView recyclerView;
     private SelectCollectionDialog.OnCollectionsChangedListener collectionsChangedListener;
     private OnDownloadPhotoListener downloadPhotoListener;
 
@@ -115,7 +117,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             holder.collectionButton.setImageResource(R.drawable.ic_item_plus);
         }
 
-        holder.likeButton.initLikeState(itemList.get(position).liked_by_user);
+        if (itemList.get(position).settingLike) {
+            holder.likeButton.forceSetProgressState();
+        } else {
+            holder.likeButton.forceSetResultState(itemList.get(position).liked_by_user ?
+                    R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+        }
 
         holder.background.setBackgroundColor(
                 DisplayUtils.calcCardBackgroundColor(
@@ -129,6 +136,10 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
     public void setActivity(MysplashActivity a) {
         this.a = a;
+    }
+
+    public void setRecyclerView(RecyclerView v) {
+        this.recyclerView = v;
     }
 
     /** <br> data. */
@@ -147,6 +158,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
         Glide.clear(holder.image);
+        holder.likeButton.recycleImageView();
     }
 
     public void insertItem(Photo item) {
@@ -182,10 +194,11 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         if (service == null) {
             service = PhotoService.getService();
         }
+        itemList.get(position).settingLike = true;
         service.setLikeForAPhoto(
                 itemList.get(position).id,
                 like,
-                new OnSetLikeListener(itemList.get(position).id, like, position));
+                new OnSetLikeListener(itemList.get(position).id, position));
     }
 
     public int getRealItemCount() {
@@ -220,46 +233,69 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         this.downloadPhotoListener = l;
     }
 
-    // on set like collectionsChangedListener.
+    // on set like listener.
 
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
         // data
         private String id;
-        private boolean like;
         private int position;
 
-        OnSetLikeListener(String id, boolean like, int position) {
+        // life cycle.
+
+        OnSetLikeListener(String id, int position) {
             this.id = id;
-            this.like = like;
             this.position = position;
         }
 
+        // interface.
+
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
-            if (response.isSuccessful() && response.body() != null) {
-                if (itemList.size() >= position
-                        && itemList.get(position).id.equals(response.body().photo.id)) {
+            if (itemList.size() >= position
+                    && itemList.get(position).id.equals(id)) {
+                itemList.get(position).settingLike = false;
+
+                if (response.isSuccessful() && response.body() != null) {
                     itemList.get(position).liked_by_user = response.body().photo.liked_by_user;
                     itemList.get(position).likes = response.body().photo.likes;
                 }
-            } else {
-                service.setLikeForAPhoto(
-                        id,
-                        like,
-                        this);
+
+                updateView(itemList.get(position).liked_by_user);
             }
         }
 
         @Override
         public void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t) {
-            service.setLikeForAPhoto(
-                    id,
-                    like,
-                    this);
+            if (itemList.size() >= position
+                    && itemList.get(position).id.equals(id)) {
+                itemList.get(position).settingLike = false;
+                updateView(itemList.get(position).liked_by_user);
+                NotificationUtils.showSnackbar(
+                        itemList.get(position).liked_by_user ?
+                                a.getString(R.string.feedback_unlike_failed)
+                                :
+                                a.getString(R.string.feedback_like_failed),
+                        Snackbar.LENGTH_SHORT);
+            }
+        }
+
+        // UI.
+
+        private void updateView(boolean to) {
+            if (recyclerView != null) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int firstPosition = layoutManager.findFirstVisibleItemPosition();
+                int lastPosition = layoutManager.findLastVisibleItemPosition();
+                if (firstPosition <= position && position <= lastPosition) {
+                    ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                    holder.likeButton.setResultState(
+                            to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                }
+            }
         }
     }
 
-    // on delete collection photo collectionsChangedListener.
+    // on delete collection photo listener.
 
     @Override
     public void onDeletePhotoSuccess(ChangeCollectionPhotoResult result, int position) {
@@ -288,14 +324,14 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     // view holder.
 
     class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, LikeImageButton.OnLikeListener {
+            implements View.OnClickListener {
         // widget
         public RelativeLayout background;
         public FreedomImageView image;
         public TextView title;
         ImageButton deleteButton;
         ImageButton collectionButton;
-        LikeImageButton likeButton;
+        CircularProgressIcon likeButton;
 
         ViewHolder(View itemView, int position) {
             super(itemView);
@@ -315,8 +351,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
             this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_photo_collectionButton);
             collectionButton.setOnClickListener(this);
 
-            this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_photo_likeButton);
-            likeButton.setOnLikeListener(this);
+            this.likeButton = (CircularProgressIcon) itemView.findViewById(R.id.item_photo_likeButton);
+            likeButton.setOnClickListener(this);
 
             itemView.findViewById(R.id.item_photo_downloadButton).setOnClickListener(this);
         }
@@ -343,6 +379,15 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                                 getAdapterPosition());
                         dialog.setOnDeleteCollectionListener(PhotoAdapter.this);
                         dialog.show(((CollectionActivity) a).getFragmentManager(), null);
+                    }
+                    break;
+
+                case R.id.item_photo_likeButton:
+                    if (likeButton.isUsable()) {
+                        likeButton.setProgressState();
+                        setLikeForAPhoto(
+                                !itemList.get(getAdapterPosition()).liked_by_user,
+                                getAdapterPosition());
                     }
                     break;
 
@@ -376,11 +421,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     }
                     break;
             }
-        }
-
-        @Override
-        public void onClickLikeButton(boolean newLikeState) {
-            setLikeForAPhoto(newLikeState, getAdapterPosition());
         }
     }
 }

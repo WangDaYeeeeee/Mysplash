@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
@@ -30,7 +31,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.ui.widget.LikeImageButton;
+import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -55,6 +56,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         implements SelectCollectionDialog.OnCollectionsChangedListener {
     // widget
     private Context a;
+    private RecyclerView recyclerView;
 
     // data
     private List<FollowingResult> resultList;
@@ -223,7 +225,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                     holder.collectionButton.setImageResource(R.drawable.ic_item_plus);
                 }
 
-                holder.likeButton.initLikeState(photo.liked_by_user);
+                if (photo.settingLike) {
+                    holder.likeButton.forceSetProgressState();
+                } else {
+                    holder.likeButton.forceSetResultState(photo.liked_by_user ?
+                            R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                }
 
                 holder.background.setBackgroundColor(DisplayUtils.calcCardBackgroundColor(photo.color));
 
@@ -315,6 +322,10 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         this.a = a;
     }
 
+    public void setRecyclerView(RecyclerView v) {
+        this.recyclerView = v;
+    }
+
     /** <br> data. */
 
     @Override
@@ -355,11 +366,15 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
             photoService = PhotoService.getService();
         }
         Photo photo = getPhoto(position);
-        assert photo != null;
-        photoService.setLikeForAPhoto(
-                photo.id,
-                like,
-                new OnSetLikeListener(photo.id, like, position));
+        if (photo != null) {
+            photo.settingLike = true;
+            resultList.get(typeList.get(position).resultPosition)
+                    .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+            photoService.setLikeForAPhoto(
+                    photo.id,
+                    like,
+                    new OnSetLikeListener(photo.id, position));
+        }
     }
 
     public void cancelService() {
@@ -494,45 +509,65 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
         // data
         private String id;
-        private boolean like;
         private int position;
 
-        OnSetLikeListener(String id, boolean like, int position) {
+        // life cycle.
+
+        OnSetLikeListener(String id, int position) {
             this.id = id;
-            this.like = like;
             this.position = position;
         }
 
+        // interface.
+
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
-            if (response.isSuccessful() && response.body() != null) {
-                if (typeList.size() < position) {
-                    return;
-                }
+            if (typeList.size() < position) {
+                return;
+            }
+            Photo photo = getPhoto(position);
+            if (photo != null && photo.id.equals(id)) {
+                photo.settingLike = false;
 
-                Photo photo = getPhoto(position);
-                if (photo != null
-                        && photo.id.equals(response.body().photo.id)) {
+                if (response.isSuccessful() && response.body() != null) {
                     photo.liked_by_user = response.body().photo.liked_by_user;
                     photo.likes = response.body().photo.likes;
-
-                    resultList.get(typeList.get(position).resultPosition)
-                            .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
                 }
-            } else {
-                photoService.setLikeForAPhoto(
-                        id,
-                        like,
-                        this);
+
+                resultList.get(typeList.get(position).resultPosition)
+                        .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+
+                updateView(photo.liked_by_user);
             }
         }
 
         @Override
         public void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t) {
-            photoService.setLikeForAPhoto(
-                    id,
-                    like,
-                    this);
+            if (typeList.size() < position) {
+                return;
+            }
+            Photo photo =getPhoto(position);
+            if (photo != null && photo.id.equals(id)) {
+                photo.settingLike = false;
+                resultList.get(typeList.get(position).resultPosition)
+                        .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+                updateView(photo.liked_by_user);
+            }
+        }
+
+        // UI.
+
+        private void updateView(boolean to) {
+            if (recyclerView != null) {
+                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int firstPosition = layoutManager.findFirstVisibleItemPosition();
+                int lastPosition = layoutManager.findLastVisibleItemPosition();
+                if (firstPosition <= position && position <= lastPosition) {
+                    ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                    holder.likeButton.setResultState(
+                            to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                }
+            }
         }
     }
 
@@ -568,7 +603,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     // view holder.
 
     class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener, LikeImageButton.OnLikeListener {
+            implements View.OnClickListener {
         // widget
         public RelativeLayout background;
 
@@ -579,7 +614,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         public FreedomImageView image;
         TextView title;
         ImageButton collectionButton;
-        LikeImageButton likeButton;
+        CircularProgressIcon likeButton;
 
         TextView more;
 
@@ -621,8 +656,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                     this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_following_photo_collectionButton);
                     collectionButton.setOnClickListener(this);
 
-                    this.likeButton = (LikeImageButton) itemView.findViewById(R.id.item_following_photo_likeButton);
-                    likeButton.setOnLikeListener(this);
+                    this.likeButton = (CircularProgressIcon) itemView.findViewById(R.id.item_following_photo_likeButton);
+                    likeButton.setOnClickListener(this);
 
                     itemView.findViewById(R.id.item_following_photo_downloadButton).setOnClickListener(this);
                     break;
@@ -706,6 +741,14 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                                     getPhoto(position));
                             break;
 
+                        case R.id.item_following_photo_likeButton:
+                            Photo photo = getPhoto(position);
+                            if (likeButton.isUsable() && photo != null) {
+                                likeButton.setProgressState();
+                                setLikeForAPhoto(!photo.liked_by_user, position);
+                            }
+                            break;
+
                         case R.id.item_following_photo_collectionButton:
                             if (!AuthManager.getInstance().isAuthorized()) {
                                 IntentHelper.startLoginActivity((MysplashActivity) a);
@@ -770,11 +813,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                     }
                     break;
             }
-        }
-
-        @Override
-        public void onClickLikeButton(boolean newLikeState) {
-            setLikeForAPhoto(newLikeState, position);
         }
     }
 }

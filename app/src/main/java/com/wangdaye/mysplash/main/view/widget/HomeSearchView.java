@@ -169,6 +169,10 @@ public class HomeSearchView extends NestedScrollFrameLayout
         recyclerView.setAdapter(searchPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
+
+        if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
+            ((PhotoAdapter) searchPresenter.getAdapter()).setRecyclerView(recyclerView);
+        }
     }
 
     private void initSearchingView(int type) {

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_custom_api_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/root_color">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_custom_api_statusBar"
+            android:background="?attr/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_custom_api_swipeBackView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                android:background="?attr/root_color">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageButton
+                        android:id="@+id/activity_custom_api_closeBtn"
+                        style="@style/material_image_button"
+                        tools:src="@drawable/ic_close_light"
+                        tools:ignore="ContentDescription" />
+
+                    <LinearLayout
+                        android:id="@+id/activity_custom_api_inputContainer"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true">
+
+                        <EditText
+                            android:id="@+id/activity_custom_api_key"
+                            android:hint="api KEY"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:background="@android:color/transparent"
+                            android:lineSpacingMultiplier="1.3"
+                            android:layout_marginTop="@dimen/normal_margin"
+                            android:layout_marginBottom="@dimen/normal_margin"
+                            android:layout_marginLeft="@dimen/mini_icon_size"
+                            android:layout_marginRight="@dimen/mini_icon_size"
+                            android:maxLines="1"
+                            style="@style/content_text"
+                            tools:ignore="HardcodedText" />
+
+                        <EditText
+                            android:id="@+id/activity_custom_api_secret"
+                            android:hint="Secret"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:background="@android:color/transparent"
+                            android:lineSpacingMultiplier="1.3"
+                            android:layout_marginTop="@dimen/normal_margin"
+                            android:layout_marginBottom="@dimen/normal_margin"
+                            android:layout_marginLeft="@dimen/mini_icon_size"
+                            android:layout_marginRight="@dimen/mini_icon_size"
+                            android:maxLines="1"
+                            style="@style/content_text"
+                            tools:ignore="HardcodedText" />
+
+                        <TextView
+                            android:id="@+id/activity_custom_api_redirectUri"
+                            android:text="Redirect URI\nmysplash://unsplash-auth-callback"
+                            android:lineSpacingMultiplier="1.3"
+                            android:textIsSelectable="true"
+                            android:layout_marginTop="@dimen/normal_margin"
+                            android:layout_marginBottom="@dimen/normal_margin"
+                            android:layout_marginLeft="@dimen/mini_icon_size"
+                            android:layout_marginRight="@dimen/mini_icon_size"
+                            style="@style/content_text"
+                            tools:ignore="HardcodedText" />
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/activity_custom_api_enterBtn"
+                        android:text="@string/enter"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@id/activity_custom_api_inputContainer"
+                        style="@style/material_button"
+                        tools:ignore="RtlHardcoded" />
+
+                    <Button
+                        android:id="@+id/activity_custom_api_cancelBtn"
+                        android:text="@string/cancel"
+                        android:textColor="?attr/subtitle_color"
+                        android:layout_toLeftOf="@id/activity_custom_api_enterBtn"
+                        android:layout_below="@id/activity_custom_api_inputContainer"
+                        style="@style/material_button"
+                        tools:ignore="RtlHardcoded" />
+
+                </RelativeLayout>
+
+            </android.support.v4.widget.NestedScrollView>
+
+        </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

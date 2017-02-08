@@ -238,8 +238,9 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                             break;
 
                         default:
+                            int limitCount = itemList.get(getAdapterPosition()).entity.result == DownloadMissionEntity.RESULT_DOWNLOADING ? 1 : 0;
                             DownloadMissionEntity entity = itemList.get(getAdapterPosition()).entity;
-                            if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > 1) {
+                            if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > limitCount) {
                                 NotificationUtils.showSnackbar(
                                         c.getString(R.string.feedback_download_repeat),
                                         Snackbar.LENGTH_SHORT);

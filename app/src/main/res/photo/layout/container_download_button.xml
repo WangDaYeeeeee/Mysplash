@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_download_button"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    android:paddingTop="@dimen/normal_margin"
+    tools:ignore="DisableBaselineAlignment">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/container_download_downloadBtn"
+            android:src="@drawable/ic_download_light"
+            android:layout_width="@dimen/large_icon_size"
+            android:layout_height="@dimen/large_icon_size"
+            android:padding="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/container_download_downloadTxt"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/container_download_downloadBtn"
+            style="@style/subtitle_text"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/container_download_shareBtn"
+            android:src="@drawable/ic_send_light"
+            android:layout_width="@dimen/large_icon_size"
+            android:layout_height="@dimen/large_icon_size"
+            android:padding="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/container_download_shareTxt"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/container_download_shareBtn"
+            style="@style/subtitle_text"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
+        <ImageButton
+            android:id="@+id/container_download_wallBtn"
+            android:src="@drawable/ic_mountain_light"
+            android:layout_width="@dimen/large_icon_size"
+            android:layout_height="@dimen/large_icon_size"
+            android:padding="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/container_download_wallTxt"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/container_download_wallBtn"
+            style="@style/subtitle_text"
+            tools:ignore="HardcodedText" />
+
+    </RelativeLayout>
+
+</LinearLayout>

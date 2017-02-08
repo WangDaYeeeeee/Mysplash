@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.data.entity.unsplash;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,7 @@ public class FollowingResult {
         // photo part.
         public boolean loadPhotoSuccess = false;
         public boolean hasFadedIn = false;
+        public boolean settingLike = false;
         public String created_at;
         public int width;
         public int height;
@@ -61,6 +63,7 @@ public class FollowingResult {
         public Object(Photo p) {
             loadPhotoSuccess = p.loadPhotoSuccess;
             hasFadedIn = p.hasFadedIn;
+            settingLike = p.settingLike;
             id = p.id;
             created_at = p.created_at;
             width = p.width;
@@ -73,14 +76,15 @@ public class FollowingResult {
             urls = p.urls;
             links = p.links;
             user = p.user;
-            current_user_collections = p.current_user_collections;
-            categories = p.categories;
+            current_user_collections = new ArrayList<>(p.current_user_collections);
+            categories = new ArrayList<>(p.categories);
         }
 
         public Photo castToPhoto() {
             Photo p = new Photo();
             p.loadPhotoSuccess = loadPhotoSuccess;
             p.hasFadedIn = hasFadedIn;
+            p.settingLike = settingLike;
             p.id = id;
             p.created_at = created_at;
             p.width = width;
@@ -93,8 +97,8 @@ public class FollowingResult {
             p.urls = urls;
             p.links = links;
             p.user = user;
-            p.current_user_collections = current_user_collections;
-            p.categories = categories;
+            p.current_user_collections = new ArrayList<>(current_user_collections);
+            p.categories = new ArrayList<>(categories);
             return p;
         }
 

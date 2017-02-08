@@ -118,7 +118,8 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     public void initMP(CollectionActivity a, Collection c) {
         initModel(a, c);
         initPresenter();
-        recyclerView.setAdapter(photosModel.getAdapter());
+        recyclerView.setAdapter(photosPresenter.getAdapter());
+        photosPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
     /** <br> presenter. */

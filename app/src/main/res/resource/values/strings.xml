@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.8.7</string>
+    <string name="version_code">2.8.8</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -164,9 +164,10 @@
     <string name="feedback_share_user_title">A user profile from Unsplash.com</string>
     <string name="feedback_share_user_extra">#\n</string>
 
-    <string name="feedback_follow_success">Follow succeed.</string>
+    <string name="feedback_like_failed">Like photo failed.</string>
+    <string name="feedback_unlike_failed">Unlike photo failed.</string>
+
     <string name="feedback_follow_failed">Follow failed.</string>
-    <string name="feedback_cancel_follow_success">Cancel follow succeed.</string>
     <string name="feedback_cancel_follow_failed">Cancel follow failed.</string>
 
     <!-- introduce. -->

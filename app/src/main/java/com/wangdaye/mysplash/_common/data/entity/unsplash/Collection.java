@@ -10,6 +10,8 @@ import com.google.gson.annotations.SerializedName;
  * */
 
 public class Collection implements Parcelable {
+    // data
+    public boolean insertingPhoto = false;
 
     /**
      * id : 206

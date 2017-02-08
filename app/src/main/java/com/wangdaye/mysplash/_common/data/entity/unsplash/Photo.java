@@ -16,6 +16,7 @@ public class Photo
     // data
     public boolean loadPhotoSuccess = false;
     public boolean hasFadedIn = false;
+    public boolean settingLike = false;
 
     /**
      * id : Dwu85P9SOIk

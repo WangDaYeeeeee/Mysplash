@@ -172,6 +172,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
         recyclerView.addOnScrollListener(new AvatarScrollListener());
+
+        followingPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
     private void initLoadingView() {
