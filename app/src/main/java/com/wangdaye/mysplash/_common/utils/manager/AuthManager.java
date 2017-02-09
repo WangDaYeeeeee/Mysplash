@@ -3,13 +3,16 @@ package com.wangdaye.mysplash._common.utils.manager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
+import com.wangdaye.mysplash._common.utils.NotificationUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +58,7 @@ public class AuthManager
     public static final int LOADING_USER_STATE = 2;
 
     private static final String KEY_VERSION = "version";
-    private static final int VERSION_CODE = 7;
+    private static final int VERSION_CODE = 8;
 
     /** <br> life cycle. */
 
@@ -101,6 +104,10 @@ public class AuthManager
             editor.putString(KEY_EMAIL, null);
             editor.putString(KEY_AVATAR_PATH, null);
             editor.apply();
+
+            NotificationUtils.showSnackbar(
+                    Mysplash.getInstance().getString(R.string.feedback_please_login),
+                    Snackbar.LENGTH_SHORT);
         }
     }
 

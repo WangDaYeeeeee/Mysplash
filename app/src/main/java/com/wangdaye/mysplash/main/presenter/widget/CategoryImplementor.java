@@ -208,7 +208,6 @@ public class CategoryImplementor
             }
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
-                // ValueUtils.writePhotoCount(c, response, category);
                 if (random) {
                     model.setPhotosPage(page + 1);
                 } else {

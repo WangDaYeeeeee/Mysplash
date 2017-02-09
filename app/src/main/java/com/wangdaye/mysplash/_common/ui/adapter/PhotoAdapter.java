@@ -383,11 +383,15 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     break;
 
                 case R.id.item_photo_likeButton:
-                    if (likeButton.isUsable()) {
-                        likeButton.setProgressState();
-                        setLikeForAPhoto(
-                                !itemList.get(getAdapterPosition()).liked_by_user,
-                                getAdapterPosition());
+                    if (AuthManager.getInstance().isAuthorized()) {
+                        if (likeButton.isUsable()) {
+                            likeButton.setProgressState();
+                            setLikeForAPhoto(
+                                    !itemList.get(getAdapterPosition()).liked_by_user,
+                                    getAdapterPosition());
+                        }
+                    } else {
+                        IntentHelper.startLoginActivity((MysplashActivity) a);
                     }
                     break;
 

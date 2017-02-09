@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.target.Target;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingResult;
@@ -522,36 +523,51 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
 
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
-            if (typeList.size() < position) {
-                return;
-            }
-            Photo photo = getPhoto(position);
-            if (photo != null && photo.id.equals(id)) {
-                photo.settingLike = false;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    photo.liked_by_user = response.body().photo.liked_by_user;
-                    photo.likes = response.body().photo.likes;
+            if (Mysplash.getInstance() != null && Mysplash.getInstance().getTopActivity() != null) {
+                if (typeList.size() < position) {
+                    return;
                 }
+                Photo photo = getPhoto(position);
+                if (photo != null && photo.id.equals(id)) {
+                    photo.settingLike = false;
 
-                resultList.get(typeList.get(position).resultPosition)
-                        .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+                    if (response.isSuccessful() && response.body() != null) {
+                        photo.liked_by_user = response.body().photo.liked_by_user;
+                        photo.likes = response.body().photo.likes;
+                    } else {
+                        NotificationUtils.showSnackbar(
+                                photo.liked_by_user ?
+                                        a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed),
+                                Snackbar.LENGTH_SHORT);
+                    }
 
-                updateView(photo.liked_by_user);
+                    resultList.get(typeList.get(position).resultPosition)
+                            .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+
+                    updateView(photo.liked_by_user);
+                }
             }
         }
 
         @Override
         public void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t) {
-            if (typeList.size() < position) {
-                return;
-            }
-            Photo photo =getPhoto(position);
-            if (photo != null && photo.id.equals(id)) {
-                photo.settingLike = false;
-                resultList.get(typeList.get(position).resultPosition)
-                        .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
-                updateView(photo.liked_by_user);
+            if (Mysplash.getInstance() != null && Mysplash.getInstance().getTopActivity() != null) {
+                if (typeList.size() < position) {
+                    return;
+                }
+                Photo photo = getPhoto(position);
+                if (photo != null && photo.id.equals(id)) {
+                    photo.settingLike = false;
+
+                    NotificationUtils.showSnackbar(
+                            photo.liked_by_user ?
+                                    a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed),
+                            Snackbar.LENGTH_SHORT);
+
+                    resultList.get(typeList.get(position).resultPosition)
+                            .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+                    updateView(photo.liked_by_user);
+                }
             }
         }
 
@@ -742,10 +758,14 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                             break;
 
                         case R.id.item_following_photo_likeButton:
-                            Photo photo = getPhoto(position);
-                            if (likeButton.isUsable() && photo != null) {
-                                likeButton.setProgressState();
-                                setLikeForAPhoto(!photo.liked_by_user, position);
+                            if (AuthManager.getInstance().isAuthorized()) {
+                                Photo photo = getPhoto(position);
+                                if (likeButton.isUsable() && photo != null) {
+                                    likeButton.setProgressState();
+                                    setLikeForAPhoto(!photo.liked_by_user, position);
+                                }
+                            } else {
+                                IntentHelper.startLoginActivity((MysplashActivity) a);
                             }
                             break;
 

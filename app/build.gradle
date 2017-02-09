@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 288
-        versionName "2.8.8"
+        versionCode 289
+        versionName "2.8.9"
     }
     sourceSets {
         main {
@@ -38,11 +38,6 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-    buildTypes.each {
-        it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
-        it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
-        it.buildConfigField 'String', 'APP_ID_NEW', APP_ID_NEW
     }
     repositories {
         mavenCentral()

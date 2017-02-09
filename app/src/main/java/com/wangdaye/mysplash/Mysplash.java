@@ -38,8 +38,13 @@ public class Mysplash extends Application {
     private Photo photo;
 
     // Unsplash data.
-    public static final String APP_ID_NEW = "41f1f23556b01d63b1ae823bdf008cc32ce446f77c843e2daa2a80c770015df3";
-    public static final String SECRET_NEW = "dec952db51b50babd1ba55e26b7dbbd596ae03554a59c0055864826f7565c94e";
+    public static final String APP_ID_BETA = "7bf112dfe38b71025468053af65c1f8ebe7a7ecf286eddb86c3131deb64b2ac4";
+    public static final String SECRET_BETA = "bc149f8b667347f502b9d10b9b48b092547a7e17762237c8f3a53b1897e6101b";
+
+    public static final String APP_ID_RELEASE="XXX";
+    public static final String SECRET_RELEASE="XXX";
+
+    public static final String APP_ID_NEW="XXX";
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
@@ -111,13 +116,13 @@ public class Mysplash extends Application {
 
     public static String getAppId(Context c, boolean auth) {
         if (isDebug(c)) {
-            return APP_ID_NEW;
+            return APP_ID_BETA;
         } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
                 || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
             if (auth) {
-                return BuildConfig.APP_ID_RELEASE;
+                return APP_ID_RELEASE;
             } else {
-                return BuildConfig.APP_ID_NEW;
+                return APP_ID_NEW;
             }
         } else {
             return getInstance().getCustomApiKey();
@@ -126,10 +131,10 @@ public class Mysplash extends Application {
 
     public static String getSecret(Context c) {
         if (isDebug(c)) {
-            return SECRET_NEW;
+            return SECRET_BETA;
         } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
                 || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
-            return BuildConfig.SECRET_RELEASE;
+            return SECRET_RELEASE;
         } else {
             return getInstance().getCustomApiSecret();
         }

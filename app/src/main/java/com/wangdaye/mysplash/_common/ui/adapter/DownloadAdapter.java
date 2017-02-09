@@ -219,10 +219,18 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                     break;
 
                 case R.id.item_download_closeBtn:
-                    DownloadHelper.getInstance(c)
-                            .removeMission(
-                                    c,
-                                    itemList.get(getAdapterPosition()).entity.missionId);
+                    switch (itemList.get(getAdapterPosition()).entity.result) {
+                        case DownloadMissionEntity.RESULT_SUCCEED:
+                            // do nothing.
+                            break;
+
+                        default:
+                            DownloadHelper.getInstance(c)
+                                    .removeMission(
+                                            c,
+                                            itemList.get(getAdapterPosition()).entity.missionId);
+                            break;
+                    }
                     DatabaseHelper.getInstance(c)
                             .deleteDownloadEntity(
                                     itemList.get(getAdapterPosition()).entity.missionId);
