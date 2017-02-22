@@ -25,7 +25,7 @@ public class ToolbarImplementor
 
     @Override
     public void touchToolbar(MysplashActivity a) {
-        ((CollectionActivity) a).backToTop();
+        // do nothing.
     }
 
     @Override

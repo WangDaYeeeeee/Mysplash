@@ -1,13 +1,15 @@
 package com.wangdaye.mysplash.about.view.holder;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.i.model.AboutModel;
+import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
+import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.AppAboutObject;
 
@@ -15,25 +17,35 @@ import com.wangdaye.mysplash.about.model.AppAboutObject;
  * App holder.
  * */
 
-public class AppHolder extends RecyclerView.ViewHolder
+public class AppHolder extends AboutAdapter.ViewHolder
         implements View.OnClickListener {
+    // widget
+    private ImageView icon;
+    private TextView text;
+
     // data
     private int id;
 
     /** <br> life cycle. */
 
-    public AppHolder(View itemView, AppAboutObject object) {
+    public AppHolder(View itemView) {
         super(itemView);
 
         itemView.findViewById(R.id.item_about_app_container).setOnClickListener(this);
 
-        ImageView icon = (ImageView) itemView.findViewById(R.id.item_about_app_icon);
+        this.icon = (ImageView) itemView.findViewById(R.id.item_about_app_icon);
+        this.text = (TextView) itemView.findViewById(R.id.item_about_app_title);
+    }
+
+    /** <br> UI. */
+
+    @Override
+    public void onBindView(MysplashActivity a, AboutModel model) {
+        AppAboutObject object = (AppAboutObject) model;
+
         icon.setImageResource(object.iconId);
-
-        TextView text = (TextView) itemView.findViewById(R.id.item_about_app_title);
         text.setText(object.text);
-
-        this.id = object.id;
+        id = object.id;
     }
 
     /** <br> interface. */

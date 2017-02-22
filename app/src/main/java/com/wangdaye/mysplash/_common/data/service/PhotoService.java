@@ -6,7 +6,7 @@ import com.wangdaye.mysplash._common.data.api.PhotoApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.PhotoStats;
-import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.interceptor.AuthInterceptor;
 
 import java.util.List;
 
@@ -125,9 +125,10 @@ public class PhotoService {
                 }
             }
         });
+        call = setLikeForAPhoto;
     }
 
-    public void requestAPhoto(String id, final OnRequestSinglePhotoListener l) {
+    public void requestAPhoto(String id, final PhotoInfoService.OnRequestSinglePhotoListener l) {
         Call<Photo> getAPhoto = buildApi(buildClient()).getAPhoto(id);
         getAPhoto.enqueue(new Callback<Photo>() {
             @Override
@@ -163,6 +164,7 @@ public class PhotoService {
                 }
             }
         });
+        call = getUserPhotos;
     }
 
     public void requestUserLikes(String username, int page, int per_page, String order_by, final OnRequestPhotosListener l) {
@@ -182,6 +184,7 @@ public class PhotoService {
                 }
             }
         });
+        call = getUserLikes;
     }
 
     public void requestCollectionPhotos(int collectionId, int page, int per_page, final OnRequestPhotosListener l) {
@@ -201,6 +204,7 @@ public class PhotoService {
                 }
             }
         });
+        call = getCollectionPhotos;
     }
 
     public void requestCuratedCollectionPhotos(int collectionId, int page, int per_page, final OnRequestPhotosListener l) {
@@ -220,6 +224,7 @@ public class PhotoService {
                 }
             }
         });
+        call = getCuratedCollectionPhotos;
     }
 
 
@@ -246,6 +251,7 @@ public class PhotoService {
                 }
             }
         });
+        call = getRandomPhotos;
     }
 
     public void cancel() {
@@ -294,10 +300,5 @@ public class PhotoService {
     public interface OnSetLikeListener {
         void onSetLikeSuccess(Call<LikePhotoResult> call, retrofit2.Response<LikePhotoResult> response);
         void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t);
-    }
-
-    public interface OnRequestSinglePhotoListener {
-        void onRequestSinglePhotoSuccess(Call<Photo> call, retrofit2.Response<Photo> response);
-        void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t);
     }
 }

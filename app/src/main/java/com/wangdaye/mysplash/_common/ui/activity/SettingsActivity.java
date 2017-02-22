@@ -26,9 +26,6 @@ public class SettingsActivity extends MysplashActivity
     // widget
     private CoordinatorLayout container;
 
-    // data
-    public static final int SETTINGS_ACTIVITY = 1;
-
     /** <br> life cycle. */
 
     @Override
@@ -90,7 +87,7 @@ public class SettingsActivity extends MysplashActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case SETTINGS_ACTIVITY:
+            case Mysplash.CUSTOM_API_ACTIVITY:
                 if (resultCode == RESULT_OK) {
                     showSnackbar(
                             getString(R.string.feedback_please_login),

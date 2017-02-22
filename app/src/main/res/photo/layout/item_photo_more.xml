@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_photo_more"
+    android:layout_width="match_parent"
+    android:layout_height="72dp"
+    android:background="@color/colorPrimary_dark"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise"
+    tools:ignore="RtlHardcoded,UnusedAttribute">
+
+    <ImageView
+        android:id="@+id/item_photo_more_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:alpha="0.5"
+        tools:background="@color/colorRoot_light"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:text="@string/more"
+        android:textColor="@color/colorTextLight"
+        android:textStyle="bold"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:shadowColor="@color/colorTextDark2nd"
+        android:layout_centerInParent="true"
+        android:maxLines="1"
+        style="@style/subtitle_text"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

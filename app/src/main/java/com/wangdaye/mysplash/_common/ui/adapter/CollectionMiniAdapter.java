@@ -20,7 +20,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
+import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 
 /**
  * Collection mini adapter. (Recycler view)

@@ -40,7 +40,7 @@ import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
+import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
@@ -111,19 +111,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         switch (typeList.get(position).type) {
             case VIEW_TYPE_TITLE: {
                 holder.actor.setText(getUser(position).name);
-                if (getUser(position).profile_image != null) {
-                    Glide.with(a)
-                            .load(getUser(position).profile_image.large)
-                            .override(128, 128)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(holder.avatar);
-                } else {
-                    Glide.with(a)
-                            .load(R.drawable.default_avatar)
-                            .override(128, 128)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(holder.avatar);
-                }
+                DisplayUtils.loadAvatar(a, holder.avatar, getUser(position).profile_image);
                 switch (resultList.get(typeList.get(position).resultPosition).verb) {
                     case FollowingResult.VERB_LIKED:
                         holder.verb.setVisibility(View.VISIBLE);
@@ -253,19 +241,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                     holder.verb.setText(user.bio);
                 }
 
-                if (user.profile_image != null) {
-                    Glide.with(a)
-                            .load(user.profile_image.large)
-                            .override(128, 128)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(holder.avatar);
-                } else {
-                    Glide.with(a)
-                            .load(R.drawable.default_avatar)
-                            .override(128, 128)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(holder.avatar);
-                }
+                DisplayUtils.loadAvatar(a, holder.avatar, getUser(position).profile_image);
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     holder.avatar.setTransitionName(user.username + "-" + position + "-avatar");
@@ -297,19 +273,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                             }
                         })
                         .into(holder.image);
-                if (getUser(position).profile_image != null) {
-                    Glide.with(a)
-                            .load(getUser(position).profile_image.large)
-                            .override(128, 128)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(holder.avatar);
-                } else {
-                    Glide.with(a)
-                            .load(R.drawable.default_avatar)
-                            .override(128, 128)
-                            .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                            .into(holder.avatar);
-                }
+                DisplayUtils.loadAvatar(a, holder.avatar, getUser(position).profile_image);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     holder.avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
                     holder.background.setTransitionName(getUser(position).username + "-" + position + "-background");
@@ -644,9 +608,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 case VIEW_TYPE_TITLE: {
                     this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_title_background);
 
-                    itemView.findViewById(R.id.item_following_title_avatarContainer).setOnClickListener(this);
-
                     this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_title_avatar);
+                    avatar.setOnClickListener(this);
 
                     this.actor = (TextView) itemView.findViewById(R.id.item_following_title_actor);
                     actor.setOnClickListener(this);
@@ -700,7 +663,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                     image.setSize(photo.width, photo.height);
 
                     this.more = (TextView) itemView.findViewById(R.id.item_following_more_title);
+
                     this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_more_avatar);
+                    avatar.setOnClickListener(this);
                     break;
                 }
             }
@@ -711,7 +676,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
             switch (typeList.get(position).type) {
                 case VIEW_TYPE_TITLE:
                     switch (view.getId()) {
-                        case R.id.item_following_title_avatarContainer:
+                        case R.id.item_following_title_avatar:
                         case R.id.item_following_title_actor: {
                             IntentHelper.startUserActivity(
                                     (MysplashActivity) a,
@@ -807,6 +772,14 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
 
                 case VIEW_TYPE_MORE:
                     switch (view.getId()) {
+                        case R.id.item_following_more_avatar:
+                            IntentHelper.startUserActivity(
+                                    (MysplashActivity) a,
+                                    avatar,
+                                    getUser(position),
+                                    UserActivity.PAGE_LIKE);
+                            break;
+
                         case R.id.item_following_more_background:
                             if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_COLLECTED)
                                     || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_CURATED)) {

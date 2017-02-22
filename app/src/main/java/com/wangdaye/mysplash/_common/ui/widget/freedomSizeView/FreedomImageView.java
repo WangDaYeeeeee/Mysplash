@@ -28,8 +28,9 @@ public class FreedomImageView extends ImageView {
     // data
     private float width = 1;
     private float height = 0.666F;
+
+    private boolean notFree = false;
     private boolean coverMode = false;
-    private boolean squareMode = false;
     private boolean showShadow = false;
 
     private int textPosition;
@@ -62,8 +63,8 @@ public class FreedomImageView extends ImageView {
 
     private void initialize(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.FreedomImageView, defStyleAttr, defStyleRes);
+        this.notFree = a.getBoolean(R.styleable.FreedomImageView_fiv_not_free, false);
         this.coverMode = a.getBoolean(R.styleable.FreedomImageView_fiv_cover_mode, false);
-        this.squareMode = a.getBoolean(R.styleable.FreedomImageView_fiv_square, false);
         this.textPosition = a.getInt(R.styleable.FreedomImageView_fiv_shadow_position, POSITION_NONE);
         a.recycle();
 
@@ -75,8 +76,12 @@ public class FreedomImageView extends ImageView {
     @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
-        setMeasuredDimension(size[0], size[1]);
+        if (notFree) {
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        } else {
+            int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
+            setMeasuredDimension(size[0], size[1]);
+        }
     }
 
     @SuppressLint("DrawAllocation")
@@ -150,16 +155,18 @@ public class FreedomImageView extends ImageView {
     /** <br> data. */
 
     public void setSize(int w, int h) {
-        width = w;
-        height = h;
+        if (!notFree) {
+            width = w;
+            height = h;
 
-        if (getMeasuredWidth() != 0) {
-            int[] size = getMeasureSize(getMeasuredWidth());
+            if (getMeasuredWidth() != 0) {
+                int[] size = getMeasureSize(getMeasuredWidth());
 
-            ViewGroup.LayoutParams params = getLayoutParams();
-            params.width = size[0];
-            params.height = size[1];
-            setLayoutParams(params);
+                ViewGroup.LayoutParams params = getLayoutParams();
+                params.width = size[0];
+                params.height = size[1];
+                setLayoutParams(params);
+            }
         }
     }
 
@@ -168,10 +175,6 @@ public class FreedomImageView extends ImageView {
     }
 
     private int[] getMeasureSize(int measureWidth) {
-        if (squareMode) {
-            return new int[] {measureWidth, measureWidth};
-        }
-
         if (coverMode) {
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
             int screenHeight = getResources().getDisplayMetrics().heightPixels;

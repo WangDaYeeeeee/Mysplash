@@ -29,6 +29,7 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
     // data
     public static final int ITEM_STATS = 1;
     public static final int ITEM_DOWNLOAD_PAGE = 2;
+    public static final int ITEM_STORY_PAGE = 3;
 
     /** <br> life cycle. */
 
@@ -63,6 +64,7 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
 
         v.findViewById(R.id.popup_photo_menu_stats).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_downloadPage).setOnClickListener(this);
+        v.findViewById(R.id.popup_photo_menu_storyPage).setOnClickListener(this);
 
         TextView statsTxt = (TextView) v.findViewById(R.id.popup_photo_menu_statsTxt);
         DisplayUtils.setTypeface(v.getContext(), statsTxt);
@@ -70,12 +72,17 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
         TextView downloadPageTxt = (TextView) v.findViewById(R.id.popup_photo_menu_downloadPageTxt);
         DisplayUtils.setTypeface(v.getContext(), downloadPageTxt);
 
+        TextView storyPageTxt = (TextView) v.findViewById(R.id.popup_photo_menu_storyPageTxt);
+        DisplayUtils.setTypeface(v.getContext(), storyPageTxt);
+
         if (Mysplash.getInstance().isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_light);
             ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_light);
+            ((ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon)).setImageResource(R.drawable.ic_book_light);
         } else {
             ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_dark);
             ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_dark);
+            ((ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon)).setImageResource(R.drawable.ic_book_dark);
         }
     }
 
@@ -101,6 +108,12 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
             case R.id.popup_photo_menu_downloadPage:
                 if (listener != null) {
                     listener.onSelectItem(ITEM_DOWNLOAD_PAGE);
+                }
+                break;
+
+            case R.id.popup_photo_menu_storyPage:
+                if (listener != null) {
+                    listener.onSelectItem(ITEM_STORY_PAGE);
                 }
                 break;
         }

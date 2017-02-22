@@ -100,14 +100,14 @@ public class StatsDialog extends MysplashDialogFragment
             ((ImageView) v.findViewById(R.id.dialog_stats_downloadIcon))
                     .setImageResource(R.drawable.ic_download_light);
             ((ImageView) v.findViewById(R.id.dialog_stats_likeIcon))
-                    .setImageResource(R.drawable.ic_heart_outline_light);
+                    .setImageResource(R.drawable.ic_heart_light);
             ((ImageView) v.findViewById(R.id.dialog_stats_viewIcon))
                     .setImageResource(R.drawable.ic_eye_light);
         } else {
             ((ImageView) v.findViewById(R.id.dialog_stats_downloadIcon))
                     .setImageResource(R.drawable.ic_download_dark);
             ((ImageView) v.findViewById(R.id.dialog_stats_likeIcon))
-                    .setImageResource(R.drawable.ic_heart_outline_dark);
+                    .setImageResource(R.drawable.ic_heart_dark);
             ((ImageView) v.findViewById(R.id.dialog_stats_viewIcon))
                     .setImageResource(R.drawable.ic_eye_dark);
         }

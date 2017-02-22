@@ -5,7 +5,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/root_color"
     android:paddingTop="@dimen/normal_margin"
     tools:ignore="DisableBaselineAlignment">
 
@@ -32,6 +31,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/container_download_downloadBtn"
             style="@style/subtitle_text"
+            tools:text="DOWNLOAD"
             tools:ignore="HardcodedText" />
 
     </RelativeLayout>
@@ -59,6 +59,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/container_download_shareBtn"
             style="@style/subtitle_text"
+            tools:text="SHARE"
             tools:ignore="HardcodedText" />
 
     </RelativeLayout>
@@ -86,6 +87,7 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/container_download_wallBtn"
             style="@style/subtitle_text"
+            tools:text="WALLPAPER"
             tools:ignore="HardcodedText" />
 
     </RelativeLayout>

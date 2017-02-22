@@ -21,7 +21,7 @@ import java.util.List;
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(18);
+        List<AboutModel> modelList = new ArrayList<>(17);
         boolean light = Mysplash.getInstance().isLightTheme();
 
         // header.
@@ -78,13 +78,9 @@ public class CreateAboutModelImplementor {
                 c.getString(R.string.about_circle_image_view),
                 "https://github.com/hdodenhof/CircleImageView"));
         modelList.add(new LibraryObject(
-                c.getString(R.string.tagLayout),
-                c.getString(R.string.about_tagLayout),
-                "https://github.com/hongyangAndroid/FlowLayout"));
-        modelList.add(new LibraryObject(
                 c.getString(R.string.photo_view),
                 c.getString(R.string.about_photo_view),
-                "https://github.com/bm-x/PhotoView"));
+                "https://github.com/chrisbanes/PhotoView"));
         modelList.add(new LibraryObject(
                 c.getString(R.string.page_indicator),
                 c.getString(R.string.about_page_indicator),

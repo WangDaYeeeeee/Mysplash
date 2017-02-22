@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
@@ -30,6 +29,7 @@ import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -43,11 +43,10 @@ import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.DrawerView;
 import com.wangdaye.mysplash._common.i.view.MeManageView;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.manager.ShortcutsManager;
 import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash._common.utils.widget.PriorityRunnable;
+import com.wangdaye.mysplash._common.utils.widget.runnable.PriorityRunnable;
 import com.wangdaye.mysplash.main.model.activity.DownloadObject;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
@@ -479,11 +478,7 @@ public class MainActivity extends MysplashActivity
             navAvatar.setVisibility(View.VISIBLE);
             appIcon.setVisibility(View.GONE);
             Glide.clear(navAvatar);
-            Glide.with(Mysplash.getInstance())
-                    .load(AuthManager.getInstance().getAvatarPath())
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(navAvatar);
+            DisplayUtils.loadAvatar(Mysplash.getInstance(), navAvatar, AuthManager.getInstance().getAvatarPath());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 navAvatar.setTransitionName(AuthManager.getInstance().getAccessToken());
             }

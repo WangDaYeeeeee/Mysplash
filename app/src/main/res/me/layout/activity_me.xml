@@ -55,8 +55,7 @@
                         android:src="?attr/line_color"
                         android:transitionName="@string/transition_me_avatar"
                         android:foreground="?attr/selectableItemBackgroundBorderless"
-                        app:civ_fill_color="@color/colorTextGrey"
-                        tools:ignore="RtlHardcoded" />
+                        tools:ignore="ContentDescription,RtlHardcoded" />
 
                     <TextView
                         android:id="@+id/activity_me_title"

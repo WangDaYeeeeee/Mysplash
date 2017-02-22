@@ -144,11 +144,15 @@
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
-        <activity android:name=".category.view.activity.CategoryActivity"
+        <activity android:name=".tag.view.activity.TagActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
         <activity android:name="._common.ui.activity.CustomApiActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:label="@string/app_name" />
+
+        <activity android:name="._common.ui.activity.RelativeActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 

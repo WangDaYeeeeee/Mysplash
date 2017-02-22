@@ -14,7 +14,7 @@
     </changeBounds>
 
     <transition
-        class="com.wangdaye.mysplash._common.ui.transition.PhotoSharedEnter"
+        class="com.wangdaye.mysplash._common.ui.transition.CoverTransition"
         android:interpolator="@android:interpolator/fast_out_slow_in"
         tools:ignore="NewApi">
         <targets>

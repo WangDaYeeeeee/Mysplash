@@ -104,7 +104,7 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
                             total[0] -= consumed[0];
                             total[1] -= consumed[1];
                         }
-                        dispatchNestedScroll(0, 0, total[0], total[1], null);
+                        dispatchNestedScroll(consumed[0], consumed[1], total[0], total[1], null);
                         swipeDir = deltaY == 0 ? DIR_NULL : (deltaY > 0 ? DIR_TOP : DIR_BOTTOM);
                         oldY = ev.getY();
                         lastOffsetY = (int) (y - (isParentOffset () ? ((View) getParent()).getY() : getY()));

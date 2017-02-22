@@ -83,6 +83,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private final int INPUT_COLLECTION_STATE = 1;
     private final int CREATE_COLLECTION_STATE = 2;
 
+    private boolean useable;
+
     /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
@@ -105,6 +107,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        useable = false;
         AuthManager.getInstance().removeOnWriteDataListener(this);
         if (serviceListener != null) {
             serviceListener.cancel();
@@ -273,6 +276,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         this.adapter = new CollectionMiniAdapter(getActivity(), photo);
         adapter.setOnCollectionResponseListener(this);
+
+        this.useable = true;
     }
 
     public void setPhotoAndListener(Photo p, OnCollectionsChangedListener l) {
@@ -538,27 +543,31 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         @Override
         public void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call,
                                          Response<ChangeCollectionPhotoResult> response) {
-            if (response.isSuccessful() && response.body() != null) {
-                if (listener != null) {
-                    listener.onUpdateCollection(response.body().collection, response.body().user, response.body().photo);
+            if (useable) {
+                if (response.isSuccessful() && response.body() != null) {
+                    if (listener != null) {
+                        listener.onUpdateCollection(response.body().collection, response.body().user, response.body().photo);
+                    }
+                    // update collection.
+                    AuthManager.getInstance().getCollectionsManager().updateCollection(response.body().collection);
+                    // update user.
+                    AuthManager.getInstance().updateUser(response.body().user);
+                    // update photo.
+                    photo = response.body().photo;
+                    adapter.updatePhoto(photo);
+                    // update view.
+                    notifySelectCollectionResult(response.body().collection.id, add, true);
+                } else {
+                    notifySelectCollectionResult(response.body().collection.id, add, false);
                 }
-                // update collection.
-                AuthManager.getInstance().getCollectionsManager().updateCollection(response.body().collection);
-                // update user.
-                AuthManager.getInstance().updateUser(response.body().user);
-                // update photo.
-                photo = response.body().photo;
-                adapter.updatePhoto(photo);
-                // update view.
-                notifySelectCollectionResult(response.body().collection.id, add, true);
-            } else {
-                notifySelectCollectionResult(response.body().collection.id, add, false);
             }
         }
 
         @Override
         public void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t) {
-            notifySelectCollectionResult(collectionId, add, false);
+            if (useable) {
+                notifySelectCollectionResult(collectionId, add, false);
+            }
         }
     }
 }

@@ -35,7 +35,7 @@ import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
+import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import java.util.List;

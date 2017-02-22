@@ -21,7 +21,7 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.utils.widget.ColorAnimRequestListener;
+import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
@@ -89,19 +89,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
         }
 
-        if (itemList.get(position).user.profile_image != null) {
-            Glide.with(a)
-                    .load(itemList.get(position).user.profile_image.large)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.avatar);
-        } else {
-            Glide.with(a)
-                    .load(R.drawable.default_avatar)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.avatar);
-        }
+        DisplayUtils.loadAvatar(a, holder.avatar, itemList.get(position).user.profile_image);
         holder.name.setText(itemList.get(position).user.name);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -205,9 +193,8 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             this.subtitle = (TextView) itemView.findViewById(R.id.item_collection_subtitle);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
 
-            itemView.findViewById(R.id.item_collection_avatarContainer).setOnClickListener(this);
-
             this.avatar = (CircleImageView) itemView.findViewById(R.id.item_collection_avatar);
+            avatar.setOnClickListener(this);
 
             this.name = (TextView) itemView.findViewById(R.id.item_collection_name);
             DisplayUtils.setTypeface(itemView.getContext(), name);
@@ -226,7 +213,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
                     }
                     break;
 
-                case R.id.item_collection_avatarContainer:
+                case R.id.item_collection_avatar:
                     if (a instanceof MysplashActivity) {
                         IntentHelper.startUserActivity(
                                 (MysplashActivity) a,

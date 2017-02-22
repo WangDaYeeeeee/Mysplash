@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:duration="350"
     android:transitionOrdering="together">
 
@@ -12,6 +13,11 @@
             <target android:targetId="@id/activity_user_avatar" />
         </targets>
     </changeBounds>
+
+    <transition
+        class="com.wangdaye.mysplash._common.ui.transition.LiftOff"
+        android:duration="400"
+        app:initElevation="10dp" />
 
     <arcMotion
         android:minimumHorizontalAngle="15"

@@ -17,15 +17,13 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -43,7 +41,6 @@ import com.wangdaye.mysplash._common.i.view.EditResultView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.collection.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.collection.model.activity.DownloadObject;
@@ -57,7 +54,6 @@ import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
@@ -257,17 +253,11 @@ public class CollectionActivity extends MysplashActivity
             }
 
             this.creatorBar = (RelativeLayout) findViewById(R.id.activity_collection_creatorBar);
-            creatorBar.setOnClickListener(this);
 
             findViewById(R.id.activity_collection_touchBar).setOnClickListener(this);
 
             this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
-            Glide.with(this)
-                    .load(c.user.profile_image.large)
-                    .priority(Priority.HIGH)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(avatarImage);
+            DisplayUtils.loadAvatar(this, avatarImage, c.user.profile_image);
 
             TextView subtitle = (TextView) findViewById(R.id.activity_collection_subtitle);
             DisplayUtils.setTypeface(this, subtitle);
@@ -276,8 +266,7 @@ public class CollectionActivity extends MysplashActivity
             this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
             photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
             photosView.initRefresh();
-
-            AnimUtils.animInitShow(photosView, 400);
+            photosView.initAnimShow();
         }
     }
 
@@ -356,10 +345,6 @@ public class CollectionActivity extends MysplashActivity
                     browsablePresenter.visitParentView();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
-                break;
-
-            case R.id.activity_collection_creatorBar:
-                toolbarPresenter.touchToolbar(this);
                 break;
 
             case R.id.activity_collection_touchBar:

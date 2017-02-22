@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.item.MyFollowUser;
@@ -21,6 +20,7 @@ import com.wangdaye.mysplash._common.data.service.FollowingService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
@@ -64,19 +64,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
     @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if (itemList.get(position).user.profile_image != null) {
-            Glide.with(a)
-                    .load(itemList.get(position).user.profile_image.large)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.avatar);
-        } else {
-            Glide.with(a)
-                    .load(R.drawable.default_avatar)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.avatar);
-        }
+        DisplayUtils.loadAvatar(a, holder.avatar, itemList.get(position).user.profile_image);
 
         holder.title.setText(itemList.get(position).user.name);
 

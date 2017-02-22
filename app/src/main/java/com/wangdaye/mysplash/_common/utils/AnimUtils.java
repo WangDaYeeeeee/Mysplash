@@ -44,25 +44,37 @@ public class AnimUtils {
     }
 
     public static void animShow(View v) {
+        animShow(v, 300, 0, 1);
+    }
+
+    public static void animShow(View v, int duration, float from, float to) {
         if (v.getVisibility() == View.GONE) {
             v.setVisibility(View.VISIBLE);
         }
+        v.clearAnimation();
         ObjectAnimator
-                .ofFloat(v, "alpha", 0, 1)
-                .setDuration(300)
+                .ofFloat(v, "alpha", from, to)
+                .setDuration(duration)
                 .start();
 
     }
 
     public static void animHide(final View v) {
+        animHide(v, 300, v.getAlpha(), 0, true);
+    }
+
+    public static void animHide(final View v, int duration, float from, float to, final boolean gone) {
+        v.clearAnimation();
         ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", v.getAlpha(), 0)
-                .setDuration(300);
+                .ofFloat(v, "alpha", from, to)
+                .setDuration(duration);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                v.setVisibility(View.GONE);
+                if (gone) {
+                    v.setVisibility(View.GONE);
+                }
             }
         });
         anim.start();

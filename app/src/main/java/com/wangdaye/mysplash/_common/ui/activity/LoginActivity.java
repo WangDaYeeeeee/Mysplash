@@ -37,44 +37,44 @@ import retrofit2.Response;
  * */
 
 public class LoginActivity extends MysplashActivity
-        implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        AuthorizeService.OnRequestAccessTokenListener {
-    // widget
-    private CoordinatorLayout container;
-    private StatusBarView statusBar;
-    private LinearLayout buttonContainer;
-    private RelativeLayout progressContainer;
+    implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
+    AuthorizeService.OnRequestAccessTokenListener {
+        // widget
+        private CoordinatorLayout container;
+        private StatusBarView statusBar;
+        private LinearLayout buttonContainer;
+        private RelativeLayout progressContainer;
 
-    // data
-    private AuthorizeService service;
+        // data
+        private AuthorizeService service;
 
-    private int state;
-    private final int NORMAL_STATE = 0;
-    private final int AUTH_STATE = 1;
+        private int state;
+        private final int NORMAL_STATE = 0;
+        private final int AUTH_STATE = 1;
 
-    /** <br> life cycle. */
+        /** <br> life cycle. */
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            initData();
-            initWidget();
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_login);
         }
-    }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        service.cancel();
-    }
+        @Override
+        protected void onStart() {
+            super.onStart();
+            if (!isStarted()) {
+                setStarted();
+                initData();
+                initWidget();
+            }
+        }
+
+        @Override
+        public void onDestroy() {
+            super.onDestroy();
+            service.cancel();
+        }
 
     @Override
     protected void setTheme() {

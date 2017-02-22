@@ -133,6 +133,13 @@ public class MultiFilterFragment extends MysplashFragment
 
     private void initPresenter() {
         this.multiFilterBarPresenter = new MultiFilterBarImplementor(multiFilterBarModel, this);
+        if (getBundle() != null) {
+            multiFilterBarPresenter.setQuery(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""));
+            multiFilterBarPresenter.setUsername(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""));
+            multiFilterBarPresenter.setCategory(getBundle().getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, 0));
+            multiFilterBarPresenter.setOrientation(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
+            multiFilterBarPresenter.setFeatured(getBundle().getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
+        }
         this.popupManagePresenter = new MultiFilterFragmentPopupManageImplementor(this);
         this.messageManagePresenter = new MessageManageImplementor(this);
     }
@@ -256,13 +263,6 @@ public class MultiFilterFragment extends MysplashFragment
 
     private void initModel() {
         this.multiFilterBarModel = new MultiFilterBarObject();
-        if (getBundle() != null) {
-            multiFilterBarPresenter.setQuery(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""));
-            multiFilterBarPresenter.setUsername(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""));
-            multiFilterBarPresenter.setCategory(getBundle().getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, 0));
-            multiFilterBarPresenter.setOrientation(getBundle().getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
-            multiFilterBarPresenter.setFeatured(getBundle().getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
-        }
     }
 
     /** <br> interface. */

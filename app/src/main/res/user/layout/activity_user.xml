@@ -54,8 +54,7 @@
                         android:scaleType="centerCrop"
                         android:src="?attr/line_color"
                         android:transitionName="@string/transition_user_avatar"
-                        app:civ_fill_color="@color/colorTextGrey"
-                        tools:ignore="RtlHardcoded" />
+                        tools:ignore="ContentDescription,RtlHardcoded" />
 
                     <TextView
                         android:id="@+id/activity_user_title"

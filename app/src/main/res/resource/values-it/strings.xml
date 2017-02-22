@@ -41,10 +41,8 @@
     <string name="about_circular_progress_view">Barra di avanzamento in stile Material per Android.</string>
     <string name="circle_image_view">CircleImageView</string>
     <string name="about_circle_image_view">Un visualizzatore di immagini circolare per Android.</string>
-    <string name="tagLayout">FlowLayout</string>
-    <string name="about_tagLayout">FlowLayout per Android.</string>
     <string name="photo_view">PhotoView</string>
-    <string name="about_photo_view">Un widget per l\'anteprima e la scala delle immagini.</string>
+    <string name="about_photo_view">Implementation of ImageView for Android that supports zooming, by various touch gestures.</string>
     <string name="page_indicator">InkPageIndicator</string>
     <string name="about_page_indicator">InkPageIndicator creato da @nickbutcher per Plaid https://github.com/nickbutcher/plaid e riadattato da David Pacioianu per API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
@@ -111,7 +109,7 @@
     <string name="feedback_edit_bio">Biografia</string>
     <string name="feedback_update_profile_failed">Impossibile modificare il profilo.</string>
 
-    <string name="feedback_add_to_collection">Aggiungi a raccolta</string>
+    <string name="feedback_add_to_collection">Aggiungi context raccolta</string>
     <string name="feedback_delete_from_collection">Elimina da raccolta</string>
     <string name="feedback_create_collection">Crea nuova raccolta</string>
     <string name="feedback_edit_collection">Modifica raccolta</string>
@@ -148,14 +146,8 @@
     <string name="feedback_share_user_extra">#\n</string>
 
     <!-- introduce. -->
-    <string name="introduce_title_search">Nuove ricerca e visualizzazione</string>
-    <string name="introduce_description_search">Una nuova ricerca, pontentissima. Oltre alle fotografie, potrai cercare utenti e raccolte.</string>
-    <string name="introduce_title_filter">Multi-filtro</string>
-    <string name="introduce_description_filter">Puoi filtrare le tue ricerche secondo parametri multipli.</string>
     <string name="introduce_title_back_top">Scorri in cima</string>
     <string name="introduce_description_back_top">Tocca la barra in alto o il tasto indietro e la visualizzazione torna in cima.</string>
-    <string name="introduce_title_start">Inizia</string>
-    <string name="introduce_description_start">Spero ti piaccia Mysplash.</string>
 
     <!-- menu. -->
     <string name="action_home">Home</string>

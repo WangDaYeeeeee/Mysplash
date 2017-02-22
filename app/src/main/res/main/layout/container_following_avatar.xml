@@ -4,7 +4,6 @@
     android:id="@+id/container_following_avatar_avatarContainer"
     android:layout_width="@dimen/large_icon_size"
     android:layout_height="@dimen/large_icon_size"
-    android:foreground="?attr/selectableItemBackground"
     android:background="?attr/root_color">
 
     <com.wangdaye.mysplash._common.ui.widget.CircleImageView
@@ -12,6 +11,8 @@
         android:layout_width="@dimen/mini_icon_size"
         android:layout_height="@dimen/mini_icon_size"
         android:layout_margin="@dimen/normal_margin"
-        tools:src="@drawable/default_avatar" />
+        android:stateListAnimator="@animator/touch_rise"
+        tools:src="@drawable/default_avatar"
+        tools:ignore="ContentDescription,UnusedAttribute" />
 
 </FrameLayout>

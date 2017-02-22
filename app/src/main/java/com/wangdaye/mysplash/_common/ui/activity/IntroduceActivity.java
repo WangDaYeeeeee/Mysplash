@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -24,7 +25,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -84,9 +84,7 @@ public class IntroduceActivity extends MysplashActivity
         editor.putInt(KEY_INTRODUCE_VERSION, FIRST_VERSION);
         editor.apply();
 
-        Intent intent = new Intent(a, IntroduceActivity.class);
-        a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        IntentHelper.startIntroduceActivity(a);
     }
 
     @Override
@@ -201,7 +199,7 @@ public class IntroduceActivity extends MysplashActivity
             TextView title = (TextView) v.findViewById(R.id.container_introduce_title);
             title.setText(introduceModelList.get(i).title);
 
-            FreedomImageView image = (FreedomImageView) v.findViewById(R.id.container_introduce_image);
+            ImageView image = (ImageView) v.findViewById(R.id.container_introduce_image);
             Glide.with(this)
                     .load(introduceModelList.get(i).imageRes)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -273,24 +271,9 @@ public class IntroduceActivity extends MysplashActivity
             case FIRST_VERSION:
                 introduceModelList.add(
                         new IntroduceModel(
-                                R.string.introduce_title_search,
-                                R.drawable.illustration_search,
-                                R.string.introduce_description_search));
-                introduceModelList.add(
-                        new IntroduceModel(
-                                R.string.introduce_title_filter,
-                                R.drawable.illustration_filter,
-                                R.string.introduce_description_filter));
-                introduceModelList.add(
-                        new IntroduceModel(
                                 R.string.introduce_title_back_top,
                                 R.drawable.illustration_back_top,
                                 R.string.introduce_description_back_top));
-                introduceModelList.add(
-                        new IntroduceModel(
-                                R.string.introduce_title_start,
-                                R.drawable.illustration_start,
-                                R.string.introduce_description_start));
                 break;
         }
     }

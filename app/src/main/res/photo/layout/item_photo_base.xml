@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_photo_base_titleBar"
+    android:layout_width="match_parent"
+    android:layout_height="317dp"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/item_photo_base_displayContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/item_photo_base_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/MysplashPopupMenuTheme" />
+
+        <TextView
+            android:id="@+id/item_photo_base_title"
+            android:textColor="?attr/title_color"
+            android:textStyle="bold"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:layout_marginLeft="@dimen/normal_icon_size"
+            android:layout_marginRight="@dimen/normal_icon_size"
+            android:layout_centerHorizontal="true"
+            style="@style/large_title_text"
+            tools:text="By Wang Yueeeeeee"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/item_photo_base_subtitle"
+            android:maxLines="1"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_below="@id/item_photo_base_title"
+            android:layout_centerHorizontal="true"
+            style="@style/subtitle_text"
+            tools:text="ON 2016-07-23"
+            tools:ignore="RtlHardcoded" />
+
+        <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+            android:id="@+id/item_photo_base_avatar"
+            android:layout_width="@dimen/large_icon_size"
+            android:layout_height="@dimen/large_icon_size"
+            android:layout_below="@id/item_photo_base_subtitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/little_icon_size"
+            android:scaleType="centerCrop"
+            android:src="?attr/line_color"
+            android:stateListAnimator="@animator/touch_rise"
+            tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
+
+    </RelativeLayout>
+
+    <com.wangdaye.mysplash._common.ui.widget.PhotoDownloadView
+        android:id="@+id/item_photo_base_btnBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="17dp"
+        android:layout_alignParentBottom="true" />
+
+    <FrameLayout
+        android:background="?attr/line_color"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+</RelativeLayout>

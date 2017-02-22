@@ -14,7 +14,8 @@
         android:layout_width="@dimen/normal_icon_size"
         android:layout_height="@dimen/normal_icon_size"
         android:layout_margin="@dimen/normal_margin"
-        tools:src="@drawable/default_avatar" />
+        tools:src="@drawable/default_avatar"
+        tools:ignore="ContentDescription" />
 
     <FrameLayout
         android:id="@+id/item_following_user_centerFlag"

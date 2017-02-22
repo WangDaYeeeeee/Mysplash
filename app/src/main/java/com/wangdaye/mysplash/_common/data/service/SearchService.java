@@ -6,7 +6,7 @@ import com.wangdaye.mysplash._common.data.api.SearchApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.SearchCollectionsResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.SearchPhotosResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.SearchUsersResult;
-import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.interceptor.AuthInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;

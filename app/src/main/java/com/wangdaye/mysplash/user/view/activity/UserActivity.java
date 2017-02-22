@@ -17,9 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
@@ -30,6 +27,7 @@ import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -53,7 +51,6 @@ import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
@@ -276,12 +273,7 @@ public class UserActivity extends MysplashActivity
             }
 
             CircleImageView avatar = (CircleImageView) findViewById(R.id.activity_user_avatar);
-            Glide.with(this)
-                    .load(u.profile_image.large)
-                    .priority(Priority.HIGH)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(avatar);
+            DisplayUtils.loadAvatar(this, avatar, u.profile_image);
 
             TextView title = (TextView) findViewById(R.id.activity_user_title);
             title.setText(u.name);
@@ -320,6 +312,7 @@ public class UserActivity extends MysplashActivity
 
         this.viewPager = (ViewPager) findViewById(R.id.activity_user_viewPager);
         viewPager.setAdapter(adapter);
+        viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition());
         viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_user_tabLayout);

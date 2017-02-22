@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.8.9</string>
+    <string name="version_code">2.9.4</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -47,6 +47,9 @@
     <string name="to">to</string>
     <string name="more">MORE</string>
 
+    <string name="relative_photo">relative photos</string>
+    <string name="relative_collection">relative collections</string>
+
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
     <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
@@ -58,14 +61,12 @@
     <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
     <string name="circle_image_view">CircleImageView</string>
     <string name="about_circle_image_view">A circular ImageView for Android.</string>
-    <string name="tagLayout">FlowLayout</string>
-    <string name="about_tagLayout">Android flow layout.</string>
     <string name="photo_view">PhotoView</string>
-    <string name="about_photo_view">A widget to preview and scale image.</string>
+    <string name="about_photo_view">Implementation of ImageView for Android that supports zooming, by various touch gestures.</string>
     <string name="page_indicator">InkPageIndicator</string>
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
-    <string name="about_greendao_db">greenDAO is a light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
@@ -170,15 +171,11 @@
     <string name="feedback_follow_failed">Follow failed.</string>
     <string name="feedback_cancel_follow_failed">Cancel follow failed.</string>
 
+    <string name="feedback_story_is_null">Story does not exist or has not been loaded.</string>
+
     <!-- introduce. -->
-    <string name="introduce_title_search">New Search View</string>
-    <string name="introduce_description_search">The more powerful Search View is coming. Not only photos, you can also search users and collections now.</string>
-    <string name="introduce_title_filter">Multi-Filter</string>
-    <string name="introduce_description_filter">Find this function in drawer, you can filter photos by multiple conditions.</string>
     <string name="introduce_title_back_top">Scroll To Top</string>
     <string name="introduce_description_back_top">Click top bar or back button, the photo list view will scroll back to the top.</string>
-    <string name="introduce_title_start">Start</string>
-    <string name="introduce_description_start">Hope you like Mysplash.</string>
 
     <!-- menu. -->
     <string name="action_home">Home</string>
@@ -203,6 +200,7 @@
     <string name="action_clear_text">Clear text</string>
 
     <string name="action_open_download_link">Open Download Web Page</string>
+    <string name="action_open_story_link">Open Story Image Page</string>
     <string name="action_share">Share</string>
     <string name="action_menu">Menu</string>
 

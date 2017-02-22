@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -48,21 +47,6 @@ public class FreedomTouchView extends View {
         setMeasuredDimension(size[0], size[1]);
     }
 
-    public void setSize(final Photo p) {
-        post(new Runnable() {
-            @Override public void run() {
-                width = p.width;
-                height = p.height;
-                int[] size = getMeasureSize(getMeasuredWidth());
-
-                ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = size[0];
-                params.height = size[1];
-                setLayoutParams(params);
-            }
-        });
-    }
-
     /** <br> data. */
 
     public void setSize(int w, int h) {
@@ -79,21 +63,24 @@ public class FreedomTouchView extends View {
         }
     }
 
+    public float[] getSize() {
+        return new float[] {width, height};
+    }
+
     private int[] getMeasureSize(int measureWidth) {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
-        int statusBarHeight = DisplayUtils.getStatusBarHeight(getResources());
         float limitHeight = screenHeight
                 - new DisplayUtils(getContext()).dpToPx(300);
 
         if (1.0 * height / width * screenWidth <= limitHeight) {
             return new int[] {
                     screenWidth,
-                    (int) limitHeight - statusBarHeight};
+                    (int) limitHeight};
         } else {
             return new int[] {
                     measureWidth,
-                    (int) (measureWidth * height / width - statusBarHeight)};
+                    (int) (measureWidth * height / width)};
         }
     }
 }

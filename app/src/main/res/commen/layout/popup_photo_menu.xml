@@ -54,4 +54,28 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/popup_photo_menu_storyPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_photo_menu_storyPageIcon"
+            android:src="@drawable/ic_book_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_menu_storyPageTxt"
+            android:text="@string/action_open_story_link"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_photo_menu_storyPageIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
 </LinearLayout>

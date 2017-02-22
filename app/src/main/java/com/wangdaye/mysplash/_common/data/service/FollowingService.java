@@ -5,7 +5,7 @@ import android.net.Uri;
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash._common.data.api.FollowingApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingFeedResult;
-import com.wangdaye.mysplash._common.utils.widget.FollowingInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.interceptor.FollowingInterceptor;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;

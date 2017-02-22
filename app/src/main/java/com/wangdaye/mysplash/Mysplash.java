@@ -37,15 +37,6 @@ public class Mysplash extends Application {
     // transfer
     private Photo photo;
 
-    // Unsplash data.
-    public static final String APP_ID_BETA = "7bf112dfe38b71025468053af65c1f8ebe7a7ecf286eddb86c3131deb64b2ac4";
-    public static final String SECRET_BETA = "bc149f8b667347f502b9d10b9b48b092547a7e17762237c8f3a53b1897e6101b";
-
-    public static final String APP_ID_RELEASE="XXX";
-    public static final String SECRET_RELEASE="XXX";
-
-    public static final String APP_ID_NEW="XXX";
-
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
@@ -81,6 +72,7 @@ public class Mysplash extends Application {
 
     // activity code.
     public static final int ME_ACTIVITY = 1;
+    public static final int CUSTOM_API_ACTIVITY = 2;
 
     // permission code.
     public static final int WRITE_EXTERNAL_STORAGE = 1;
@@ -116,13 +108,13 @@ public class Mysplash extends Application {
 
     public static String getAppId(Context c, boolean auth) {
         if (isDebug(c)) {
-            return APP_ID_BETA;
+            return BuildConfig.APP_ID_BETA;
         } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
                 || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
             if (auth) {
-                return APP_ID_RELEASE;
+                return BuildConfig.APP_ID_RELEASE;
             } else {
-                return APP_ID_NEW;
+                return BuildConfig.APP_ID_RELEASE_UNAUTH;
             }
         } else {
             return getInstance().getCustomApiKey();
@@ -131,10 +123,10 @@ public class Mysplash extends Application {
 
     public static String getSecret(Context c) {
         if (isDebug(c)) {
-            return SECRET_BETA;
+            return BuildConfig.SECRET_BETA;
         } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
                 || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
-            return SECRET_RELEASE;
+            return BuildConfig.SECRET_RELEASE;
         } else {
             return getInstance().getCustomApiSecret();
         }

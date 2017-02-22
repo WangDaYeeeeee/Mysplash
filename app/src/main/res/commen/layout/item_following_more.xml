@@ -46,9 +46,11 @@
             android:layout_width="@dimen/mini_icon_size"
             android:layout_height="@dimen/mini_icon_size"
             android:layout_margin="@dimen/normal_margin"
+            android:stateListAnimator="@animator/touch_rise"
             android:layout_toRightOf="@id/item_following_more_title"
             android:layout_centerVertical="true"
-            tools:src="@drawable/default_avatar" />
+            tools:src="@drawable/default_avatar"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 

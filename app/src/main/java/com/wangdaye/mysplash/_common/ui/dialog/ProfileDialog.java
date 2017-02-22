@@ -5,11 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
@@ -17,6 +16,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 import retrofit2.Call;
@@ -31,6 +31,7 @@ public class ProfileDialog extends MysplashDialogFragment
     // widget
     private CoordinatorLayout container;
     private CircularProgressView progressView;
+    private NestedScrollView scrollView;
     private TextView contentTxt;
 
     // data
@@ -64,8 +65,10 @@ public class ProfileDialog extends MysplashDialogFragment
 
         this.progressView = (CircularProgressView) v.findViewById(R.id.dialog_profile_progress);
 
+        this.scrollView = (NestedScrollView) v.findViewById(R.id.dialog_profile_scrollView);
+        scrollView.setVisibility(View.GONE);
+
         this.contentTxt = (TextView) v.findViewById(R.id.dialog_profile_text);
-        contentTxt.setAlpha(0);
         DisplayUtils.setTypeface(getActivity(), contentTxt);
 
         v.findViewById(R.id.dialog_profile_enterBtn).setOnClickListener(this);
@@ -101,19 +104,16 @@ public class ProfileDialog extends MysplashDialogFragment
         if (response.isSuccessful() && response.body() != null) {
             User user = response.body();
             contentTxt.setText(
-                    user.total_photos + " " + getResources().getStringArray(R.array.user_tabs)[0] + "\n"
+                    user.name + "\n\n"
+                            + user.bio + "\n\n"
+                            + user.total_photos + " " + getResources().getStringArray(R.array.user_tabs)[0] + "\n"
                             + user.total_collections + " " + getResources().getStringArray(R.array.user_tabs)[1] + "\n"
                             + user.total_likes + " " + getResources().getStringArray(R.array.user_tabs)[2] + "\n"
                             + user.followers_count + " " + getResources().getStringArray(R.array.my_follow_tabs)[0] + "\n"
                             + user.following_count + " " + getResources().getStringArray(R.array.my_follow_tabs)[1]);
 
-            AlphaAnimation textAnim = new AlphaAnimation(contentTxt, 0, 1);
-            textAnim.setDuration(200);
-            contentTxt.startAnimation(textAnim);
-
-            AlphaAnimation progressAnim = new AlphaAnimation(progressView, 1, 0);
-            progressAnim.setDuration(200);
-            progressView.startAnimation(progressAnim);
+            AnimUtils.animShow(scrollView);
+            AnimUtils.animHide(progressView);
         } else {
             service.requestUserProfile(username, this);
         }
@@ -123,28 +123,6 @@ public class ProfileDialog extends MysplashDialogFragment
     public void onRequestUserProfileFailed(Call<User> call, Throwable t) {
         if (!TextUtils.isEmpty(username)) {
             service.requestUserProfile(username, this);
-        }
-    }
-
-    /** <br> inner class. */
-
-    private class AlphaAnimation extends Animation {
-        // widget
-        private View target;
-
-        // data
-        private float from;
-        private float to;
-
-        AlphaAnimation(View target, float from, float to) {
-            this.target = target;
-            this.from = from;
-            this.to = to;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            target.setAlpha(from + (to - from) * interpolatedTime);
         }
     }
 }

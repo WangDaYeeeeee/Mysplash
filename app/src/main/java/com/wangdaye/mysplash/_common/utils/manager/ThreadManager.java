@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.utils.manager;
 
-import com.wangdaye.mysplash._common.utils.widget.PriorityRunnable;
+import com.wangdaye.mysplash._common.utils.widget.runnable.PriorityRunnable;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;

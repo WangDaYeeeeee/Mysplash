@@ -5,7 +5,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.UserApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.interceptor.AuthInterceptor;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

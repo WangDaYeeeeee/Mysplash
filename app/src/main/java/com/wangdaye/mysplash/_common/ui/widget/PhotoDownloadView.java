@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -26,12 +27,14 @@ import com.wangdaye.mysplash.R;
 
 public class PhotoDownloadView extends FrameLayout {
     // widget
+    private LinearLayout buttonView;
     private ImageButton[] optionButtons;
     private RelativeLayout progressView;
     private CircularProgressView progress;
     private TextView progressTxt;
 
-    private Animator animator;
+    private Animator show;
+    private Animator hide;
 
     // data
     private boolean showProgress;
@@ -78,6 +81,8 @@ public class PhotoDownloadView extends FrameLayout {
 
     private void initWidget() {
         // button view.
+        this.buttonView = (LinearLayout) findViewById(R.id.container_download_button);
+
         this.optionButtons = new ImageButton[] {
                 (ImageButton) findViewById(R.id.container_download_downloadBtn),
                 (ImageButton) findViewById(R.id.container_download_shareBtn),
@@ -114,40 +119,66 @@ public class PhotoDownloadView extends FrameLayout {
     public void setButtonState() {
         if (showProgress) {
             setShowProgress(false);
-            if (animator != null) {
-                animator.cancel();
+            if (show != null) {
+                show.cancel();
+            }
+            if (hide != null) {
+                hide.cancel();
             }
 
-            animator = ObjectAnimator.ofFloat(progressView, "alpha", progressView.getAlpha(), 0);
-            animator.addListener(new AnimatorListenerAdapter() {
+            show = ObjectAnimator.ofFloat(buttonView, "alpha", buttonView.getAlpha(), 1);
+            show.setInterpolator(new AccelerateDecelerateInterpolator());
+            show.setDuration(200);
+
+            hide = ObjectAnimator.ofFloat(progressView, "alpha", progressView.getAlpha(), 0);
+            hide.removeAllListeners();
+            hide.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
                     progressView.setVisibility(GONE);
-                    animator.removeAllListeners();
                 }
             });
-            animator.setInterpolator(new AccelerateDecelerateInterpolator());
-            animator.setDuration(200);
-            animator.start();
+            hide.setInterpolator(new AccelerateDecelerateInterpolator());
+            hide.setDuration(200);
+
+            buttonView.setVisibility(VISIBLE);
+            show.start();
+            hide.start();
         }
     }
 
     public void setProgressState() {
         if (!showProgress) {
             setShowProgress(true);
-            if (animator != null) {
-                animator.cancel();
+            if (show != null) {
+                show.cancel();
+            }
+            if (hide != null) {
+                hide.cancel();
             }
 
             initProcess();
 
-            progressView.setVisibility(VISIBLE);
+            show = ObjectAnimator.ofFloat(progressView, "alpha", progressView.getAlpha(), 1);
+            show.setInterpolator(new AccelerateDecelerateInterpolator());
+            show.setDuration(200);
 
-            animator = ObjectAnimator.ofFloat(progressView, "alpha", 0, 1);
-            animator.setInterpolator(new AccelerateDecelerateInterpolator());
-            animator.setDuration(200);
-            animator.start();
+            hide = ObjectAnimator.ofFloat(buttonView, "alpha", buttonView.getAlpha(), 0);
+            hide.removeAllListeners();
+            hide.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    buttonView.setVisibility(GONE);
+                }
+            });
+            hide.setInterpolator(new AccelerateDecelerateInterpolator());
+            hide.setDuration(200);
+
+            progressView.setVisibility(VISIBLE);
+            show.start();
+            hide.start();
         }
     }
 
@@ -165,6 +196,15 @@ public class PhotoDownloadView extends FrameLayout {
         process = 0;
         progress.setProgress(process);
         progressTxt.setText(process + " %");
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        LayoutParams params = (LayoutParams) progressView.getLayoutParams();
+        params.width = getMeasuredWidth();
+        params.height = getMeasuredHeight();
+        progressView.setLayoutParams(params);
     }
 
     /** <br> data. */

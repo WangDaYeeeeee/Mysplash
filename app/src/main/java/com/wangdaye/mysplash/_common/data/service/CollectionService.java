@@ -5,7 +5,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.api.CollectionApi;
 import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.utils.widget.AuthInterceptor;
+import com.wangdaye.mysplash._common.utils.widget.interceptor.AuthInterceptor;
 
 import java.util.List;
 

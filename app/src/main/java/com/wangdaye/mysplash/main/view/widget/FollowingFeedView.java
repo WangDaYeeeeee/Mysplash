@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -144,9 +143,9 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     private void initAvatarView() {
         this.avatarContainer = (FrameLayout) findViewById(R.id.container_following_avatar_avatarContainer);
-        avatarContainer.setOnClickListener(this);
 
         this.avatar = (CircleImageView) findViewById(R.id.container_following_avatar_avatar);
+        avatar.setOnClickListener(this);
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
         int size = (int) new DisplayUtils(getContext()).dpToPx(56);
@@ -239,7 +238,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.container_following_avatar_avatarContainer:
+            case R.id.container_following_avatar_avatar:
                 int adapterPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
                         .findFirstVisibleItemPosition();
                 IntentHelper.startUserActivity(
@@ -317,19 +316,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         || (followingPresenter.getAdapter().isFooterView(lastAdapterPosition)
                         && followingPresenter.getAdapter().isHeaderView(firstVisibleItemPosition)))) {
                     User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
-                    if (user.profile_image != null) {
-                        Glide.with(getContext())
-                                .load(user.profile_image.large)
-                                .override(128, 128)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .into(avatar);
-                    } else {
-                        Glide.with(getContext())
-                                .load(R.drawable.default_avatar)
-                                .override(128, 128)
-                                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                                .into(avatar);
-                    }
+                    DisplayUtils.loadAvatar(getContext(), avatar, user.profile_image);
                 }
                 lastAdapterPosition = firstVisibleItemPosition;
             }

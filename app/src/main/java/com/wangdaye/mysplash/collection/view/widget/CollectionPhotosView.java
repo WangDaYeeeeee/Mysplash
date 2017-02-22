@@ -172,6 +172,10 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         scrollPresenter.scrollToTop();
     }
 
+    public void initAnimShow() {
+        AnimUtils.animInitShow(progressView, 400);
+    }
+
     /** <br> model. */
 
     // init.

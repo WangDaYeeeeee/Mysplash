@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "24.0.2"
+    buildToolsVersion "24.0.3"
 
     defaultConfig {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 289
-        versionName "2.8.9"
+        versionCode 294
+        versionName "2.9.4"
     }
     sourceSets {
         main {
@@ -25,7 +25,7 @@ android {
                     'src/main/res/me',
                     'src/main/res/commen',
                     'src/main/res/about',
-                    'src/main/res/category',
+                    'src/main/res/tag',
                     'src/main/res/resource',
                     'src/main/res']
         }
@@ -37,6 +37,13 @@ android {
             zipAlignEnabled true
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        buildTypes.each {
+            it.buildConfigField 'String', 'APP_ID_BETA', APP_ID_BETA
+            it.buildConfigField 'String', 'SECRET_BETA', SECRET_BETA
+            it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
+            it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
+            it.buildConfigField 'String', 'APP_ID_RELEASE_UNAUTH', APP_ID_RELEASE_UNAUTH
         }
     }
     repositories {
@@ -59,6 +66,12 @@ greendao {
     generateTests false
 }
 
+allprojects {
+    repositories {
+        maven { url "https://jitpack.io" }
+    }
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
@@ -72,8 +85,6 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
-    compile 'com.zhy:flowlayout-lib:1.0.3'
-    compile 'com.bm.photoview:library:1.4.1'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
     compile 'org.greenrobot:greendao:3.2.0'
 }

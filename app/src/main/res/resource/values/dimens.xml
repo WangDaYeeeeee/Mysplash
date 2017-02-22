@@ -14,6 +14,7 @@
     <dimen name="content_text_size">16sp</dimen>
 
     <!-- icon -->
+    <dimen name="feedback_icon_size">156dp</dimen>
     <dimen name="design_icon_size">72dp</dimen>
     <dimen name="large_icon_size">56dp</dimen>
     <dimen name="normal_icon_size">48dp</dimen>

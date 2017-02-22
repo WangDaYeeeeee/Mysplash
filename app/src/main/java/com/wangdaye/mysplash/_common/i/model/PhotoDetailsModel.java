@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash._common.i.model;
 
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.service.PhotoService;
+import com.wangdaye.mysplash._common.data.service.PhotoInfoService;
 
 /**
  * Photo details model.
@@ -9,7 +9,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 
 public interface PhotoDetailsModel {
 
-    PhotoService getService();
+    PhotoInfoService getService();
 
     Photo getPhoto();
     void setPhoto(Photo p);

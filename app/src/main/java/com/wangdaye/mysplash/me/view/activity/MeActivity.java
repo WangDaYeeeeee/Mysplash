@@ -32,6 +32,7 @@ import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.NotificationUtils;
@@ -48,7 +49,6 @@ import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
@@ -309,8 +309,8 @@ public class MeActivity extends MysplashActivity
 
         this.viewPager = (ViewPager) findViewById(R.id.activity_me_viewPager);
         viewPager.setAdapter(adapter);
-        viewPager.addOnPageChangeListener(this);
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
+        viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_me_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -331,19 +331,11 @@ public class MeActivity extends MysplashActivity
         }
 
         if (AuthManager.getInstance().getUser() != null) {
-            Glide.with(this)
-                    .load(AuthManager.getInstance().getUser().profile_image.large)
-                    .priority(Priority.HIGH)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(avatar);
+            DisplayUtils.loadAvatar(
+                    Mysplash.getInstance(), avatar, AuthManager.getInstance().getUser().profile_image.large);
         } else if (!TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
-            Glide.with(this)
-                    .load(AuthManager.getInstance().getAvatarPath())
-                    .priority(Priority.HIGH)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(avatar);
+            DisplayUtils.loadAvatar(
+                    Mysplash.getInstance(), avatar, AuthManager.getInstance().getAvatarPath());
         } else {
             Glide.with(this)
                     .load(R.drawable.default_avatar)

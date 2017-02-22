@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_collection_card"
+    android:layout_width="278dp"
+    android:layout_height="match_parent"
+    android:layout_marginTop="@dimen/little_margin"
+    android:layout_marginRight="@dimen/little_margin"
+    android:layout_marginBottom="@dimen/little_margin"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise_mini"
+    app:cardCornerRadius="2dp"
+    app:cardPreventCornerOverlap="true"
+    tools:ignore="RtlHardcoded,UnusedAttribute">
+
+    <RelativeLayout
+        android:id="@+id/item_collection_card_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:ignore="UnusedAttribute">
+
+        <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
+            android:id="@+id/item_collection_card_cover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            app:fiv_not_free="true"
+            app:fiv_shadow_position="both"
+            tools:src="?attr/title_color" />
+
+        <TextView
+            android:id="@+id/item_collection_card_subtitle"
+            android:textColor="@android:color/white"
+            android:maxLines="1"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/colorTextDark2nd"
+            android:alpha="0.9"
+            android:layout_marginLeft="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
+            style="@style/subtitle_text"
+            tools:text="3 photos"/>
+
+        <TextView
+            android:id="@+id/item_collection_card_title"
+            android:textColor="@android:color/white"
+            android:maxLines="1"
+            android:textSize="@dimen/large_title_text_size"
+            android:textStyle="bold"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/colorTextDark2nd"
+            android:layout_marginLeft="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_below="@id/item_collection_card_subtitle"
+            style="@style/title_text"
+            tools:text="LET THE INSPIRATION BEGIN"/>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+                android:id="@+id/item_collection_card_avatar"
+                android:layout_width="@dimen/mini_icon_size"
+                android:layout_height="@dimen/mini_icon_size"
+                android:layout_margin="@dimen/normal_margin"
+                tools:src="@drawable/default_avatar"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/item_collection_card_name"
+                android:textColor="@color/colorTextLight"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:shadowColor="@color/colorTextDark2nd"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/item_collection_card_avatar"
+                android:layout_marginRight="@dimen/normal_margin"
+                android:maxLines="1"
+                style="@style/subtitle_text"
+                tools:text="Wang Yueeeeee"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

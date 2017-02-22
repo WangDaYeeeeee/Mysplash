@@ -8,6 +8,7 @@ import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewConfiguration;
 
 /**
  * Nested scroll app bar layout.
@@ -18,6 +19,9 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         implements NestedScrollingChild {
     // widget
     private NestedScrollingChildHelper nestedScrollingChildHelper;
+
+    // data
+    private float touchSlop;
 
     /** <br> life cycle. */
 
@@ -33,8 +37,15 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
     private void initialize() {
         this.nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
-
         setNestedScrollingEnabled(true);
+
+        this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    /** <br> data. */
+
+    public float getTouchSlop() {
+        return touchSlop;
     }
 
     /** <br> interface. */
@@ -94,6 +105,7 @@ public class NestedScrollAppBarLayout extends AppBarLayout
     public static class Behavior extends AppBarLayout.Behavior {
         // data
         private float oldY;
+        private boolean isBeingDragged;
 
         // life cycle.
 
@@ -108,36 +120,42 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         // touch.
 
         @Override
-        public boolean onInterceptTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
-            return super.onInterceptTouchEvent(parent, child, ev);
-        }
-
-        @Override
         public boolean onTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
             switch (ev.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     ((NestedScrollAppBarLayout) child).startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
                     oldY = ev.getY();
+                    isBeingDragged = false;
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    if ((child.getY() >= 0 && ev.getY() > oldY)
-                            || (parent.getTranslationY() > 0 && ev.getY() < oldY)) {
+                    if (!isBeingDragged) {
+                        if (Math.abs(ev.getY() - oldY) > ((NestedScrollAppBarLayout) child).getTouchSlop()) {
+                            isBeingDragged = true;
+                        }
+                    }
+                    if (isBeingDragged) {
                         int[] total = new int[] {0, (int) (oldY - ev.getY())};
                         int[] consumed = new int[] {0, 0};
-                        ((NestedScrollAppBarLayout) child).dispatchNestedPreScroll(total[0], total[1], consumed, null);
-                        ((NestedScrollAppBarLayout) child).dispatchNestedScroll(0, 0, total[0] - consumed[0], total[1] - consumed[1], null);
+                        ((NestedScrollAppBarLayout) child).dispatchNestedPreScroll(
+                                total[0], total[1], consumed, null);
+                        ((NestedScrollAppBarLayout) child).dispatchNestedScroll(
+                                consumed[0], consumed[1], total[0] - consumed[0], total[1] - consumed[1], null);
                     }
                     oldY = ev.getY();
-                    break;
+                    return isBeingDragged;
 
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                     ((NestedScrollAppBarLayout) child).stopNestedScroll();
+                    if (isBeingDragged) {
+                        isBeingDragged = false;
+                        return true;
+                    }
                     break;
             }
 
-            return parent.getTranslationY() > 0 || super.onTouchEvent(parent, child, ev);
+            return super.onTouchEvent(parent, child, ev);
         }
     }
 }

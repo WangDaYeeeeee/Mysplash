@@ -13,14 +13,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
@@ -74,19 +73,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             holder.portfolioBtn.setImageResource(R.drawable.ic_item_earth_dark);
         }
 
-        if (itemList.get(position).profile_image != null) {
-            Glide.with(a)
-                    .load(itemList.get(position).profile_image.large)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.avatar);
-        } else {
-            Glide.with(a)
-                    .load(R.drawable.default_avatar)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.avatar);
-        }
+        DisplayUtils.loadAvatarWithColorAnim(a, holder.avatar, itemList.get(position).profile_image);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             holder.avatar.setTransitionName(itemList.get(position).username + "-avatar");

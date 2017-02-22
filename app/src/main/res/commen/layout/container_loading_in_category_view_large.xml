@@ -23,15 +23,12 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
+        <ImageView
             android:id="@+id/container_loading_in_category_view_large_feedbackImg"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="108dp"
-            android:layout_marginRight="108dp"
+            android:layout_width="@dimen/feedback_icon_size"
+            android:layout_height="@dimen/feedback_icon_size"
             android:layout_marginBottom="@dimen/normal_margin"
             android:layout_centerHorizontal="true"
-            app:fiv_square="true"
             tools:src="@drawable/feedback_no_photos"
             tools:ignore="ContentDescription" />
 

@@ -6,7 +6,7 @@
         <objectAnimator
             android:duration="@android:integer/config_shortAnimTime"
             android:propertyName="translationZ"
-            android:valueTo="5dp" />
+            android:valueTo="4dp" />
     </item>
     <item>
         <objectAnimator

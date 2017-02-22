@@ -54,21 +54,14 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/item_collection_cover">
 
-        <FrameLayout
-            android:id="@+id/item_collection_avatarContainer"
-            android:layout_width="@dimen/large_icon_size"
-            android:layout_height="@dimen/large_icon_size"
-            android:foreground="?attr/selectableItemBackgroundBorderless">
-
-            <com.wangdaye.mysplash._common.ui.widget.CircleImageView
-                android:id="@+id/item_collection_avatar"
-                android:layout_width="@dimen/mini_icon_size"
-                android:layout_height="@dimen/mini_icon_size"
-                android:layout_margin="@dimen/normal_margin"
-                tools:src="@drawable/default_avatar"
-                tools:ignore="RtlHardcoded" />
-
-        </FrameLayout>
+        <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+            android:id="@+id/item_collection_avatar"
+            android:layout_width="@dimen/mini_icon_size"
+            android:layout_height="@dimen/mini_icon_size"
+            android:layout_margin="@dimen/normal_margin"
+            android:stateListAnimator="@animator/touch_rise"
+            tools:src="@drawable/default_avatar"
+            tools:ignore="ContentDescription,RtlHardcoded" />
 
         <TextView
             android:id="@+id/item_collection_name"
@@ -78,7 +71,7 @@
             android:shadowRadius="1"
             android:shadowColor="@color/colorTextDark2nd"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/item_collection_avatarContainer"
+            android:layout_toRightOf="@id/item_collection_avatar"
             android:layout_marginRight="@dimen/normal_margin"
             android:maxLines="1"
             style="@style/subtitle_text"

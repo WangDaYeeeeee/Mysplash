@@ -12,14 +12,26 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.DrawableRequestBuilder;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.data.entity.unsplash.ProfileImage;
+import com.wangdaye.mysplash._common.utils.widget.glide.CircleTransformation;
+import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
+
+import org.greenrobot.greendao.annotation.NotNull;
 
 /**
  * Display utils.
@@ -135,5 +147,65 @@ public class DisplayUtils {
                     (int) (green * 0.3),
                     (int) (blue * 0.3));
         }
+    }
+
+    public static void loadAvatar(Context context, final ImageView view, ProfileImage profileImage) {
+        if (profileImage == null || TextUtils.isEmpty(profileImage.large)) {
+            Glide.with(context)
+                    .load(R.drawable.default_avatar)
+                    .override(128, 128)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(view);
+        } else {
+            loadAvatar(context, view, profileImage.large);
+        }
+    }
+
+    public static void loadAvatarWithColorAnim(final Context context, final ImageView view, ProfileImage profileImage) {
+        if (profileImage == null || TextUtils.isEmpty(profileImage.large)) {
+            Glide.with(context)
+                    .load(R.drawable.default_avatar)
+                    .override(128, 128)
+                    .transform(new CircleTransformation(context))
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(view);
+        } else {
+            DrawableRequestBuilder<Integer> thumbnailRequest = Glide.with(context)
+                    .load(R.drawable.default_avatar)
+                    .override(128, 128)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+            Glide.with(context)
+                    .load(profileImage.large)
+                    .override(128, 128)
+                    .thumbnail(thumbnailRequest)
+                    .error(R.drawable.default_avatar)
+                    .transform(new CircleTransformation(context))
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource,
+                                                       String model, Target<GlideDrawable> target,
+                                                       boolean isFromMemoryCache, boolean isFirstResource) {
+                            startColorAnimation(context, view);
+                            return false;
+                        }
+                    })
+                    .into(view);
+        }
+    }
+
+    public static void loadAvatar(Context context, final ImageView view, @NotNull String url) {
+        DrawableRequestBuilder<Integer> thumbnailRequest = Glide.with(context)
+                .load(R.drawable.default_avatar)
+                .override(128, 128)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+        Glide.with(context)
+                .load(url)
+                .override(128, 128)
+                .thumbnail(thumbnailRequest)
+                .error(R.drawable.default_avatar)
+                .transform(new CircleTransformation(context))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .into(view);
     }
 }

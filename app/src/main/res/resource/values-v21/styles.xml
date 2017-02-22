@@ -52,7 +52,6 @@
     <!-- photo activity. -->
 
     <style name="MysplashTheme_light.Translucent.Photo" parent="MysplashTheme_light.Translucent">
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowEnterTransition">@transition/photo_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/photo_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_shared_enter</item>
@@ -60,7 +59,6 @@
     </style>
 
     <style name="MysplashTheme_dark.Translucent.Photo" parent="MysplashTheme_dark.Translucent">
-        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowEnterTransition">@transition/photo_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/photo_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_shared_enter</item>

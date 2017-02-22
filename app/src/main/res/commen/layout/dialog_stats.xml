@@ -25,7 +25,7 @@
 
                 <ImageView
                     android:id="@+id/dialog_stats_likeIcon"
-                    android:src="@drawable/ic_heart_outline_light"
+                    android:src="@drawable/ic_heart_light"
                     style="@style/material_icon"
                     tools:ignore="ContentDescription" />
 

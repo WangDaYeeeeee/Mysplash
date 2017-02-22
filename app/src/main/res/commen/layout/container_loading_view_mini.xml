@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_loading_view_mini_loadingContainer"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="?attr/root_color">
 
     <com.github.rahatarmanahmed.cpv.CircularProgressView

@@ -19,7 +19,8 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.activity.CustomApiActivity;
-import com.wangdaye.mysplash.category.view.activity.CategoryActivity;
+import com.wangdaye.mysplash._common.ui.activity.RelativeActivity;
+import com.wangdaye.mysplash.tag.view.activity.TagActivity;
 import com.wangdaye.mysplash._common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.activity.LoginActivity;
@@ -268,16 +269,23 @@ public class IntentHelper {
         }
     }
 
-    public static void startCategoryActivity(MysplashActivity a, int categoryId) {
-        Intent intent = new Intent(a, CategoryActivity.class);
-        intent.putExtra(CategoryActivity.KEY_CATEGORY_ACTIVITY_ID, categoryId);
+    public static void startTagActivity(MysplashActivity a, String tag) {
+        Intent intent = new Intent(a, TagActivity.class);
+        intent.putExtra(TagActivity.KEY_TAG_ACTIVITY_TAG, tag);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startCustomApiActivity(SettingsActivity a) {
         Intent intent = new Intent(a, CustomApiActivity.class);
-        a.startActivityForResult(intent, SettingsActivity.SETTINGS_ACTIVITY);
+        a.startActivityForResult(intent, Mysplash.CUSTOM_API_ACTIVITY);
+        a.overridePendingTransition(R.anim.activity_in, 0);
+    }
+
+    public static void startRelativeActivity(MysplashActivity a, Photo photo) {
+        Intent intent = new Intent(a, RelativeActivity.class);
+        intent.putExtra(RelativeActivity.KEY_RELATIVE_ACTIVITY_PHOTO, photo);
+        a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 }
