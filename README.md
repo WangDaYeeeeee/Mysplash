@@ -1,10 +1,9 @@
 ![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/work/cover_github.png)
 
 ## <context href="#chinese">中文</context> | <context href="#english">English</context>
-<context href="https://f-droid.org/repository/browse/?fdid=com.wangdaye.mysplash" target="_blank">
-<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80"/></context>
-<context href="https://play.google.com/store/apps/details?id=com.wangdaye.mysplash" target="_blank">
-<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80"/></context>
+
+[![F-Droid](https://f-droid.org/badge/get-it-on.png)](https://f-droid.org/repository/browse/?fdid=com.wangdaye.mysplash)
+[![F-Droid](https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png)](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 * [Cool APK](http://www.coolapk.com/apk/com.wangdaye.mysplash)
 
 -----
