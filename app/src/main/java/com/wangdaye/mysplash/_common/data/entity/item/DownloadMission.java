@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash._common.data.entity.item;
 
-import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
 
 /**
  * Download mission.

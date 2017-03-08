@@ -3,9 +3,7 @@ package com.wangdaye.mysplash.photo.view.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -21,22 +19,20 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
+import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash._common.ui.widget.PhotoDownloadView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.FileUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
@@ -55,11 +51,11 @@ import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash._common.utils.widget.runnable.FlagRunnable;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo.model.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.DownloadObject;
 import com.wangdaye.mysplash.photo.model.PhotoInfoObject;
@@ -158,7 +154,7 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return false;
     }
 
@@ -216,15 +212,23 @@ public class PhotoActivity extends MysplashActivity
 
             this.photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
             photoImage.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
-            Glide.with(this)
-                    .load(photoInfoPresenter.getPhoto().urls.regular)
-                    .override(
-                            photoInfoPresenter.getPhoto().getRegularWidth(),
-                            photoInfoPresenter.getPhoto().getRegularHeight())
-                    .priority(Priority.HIGH)
-                    .centerCrop()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(photoImage);
+            ImageHelper.loadRegularPhoto(
+                    this, photoImage, photoInfoPresenter.getPhoto(),
+                    new ImageHelper.OnLoadImageListener() {
+                @Override
+                public void onLoadSucceed() {
+                    photoInfoPresenter.getPhoto().loadPhotoSuccess = true;
+                    if (!photoInfoPresenter.getPhoto().hasFadedIn) {
+                        photoInfoPresenter.getPhoto().hasFadedIn = true;
+                        ImageHelper.startSaturationAnimation(PhotoActivity.this, photoImage);
+                    }
+                }
+
+                @Override
+                public void onLoadFailed() {
+                    // do nothing.
+                }
+            });
 
             this.recyclerView = (RecyclerView) findViewById(R.id.activity_photo_recyclerView);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
@@ -323,12 +327,12 @@ public class PhotoActivity extends MysplashActivity
 
     public void readyToDownload(int type) {
         if (DatabaseHelper.getInstance(this).readDownloadingEntityCount(photoInfoPresenter.getPhoto().id) > 0) {
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     getString(R.string.feedback_download_repeat),
                     Snackbar.LENGTH_SHORT);
         } else if (FileUtils.isPhotoExists(this, photoInfoPresenter.getPhoto().id)) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();
-            dialog.setDownlaodKey(type);
+            dialog.setDownloadKey(type);
             dialog.setOnCheckOrDownloadListener(this);
             dialog.show(getFragmentManager(), null);
         } else {
@@ -408,7 +412,7 @@ public class PhotoActivity extends MysplashActivity
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
                         downloadByType(requestCode);
                     } else {
-                        NotificationUtils.showSnackbar(
+                        NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
                                 Snackbar.LENGTH_SHORT);
                     }
@@ -567,7 +571,7 @@ public class PhotoActivity extends MysplashActivity
                         && !TextUtils.isEmpty(photoInfoPresenter.getPhoto().story.image_url)) {
                     IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().story.image_url);
                 } else {
-                    NotificationUtils.showSnackbar(
+                    NotificationHelper.showSnackbar(
                             getString(R.string.feedback_story_is_null),
                             Snackbar.LENGTH_SHORT);
                 }
@@ -625,7 +629,7 @@ public class PhotoActivity extends MysplashActivity
 
     @Override
     public void visitParentView() {
-        startActivity(new Intent(this, MainActivity.class));
+        IntentHelper.startMainActivity(this);
     }
 
     // message manage view.
@@ -654,29 +658,24 @@ public class PhotoActivity extends MysplashActivity
         @Override
         public void run() {
             while (isRunning()) {
+                DownloadHelper.getInstance().setServiceAlive(true);
                 DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity.this)
                         .readDownloadingEntity(photoInfoPresenter.getPhoto().id);
                 if (entity != null && entity.missionId != -1
-                        && entity.result == DownloadMissionEntity.RESULT_DOWNLOADING) {
-                    Cursor cursor = DownloadHelper.getInstance(PhotoActivity.this)
-                            .getMissionCursor(entity.missionId);
-                    if (cursor != null && cursor.getCount() != 0) {
-                        if (DownloadHelper.isMissionSuccess(cursor)
-                                || DownloadHelper.isMissionFailed(cursor)) {
-                            messageManagePresenter.sendMessage(-1, null);
-                        } else {
-                            messageManagePresenter.sendMessage(
-                                    (int) DownloadHelper.getMissionProcess(cursor),
-                                    null);
-                        }
-                    } else {
+                        && entity.result == DownloadHelper.RESULT_DOWNLOADING) {
+                    DownloadMission mission = DownloadHelper.getInstance()
+                            .getDownloadMission(PhotoActivity.this, entity.missionId);
+                    if (mission == null || mission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
                         messageManagePresenter.sendMessage(-1, null);
+                    } else {
+                        messageManagePresenter.sendMessage((int) mission.process, null);
                     }
                 } else {
                     messageManagePresenter.sendMessage(-1, null);
                 }
                 SystemClock.sleep(200);
             }
+            DownloadHelper.getInstance().setServiceAlive(false);
         }
     };
 }

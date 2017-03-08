@@ -12,7 +12,7 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,19 @@ public class AuthManager
     private static final String KEY_VERSION = "version";
     private static final int VERSION_CODE = 8;
 
+    /** singleton. */
+
+    private static AuthManager instance;
+
+    public static AuthManager getInstance() {
+        synchronized (AuthManager.class) {
+            if (instance == null) {
+                instance = new AuthManager();
+            }
+        }
+        return instance;
+    }
+
     /** <br> life cycle. */
 
     private AuthManager() {
@@ -105,7 +118,7 @@ public class AuthManager
             editor.putString(KEY_AVATAR_PATH, null);
             editor.apply();
 
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     Mysplash.getInstance().getString(R.string.feedback_please_login),
                     Snackbar.LENGTH_SHORT);
         }
@@ -324,18 +337,5 @@ public class AuthManager
         if (isAuthorized()) {
             service.requestUserProfile(me.username, this);
         }
-    }
-
-    /** singleton. */
-
-    private static AuthManager instance;
-
-    public static AuthManager getInstance() {
-        synchronized (AuthManager.class) {
-            if (instance == null) {
-                instance = new AuthManager();
-            }
-        }
-        return instance;
     }
 }

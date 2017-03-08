@@ -28,7 +28,7 @@ import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.user.model.widget.LoadObject;
 import com.wangdaye.mysplash.user.presenter.widget.LoadImplementor;
@@ -238,11 +238,11 @@ public class UserProfileView extends FrameLayout
     public void followRequestFailed(boolean follow) {
         rippleButton.setSwitchResult(false);
         if (follow) {
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     getContext().getString(R.string.feedback_follow_failed),
                     Snackbar.LENGTH_SHORT);
         } else {
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     getContext().getString(R.string.feedback_cancel_follow_failed),
                     Snackbar.LENGTH_SHORT);
         }

@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
@@ -10,17 +9,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 
 /**
  * Collection mini adapter. (Recycler view)
@@ -50,58 +45,19 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         return new ViewHolder(v);
     }
 
-    @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        if (position == 0) {
-            holder.image.setImageResource(R.color.colorTextSubtitle_light);
-            holder.title.setText(c.getString(R.string.feedback_create_collection).toUpperCase());
-            holder.subtitle.setVisibility(View.GONE);
-            holder.lockIcon.setVisibility(View.GONE);
-            holder.stateIcon.forceSetResultState(android.R.color.transparent);
-            return;
-        } else if (position == getRealItemCount() + 1) {
-            return;
-        }
-
-        final Collection collection = AuthManager.getInstance()
-                .getCollectionsManager()
-                .getCollectionList()
-                .get(position - 1);
-
-        holder.subtitle.setVisibility(View.VISIBLE);
-        holder.lockIcon.setVisibility(View.VISIBLE);
-
-        holder.title.setText(collection.title.toUpperCase());
-        int photoNum = collection.total_photos;
-        holder.subtitle.setText(photoNum + " " + c.getResources().getStringArray(R.array.user_tabs)[0]);
-
-        holder.reloadCoverImage(collection);
-
-        if (collection.privateX) {
-            holder.lockIcon.setAlpha(1f);
-        } else {
-            holder.lockIcon.setAlpha(0f);
-        }
-
-        if (collection.insertingPhoto) {
-            holder.stateIcon.forceSetProgressState();
-        } else {
-            for (int i = 0; i < photo.current_user_collections.size(); i ++) {
-                if (collection.id == photo.current_user_collections.get(i).id) {
-                    holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
-                    return;
-                }
-            }
-            holder.stateIcon.forceSetResultState(android.R.color.transparent);
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     /** <br> data. */
 
     @Override
     public int getItemCount() {
-        return getRealItemCount() + 1;
+        return AuthManager.getInstance()
+                .getCollectionsManager()
+                .getCollectionList()
+                .size() + 1;
     }
 
     @Override
@@ -112,13 +68,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder.image != null) {
-            Glide.clear(holder.image);
-        }
-    }
-
-    public int getRealItemCount() {
-        return AuthManager.getInstance().getCollectionsManager().getCollectionList().size();
+        holder.onRecycled();
     }
 
     public void updatePhoto(Photo p) {
@@ -167,6 +117,49 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         // UI.
 
+        void onBindView(int position) {
+            if (position == 0) {
+                image.setImageResource(R.color.colorTextSubtitle_light);
+                title.setText(c.getString(R.string.feedback_create_collection).toUpperCase());
+                subtitle.setVisibility(View.GONE);
+                lockIcon.setVisibility(View.GONE);
+                stateIcon.forceSetResultState(android.R.color.transparent);
+                return;
+            }
+
+            final Collection collection = AuthManager.getInstance()
+                    .getCollectionsManager()
+                    .getCollectionList()
+                    .get(position - 1);
+
+            subtitle.setVisibility(View.VISIBLE);
+            lockIcon.setVisibility(View.VISIBLE);
+
+            title.setText(collection.title.toUpperCase());
+            int photoNum = collection.total_photos;
+            subtitle.setText(photoNum + " " + c.getResources().getStringArray(R.array.user_tabs)[0]);
+
+            reloadCoverImage(collection);
+
+            if (collection.privateX) {
+                lockIcon.setAlpha(1f);
+            } else {
+                lockIcon.setAlpha(0f);
+            }
+
+            if (collection.insertingPhoto) {
+                stateIcon.forceSetProgressState();
+            } else {
+                for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+                    if (collection.id == photo.current_user_collections.get(i).id) {
+                        stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
+                        return;
+                    }
+                }
+                stateIcon.forceSetResultState(android.R.color.transparent);
+            }
+        }
+
         public void setProgressState() {
             stateIcon.setProgressState();
         }
@@ -177,28 +170,30 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         public void reloadCoverImage(final Collection collection) {
             if (collection.cover_photo != null) {
-                Glide.with(c)
-                        .load(collection.cover_photo.urls.regular)
-                        .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFromMemoryCache, boolean isFirstResource) {
-                                if (!collection.cover_photo.hasFadedIn) {
-                                    collection.cover_photo.hasFadedIn = true;
-                                    AuthManager.getInstance()
-                                            .getCollectionsManager()
-                                            .updateCollection(collection);
-                                    startColorAnimation(c, image);
-                                }
-                                return false;
-                            }
-                        })
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(image);
+                ImageHelper.loadCollectionCover(c, image, collection, new ImageHelper.OnLoadImageListener() {
+                    @Override
+                    public void onLoadSucceed() {
+                        if (!collection.cover_photo.hasFadedIn) {
+                            collection.cover_photo.hasFadedIn = true;
+                            AuthManager.getInstance()
+                                    .getCollectionsManager()
+                                    .updateCollection(collection);
+                            ImageHelper.startSaturationAnimation(c, image);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed() {
+                        image.setImageResource(R.color.colorTextContent_light);
+                    }
+                });
             } else {
                 image.setImageResource(R.color.colorTextContent_light);
             }
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
         }
 
         // interface.

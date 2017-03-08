@@ -18,9 +18,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
@@ -35,8 +32,10 @@ import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.PagerManageModel;
 import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
@@ -47,13 +46,12 @@ import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.model.activity.DownloadObject;
 import com.wangdaye.mysplash.me.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
@@ -177,7 +175,7 @@ public class MeActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return true;
     }
 
@@ -275,6 +273,7 @@ public class MeActivity extends MysplashActivity
         toolbar.setNavigationOnClickListener(this);
 
         this.avatar = (CircleImageView) findViewById(R.id.activity_me_avatar);
+        avatar.setOnClickListener(new OnClickAvatarListener());
 
         this.title = (TextView) findViewById(R.id.activity_me_title);
         title.setOnClickListener(this);
@@ -331,18 +330,11 @@ public class MeActivity extends MysplashActivity
         }
 
         if (AuthManager.getInstance().getUser() != null) {
-            DisplayUtils.loadAvatar(
-                    Mysplash.getInstance(), avatar, AuthManager.getInstance().getUser().profile_image.large);
+            ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getUser(), null);
         } else if (!TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
-            DisplayUtils.loadAvatar(
-                    Mysplash.getInstance(), avatar, AuthManager.getInstance().getAvatarPath());
+            ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getAvatarPath(), null);
         } else {
-            Glide.with(this)
-                    .load(R.drawable.default_avatar)
-                    .priority(Priority.HIGH)
-                    .override(128, 128)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(avatar);
+            ImageHelper.loadAvatar(this, avatar, new User(), null);
         }
     }
 
@@ -410,7 +402,7 @@ public class MeActivity extends MysplashActivity
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
                         downloadPresenter.download();
                     } else {
-                        NotificationUtils.showSnackbar(
+                        NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
                                 Snackbar.LENGTH_SHORT);
                     }
@@ -428,7 +420,7 @@ public class MeActivity extends MysplashActivity
         switch (view.getId()) {
             case -1:
                 if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)) {
-                    startActivity(new Intent(this, MainActivity.class));
+                    IntentHelper.startMainActivity(this);
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
                 break;
@@ -441,6 +433,19 @@ public class MeActivity extends MysplashActivity
                     dialog.show(getFragmentManager(), null);
                 }
                 break;
+        }
+    }
+
+    private class OnClickAvatarListener implements View.OnClickListener {
+
+        // interface.
+
+        @Override
+        public void onClick(View v) {
+            if (AuthManager.getInstance().getUser() != null) {
+                IntentHelper.startPreviewActivity(
+                        MeActivity.this, AuthManager.getInstance().getUser(), false);
+            }
         }
     }
 

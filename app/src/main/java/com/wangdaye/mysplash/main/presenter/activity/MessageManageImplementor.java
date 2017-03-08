@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.main.presenter.activity;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 

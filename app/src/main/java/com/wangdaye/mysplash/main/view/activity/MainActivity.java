@@ -27,13 +27,14 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
+import com.wangdaye.mysplash._common._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.DrawerModel;
 import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
@@ -46,12 +47,11 @@ import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.manager.ShortcutsManager;
 import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash._common.utils.widget.runnable.PriorityRunnable;
 import com.wangdaye.mysplash.main.model.activity.DownloadObject;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
 import com.wangdaye.mysplash.main.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
@@ -176,7 +176,7 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return true;
     }
 
@@ -352,7 +352,7 @@ public class MainActivity extends MysplashActivity
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
                         downloadPresenter.download();
                     } else {
-                        NotificationUtils.showSnackbar(
+                        NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
                                 Snackbar.LENGTH_SHORT);
                     }
@@ -478,7 +478,7 @@ public class MainActivity extends MysplashActivity
             navAvatar.setVisibility(View.VISIBLE);
             appIcon.setVisibility(View.GONE);
             Glide.clear(navAvatar);
-            DisplayUtils.loadAvatar(Mysplash.getInstance(), navAvatar, AuthManager.getInstance().getAvatarPath());
+            ImageHelper.loadAvatar(Mysplash.getInstance(), navAvatar, AuthManager.getInstance().getAvatarPath(), null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 navAvatar.setTransitionName(AuthManager.getInstance().getAccessToken());
             }
@@ -542,7 +542,7 @@ public class MainActivity extends MysplashActivity
 
     /** <br> thread. */
 
-    private PriorityRunnable runnable = new PriorityRunnable(false) {
+    private Runnable runnable = new Runnable() {
         @Override
         public void run() {
             AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);

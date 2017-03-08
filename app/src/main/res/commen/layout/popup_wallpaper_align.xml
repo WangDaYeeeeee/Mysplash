@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorRoot_light">
+
+    <RelativeLayout
+        android:id="@+id/popup_wallpaper_align_left"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_wallpaper_align_leftIcon"
+            android:src="@drawable/ic_align_left_light"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_wallpaper_align_leftTxt"
+            android:text="@string/action_align_left"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_wallpaper_align_leftIcon"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorTextContent_light"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_wallpaper_align_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_wallpaper_align_centerIcon"
+            android:src="@drawable/ic_align_center_light"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_wallpaper_align_centerTxt"
+            android:text="@string/action_align_center"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_wallpaper_align_centerIcon"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorTextContent_light"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_wallpaper_align_right"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_wallpaper_align_rightIcon"
+            android:src="@drawable/ic_align_right_light"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_wallpaper_align_rightTxt"
+            android:text="@string/action_align_right"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_wallpaper_align_rightIcon"
+            android:layout_width="wrap_content"
+            android:textColor="@color/colorTextContent_light"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

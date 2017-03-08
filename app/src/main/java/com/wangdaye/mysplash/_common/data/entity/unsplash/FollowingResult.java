@@ -26,13 +26,13 @@ public class FollowingResult {
 
     public static class Object {
         // comment part.
+        public boolean hasFadedIn = false;
         public String id;
         public int downloads;
         public PhotoLinks links;
 
         // photo part.
         public boolean loadPhotoSuccess = false;
-        public boolean hasFadedIn = false;
         public boolean settingLike = false;
         public String created_at;
         public int width;
@@ -78,6 +78,24 @@ public class FollowingResult {
             user = p.user;
             current_user_collections = new ArrayList<>(p.current_user_collections);
             categories = new ArrayList<>(p.categories);
+        }
+
+        public Object(User u) {
+            hasFadedIn = u.hasFadedIn;
+            id = u.id;
+            downloads = u.downloads;
+            username = u.username;
+            name = u.name;
+            first_name = u.first_name;
+            last_name = u.last_name;
+            portfolio_url = u.portfolio_url;
+            bio = u.bio;
+            total_likes = u.total_likes;
+            total_photos = u.total_photos;
+            total_collections = u.total_collections;
+            followed_by_user = u.followed_by_user;
+            profile_image = u.profile_image;
+            badge = u.badge;
         }
 
         public Photo castToPhoto() {

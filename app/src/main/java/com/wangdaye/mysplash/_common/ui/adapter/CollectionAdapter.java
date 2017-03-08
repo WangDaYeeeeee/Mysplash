@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -10,18 +9,14 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
@@ -50,52 +45,9 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         return new ViewHolder(v, viewType);
     }
 
-    @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.title.setText("");
-        holder.subtitle.setText("");
-        holder.image.setShowShadow(false);
-        if (itemList.get(position).cover_photo != null
-                && itemList.get(position).cover_photo.width != 0
-                && itemList.get(position).cover_photo.height != 0) {
-            Glide.with(a)
-                    .load(itemList.get(position).cover_photo.urls.regular)
-                    .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model,
-                                                       Target<GlideDrawable> target,
-                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                            if (!itemList.get(position).cover_photo.hasFadedIn) {
-                                itemList.get(position).cover_photo.hasFadedIn = true;
-                                startColorAnimation(a, holder.image);
-                            }
-                            holder.title.setText(itemList.get(position).title.toUpperCase());
-                            int photoNum = itemList.get(position).total_photos;
-                            holder.subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
-                            holder.image.setShowShadow(true);
-                            return false;
-                        }
-                    })
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(holder.image);
-            holder.background.setBackgroundColor(
-                    DisplayUtils.calcCardBackgroundColor(
-                            itemList.get(position).cover_photo.color));
-        } else {
-            holder.image.setImageResource(R.color.colorTextContent_light);
-            holder.title.setText(itemList.get(position).title.toUpperCase());
-            int photoNum = itemList.get(position).total_photos;
-            holder.subtitle.setText(photoNum + (photoNum > 1 ? " photos" : " photo"));
-        }
-
-        DisplayUtils.loadAvatar(a, holder.avatar, itemList.get(position).user.profile_image);
-        holder.name.setText(itemList.get(position).user.name);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.background.setTransitionName(itemList.get(position).id + "-background");
-            holder.avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -117,8 +69,7 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        Glide.clear(holder.image);
-        Glide.clear(holder.avatar);
+        holder.onRecycled();
     }
 
     public void insertItem(Collection c, int position) {
@@ -153,10 +104,6 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public int getRealItemCount() {
-        return itemList.size();
-    }
-
     public List<Collection> getItemList() {
         return itemList;
     }
@@ -174,6 +121,8 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         public TextView subtitle;
         CircleImageView avatar;
         TextView name;
+
+        // life cycle.
 
         ViewHolder(View itemView, int position) {
             super(itemView);
@@ -199,6 +148,58 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
             this.name = (TextView) itemView.findViewById(R.id.item_collection_name);
             DisplayUtils.setTypeface(itemView.getContext(), name);
         }
+
+        // UI.
+
+        void onBindView(final int position) {
+            title.setText("");
+            subtitle.setText("");
+            image.setShowShadow(false);
+
+            if (itemList.get(position).cover_photo != null) {
+                ImageHelper.loadCollectionCover(a, image, itemList.get(position), new ImageHelper.OnLoadImageListener() {
+                    @Override
+                    public void onLoadSucceed() {
+                        if (!itemList.get(position).cover_photo.hasFadedIn) {
+                            itemList.get(position).cover_photo.hasFadedIn = true;
+                            ImageHelper.startSaturationAnimation(a, image);
+                        }
+                        title.setText(itemList.get(position).title.toUpperCase());
+                        int photoNum = itemList.get(position).total_photos;
+                        subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+                        image.setShowShadow(true);
+                    }
+
+                    @Override
+                    public void onLoadFailed() {
+                        title.setText(itemList.get(position).title.toUpperCase());
+                        int photoNum = itemList.get(position).total_photos;
+                        subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+                        image.setShowShadow(true);
+                    }
+                });
+                background.setBackgroundColor(
+                        ImageHelper.computeCardBackgroundColor(
+                                itemList.get(position).cover_photo.color));
+            } else {
+                image.setImageResource(R.color.colorTextContent_light);
+            }
+
+            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, null);
+            name.setText(itemList.get(position).user.name);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                background.setTransitionName(itemList.get(position).id + "-background");
+                avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
+            }
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
+            ImageHelper.releaseImageView(avatar);
+        }
+
+        // interface.
 
         @Override
         public void onClick(View view) {

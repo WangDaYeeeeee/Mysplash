@@ -148,6 +148,8 @@
     <string name="feedback_follow_failed">关注失败</string>
     <string name="feedback_cancel_follow_failed">取消关注失败</string>
 
+    <string name="feedback_story_is_null">故事不存在或尚未加载</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">回滚至顶部</string>
     <string name="introduce_description_back_top">点击顶栏或返回键，照片列表页面将会自动回滚到顶部</string>
@@ -188,7 +190,16 @@
     <string name="action_path">下载路径</string>
     <string name="action_cancel_all">全部取消</string>
 
-    <string name="feedback_story_is_null">故事不存在或尚未加载</string>
+    <string name="action_clip_with_square">裁剪为正方形</string>
+    <string name="action_clip_with_rectangle">裁剪为矩形</string>
+
+    <string name="action_align_left">左对齐</string>
+    <string name="action_align_center">中对齐</string>
+    <string name="action_align_right">右对齐</string>
+
+    <string name="action_wallpaper">设为壁纸</string>
+    <string name="action_lockscreen">设为锁屏</string>
+    <string name="action_wallpaper_lockscreen">设为壁纸和锁屏</string>
 
     <!-- 设置项. -->
     <string name="settings_category_basic">基础</string>

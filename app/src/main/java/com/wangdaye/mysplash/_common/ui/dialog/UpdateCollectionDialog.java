@@ -21,10 +21,10 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -176,13 +176,13 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
     }
 
     private void notifyUpdateFailed() {
-        NotificationUtils.showSnackbar(
+        NotificationHelper.showSnackbar(
                 getString(R.string.feedback_update_collection_failed),
                 Toast.LENGTH_SHORT);
     }
 
     private void notifyDeleteFailed() {
-        NotificationUtils.showSnackbar(
+        NotificationHelper.showSnackbar(
                 getString(R.string.feedback_delete_collection_failed),
                 Toast.LENGTH_SHORT);
     }

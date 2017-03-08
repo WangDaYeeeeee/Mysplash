@@ -7,7 +7,7 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;

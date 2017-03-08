@@ -1,9 +1,6 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.database.Cursor;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,18 +10,17 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.utils.FileUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.data.entity.database.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 
 import java.util.ArrayList;
@@ -51,20 +47,25 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
         this.itemList = new ArrayList<>();
         List<DownloadMissionEntity> entityList;
-        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadMissionEntity.RESULT_FAILED);
+        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_FAILED);
         for (int i = 0; i < entityList.size(); i ++) {
-            itemList.add(new DownloadMission(entityList.get(i)));
+            itemList.add(
+                    new DownloadMission(
+                            entityList.get(i)));
         }
-        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadMissionEntity.RESULT_DOWNLOADING);
+        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_DOWNLOADING);
         for (int i = 0; i < entityList.size(); i ++) {
-            float process = DownloadHelper.getMissionProcess(
-                    DownloadHelper.getInstance(c).getMissionCursor(
-                            entityList.get(i).missionId));
-            itemList.add(new DownloadMission(entityList.get(i), process));
+            itemList.add(
+                    DownloadHelper.getInstance()
+                            .getDownloadMission(
+                                    c,
+                                    entityList.get(i).missionId));
         }
-        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadMissionEntity.RESULT_SUCCEED);
+        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_SUCCEED);
         for (int i = 0; i < entityList.size(); i ++) {
-            itemList.add(new DownloadMission(entityList.get(i)));
+            itemList.add(
+                    new DownloadMission(
+                            entityList.get(i)));
         }
     }
 
@@ -76,35 +77,9 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         return new ViewHolder(v);
     }
 
-    @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Glide.with(c)
-                .load(itemList.get(position).entity.photoUri)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(holder.image);
-        switch (itemList.get(position).entity.result) {
-            case DownloadMissionEntity.RESULT_SUCCEED:
-                holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
-                holder.title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
-                holder.retryCheckBtn.setImageResource(R.drawable.ic_item_check);
-                break;
-
-            case DownloadMissionEntity.RESULT_DOWNLOADING:
-                holder.stateIcon.forceSetProgressState();
-                holder.title.setText(
-                        itemList.get(position).entity.getRealTitle().toUpperCase()
-                                + " : "
-                                + ((int) (itemList.get(position).process)) + "%");
-                holder.retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
-                break;
-
-            case DownloadMissionEntity.RESULT_FAILED:
-                holder.stateIcon.forceSetResultState(R.drawable.ic_item_state_error);
-                holder.title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
-                holder.retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
-                break;
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     /** <br> data. */
@@ -122,12 +97,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        Glide.clear(holder.image);
-        holder.stateIcon.recycleImageView();
-    }
-
-    public int getRealItemCount() {
-        return getItemCount();
+        holder.onRecycled();
     }
 
     /** <br> interface. */
@@ -190,21 +160,54 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
         // UI.
 
-        public void drawProcessStatus(DownloadMissionEntity entity, @Nullable Cursor cursor, boolean switchState) {
-            float process = (cursor == null || cursor.getCount() == 0) ?
-                    0 : DownloadHelper.getMissionProcess(cursor);
+        void onBindView(int position) {
+            ImageHelper.loadPhoto(c, image, itemList.get(position).entity.getPhotoUri(), false, null);
+
+            switch (itemList.get(position).entity.result) {
+                case DownloadHelper.RESULT_DOWNLOADING:
+                    stateIcon.forceSetProgressState();
+                    title.setText(
+                            itemList.get(position).entity.getRealTitle().toUpperCase()
+                                    + " : "
+                                    + ((int) (itemList.get(position).process)) + "%");
+                    retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
+                    break;
+
+                case DownloadHelper.RESULT_SUCCEED:
+                    stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
+                    title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
+                    retryCheckBtn.setImageResource(R.drawable.ic_item_check);
+                    break;
+
+                case DownloadHelper.RESULT_FAILED:
+                    stateIcon.forceSetResultState(R.drawable.ic_item_state_error);
+                    title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
+                    retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
+                    break;
+            }
+        }
+
+        public void drawProcessStatus(DownloadMission mission, boolean switchState) {
             if (switchState) {
                 stateIcon.setProgressState();
                 retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
             }
             title.setText(
-                    entity.getRealTitle().toUpperCase() + " : " + ((int) process) + "%");
+                    mission.entity.getRealTitle().toUpperCase() + " : " + ((int) mission.process) + "%");
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
+            stateIcon.recycleImageView();
         }
 
         // interface.
 
         @Override
         public void onClick(View view) {
+            if (getAdapterPosition() < 0) {
+                return;
+            }
             switch (view.getId()) {
                 case R.id.item_download_card:
                     if (itemList.get(getAdapterPosition()).entity.downloadType == DownloadHelper.COLLECTION_TYPE) {
@@ -219,20 +222,9 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                     break;
 
                 case R.id.item_download_closeBtn:
-                    switch (itemList.get(getAdapterPosition()).entity.result) {
-                        case DownloadMissionEntity.RESULT_SUCCEED:
-                            // do nothing.
-                            break;
-
-                        default:
-                            DownloadHelper.getInstance(c)
-                                    .removeMission(
-                                            c,
-                                            itemList.get(getAdapterPosition()).entity.missionId);
-                            break;
-                    }
-                    DatabaseHelper.getInstance(c)
-                            .deleteDownloadEntity(
+                    DownloadHelper.getInstance()
+                            .removeMission(
+                                    c,
                                     itemList.get(getAdapterPosition()).entity.missionId);
                     itemList.remove(getAdapterPosition());
                     notifyItemRemoved(getAdapterPosition());
@@ -240,22 +232,23 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
                 case R.id.item_download_retry_check_btn:
                     switch (itemList.get(getAdapterPosition()).entity.result) {
-                        case DownloadMissionEntity.RESULT_SUCCEED:
+                        case DownloadHelper.RESULT_SUCCEED:
                             IntentHelper.startCheckPhotoActivity(
                                     c, itemList.get(getAdapterPosition()).entity.title);
                             break;
 
                         default:
-                            int limitCount = itemList.get(getAdapterPosition()).entity.result == DownloadMissionEntity.RESULT_DOWNLOADING ? 1 : 0;
+                            int limitCount = itemList.get(getAdapterPosition())
+                                    .entity.result == DownloadHelper.RESULT_DOWNLOADING ? 1 : 0;
                             DownloadMissionEntity entity = itemList.get(getAdapterPosition()).entity;
                             if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > limitCount) {
-                                NotificationUtils.showSnackbar(
+                                NotificationHelper.showSnackbar(
                                         c.getString(R.string.feedback_download_repeat),
                                         Snackbar.LENGTH_SHORT);
                             } else if (FileUtils.isPhotoExists(c, entity.title)
                                     || FileUtils.isCollectionExists(c, entity.title)) {
                                 DownloadRepeatDialog dialog = new DownloadRepeatDialog();
-                                dialog.setDownlaodKey(entity);
+                                dialog.setDownloadKey(entity);
                                 dialog.setOnCheckOrDownloadListener(DownloadAdapter.this);
                                 dialog.show(Mysplash.getInstance().getTopActivity().getFragmentManager(), null);
                             } else if (listener != null) {

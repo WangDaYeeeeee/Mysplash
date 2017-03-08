@@ -21,7 +21,7 @@ import java.util.List;
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(17);
+        List<AboutModel> modelList = new ArrayList<>(20);
         boolean light = Mysplash.getInstance().isLightTheme();
 
         // header.
@@ -58,6 +58,16 @@ public class CreateAboutModelImplementor {
                 "Mehmet Saygin Yilmaz",
                 R.drawable.flag_tr,
                 "memcos@gmail.com"));
+        modelList.add(new TranslatorObject(
+                "https://avatars2.githubusercontent.com/u/22666602?v=3&s=460",
+                "OfficialMITX",
+                R.drawable.flag_de,
+                "https://github.com/OffifialMITX"));
+        modelList.add(new TranslatorObject(
+                "https://avatars0.githubusercontent.com/u/3891063?v=3&s=400",
+                "Alex",
+                R.drawable.flag_ru,
+                "https://github.com/Ulop"));
 
         // library.
         modelList.add(new CategoryAboutObject(c.getString(R.string.libraries)));
@@ -80,7 +90,7 @@ public class CreateAboutModelImplementor {
         modelList.add(new LibraryObject(
                 c.getString(R.string.photo_view),
                 c.getString(R.string.about_photo_view),
-                "https://github.com/chrisbanes/PhotoView"));
+                "https://github.com/bm-x/PhotoView"));
         modelList.add(new LibraryObject(
                 c.getString(R.string.page_indicator),
                 c.getString(R.string.about_page_indicator),
@@ -89,6 +99,10 @@ public class CreateAboutModelImplementor {
                 c.getString(R.string.greendao_db),
                 c.getString(R.string.about_greendao_db),
                 "https://github.com/greenrobot/greenDAO"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.downloader),
+                c.getString(R.string.about_downloader),
+                "https://github.com/lingochamp/FileDownloader"));
 
         return modelList;
     }

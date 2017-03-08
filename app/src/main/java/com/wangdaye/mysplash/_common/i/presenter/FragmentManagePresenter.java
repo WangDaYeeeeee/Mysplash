@@ -2,8 +2,8 @@ package com.wangdaye.mysplash._common.i.presenter;
 
 import android.os.Bundle;
 
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui._basic.MysplashFragment;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashFragment;
 
 import java.util.List;
 

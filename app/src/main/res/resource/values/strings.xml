@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">2.9.4</string>
+    <string name="version_code">3.0.1</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -67,6 +67,8 @@
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
     <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="downloader">FileDownloader</string>
+    <string name="about_downloader">Multitask、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
@@ -212,6 +214,17 @@
 
     <string name="action_path">Download Path</string>
     <string name="action_cancel_all">Cancel All</string>
+
+    <string name="action_clip_with_square">Clip With Square</string>
+    <string name="action_clip_with_rectangle">Clip With Rectangle</string>
+
+    <string name="action_align_left">Align Left Side</string>
+    <string name="action_align_center">Align Center</string>
+    <string name="action_align_right">Align Right Side</string>
+    
+    <string name="action_wallpaper">Wallpaper</string>
+    <string name="action_lockscreen">LockScreen</string>
+    <string name="action_wallpaper_lockscreen">Wallpaper And LockScreen</string>
 
     <!-- transition name. -->
     <string name="transition_activity_container">activity_container</string>

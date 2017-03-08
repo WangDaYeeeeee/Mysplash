@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -26,7 +25,7 @@ import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -36,6 +35,7 @@ import com.wangdaye.mysplash._common.i.view.CollectionsView;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.CollectionsObject;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
@@ -143,10 +143,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         feedbackContainer.setVisibility(GONE);
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
-        Glide.with(getContext())
-                .load(R.drawable.feedback_no_photos)
-                .dontAnimate()
-                .into(feedbackImg);
+        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
 
         this.feedbackText = (TextView) findViewById(R.id.container_loading_view_large_feedbackTxt);
 
@@ -255,7 +252,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return collectionsPresenter.getAdapter().getRealItemCount() <= 0
+        return collectionsPresenter.getAdapter().getItemCount() <= 0
                 && !collectionsPresenter.isRefreshing() && !collectionsPresenter.isLoading();
     }
 
@@ -299,7 +296,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return collectionsPresenter.getAdapter().getRealItemCount();
+            return collectionsPresenter.getAdapter().getItemCount();
         }
     }
 

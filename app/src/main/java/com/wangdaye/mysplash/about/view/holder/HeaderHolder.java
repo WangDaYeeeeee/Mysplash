@@ -5,16 +5,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.TotalDialog;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 
 /**
  * Header holder.
@@ -22,6 +21,7 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 public class HeaderHolder extends AboutAdapter.ViewHolder
         implements View.OnClickListener {
+    // widget
     private ImageView appIcon;
 
     /** <br> life cycle. */
@@ -57,10 +57,12 @@ public class HeaderHolder extends AboutAdapter.ViewHolder
 
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {
-        Glide.with(a)
-                .load(R.drawable.ic_launcher)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(appIcon);
+        ImageHelper.loadIcon(a, appIcon, R.drawable.ic_launcher);
+    }
+
+    @Override
+    protected void onRecycled() {
+        ImageHelper.releaseImageView(appIcon);
     }
 
     /** <br> interface. */

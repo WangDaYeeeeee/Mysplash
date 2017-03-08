@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash.about.model.CategoryAboutObject;
 
@@ -29,5 +29,10 @@ public class CategoryHolder extends AboutAdapter.ViewHolder {
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {
         text.setText(((CategoryAboutObject) model).category);
+    }
+
+    @Override
+    protected void onRecycled() {
+        // do nothing.
     }
 }

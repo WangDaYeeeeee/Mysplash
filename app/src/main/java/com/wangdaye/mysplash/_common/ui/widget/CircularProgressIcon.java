@@ -13,10 +13,9 @@ import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 
 /**
  * Circular progress button.
@@ -94,10 +93,7 @@ public class CircularProgressIcon extends FrameLayout {
         cancelAllAnimation();
         setState(STATE_RESULT);
         setAnimating(false);
-        Glide.with(getContext())
-                .load(imageId)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(image);
+        ImageHelper.loadIcon(getContext(), image, imageId);
 
         image.setAlpha(1f);
         image.setScaleX(1f);
@@ -125,11 +121,7 @@ public class CircularProgressIcon extends FrameLayout {
         if (getState() == STATE_PROGRESS) {
             setState(STATE_RESULT);
             cancelAllAnimation();
-            Glide.with(getContext())
-                    .load(imageId)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .dontAnimate()
-                    .into(image);
+            ImageHelper.loadIcon(getContext(), image, imageId);
             showAnimation = new ShowAnimation(image);
             image.startAnimation(showAnimation);
             hideAnimation = new HideAnimation(progress);
@@ -147,7 +139,7 @@ public class CircularProgressIcon extends FrameLayout {
     }
 
     public void recycleImageView() {
-        Glide.clear(image);
+        ImageHelper.releaseImageView(image);
     }
 
     /** <br> data. */

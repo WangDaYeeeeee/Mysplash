@@ -14,7 +14,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.api.PhotoApi;
 import com.wangdaye.mysplash._common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash._common.ui.widget.preference.MysplashListPreference;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -86,7 +86,7 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void showRebootSnackbar() {
-        NotificationUtils.showActionSnackbar(
+        NotificationHelper.showActionSnackbar(
                 getString(R.string.feedback_notify_restart),
                 getString(R.string.restart),
                 Snackbar.LENGTH_SHORT,

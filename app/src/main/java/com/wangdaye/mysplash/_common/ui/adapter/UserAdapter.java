@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -12,13 +11,13 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
@@ -48,37 +47,9 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.title.setText(itemList.get(position).name);
-        if (TextUtils.isEmpty(itemList.get(position).bio)) {
-            holder.subtitle.setText(
-                    itemList.get(position).total_photos + a.getResources().getStringArray(R.array.user_tabs)[0] +
-                            + itemList.get(position).total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
-                            + itemList.get(position).total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
-        } else {
-            holder.subtitle.setText(itemList.get(position).bio);
-        }
-
-        if (TextUtils.isEmpty(itemList.get(position).portfolio_url)) {
-            holder.portfolioBtn.setVisibility(View.GONE);
-        } else {
-            holder.portfolioBtn.setVisibility(View.VISIBLE);
-        }
-
-        if (Mysplash.getInstance().isLightTheme()) {
-            holder.portfolioBtn.setImageResource(R.drawable.ic_item_earth_light);
-        } else {
-            holder.portfolioBtn.setImageResource(R.drawable.ic_item_earth_dark);
-        }
-
-        DisplayUtils.loadAvatarWithColorAnim(a, holder.avatar, itemList.get(position).profile_image);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.avatar.setTransitionName(itemList.get(position).username + "-avatar");
-            holder.background.setTransitionName(itemList.get(position).username + "-background");
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -99,7 +70,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        Glide.clear(holder.avatar);
+        holder.onRecycled();
     }
 
     public void insertItem(User u, int position) {
@@ -110,10 +81,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void clearItem() {
         itemList.clear();
         notifyDataSetChanged();
-    }
-
-    public int getRealItemCount() {
-        return itemList.size();
     }
 
     /** <br> inner class. */
@@ -129,6 +96,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
 
         public TextView title;
         public TextView subtitle;
+
+        // life cycle.
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -146,6 +115,58 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             this.subtitle = (TextView) itemView.findViewById(R.id.item_user_subtitle);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
+
+        // UI.
+
+        void onBindView(final int position) {
+            title.setText(itemList.get(position).name);
+            if (TextUtils.isEmpty(itemList.get(position).bio)) {
+                subtitle.setText(
+                        itemList.get(position).total_photos + a.getResources().getStringArray(R.array.user_tabs)[0] +
+                                + itemList.get(position).total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
+                                + itemList.get(position).total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
+            } else {
+                subtitle.setText(itemList.get(position).bio);
+            }
+
+            if (TextUtils.isEmpty(itemList.get(position).portfolio_url)) {
+                portfolioBtn.setVisibility(View.GONE);
+            } else {
+                portfolioBtn.setVisibility(View.VISIBLE);
+            }
+
+            if (Mysplash.getInstance().isLightTheme()) {
+                portfolioBtn.setImageResource(R.drawable.ic_item_earth_light);
+            } else {
+                portfolioBtn.setImageResource(R.drawable.ic_item_earth_dark);
+            }
+
+            ImageHelper.loadAvatar(a, avatar, itemList.get(position), new ImageHelper.OnLoadImageListener() {
+                @Override
+                public void onLoadSucceed() {
+                    if (!itemList.get(position).hasFadedIn) {
+                        itemList.get(position).hasFadedIn = true;
+                        ImageHelper.startSaturationAnimation(a, avatar);
+                    }
+                }
+
+                @Override
+                public void onLoadFailed() {
+                    // do nothing.
+                }
+            });
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                avatar.setTransitionName(itemList.get(position).username + "-avatar");
+                background.setTransitionName(itemList.get(position).username + "-background");
+            }
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(avatar);
+        }
+
+        // interface.
 
         @Override
         public void onClick(View view) {

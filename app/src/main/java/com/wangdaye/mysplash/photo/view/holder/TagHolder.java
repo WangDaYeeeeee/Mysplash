@@ -6,9 +6,9 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.item.Tag;
+import com.wangdaye.mysplash._common._basic.Tag;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash._common.ui.adapter.TagAdapter;
 

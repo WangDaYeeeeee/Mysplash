@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.photo.presenter;
 
 import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 
 /**
  * Message manage implementor.

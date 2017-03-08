@@ -20,7 +20,7 @@ import com.wangdaye.mysplash._common.i.view.PagerManageView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash._common.i.view.UserView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
@@ -149,7 +149,7 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return true;
     }
 

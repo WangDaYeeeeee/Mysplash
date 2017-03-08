@@ -23,6 +23,7 @@
         android:layout_margin="@dimen/normal_margin"
         android:layout_alignParentRight="true"
         android:layout_below="@id/item_photo_story_content"
+        android:foreground="?attr/selectableItemBackground"
         android:stateListAnimator="@animator/touch_rise"
         android:scaleType="centerCrop"
         android:src="?attr/line_color"

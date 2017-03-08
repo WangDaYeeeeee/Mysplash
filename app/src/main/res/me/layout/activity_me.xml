@@ -54,7 +54,8 @@
                         android:scaleType="centerCrop"
                         android:src="?attr/line_color"
                         android:transitionName="@string/transition_me_avatar"
-                        android:foreground="?attr/selectableItemBackgroundBorderless"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:stateListAnimator="@animator/touch_rise"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 
                     <TextView

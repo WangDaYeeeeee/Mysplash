@@ -55,7 +55,7 @@ public class NestedScrollPhotoView extends PhotoView {
 
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                if (getScale() == 1) {
+                if (getInfo().getScale() == 1) {
                     isBeingDragged = false;
                     oldY = ev.getY();
                     parent.onStartNestedScroll(this, this, ViewCompat.SCROLL_AXIS_VERTICAL);
@@ -65,7 +65,7 @@ public class NestedScrollPhotoView extends PhotoView {
 
             case MotionEvent.ACTION_MOVE:
                 int deltaY = (int) (oldY - ev.getY());
-                if (getScale() == 1 && !isBeingDragged) {
+                if (getInfo().getScale() == 1 && !isBeingDragged) {
                     if (Math.abs(deltaY) > touchSlop) {
                         isBeingDragged = true;
                     }

@@ -52,6 +52,7 @@
             android:scaleType="centerCrop"
             android:src="?attr/line_color"
             android:stateListAnimator="@animator/touch_rise"
+            android:foreground="?attr/selectableItemBackground"
             tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
 
     </RelativeLayout>
@@ -60,7 +61,7 @@
         android:id="@+id/item_photo_base_btnBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="17dp"
+        android:layout_marginBottom="16dp"
         android:layout_alignParentBottom="true" />
 
     <FrameLayout

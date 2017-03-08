@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
@@ -17,10 +16,6 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
@@ -29,18 +24,18 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
@@ -105,182 +100,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         }
     }
 
-    @SuppressLint("RecyclerView")
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        switch (typeList.get(position).type) {
-            case VIEW_TYPE_TITLE: {
-                holder.actor.setText(getUser(position).name);
-                DisplayUtils.loadAvatar(a, holder.avatar, getUser(position).profile_image);
-                switch (resultList.get(typeList.get(position).resultPosition).verb) {
-                    case FollowingResult.VERB_LIKED:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                a.getString(R.string.liked)
-                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                        + " " + a.getString(R.string.photos)
-                                        + ".");
-                        break;
-
-                    case FollowingResult.VERB_COLLECTED:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                Html.fromHtml(
-                                        a.getString(R.string.collected)
-                                                + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                                + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
-                                                + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
-                                                + "."));
-                        break;
-
-                    case FollowingResult.VERB_FOLLOWED:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                a.getString(R.string.followed)
-                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                        + " " + a.getString(R.string.users)
-                                        + ".");
-                        break;
-
-                    case FollowingResult.VERB_RELEASE:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                a.getString(R.string.released)
-                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                        + " " + a.getString(R.string.photos)
-                                        + ".");
-                        break;
-
-                    case FollowingResult.VERB_PUBLISHED:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                a.getString(R.string.published)
-                                        + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                        + " " + a.getString(R.string.photos)
-                                        + ".");
-                        break;
-
-                    case FollowingResult.VERB_CURATED:
-                        holder.verb.setVisibility(View.VISIBLE);
-                        holder.verb.setText(
-                                Html.fromHtml(
-                                        a.getString(R.string.curated)
-                                                + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                                + " " + a.getString(R.string.photos)
-                                                + (resultList.get(typeList.get(position).resultPosition).targets.size() > 0 ?
-                                                " " + a.getString(R.string.to)
-                                                        + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
-                                                :
-                                                "")
-                                                + "."));
-                        break;
-
-                    default:
-                        holder.verb.setVisibility(View.GONE);
-                        break;
-                }
-                break;
-            }
-            case VIEW_TYPE_PHOTO: {
-                final Photo photo = getPhoto(position);
-                assert photo != null;
-                holder.title.setText("");
-                holder.image.setShowShadow(false);
-                Glide.with(a)
-                        .load(photo.urls.regular)
-                        .override(photo.getRegularWidth(), photo.getRegularHeight())
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFromMemoryCache, boolean isFirstResource) {
-                                photo.loadPhotoSuccess = true;
-                                if (!photo.hasFadedIn) {
-                                    photo.hasFadedIn = true;
-                                    updatePhoto(photo, position);
-                                    startColorAnimation(a, holder.image);
-                                }
-                                holder.title.setText(photo.user.name);
-                                holder.image.setShowShadow(true);
-                                return false;
-                            }
-                        })
-                        .into(holder.image);
-
-                if (photo.current_user_collections.size() != 0) {
-                    holder.collectionButton.setImageResource(R.drawable.ic_item_added);
-                } else {
-                    holder.collectionButton.setImageResource(R.drawable.ic_item_plus);
-                }
-
-                if (photo.settingLike) {
-                    holder.likeButton.forceSetProgressState();
-                } else {
-                    holder.likeButton.forceSetResultState(photo.liked_by_user ?
-                            R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
-                }
-
-                holder.background.setBackgroundColor(DisplayUtils.calcCardBackgroundColor(photo.color));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.image.setTransitionName(photo.id + "-" + position + "-image");
-                    holder.background.setTransitionName(photo.id + "-" + position + "-background");
-                }
-                break;
-            }
-            case VIEW_TYPE_USER:
-                User user = getUser(position);
-                holder.actor.setText(user.name);
-                if (TextUtils.isEmpty(user.bio)) {
-                    holder.verb.setText(
-                            user.total_photos + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
-                                    + user.total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
-                                    + user.total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
-                } else {
-                    holder.verb.setText(user.bio);
-                }
-
-                DisplayUtils.loadAvatar(a, holder.avatar, getUser(position).profile_image);
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.avatar.setTransitionName(user.username + "-" + position + "-avatar");
-                    holder.background.setTransitionName(user.username + "-" + position + "-background");
-                }
-                break;
-            case VIEW_TYPE_MORE: {
-                final Photo photo = getPhoto(position);
-                assert photo != null;
-                holder.more.setText(
-                        (resultList.get(typeList.get(position).resultPosition).objects.size() - MAX_DISPLAY_PHOTO_COUNT)
-                                + " " + a.getString(R.string.more));
-                Glide.with(a)
-                        .load(photo.urls.regular)
-                        .override(photo.getRegularWidth(), photo.getRegularHeight())
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
-                            @Override
-                            public boolean onResourceReady(GlideDrawable resource, String model,
-                                                           Target<GlideDrawable> target,
-                                                           boolean isFromMemoryCache, boolean isFirstResource) {
-                                photo.loadPhotoSuccess = true;
-                                if (!photo.hasFadedIn) {
-                                    photo.hasFadedIn = true;
-                                    updatePhoto(photo, position);
-                                    startColorAnimation(a, holder.image);
-                                }
-                                return false;
-                            }
-                        })
-                        .into(holder.image);
-                DisplayUtils.loadAvatar(a, holder.avatar, getUser(position).profile_image);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    holder.avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
-                    holder.background.setTransitionName(getUser(position).username + "-" + position + "-background");
-                }
-                break;
-            }
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -306,12 +128,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder.image != null) {
-            Glide.clear(holder.image);
-        }
-        if (holder.avatar != null) {
-            Glide.clear(holder.avatar);
-        }
+        holder.onRecycled();
     }
 
     public void insertItem(FollowingResult item) {
@@ -346,10 +163,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         if (photoService != null) {
             photoService.cancel();
         }
-    }
-
-    public int getRealItemCount() {
-        return typeList.size();
     }
 
     public void updatePhoto(Photo p, boolean probablyRepeat) {
@@ -449,6 +262,12 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         resultList.set(typeList.get(position).resultPosition, result);
     }
 
+    private void updateUser(User user, int position) {
+        FollowingResult result = resultList.get(typeList.get(position).resultPosition);
+        result.objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(user));
+        resultList.set(typeList.get(position).resultPosition, result);
+    }
+
     private Collection getCollection(int position) {
         return resultList.get(typeList.get(position).resultPosition)
                 .targets.get(0);
@@ -499,7 +318,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                         photo.liked_by_user = response.body().photo.liked_by_user;
                         photo.likes = response.body().photo.likes;
                     } else {
-                        NotificationUtils.showSnackbar(
+                        NotificationHelper.showSnackbar(
                                 photo.liked_by_user ?
                                         a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed),
                                 Snackbar.LENGTH_SHORT);
@@ -523,7 +342,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 if (photo != null && photo.id.equals(id)) {
                     photo.settingLike = false;
 
-                    NotificationUtils.showSnackbar(
+                    NotificationHelper.showSnackbar(
                             photo.liked_by_user ?
                                     a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed),
                             Snackbar.LENGTH_SHORT);
@@ -601,6 +420,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         // data
         private int position;
 
+        // life cycle.
+
         ViewHolder(View itemView, int position) {
             super(itemView);
             this.position = position;
@@ -670,6 +491,205 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 }
             }
         }
+
+        // UI.
+
+        void onBindView(final int position) {
+            switch (typeList.get(position).type) {
+                case VIEW_TYPE_TITLE: {
+                    actor.setText(getUser(position).name);
+                    ImageHelper.loadAvatar(a, avatar, getUser(position), null);
+                    switch (resultList.get(typeList.get(position).resultPosition).verb) {
+                        case FollowingResult.VERB_LIKED:
+                            verb.setVisibility(View.VISIBLE);
+                            verb.setText(
+                                    a.getString(R.string.liked)
+                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                            + " " + a.getString(R.string.photos)
+                                            + ".");
+                            break;
+
+                        case FollowingResult.VERB_COLLECTED:
+                            verb.setVisibility(View.VISIBLE);
+                            verb.setText(
+                                    Html.fromHtml(
+                                            a.getString(R.string.collected)
+                                                    + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                                    + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
+                                                    + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
+                                                    + "."));
+                            break;
+
+                        case FollowingResult.VERB_FOLLOWED:
+                            verb.setVisibility(View.VISIBLE);
+                            verb.setText(
+                                    a.getString(R.string.followed)
+                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                            + " " + a.getString(R.string.users)
+                                            + ".");
+                            break;
+
+                        case FollowingResult.VERB_RELEASE:
+                            verb.setVisibility(View.VISIBLE);
+                            verb.setText(
+                                    a.getString(R.string.released)
+                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                            + " " + a.getString(R.string.photos)
+                                            + ".");
+                            break;
+
+                        case FollowingResult.VERB_PUBLISHED:
+                            verb.setVisibility(View.VISIBLE);
+                            verb.setText(
+                                    a.getString(R.string.published)
+                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                            + " " + a.getString(R.string.photos)
+                                            + ".");
+                            break;
+
+                        case FollowingResult.VERB_CURATED:
+                            verb.setVisibility(View.VISIBLE);
+                            verb.setText(
+                                    Html.fromHtml(
+                                            a.getString(R.string.curated)
+                                                    + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
+                                                    + " " + a.getString(R.string.photos)
+                                                    + (resultList.get(typeList.get(position).resultPosition).targets.size() > 0 ?
+                                                    " " + a.getString(R.string.to)
+                                                            + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
+                                                    :
+                                                    "")
+                                                    + "."));
+                            break;
+
+                        default:
+                            verb.setVisibility(View.GONE);
+                            break;
+                    }
+                    break;
+                }
+                case VIEW_TYPE_PHOTO: {
+                    final Photo photo = getPhoto(position);
+                    assert photo != null;
+                    title.setText("");
+                    image.setShowShadow(false);
+
+                    ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
+                        @Override
+                        public void onLoadSucceed() {
+                            photo.loadPhotoSuccess = true;
+                            if (!photo.hasFadedIn) {
+                                photo.hasFadedIn = true;
+                                updatePhoto(photo, position);
+                                ImageHelper.startSaturationAnimation(a, image);
+                            }
+                            title.setText(photo.user.name);
+                            image.setShowShadow(true);
+                        }
+
+                        @Override
+                        public void onLoadFailed() {
+                            // do nothing.
+                        }
+                    });
+
+                    if (photo.current_user_collections.size() != 0) {
+                        collectionButton.setImageResource(R.drawable.ic_item_added);
+                    } else {
+                        collectionButton.setImageResource(R.drawable.ic_item_plus);
+                    }
+
+                    if (photo.settingLike) {
+                        likeButton.forceSetProgressState();
+                    } else {
+                        likeButton.forceSetResultState(photo.liked_by_user ?
+                                R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                    }
+
+                    background.setBackgroundColor(ImageHelper.computeCardBackgroundColor(photo.color));
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        image.setTransitionName(photo.id + "-" + position + "-image");
+                        background.setTransitionName(photo.id + "-" + position + "-background");
+                    }
+                    break;
+                }
+                case VIEW_TYPE_USER:
+                    final User user = getUser(position);
+                    actor.setText(user.name);
+                    if (TextUtils.isEmpty(user.bio)) {
+                        verb.setText(
+                                user.total_photos + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
+                                        + user.total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
+                                        + user.total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
+                    } else {
+                        verb.setText(user.bio);
+                    }
+
+                    ImageHelper.loadAvatar(a, avatar, getUser(position), new ImageHelper.OnLoadImageListener() {
+                        @Override
+                        public void onLoadSucceed() {
+                            if (!user.hasFadedIn) {
+                                user.hasFadedIn = true;
+                                updateUser(user, position);
+                                ImageHelper.startSaturationAnimation(a, avatar);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadFailed() {
+                            // do nothing.
+                        }
+                    });
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        avatar.setTransitionName(user.username + "-" + position + "-avatar");
+                        background.setTransitionName(user.username + "-" + position + "-background");
+                    }
+                    break;
+
+                case VIEW_TYPE_MORE: {
+                    final Photo photo = getPhoto(position);
+                    assert photo != null;
+                    more.setText(
+                            (resultList.get(typeList.get(position).resultPosition).objects.size() - MAX_DISPLAY_PHOTO_COUNT)
+                                    + " " + a.getString(R.string.more));
+                    ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
+                        @Override
+                        public void onLoadSucceed() {
+                            photo.loadPhotoSuccess = true;
+                            if (!photo.hasFadedIn) {
+                                photo.hasFadedIn = true;
+                                updatePhoto(photo, position);
+                                ImageHelper.startSaturationAnimation(a, image);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadFailed() {
+                            // do nothing.
+                        }
+                    });
+                    ImageHelper.loadAvatar(a, avatar, getUser(position), null);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
+                        background.setTransitionName(getUser(position).username + "-" + position + "-background");
+                    }
+                    break;
+                }
+            }
+        }
+
+        void onRecycled() {
+            if (image != null) {
+                ImageHelper.releaseImageView(image);
+            }
+            if (avatar != null) {
+                ImageHelper.releaseImageView(avatar);
+            }
+        }
+
+        // interface.
 
         @Override
         public void onClick(View view) {
@@ -748,9 +768,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                             Photo p = getPhoto(position);
                             assert p != null;
                             if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(p.id) == 0) {
-                                DownloadHelper.getInstance(a).addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
+                                DownloadHelper.getInstance().addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
                             } else {
-                                NotificationUtils.showSnackbar(
+                                NotificationHelper.showSnackbar(
                                         a.getString(R.string.feedback_download_repeat),
                                         Snackbar.LENGTH_SHORT);
                             }

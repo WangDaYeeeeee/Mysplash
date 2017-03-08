@@ -47,6 +47,8 @@
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
     <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="downloader">FileDownloader</string>
+    <string name="about_downloader">Multitask、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">TEKRAR DENE</string>

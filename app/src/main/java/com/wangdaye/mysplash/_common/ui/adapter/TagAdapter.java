@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -10,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Priority;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.item.Tag;
+import com.wangdaye.mysplash._common._basic.Tag;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 
 
@@ -45,28 +42,21 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         return new ViewHolder(v);
     }
 
-    @SuppressLint({"RecyclerView"})
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.text.setText(itemList.get(position).getTitle());
-        holder.layoutText.setText(itemList.get(position).getTitle());
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
+    }
 
-        Glide.with(context)
-                .load(itemList.get(position).getUrl())
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .centerCrop()
-                .priority(Priority.LOW)
-                .into(holder.image);
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
     }
 
     /** <br> data. */
 
     @Override
     public int getItemCount() {
-        return itemList.size();
-    }
-
-    public int getRealItemCount() {
         return itemList.size();
     }
 
@@ -82,6 +72,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         TextView layoutText;
         ImageView image;
 
+        // life cycle.
+
         ViewHolder(View itemView) {
             super(itemView);
 
@@ -92,6 +84,21 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             this.layoutText = (TextView) itemView.findViewById(R.id.item_tag_layoutText);
             this.image = (ImageView) itemView.findViewById(R.id.item_tag_image);
         }
+
+        // UI.
+
+        void onBindView(int position) {
+            text.setText(itemList.get(position).getTitle());
+            layoutText.setText(itemList.get(position).getTitle());
+
+            ImageHelper.loadPhoto(context, image, itemList.get(position).getUrl(), true, null);
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
+        }
+
+        // interface.
 
         @Override
         public void onClick(View view) {

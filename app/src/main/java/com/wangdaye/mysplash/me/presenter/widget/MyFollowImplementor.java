@@ -10,9 +10,9 @@ import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.i.model.MyFollowModel;
 import com.wangdaye.mysplash._common.i.presenter.MyFollowPresenter;
 import com.wangdaye.mysplash._common.i.view.MyFollowView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyFollowAdapter;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
 
@@ -186,7 +186,7 @@ public class MyFollowImplementor
                 for (int i = 0; i < response.body().size(); i ++) {
                     model.getAdapter().insertItem(
                             response.body().get(i),
-                            model.getAdapter().getRealItemCount());
+                            model.getAdapter().getItemCount());
                 }
                 if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
@@ -210,7 +210,7 @@ public class MyFollowImplementor
             } else {
                 view.setLoading(false);
             }
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     Snackbar.LENGTH_SHORT);
             view.requestMyFollowFailed(c.getString(R.string.feedback_load_nothing_tv));

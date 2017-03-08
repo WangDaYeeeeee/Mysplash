@@ -31,7 +31,7 @@ public class CollectionsObject
 
         this.collectionsType = collectionsType;
 
-        this.collectionsPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
+        this.collectionsPage = adapter.getItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
         this.refreshing = false;
         this.loading = false;

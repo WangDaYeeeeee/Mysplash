@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash.about.presenter.CreateAboutModelImplementor;
 import com.wangdaye.mysplash.about.view.holder.AppHolder;
 import com.wangdaye.mysplash.about.view.holder.CategoryHolder;
@@ -69,6 +69,12 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         holder.onBindView(a, itemList.get(position));
     }
 
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
+    }
+
     /** <br> data. */
 
     @Override
@@ -90,5 +96,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         }
 
         protected abstract void onBindView(MysplashActivity a, AboutModel model);
+
+        protected abstract void onRecycled();
     }
 }

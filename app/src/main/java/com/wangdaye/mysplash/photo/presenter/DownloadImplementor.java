@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.photo.presenter;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
@@ -54,6 +54,6 @@ public class DownloadImplementor
     private void doDownload(int type) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         Photo p = (Photo) model.getDownloadKey();
-        DownloadHelper.getInstance(a).addMission(a, p, type);
+        DownloadHelper.getInstance().addMission(a, p, type);
     }
 }

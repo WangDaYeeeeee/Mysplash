@@ -7,7 +7,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
@@ -46,6 +46,11 @@ public class AppHolder extends AboutAdapter.ViewHolder
         icon.setImageResource(object.iconId);
         text.setText(object.text);
         id = object.id;
+    }
+
+    @Override
+    protected void onRecycled() {
+        // do nothing.
     }
 
     /** <br> interface. */

@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -39,6 +38,7 @@ import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SearchView;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.model.widget.SearchCollectionsObject;
@@ -190,11 +190,8 @@ public class HomeSearchView extends NestedScrollFrameLayout
             feedbackContainer.setVisibility(GONE);
         }
 
-        ImageView feedbackImage = (ImageView) findViewById(R.id.container_searching_view_large_feedbackImg);
-        Glide.with(getContext())
-                .load(R.drawable.feedback_search)
-                .dontAnimate()
-                .into(feedbackImage);
+        ImageView feedbackImg = (ImageView) findViewById(R.id.container_searching_view_large_feedbackImg);
+        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_search);
 
         this.feedbackText = (TextView) findViewById(R.id.container_searching_view_large_feedbackTxt);
         switch (type) {

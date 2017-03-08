@@ -21,7 +21,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionCardAdapter;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
@@ -29,7 +29,7 @@ import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class RelativeActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return true;
     }
 
@@ -203,7 +203,7 @@ public class RelativeActivity extends MysplashActivity
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             type);
                 } else {
-                    DownloadHelper.getInstance(this)
+                    DownloadHelper.getInstance()
                             .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
                 }
                 break;
@@ -217,10 +217,10 @@ public class RelativeActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        DownloadHelper.getInstance(this)
+                        DownloadHelper.getInstance()
                                 .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
                     } else {
-                        NotificationUtils.showSnackbar(
+                        NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
                                 Snackbar.LENGTH_SHORT);
                     }
@@ -285,7 +285,7 @@ public class RelativeActivity extends MysplashActivity
     public void onDownload(Photo photo) {
         downloadTarget = photo;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            DownloadHelper.getInstance(this)
+            DownloadHelper.getInstance()
                     .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);

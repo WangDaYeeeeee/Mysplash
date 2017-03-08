@@ -19,6 +19,19 @@ public class ApiManager {
     private static final String KEY_CUSTOM_API_KEY = "custom_api_key";
     private static final String KEY_CUSTOM_API_SECRET = "custom_api_secret";
 
+    /** singleton. */
+
+    private static ApiManager instance;
+
+    public static ApiManager getInstance(Context context) {
+        synchronized (ApiManager.class) {
+            if (instance == null) {
+                instance = new ApiManager(context);
+            }
+        }
+        return instance;
+    }
+
     /** <br> life cycle. */
 
     private ApiManager(Context context) {
@@ -55,18 +68,5 @@ public class ApiManager {
     public void destroy() {
         sharedPreferences = null;
         instance = null;
-    }
-
-    /** singleton. */
-
-    private static ApiManager instance;
-
-    public static ApiManager getInstance(Context context) {
-        synchronized (ApiManager.class) {
-            if (instance == null) {
-                instance = new ApiManager(context);
-            }
-        }
-        return instance;
     }
 }

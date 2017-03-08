@@ -218,10 +218,6 @@ public class PhotoView extends ImageView {
         isRotateEnable = false;
     }
 
-    public float getScale() {
-        return mScale;
-    }
-
     /**
      */
     public void setMaxAnimFromWaiteTime(int wait) {

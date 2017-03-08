@@ -33,10 +33,10 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionMiniAdapter;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
@@ -222,7 +222,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     }
 
     private void notifyCreateFailed() {
-        NotificationUtils.showSnackbar(
+        NotificationHelper.showSnackbar(
                 getString(R.string.feedback_create_collection_failed),
                 Snackbar.LENGTH_SHORT);
     }
@@ -250,12 +250,12 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     } else {
                         if (add) {
                             holder.setResultState(android.R.color.transparent);
-                            NotificationUtils.showSnackbar(
+                            NotificationHelper.showSnackbar(
                                     getString(R.string.feedback_add_photo_failed),
                                     Snackbar.LENGTH_SHORT);
                         } else {
                             holder.setResultState(R.drawable.ic_item_state_succeed);
-                            NotificationUtils.showSnackbar(
+                            NotificationHelper.showSnackbar(
                                     getString(R.string.feedback_delete_photo_failed),
                                     Snackbar.LENGTH_SHORT);
                         }
@@ -322,7 +322,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private void createCollection() {
         String title = nameTxt.getText().toString();
         if (TextUtils.isEmpty(title)) {
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     getString(R.string.feedback_name_is_required),
                     Snackbar.LENGTH_SHORT);
         } else {

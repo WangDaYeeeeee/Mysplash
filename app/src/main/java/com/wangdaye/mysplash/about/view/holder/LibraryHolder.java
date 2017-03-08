@@ -5,7 +5,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
@@ -47,6 +47,11 @@ public class LibraryHolder extends AboutAdapter.ViewHolder
         title.setText(object.title);
         content.setText(object.subtitle);
         uri = object.uri;
+    }
+
+    @Override
+    protected void onRecycled() {
+        // do nothing.
     }
 
     /** <br> interface. */

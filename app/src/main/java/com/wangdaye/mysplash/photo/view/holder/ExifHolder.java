@@ -11,10 +11,10 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 /**
  * Exif holder.
@@ -127,7 +127,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
     }
 
     private void showExifDescription(String title, String content) {
-        NotificationUtils.showSnackbar(
+        NotificationHelper.showSnackbar(
                 title + " : " + content,
                 Snackbar.LENGTH_SHORT);
     }

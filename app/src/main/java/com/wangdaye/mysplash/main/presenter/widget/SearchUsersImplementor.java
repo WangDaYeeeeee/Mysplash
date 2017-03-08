@@ -116,7 +116,7 @@ public class SearchUsersImplementor
 
     @Override
     public int getAdapterItemCount() {
-        return ((UserAdapter) model.getAdapter()).getRealItemCount();
+        return ((UserAdapter) model.getAdapter()).getItemCount();
     }
 
     @Override
@@ -165,12 +165,12 @@ public class SearchUsersImplementor
             if (response.isSuccessful()
                     && response.body() != null
                     && response.body().results != null
-                    && adapter.getRealItemCount() + response.body().results.size() > 0) {
+                    && adapter.getItemCount() + response.body().results.size() > 0) {
                 model.setPhotosPage(page);
                 for (int i = 0; i < response.body().results.size(); i ++) {
                     adapter.insertItem(
                             response.body().results.get(i),
-                            adapter.getRealItemCount());
+                            adapter.getItemCount());
                 }
                 if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);

@@ -4,16 +4,18 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Translator holder.
@@ -28,7 +30,7 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder
     private TextView subtitle;
 
     // data
-    private String email;
+    private String url;
 
     /** <br> life cycle. */
 
@@ -51,21 +53,30 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder
     protected void onBindView(MysplashActivity a, AboutModel model) {
         TranslatorObject object = (TranslatorObject) model;
 
-        DisplayUtils.loadAvatar(a, avatar, object.avatarUrl);
-        Glide.with(a)
-                .load(object.flagId)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(flag);
+        ImageHelper.loadAvatar(a, avatar, object.avatarUrl, null);
+        ImageHelper.loadIcon(a, flag, object.flagId);
+
         title.setText(object.title);
         subtitle.setText(object.subtitle);
-        email = object.subtitle;
+        url = object.subtitle;
+    }
+
+    @Override
+    protected void onRecycled() {
+        ImageHelper.releaseImageView(avatar);
+        ImageHelper.releaseImageView(flag);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.item_about_translator_container:
-                IntentHelper.startWebActivity(v.getContext(), "mailto:" + this.email);
+                String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+                Pattern regex = Pattern.compile(check);
+                Matcher matcher = regex.matcher(url);
+                IntentHelper.startWebActivity(
+                        v.getContext(),
+                        matcher.matches() ? "mailto:" + url : url);
                 break;
         }
     }

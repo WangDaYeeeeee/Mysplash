@@ -13,7 +13,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**

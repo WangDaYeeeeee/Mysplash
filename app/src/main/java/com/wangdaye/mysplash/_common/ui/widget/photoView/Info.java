@@ -38,4 +38,12 @@ public class Info {
         mBaseRect.set(base);
         mScreenCenter.set(screenCenter);
     }
+
+    public RectF getImageBound() {
+        return mRect;
+    }
+
+    public float getScale() {
+        return mScale;
+    }
 }

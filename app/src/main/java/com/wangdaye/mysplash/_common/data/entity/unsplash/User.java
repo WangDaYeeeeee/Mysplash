@@ -3,13 +3,18 @@ package com.wangdaye.mysplash._common.data.entity.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.wangdaye.mysplash._common._basic.Previewable;
+
 import java.util.List;
 
 /**
  * User.
  * */
 
-public class User implements Parcelable {
+public class User
+        implements Parcelable, Previewable {
+    // data
+    public boolean hasFadedIn = false;
 
     /**
      * id : RfO4tDTEHg0
@@ -68,6 +73,7 @@ public class User implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte(this.hasFadedIn ? (byte) 1 : (byte) 0);
         dest.writeString(this.id);
         dest.writeInt(this.numeric_id);
         dest.writeString(this.username);
@@ -95,6 +101,7 @@ public class User implements Parcelable {
     }
 
     protected User(Parcel in) {
+        this.hasFadedIn = in.readByte() != 0;
         this.id = in.readString();
         this.numeric_id = in.readInt();
         this.username = in.readString();
@@ -129,4 +136,31 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
+
+    /** <br> interface. */
+
+    @Override
+    public String getRegularUrl() {
+        return profile_image.large;
+    }
+
+    @Override
+    public String getFullUrl() {
+        return profile_image.large;
+    }
+
+    @Override
+    public String getDownloadUrl() {
+        return profile_image.large;
+    }
+
+    @Override
+    public int getWidth() {
+        return 128;
+    }
+
+    @Override
+    public int getHeight() {
+        return 128;
+    }
 }

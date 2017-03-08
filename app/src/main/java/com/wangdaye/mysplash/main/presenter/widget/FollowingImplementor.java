@@ -11,9 +11,9 @@ import com.wangdaye.mysplash._common.data.service.FollowingService;
 import com.wangdaye.mysplash._common.i.model.FollowingModel;
 import com.wangdaye.mysplash._common.i.presenter.FollowingPresenter;
 import com.wangdaye.mysplash._common.i.view.FollowingView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.FollowingAdapter;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 import retrofit2.Call;
 
@@ -116,7 +116,7 @@ public class FollowingImplementor implements FollowingPresenter {
 
     @Override
     public int getAdapterItemCount() {
-        return model.getAdapter().getRealItemCount();
+        return model.getAdapter().getItemCount();
     }
 
     @Override
@@ -170,7 +170,7 @@ public class FollowingImplementor implements FollowingPresenter {
             }
 
             if (response.isSuccessful()
-                    && model.getAdapter().getRealItemCount() + response.body().results.size() > 0) {
+                    && model.getAdapter().getItemCount() + response.body().results.size() > 0) {
                 for (int i = 0; i < response.body().results.size(); i ++) {
                     model.getAdapter().insertItem(response.body().results.get(i));
                 }
@@ -197,7 +197,7 @@ public class FollowingImplementor implements FollowingPresenter {
             } else {
                 view.setLoading(false);
             }
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     Snackbar.LENGTH_SHORT);
             Log.d("FOLLOWING", t.getMessage());

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.PhotoDownloadView;
@@ -20,6 +20,7 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.ShareUtils;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
@@ -91,7 +92,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         title.setText(a.getString(R.string.by) + " " + photo.user.name);
         subtitle.setText(a.getString(R.string.on) + " " + photo.created_at.split("T")[0]);
 
-        DisplayUtils.loadAvatar(a, avatar, photo.user.profile_image);
+        ImageHelper.loadAvatar(a, avatar, photo.user, null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(photo.user.username);
         }

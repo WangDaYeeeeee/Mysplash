@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -13,29 +12,25 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.FileUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.dialog.DeleteCollectionPhotoDialogFragment;
 import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.utils.widget.glide.ColorAnimRequestListener;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import java.util.List;
@@ -80,58 +75,9 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         return new ViewHolder(v, viewType);
     }
 
-    @SuppressLint("RecyclerView")
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.title.setText("");
-        holder.image.setShowShadow(false);
-        Glide.with(a)
-                .load(itemList.get(position).urls.regular)
-                .override(itemList.get(position).getRegularWidth(), itemList.get(position).getRegularHeight())
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new ColorAnimRequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model,
-                                                   Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        itemList.get(position).loadPhotoSuccess = true;
-                        if (!itemList.get(position).hasFadedIn) {
-                            itemList.get(position).hasFadedIn = true;
-                            startColorAnimation(a, holder.image);
-                        }
-                        holder.title.setText(itemList.get(position).user.name);
-                        holder.image.setShowShadow(true);
-                        return false;
-                    }
-                })
-                .into(holder.image);
-
-        if (inMyCollection) {
-            holder.deleteButton.setVisibility(View.VISIBLE);
-        } else {
-            holder.deleteButton.setVisibility(View.GONE);
-        }
-        if (itemList.get(position).current_user_collections.size() != 0) {
-            holder.collectionButton.setImageResource(R.drawable.ic_item_added);
-        } else {
-            holder.collectionButton.setImageResource(R.drawable.ic_item_plus);
-        }
-
-        if (itemList.get(position).settingLike) {
-            holder.likeButton.forceSetProgressState();
-        } else {
-            holder.likeButton.forceSetResultState(itemList.get(position).liked_by_user ?
-                    R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
-        }
-
-        holder.background.setBackgroundColor(
-                DisplayUtils.calcCardBackgroundColor(
-                        itemList.get(position).color));
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.image.setTransitionName(itemList.get(position).id + "-image");
-            holder.background.setTransitionName(itemList.get(position).id + "-background");
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -157,8 +103,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     @Override
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        Glide.clear(holder.image);
-        holder.likeButton.recycleImageView();
+        holder.onRecycled();
     }
 
     public void insertItem(Photo item) {
@@ -270,7 +215,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                     && itemList.get(position).id.equals(id)) {
                 itemList.get(position).settingLike = false;
                 updateView(itemList.get(position).liked_by_user);
-                NotificationUtils.showSnackbar(
+                NotificationHelper.showSnackbar(
                         itemList.get(position).liked_by_user ?
                                 a.getString(R.string.feedback_unlike_failed)
                                 :
@@ -333,6 +278,8 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         ImageButton collectionButton;
         CircularProgressIcon likeButton;
 
+        // life cycle.
+
         ViewHolder(View itemView, int position) {
             super(itemView);
 
@@ -356,6 +303,65 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
 
             itemView.findViewById(R.id.item_photo_downloadButton).setOnClickListener(this);
         }
+
+        // UI.
+
+        void onBindView(final int position) {
+            title.setText("");
+            image.setShowShadow(false);
+
+            ImageHelper.loadRegularPhoto(a, image, itemList.get(position), new ImageHelper.OnLoadImageListener() {
+                @Override
+                public void onLoadSucceed() {
+                    itemList.get(position).loadPhotoSuccess = true;
+                    if (!itemList.get(position).hasFadedIn) {
+                        itemList.get(position).hasFadedIn = true;
+                        ImageHelper.startSaturationAnimation(a, image);
+                    }
+                    title.setText(itemList.get(position).user.name);
+                    image.setShowShadow(true);
+                }
+
+                @Override
+                public void onLoadFailed() {
+                    // do nothing.
+                }
+            });
+
+            if (inMyCollection) {
+                deleteButton.setVisibility(View.VISIBLE);
+            } else {
+                deleteButton.setVisibility(View.GONE);
+            }
+            if (itemList.get(position).current_user_collections.size() != 0) {
+                collectionButton.setImageResource(R.drawable.ic_item_added);
+            } else {
+                collectionButton.setImageResource(R.drawable.ic_item_plus);
+            }
+
+            if (itemList.get(position).settingLike) {
+                likeButton.forceSetProgressState();
+            } else {
+                likeButton.forceSetResultState(itemList.get(position).liked_by_user ?
+                        R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+            }
+
+            background.setBackgroundColor(
+                    ImageHelper.computeCardBackgroundColor(
+                            itemList.get(position).color));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                image.setTransitionName(itemList.get(position).id + "-image");
+                background.setTransitionName(itemList.get(position).id + "-background");
+            }
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
+            likeButton.recycleImageView();
+        }
+
+        // interface.
 
         @Override
         public void onClick(View view) {
@@ -410,12 +416,12 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                 case R.id.item_photo_downloadButton:
                     Photo p = itemList.get(getAdapterPosition());
                     if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(p.id) > 0) {
-                        NotificationUtils.showSnackbar(
+                        NotificationHelper.showSnackbar(
                                 a.getString(R.string.feedback_download_repeat),
                                 Snackbar.LENGTH_SHORT);
                     } else if (FileUtils.isPhotoExists(a, p.id)) {
                         DownloadRepeatDialog dialog = new DownloadRepeatDialog();
-                        dialog.setDownlaodKey(p);
+                        dialog.setDownloadKey(p);
                         dialog.setOnCheckOrDownloadListener(PhotoAdapter.this);
                         dialog.show(Mysplash.getInstance().getTopActivity().getFragmentManager(), null);
                     } else {

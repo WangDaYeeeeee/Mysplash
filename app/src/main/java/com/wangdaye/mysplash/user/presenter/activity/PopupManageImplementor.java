@@ -8,7 +8,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.popup.PhotoOrderPopupWindow;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 /**
  * Popup manage implementor.
@@ -42,7 +42,7 @@ public class PopupManageImplementor
                 }
             });
         } else {
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_no_filter),
                     Snackbar.LENGTH_SHORT);
         }

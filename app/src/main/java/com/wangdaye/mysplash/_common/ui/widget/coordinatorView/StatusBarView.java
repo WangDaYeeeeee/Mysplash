@@ -50,7 +50,7 @@ public class StatusBarView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         if (mask) {
-            canvas.drawColor(Color.argb((int) (255 * 0.2), 0, 0, 0));
+            canvas.drawColor(Color.argb((int) (255 * 0.1), 0, 0, 0));
         }
     }
 

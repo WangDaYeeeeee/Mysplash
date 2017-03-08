@@ -71,6 +71,8 @@
                 android:layout_height="@dimen/mini_icon_size"
                 android:layout_margin="@dimen/normal_margin"
                 tools:src="@drawable/default_avatar"
+                android:foreground="?attr/selectableItemBackground"
+                android:stateListAnimator="@animator/touch_rise"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
             <TextView

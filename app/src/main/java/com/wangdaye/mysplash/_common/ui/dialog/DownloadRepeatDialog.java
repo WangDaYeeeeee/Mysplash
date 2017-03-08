@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -24,7 +24,7 @@ public class DownloadRepeatDialog extends MysplashDialogFragment
     private OnCheckOrDownloadListener listener;
 
     // data
-    private Object downlaodKey;
+    private Object downloadKey;
 
     /** <br> life cycle. */
 
@@ -58,8 +58,8 @@ public class DownloadRepeatDialog extends MysplashDialogFragment
 
     /** <br> data. */
 
-    public void setDownlaodKey(Object obj) {
-        this.downlaodKey = obj;
+    public void setDownloadKey(Object obj) {
+        this.downloadKey = obj;
     }
 
     /** <br> interface. */
@@ -82,14 +82,14 @@ public class DownloadRepeatDialog extends MysplashDialogFragment
         switch (v.getId()) {
             case R.id.dialog_download_repeat_checkBtn:
                 if (listener != null) {
-                    listener.onCheck(downlaodKey);
+                    listener.onCheck(downloadKey);
                 }
                 dismiss();
                 break;
 
             case R.id.dialog_download_repeat_downloadBtn:
                 if (listener != null) {
-                    listener.onDownload(downlaodKey);
+                    listener.onDownload(downloadKey);
                 }
                 dismiss();
                 break;

@@ -65,14 +65,14 @@
         <item name="android:windowSharedElementReturnTransition">@transition/photo_activity_shared_return</item>
     </style>
 
-    <!-- photo preview activity. -->
+    <!-- preview activity. -->
 
-    <style name="MysplashTheme_light.Translucent.PhotoPreview" parent="MysplashTheme_light.Translucent">
+    <style name="MysplashTheme_light.Translucent.Preview" parent="MysplashTheme_light.Translucent">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
-    <style name="MysplashTheme_dark.Translucent.PhotoPreview" parent="MysplashTheme_dark.Translucent">
+    <style name="MysplashTheme_dark.Translucent.Preview" parent="MysplashTheme_dark.Translucent">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
@@ -140,6 +140,13 @@
     <style name="MysplashTheme_light.Translucent.Common" parent="MysplashTheme_light.Translucent" />
 
     <style name="MysplashTheme_dark.Translucent.Common" parent="MysplashTheme_dark.Translucent" />
+
+    <!-- set wallpaper activity. -->
+
+    <style name="MysplashTheme_dark.SetWallpaper" parent="MysplashTheme_dark">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
 
     <!-- popup. -->
 

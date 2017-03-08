@@ -33,7 +33,6 @@
 
                 <TextView
                     android:id="@+id/dialog_profile_text"
-                    android:text="storage/emulated/0/Pictures/Mysplash"
                     android:lineSpacingMultiplier="1.3"
                     android:layout_marginTop="@dimen/normal_margin"
                     android:layout_marginBottom="@dimen/normal_margin"
@@ -41,6 +40,7 @@
                     android:layout_marginRight="@dimen/mini_icon_size"
                     android:textIsSelectable="true"
                     style="@style/content_text"
+                    tools:text="3 Likes\n565 Followers"
                     tools:ignore="HardcodedText" />
 
             </android.support.v4.widget.NestedScrollView>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_set_wallpaper_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.mysplash._common.ui.widget.photoView.PhotoView
+            android:id="@+id/activity_set_wallpaper_photoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_set_wallpaper_statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <ImageButton
+            android:id="@+id/activity_set_wallpaper_closeBtn"
+            android:src="@drawable/ic_toolbar_close_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription" />
+
+        <Button
+            android:id="@+id/activity_set_wallpaper_setBtn"
+            android:text="@string/set"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextTitle_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            android:layout_alignParentRight="true"
+            android:layout_margin="4dp"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/activity_set_wallpaper_alignBtn"
+            android:src="@drawable/ic_align_center_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            android:layout_toLeftOf="@id/activity_set_wallpaper_setBtn"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <ImageView
+            android:id="@+id/activity_set_wallpaper_typeBtn"
+            android:src="@drawable/ic_orientation_squarish_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            android:layout_toLeftOf="@id/activity_set_wallpaper_alignBtn"
+            style="@style/material_image_button"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

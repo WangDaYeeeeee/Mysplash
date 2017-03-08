@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.main.model.widget;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.service.SearchService;
 import com.wangdaye.mysplash._common.i.model.SearchModel;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
 
 /**
@@ -32,7 +32,7 @@ public class SearchCollectionsObject
 
         this.searchQuery = query;
 
-        this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
+        this.photosPage = adapter.getItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
         this.refreshing = false;
         this.loading = false;

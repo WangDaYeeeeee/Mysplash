@@ -17,7 +17,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -32,7 +31,7 @@ import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash._common.i.view.FollowingView;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
@@ -40,6 +39,7 @@ import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefr
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.model.widget.FollowingObject;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
@@ -143,6 +143,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     private void initAvatarView() {
         this.avatarContainer = (FrameLayout) findViewById(R.id.container_following_avatar_avatarContainer);
+        avatarContainer.setOnClickListener(this);
 
         this.avatar = (CircleImageView) findViewById(R.id.container_following_avatar_avatar);
         avatar.setOnClickListener(this);
@@ -183,10 +184,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         feedbackContainer.setVisibility(GONE);
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_in_following_view_large_feedbackImg);
-        Glide.with(getContext())
-                .load(R.drawable.feedback_no_photos)
-                .dontAnimate()
-                .into(feedbackImg);
+        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
 
         this.feedbackText = (TextView) findViewById(R.id.container_loading_in_following_view_large_feedbackTxt);
 
@@ -238,6 +236,10 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.container_following_avatar_avatarContainer:
+                // do nothing.
+                break;
+
             case R.id.container_following_avatar_avatar:
                 int adapterPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
                         .findFirstVisibleItemPosition();
@@ -316,7 +318,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         || (followingPresenter.getAdapter().isFooterView(lastAdapterPosition)
                         && followingPresenter.getAdapter().isHeaderView(firstVisibleItemPosition)))) {
                     User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
-                    DisplayUtils.loadAvatar(getContext(), avatar, user.profile_image);
+                    ImageHelper.loadAvatar(getContext(), avatar, user, null);
                 }
                 lastAdapterPosition = firstVisibleItemPosition;
             }

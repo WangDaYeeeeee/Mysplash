@@ -301,7 +301,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return collectionsPresenter.getAdapter().getRealItemCount();
+            return collectionsPresenter.getAdapter().getItemCount();
         }
     }
 
@@ -384,7 +384,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         switch (loadPresenter.getLoadState()) {
             case LoadObject.NORMAL_STATE:
                 return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
-                        || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
+                        || collectionsPresenter.getAdapter().getItemCount() <= 0;
 
             default:
                 return true;

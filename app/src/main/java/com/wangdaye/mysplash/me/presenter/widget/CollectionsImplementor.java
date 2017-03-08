@@ -7,13 +7,13 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.i.model.CollectionsModel;
 import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash._common.i.view.CollectionsView;
 import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 import java.util.List;
 
@@ -178,7 +178,7 @@ public class CollectionsImplementor
             if (response.isSuccessful()) {
                 model.setCollectionsPage(page);
                 for (int i = 0; i < response.body().size(); i ++) {
-                    model.getAdapter().insertItem(response.body().get(i), model.getAdapter().getRealItemCount());
+                    model.getAdapter().insertItem(response.body().get(i), model.getAdapter().getItemCount());
                 }
                 if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     model.setOver(true);
@@ -205,7 +205,7 @@ public class CollectionsImplementor
             } else {
                 view.setLoading(false);
             }
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     Snackbar.LENGTH_SHORT);
             view.requestCollectionsFailed(c.getString(R.string.feedback_load_failed_tv));

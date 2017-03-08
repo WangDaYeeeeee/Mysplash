@@ -3,14 +3,13 @@ package com.wangdaye.mysplash.photo.view.holder;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 
 /**
@@ -21,6 +20,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
         implements View.OnClickListener {
     // widget
     private ImageView imageView;
+    private OnLoadImageCallback callback;
     
     // data
     private Photo photo;
@@ -41,29 +41,36 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
 
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {
+        // do nothing.
+    }
+
+    public void loadMoreImage(final MysplashActivity a, final Photo photo, final boolean hasFadedIn,
+                              OnLoadImageCallback c) {
+        setOnLoadImageCallback(c);
+        ImageHelper.OnLoadImageListener listener = new ImageHelper.OnLoadImageListener() {
+            @Override
+            public void onLoadSucceed() {
+                if (!hasFadedIn) {
+                    if (callback != null) {
+                        callback.onLoadImageSucceed();
+                    }
+                    ImageHelper.startSaturationAnimation(a, imageView);
+                }
+            }
+
+            @Override
+            public void onLoadFailed() {
+                // do nothing.
+            }
+        };
+
         imageView.setTranslationY((float) (new DisplayUtils(a).dpToPx(72) * (-0.5)));
         if (photo.related_photos != null && photo.related_photos.results.size() != 0) {
-            Glide.with(a)
-                    .load(photo.related_photos.results.get(0).urls.regular)
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(imageView);
+            ImageHelper.loadRegularPhoto(a, imageView, photo.related_photos.results.get(0), hasFadedIn ? null : listener);
         } else if (photo.related_collections != null && photo.related_collections.results.size() != 0) {
-            if (photo.related_collections.results.get(0).cover_photo != null) {
-                Glide.with(a)
-                        .load(photo.related_collections.results.get(0).cover_photo.urls.regular)
-                        .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                        .into(imageView);
-            } else {
-                Glide.with(a)
-                        .load(R.color.colorPrimary_dark)
-                        .diskCacheStrategy(DiskCacheStrategy.NONE)
-                        .into(imageView);
-            }
+            ImageHelper.loadCollectionCover(a, imageView, photo.related_collections.results.get(0), hasFadedIn ? null : listener);
         } else {
-            Glide.with(a)
-                    .load(R.color.colorPrimary_dark)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(imageView);
+            imageView.setImageResource(R.color.colorPrimary_dark);
         }
         this.photo = photo;
     }
@@ -73,7 +80,19 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
     }
 
     /** <br> interface. */
-    
+
+    // on load image callback.
+
+    public interface OnLoadImageCallback {
+        void onLoadImageSucceed();
+    }
+
+    private void setOnLoadImageCallback(OnLoadImageCallback c) {
+        this.callback = c;
+    }
+
+    // on click listener.
+
     @Override
     public void onClick(View view) {
         switch (view.getId()) {

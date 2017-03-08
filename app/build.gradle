@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 294
-        versionName "2.9.4"
+        versionCode 301
+        versionName "3.0.1"
     }
     sourceSets {
         main {
@@ -62,7 +62,7 @@ buildscript {
 
 apply plugin: 'org.greenrobot.greendao'
 greendao {
-    schemaVersion 11
+    schemaVersion 12
     generateTests false
 }
 
@@ -87,4 +87,5 @@ dependencies {
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.liulishuo.filedownloader:library:1.4.1'
 }

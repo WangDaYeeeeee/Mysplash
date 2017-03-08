@@ -11,7 +11,7 @@ import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash._common.i.presenter.MultiFilterPresenter;
 import com.wangdaye.mysplash._common.i.view.MultiFilterView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 
 import java.util.List;

@@ -34,6 +34,14 @@ public class LanguageUtils {
                     configuration.setLocale(new Locale("tr"));
                     break;
 
+                case "german":
+                    configuration.setLocale(new Locale("de"));
+                    break;
+
+                case "russian":
+                    configuration.setLocale(new Locale("ru"));
+                    break;
+
                 default:
                     configuration.setLocale(new Locale("en"));
                     break;

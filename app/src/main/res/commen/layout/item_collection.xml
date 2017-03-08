@@ -60,6 +60,7 @@
             android:layout_height="@dimen/mini_icon_size"
             android:layout_margin="@dimen/normal_margin"
             android:stateListAnimator="@animator/touch_rise"
+            android:foreground="?attr/selectableItemBackground"
             tools:src="@drawable/default_avatar"
             tools:ignore="ContentDescription,RtlHardcoded" />
 

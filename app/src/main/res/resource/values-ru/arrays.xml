@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- home tab. -->
+    <string-array name="home_tabs">
+        <item>НОВЫЕ</item>
+        <item>FEATURED</item>
+        <item>КОЛЛЕКЦИИ</item>
+    </string-array>
+
+    <!-- search tab. -->
+    <string-array name="search_tabs">
+        <item>ФОТОГРАФИИ</item>
+        <item>КОЛЛЕКЦИИ</item>
+        <item>ПОЛЬЗОВАТЕЛИ</item>
+    </string-array>
+
+    <!-- user tab. -->
+    <string-array name="user_tabs">
+        <item>ФОТОГРАФИИ</item>
+        <item>КОЛЛЕКЦИИ</item>
+        <item>ПОНРАВИВШИЕСЯ</item>
+    </string-array>
+
+    <!-- my follow tab. -->
+    <string-array name="my_follow_tabs">
+        <item>ПОДПИСЧИКИ</item>
+        <item>ПОДПИСКИ</item>
+    </string-array>
+
+    <!-- download option. -->
+    <string-array name="download_options">
+        <item>ЗАГРУЗИТЬ</item>
+        <item>ПОДЕЛИТЬСЯ</item>
+        <item>ОБОИ</item>
+    </string-array>
+
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
+        <item>Последние</item>
+        <item>Старые</item>
+        <item>Популярные</item>
+        <item>Случайные</item>
+    </string-array>
+
+    <!-- collection type. -->
+    <string-array name="collection_types">
+        <item>All</item>
+        <item>Curated</item>
+        <item>Featured</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>Сжатый</item>
+        <item>Исходный</item>
+    </string-array>
+
+    <!-- back to top. -->
+    <string-array name="back_to_top_type">
+        <item>Все списки</item>
+        <item>Только на главную</item>
+        <item>Ничего</item>
+    </string-array>
+
+    <!-- language. -->
+    <string-array name="languages">
+        <item>Follow system</item>
+        <item>English</item>
+        <item>中文</item>
+        <item>Italiano</item>
+        <item>Türk</item>
+        <item>Deutsche</item>
+        <item>Русский</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>Ландшафтный</item>
+        <item>Портретный</item>
+        <item>Квадратный</item>
+    </string-array>
+
+</resources>

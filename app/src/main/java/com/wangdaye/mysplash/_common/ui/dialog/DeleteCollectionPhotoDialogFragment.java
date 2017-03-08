@@ -17,9 +17,9 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoR
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -113,7 +113,7 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
     }
 
     private void notifyFailed() {
-        NotificationUtils.showSnackbar(
+        NotificationHelper.showSnackbar(
                 getString(R.string.feedback_delete_photo_failed),
                 Snackbar.LENGTH_SHORT);
     }

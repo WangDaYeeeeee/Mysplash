@@ -5,7 +5,7 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomTouchView;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
@@ -54,7 +54,8 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.item_photo_touch:
-                IntentHelper.startPreviewPhotoActivity(Mysplash.getInstance().getTopActivity(), photo);
+                IntentHelper.startPreviewActivity(
+                        Mysplash.getInstance().getTopActivity(), photo, true);
                 break;
         }
     }

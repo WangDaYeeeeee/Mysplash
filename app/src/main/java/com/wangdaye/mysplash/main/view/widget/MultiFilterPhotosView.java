@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -40,6 +39,7 @@ import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFram
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.MultiFilterObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
@@ -195,10 +195,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_filtering_view_large_feedbackContainer);
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_filtering_view_large_feedbackImg);
-        Glide.with(getContext())
-                .load(R.drawable.feedback_search)
-                .dontAnimate()
-                .into(feedbackImg);
+        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_search);
 
         this.feedbackText = (TextView) findViewById(R.id.container_filtering_view_large_feedbackTxt);
         feedbackText.setText(R.string.feedback_search_photos_tv);

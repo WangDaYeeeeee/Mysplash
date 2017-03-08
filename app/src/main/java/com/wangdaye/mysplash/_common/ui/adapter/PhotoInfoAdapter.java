@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.photo.view.holder.BaseHolder;
 import com.wangdaye.mysplash.photo.view.holder.ExifHolder;
@@ -35,6 +35,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
     private List<Integer> typeList;
     private boolean complete;
     private boolean needShowInitAnim;
+    private boolean moreImageHasFadedIn;
 
     /** <br> data. */
 
@@ -44,6 +45,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         this.photo = photo;
         this.complete = photo != null && photo.complete;
         this.needShowInitAnim = true;
+        this.moreImageHasFadedIn = false;
         buildTypeList();
     }
 
@@ -93,6 +95,13 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         } else if (getItemViewType(position) == TagHolder.TYPE_TAG) {
             ((TagHolder) holder).scrollTo(scrollListener.scrollX, 0);
             ((TagHolder) holder).setScrollListener(scrollListener);
+        } else if (getItemViewType(position) == MoreHolder.TYPE_MORE) {
+            ((MoreHolder) holder).loadMoreImage(a, photo, moreImageHasFadedIn, new MoreHolder.OnLoadImageCallback() {
+                @Override
+                public void onLoadImageSucceed() {
+                    moreImageHasFadedIn = true;
+                }
+            });
         }
     }
 
@@ -121,9 +130,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
             for (int i = 0; i < 4; i ++) {
                 typeList.add(ExifHolder.TYPE_EXIF + i);
             }
-            if (photo.tags != null || photo.categories != null) {
-                typeList.add(TagHolder.TYPE_TAG);
-            }
+            typeList.add(TagHolder.TYPE_TAG);
             if ((photo.related_photos != null && photo.related_photos.results.size() > 0)
                     || (photo.related_collections != null && photo.related_collections.results.size() > 0)) {
                 typeList.add(MoreHolder.TYPE_MORE);
@@ -144,6 +151,8 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
     }
 
     /** <br> interface. */
+
+    // on scroll listener.
 
     private class OnScrollListener extends RecyclerView.OnScrollListener {
         // data
@@ -166,6 +175,8 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
             scrollX += dx;
         }
     }
+
+    // on load image callback.
 
     /** <br> inner class. */
 

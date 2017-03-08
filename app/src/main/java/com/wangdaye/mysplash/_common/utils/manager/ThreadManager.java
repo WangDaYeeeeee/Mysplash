@@ -1,11 +1,7 @@
 package com.wangdaye.mysplash._common.utils.manager;
 
-import com.wangdaye.mysplash._common.utils.widget.runnable.PriorityRunnable;
-
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.PriorityBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.Executors;
 
 /**
  * Thread manager.
@@ -13,22 +9,6 @@ import java.util.concurrent.TimeUnit;
 
 public class ThreadManager {
     private ExecutorService threadPool;
-
-    /** <br> life cycle. */
-
-    private ThreadManager() {
-        int coreCount = Runtime.getRuntime().availableProcessors();
-        this.threadPool = new ThreadPoolExecutor(
-                coreCount, coreCount * 2,
-                0, TimeUnit.SECONDS,
-                new PriorityBlockingQueue<Runnable>());
-    }
-
-    /** <br> data. */
-
-    public void execute(PriorityRunnable runnable) {
-        threadPool.execute(runnable);
-    }
 
     /** <br> singleton. */
 
@@ -41,5 +21,17 @@ public class ThreadManager {
             }
         }
         return instance;
+    }
+
+    /** <br> life cycle. */
+
+    private ThreadManager() {
+        this.threadPool = Executors.newCachedThreadPool();
+    }
+
+    /** <br> data. */
+
+    public void execute(Runnable runnable) {
+        threadPool.execute(runnable);
     }
 }

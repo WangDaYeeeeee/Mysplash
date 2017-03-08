@@ -8,7 +8,8 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
+import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.manager.ApiManager;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -76,6 +77,15 @@ public class Mysplash extends Application {
 
     // permission code.
     public static final int WRITE_EXTERNAL_STORAGE = 1;
+    public static final int READ_EXTERNAL_STORAGE = 2;
+
+    /** <br> singleton. */
+
+    private static Mysplash instance;
+
+    public static Mysplash getInstance() {
+        return instance;
+    }
 
     /** <br> life cycle. */
 
@@ -86,6 +96,7 @@ public class Mysplash extends Application {
         instance = this;
         activityList = new ArrayList<>();
 
+        DownloadHelper.getInstance().init(getApplicationContext());
         ApiManager.getInstance(this);
         AuthManager.getInstance();
 
@@ -266,13 +277,5 @@ public class Mysplash extends Application {
 
     public void setCustomApiSecret(String customApiSecret) {
         this.customApiSecret = customApiSecret;
-    }
-
-    /** <br> singleton. */
-
-    private static Mysplash instance;
-
-    public static Mysplash getInstance() {
-        return instance;
     }
 }

@@ -11,12 +11,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashPopupWindow;
+import com.wangdaye.mysplash._common._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**

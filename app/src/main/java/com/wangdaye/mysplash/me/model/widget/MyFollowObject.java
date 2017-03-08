@@ -32,7 +32,7 @@ public class MyFollowObject implements MyFollowModel {
         this.service = UserService.getService();
 
         this.followType = followType;
-        this.userPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
+        this.userPage = adapter.getItemCount() / Mysplash.DEFAULT_PER_PAGE;
         this.deltaValue = 0;
 
         this.refreshing = false;

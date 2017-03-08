@@ -10,9 +10,9 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.i.presenter.PhotosPresenter;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.ValueUtils;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash.main.model.widget.PhotosObject;
@@ -282,7 +282,7 @@ public class PhotosImplementor
             } else {
                 view.setLoading(false);
             }
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     Snackbar.LENGTH_SHORT);
             view.requestPhotosFailed(c.getString(R.string.feedback_load_failed_tv));

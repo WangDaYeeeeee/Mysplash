@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -32,13 +31,14 @@ import com.wangdaye.mysplash._common.i.view.MyFollowView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SwipeBackView;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.MyFollowAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
@@ -148,10 +148,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         feedbackContainer.setVisibility(GONE);
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
-        Glide.with(getContext())
-                .load(R.drawable.feedback_no_photos)
-                .dontAnimate()
-                .into(feedbackImg);
+        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
 
         this.feedbackText = (TextView) findViewById(R.id.container_loading_view_large_feedbackTxt);
 
@@ -325,7 +322,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return myFollowPresenter.getAdapter().getRealItemCount();
+            return myFollowPresenter.getAdapter().getItemCount();
         }
     }
 
@@ -408,7 +405,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         switch (loadPresenter.getLoadState()) {
             case LoadObject.NORMAL_STATE:
                 return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
-                        || myFollowPresenter.getAdapter().getRealItemCount() <= 0;
+                        || myFollowPresenter.getAdapter().getItemCount() <= 0;
 
             default:
                 return true;

@@ -14,20 +14,19 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash._common.data.service.AuthorizeService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -91,7 +90,7 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return true;
     }
 
@@ -158,10 +157,7 @@ public class LoginActivity extends MysplashActivity
         }
 
         ImageView icon = (ImageView) findViewById(R.id.activity_login_icon);
-        Glide.with(this)
-                .load(R.drawable.ic_launcher)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(icon);
+        ImageHelper.loadIcon(this, icon, R.drawable.ic_launcher);
 
         DisplayUtils.setTypeface(this, ((TextView) findViewById(R.id.activity_login_content)));
 
@@ -267,7 +263,7 @@ public class LoginActivity extends MysplashActivity
             IntentHelper.startMainActivity(this);
             finish();
         } else {
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     getString(R.string.feedback_request_token_failed),
                     Snackbar.LENGTH_SHORT);
             setState(NORMAL_STATE);
@@ -276,7 +272,7 @@ public class LoginActivity extends MysplashActivity
 
     @Override
     public void onRequestAccessTokenFailed(Call<AccessToken> call, Throwable t) {
-        NotificationUtils.showSnackbar(
+        NotificationHelper.showSnackbar(
                 getString(R.string.feedback_request_token_failed),
                 Snackbar.LENGTH_SHORT);
         setState(NORMAL_STATE);

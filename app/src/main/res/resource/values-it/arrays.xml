@@ -70,6 +70,8 @@
         <item>中文</item>
         <item>Italiano</item>
         <item>Türk</item>
+        <item>Deutsche</item>
+        <item>Русский</item>
     </string-array>
 
     <!-- search orientation. -->

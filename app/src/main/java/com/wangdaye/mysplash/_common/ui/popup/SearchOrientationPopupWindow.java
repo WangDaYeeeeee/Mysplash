@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashPopupWindow;
+import com.wangdaye.mysplash._common._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**

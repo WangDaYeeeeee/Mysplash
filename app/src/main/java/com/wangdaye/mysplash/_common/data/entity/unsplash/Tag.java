@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Tag.
  * */
 
-public class Tag implements com.wangdaye.mysplash._common.data.entity.item.Tag, Parcelable {
+public class Tag implements com.wangdaye.mysplash._common._basic.Tag, Parcelable {
 
     /**
      * title : frozen

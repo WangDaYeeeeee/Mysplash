@@ -13,11 +13,11 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash._common.utils.manager.ApiManager;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 
@@ -79,7 +79,7 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean needSetStatusBarTextDark() {
+    protected boolean isFullScreen() {
         return true;
     }
 
@@ -103,7 +103,7 @@ public class CustomApiActivity extends MysplashActivity
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else {
             backPressed = true;
-            NotificationUtils.showSnackbar(
+            NotificationHelper.showSnackbar(
                     getString(R.string.feedback_click_again_to_exit),
                     Snackbar.LENGTH_SHORT);
 

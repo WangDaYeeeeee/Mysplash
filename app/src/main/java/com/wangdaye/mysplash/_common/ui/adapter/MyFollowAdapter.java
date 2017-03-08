@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -11,17 +10,16 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.item.MyFollowUser;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.FollowingService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.NotificationUtils;
+import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
@@ -61,23 +59,9 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         return new ViewHolder(v);
     }
 
-    @SuppressLint({"RecyclerView", "SetTextI18n"})
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
-        DisplayUtils.loadAvatar(a, holder.avatar, itemList.get(position).user.profile_image);
-
-        holder.title.setText(itemList.get(position).user.name);
-
-        if (itemList.get(position).requesting) {
-            holder.rippleButton.forceProgress(itemList.get(position).switchTo);
-        } else {
-            holder.rippleButton.forceSwitch(itemList.get(position).user.followed_by_user);
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            holder.avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
-            holder.background.setTransitionName(itemList.get(position).user.username + "-background");
-        }
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
     }
 
     public void setActivity(MysplashActivity a) {
@@ -98,7 +82,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
 
     public void onViewRecycled(ViewHolder holder) {
         super.onViewRecycled(holder);
-        Glide.clear(holder.avatar);
+        holder.onRecycled();
     }
 
     public void insertItem(User u, int position) {
@@ -109,10 +93,6 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
     public void clearItem() {
         itemList.clear();
         notifyDataSetChanged();
-    }
-
-    public int getRealItemCount() {
-        return itemList.size();
     }
 
     /** <br> interface. */
@@ -174,7 +154,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         @Override
         public void onFollowFailed(Call<ResponseBody> call, Throwable t) {
             if (Mysplash.getInstance() != null && Mysplash.getInstance().getTopActivity() != null) {
-                NotificationUtils.showSnackbar(
+                NotificationHelper.showSnackbar(
                         a.getString(R.string.feedback_follow_failed),
                         Snackbar.LENGTH_SHORT);
                 for (int i = 0; i < itemList.size(); i ++) {
@@ -192,7 +172,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         @Override
         public void onCancelFollowFailed(Call<ResponseBody> call, Throwable t) {
             if (Mysplash.getInstance() != null && Mysplash.getInstance().getTopActivity() != null) {
-                NotificationUtils.showSnackbar(
+                NotificationHelper.showSnackbar(
                         a.getString(R.string.feedback_cancel_follow_failed),
                         Snackbar.LENGTH_SHORT);
                 for (int i = 0; i < itemList.size(); i ++) {
@@ -220,6 +200,8 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         TextView title;
         public RippleButton rippleButton;
 
+        // life cycle.
+
         ViewHolder(View itemView) {
             super(itemView);
 
@@ -233,6 +215,29 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
             this.rippleButton = (RippleButton) itemView.findViewById(R.id.item_my_follow_user_button);
             rippleButton.setOnSwitchListener(this);
         }
+
+        void onBindView(int position) {
+            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, null);
+
+            title.setText(itemList.get(position).user.name);
+
+            if (itemList.get(position).requesting) {
+                rippleButton.forceProgress(itemList.get(position).switchTo);
+            } else {
+                rippleButton.forceSwitch(itemList.get(position).user.followed_by_user);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
+                background.setTransitionName(itemList.get(position).user.username + "-background");
+            }
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(avatar);
+        }
+
+        // interface.
 
         @Override
         public void onClick(View view) {

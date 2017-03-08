@@ -14,10 +14,8 @@
         </targets>
     </changeBounds>
 
-    <arcMotion
-        android:minimumHorizontalAngle="15"
-        android:minimumVerticalAngle="0"
-        android:maximumAngle="90"
-        tools:ignore="UnusedAttribute" />
+    <pathMotion
+        class="com.wangdaye.mysplash._common.ui.transition.GravityArcMotion"
+        android:maximumAngle="50" />
 
 </transitionSet>

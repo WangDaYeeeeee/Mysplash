@@ -3,7 +3,7 @@ package com.wangdaye.mysplash._common.i.model;
 import android.support.v7.widget.RecyclerView;
 
 import com.wangdaye.mysplash._common.data.service.SearchService;
-import com.wangdaye.mysplash._common.ui._basic.MysplashActivity;
+import com.wangdaye.mysplash._common._basic.MysplashActivity;
 
 /**
  * Search model.

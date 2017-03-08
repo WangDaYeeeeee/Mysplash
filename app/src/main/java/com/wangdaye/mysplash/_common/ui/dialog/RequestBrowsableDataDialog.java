@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.ui._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash._common._basic.MysplashDialogFragment;
 
 /**
  * Request browsable data dialog.
