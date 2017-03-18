@@ -116,11 +116,6 @@ public class MyFollowActivity extends MysplashActivity
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
-        for (PagerView pager : pagers) {
-            if (pager != null) {
-                pager.writeBundle(outState);
-            }
-        }
     }
 
     @Override
@@ -215,7 +210,9 @@ public class MyFollowActivity extends MysplashActivity
         AnimUtils.animInitShow(
                 (View) pagers[pagerManagePresenter.getPagerPosition()],
                 400);
-        pagers[pagerManagePresenter.getPagerPosition()].refreshPager();
+        for (PagerView p : pagers) {
+            p.refreshPager();
+        }
     }
 
     private void initPages() {
@@ -257,7 +254,7 @@ public class MyFollowActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -268,7 +265,7 @@ public class MyFollowActivity extends MysplashActivity
         }
     }
 
-    // on page change listener.
+    // on page change swipeListener.
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -288,7 +285,7 @@ public class MyFollowActivity extends MysplashActivity
         // do nothing.
     }
 
-    // on swipe listener.(swipe back listener)
+    // on swipe swipeListener.(swipe back swipeListener)
 
     @Override
     public boolean canSwipeBack(int dir) {

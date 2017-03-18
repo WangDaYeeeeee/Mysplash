@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.me.model.widget;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.service.PhotoService;
 import com.wangdaye.mysplash._common.i.model.PhotosModel;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
@@ -30,12 +31,12 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(PhotoAdapter adapter, int photosType, String photosOrder) {
+    public PhotosObject(PhotoAdapter adapter, int photosType) {
         this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.photosType = photosType;
-        this.photosOrder = photosOrder;
+        this.photosOrder = Mysplash.getInstance().getDefaultPhotoOrder();
 
         this.photosPage = 0;
 

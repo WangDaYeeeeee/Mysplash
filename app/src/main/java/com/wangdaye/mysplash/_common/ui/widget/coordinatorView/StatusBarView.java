@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash._common.ui.widget.coordinatorView;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -7,7 +8,9 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
 /**
@@ -15,8 +18,16 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
  * */
 
 public class StatusBarView extends View {
+    // widget
+    private ObjectAnimator alphaAnimator;
+
     // data
     private boolean mask = false;
+
+    private boolean initAlpha = false;
+    public static final float LIGHT_INIT_MASK_ALPHA = 0.03f;
+    public static final float DARK_INIT_MASK_ALPHA = 0.2f;
+    public static final float DARKER_MASK_ALPHA = 0.2f;
 
     /** <br> life cycle. */
 
@@ -57,5 +68,63 @@ public class StatusBarView extends View {
     public void setMask(boolean b) {
         this.mask = b;
         invalidate();
+    }
+
+    public void setInitMaskAlpha() {
+        setInitAlpha(true);
+        cancelAnimator();
+        setAlpha(getTargetAlpha());
+    }
+
+    public void animToInitAlpha() {
+        setInitAlpha(true);
+        changeAlpha(getTargetAlpha());
+    }
+
+    public void animToDarkerAlpha() {
+        setInitAlpha(false);
+        changeAlpha(getTargetAlpha());
+    }
+
+    private void changeAlpha(float alphaTo) {
+        cancelAnimator();
+        if (getAlpha() != alphaTo) {
+            alphaAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), alphaTo)
+                    .setDuration(150);
+            alphaAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+            alphaAnimator.start();
+        }
+    }
+
+    private void cancelAnimator() {
+        if (alphaAnimator != null) {
+            alphaAnimator.cancel();
+        }
+    }
+
+    /** <br> data. */
+
+    private float getTargetAlpha() {
+        if (isInitAlpha()) {
+            if (Mysplash.getInstance().isLightTheme()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    return LIGHT_INIT_MASK_ALPHA;
+                } else {
+                    return DARKER_MASK_ALPHA;
+                }
+            } else {
+                return DARK_INIT_MASK_ALPHA;
+            }
+        } else {
+            return DARKER_MASK_ALPHA;
+        }
+    }
+
+    public boolean isInitAlpha() {
+        return initAlpha;
+    }
+
+    public void setInitAlpha(boolean initAlpha) {
+        this.initAlpha = initAlpha;
     }
 }

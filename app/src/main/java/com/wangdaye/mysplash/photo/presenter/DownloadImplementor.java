@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.photo.presenter;
 
-import com.wangdaye.mysplash.Mysplash;
+import android.content.Context;
+
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
@@ -25,18 +25,18 @@ public class DownloadImplementor
     /** <br> presenter. */
 
     @Override
-    public void download() {
-        doDownload(DownloadHelper.DOWNLOAD_TYPE);
+    public void download(Context context) {
+        doDownload(context, DownloadHelper.DOWNLOAD_TYPE);
     }
 
     @Override
-    public void share() {
-        doDownload(DownloadHelper.SHARE_TYPE);
+    public void share(Context context) {
+        doDownload(context, DownloadHelper.SHARE_TYPE);
     }
 
     @Override
-    public void setWallpaper() {
-        doDownload(DownloadHelper.WALLPAPER_TYPE);
+    public void setWallpaper(Context context) {
+        doDownload(context, DownloadHelper.WALLPAPER_TYPE);
     }
 
     @Override
@@ -51,9 +51,8 @@ public class DownloadImplementor
 
     /** <br> utils. */
 
-    private void doDownload(int type) {
-        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+    private void doDownload(Context context, int type) {
         Photo p = (Photo) model.getDownloadKey();
-        DownloadHelper.getInstance().addMission(a, p, type);
+        DownloadHelper.getInstance(context).addMission(context, p, type);
     }
 }

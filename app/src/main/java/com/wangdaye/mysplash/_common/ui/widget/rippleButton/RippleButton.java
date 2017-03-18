@@ -309,7 +309,7 @@ public class RippleButton extends CardView
 
     /** <br> interface. */
 
-    // on switch listener.
+    // on switch swipeListener.
 
     public interface OnSwitchListener {
         void onSwitch(boolean switchTo);

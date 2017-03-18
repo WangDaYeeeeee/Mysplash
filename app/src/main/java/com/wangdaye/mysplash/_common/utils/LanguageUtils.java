@@ -42,6 +42,10 @@ public class LanguageUtils {
                     configuration.setLocale(new Locale("ru"));
                     break;
 
+                case "spanish":
+                    configuration.setLocale(new Locale("es"));
+                    break;
+
                 default:
                     configuration.setLocale(new Locale("en"));
                     break;

@@ -47,6 +47,8 @@
     <string name="relative_photo">Relative Fotos</string>
     <string name="relative_collection">Relative Sammlungen</string>
 
+    <string name="follow_system">System folgen</string>
+
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
     <string name="about_unsplash">Freie (mach, was immer du willst) hochauflösende Fotos.</string>

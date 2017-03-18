@@ -115,8 +115,19 @@ public class SearchUsersImplementor
     }
 
     @Override
+    public void setPage(int page) {
+        model.setPhotosPage(page);
+    }
+
+    @Override
+    public void setOver(boolean over) {
+        model.setOver(over);
+        view.setPermitLoading(!over);
+    }
+
+    @Override
     public int getAdapterItemCount() {
-        return ((UserAdapter) model.getAdapter()).getItemCount();
+        return ((UserAdapter) model.getAdapter()).getRealItemCount();
     }
 
     @Override
@@ -156,9 +167,8 @@ public class SearchUsersImplementor
             model.setLoading(false);
             if (refresh) {
                 adapter.clearItem();
-                model.setOver(false);
+                setOver(false);
                 view.setRefreshing(false);
-                view.setPermitLoading(true);
             } else {
                 view.setLoading(false);
             }
@@ -173,8 +183,7 @@ public class SearchUsersImplementor
                             adapter.getItemCount());
                 }
                 if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
-                    model.setOver(true);
-                    view.setPermitLoading(false);
+                    setOver(true);
                 }
                 view.requestPhotosSuccess();
             } else {

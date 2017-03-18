@@ -28,8 +28,8 @@
         android:layout_height="34dp"
         android:layout_marginRight="@dimen/little_margin"
         android:layout_marginBottom="@dimen/little_margin"
-        android:background="@android:color/transparent"
         android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:background="@android:color/transparent"
         android:layout_alignBottom="@+id/item_following_photo_image"
         android:layout_alignParentRight="true"
         tools:ignore="ContentDescription,RtlHardcoded" />
@@ -41,8 +41,8 @@
         android:layout_height="34dp"
         android:padding="@dimen/little_margin"
         android:layout_marginBottom="@dimen/little_margin"
-        android:background="@android:color/transparent"
         android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:background="@android:color/transparent"
         android:layout_alignBottom="@+id/item_following_photo_image"
         android:layout_toLeftOf="@id/item_following_photo_likeButton"
         tools:ignore="ContentDescription,RtlHardcoded" />
@@ -54,8 +54,8 @@
         android:layout_height="34dp"
         android:padding="@dimen/little_margin"
         android:layout_marginBottom="@dimen/little_margin"
-        android:background="@android:color/transparent"
         android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:background="@android:color/transparent"
         android:layout_alignBottom="@+id/item_following_photo_image"
         android:layout_toLeftOf="@id/item_following_photo_collectionButton"
         tools:ignore="ContentDescription,RtlHardcoded" />

@@ -64,7 +64,7 @@ public class DownloadRepeatDialog extends MysplashDialogFragment
 
     /** <br> interface. */
 
-    // on check or download listener.
+    // on check or download swipeListener.
 
     public interface OnCheckOrDownloadListener {
         void onCheck(Object obj);
@@ -75,7 +75,7 @@ public class DownloadRepeatDialog extends MysplashDialogFragment
         this.listener = l;
     }
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {

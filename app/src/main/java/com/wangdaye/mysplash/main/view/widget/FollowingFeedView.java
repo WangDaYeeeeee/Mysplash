@@ -3,6 +3,8 @@ package com.wangdaye.mysplash.main.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -50,6 +52,7 @@ import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Following feed view.
@@ -71,13 +74,18 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     private BothWaySwipeRefreshLayout refreshLayout;
     private RecyclerView recyclerView;
 
-    private FrameLayout avatarContainer;
+    private RelativeLayout avatarContainer;
     private CircleImageView avatar;
 
     // presenter.
     private FollowingPresenter followingPresenter;
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
+
+    // data
+    private float offsetY = 0;
+    private float AVATAR_SIZE;
+    private float STATUS_BAR_HEIGHT;
 
     /** <br> life cycle. */
 
@@ -119,6 +127,20 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     @Override
+    public Parcelable onSaveInstanceState() {
+        return new SavedState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        followingPresenter.setNextPage(ss.nextPage);
+        followingPresenter.setOver(ss.over);
+    }
+
+    @Override
     public boolean isParentOffset() {
         return false;
     }
@@ -142,17 +164,19 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     private void initAvatarView() {
-        this.avatarContainer = (FrameLayout) findViewById(R.id.container_following_avatar_avatarContainer);
+        this.avatarContainer = (RelativeLayout) findViewById(R.id.container_following_avatar_avatarContainer);
         avatarContainer.setOnClickListener(this);
 
         this.avatar = (CircleImageView) findViewById(R.id.container_following_avatar_avatar);
         avatar.setOnClickListener(this);
 
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
-        int size = (int) new DisplayUtils(getContext()).dpToPx(56);
-        params.width = size;
-        params.height = size;
-        avatarContainer.setLayoutParams(params);
+        DisplayUtils utils = new DisplayUtils(getContext());
+
+        FrameLayout.LayoutParams containerParams = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
+        int size = (int) utils.dpToPx(56);
+        containerParams.width = size;
+        containerParams.height = size + DisplayUtils.getStatusBarHeight(getResources());
+        avatarContainer.setLayoutParams(containerParams);
     }
 
     private void initContentView() {
@@ -167,11 +191,17 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
 
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(followingPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
-        recyclerView.addOnScrollListener(new AvatarScrollListener());
+        avatarScrollListener = new AvatarScrollListener();
+        recyclerView.addOnScrollListener(avatarScrollListener);
 
         followingPresenter.getAdapter().setRecyclerView(recyclerView);
     }
@@ -209,12 +239,31 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         new ArrayList<FollowingResult>(Mysplash.DEFAULT_PER_PAGE)));
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
+
+        this.AVATAR_SIZE = new DisplayUtils(getContext()).dpToPx(56);
+        this.STATUS_BAR_HEIGHT = DisplayUtils.getStatusBarHeight(getResources());
     }
 
     // interface.
 
     public void setActivity(MysplashActivity a) {
         followingPresenter.setActivityForAdapter(a);
+    }
+
+    public List<FollowingResult> getFeeds() {
+        return followingPresenter.getAdapter().getFeeds();
+    }
+
+    public void setFeeds(List<FollowingResult> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        followingPresenter.getAdapter().setFeeds(list);
+        if (list.size() == 0) {
+            initRefresh();
+        } else {
+            setNormalState();
+        }
     }
 
     public void cancelRequest() {
@@ -229,9 +278,26 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         return scrollPresenter.needBackToTop();
     }
 
+    public void setOffsetY(float offsetY) {
+        if (this.offsetY != offsetY) {
+            this.offsetY = offsetY;
+            if (avatarScrollListener != null && followingPresenter.getAdapter().getRealItemCount() > 0) {
+                avatarScrollListener.onScrolled(recyclerView, 0, 0);
+            }
+        }
+    }
+
+    public float getOffsetY() {
+        return offsetY;
+    }
+
+    private float getRealOffset() {
+        return Math.max(getOffsetY() - AVATAR_SIZE, 0);
+    }
+
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -256,7 +322,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh an load listener.
+    // on refresh an load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -268,7 +334,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         followingPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
@@ -279,48 +345,52 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
     };
 
+    private AvatarScrollListener avatarScrollListener;
     private class AvatarScrollListener extends RecyclerView.OnScrollListener {
         // widget
         private LinearLayoutManager manager;
 
         // data
-        private int lastAdapterPosition;
-
-        private final int AVATAR_SIZE;
+        private User lastActor;
 
         // life cycle.
 
         AvatarScrollListener() {
             this.manager = (LinearLayoutManager) recyclerView.getLayoutManager();
-            this.lastAdapterPosition = -1;
-
-            AVATAR_SIZE = (int) new DisplayUtils(getContext()).dpToPx(56);
+            this.lastActor = null;
         }
 
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
             int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
-            View firstVisibleView = manager.findViewByPosition(firstVisibleItemPosition);
+            if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)) {
 
-            // avatar position.
-            if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)
-                    && firstVisibleView.getY() + firstVisibleView.getMeasuredHeight() < AVATAR_SIZE) {
-                avatarContainer.setTranslationY(
-                        firstVisibleView.getY() + firstVisibleView.getMeasuredHeight() - AVATAR_SIZE);
-            } else {
-                avatarContainer.setTranslationY(0);
-            }
+                View firstVisibleView = manager.findViewByPosition(firstVisibleItemPosition);
+                View secondVisibleView = manager.findViewByPosition(firstVisibleItemPosition + 1);
+                if (firstVisibleView != null && secondVisibleView != null) {
+                    float footerBottom = firstVisibleView.getY() + firstVisibleView.getMeasuredHeight();
+                    float headerTop = secondVisibleView.getY();
 
-            // avatar image.
-            if (lastAdapterPosition != firstVisibleItemPosition) {
-                if (lastAdapterPosition == -1
-                        || ((followingPresenter.getAdapter().isHeaderView(lastAdapterPosition)
-                        && followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition))
-                        || (followingPresenter.getAdapter().isFooterView(lastAdapterPosition)
-                        && followingPresenter.getAdapter().isHeaderView(firstVisibleItemPosition)))) {
-                    User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
-                    ImageHelper.loadAvatar(getContext(), avatar, user, null);
+                    if (footerBottom < AVATAR_SIZE + getRealOffset() && headerTop > getRealOffset()) {
+                        avatarContainer.setTranslationY(footerBottom - AVATAR_SIZE - STATUS_BAR_HEIGHT);
+                        setAvatarImage(firstVisibleItemPosition);
+                    } else {
+                        avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
+                        setAvatarImage(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
+                    }
                 }
-                lastAdapterPosition = firstVisibleItemPosition;
+            } else {
+                avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
+                if (lastActor == null) {
+                    setAvatarImage(firstVisibleItemPosition);
+                }
+            }
+        }
+
+        private void setAvatarImage(int position) {
+            User user = followingPresenter.getAdapter().getActor(position);
+            if (lastActor == null || !lastActor.username.equals(user.username)) {
+                lastActor = user;
+                ImageHelper.loadAvatar(getContext(), avatar, user, null);
             }
         }
     }
@@ -405,13 +475,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @Override
     public void scrollToTop() {
+        avatarScrollListener.setAvatarImage(0);
         BackToTopUtils.scrollToTop(recyclerView);
     }
 
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = followingPresenter.getAdapter().getRealItemCount();
         if (followingPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             followingPresenter.loadMore(getContext(), false);
@@ -430,5 +501,47 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState extends BaseSavedState {
+        // data
+        String nextPage;
+        boolean over;
+
+        // life cycle.
+
+        SavedState(FollowingFeedView view, Parcelable superState) {
+            super(superState);
+            this.nextPage = view.followingModel.getNextPage();
+            this.over = view.followingModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.nextPage = in.readString();
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(this.nextPage);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

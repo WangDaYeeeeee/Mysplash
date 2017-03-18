@@ -342,7 +342,7 @@ public class UpdateMeActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -357,7 +357,7 @@ public class UpdateMeActivity extends MysplashActivity
         }
     }
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -375,7 +375,7 @@ public class UpdateMeActivity extends MysplashActivity
         finishActivity(dir);
     }
 
-    // on request me profile listener.
+    // on request me profile swipeListener.
 
     @Override
     public void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response) {

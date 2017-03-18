@@ -25,11 +25,11 @@ public class CollectionsObject
 
     /** <br> life cycle. */
 
-    public CollectionsObject(CollectionAdapter adapter, String collectionsType) {
+    public CollectionsObject(CollectionAdapter adapter) {
         this.adapter = adapter;
         this.service = CollectionService.getService();
 
-        this.collectionsType = collectionsType;
+        this.collectionsType = Mysplash.getInstance().getDefaultCollectionType();
 
         this.collectionsPage = adapter.getItemCount() / Mysplash.DEFAULT_PER_PAGE;
 

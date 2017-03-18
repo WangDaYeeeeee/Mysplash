@@ -9,7 +9,6 @@ import android.text.TextUtils;
 
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash._common.utils.manager.ApiManager;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -96,7 +95,6 @@ public class Mysplash extends Application {
         instance = this;
         activityList = new ArrayList<>();
 
-        DownloadHelper.getInstance().init(getApplicationContext());
         ApiManager.getInstance(this);
         AuthManager.getInstance();
 

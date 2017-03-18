@@ -176,7 +176,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -187,7 +187,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh an load listener.
+    // on refresh an load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -199,7 +199,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         myFollowPresenter.loadMore(getContext(), false);
     }
 
-    // on follow state changed listener.
+    // on follow state changed swipeListener.
 
     @Override
     public void onFollowStateChanged(String username, int position, boolean switchTo, boolean succeed) {
@@ -216,7 +216,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         }
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -267,6 +267,16 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     }
 
     // pager view.
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+
+    }
 
     @Override
     public void checkToRefresh() { // interface
@@ -324,11 +334,6 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         } else {
             return myFollowPresenter.getAdapter().getItemCount();
         }
-    }
-
-    @Override
-    public void writeBundle(Bundle outState) {
-        // do nothing.
     }
 
     // load view.

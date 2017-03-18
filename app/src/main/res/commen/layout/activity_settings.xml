@@ -1,45 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:id="@+id/activity_settings_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="?attr/root_color">
+    android:layout_height="match_parent">
     
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-        android:id="@+id/activity_settings_statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark" />
-
-    <android.support.design.widget.CoordinatorLayout
-        android:id="@+id/activity_settings_container"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_settings_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:theme="@style/MysplashToolbarTheme">
+            android:background="?attr/colorPrimaryDark" />
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/activity_settings_toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:title="@string/action_settings"
-                app:popupTheme="@style/MysplashPopupMenuTheme"
-                tools:ignore="UnusedAttribute" />
-
-        </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
-
-        <FrameLayout
-            android:id="@+id/activity_settings_preferenceContainer"
+        <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_settings_swipeBackView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:background="?attr/root_color">
 
-    </android.support.design.widget.CoordinatorLayout>
+            <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:theme="@style/MysplashToolbarTheme">
 
-</LinearLayout>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_settings_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="@string/action_settings"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"
+                    tools:ignore="UnusedAttribute" />
+
+            </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+
+            <FrameLayout
+                android:id="@+id/activity_settings_preferenceContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

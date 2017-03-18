@@ -133,7 +133,7 @@ public class StatsDialog extends MysplashDialogFragment
 
     /** <br> interface. */
 
-    // on request stats listener.
+    // on request stats swipeListener.
 
     @SuppressLint("SetTextI18n")
     @Override

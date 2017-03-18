@@ -2,7 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,6 +38,7 @@ import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.PhotosView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.PhotosObject;
@@ -48,6 +50,7 @@ import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Home photos view.
@@ -77,26 +80,23 @@ public class HomePhotosView extends NestedScrollFrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
-    // data.
-    private final String KEY_HOME_PHOTOS_VIEW_NEW_FILTER_TYPE = "key_home_photos_view_new_filter_type";
-    private final String KEY_HOME_PHOTOS_VIEW_FEATURED_FILTER_TYPE = "key_home_photos_view_featured_filter_type";
-
     /** <br> life cycle. */
 
-    public HomePhotosView(MainActivity a, @Nullable Bundle bundle, int photosType) {
+    public HomePhotosView(MainActivity a, int photosType, int id) {
         super(a);
-        this.initialize(a, bundle, photosType);
+        this.setId(id);
+        this.initialize(a, photosType);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(MainActivity a, @Nullable Bundle bundle, int photosType) {
+    private void initialize(MainActivity a, int photosType) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle, photosType);
+        initModel(a, photosType);
         initPresenter();
         initView();
     }
@@ -134,6 +134,11 @@ public class HomePhotosView extends NestedScrollFrameLayout
         }
         refreshLayout.setVisibility(GONE);
 
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(photosPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -160,32 +165,38 @@ public class HomePhotosView extends NestedScrollFrameLayout
 
     /** <br> model. */
 
-    private void initModel(MainActivity a, @Nullable Bundle bundle, int photosType) {
-        String order = Mysplash.getInstance().getDefaultPhotoOrder();
-        if (bundle != null) {
-            switch (photosType) {
-                case PhotosObject.PHOTOS_TYPE_NEW:
-                    order = bundle.getString(KEY_HOME_PHOTOS_VIEW_NEW_FILTER_TYPE, order);
-                    break;
+    // init.
 
-                case PhotosObject.PHOTOS_TYPE_FEATURED:
-                    order = bundle.getString(KEY_HOME_PHOTOS_VIEW_FEATURED_FILTER_TYPE, order);
-                    break;
-            }
-        }
-
+    private void initModel(MainActivity a, int photosType) {
         this.photosModel = new PhotosObject(
                 a,
                 new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this, a),
-                photosType,
-                order);
+                photosType);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
     }
 
+    // interface.
+
+    public List<Photo> getPhotos() {
+        return photosPresenter.getAdapter().getPhotoData();
+    }
+
+    public void setPhotos(List<Photo> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        photosPresenter.getAdapter().setPhotoData(list);
+        if (list.size() == 0) {
+            refreshPager();
+        } else {
+            setNormalState();
+        }
+    }
+
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -196,7 +207,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh an load listener.
+    // on refresh an load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -208,7 +219,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
         photosPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -218,7 +229,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
         }
     };
 
-    // on collection changed listener.
+    // on collection changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -271,6 +282,24 @@ public class HomePhotosView extends NestedScrollFrameLayout
     }
 
     // pager view.
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putParcelable(String.valueOf(getId()), new SavedState(this));
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        SavedState ss = bundle.getParcelable(String.valueOf(getId()));
+        if (ss != null) {
+            photosPresenter.setOrder(ss.order);
+            photosPresenter.setPage(ss.page);
+            photosPresenter.setPageList(ss.pageList);
+            photosPresenter.setOver(ss.over);
+        } else {
+            refreshPager();
+        }
+    }
 
     @Override
     public void checkToRefresh() { // interface
@@ -329,19 +358,6 @@ public class HomePhotosView extends NestedScrollFrameLayout
         }
     }
 
-    @Override
-    public void writeBundle(Bundle outState) {
-        if (photosPresenter.getPhotosType() == PhotosObject.PHOTOS_TYPE_NEW) {
-            outState.putString(
-                    KEY_HOME_PHOTOS_VIEW_NEW_FILTER_TYPE,
-                    photosPresenter.getOrder());
-        } else {
-            outState.putString(
-                    KEY_HOME_PHOTOS_VIEW_FEATURED_FILTER_TYPE,
-                    photosPresenter.getOrder());
-        }
-    }
-
     // load view.
 
     @Override
@@ -388,7 +404,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = photosPresenter.getAdapter().getRealItemCount();
         if (photosPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             photosPresenter.loadMore(getContext(), false);
@@ -407,5 +423,75 @@ public class HomePhotosView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState implements Parcelable {
+        // data
+        String order;
+
+        int page;
+        List<Integer> pageList;
+
+        boolean over;
+
+        // life cycle.
+
+        SavedState(HomePhotosView view) {
+            this.order = view.photosModel.getPhotosOrder();
+            this.page = view.photosModel.getPhotosPage();
+            this.pageList = new ArrayList<>();
+            this.pageList.addAll(view.photosModel.getPageList());
+            this.over = view.photosModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.order = in.readString();
+            this.page = in.readInt();
+
+            this.pageList = new ArrayList<>();
+            int[] pages = new int[in.readInt()];
+            in.readIntArray(pages);
+            pageList = new ArrayList<>(pages.length);
+            for (int p : pages) {
+                pageList.add(p);
+            }
+
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.order);
+            out.writeInt(this.page);
+
+            int[] pages = new int[pageList.size()];
+            for (int i = 0; i < pages.length; i ++) {
+                pages[i] = pageList.get(i);
+            }
+            out.writeInt(pages.length);
+            out.writeIntArray(pages);
+
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

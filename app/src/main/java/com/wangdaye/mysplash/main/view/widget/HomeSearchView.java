@@ -2,11 +2,13 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -38,6 +40,7 @@ import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
 import com.wangdaye.mysplash._common.i.view.SearchView;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
@@ -54,6 +57,7 @@ import com.wangdaye.mysplash.main.presenter.widget.SearchUsersImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Search content view.
@@ -89,27 +93,23 @@ public class HomeSearchView extends NestedScrollFrameLayout
     public static final int SEARCH_COLLECTIONS_TYPE = 1;
     public static final int SEARCH_USERS_TYPE = 2;
 
-    private final String KEY_HOME_SEARCH_VIEW_SEARCHING_PHOTO = "home_search_view_searching_photo";
-    private final String KEY_HOME_SEARCH_VIEW_SEARCHING_COLLECTION = "home_search_view_searching_collection";
-    private final String KEY_HOME_SEARCH_VIEW_SEARCHING_USER = "home_search_view_searching_user";
-    private final String KEY_HOME_SEARCH_VIEW_QUERY = "home_search_view_query";
-
     /** <br> life cycle. */
 
-    public HomeSearchView(MainActivity a, @Nullable Bundle bundle, int type) {
+    public HomeSearchView(MainActivity a, int type, int id) {
         super(a);
-        this.initialize(a, bundle, type);
+        this.setId(id);
+        this.initialize(a, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(MainActivity a, @Nullable Bundle bundle, int type) {
+    private void initialize(MainActivity a, int type) {
         View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_searching_view_large, this, false);
         addView(searchingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle, type);
+        initModel(a, type);
         initPresenter(type);
         initView(type);
 
@@ -164,6 +164,11 @@ public class HomeSearchView extends NestedScrollFrameLayout
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
         refreshLayout.setVisibility(GONE);
+
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(searchPresenter.getAdapter());
@@ -234,49 +239,30 @@ public class HomeSearchView extends NestedScrollFrameLayout
 
     // init.
 
-    private void initModel(MainActivity a, @Nullable Bundle bundle, int type) {
-        String query = "";
-        if (bundle != null) {
-            query = bundle.getString(KEY_HOME_SEARCH_VIEW_QUERY, query);
-        }
+    private void initModel(MainActivity a, int type) {
         this.scrollModel = new ScrollObject(true);
+        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
 
         switch (type) {
             case SEARCH_PHOTOS_TYPE:
-                if (bundle != null && bundle.getBoolean(KEY_HOME_SEARCH_VIEW_SEARCHING_PHOTO, false)) {
-                    this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-                } else {
-                    this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-                }
+                this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
                 this.searchModel = new SearchPhotosObject(
                         new PhotoAdapter(
                                 getContext(),
                                 new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
                                 this,
-                                a),
-                        query);
+                                a));
                 break;
 
             case SEARCH_COLLECTIONS_TYPE:
-                if (bundle != null && bundle.getBoolean(KEY_HOME_SEARCH_VIEW_SEARCHING_COLLECTION, false)) {
-                    this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-                } else {
-                    this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-                }
                 this.searchModel = new SearchCollectionsObject(
-                        new CollectionAdapter(getContext(), new ArrayList<Collection>()),
-                        query);
+                        new CollectionAdapter(getContext(), new ArrayList<Collection>()));
                 break;
 
             case SEARCH_USERS_TYPE:
-                if (bundle != null && bundle.getBoolean(KEY_HOME_SEARCH_VIEW_SEARCHING_USER, false)) {
-                    this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-                } else {
-                    this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-                }
+                this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
                 this.searchModel = new SearchUsersObject(
-                        new UserAdapter(getContext(), new ArrayList<User>()),
-                        query);
+                        new UserAdapter(getContext(), new ArrayList<User>()));
                 break;
         }
     }
@@ -287,9 +273,54 @@ public class HomeSearchView extends NestedScrollFrameLayout
         return scrollPresenter.needBackToTop();
     }
 
+    public List<Photo> getPhotos() {
+        return ((PhotoAdapter) searchPresenter.getAdapter()).getPhotoData();
+    }
+
+    public void setPhotos(List<Photo> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        ((PhotoAdapter) searchPresenter.getAdapter()).setPhotoData(list);
+        if (list.size() == 0 && !TextUtils.isEmpty(searchPresenter.getQuery())) {
+            refreshPager();
+        } else {
+            animShow(refreshLayout);
+            animHide(feedbackContainer);
+        }
+    }
+
+    public List<Collection> getCollections() {
+        return ((CollectionAdapter) searchPresenter.getAdapter()).getCollectionData();
+    }
+
+    public void setCollections(List<Collection> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        ((CollectionAdapter) searchPresenter.getAdapter()).setCollectionData(list);
+        if (list.size() == 0 && !TextUtils.isEmpty(searchPresenter.getQuery())) {
+            refreshPager();
+        }
+    }
+
+    public List<User> getUsers() {
+        return ((UserAdapter) searchPresenter.getAdapter()).getUserData();
+    }
+
+    public void setUsers(List<User> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        ((UserAdapter) searchPresenter.getAdapter()).setUserData(list);
+        if (list.size() == 0 && !TextUtils.isEmpty(searchPresenter.getQuery())) {
+            refreshPager();
+        }
+    }
+
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -300,7 +331,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh and load listener.
+    // on refresh and load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -312,7 +343,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
         searchPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
@@ -323,7 +354,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     };
 
-    // on change collections listener.
+    // on change collections swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -378,6 +409,23 @@ public class HomeSearchView extends NestedScrollFrameLayout
     }
 
     // pager view.
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putParcelable(String.valueOf(getId()), new SavedState(this));
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        SavedState ss = bundle.getParcelable(String.valueOf(getId()));
+        if (ss != null) {
+            searchPresenter.setQuery(ss.query);
+            searchPresenter.setPage(ss.page);
+            searchPresenter.setOver(ss.over);
+        } else {
+            refreshPager();
+        }
+    }
 
     @Override
     public void checkToRefresh() { // interface
@@ -437,26 +485,6 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    @Override
-    public void writeBundle(Bundle outState) {
-        outState.putString(
-                KEY_HOME_SEARCH_VIEW_QUERY,
-                searchPresenter.getQuery());
-        if (searchModel instanceof SearchPhotosObject) {
-            outState.putBoolean(
-                    KEY_HOME_SEARCH_VIEW_SEARCHING_PHOTO,
-                    loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
-        } else if (searchModel instanceof SearchCollectionsObject) {
-            outState.putBoolean(
-                    KEY_HOME_SEARCH_VIEW_SEARCHING_COLLECTION,
-                    loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
-        } else if (searchModel instanceof SearchUsersObject) {
-            outState.putBoolean(
-                    KEY_HOME_SEARCH_VIEW_SEARCHING_USER,
-                    loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
-        }
-    }
-
     // load view.
 
     @Override
@@ -504,7 +532,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = recyclerView.getAdapter().getItemCount() - 1;
         if (searchPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             searchPresenter.loadMore(getContext(), false);
@@ -523,5 +551,53 @@ public class HomeSearchView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState implements Parcelable {
+        // data
+        String query;
+        int page;
+        boolean over;
+
+        // life cycle.
+
+        SavedState(HomeSearchView view) {
+            this.query = view.searchModel.getSearchQuery();
+            this.page = view.searchModel.getPhotosPage();
+            this.over = view.searchModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.query = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.query);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

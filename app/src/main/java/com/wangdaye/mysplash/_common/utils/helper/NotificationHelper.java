@@ -1,14 +1,9 @@
 package com.wangdaye.mysplash._common.utils.helper;
 
 import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -22,172 +17,19 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash._common.utils.widget.runnable.FlagRunnable;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * notification helper.
  * */
 
 public class NotificationHelper {
-    // widget
-    private Context context;
-    private NotificationManager manager;
-
     // data
-    private List<String> titleList;
-    private long soFar;
-    private long total;
-    private int iconCode;
-    private long refreshTime;
-
-    public static final int REFRESH_RATE = 150;
-
-    public static final int DOWNLOAD_NOTIFICATION_ID = 7777;
-
     private static final String NOTIFICATION_GROUP_KEY = "mysplash_download_result_notification";
     private static final String PREFERENCE_NOTIFICATION = "notification";
     private static final String KEY_NOTIFICATION_ID = "notification_id";
     private static final int NOTIFICATION_GROUP_SUMMARY_ID = 1001;
 
-    /** <br> singleton. */
-
-    private static NotificationHelper instance;
-
-    public static NotificationHelper getInstance(Context context) {
-        if (instance == null) {
-            synchronized (NotificationHelper.class) {
-                if (instance == null) {
-                    instance = new NotificationHelper(context);
-                }
-            }
-        }
-        return instance;
-    }
-
-    /** <br> life cycle. */
-
-    private NotificationHelper(Context context) {
-        this.context = context;
-        this.refreshNotification.setRunning(false);
-        this.manager = (NotificationManager) Mysplash.getInstance()
-                .getSystemService(Context.NOTIFICATION_SERVICE);
-        this.titleList = new ArrayList<>();
-        this.refreshTime = this.soFar = this.total = this.iconCode = 0;
-    }
-
-    private void destroy() {
-        context = null;
-        manager = null;
-        instance = null;
-        refreshNotification.setRunning(false);
-    }
-
     /** <br> notification. */
-
-    // progress.
-
-    @Nullable
-    public Notification sendDownloadProgressNotification(String title, long deltaSoFar, long deltaTotal,
-                                                         boolean titleChanged, boolean remove) {
-        boolean timeChanged = Math.abs(System.currentTimeMillis() - refreshTime) >= REFRESH_RATE;
-
-        soFar = Math.max(0, soFar + deltaSoFar);
-        total = Math.max(0, total + deltaTotal);
-
-        if (titleChanged && titleList != null) {
-            if (remove) {
-                titleList.remove(title);
-            } else {
-                boolean newTitle = true;
-                for (int i = 0; i < titleList.size(); i ++) {
-                    if (titleList.get(i).equals(title)) {
-                        newTitle = false;
-                        break;
-                    }
-                }
-                if (newTitle) {
-                    titleList.add(title);
-                }
-            }
-        }
-        if (titleChanged || timeChanged) {
-            if (timeChanged) {
-                refreshTime = System.currentTimeMillis();
-            }
-            int downloadingCount = titleList == null ? 0 : titleList.size();
-            if (downloadingCount > 0 && context != null) {
-                Notification notification = buildProgressNotification(context, timeChanged);
-                manager.notify(DOWNLOAD_NOTIFICATION_ID, notification);
-                if (!remove && downloadingCount == 1 && !refreshNotification.isRunning()) {
-                    refreshNotification.setRunning(true);
-                    ThreadManager.getInstance().execute(refreshNotification);
-                }
-                return notification;
-            }
-            if (remove && downloadingCount <= 0) {
-                destroy();
-            }
-        }
-        return null;
-    }
-
-    private Notification buildProgressNotification(Context c, boolean timeChanged) {
-        int process = (int) (100.0 * soFar / total);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(c);
-        builder.setSmallIcon(getIconResId(timeChanged));
-        builder.setContentTitle(c.getString(R.string.feedback_downloading));
-        builder.setSubText(process + "%");
-        builder.setProgress(100, process, false);
-
-        NotificationCompat.InboxStyle inbox = new NotificationCompat.InboxStyle();
-        for (int i = 0; i < titleList.size(); i ++) {
-            inbox.addLine(titleList.get(i));
-        }
-        builder.setStyle(inbox);
-
-        Intent intent = IntentHelper.getDownloadManageActivityIntent(c);
-        PendingIntent pendingIntent = PendingIntent.getActivity(c, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(pendingIntent);
-
-        return builder.build();
-    }
-
-    private int getIconResId(boolean timeChanged) {
-        if (iconCode == 0) {
-            setIconCode(timeChanged);
-            return R.drawable.ic_notification_progress_1;
-        } else if (iconCode == 1) {
-            setIconCode(timeChanged);
-            return R.drawable.ic_notification_progress_2;
-        } else if (iconCode == 2) {
-            setIconCode(timeChanged);
-            return R.drawable.ic_notification_progress_3;
-        } else if (iconCode == 3) {
-            setIconCode(timeChanged);
-            return R.drawable.ic_notification_progress_4;
-        } else if (iconCode == 4) {
-            setIconCode(timeChanged);
-            return R.drawable.ic_notification_progress_5;
-        } else {
-            setIconCode(timeChanged);
-            return R.drawable.ic_notification_progress_6;
-        }
-    }
-
-    private void setIconCode(boolean timeChanged) {
-        if (timeChanged) {
-            if (iconCode < 5) {
-                iconCode ++;
-            } else {
-                iconCode = 0;
-            }
-        }
-    }
 
     // feedback.
 
@@ -357,16 +199,4 @@ public class NotificationHelper {
             snackbar.show();
         }
     }
-
-    /** <br> inner class. */
-
-    private FlagRunnable refreshNotification = new FlagRunnable(true) {
-        @Override
-        public void run() {
-            while (isRunning()) {
-                sendDownloadProgressNotification("", 0, 0, false, false);
-                SystemClock.sleep(100);
-            }
-        }
-    };
 }

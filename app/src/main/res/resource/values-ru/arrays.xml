@@ -64,17 +64,6 @@
         <item>Ничего</item>
     </string-array>
 
-    <!-- language. -->
-    <string-array name="languages">
-        <item>Follow system</item>
-        <item>English</item>
-        <item>中文</item>
-        <item>Italiano</item>
-        <item>Türk</item>
-        <item>Deutsche</item>
-        <item>Русский</item>
-    </string-array>
-
     <!-- search orientation. -->
     <string-array name="search_orientations">
         <item>Ландшафтный</item>

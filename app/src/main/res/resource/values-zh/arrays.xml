@@ -63,17 +63,6 @@
         <item>关闭</item>
     </string-array>
 
-    <!-- language. -->
-    <string-array name="languages">
-        <item>跟随系统</item>
-        <item>English</item>
-        <item>中文</item>
-        <item>Italiano</item>
-        <item>Türk</item>
-        <item>Deutsche</item>
-        <item>Русский</item>
-    </string-array>
-
     <!-- 搜索规格 -->
     <string-array name="search_orientations">
         <item>横向</item>

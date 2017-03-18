@@ -63,17 +63,6 @@
         <item>Nessuno</item>
     </string-array>
 
-    <!-- language. -->
-    <string-array name="languages">
-        <item>Lingua di sistema</item>
-        <item>English</item>
-        <item>中文</item>
-        <item>Italiano</item>
-        <item>Türk</item>
-        <item>Deutsche</item>
-        <item>Русский</item>
-    </string-array>
-
     <!-- search orientation. -->
     <string-array name="search_orientations">
         <item>Orizzontale</item>

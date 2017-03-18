@@ -36,7 +36,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|snap">
+                    app:layout_scrollFlags="scroll">
 
                     <android.support.v7.widget.Toolbar
                         android:id="@+id/activity_me_toolbar"
@@ -86,10 +86,7 @@
                     android:id="@+id/activity_me_tabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tab_layout_height"
-                    app:tabIndicatorHeight="3dp"
-                    app:tabIndicatorColor="?attr/title_color"
-                    app:tabSelectedTextColor="?attr/content_color"
-                    app:tabTextColor="?attr/subtitle_color" />
+                    style="@style/MysplashTabLayoutTheme" />
 
             </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 

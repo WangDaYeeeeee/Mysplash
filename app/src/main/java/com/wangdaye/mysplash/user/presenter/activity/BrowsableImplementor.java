@@ -2,13 +2,11 @@ package com.wangdaye.mysplash.user.presenter.activity;
 
 import android.net.Uri;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 import com.wangdaye.mysplash._common.data.service.UserService;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.view.BrowsableView;
-import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -50,11 +48,6 @@ public class BrowsableImplementor
     }
 
     @Override
-    public void drawBrowsableView() {
-        view.drawBrowsableView();
-    }
-
-    @Override
     public void visitParentView() {
         view.visitParentView();
     }
@@ -71,17 +64,13 @@ public class BrowsableImplementor
         ((UserService) model.getService()).requestUserProfile(keys[0].substring(1), this);
     }
 
-    /** <br> listener. */
+    /** <br> swipeListener. */
 
     @Override
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {
         if (response.isSuccessful() && response.body() != null) {
-            Mysplash.getInstance()
-                    .getTopActivity()
-                    .getIntent()
-                    .putExtra(UserActivity.KEY_USER_ACTIVITY_USER, response.body());
             view.dismissRequestDialog();
-            view.drawBrowsableView();
+            view.drawBrowsableView(response);
         } else {
             requestUser();
         }

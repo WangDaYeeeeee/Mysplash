@@ -97,13 +97,13 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
 
     /** <br> interface. */
 
-    // on follow state changed listener.
+    // on follow state changed swipeListener.
 
     public interface OnFollowStateChangedListener {
         void onFollowStateChanged(String username, int position, boolean switchTo, boolean succeed);
     }
 
-    // on set follow listener.
+    // on set follow swipeListener.
 
     private class OnSetFollowListener implements FollowingService.OnFollowListener {
         // data

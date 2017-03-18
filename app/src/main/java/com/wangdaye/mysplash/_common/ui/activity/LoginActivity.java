@@ -214,7 +214,7 @@ public class LoginActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -235,7 +235,7 @@ public class LoginActivity extends MysplashActivity
         }
     }
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -253,7 +253,7 @@ public class LoginActivity extends MysplashActivity
         finishActivity(dir);
     }
 
-    // on request access token listener.
+    // on request access token swipeListener.
 
     @Override
     public void onRequestAccessTokenSuccess(Call<AccessToken> call, Response<AccessToken> response) {

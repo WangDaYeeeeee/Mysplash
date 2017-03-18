@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common._basic.FooterAdapter;
 import com.wangdaye.mysplash._common.data.entity.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
@@ -33,6 +34,7 @@ import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -42,7 +44,7 @@ import retrofit2.Response;
  * Photos adapter. (Recycler view)
  * */
 
-public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
+public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         implements DeleteCollectionPhotoDialogFragment.OnDeleteCollectionListener,
         DownloadRepeatDialog.OnCheckOrDownloadListener {
     // widget
@@ -67,17 +69,34 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         this.downloadPhotoListener = dl;
     }
 
-    /** <br> UI. */
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent, false);
-        return new ViewHolder(v, viewType);
+    protected boolean hasFooter() {
+        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.onBindView(position);
+    public int getRealItemCount() {
+        return itemList.size();
+    }
+
+    /** <br> UI. */
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+        if (isFooter(position)) {
+            // footer.
+            return FooterHolder.buildInstance(parent);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_photo, parent, false);
+            return new ViewHolder(v, position);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onBindView(position);
+        }
     }
 
     public void setActivity(MysplashActivity a) {
@@ -91,19 +110,16 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
     /** <br> data. */
 
     @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    @Override
     public int getItemViewType(int position) {
         return position;
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.onRecycled();
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onRecycled();
+        }
     }
 
     public void insertItem(Photo item) {
@@ -146,10 +162,6 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
                 new OnSetLikeListener(itemList.get(position).id, position));
     }
 
-    public int getRealItemCount() {
-        return itemList.size();
-    }
-
     public void setInMyCollection(boolean in) {
         this.inMyCollection = in;
     }
@@ -166,9 +178,21 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         }
     }
 
+    public void setPhotoData(List<Photo> list) {
+        itemList.clear();
+        itemList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public List<Photo> getPhotoData() {
+        List<Photo> list = new ArrayList<>();
+        list.addAll(itemList);
+        return list;
+    }
+
     /** <br> interface. */
 
-    // on download photo listener.
+    // on download photo swipeListener.
 
     public interface OnDownloadPhotoListener {
         void onDownload(Photo photo);
@@ -178,7 +202,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         this.downloadPhotoListener = l;
     }
 
-    // on set like listener.
+    // on set like swipeListener.
 
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
         // data
@@ -240,7 +264,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         }
     }
 
-    // on delete collection photo listener.
+    // on delete collection photo swipeListener.
 
     @Override
     public void onDeletePhotoSuccess(ChangeCollectionPhotoResult result, int position) {
@@ -250,7 +274,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder>
         }
     }
 
-    // on check or download listener. (download repeat dialog)
+    // on check or download swipeListener. (download repeat dialog)
 
     @Override
     public void onCheck(Object obj) {

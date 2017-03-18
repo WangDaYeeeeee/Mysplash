@@ -141,12 +141,22 @@ public class MeActivity extends MysplashActivity
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(KEY_ME_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
-        for (PagerView pager : pagers) {
-            if (pager != null) {
-                pager.writeBundle(outState);
-            }
+        // write large data.
+        SavedStateFragment f = new SavedStateFragment();
+        if (pagers[0] != null) {
+            f.setPhotoList(((MePhotosView) pagers[0]).getPhotos());
         }
+        if (pagers[1] != null) {
+            f.setCollectionList(((MeCollectionsView) pagers[2]).getCollections());
+        }
+        if (pagers[2] != null) {
+            f.setLikeList(((MePhotosView) pagers[2]).getPhotos());
+        }
+        f.saveData(this);
+
+        // write normal data.
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_ME_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
     }
 
     @Override
@@ -240,6 +250,8 @@ public class MeActivity extends MysplashActivity
     // init.
 
     private void initView() {
+        this.utils = new DisplayUtils(this);
+
         SwipeBackCoordinatorLayout swipeBackView
                 = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
@@ -278,24 +290,15 @@ public class MeActivity extends MysplashActivity
         this.title = (TextView) findViewById(R.id.activity_me_title);
         title.setOnClickListener(this);
 
-        this.meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
-
         initPages();
-        this.utils = new DisplayUtils(this);
-
         drawProfile();
-
-        AnimUtils.animInitShow(
-                (View) pagers[pagerManagePresenter.getPagerPosition()],
-                400);
-        pagers[pagerManagePresenter.getPagerPosition()].refreshPager();
     }
 
     private void initPages() {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new MePhotosView(this, getBundle(), PhotosObject.PHOTOS_TYPE_PHOTOS));
-        pageList.add(new MeCollectionsView(this));
-        pageList.add(new MePhotosView(this, getBundle(), PhotosObject.PHOTOS_TYPE_LIKES));
+        pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_PHOTOS, R.id.activity_me_page_photo));
+        pageList.add(new MeCollectionsView(this, R.id.activity_me_page_collection));
+        pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_LIKES, R.id.activity_me_page_like));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -314,10 +317,31 @@ public class MeActivity extends MysplashActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_me_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+
+        BaseSavedStateFragment f = SavedStateFragment.getData(this);
+        if (f != null && f instanceof SavedStateFragment) {
+            ((MePhotosView) pagers[0]).setPhotos(((SavedStateFragment) f).getPhotoList());
+            ((MeCollectionsView) pagers[1]).setCollections(((SavedStateFragment) f).getCollectionList());
+            ((MePhotosView) pagers[2]).setPhotos(((SavedStateFragment) f).getLikeList());
+
+            if (getBundle() != null) {
+                for (PagerView pager : pagers) {
+                    pager.onRestoreInstanceState(getBundle());
+                }
+            }
+        } else {
+            AnimUtils.animInitShow(
+                    (View) pagers[pagerManagePresenter.getPagerPosition()],
+                    400);
+            for (PagerView pager : pagers) {
+                pager.refreshPager();
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
     private void drawProfile() {
+        this.meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
         if (AuthManager.getInstance().getMe() != null) {
             Me me = AuthManager.getInstance().getMe();
             title.setText(me.first_name + " " + me.last_name);
@@ -387,7 +411,7 @@ public class MeActivity extends MysplashActivity
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             type);
                 } else {
-                    downloadPresenter.download();
+                    downloadPresenter.download(this);
                 }
                 break;
         }
@@ -400,7 +424,7 @@ public class MeActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadPresenter.download();
+                        downloadPresenter.download(this);
                     } else {
                         NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
@@ -413,7 +437,7 @@ public class MeActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -449,26 +473,26 @@ public class MeActivity extends MysplashActivity
         }
     }
 
-    // on menu item click listener.
+    // on menu item click swipeListener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem(this, item.getItemId());
     }
 
-    // on download photo listener. (photo adapter)
+    // on download photo swipeListener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
         downloadPresenter.setDownloadKey(photo);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            downloadPresenter.download();
+            downloadPresenter.download(this);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
         }
     }
 
-    // on page change listener.
+    // on page change swipeListener.
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -488,7 +512,7 @@ public class MeActivity extends MysplashActivity
         // do nothing.
     }
 
-    // on swipe listener.(swipe back listener)
+    // on swipe swipeListener.(swipe back swipeListener)
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -506,7 +530,7 @@ public class MeActivity extends MysplashActivity
         swipeBackManagePresenter.swipeBackFinish(this, dir);
     }
 
-    // on collections changed listener.
+    // on collections changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -521,7 +545,7 @@ public class MeActivity extends MysplashActivity
         ((MePhotosView) pagers[2]).updatePhoto(p);
     }
 
-    // on author data changed listener.
+    // on author data changed swipeListener.
 
     @Override
     public void onWriteAccessToken() {
@@ -583,6 +607,41 @@ public class MeActivity extends MysplashActivity
         } else {
             return pagerManagePresenter.canPagerSwipeBack(dir)
                     && appBar.getY() >= 0;
+        }
+    }
+
+    /** <br> inner class. */
+
+    public static class SavedStateFragment extends BaseSavedStateFragment {
+        // data
+        private List<Photo> photoList;
+        private List<Collection> collectionList;
+        private List<Photo> likeList;
+
+        // data.
+
+        public List<Photo> getPhotoList() {
+            return photoList;
+        }
+
+        public void setPhotoList(List<Photo> photoList) {
+            this.photoList = photoList;
+        }
+
+        public List<Collection> getCollectionList() {
+            return collectionList;
+        }
+
+        public void setCollectionList(List<Collection> collectionList) {
+            this.collectionList = collectionList;
+        }
+
+        public List<Photo> getLikeList() {
+            return likeList;
+        }
+
+        public void setLikeList(List<Photo> likeList) {
+            this.likeList = likeList;
         }
     }
 }

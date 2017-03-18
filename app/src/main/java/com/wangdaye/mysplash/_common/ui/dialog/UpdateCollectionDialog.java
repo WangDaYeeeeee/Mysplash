@@ -259,7 +259,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         }
     }
 
-    // on request a collection listener.
+    // on request a collection swipeListener.
 
     @Override
     public void onRequestACollectionSuccess(Call<Collection> call, Response<Collection> response) {
@@ -280,7 +280,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         notifyUpdateFailed();
     }
 
-    // on delete collection listener.
+    // on delete collection swipeListener.
 
     @Override
     public void onDeleteCollectionSuccess(Call<ResponseBody> call, Response<ResponseBody> response) {

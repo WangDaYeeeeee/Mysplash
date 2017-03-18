@@ -86,13 +86,14 @@
 
     <!-- language. -->
     <string-array name="languages">
-        <item>Follow system</item>
+        <item>@string/follow_system</item>
         <item>English</item>
         <item>中文</item>
         <item>Italiano</item>
         <item>Türk</item>
         <item>Deutsche</item>
         <item>Русский</item>
+        <item>Español</item>
     </string-array>
     <string-array name="language_values">
         <item>follow_system</item>
@@ -102,6 +103,7 @@
         <item>turkish</item>
         <item>german</item>
         <item>russian</item>
+        <item>spanish</item>
     </string-array>
 
     <!-- search orientation. -->

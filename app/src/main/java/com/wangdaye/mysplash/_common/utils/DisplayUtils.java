@@ -7,14 +7,13 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
-import android.view.KeyCharacterMap;
-import android.view.KeyEvent;
+import android.view.Display;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -50,15 +49,25 @@ public class DisplayUtils {
         return result;
     }
 
-    public static int getNavigationBarHeight(Context c) {
-        boolean hasMenuKey = ViewConfiguration.get(c).hasPermanentMenuKey();
-        boolean hasBackKey = KeyCharacterMap.deviceHasKey(KeyEvent.KEYCODE_BACK);
-        if (!hasMenuKey && !hasBackKey) {
-            Resources resources = c.getResources();
-            int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
-            return resources.getDimensionPixelSize(resourceId);
+    public static int getNavigationBarHeight(Resources r) {
+        if (!isNavigationBarShow()){
+            return 0;
         }
-        return 0;
+        int result = 0;
+        int resourceId = r.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId > 0) {
+            result = r.getDimensionPixelSize(resourceId);
+        }
+        return result;
+    }
+
+    private static boolean isNavigationBarShow(){
+        Display display = Mysplash.getInstance().getTopActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        Point realSize = new Point();
+        display.getSize(size);
+        display.getRealSize(realSize);
+        return realSize.y != size.y;
     }
 
     public static void setWindowTop(Activity activity) {
@@ -83,15 +92,21 @@ public class DisplayUtils {
         }
     }
 
-    public static void setStatusBarTextDark(Activity activity) {
-        if (isNeedSetStatusBarTextDark()) {
+    public static void initStatusBarStyle(Activity activity) {
+        setStatusBarStyle(activity, false);
+    }
+
+    public static void setStatusBarStyle(Activity activity, boolean onlyWhiteText) {
+        if (!onlyWhiteText && isNeedSetStatusBarTextDark()) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 activity.getWindow().getDecorView().setSystemUiVisibility(
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         } else {
-            activity.getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                activity.getWindow().getDecorView().setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            }
         }
     }
 

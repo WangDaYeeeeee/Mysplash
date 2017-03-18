@@ -103,6 +103,9 @@ public class ValueUtils {
             case "russian":
                 return c.getResources().getStringArray(R.array.languages)[6];
 
+            case "spanish":
+                return c.getResources().getStringArray(R.array.languages)[7];
+
             default:
                 return null;
         }
@@ -164,7 +167,7 @@ public class ValueUtils {
         }
     }
 
-    public static int getRandomInt(int max) {
+    private static int getRandomInt(int max) {
         return new Random().nextInt(max);
     }
 

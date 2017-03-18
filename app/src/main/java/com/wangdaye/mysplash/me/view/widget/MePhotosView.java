@@ -2,7 +2,8 @@ package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -34,6 +35,7 @@ import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFram
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.PhotosObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
@@ -45,6 +47,7 @@ import com.wangdaye.mysplash.me.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Me photo view.
@@ -73,25 +76,22 @@ public class MePhotosView extends NestedScrollFrameLayout
     private ScrollPresenter scrollPresenter;
     private SwipeBackPresenter swipeBackPresenter;
 
-    // data.
-    private final String KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE = "me_photos_view_photo_filter_value";
-    private final String KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE = "me_photos_view_like_filter_value";
-
     /** <br> life cycle. */
 
-    public MePhotosView(MeActivity a, @Nullable Bundle bundle, int type) {
+    public MePhotosView(MeActivity a, int type, int id) {
         super(a);
-        this.initialize(a, bundle, type);
+        this.setId(id);
+        this.initialize(a, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(MeActivity a, @Nullable Bundle bundle, int type) {
+    private void initialize(MeActivity a, int type) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, this, false);
         addView(loadingView);
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle, type);
+        initModel(a, type);
         initPresenter();
         initView();
     }
@@ -132,6 +132,11 @@ public class MePhotosView extends NestedScrollFrameLayout
         refreshLayout.setPermitRefresh(false);
         refreshLayout.setVisibility(GONE);
 
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(photosPresenter.getAdapter());
@@ -148,26 +153,37 @@ public class MePhotosView extends NestedScrollFrameLayout
 
     /** <br> model. */
 
-    private void initModel(MeActivity a, @Nullable Bundle bundle, int type) {
-        String order = Mysplash.getInstance().getDefaultPhotoOrder();
-        if (bundle != null) {
-            if (type == PhotosObject.PHOTOS_TYPE_PHOTOS) {
-                order = bundle.getString(KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE, order);
-            } else {
-                order = bundle.getString(KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE, order);
-            }
-        }
+    // init.
+
+    private void initModel(MeActivity a, int type) {
         this.photosModel = new PhotosObject(
                 new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a),
-                type,
-                order);
+                type);
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }
 
+    // interface.
+
+    public List<Photo> getPhotos() {
+        return photosPresenter.getAdapter().getPhotoData();
+    }
+
+    public void setPhotos(List<Photo> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        photosPresenter.getAdapter().setPhotoData(list);
+        if (list.size() == 0) {
+            refreshPager();
+        } else {
+            setNormalState();
+        }
+    }
+
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -176,7 +192,7 @@ public class MePhotosView extends NestedScrollFrameLayout
                 photosPresenter.initRefresh(getContext());
                 break;
         }
-    }// on refresh an load listener.
+    }// on refresh an load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -188,7 +204,7 @@ public class MePhotosView extends NestedScrollFrameLayout
         photosPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
@@ -239,6 +255,21 @@ public class MePhotosView extends NestedScrollFrameLayout
     }
 
     // pager view.
+
+    @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putParcelable(String.valueOf(getId()), new SavedState(this));
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        SavedState ss = bundle.getParcelable(String.valueOf(getId()));
+        if (ss != null) {
+            photosPresenter.setOrder(ss.order);
+            photosPresenter.setPage(ss.page);
+            photosPresenter.setOver(ss.over);
+        }
+    }
 
     @Override
     public void checkToRefresh() { // interface
@@ -298,19 +329,6 @@ public class MePhotosView extends NestedScrollFrameLayout
         }
     }
 
-    @Override
-    public void writeBundle(Bundle outState) {
-        switch (photosPresenter.getPhotosType()) {
-            case PhotosObject.PHOTOS_TYPE_PHOTOS:
-                outState.putString(KEY_ME_PHOTOS_VIEW_PHOTO_FILTER_VALUE, photosPresenter.getOrder());
-                break;
-
-            case PhotosObject.PHOTOS_TYPE_LIKES:
-                outState.putString(KEY_ME_PHOTOS_VIEW_LIKE_FILTER_VALUE, photosPresenter.getOrder());
-                break;
-        }
-    }
-
     // load view.
 
     @Override
@@ -357,7 +375,7 @@ public class MePhotosView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = photosPresenter.getAdapter().getRealItemCount();
         if (photosPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             photosPresenter.loadMore(getContext(), false);
@@ -390,5 +408,53 @@ public class MePhotosView extends NestedScrollFrameLayout
             default:
                 return true;
         }
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState implements Parcelable {
+        // data
+        String order;
+        int page;
+        boolean over;
+
+        // life cycle.
+
+        SavedState(MePhotosView view) {
+            this.order = view.photosModel.getPhotosOrder();
+            this.page = view.photosModel.getPhotosPage();
+            this.over = view.photosModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.order = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.order);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

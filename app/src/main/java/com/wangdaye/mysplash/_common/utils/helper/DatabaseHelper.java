@@ -58,6 +58,10 @@ public class DatabaseHelper {
         DownloadMissionEntity.updateDownloadEntity(openHelper.getWritableDatabase(), entity);
     }
 
+    public List<DownloadMissionEntity> readDownloadEntityList() {
+        return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase());
+    }
+
     public List<DownloadMissionEntity> readDownloadEntityList(int result) {
         return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase(), result);
     }

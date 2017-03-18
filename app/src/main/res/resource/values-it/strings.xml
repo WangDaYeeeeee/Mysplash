@@ -30,6 +30,8 @@
     <string name="on">Da</string>
     <string name="now">Ora</string>
 
+    <string name="follow_system">Lingua di sistema</string>
+
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
     <string name="about_unsplash">Fotografie ad alta risoluzione, gratis.</string>
@@ -47,8 +49,6 @@
     <string name="about_page_indicator">InkPageIndicator creato da @nickbutcher per Plaid https://github.com/nickbutcher/plaid e riadattato da David Pacioianu per API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
     <string name="about_greendao_db">greenDAO è una rapida soluzione ORM per Android che mappa gli oggetti nei database SQLite.</string>
-    <string name="downloader">FileDownloader</string>
-    <string name="about_downloader">Multitask、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">TOCCA PER RIPROVARE</string>

@@ -108,7 +108,7 @@ public class AboutActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {

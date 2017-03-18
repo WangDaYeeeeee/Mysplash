@@ -133,7 +133,7 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
 
     /** <br> interface. */
 
-    // on delete collection listener.
+    // on delete collection swipeListener.
 
     public interface OnDeleteCollectionListener {
         void onDeletePhotoSuccess(ChangeCollectionPhotoResult result, int position);
@@ -143,7 +143,7 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
         listener = l;
     }
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -159,7 +159,7 @@ public class DeleteCollectionPhotoDialogFragment extends MysplashDialogFragment
         }
     }
 
-    // on change collection photo listener.
+    // on change collection photo swipeListener.
 
     @Override
     public void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call,

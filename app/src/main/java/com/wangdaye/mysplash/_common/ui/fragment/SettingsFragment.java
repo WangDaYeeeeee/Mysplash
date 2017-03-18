@@ -1,13 +1,21 @@
 package com.wangdaye.mysplash._common.ui.fragment;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.NestedScrollingChild;
+import android.support.v4.view.NestedScrollingChildHelper;
+import android.support.v4.view.ViewCompat;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
+import android.widget.ListView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -24,7 +32,10 @@ import com.wangdaye.mysplash.main.view.activity.MainActivity;
  * */
 
 public class SettingsFragment extends PreferenceFragment
-        implements Preference.OnPreferenceChangeListener {
+        implements Preference.OnPreferenceChangeListener, NestedScrollingChild {
+    // widget
+    private NestedScrollingChildHelper nestedScrollingChildHelper;
+    private ListView listView;
 
     /** <br> life cycle. */
 
@@ -35,7 +46,20 @@ public class SettingsFragment extends PreferenceFragment
         initView();
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listView = (ListView) view.findViewById(android.R.id.list);
+        if (listView != null) {
+            listView.setOnTouchListener(new ScrollListener(getActivity()));
+            nestedScrollingChildHelper = new NestedScrollingChildHelper(listView);
+            nestedScrollingChildHelper.setNestedScrollingEnabled(true);
+        }
+    }
+
     /** <br> UI. */
+
+    // init.
 
     private void initView() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -85,12 +109,23 @@ public class SettingsFragment extends PreferenceFragment
         downloadScale.setOnPreferenceChangeListener(this);
     }
 
+    // interface.
+
     private void showRebootSnackbar() {
         NotificationHelper.showActionSnackbar(
                 getString(R.string.feedback_notify_restart),
                 getString(R.string.restart),
                 Snackbar.LENGTH_SHORT,
                 rebootListener);
+    }
+
+    @Nullable
+    public ListView getScrolledView() {
+        if (listView != null) {
+            return listView;
+        } else {
+            return null;
+        }
     }
 
     @Override
@@ -103,7 +138,7 @@ public class SettingsFragment extends PreferenceFragment
 
     /** <br> interface. */
 
-    // on preference_widget changed listener.
+    // on preference_widget changed swipeListener.
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {
@@ -139,7 +174,7 @@ public class SettingsFragment extends PreferenceFragment
         return true;
     }
 
-    // on action click listener.
+    // on action click swipeListener.
 
     private View.OnClickListener rebootListener = new View.OnClickListener() {
         @Override
@@ -150,4 +185,106 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
     };
+
+    // on touch swipeListener.
+
+    private class ScrollListener implements View.OnTouchListener {
+        // data
+        private float oldY;
+        private boolean isBeingDragged;
+        private float touchSlop;
+
+        ScrollListener(Context context) {
+            this.touchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        }
+
+        // interface.
+
+        @Override
+        public boolean onTouch(View v, MotionEvent ev) {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+                    oldY = ev.getY();
+                    isBeingDragged = false;
+                    break;
+
+                case MotionEvent.ACTION_MOVE:
+                    if (!isBeingDragged) {
+                        if (Math.abs(ev.getY() - oldY) > touchSlop) {
+                            isBeingDragged = true;
+                        }
+                    }
+                    if (isBeingDragged) {
+                        int[] total = new int[] {0, (int) (oldY - ev.getY())};
+                        int[] consumed = new int[] {0, 0};
+                        dispatchNestedPreScroll(
+                                total[0], total[1], consumed, null);
+                        dispatchNestedScroll(
+                                consumed[0], consumed[1], total[0] - consumed[0], total[1] - consumed[1], null);
+                    }
+                    oldY = ev.getY();
+                    break;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    stopNestedScroll();
+                    if (isBeingDragged) {
+                        isBeingDragged = false;
+                    }
+                    break;
+            }
+            return false;
+        }
+    }
+
+    // nested scrolling child.
+
+    @Override
+    public void setNestedScrollingEnabled(boolean enabled) {
+        nestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
+    }
+
+    @Override
+    public boolean isNestedScrollingEnabled() {
+        return nestedScrollingChildHelper.isNestedScrollingEnabled();
+    }
+
+    @Override
+    public boolean startNestedScroll(int axes) {
+        return nestedScrollingChildHelper.startNestedScroll(axes);
+    }
+
+    @Override
+    public void stopNestedScroll() {
+        nestedScrollingChildHelper.stopNestedScroll();
+    }
+
+    @Override
+    public boolean hasNestedScrollingParent() {
+        return nestedScrollingChildHelper.hasNestedScrollingParent();
+    }
+
+    @Override
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed,
+                                        int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+        return nestedScrollingChildHelper.dispatchNestedScroll(
+                dxConsumed, dyConsumed,
+                dxUnconsumed, dyUnconsumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+        return nestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+        return nestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+        return nestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
+    }
 }

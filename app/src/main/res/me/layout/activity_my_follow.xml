@@ -38,17 +38,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="@android:color/transparent"
-                    app:layout_scrollFlags="scroll|snap"
+                    app:layout_scrollFlags="scroll|enterAlways"
                     app:popupTheme="@style/MysplashPopupMenuTheme" />
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/activity_my_follow_tabLayout"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tab_layout_height"
-                    app:tabIndicatorHeight="3dp"
-                    app:tabIndicatorColor="?attr/title_color"
-                    app:tabSelectedTextColor="?attr/content_color"
-                    app:tabTextColor="?attr/subtitle_color" />
+                    style="@style/MysplashTabLayoutTheme" />
 
             </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 

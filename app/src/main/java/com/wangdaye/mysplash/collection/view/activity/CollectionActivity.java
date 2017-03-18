@@ -62,6 +62,8 @@ import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
+import java.util.List;
+
 /**
  * Collection activity.
  * */
@@ -69,7 +71,7 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 public class CollectionActivity extends MysplashActivity
         implements SwipeBackManageView, EditResultView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, PhotoAdapter.OnDownloadPhotoListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener,
+        NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener,
         UpdateCollectionDialog.OnCollectionChangedListener,
         DownloadRepeatDialog.OnCheckOrDownloadListener {
     // model.
@@ -80,11 +82,12 @@ public class CollectionActivity extends MysplashActivity
     // view.
     private RequestBrowsableDataDialog requestDialog;
 
+    private StatusBarView statusBar;
+
     private CoordinatorLayout container;
     private NestedScrollAppBarLayout appBar;
     private RelativeLayout creatorBar;
     private CircleImageView avatarImage;
-    private StatusBarView statusBar;
     private CollectionPhotosView photosView;
     
     // presenter.
@@ -127,6 +130,19 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // save large data.
+        SavedStateFragment f = new SavedStateFragment();
+        if (photosView != null) {
+            f.setPhotoList(photosView.getPhotos());
+        }
+        f.saveData(this);
+
+        // save normal data.
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Collection);
@@ -147,6 +163,8 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void backToTop() {
+        statusBar.animToInitAlpha();
+        DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, photosView);
         photosView.pagerBackToTop();
     }
@@ -196,30 +214,33 @@ public class CollectionActivity extends MysplashActivity
 
     @SuppressLint("SetTextI18n")
     private void initView(boolean init) {
-        if (init && browsablePresenter.isBrowsable()) {
+        if (init && browsablePresenter.isBrowsable() && editResultPresenter.getEditKey() == null) {
             browsablePresenter.requestBrowsableData();
         } else {
             Collection c = (Collection) editResultPresenter.getEditKey();
 
             this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
 
+            this.statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
+            if (getBundle() == null) {
+                statusBar.setInitMaskAlpha();
+            }
+
             SwipeBackCoordinatorLayout swipeBackView
                     = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_collection_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
-            this.statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
-            if (DisplayUtils.isNeedSetStatusBarMask()) {
-                statusBar.setBackgroundResource(R.color.colorPrimary_light);
-                statusBar.setMask(true);
-            }
-
             this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_collection_appBar);
+            appBar.setOnNestedScrollingListener(this);
 
             TextView title = (TextView) findViewById(R.id.activity_collection_title);
             title.setText(c.title);
 
+            StatusBarView titleStatusBar = (StatusBarView) findViewById(R.id.activity_collection_titleStatusBar);
+
             TextView description = (TextView) findViewById(R.id.activity_collection_description);
             if (TextUtils.isEmpty(c.description)) {
+                titleStatusBar.setVisibility(View.GONE);
                 description.setVisibility(View.GONE);
             } else {
                 DisplayUtils.setTypeface(this, description);
@@ -270,8 +291,14 @@ public class CollectionActivity extends MysplashActivity
 
             this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
             photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
-            photosView.initRefresh();
-            photosView.initAnimShow();
+
+            BaseSavedStateFragment f = SavedStateFragment.getData(this);
+            if (f != null && f instanceof SavedStateFragment) {
+                photosView.setPhotos(((SavedStateFragment) f).getPhotoList());
+            } else {
+                photosView.initAnimShow();
+                photosView.initRefresh();
+            }
         }
     }
 
@@ -314,7 +341,7 @@ public class CollectionActivity extends MysplashActivity
 
     private void onDownload() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            downloadPresenter.download();
+            downloadPresenter.download(this);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, 2);
         }
@@ -333,7 +360,7 @@ public class CollectionActivity extends MysplashActivity
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             requestCode);
                 } else {
-                    downloadPresenter.download();
+                    downloadPresenter.download(this);
                 }
                 break;
         }
@@ -346,7 +373,7 @@ public class CollectionActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadPresenter.download();
+                        downloadPresenter.download(this);
                     } else {
                         NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
@@ -359,7 +386,7 @@ public class CollectionActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -381,26 +408,53 @@ public class CollectionActivity extends MysplashActivity
         }
     }
 
-    // on menu item click listener.
+    // on menu item click swipeListener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem(this, item.getItemId());
     }
 
-    // on download photo listener. (photo adapter)
+    // on download photo swipeListener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
         downloadPresenter.setDownloadKey(photo);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            downloadPresenter.download();
+            downloadPresenter.download(this);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
         }
     }
 
-    // on swipe listener.
+    // on nested scrolling swipeListener.
+
+    @Override
+    public void onStartNestedScroll() {
+        // do nothing.
+    }
+
+    @Override
+    public void onNestedScrolling() {
+        if (appBar.getY() > -appBar.getMeasuredHeight()) {
+            if (!statusBar.isInitAlpha()) {
+                statusBar.animToInitAlpha();
+                DisplayUtils.setStatusBarStyle(this, false);
+            }
+        } else {
+            if (statusBar.isInitAlpha()) {
+                statusBar.animToDarkerAlpha();
+                DisplayUtils.setStatusBarStyle(this, true);
+            }
+        }
+    }
+
+    @Override
+    public void onStopNestedScroll() {
+        // do nothing.
+    }
+
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -409,7 +463,6 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
@@ -418,7 +471,7 @@ public class CollectionActivity extends MysplashActivity
         swipeBackManagePresenter.swipeBackFinish(this, dir);
     }
 
-    // on collection changed listener.
+    // on collection changed swipeListener.
 
     @Override
     public void onEditCollection(Collection c) {
@@ -432,7 +485,7 @@ public class CollectionActivity extends MysplashActivity
         editResultPresenter.deleteSomething(c);
     }
 
-    // on check or download listener. (Collection)
+    // on check or download swipeListener. (Collection)
 
     @Override
     public void onCheck(Object obj) {
@@ -503,7 +556,8 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    public void drawBrowsableView() {
+    public void drawBrowsableView(Object result) {
+        getIntent().putExtra(KEY_COLLECTION_ACTIVITY_COLLECTION, (Collection) result);
         initModel();
         initPresenter();
         initView(false);
@@ -512,5 +566,22 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public void visitParentView() {
         IntentHelper.startMainActivity(this);
+    }
+
+    /** <br> inner class. */
+
+    public static class SavedStateFragment extends BaseSavedStateFragment {
+        // data
+        private List<Photo> photoList;
+
+        // data.
+
+        public List<Photo> getPhotoList() {
+            return photoList;
+        }
+
+        public void setPhotoList(List<Photo> photoList) {
+            this.photoList = photoList;
+        }
     }
 }

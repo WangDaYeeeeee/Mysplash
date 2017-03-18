@@ -61,7 +61,7 @@ public class PopupManageImplementor
 
     /** <br> interface. */
 
-    // on select item listener.
+    // on select item swipeListener.
 
     @Override
     public void onSelectItem(int id) {

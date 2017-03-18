@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ import com.wangdaye.mysplash._common._basic.MysplashFragment;
 import com.wangdaye.mysplash._common.ui.popup.SearchCategoryPopupWindow;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.i.view.PopupManageView;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
@@ -41,11 +39,14 @@ import com.wangdaye.mysplash._common.utils.ValueUtils;
 public class CategoryFragment extends MysplashFragment
         implements CategoryManageView, PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener,
+        NestedScrollAppBarLayout.OnNestedScrollingListener,
         SearchCategoryPopupWindow.OnSearchCategoryChangedListener {
     // model.
     private CategoryManageModel categoryManageModel;
 
     // view.
+    private StatusBarView statusBar;
+
     private CoordinatorLayout container;
     private NestedScrollAppBarLayout appBar;
     private Toolbar toolbar;
@@ -66,9 +67,9 @@ public class CategoryFragment extends MysplashFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
-        initModel();
+        initModel(savedInstanceState);
         initPresenter();
-        initView(view);
+        initView(view, savedInstanceState);
         return view;
     }
 
@@ -79,20 +80,41 @@ public class CategoryFragment extends MysplashFragment
     }
 
     @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, categoryManagePresenter.getCategoryId());
+    }
+
+    @Override
     public View getSnackbarContainer() {
         return container;
     }
 
     @Override
-    public MysplashFragment readBundle(@Nullable Bundle savedInstanceState) {
-        setBundle(savedInstanceState);
-        return this;
+    public boolean needSetOnlyWhiteStatusBarText() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
     @Override
-    public void writeBundle(Bundle outState) {
-        outState.putInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, categoryManagePresenter.getCategoryId());
-        photosView.writeBundle(outState);
+    public void backToTop() {
+        statusBar.animToInitAlpha();
+        setStatusBarStyle(false);
+        BackToTopUtils.showTopBar(appBar, photosView);
+        photosView.pagerScrollToTop();
+    }
+
+    @Override
+    public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
+        if (photosView != null) {
+            ((MainActivity.SavedStateFragment) outState).setCategoryList(photosView.getPhotos());
+        }
+    }
+
+    @Override
+    public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
+        if (photosView != null) {
+            photosView.setPhotos(((MainActivity.SavedStateFragment) savedInstanceState).getCategoryList());
+        }
     }
 
     /** <br> presenter. */
@@ -107,16 +129,14 @@ public class CategoryFragment extends MysplashFragment
 
     // init.
 
-    private void initView(View v) {
-        StatusBarView statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
-        if (DisplayUtils.isNeedSetStatusBarMask()) {
-            statusBar.setBackgroundResource(R.color.colorPrimary_light);
-            statusBar.setMask(true);
-        }
+    private void initView(View v, Bundle savedInstanceState) {
+        this.statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
+        statusBar.setInitMaskAlpha();
 
         this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_category_container);
 
         this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_category_appBar);
+        appBar.setOnNestedScrollingListener(this);
 
         this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
         if (Mysplash.getInstance().isLightTheme()) {
@@ -149,19 +169,12 @@ public class CategoryFragment extends MysplashFragment
         this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
         photosView.setActivity((MainActivity) getActivity());
         photosView.setCategory(categoryManagePresenter.getCategoryId());
-        if (getBundle() != null) {
-            photosView.readBundle(getBundle());
-        } else {
+        if (savedInstanceState == null) {
             photosView.initRefresh();
         }
     }
 
     // interface.
-
-    public void backToTop() {
-        BackToTopUtils.showTopBar(appBar, photosView);
-        photosView.pagerScrollToTop();
-    }
 
     public void showPopup() {
         popupManagePresenter.showPopup(getActivity(), toolbar, photosView.getOrder(), 0);
@@ -171,11 +184,11 @@ public class CategoryFragment extends MysplashFragment
 
     // init.
 
-    private void initModel() {
-        int categoryId = getBundle() == null ?
+    private void initModel(Bundle savedInstanceState) {
+        int categoryId = savedInstanceState == null ?
                 Mysplash.CATEGORY_BUILDINGS_ID
                 :
-                getBundle().getInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, Mysplash.CATEGORY_BUILDINGS_ID);
+                savedInstanceState.getInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, Mysplash.CATEGORY_BUILDINGS_ID);
         this.categoryManageModel = new CategoryManageObject(categoryId);
     }
 
@@ -187,7 +200,7 @@ public class CategoryFragment extends MysplashFragment
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -212,14 +225,41 @@ public class CategoryFragment extends MysplashFragment
         }
     }
 
-    // on menu item click listener.
+    // on menu item click swipeListener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
     }
 
-    // on search category changed listener.
+    // on nested scrolling swipeListener.
+
+    @Override
+    public void onStartNestedScroll() {
+        // do nothing.
+    }
+
+    @Override
+    public void onNestedScrolling() {
+        if (needSetOnlyWhiteStatusBarText()) {
+            if (statusBar.isInitAlpha()) {
+                statusBar.animToDarkerAlpha();
+                setStatusBarStyle(true);
+            }
+        } else {
+            if (!statusBar.isInitAlpha()) {
+                statusBar.animToInitAlpha();
+                setStatusBarStyle(false);
+            }
+        }
+    }
+
+    @Override
+    public void onStopNestedScroll() {
+        // do nothing.
+    }
+
+    // on search category changed swipeListener.
 
     @Override
     public void onSearchCategoryChanged(int categoryId) {

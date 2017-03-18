@@ -430,7 +430,7 @@ public class SetWallpaperActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -457,7 +457,7 @@ public class SetWallpaperActivity extends MysplashActivity
         }
     }
 
-    // on clip type changed listener.
+    // on clip type changed swipeListener.
 
     @Override
     public void onClipTypeChanged(int type) {
@@ -465,7 +465,7 @@ public class SetWallpaperActivity extends MysplashActivity
         setTypeIcon(type);
     }
 
-    // on align type changed listener.
+    // on align type changed swipeListener.
 
     @Override
     public void onAlignTypeChanged(int type) {
@@ -473,7 +473,7 @@ public class SetWallpaperActivity extends MysplashActivity
         setAlignIcon(type);
     }
 
-    // on where selected listener.
+    // on where selected swipeListener.
 
     @Override
     public void onWhereSelected(int where) {

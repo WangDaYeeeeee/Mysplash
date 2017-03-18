@@ -12,7 +12,6 @@ public interface BrowsablePresenter {
     boolean isBrowsable();
 
     void requestBrowsableData();
-    void drawBrowsableView();
     void visitParentView();
 
     void cancelRequest();

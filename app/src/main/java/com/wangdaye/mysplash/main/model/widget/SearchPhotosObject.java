@@ -26,11 +26,11 @@ public class SearchPhotosObject
 
     /** <br> life cycle. */
 
-    public SearchPhotosObject(PhotoAdapter adapter, String query) {
+    public SearchPhotosObject(PhotoAdapter adapter) {
         this.adapter = adapter;
         this.service = SearchService.getService();
 
-        this.searchQuery = query;
+        this.searchQuery = "";
 
         this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
 

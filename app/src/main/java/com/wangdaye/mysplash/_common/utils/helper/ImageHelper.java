@@ -114,7 +114,7 @@ public class ImageHelper {
             loadImage(
                     context, view,
                     R.drawable.default_avatar, 128, 128, false,
-                    null,
+                    new CircleTransformation(context),
                     l);
         }
     }
@@ -124,6 +124,7 @@ public class ImageHelper {
         DrawableRequestBuilder<Integer> thumbnailRequest = Glide.with(context)
                 .load(R.drawable.default_avatar)
                 .override(128, 128)
+                .transform(new CircleTransformation(context))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE);
         loadImage(
                 context, view,
@@ -303,7 +304,7 @@ public class ImageHelper {
         Glide.clear(view);
     }
 
-    /** <br> listener. */
+    /** <br> swipeListener. */
 
     public interface OnLoadImageListener {
         void onLoadSucceed();

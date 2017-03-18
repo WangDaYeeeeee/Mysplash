@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common._basic.FooterAdapter;
 import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -19,13 +20,14 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Collection adapter. (Recycler view)
  * */
 
-public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.ViewHolder> {
+public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     // widget
     private Context a;
     private List<Collection> itemList;
@@ -37,17 +39,34 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
         this.itemList = list;
     }
 
-    /** <br> UI. */
-
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_collection, parent, false);
-        return new ViewHolder(v, viewType);
+    protected boolean hasFooter() {
+        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.onBindView(position);
+    public int getRealItemCount() {
+        return itemList.size();
+    }
+
+    /** <br> UI. */
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+        if (isFooter(position)) {
+            // footer.
+            return FooterHolder.buildInstance(parent);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_collection, parent, false);
+            return new ViewHolder(v, position);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onBindView(position);
+        }
     }
 
     public void setActivity(MysplashActivity a) {
@@ -57,19 +76,16 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
     /** <br> data. */
 
     @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    @Override
     public int getItemViewType(int position) {
         return position;
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.onRecycled();
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onRecycled();
+        }
     }
 
     public void insertItem(Collection c, int position) {
@@ -106,6 +122,18 @@ public class CollectionAdapter extends RecyclerView.Adapter<CollectionAdapter.Vi
 
     public List<Collection> getItemList() {
         return itemList;
+    }
+
+    public void setCollectionData(List<Collection> list) {
+        itemList.clear();
+        itemList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public List<Collection> getCollectionData() {
+        List<Collection> list = new ArrayList<>();
+        list.addAll(itemList);
+        return list;
     }
 
     /** <br> inner class. */

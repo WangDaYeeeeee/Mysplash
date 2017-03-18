@@ -3,13 +3,14 @@ package com.wangdaye.mysplash.tag.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +44,7 @@ import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFram
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash.tag.model.widget.LoadObject;
 import com.wangdaye.mysplash.tag.model.widget.ScrollObject;
 import com.wangdaye.mysplash.tag.model.widget.SearchObject;
@@ -53,6 +55,7 @@ import com.wangdaye.mysplash.tag.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.tag.view.activity.TagActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Category photos view.
@@ -80,9 +83,6 @@ public class TagPhotosView extends NestedScrollFrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
     private SwipeBackPresenter swipeBackPresenter;
-
-    // data
-    private static final String KEY_TAG_PHOTO_VIEW_TAG = "tag_photo_view_tag";
 
     /** <br> life cycle. */
 
@@ -121,21 +121,23 @@ public class TagPhotosView extends NestedScrollFrameLayout
     }
 
     @Override
+    public Parcelable onSaveInstanceState() {
+        return new SavedState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        searchPresenter.setQuery(ss.query);
+        searchPresenter.setPage(ss.page);
+        searchPresenter.setOver(ss.over);
+    }
+
+    @Override
     public boolean isParentOffset() {
         return false;
-    }
-
-    public void readBundle(@NonNull Bundle saveInstanceState) {
-        searchPresenter.setQuery(saveInstanceState.getString(
-                KEY_TAG_PHOTO_VIEW_TAG,
-                searchPresenter.getQuery()));
-        initRefresh();
-    }
-
-    public void writeBundle(Bundle outState) {
-        outState.putString(
-                KEY_TAG_PHOTO_VIEW_TAG,
-                searchPresenter.getQuery());
     }
 
     /** <br> presenter. */
@@ -168,6 +170,11 @@ public class TagPhotosView extends NestedScrollFrameLayout
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
+
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(searchPresenter.getAdapter());
@@ -225,6 +232,22 @@ public class TagPhotosView extends NestedScrollFrameLayout
         ((PhotoAdapter) searchPresenter.getAdapter()).setOnDownloadPhotoListener(a);
     }
 
+    public List<Photo> getPhotos() {
+        return ((PhotoAdapter) searchPresenter.getAdapter()).getPhotoData();
+    }
+
+    public void setPhotos(List<Photo> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        ((PhotoAdapter) searchPresenter.getAdapter()).setPhotoData(list);
+        if (list.size() == 0 && !TextUtils.isEmpty(searchPresenter.getQuery())) {
+            initRefresh();
+        } else {
+            setNormalState();
+        }
+    }
+
     public void setTag(String key) {
         searchPresenter.setQuery(key);
     }
@@ -247,7 +270,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -258,7 +281,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh an load listener.
+    // on refresh an load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -270,7 +293,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
         searchPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
@@ -281,7 +304,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
         }
     };
 
-    // on collections changed listener.
+    // on collections changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -379,7 +402,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = searchPresenter.getAdapterItemCount();
         if (searchPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             searchPresenter.loadMore(getContext(), false);
@@ -412,5 +435,51 @@ public class TagPhotosView extends NestedScrollFrameLayout
             default:
                 return true;
         }
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState extends BaseSavedState {
+        // data
+        String query;
+        int page;
+        boolean over;
+
+        // life cycle.
+
+        SavedState(TagPhotosView view, Parcelable superState) {
+            super(superState);
+            this.query = view.searchModel.getSearchQuery();
+            this.page = view.searchModel.getPhotosPage();
+            this.over = view.searchModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.query = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(this.query);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

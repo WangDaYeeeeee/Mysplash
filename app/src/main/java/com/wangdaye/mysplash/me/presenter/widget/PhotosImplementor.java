@@ -143,6 +143,22 @@ public class PhotosImplementor
     }
 
     @Override
+    public void setPage(int page) {
+        model.setPhotosPage(page);
+    }
+
+    @Override
+    public void setPageList(List<Integer> pageList) {
+        model.setPageList(pageList);
+    }
+
+    @Override
+    public void setOver(boolean over) {
+        model.setOver(over);
+        view.setPermitLoading(!over);
+    }
+
+    @Override
     public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
@@ -207,9 +223,8 @@ public class PhotosImplementor
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
-                model.setOver(false);
+                setOver(false);
                 view.setRefreshing(false);
-                view.setPermitLoading(true);
             } else {
                 view.setLoading(false);
             }
@@ -219,8 +234,7 @@ public class PhotosImplementor
                     model.getAdapter().insertItem(response.body().get(i));
                 }
                 if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
-                    model.setOver(true);
-                    view.setPermitLoading(false);
+                    setOver(true);
                 }
                 view.requestPhotosSuccess();
             } else {

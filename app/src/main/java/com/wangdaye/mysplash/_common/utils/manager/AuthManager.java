@@ -65,9 +65,11 @@ public class AuthManager
     private static AuthManager instance;
 
     public static AuthManager getInstance() {
-        synchronized (AuthManager.class) {
-            if (instance == null) {
-                instance = new AuthManager();
+        if (instance == null) {
+            synchronized (AuthManager.class) {
+                if (instance == null) {
+                    instance = new AuthManager();
+                }
             }
         }
         return instance;
@@ -280,7 +282,7 @@ public class AuthManager
 
     /** <br> interface. */
 
-    // on auth data changed listener.
+    // on auth data changed swipeListener.
 
     public interface OnAuthDataChangedListener {
         void onWriteAccessToken();
@@ -297,7 +299,7 @@ public class AuthManager
         listenerList.remove(l);
     }
 
-    // on request me profile listener.
+    // on request me profile swipeListener.
 
     @Override
     public void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response) {
@@ -317,7 +319,7 @@ public class AuthManager
         }
     }
 
-    // on request user profile listener.
+    // on request user profile swipeListener.
 
     @Override
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {

@@ -65,7 +65,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private boolean mPermitRefresh = true;
     private boolean mPermitLoad = true;
     private int mTouchSlop;
-    private float mDragTriggerDistance = -1;
+    private float[] mDragTriggerDistances = new float[] {-1, -1};
 
     private float mTotalUnconsumed;
     private final NestedScrollingParentHelper mNestedScrollingParentHelper;
@@ -135,7 +135,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         final DisplayMetrics metrics = getResources().getDisplayMetrics();
         mCircleWidth = (int) (CIRCLE_DIAMETER * metrics.density);
         mCircleHeight = (int) (CIRCLE_DIAMETER * metrics.density);
-        mDragTriggerDistance = DEFAULT_CIRCLE_TARGET * metrics.density;
+        mDragTriggerDistances[DIRECTION_TOP] = DEFAULT_CIRCLE_TARGET * metrics.density;
+        mDragTriggerDistances[DIRECTION_BOTTOM] = DEFAULT_CIRCLE_TARGET * metrics.density;
 
         createProgressView();
         ViewCompat.setChildrenDrawingOrderEnabled(this, true);
@@ -276,16 +277,16 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
     private void moveSpinner(int dir, float dragDistance) {
         mProgress[dir].showArrow(true);
-        float originalDragPercent = Math.abs(dragDistance) / mDragTriggerDistance;
+        float originalDragPercent = Math.abs(dragDistance) / mDragTriggerDistances[dir];
 
         float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
         float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
-        float extraOS = Math.abs(dragDistance) - mDragTriggerDistance;
-        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, mDragTriggerDistance * 2) / mDragTriggerDistance);
+        float extraOS = Math.abs(dragDistance) - mDragTriggerDistances[dir];
+        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, mDragTriggerDistances[dir] * 2) / mDragTriggerDistances[dir]);
         float tensionPercent = (float) ((tensionSlingshotPercent / 4) - Math.pow((tensionSlingshotPercent / 4), 2)) * 2f;
-        float extraMove = (mDragTriggerDistance) * tensionPercent * 2;
+        float extraMove = (mDragTriggerDistances[dir]) * tensionPercent * 2;
 
-        int offset = (int) ((mDragTriggerDistance * dragPercent) + extraMove) * (dir == DIRECTION_TOP ? 1 : -1);
+        int offset = (int) ((mDragTriggerDistances[dir] * dragPercent) + extraMove) * (dir == DIRECTION_TOP ? 1 : -1);
 
         // where 1.0f is a full circle
         if (mCircleViews[dir].getVisibility() != View.VISIBLE) {
@@ -298,9 +299,9 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
 
         if (mScale) {
-            setAnimationProgress(dir, Math.min(1f, Math.abs(dragDistance / mDragTriggerDistance)));
+            setAnimationProgress(dir, Math.min(1f, Math.abs(dragDistance / mDragTriggerDistances[dir])));
         }
-        if (Math.abs(dragDistance) < mDragTriggerDistance) {
+        if (Math.abs(dragDistance) < mDragTriggerDistances[dir]) {
             if (mProgress[dir].getAlpha() > STARTING_PROGRESS_ALPHA
                     && !isAnimationRunning(mAlphaStartAnimation)) {
                 // Animate the alpha
@@ -322,7 +323,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     }
 
     private void finishSpinner(final int dir, float dragDistance) {
-        if (Math.abs(dragDistance) > mDragTriggerDistance) {
+        if (Math.abs(dragDistance) > mDragTriggerDistances[dir]) {
             if (dir == DIRECTION_TOP) {
                 setRefreshing(true, true /* notify */);
             } else {
@@ -400,7 +401,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mCircleViews[DIRECTION_BOTTOM].setVisibility(GONE);
             // scale and show
             mRefreshing = true;
-            setTargetOffsetTopAndBottom(DIRECTION_TOP, (int) (mDragTriggerDistance - mDragOffsetDistance));
+            setTargetOffsetTopAndBottom(DIRECTION_TOP, (int) (mDragTriggerDistances[DIRECTION_TOP] - mDragOffsetDistance));
             mNotify = false;
             startScaleUpAnimation(DIRECTION_TOP, mRefreshListener);
         } else {
@@ -416,7 +417,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mCircleViews[DIRECTION_TOP].setVisibility(GONE);
             // scale and show
             mLoading = true;
-            setTargetOffsetTopAndBottom(DIRECTION_BOTTOM, (int) (-mDragTriggerDistance - mDragOffsetDistance));
+            setTargetOffsetTopAndBottom(DIRECTION_BOTTOM, (int) (-mDragTriggerDistances[DIRECTION_BOTTOM] - mDragOffsetDistance));
             mNotify = false;
             startScaleUpAnimation(DIRECTION_BOTTOM, mLoadListener);
         } else {
@@ -785,6 +786,13 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
     }
 
+    public void setDragTriggerDistance(int dir, int distance) {
+        if (dir == DIRECTION_BOTTOM) {
+            distance += mCircleHeight;
+        }
+        mDragTriggerDistances[dir] = distance;
+    }
+
     private boolean isAnimationRunning(Animation animation) {
         return animation != null && animation.hasStarted() && !animation.hasEnded();
     }
@@ -825,7 +833,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         public void applyTransformation(float interpolatedTime, Transformation t) {
             setTargetOffsetTopAndBottom(
                     DIRECTION_TOP,
-                    (int) (mFrom + (mDragTriggerDistance - mFrom) * interpolatedTime - mDragOffsetDistance));
+                    (int) (mFrom + (mDragTriggerDistances[DIRECTION_TOP] - mFrom) * interpolatedTime - mDragOffsetDistance));
             mProgress[DIRECTION_TOP].setArrowScale(1 - interpolatedTime);
         }
     };
@@ -835,7 +843,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         public void applyTransformation(float interpolatedTime, Transformation t) {
             setTargetOffsetTopAndBottom(
                     DIRECTION_BOTTOM,
-                    (int) (mFrom + (-mDragTriggerDistance - mFrom) * interpolatedTime - mDragOffsetDistance));
+                    (int) (mFrom + (-mDragTriggerDistances[DIRECTION_BOTTOM] - mFrom) * interpolatedTime - mDragOffsetDistance));
             mProgress[DIRECTION_BOTTOM].setArrowScale(1 - interpolatedTime);
         }
     };
@@ -1010,7 +1018,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
                         mListener.onRefresh();
                     }
                 }
-                mDragOffsetDistance = (int) mDragTriggerDistance;
+                mDragOffsetDistance = (int) mDragTriggerDistances[DIRECTION_TOP];
             } else {
                 reset();
             }
@@ -1038,14 +1046,14 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
                         mListener.onLoad();
                     }
                 }
-                mDragOffsetDistance = (int) -mDragTriggerDistance;
+                mDragOffsetDistance = (int) -mDragTriggerDistances[DIRECTION_BOTTOM];
             } else {
                 reset();
             }
         }
     };
 
-    // on refresh and load listener.
+    // on refresh and load swipeListener.
 
     public interface OnRefreshAndLoadListener {
         void onRefresh();

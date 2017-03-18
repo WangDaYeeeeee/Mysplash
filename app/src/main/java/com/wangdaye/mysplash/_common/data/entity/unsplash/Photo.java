@@ -177,6 +177,7 @@ public class Photo
         dest.writeByte(this.loadPhotoSuccess ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasFadedIn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.settingLike ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.complete ? (byte) 1 : (byte) 0);
         dest.writeString(this.id);
         dest.writeString(this.created_at);
         dest.writeInt(this.width);
@@ -206,6 +207,7 @@ public class Photo
         this.loadPhotoSuccess = in.readByte() != 0;
         this.hasFadedIn = in.readByte() != 0;
         this.settingLike = in.readByte() != 0;
+        this.complete = in.readByte() != 0;
         this.id = in.readString();
         this.created_at = in.readString();
         this.width = in.readInt();

@@ -54,7 +54,7 @@ import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash._common.utils.widget.runnable.FlagRunnable;
+import com.wangdaye.mysplash._common._basic.FlagRunnable;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.photo.model.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.DownloadObject;
@@ -110,7 +110,7 @@ public class PhotoActivity extends MysplashActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStatusBarStyle(false);
+        DisplayUtils.setStatusBarStyle(this, true);
         setContentView(R.layout.activity_photo);
         initModel();
         initPresenter();
@@ -201,7 +201,7 @@ public class PhotoActivity extends MysplashActivity
     private void initView(boolean init) {
         this.handler = new SafeHandler<>(this);
 
-        if (init && browsablePresenter.isBrowsable()) {
+        if (init && browsablePresenter.isBrowsable() && photoInfoPresenter.getPhoto() == null) {
             browsablePresenter.requestBrowsableData();
         } else {
             this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
@@ -259,18 +259,6 @@ public class PhotoActivity extends MysplashActivity
 
     public void initRefresh() {
         photoInfoPresenter.requestPhoto(this);
-    }
-
-    private void setStatusBarStyle(boolean darkText) {
-        if (darkText) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-        } else {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        }
     }
 
     public void visitParentActivity() {
@@ -347,15 +335,15 @@ public class PhotoActivity extends MysplashActivity
     public void downloadByType(int type) {
         switch (type) {
             case DownloadHelper.DOWNLOAD_TYPE:
-                downloadPresenter.download();
+                downloadPresenter.download(this);
                 break;
 
             case DownloadHelper.SHARE_TYPE:
-                downloadPresenter.share();
+                downloadPresenter.share(this);
                 break;
 
             case DownloadHelper.WALLPAPER_TYPE:
-                downloadPresenter.setWallpaper();
+                downloadPresenter.setWallpaper(this);
                 break;
         }
         PhotoDownloadView downloadView = getPhotoDownloadView();
@@ -423,7 +411,7 @@ public class PhotoActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on check or download listener.
+    // on check or download swipeListener.
 
     @Override
     public void onCheck(Object obj) {
@@ -441,7 +429,7 @@ public class PhotoActivity extends MysplashActivity
         }
     }
 
-    // on scroll changed listener.
+    // on scroll changed swipeListener.
 
     private class OnScrollListener extends RecyclerView.OnScrollListener {
         // data.
@@ -517,14 +505,14 @@ public class PhotoActivity extends MysplashActivity
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
-                setStatusBarStyle(Mysplash.getInstance().isLightTheme());
+                DisplayUtils.setStatusBarStyle(PhotoActivity.this, false);
             } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
-                setStatusBarStyle(false);
+                DisplayUtils.setStatusBarStyle(PhotoActivity.this, true);
             }
         }
     }
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -581,6 +569,8 @@ public class PhotoActivity extends MysplashActivity
 
     @Override
     public void requestPhotoSuccess(Photo photo) {
+        getIntent().putExtra(KEY_PHOTO_ACTIVITY_PHOTO, photo);
+
         int oldCount = photoInfoPresenter.getAdapter().getItemCount() - 1;
 
         photoInfoPresenter.getAdapter().notifyItemRemoved(oldCount);
@@ -621,7 +611,8 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    public void drawBrowsableView() {
+    public void drawBrowsableView(Object result) {
+        getIntent().putExtra(KEY_PHOTO_ACTIVITY_PHOTO, (Photo) result);
         initModel();
         initPresenter();
         initView(false);
@@ -658,12 +649,11 @@ public class PhotoActivity extends MysplashActivity
         @Override
         public void run() {
             while (isRunning()) {
-                DownloadHelper.getInstance().setServiceAlive(true);
                 DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity.this)
                         .readDownloadingEntity(photoInfoPresenter.getPhoto().id);
                 if (entity != null && entity.missionId != -1
                         && entity.result == DownloadHelper.RESULT_DOWNLOADING) {
-                    DownloadMission mission = DownloadHelper.getInstance()
+                    DownloadMission mission = DownloadHelper.getInstance(PhotoActivity.this)
                             .getDownloadMission(PhotoActivity.this, entity.missionId);
                     if (mission == null || mission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
                         messageManagePresenter.sendMessage(-1, null);
@@ -675,7 +665,6 @@ public class PhotoActivity extends MysplashActivity
                 }
                 SystemClock.sleep(200);
             }
-            DownloadHelper.getInstance().setServiceAlive(false);
         }
     };
 }

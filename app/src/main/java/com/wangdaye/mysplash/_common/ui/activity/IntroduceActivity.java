@@ -294,7 +294,7 @@ public class IntroduceActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -323,7 +323,7 @@ public class IntroduceActivity extends MysplashActivity
         }
     }
 
-    // on page changed listener.
+    // on page changed swipeListener.
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

@@ -15,9 +15,11 @@ public class ThreadManager {
     private static ThreadManager instance;
 
     public static ThreadManager getInstance() {
-        synchronized (ThreadManager.class) {
-            if (instance == null) {
-                instance = new ThreadManager();
+        if (instance == null) {
+            synchronized (ThreadManager.class) {
+                if (instance == null) {
+                    instance = new ThreadManager();
+                }
             }
         }
         return instance;

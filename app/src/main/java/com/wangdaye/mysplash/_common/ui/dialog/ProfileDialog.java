@@ -86,7 +86,7 @@ public class ProfileDialog extends MysplashDialogFragment
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -97,7 +97,7 @@ public class ProfileDialog extends MysplashDialogFragment
         }
     }
 
-    // on request user profile listener.
+    // on request user profile swipeListener.
 
     @Override
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {

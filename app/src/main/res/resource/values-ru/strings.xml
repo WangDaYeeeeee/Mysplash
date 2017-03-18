@@ -3,7 +3,7 @@
 
     <!-- application. -->
     <string name="app_name">Mysplash</string>
-    <string name="about_unsplash">Бесплатный (делайте что хотите) фотографии высокого разрешения.</string>
+    <string name="about_unsplash">Бесплатные (для любого использования) фотографии высокого разрешения.</string>
 
     <!-- key words. -->
     <string name="about_app">О приложении</string>
@@ -42,9 +42,11 @@
     <string name="libraries">БИБЛИОТЕКИ</string>
     <string name="users">пользователи</string>
 
+    <string name="follow_system">Система слежения</string>
+
     <!-- menu. -->
     <string name="action_cancel_all">Отменить всё</string>
-    <string name="action_category">Категория</string>
+    <string name="action_category">Категории</string>
     <string name="action_category_buildings">Постройки</string>
     <string name="action_category_food_drink">Еда &amp; Напитки</string>
     <string name="action_category_nature">Природа</string>
@@ -61,8 +63,8 @@
     <string name="action_home">Домой</string>
     <string name="action_menu">Меню</string>
     <string name="action_multi_filter">Мультифильтр</string>
-    <string name="action_open_download_link">Открыть страницу загрузки</string>
-    <string name="action_open_portfolio">Открыть портфолио</string>
+    <string name="action_open_download_link">Страница загрузки</string>
+    <string name="action_open_portfolio">Портфолио</string>
     <string name="action_path">Путь загрузки</string>
     <string name="action_search">Поиск</string>
     <string name="action_settings">Настройки</string>
@@ -128,7 +130,7 @@
     <string name="feedback_no_sd_card">Не удаётся найти SD-карту.</string>
     <string name="feedback_notify_restart">Перезапустите для работы.</string>
     <string name="feedback_overload">Перегрузка</string>
-    <string name="feedback_please_login">Пожалуйста ввойдите в аккаунт.</string>
+    <string name="feedback_please_login">Пожалуйста войдите в аккаунт.</string>
     <string name="feedback_portfolio_is_null">Ссылка на портфолио не указана.</string>
     <string name="feedback_request_token_failed">Не удаолсь запросить токен.</string>
     <string name="feedback_restart_warning">Перезапуск приложения отменит загрузки.</string>
@@ -158,12 +160,12 @@
 
     <string name="settings_title_language">Язык</string>
     <string name="settings_title_download_scale">Качество загрузки</string>
-    <string name="settings_title_default_collection_type">Тип коллекции по-умолчанию</string>
-    <string name="settings_title_default_order">Сортировка по-умолчанию</string>
+    <string name="settings_title_default_collection_type">Коллекция</string>
+    <string name="settings_title_default_order">Сортировка</string>
     <string name="settings_title_back_to_top">Нажмите кнопку назад для прокрутки наверх</string>
     <string name="settings_category_filter">Фильтр</string>
-    <string name="settings_category_download">Загрузить</string>
-    <string name="settings_category_basic">Основной</string>
+    <string name="settings_category_download">Загрузка</string>
+    <string name="settings_category_basic">Основные</string>
 
     <string name="introduce_description_back_top">Нажмите на верхнюю панель или кнопку назад, чтобы прокрутить список фотографий обратно наверх.</string>
     <string name="introduce_title_back_top">Прокрутить наверх</string>

@@ -131,6 +131,17 @@ public class CollectionsImplementor
     }
 
     @Override
+    public void setPage(int page) {
+        model.setCollectionsPage(page);
+    }
+
+    @Override
+    public void setOver(boolean over) {
+        model.setOver(over);
+        view.setPermitLoading(!over);
+    }
+
+    @Override
     public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
@@ -201,21 +212,19 @@ public class CollectionsImplementor
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
-                model.setOver(false);
+                setOver(false);
                 view.setRefreshing(false);
-                view.setPermitLoading(true);
             } else {
                 view.setLoading(false);
             }
             if (response.isSuccessful()
-                    && model.getAdapter().getItemCount() + response.body().size() > 0) {
+                    && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
                 model.setCollectionsPage(page);
                 for (int i = 0; i < response.body().size(); i ++) {
-                    model.getAdapter().insertItem(response.body().get(i), model.getAdapter().getItemCount());
+                    model.getAdapter().insertItem(response.body().get(i), model.getAdapter().getRealItemCount());
                 }
                 if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
-                    model.setOver(true);
-                    view.setPermitLoading(false);
+                    setOver(true);
                 }
                 view.requestCollectionsSuccess();
             } else {

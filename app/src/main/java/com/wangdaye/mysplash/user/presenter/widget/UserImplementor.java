@@ -77,7 +77,7 @@ public class UserImplementor
 
     /** <br> interface. */
 
-    // on request user profile listener.
+    // on request user profile swipeListener.
 
     private class OnRequestUserProfileListener implements UserService.OnRequestUserProfileListener {
         // data
@@ -114,7 +114,7 @@ public class UserImplementor
         }
     }
 
-    // on follow listener.
+    // on follow swipeListener.
 
     private class OnFollowListener implements FollowingService.OnFollowListener {
         // data

@@ -7,123 +7,134 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_collection_swipeBackView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        android:transitionName="@string/transition_collection_background"
+        tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-            android:id="@+id/activity_collection_statusBar"
-            android:background="?attr/colorPrimaryDark"
+        <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+            android:id="@+id/activity_collection_appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
 
-        <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_collection_swipeBackView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/root_color"
-            android:transitionName="@string/transition_collection_background"
-            tools:ignore="UnusedAttribute">
-
-            <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
-                android:id="@+id/activity_collection_appBar"
+            <RelativeLayout
+                android:id="@+id/activity_collection_collectionBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                app:theme="@style/MysplashToolbarTheme">
+                app:layout_scrollFlags="scroll">
 
-                <RelativeLayout
-                    android:id="@+id/activity_collection_collectionBar"
+                <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+                    android:id="@+id/activity_collection_appBarStatusBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_collection_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_below="@id/activity_collection_appBarStatusBar"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
+
+                <TextView
+                    android:id="@+id/activity_collection_title"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/design_title_text_size"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/large_icon_size"
+                    android:layout_marginRight="@dimen/large_icon_size"
+                    android:layout_below="@id/activity_collection_toolbar"
+                    android:textIsSelectable="false"
+                    style="@style/title_text"
+                    tools:text="The Sample Collection Title" />
+
+                <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+                    android:id="@+id/activity_collection_titleStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll|snap">
+                    android:layout_below="@id/activity_collection_title" />
 
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/activity_collection_toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="@android:color/transparent"
-                        app:popupTheme="@style/MysplashPopupMenuTheme" />
+                <TextView
+                    android:id="@+id/activity_collection_description"
+                    android:layout_below="@id/activity_collection_titleStatusBar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="@dimen/mini_icon_size"
+                    android:layout_marginRight="@dimen/mini_icon_size"
+                    android:layout_width="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:lineSpacingMultiplier="1.3"
+                    android:textIsSelectable="false"
+                    style="@style/content_text"
+                    tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
-                    <TextView
-                        android:id="@+id/activity_collection_title"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/design_title_text_size"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="@dimen/little_icon_size"
-                        android:layout_marginLeft="@dimen/large_icon_size"
-                        android:layout_marginRight="@dimen/large_icon_size"
-                        android:layout_below="@id/activity_collection_toolbar"
-                        android:textIsSelectable="false"
-                        style="@style/title_text"
-                        tools:text="The Sample Collection Title" />
+            </RelativeLayout>
 
-                    <TextView
-                        android:id="@+id/activity_collection_description"
-                        android:layout_below="@id/activity_collection_title"
-                        android:layout_centerHorizontal="true"
-                        android:layout_marginLeft="@dimen/mini_icon_size"
-                        android:layout_marginRight="@dimen/mini_icon_size"
-                        android:layout_width="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:lineSpacingMultiplier="1.3"
-                        android:textIsSelectable="false"
-                        style="@style/content_text"
-                        tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/activity_collection_creatorBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    tools:ignore="UselessParent">
-
-                    <RelativeLayout
-                        android:id="@+id/activity_collection_touchBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_marginRight="@dimen/normal_margin"
-                        android:layout_centerHorizontal="true"
-                        android:background="?attr/selectableItemBackground">
-
-                        <com.wangdaye.mysplash._common.ui.widget.CircleImageView
-                            android:id="@+id/activity_collection_avatar"
-                            android:layout_width="@dimen/little_icon_size"
-                            android:layout_height="@dimen/little_icon_size"
-                            android:layout_margin="@dimen/normal_margin"
-                            android:layout_centerVertical="true"
-                            android:scaleType="centerCrop"
-                            android:src="?attr/line_color"
-                            android:transitionName="@string/transition_collection_avatar"
-                            tools:ignore="ContentDescription,RtlHardcoded" />
-
-                        <TextView
-                            android:id="@+id/activity_collection_subtitle"
-                            android:maxLines="1"
-                            android:layout_toRightOf="@id/activity_collection_avatar"
-                            android:layout_centerVertical="true"
-                            android:layout_marginRight="@dimen/normal_margin"
-                            style="@style/subtitle_text"
-                            tools:text="By Daniil Omelchenko"
-                            tools:ignore="RtlHardcoded" />
-
-                    </RelativeLayout>
-
-                </RelativeLayout>
-
-            </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
-
-            <com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView
-                android:id="@+id/activity_collection_photosView"
+            <RelativeLayout
+                android:id="@+id/activity_collection_creatorBar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways"
+                tools:ignore="UselessParent">
 
-        </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+                <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+                    android:id="@+id/activity_collection_creatorBarStatusBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-    </LinearLayout>
+                <RelativeLayout
+                    android:id="@+id/activity_collection_touchBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/normal_margin"
+                    android:layout_marginRight="@dimen/normal_margin"
+                    android:layout_below="@id/activity_collection_creatorBarStatusBar"
+                    android:layout_centerHorizontal="true"
+                    android:background="?attr/selectableItemBackground">
+
+                    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+                        android:id="@+id/activity_collection_avatar"
+                        android:layout_width="@dimen/little_icon_size"
+                        android:layout_height="@dimen/little_icon_size"
+                        android:layout_margin="@dimen/normal_margin"
+                        android:layout_centerVertical="true"
+                        android:scaleType="centerCrop"
+                        android:src="?attr/line_color"
+                        android:transitionName="@string/transition_collection_avatar"
+                        tools:ignore="ContentDescription,RtlHardcoded" />
+
+                    <TextView
+                        android:id="@+id/activity_collection_subtitle"
+                        android:maxLines="1"
+                        android:layout_toRightOf="@id/activity_collection_avatar"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/normal_margin"
+                        style="@style/subtitle_text"
+                        tools:text="By Daniil Omelchenko"
+                        tools:ignore="RtlHardcoded" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+
+        <com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView
+            android:id="@+id/activity_collection_photosView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/activity_collection_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black" />
 
 </android.support.design.widget.CoordinatorLayout>

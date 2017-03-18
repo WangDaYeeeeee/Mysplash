@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.main.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -39,6 +39,7 @@ import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFram
 import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.MultiFilterObject;
@@ -49,6 +50,7 @@ import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Multi-filter photos view.
@@ -79,14 +81,6 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     // widget.
     private OnMultiFilterDataInputInterface inputInterface;
-
-    // data.
-    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_SEARCHING = "key_multi_filter_photos_view_searching";
-    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_QUERY = "key_multi_filter_photos_view_query";
-    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_USER = "key_multi_filter_photos_view_user";
-    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_CATEGORY = "key_multi_filter_photos_view_photo_category";
-    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_ORIENTATION = "key_multi_filter_photos_view_photo_orientation";
-    private final String KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_TYPE = "key_multi_filter_photos_view_photo_type";
 
     /** <br> life cycle. */
 
@@ -125,30 +119,26 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     }
 
     @Override
+    public Parcelable onSaveInstanceState() {
+        return new SavedState(this, super.onSaveInstanceState());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+
+        multiFilterPresenter.setQuery(ss.query);
+        multiFilterPresenter.setUsername(ss.user);
+        multiFilterPresenter.setCategory(ss.category);
+        multiFilterPresenter.setOrientation(ss.orientation);
+        multiFilterPresenter.setFeatured(ss.featured);
+        multiFilterPresenter.setOver(ss.over);
+    }
+
+    @Override
     public boolean isParentOffset() {
         return false;
-    }
-
-    public void readBundle(@NonNull Bundle bundle) {
-        multiFilterPresenter.setQuery(bundle.getString(KEY_MULTI_FILTER_PHOTOS_VIEW_QUERY, ""));
-        multiFilterPresenter.setUsername(bundle.getString(KEY_MULTI_FILTER_PHOTOS_VIEW_USER, ""));
-        multiFilterPresenter.setCategory(bundle.getInt(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_CATEGORY, 0));
-        multiFilterPresenter.setOrientation(bundle.getString(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_ORIENTATION, ""));
-        multiFilterPresenter.setFeatured(bundle.getBoolean(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_TYPE, false));
-        if (bundle.getBoolean(KEY_MULTI_FILTER_PHOTOS_VIEW_SEARCHING, false)) {
-            multiFilterPresenter.initRefresh(getContext());
-        }
-    }
-
-    public void writeBundle(Bundle bundle) {
-        bundle.putBoolean(
-                KEY_MULTI_FILTER_PHOTOS_VIEW_SEARCHING,
-                loadPresenter.getLoadState() != LoadObject.FAILED_STATE);
-        bundle.putString(KEY_MULTI_FILTER_PHOTOS_VIEW_QUERY, multiFilterPresenter.getQuery());
-        bundle.putString(KEY_MULTI_FILTER_PHOTOS_VIEW_USER, multiFilterPresenter.getUsername());
-        bundle.putInt(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_CATEGORY, multiFilterPresenter.getCategory());
-        bundle.putString(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_ORIENTATION, multiFilterPresenter.getOrientation());
-        bundle.putBoolean(KEY_MULTI_FILTER_PHOTOS_VIEW_PHOTO_TYPE, multiFilterPresenter.isFeatured());
     }
 
     /** <br> presenter. */
@@ -179,6 +169,11 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
             refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
+
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
 
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(multiFilterPresenter.getAdapter());
@@ -235,6 +230,21 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         multiFilterPresenter.getAdapter().setOnDownloadPhotoListener(a);
     }
 
+    public List<Photo> getPhotos() {
+        return multiFilterPresenter.getAdapter().getPhotoData();
+    }
+
+    public void setPhotos(List<Photo> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        multiFilterPresenter.getAdapter().setPhotoData(list);
+        if (list.size() != 0) {
+            animShow(refreshLayout);
+            animHide(feedbackContainer);
+        }
+    }
+
     public void doSearch(int categoryId, boolean featured,
                          String username, String query,
                          String orientation) {
@@ -270,7 +280,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         inputInterface = i;
     }
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -288,7 +298,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh and load listener.
+    // on refresh and load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -300,7 +310,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         multiFilterPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
@@ -311,7 +321,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         }
     };
 
-    // on collections changed listener.
+    // on collections changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -411,7 +421,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = multiFilterPresenter.getAdapter().getRealItemCount();
         if (multiFilterPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             multiFilterPresenter.loadMore(getContext(), false);
@@ -430,5 +440,63 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState extends BaseSavedState {
+        // data
+        String query;
+        String user;
+        int category;
+        String orientation;
+        boolean featured;
+        boolean over;
+
+        // life cycle.
+
+        SavedState(MultiFilterPhotosView view, Parcelable superState) {
+            super(superState);
+            this.query = view.multiFilterModel.getQuery();
+            this.user = view.multiFilterModel.getUsername();
+            this.category = view.multiFilterModel.getCategory();
+            this.orientation = view.multiFilterModel.getOrientation();
+            this.featured = view.multiFilterModel.isFeatured();
+            this.over = view.multiFilterModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.query = in.readString();
+            this.user = in.readString();
+            this.category = in.readInt();
+            this.orientation = in.readString();
+            this.featured = in.readByte() != 0;
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(this.query);
+            out.writeString(this.user);
+            out.writeInt(this.category);
+            out.writeString(this.orientation);
+            out.writeByte(this.featured ? (byte) 1 : (byte) 0);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

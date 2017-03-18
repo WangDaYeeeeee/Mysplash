@@ -63,17 +63,6 @@
         <item>Nichts</item>
     </string-array>
 
-    <!-- language. -->
-    <string-array name="languages">
-        <item>System folgen</item>
-        <item>Englisch</item>
-        <item>中文</item>
-        <item>Italienisch</item>
-        <item>Türkisch</item>
-        <item>Deutsche</item>
-        <item>Русский</item>
-    </string-array>
-
     <!-- search orientation. -->
     <string-array name="search_orientations">
         <item>Landschaftsformat</item>

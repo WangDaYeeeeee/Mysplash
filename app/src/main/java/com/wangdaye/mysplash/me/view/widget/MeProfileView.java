@@ -182,7 +182,7 @@ public class MeProfileView  extends FrameLayout
 
     /** <br> interface. */
 
-    // on switch listener.
+    // on switch swipeListener.
 
     @Override
     public void onSwitch(boolean switchTo) {

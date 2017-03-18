@@ -152,7 +152,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
 
     /** <br> interface. */
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private class OnScrollListener extends RecyclerView.OnScrollListener {
         // data

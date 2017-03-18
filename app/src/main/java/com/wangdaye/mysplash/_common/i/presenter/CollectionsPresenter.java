@@ -27,6 +27,10 @@ public interface CollectionsPresenter {
 
     void setType(String key);
     String getType();
+
+    void setPage(int page);
+    void setOver(boolean over);
+
     void setActivityForAdapter(MysplashActivity a);
     CollectionAdapter getAdapter();
 }

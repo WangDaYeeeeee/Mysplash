@@ -56,7 +56,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_DOWNLOADING);
         for (int i = 0; i < entityList.size(); i ++) {
             itemList.add(
-                    DownloadHelper.getInstance()
+                    DownloadHelper.getInstance(c)
                             .getDownloadMission(
                                     c,
                                     entityList.get(i).missionId));
@@ -102,13 +102,13 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
     /** <br> interface. */
 
-    // on retry listener.
+    // on retry swipeListener.
 
     public interface OnRetryListener {
         void onRetry(DownloadMissionEntity entity);
     }
 
-    // on check or download listener.
+    // on check or download swipeListener.
 
     @Override
     public void onCheck(Object obj) {
@@ -222,7 +222,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                     break;
 
                 case R.id.item_download_closeBtn:
-                    DownloadHelper.getInstance()
+                    DownloadHelper.getInstance(c)
                             .removeMission(
                                     c,
                                     itemList.get(getAdapterPosition()).entity.missionId);

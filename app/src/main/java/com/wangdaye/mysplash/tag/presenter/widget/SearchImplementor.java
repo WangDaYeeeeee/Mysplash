@@ -114,6 +114,17 @@ public class SearchImplementor
     }
 
     @Override
+    public void setPage(int page) {
+        model.setPhotosPage(page);
+    }
+
+    @Override
+    public void setOver(boolean over) {
+        model.setOver(over);
+        view.setPermitLoading(!over);
+    }
+
+    @Override
     public int getAdapterItemCount() {
         return ((PhotoAdapter) model.getAdapter()).getRealItemCount();
     }
@@ -155,9 +166,8 @@ public class SearchImplementor
             model.setLoading(false);
             if (refresh) {
                 adapter.clearItem();
-                model.setOver(false);
+                setOver(false);
                 view.setRefreshing(false);
-                view.setPermitLoading(true);
             } else {
                 view.setLoading(false);
             }
@@ -170,8 +180,7 @@ public class SearchImplementor
                     adapter.insertItem(response.body().results.get(i));
                 }
                 if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
-                    model.setOver(true);
-                    view.setPermitLoading(false);
+                    setOver(true);
                 }
                 view.requestPhotosSuccess();
             } else {

@@ -25,6 +25,8 @@ public interface FollowingPresenter {
     void setNextPage(String nextPage);
     String getNextPage();
 
+    void setOver(boolean over);
+
     void setActivityForAdapter(MysplashActivity a);
     int getAdapterItemCount();
 

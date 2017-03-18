@@ -208,11 +208,11 @@ public class IntentHelper {
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static Intent getDownloadManageActivityIntent(Context context) {
-        Intent manageActivity = new Intent(context, DownloadManageActivity.class);
-        manageActivity.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        manageActivity.putExtra(DownloadManageActivity.EXTRA_NOTIFICATION, true);
-        return manageActivity;
+    public static void startDownloadManageActivityFromNotification(Context context) {
+        Intent intent = new Intent(context, DownloadManageActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(DownloadManageActivity.EXTRA_NOTIFICATION, true);
+        context.startActivity(intent);
     }
 
     public static void startSettingsActivity(MysplashActivity a) {

@@ -1,17 +1,14 @@
 package com.wangdaye.mysplash._common.utils.helper;
 
-import android.app.Notification;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 
-import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.liulishuo.filedownloader.FileDownloadListener;
-import com.liulishuo.filedownloader.FileDownloader;
-import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
@@ -20,6 +17,8 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash._common.utils.FileUtils;
 
+import org.greenrobot.greendao.annotation.NotNull;
+
 import java.util.List;
 
 /**
@@ -27,9 +26,10 @@ import java.util.List;
  * */
 
 public class DownloadHelper {
-    // data
-    private boolean foreground;
+    // widget
+    private DownloadManager downloadManager;
 
+    // data
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
     public static final int WALLPAPER_TYPE = 3;
@@ -43,11 +43,11 @@ public class DownloadHelper {
 
     private static DownloadHelper instance;
 
-    public static DownloadHelper getInstance() {
+    public static DownloadHelper getInstance(Context context) {
         if (instance == null) {
             synchronized (DownloadHelper.class) {
                 if (instance == null) {
-                    instance = new DownloadHelper();
+                    instance = new DownloadHelper(context);
                 }
             }
         }
@@ -56,37 +56,8 @@ public class DownloadHelper {
 
     /** <br> life cycle. */
 
-    private DownloadHelper() {
-        foreground = false;
-    }
-
-    public void init(Context context) {
-        FileDownloader.init(context);
-    }
-
-    public void setServiceAlive(boolean alive) {
-        if (alive) {
-            FileDownloader.getImpl().bindService();
-        } else {
-            FileDownloader.getImpl().unBindServiceIfIdle();
-        }
-    }
-
-    void setForeground(Notification notification) {
-        if (notification != null) {
-            if (!foreground) {
-                foreground = true;
-                FileDownloader.getImpl()
-                        .startForeground(
-                                NotificationHelper.DOWNLOAD_NOTIFICATION_ID,
-                                notification);
-            }
-        }
-    }
-
-    void stopForeground() {
-        foreground = false;
-        FileDownloader.getImpl().stopForeground(true);
+    private DownloadHelper(Context context) {
+        this.downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
     }
 
     /** <br> data. */
@@ -108,16 +79,15 @@ public class DownloadHelper {
     private long addMission(Context c, DownloadMissionEntity entity) {
         FileUtils.deleteFile(entity);
 
-        final OnDownloadListener listener = new OnDownloadListener(c.getApplicationContext(), entity);
-        entity.missionId = FileDownloader.getImpl()
-                .create(entity.downloadUrl)
-                .setPath(entity.getFilePath())
-                .setCallbackProgressMinInterval(NotificationHelper.REFRESH_RATE)
-                .setListener(listener)
-                .asInQueueTask()
-                .enqueue();
-        FileDownloader.getImpl().start(listener, false);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
+                .setTitle(entity.getRealTitle())
+                .setDescription(c.getString(R.string.feedback_downloading))
+                .setDestinationInExternalPublicDir(
+                        Mysplash.DOWNLOAD_PATH,
+                        entity.title + entity.getFormat());
+        request.allowScanningByMediaScanner();
 
+        entity.missionId = downloadManager.enqueue(request);
         entity.result = DownloadHelper.RESULT_DOWNLOADING;
         DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
 
@@ -134,8 +104,7 @@ public class DownloadHelper {
         if (entity == null) {
             return null;
         } else {
-            FileDownloader.getImpl()
-                    .clear((int) missionId, entity.getFilePath());
+            downloadManager.remove(missionId);
             DatabaseHelper.getInstance(c).deleteDownloadEntity(missionId);
 
             DownloadMission mission = new DownloadMission(entity);
@@ -151,8 +120,7 @@ public class DownloadHelper {
     public void removeMission(Context c, long id) {
         DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(id);
         if (entity != null && entity.result != RESULT_SUCCEED) {
-            FileDownloader.getImpl()
-                    .clear((int) id, entity.getFilePath());
+            downloadManager.remove(id);
         }
         DatabaseHelper.getInstance(c).deleteDownloadEntity(id);
     }
@@ -160,13 +128,10 @@ public class DownloadHelper {
     public void clearMission(Context c, List<DownloadMissionEntity> entityList) {
         for (int i = 0; i < entityList.size(); i ++) {
             if (entityList.get(i).result != RESULT_SUCCEED) {
-                FileDownloader.getImpl()
-                        .clear(
-                                (int) entityList.get(i).missionId,
-                                entityList.get(i).getFilePath());
+                downloadManager.remove(entityList.get(i).missionId);
             }
         }
-        FileDownloader.getImpl().clearAllTaskData();
+
         DatabaseHelper.getInstance(c).clearDownloadEntity();
     }
 
@@ -188,20 +153,37 @@ public class DownloadHelper {
         if (entity == null) {
             return null;
         } else {
-            entity.result = getDownloadResult(entity);
-            float process = getMissionProcess(entity);
+            Cursor cursor = getMissionCursor(id);
+            float process = 0;
+            if (cursor != null) {
+                entity.result = getDownloadResult(cursor);
+                process = getMissionProcess(cursor);
+                cursor.close();
+            }
             return new DownloadMission(entity, process);
         }
     }
 
-    private int getDownloadResult(DownloadMissionEntity entity) {
-        switch (FileDownloader.getImpl().getStatus((int) entity.missionId, entity.getFilePath())) {
-            case FileDownloadStatus.completed:
+    @Nullable
+    private Cursor getMissionCursor(long id) {
+        Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(id));
+        if (cursor == null) {
+            return null;
+        } else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
+            return cursor;
+        } else {
+            cursor.close();
+            return null;
+        }
+    }
+
+    private int getDownloadResult(@NotNull Cursor cursor) {
+        switch (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+            case DownloadManager.STATUS_SUCCESSFUL:
                 return RESULT_SUCCEED;
 
-            case FileDownloadStatus.error:
-            case FileDownloadStatus.warn:
-            case FileDownloadStatus.paused:
+            case DownloadManager.STATUS_FAILED:
+            case DownloadManager.STATUS_PAUSED:
                 return RESULT_FAILED;
 
             default:
@@ -209,108 +191,51 @@ public class DownloadHelper {
         }
     }
 
-    private float getMissionProcess(DownloadMissionEntity entity) {
-        long soFar = FileDownloader.getImpl().getSoFar((int) entity.missionId);
-        long total = FileDownloader.getImpl().getTotal((int) entity.missionId);
+    private float getMissionProcess(@NotNull Cursor cursor) {
+        long soFar = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+        long total = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
         return (int) (100.0 * soFar / total);
     }
 
-    boolean isMissionSuccess(Context context, long id) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadEntity(id);
-        return entity == null || getDownloadResult(entity) == RESULT_SUCCEED;
-    }
-}
-
-class OnDownloadListener extends FileDownloadListener {
-    // data
-    private Context context;
-    private String title;
-    private long soFar;
-    private long total;
-
-    /** <br> life cycle. */
-
-    OnDownloadListener(Context context, DownloadMissionEntity entity) {
-        this.context = context;
-        this.title = entity.getRealTitle();
-        this.soFar = this.total = 0;
+    private boolean isMissionSuccess(long id) {
+        Cursor cursor = getMissionCursor(id);
+        if (cursor != null) {
+            int result = getDownloadResult(cursor);
+            cursor.close();
+            return result == RESULT_SUCCEED;
+        } else {
+            return false;
+        }
     }
 
-    @Override
-    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-        Notification notification = NotificationHelper.getInstance(context)
-                .sendDownloadProgressNotification(title, soFarBytes - soFar, totalBytes - total, true, false);
-        DownloadHelper.getInstance().setForeground(notification);
-        soFar = soFarBytes;
-        total = totalBytes;
-    }
+    // feedback.
 
-    @Override
-    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-        Notification notification = NotificationHelper.getInstance(context)
-                .sendDownloadProgressNotification(title, soFarBytes - soFar, totalBytes - total, false, false);
-        DownloadHelper.getInstance().setForeground(notification);
-        soFar = soFarBytes;
-        total = totalBytes;
-    }
-
-    @Override
-    protected void completed(BaseDownloadTask task) {
-        downloadFinish(task.getId());
-    }
-
-    @Override
-    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-        downloadFinish(task.getId());
-    }
-
-    @Override
-    protected void error(BaseDownloadTask task, Throwable e) {
-        downloadFinish(task.getId());
-    }
-
-    @Override
-    protected void warn(BaseDownloadTask task) {
-        downloadFinish(task.getId());
-    }
-
-    /** <br> data. */
-
-    private void downloadFinish(int missionId) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(context)
+    public static void downloadFinish(Context c, long missionId) {
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c)
                 .readDownloadEntity(missionId);
 
-        if (DownloadHelper.getInstance().isMissionSuccess(context, missionId)) {
+        if (DownloadHelper.getInstance(c).isMissionSuccess(missionId)) {
             if (entity != null) {
                 if (entity.downloadType != DownloadHelper.COLLECTION_TYPE) {
-                    downloadPhotoSuccess(context, entity);
+                    downloadPhotoSuccess(c, entity);
                 } else {
-                    downloadCollectionSuccess(context, entity);
+                    downloadCollectionSuccess(c, entity);
                 }
-                DownloadHelper.getInstance()
-                        .updateMissionResult(context, entity.missionId, DownloadHelper.RESULT_SUCCEED);
+                DownloadHelper.getInstance(c)
+                        .updateMissionResult(c, entity.missionId, DownloadHelper.RESULT_SUCCEED);
             }
         } else if (entity != null) {
             if (entity.downloadType != DownloadHelper.COLLECTION_TYPE) {
-                downloadPhotoFailed(context, entity);
+                downloadPhotoFailed(c, entity);
             } else {
-                downloadCollectionFailed(context, entity);
+                downloadCollectionFailed(c, entity);
             }
-            DownloadHelper.getInstance()
-                    .updateMissionResult(context, entity.missionId, DownloadHelper.RESULT_FAILED);
+            DownloadHelper.getInstance(c)
+                    .updateMissionResult(c, entity.missionId, DownloadHelper.RESULT_FAILED);
         }
-
-        Notification notification = NotificationHelper.getInstance(context)
-                .sendDownloadProgressNotification(title, -soFar, -total, true, true);
-        if (notification != null) {
-            DownloadHelper.getInstance().setForeground(notification);
-        } else {
-            DownloadHelper.getInstance().stopForeground();
-        }
-        DownloadHelper.getInstance().setServiceAlive(false);
     }
 
-    private void downloadPhotoSuccess(Context c, DownloadMissionEntity entity) {
+    private static void downloadPhotoSuccess(Context c, DownloadMissionEntity entity) {
         c.sendBroadcast(
                 new Intent(
                         Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
@@ -324,12 +249,12 @@ class OnDownloadListener extends FileDownloadListener {
                     break;
 
                 case DownloadHelper.SHARE_TYPE: {
-                    shareDownloadSuccess(entity);
+                    shareDownloadSuccess(c, entity);
                     break;
                 }
 
                 case DownloadHelper.WALLPAPER_TYPE: {
-                    wallpaperDownloadSuccess(entity);
+                    wallpaperDownloadSuccess(c, entity);
                     break;
                 }
             }
@@ -338,7 +263,7 @@ class OnDownloadListener extends FileDownloadListener {
         }
     }
 
-    private void simpleDownloadSuccess(DownloadMissionEntity entity) {
+    private static void simpleDownloadSuccess(DownloadMissionEntity entity) {
         Context c = Mysplash.getInstance().getTopActivity();
         NotificationHelper.showActionSnackbar(
                 c.getString(R.string.feedback_download_photo_success),
@@ -347,9 +272,9 @@ class OnDownloadListener extends FileDownloadListener {
                 new OnCheckPhotoListener(Mysplash.getInstance().getTopActivity(), entity.title));
     }
 
-    private void shareDownloadSuccess(DownloadMissionEntity entity) {
+    private static void shareDownloadSuccess(Context c, DownloadMissionEntity entity) {
         // Uri file = Uri.parse("file://" + entity.getFilePath());
-        Uri file = FileUtils.filePathToUri(context, entity.getFilePath());
+        Uri file = FileUtils.filePathToUri(c, entity.getFilePath());
         Intent action = new Intent(Intent.ACTION_SEND);
         action.putExtra(Intent.EXTRA_STREAM, file);
         action.setType("image/*");
@@ -362,9 +287,9 @@ class OnDownloadListener extends FileDownloadListener {
                                         .getString(R.string.feedback_choose_share_app)));
     }
 
-    private void wallpaperDownloadSuccess(DownloadMissionEntity entity) {
+    private static void wallpaperDownloadSuccess(Context c, DownloadMissionEntity entity) {
         // Uri file = Uri.parse("file://" + entity.getFilePath());
-        Uri file = FileUtils.filePathToUri(context, entity.getFilePath());
+        Uri file = FileUtils.filePathToUri(c, entity.getFilePath());
         Intent action = new Intent(Intent.ACTION_ATTACH_DATA);
         action.setDataAndType(file, "image/jpg");
         action.putExtra("mimeType", "image/jpg");
@@ -377,7 +302,7 @@ class OnDownloadListener extends FileDownloadListener {
                                         .getString(R.string.feedback_choose_wallpaper_app)));
     }
 
-    private void downloadCollectionSuccess(Context c, DownloadMissionEntity entity) {
+    private static void downloadCollectionSuccess(Context c, DownloadMissionEntity entity) {
         if (Mysplash.getInstance() != null
                 && Mysplash.getInstance().getTopActivity() != null) {
             NotificationHelper.showActionSnackbar(
@@ -390,7 +315,7 @@ class OnDownloadListener extends FileDownloadListener {
         }
     }
 
-    private void downloadPhotoFailed(Context c, DownloadMissionEntity entity) {
+    private static void downloadPhotoFailed(Context c, DownloadMissionEntity entity) {
         if (Mysplash.getInstance() != null
                 && Mysplash.getInstance().getTopActivity() != null) {
             NotificationHelper.showActionSnackbar(
@@ -403,7 +328,7 @@ class OnDownloadListener extends FileDownloadListener {
         }
     }
 
-    private void downloadCollectionFailed(Context c, DownloadMissionEntity entity) {
+    private static void downloadCollectionFailed(Context c, DownloadMissionEntity entity) {
         if (Mysplash.getInstance() != null
                 && Mysplash.getInstance().getTopActivity() != null) {
             NotificationHelper.showActionSnackbar(
@@ -418,7 +343,7 @@ class OnDownloadListener extends FileDownloadListener {
 
     /** <br> interface. */
 
-    private class OnCheckPhotoListener implements View.OnClickListener {
+    private static class OnCheckPhotoListener implements View.OnClickListener {
         // widget
         private Context c;
 
@@ -437,7 +362,7 @@ class OnDownloadListener extends FileDownloadListener {
         }
     }
 
-    private class OnCheckCollectionListener implements View.OnClickListener {
+    private static class OnCheckCollectionListener implements View.OnClickListener {
         // widget
         private Context c;
 
@@ -456,7 +381,7 @@ class OnDownloadListener extends FileDownloadListener {
         }
     }
 
-    private View.OnClickListener onStartManageActivityListener = new View.OnClickListener() {
+    private static View.OnClickListener onStartManageActivityListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             IntentHelper.startDownloadManageActivity(Mysplash.getInstance().getTopActivity());

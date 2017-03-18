@@ -151,12 +151,22 @@ public class UserActivity extends MysplashActivity
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putInt(KEY_USER_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
-        for (PagerView pager : pagers) {
-            if (pager != null) {
-                pager.writeBundle(outState);
-            }
+        // write large data.
+        SavedStateFragment f = new SavedStateFragment();
+        if (pagers[0] != null) {
+            f.setPhotoList(((UserPhotosView) pagers[0]).getPhotos());
         }
+        if (pagers[1] != null) {
+            f.setCollectionList(((UserCollectionsView) pagers[2]).getCollections());
+        }
+        if (pagers[2] != null) {
+            f.setLikeList(((UserPhotosView) pagers[2]).getPhotos());
+        }
+        f.saveData(this);
+
+        // write normal data.
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_USER_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
     }
 
     @Override
@@ -230,10 +240,12 @@ public class UserActivity extends MysplashActivity
     // init.
 
     private void initView(boolean init) {
-        if (init && browsablePresenter.isBrowsable()) {
+        User u = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
+
+        if (init && browsablePresenter.isBrowsable() && u == null) {
             browsablePresenter.requestBrowsableData();
         } else {
-            User u = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
+            this.utils = new DisplayUtils(this);
 
             this.container = (CoordinatorLayout) findViewById(R.id.activity_user_container);
 
@@ -283,25 +295,19 @@ public class UserActivity extends MysplashActivity
                 title.setOnClickListener(this);
             }
 
-            this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
             initPages(u);
 
+            this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
             userProfileView.setUser(u);
             userProfileView.requestUserProfile(adapter);
-            this.utils = new DisplayUtils(this);
-
-            AnimUtils.animInitShow(
-                    (View) pagers[pagerManagePresenter.getPagerPosition()],
-                    400);
-            pagers[pagerManagePresenter.getPagerPosition()].refreshPager();
         }
     }
 
     private void initPages(User u) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new UserPhotosView(this, getBundle(), u, PhotosObject.PHOTOS_TYPE_PHOTOS));
-        pageList.add(new UserCollectionsView(this, u));
-        pageList.add(new UserPhotosView(this, getBundle(), u, PhotosObject.PHOTOS_TYPE_LIKES));
+        pageList.add(new UserPhotosView(this, u, PhotosObject.PHOTOS_TYPE_PHOTOS, R.id.activity_user_page_photo));
+        pageList.add(new UserCollectionsView(this, u, R.id.activity_user_page_collection));
+        pageList.add(new UserPhotosView(this, u, PhotosObject.PHOTOS_TYPE_LIKES, R.id.activity_user_page_like));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -320,6 +326,26 @@ public class UserActivity extends MysplashActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_user_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+
+        BaseSavedStateFragment f = SavedStateFragment.getData(this);
+        if (f != null && f instanceof SavedStateFragment) {
+            ((UserPhotosView) pagers[0]).setPhotos(((SavedStateFragment) f).getPhotoList());
+            ((UserCollectionsView) pagers[1]).setCollections(((SavedStateFragment) f).getCollectionList());
+            ((UserPhotosView) pagers[2]).setPhotos(((SavedStateFragment) f).getLikeList());
+
+            if (getBundle() != null) {
+                for (PagerView pager : pagers) {
+                    pager.onRestoreInstanceState(getBundle());
+                }
+            }
+        } else {
+            AnimUtils.animInitShow(
+                    (View) pagers[pagerManagePresenter.getPagerPosition()],
+                    400);
+            for (PagerView pager : pagers) {
+                pager.refreshPager();
+            }
+        }
     }
 
     // interface.
@@ -376,7 +402,7 @@ public class UserActivity extends MysplashActivity
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             type);
                 } else {
-                    downloadPresenter.download();
+                    downloadPresenter.download(this);
                 }
                 break;
         }
@@ -389,7 +415,7 @@ public class UserActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadPresenter.download();
+                        downloadPresenter.download(this);
                     } else {
                         NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
@@ -402,7 +428,7 @@ public class UserActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -443,26 +469,26 @@ public class UserActivity extends MysplashActivity
         }
     }
 
-    // on menu item click listener.
+    // on menu item click swipeListener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem(this, item.getItemId());
     }
 
-    // on download photo listener. (photo adapter)
+    // on download photo swipeListener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
         downloadPresenter.setDownloadKey(photo);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            downloadPresenter.download();
+            downloadPresenter.download(this);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
         }
     }
 
-    // on page change listener.
+    // on page change swipeListener.
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -480,7 +506,7 @@ public class UserActivity extends MysplashActivity
         // do nothing.
     }
 
-    // on swipe listener.(swipe back listener)
+    // on swipe swipeListener.(swipe back swipeListener)
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -498,7 +524,7 @@ public class UserActivity extends MysplashActivity
         swipeBackManagePresenter.swipeBackFinish(this, dir);
     }
 
-    // on collections changed listener.
+    // on collections changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -507,8 +533,11 @@ public class UserActivity extends MysplashActivity
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        ((UserPhotosView) pagers[0]).updatePhoto(p);
-        ((UserPhotosView) pagers[2]).updatePhoto(p);
+        for (PagerView pager : pagers) {
+            if (pager instanceof UserPhotosView) {
+                ((UserPhotosView) pager).updatePhoto(p);
+            }
+        }
     }
 
     // view.
@@ -566,8 +595,9 @@ public class UserActivity extends MysplashActivity
     }
 
     @Override
-    public void drawBrowsableView() {
-        User u = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
+    public void drawBrowsableView(Object result) {
+        User u = (User) result;
+        getIntent().putExtra(KEY_USER_ACTIVITY_USER, u);
         if (AuthManager.getInstance().getUsername() != null
                 && AuthManager.getInstance().getUsername().equals(u.username)) {
             AuthManager.getInstance().writeUserInfo(u);
@@ -585,5 +615,40 @@ public class UserActivity extends MysplashActivity
     @Override
     public void visitParentView() {
         IntentHelper.startMainActivity(this);
+    }
+
+    /** <br> inner class. */
+
+    public static class SavedStateFragment extends BaseSavedStateFragment {
+        // data
+        private List<Photo> photoList;
+        private List<Collection> collectionList;
+        private List<Photo> likeList;
+
+        // data.
+
+        public List<Photo> getPhotoList() {
+            return photoList;
+        }
+
+        public void setPhotoList(List<Photo> photoList) {
+            this.photoList = photoList;
+        }
+
+        public List<Collection> getCollectionList() {
+            return collectionList;
+        }
+
+        public void setCollectionList(List<Collection> collectionList) {
+            this.collectionList = collectionList;
+        }
+
+        public List<Photo> getLikeList() {
+            return likeList;
+        }
+
+        public void setLikeList(List<Photo> likeList) {
+            this.likeList = likeList;
+        }
     }
 }

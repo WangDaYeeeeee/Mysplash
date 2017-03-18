@@ -26,11 +26,11 @@ public class SearchUsersObject
 
     /** <br> life cycle. */
 
-    public SearchUsersObject(UserAdapter adapter, String query) {
+    public SearchUsersObject(UserAdapter adapter) {
         this.adapter = adapter;
         this.service = SearchService.getService();
 
-        this.searchQuery = query;
+        this.searchQuery = "";
 
         this.photosPage = adapter.getItemCount() / Mysplash.DEFAULT_PER_PAGE;
 

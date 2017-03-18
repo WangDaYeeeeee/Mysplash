@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
-import com.wangdaye.mysplash.Mysplash;
+import android.content.Context;
+
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.i.model.DownloadModel;
 import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
 
 /**
@@ -25,23 +25,22 @@ public class DownloadImplementor implements DownloadPresenter {
     /** <br> presenter. */
 
     @Override
-    public void download() {
-        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+    public void download(Context context) {
         Object key = getDownloadKey();
         if (key instanceof Collection) {
-            DownloadHelper.getInstance().addMission(a, ((Collection) key));
+            DownloadHelper.getInstance(context).addMission(context, ((Collection) key));
         } else {
-            DownloadHelper.getInstance().addMission(a, (Photo) key, DownloadHelper.DOWNLOAD_TYPE);
+            DownloadHelper.getInstance(context).addMission(context, (Photo) key, DownloadHelper.DOWNLOAD_TYPE);
         }
     }
 
     @Override
-    public void share() {
+    public void share(Context context) {
         // do nothing.
     }
 
     @Override
-    public void setWallpaper() {
+    public void setWallpaper(Context context) {
         // do nothing.
     }
 

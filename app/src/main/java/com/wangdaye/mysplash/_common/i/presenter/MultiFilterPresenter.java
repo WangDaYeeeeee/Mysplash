@@ -37,6 +37,8 @@ public interface MultiFilterPresenter {
     void setFeatured(boolean f);
     boolean isFeatured();
 
+    void setOver(boolean over);
+
     int getAdapterItemCount();
     void setActivityForAdapter(MysplashActivity a);
     PhotoAdapter getAdapter();

@@ -31,7 +31,7 @@ import com.wangdaye.mysplash._common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash._common.utils.widget.runnable.FlagRunnable;
+import com.wangdaye.mysplash._common._basic.FlagRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,7 +219,7 @@ public class DownloadManageActivity extends MysplashActivity
         long oldId = readyToDownloadEntity.missionId;
         readyToDownloadEntity = null;
 
-        DownloadMission mission = DownloadHelper.getInstance().restartMission(this, oldId);
+        DownloadMission mission = DownloadHelper.getInstance(this).restartMission(this, oldId);
 
         for (int i = 0; i < adapter.itemList.size(); i ++) {
             if (adapter.itemList.get(i).entity.missionId == oldId) {
@@ -289,7 +289,7 @@ public class DownloadManageActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -303,7 +303,7 @@ public class DownloadManageActivity extends MysplashActivity
         }
     }
 
-    // on menu item click listener.
+    // on menu item click swipeListener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
@@ -318,7 +318,7 @@ public class DownloadManageActivity extends MysplashActivity
                 for (int i = 0; i < adapter.getItemCount(); i ++) {
                     entityList.add(adapter.itemList.get(i).entity);
                 }
-                DownloadHelper.getInstance().clearMission(this, entityList);
+                DownloadHelper.getInstance(this).clearMission(this, entityList);
                 adapter.itemList.clear();
                 adapter.notifyDataSetChanged();
                 break;
@@ -326,7 +326,7 @@ public class DownloadManageActivity extends MysplashActivity
         return true;
     }
 
-    // on retry listener.
+    // on retry swipeListener.
 
     @Override
     public void onRetry(DownloadMissionEntity entity) {
@@ -338,7 +338,7 @@ public class DownloadManageActivity extends MysplashActivity
         }
     }
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -378,9 +378,9 @@ public class DownloadManageActivity extends MysplashActivity
                     switch (newMission.entity.result) {
                         case DownloadHelper.RESULT_DOWNLOADING:
                             if (oldMission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
-                                DownloadHelper.getInstance()
+                                DownloadHelper.getInstance(this)
                                         .updateMissionResult(
-                                                DownloadManageActivity.this,
+                                                this,
                                                 newMission.entity.missionId,
                                                 DownloadHelper.RESULT_DOWNLOADING);
                                 drawRecyclerItemProcess(index, newMission, true);
@@ -391,9 +391,9 @@ public class DownloadManageActivity extends MysplashActivity
 
                         case DownloadHelper.RESULT_SUCCEED:
                             if (oldMission.entity.result != DownloadHelper.RESULT_SUCCEED) {
-                                DownloadHelper.getInstance()
+                                DownloadHelper.getInstance(this)
                                         .updateMissionResult(
-                                                DownloadManageActivity.this,
+                                                this,
                                                 newMission.entity.missionId,
                                                 DownloadHelper.RESULT_SUCCEED);
                                 drawRecyclerItemSucceed(index, newMission);
@@ -402,9 +402,9 @@ public class DownloadManageActivity extends MysplashActivity
 
                         case DownloadHelper.RESULT_FAILED:
                             if (oldMission.entity.result != DownloadHelper.RESULT_FAILED) {
-                                DownloadHelper.getInstance()
+                                DownloadHelper.getInstance(this)
                                         .updateMissionResult(
-                                                DownloadManageActivity.this,
+                                                this,
                                                 newMission.entity.missionId,
                                                 DownloadHelper.RESULT_FAILED);
                                 drawRecyclerItemFailed(index, newMission);
@@ -424,8 +424,7 @@ public class DownloadManageActivity extends MysplashActivity
             while (isRunning()) {
                 for (int i = 0; isRunning() && i < adapter.itemList.size(); i ++) {
                     if (adapter.itemList.get(i).entity.result == DownloadHelper.RESULT_DOWNLOADING) {
-                        DownloadHelper.getInstance().setServiceAlive(true);
-                        DownloadMission mission = DownloadHelper.getInstance()
+                        DownloadMission mission = DownloadHelper.getInstance(DownloadManageActivity.this)
                                 .getDownloadMission(
                                         DownloadManageActivity.this,
                                         adapter.itemList.get(i).entity.missionId);
@@ -439,7 +438,6 @@ public class DownloadManageActivity extends MysplashActivity
                 }
                 SystemClock.sleep(50);
             }
-            DownloadHelper.getInstance().setServiceAlive(false);
         }
     };
 }

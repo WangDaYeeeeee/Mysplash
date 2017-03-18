@@ -8,6 +8,9 @@ import android.os.Bundle;
 
 public interface PagerView {
 
+    void onSaveInstanceState(Bundle bundle);
+    void onRestoreInstanceState(Bundle bundle);
+
     void checkToRefresh();
     boolean checkNeedRefresh();
     boolean checkNeedBackToTop();
@@ -21,6 +24,4 @@ public interface PagerView {
 
     boolean canSwipeBack(int dir);
     int getItemCount();
-
-    void writeBundle(Bundle outState);
 }

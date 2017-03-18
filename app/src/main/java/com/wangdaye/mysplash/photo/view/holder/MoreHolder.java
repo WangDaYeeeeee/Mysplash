@@ -91,7 +91,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
         this.callback = c;
     }
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {

@@ -203,7 +203,7 @@ public class RelativeActivity extends MysplashActivity
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             type);
                 } else {
-                    DownloadHelper.getInstance()
+                    DownloadHelper.getInstance(this)
                             .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
                 }
                 break;
@@ -217,7 +217,7 @@ public class RelativeActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        DownloadHelper.getInstance()
+                        DownloadHelper.getInstance(this)
                                 .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
                     } else {
                         NotificationHelper.showSnackbar(
@@ -231,7 +231,7 @@ public class RelativeActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -242,7 +242,7 @@ public class RelativeActivity extends MysplashActivity
         }
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private class OnScrollListener extends RecyclerView.OnScrollListener {
         // data
@@ -261,7 +261,7 @@ public class RelativeActivity extends MysplashActivity
         }
     }
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -279,20 +279,20 @@ public class RelativeActivity extends MysplashActivity
         finishActivity(dir);
     }
 
-    // on download listener.
+    // on download swipeListener.
 
     @Override
     public void onDownload(Photo photo) {
         downloadTarget = photo;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            DownloadHelper.getInstance()
+            DownloadHelper.getInstance(this)
                     .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
         }
     }
 
-    // on collections changed listener.
+    // on collections changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {

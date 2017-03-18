@@ -9,6 +9,6 @@ public interface BrowsableView {
     void showRequestDialog();
     void dismissRequestDialog();
 
-    void drawBrowsableView();
+    void drawBrowsableView(Object result);
     void visitParentView();
 }

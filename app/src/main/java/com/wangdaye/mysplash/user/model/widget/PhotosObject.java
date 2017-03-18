@@ -37,14 +37,14 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(UserActivity a, User u, int photosType, String photosOrder) {
+    public PhotosObject(UserActivity a, User u, int photosType) {
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a);
         this.service = PhotoService.getService();
 
         this.requestKey = u;
 
         this.photosType = photosType;
-        this.photosOrder = photosOrder;
+        this.photosOrder = Mysplash.getInstance().getDefaultPhotoOrder();
 
         this.photosPage = 0;
 

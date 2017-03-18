@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash._common._basic;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
@@ -22,7 +23,7 @@ public abstract class MysplashActivity extends AppCompatActivity {
     private List<MysplashPopupWindow> popupList;
 
     // data.
-    private boolean started = false;
+    private boolean started;
 
     /** <br> life cycle. */
 
@@ -35,12 +36,13 @@ public abstract class MysplashActivity extends AppCompatActivity {
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
         if (isFullScreen()) {
-            DisplayUtils.setStatusBarTextDark(this);
+            DisplayUtils.initStatusBarStyle(this);
         }
 
         this.bundle = savedInstanceState;
         this.dialogList = new ArrayList<>();
         this.popupList = new ArrayList<>();
+        this.started = false;
     }
 
     @Override
@@ -105,6 +107,36 @@ public abstract class MysplashActivity extends AppCompatActivity {
             return dialogList.get(dialogList.size() - 1).getSnackbarContainer();
         } else {
             return getSnackbarContainer();
+        }
+    }
+
+    /** <br> inner class. */
+
+    public abstract static class BaseSavedStateFragment extends Fragment {
+        // data
+        private static final String FRAGMENT_TAG = "SavedStateFragment";
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setRetainInstance(true);
+        }
+
+        public void saveData(MysplashActivity a) {
+            a.getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(this, FRAGMENT_TAG)
+                    .commit();
+        }
+
+        public static BaseSavedStateFragment getData(MysplashActivity a) {
+            Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            if (f != null) {
+                a.getSupportFragmentManager().beginTransaction().remove(f).commit();
+                return (BaseSavedStateFragment) f;
+            } else {
+                return null;
+            }
         }
     }
 }

@@ -2,13 +2,11 @@ package com.wangdaye.mysplash.photo.presenter;
 
 import android.net.Uri;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash._common.data.service.PhotoInfoService;
 import com.wangdaye.mysplash._common.i.model.BrowsableModel;
 import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash._common.i.view.BrowsableView;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -50,11 +48,6 @@ public class BrowsableImplementor
     }
 
     @Override
-    public void drawBrowsableView() {
-        view.drawBrowsableView();
-    }
-
-    @Override
     public void visitParentView() {
         view.visitParentView();
     }
@@ -64,20 +57,15 @@ public class BrowsableImplementor
         ((PhotoInfoService) model.getService()).cancel();
     }
 
-    /** <br> listener. */
+    /** <br> swipeListener. */
 
     @Override
     public void onRequestSinglePhotoSuccess(Call<Photo> call, Response<Photo> response) {
         if (response.isSuccessful() && response.body() != null) {
             Photo photo = response.body();
             photo.complete = true;
-
-            Mysplash.getInstance()
-                    .getTopActivity()
-                    .getIntent()
-                    .putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO, photo);
             view.dismissRequestDialog();
-            view.drawBrowsableView();
+            view.drawBrowsableView(photo);
         } else {
             ((PhotoInfoService) model.getService()).requestAPhoto(model.getBrowsableDataKey(), this);
         }

@@ -39,6 +39,6 @@ public class NavigationBarView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(
                 getResources().getDisplayMetrics().widthPixels,
-                DisplayUtils.getNavigationBarHeight(getContext()));
+                DisplayUtils.getNavigationBarHeight(getResources()));
     }
 }

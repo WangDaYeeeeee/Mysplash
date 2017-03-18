@@ -72,7 +72,7 @@ public class WallpaperWhereDialog extends MysplashDialogFragment
 
     /** <br> interface. */
 
-    // on where selected listener.
+    // on where selected swipeListener.
 
     public interface OnWhereSelectedListener {
         void onWhereSelected(int where);

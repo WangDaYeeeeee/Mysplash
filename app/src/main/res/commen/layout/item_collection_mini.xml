@@ -32,6 +32,7 @@
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_margin="@dimen/little_margin"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             tools:ignore="ContentDescription,RtlHardcoded" />

@@ -2,7 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,6 +36,7 @@ import com.wangdaye.mysplash._common.i.view.CollectionsView;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.PagerView;
 import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.main.model.widget.CollectionsObject;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
@@ -45,6 +47,7 @@ import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Home collections view.
@@ -73,25 +76,23 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
     private LoadPresenter loadPresenter;
     private ScrollPresenter scrollPresenter;
 
-    // data.
-    private final String KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE = "key_home_collections_view_filter_type";
-
     /** <br> life cycle. */
 
-    public HomeCollectionsView(MysplashActivity a, @Nullable Bundle bundle) {
+    public HomeCollectionsView(MysplashActivity a, int id) {
         super(a);
-        this.initialize(a, bundle);
+        this.setId(id);
+        this.initialize(a);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(MysplashActivity a, @Nullable Bundle bundle) {
+    private void initialize(MysplashActivity a) {
         View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
 
         View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        initModel(a, bundle);
+        initModel(a);
         initPresenter();
         initView();
     }
@@ -129,6 +130,11 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         }
         refreshLayout.setVisibility(GONE);
 
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(collectionsPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -153,22 +159,38 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     /** <br> model. */
 
-    private void initModel(MysplashActivity a, @Nullable Bundle bundle) {
-        String type = Mysplash.getInstance().getDefaultCollectionType();
-        if (bundle != null) {
-            type = bundle.getString(KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE, type);
-        }
+    // init.
 
+    private void initModel(MysplashActivity a) {
         this.collectionsModel = new CollectionsObject(
-                new CollectionAdapter(a, new ArrayList<Collection>(Mysplash.DEFAULT_PER_PAGE)),
-                type);
+                new CollectionAdapter(
+                        a,
+                        new ArrayList<Collection>(Mysplash.DEFAULT_PER_PAGE)));
         this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
     }
 
+    // interface.
+
+    public List<Collection> getCollections() {
+        return collectionsPresenter.getAdapter().getCollectionData();
+    }
+
+    public void setCollections(List<Collection> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        collectionsPresenter.getAdapter().setCollectionData(list);
+        if (list.size() == 0) {
+            refreshPager();
+        } else {
+            setNormalState();
+        }
+    }
+
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -179,7 +201,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh an load listener.
+    // on refresh an load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -191,7 +213,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         collectionsPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -244,6 +266,23 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
     // pager view.
 
     @Override
+    public void onSaveInstanceState(Bundle bundle) {
+        bundle.putParcelable(String.valueOf(getId()), new SavedState(this));
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle bundle) {
+        SavedState ss = bundle.getParcelable(String.valueOf(getId()));
+        if (ss != null) {
+            collectionsPresenter.setType(ss.type);
+            collectionsPresenter.setPage(ss.page);
+            collectionsPresenter.setOver(ss.over);
+        } else {
+            refreshPager();
+        }
+    }
+
+    @Override
     public void checkToRefresh() { // interface
         if (pagerPresenter.checkNeedRefresh()) {
             pagerPresenter.refreshPager();
@@ -252,7 +291,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return collectionsPresenter.getAdapter().getItemCount() <= 0
+        return collectionsPresenter.getAdapter().getRealItemCount() <= 0
                 && !collectionsPresenter.isRefreshing() && !collectionsPresenter.isLoading();
     }
 
@@ -296,15 +335,8 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
-            return collectionsPresenter.getAdapter().getItemCount();
+            return collectionsPresenter.getAdapter().getRealItemCount();
         }
-    }
-
-    @Override
-    public void writeBundle(Bundle outState) {
-        outState.putString(
-                KEY_HOME_COLLECTIONS_VIEW_FILTER_TYPE,
-                collectionsPresenter.getType());
     }
 
     // load view.
@@ -353,7 +385,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = collectionsPresenter.getAdapter().getRealItemCount();
         if (collectionsPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             collectionsPresenter.loadMore(getContext(), false);
@@ -372,5 +404,53 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+    }
+
+    /** <br> inner class. */
+
+    private static class SavedState implements Parcelable {
+        // data
+        String type;
+        int page;
+        boolean over;
+
+        // life cycle.
+
+        SavedState(HomeCollectionsView view) {
+            this.type = view.collectionsModel.getCollectionsType();
+            this.page = view.collectionsModel.getCollectionsPage();
+            this.over = view.collectionsModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.type = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.type);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
     }
 }

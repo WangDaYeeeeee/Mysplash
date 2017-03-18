@@ -50,6 +50,7 @@
             android:layout_marginBottom="@dimen/nano_margin"
             android:layout_toRightOf="@id/item_user_title"
             android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
             tools:src="@drawable/ic_item_earth_light"
             tools:ignore="ContentDescription,RtlHardcoded" />
 

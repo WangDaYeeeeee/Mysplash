@@ -371,7 +371,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private class ElevationScrollListener extends RecyclerView.OnScrollListener {
@@ -394,7 +394,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
     }
 
-    // on auth data changed listener.
+    // on auth data changed swipeListener.
 
     @Override
     public void onWriteAccessToken() {
@@ -419,7 +419,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         // do nothing.
     }
 
-    // on collection response listener (recycler view adapter item click).
+    // on collection response swipeListener (recycler view adapter item click).
 
     @Override
     public void onCreateCollection() {
@@ -446,7 +446,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 new OnChangeCollectionPhotoListener(collectionId, true));
     }
 
-    // on request collections listener (request collections list.).
+    // on request collections swipeListener (request collections list.).
 
     private class OnRequestCollectionsListener
             implements CollectionService.OnRequestCollectionsListener {
@@ -501,7 +501,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
     }
 
-    // on request a collection listener (create collection).
+    // on request a collection swipeListener (create collection).
 
     @Override
     public void onRequestACollectionSuccess(Call<Collection> call, Response<Collection> response) {
@@ -527,7 +527,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         notifyCreateFailed();
     }
 
-    // on change collection photo listener (add photo or delete photo).
+    // on change collection photo swipeListener (add photo or delete photo).
 
     private class OnChangeCollectionPhotoListener
             implements CollectionService.OnChangeCollectionPhotoListener {

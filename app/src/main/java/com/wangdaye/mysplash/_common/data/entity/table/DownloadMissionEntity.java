@@ -85,7 +85,7 @@ public class DownloadMissionEntity {
         }
     }
 
-    private String getFormat() {
+    public String getFormat() {
         if (downloadType == DownloadHelper.COLLECTION_TYPE) {
             return Mysplash.DOWNLOAD_COLLECTION_FORMAT;
         } else {

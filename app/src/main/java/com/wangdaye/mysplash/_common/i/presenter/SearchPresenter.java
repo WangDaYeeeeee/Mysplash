@@ -23,6 +23,9 @@ public interface SearchPresenter {
     void setQuery(String key);
     String getQuery();
 
+    void setPage(int page);
+    void setOver(boolean over);
+
     int getAdapterItemCount();
     RecyclerView.Adapter getAdapter();
 }

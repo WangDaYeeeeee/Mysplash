@@ -5,6 +5,8 @@ import android.content.Context;
 import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 
+import java.util.List;
+
 /**
  * Category presenter.
  * */
@@ -25,6 +27,12 @@ public interface CategoryPresenter {
     void setCategory(int key);
     void setOrder(String key);
     String getOrder();
+
+    void setPage(int page);
+    void setPageList(List<Integer> pageList);
+
+    void setOver(boolean over);
+
     void setActivityForAdapter(MysplashActivity a);
     int getAdapterItemCount();
 

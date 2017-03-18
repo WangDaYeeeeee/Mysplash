@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash._common.ui.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -18,6 +17,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash._common._basic.FooterAdapter;
 import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash._common.data.entity.unsplash.LikePhotoResult;
@@ -48,7 +48,7 @@ import retrofit2.Response;
  * Following adapter.
  * */
 
-public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.ViewHolder>
+public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         implements SelectCollectionDialog.OnCollectionsChangedListener {
     // widget
     private Context a;
@@ -59,12 +59,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     private List<ViewType> typeList;
     private PhotoService photoService;
 
-    private static final int VIEW_TYPE_TITLE = 0;
-    private static final int VIEW_TYPE_PHOTO = 1;
-    private static final int VIEW_TYPE_USER = 2;
-    private static final int VIEW_TYPE_MORE = 3;
-
-    private static final int MAX_DISPLAY_PHOTO_COUNT = 7;
+    static final int MAX_DISPLAY_PHOTO_COUNT = 7;
 
     /** <br> life cycle. */
 
@@ -75,34 +70,62 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         buildTypeList(list);
     }
 
+    @Override
+    protected boolean hasFooter() {
+        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+    }
+
+    @Override
+    public int getRealItemCount() {
+        return typeList.size();
+    }
+
     /** <br> UI. */
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-        ViewType viewType = typeList.get(position);
-        switch (viewType.type) {
-            case VIEW_TYPE_TITLE: {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_title, parent, false);
-                return new ViewHolder(v, position);
-            }
-            case VIEW_TYPE_PHOTO: {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_photo, parent, false);
-                return new ViewHolder(v, position);
-            }
-            case VIEW_TYPE_USER: {
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_user, parent, false);
-                return new ViewHolder(v, position);
-            }
-            default: { // VIEW_TYPE_MORE.
-                View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_more, parent, false);
-                return new ViewHolder(v, position);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+        if (isFooter(position)) {
+            // footer.
+            return FooterHolder.buildInstance(parent);
+        } else {
+            ViewType viewType = typeList.get(position);
+            switch (viewType.type) {
+                case TitleHolder.VIEW_TYPE_TITLE: {
+                    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_title, parent, false);
+                    return new TitleHolder(v);
+                }
+                case PhotoHolder.VIEW_TYPE_PHOTO: {
+                    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_photo, parent, false);
+                    return new PhotoHolder(v, this, getPhoto(position));
+                }
+                case UserHolder.VIEW_TYPE_USER: {
+                    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_user, parent, false);
+                    return new UserHolder(v, this);
+                }
+                default: { // VIEW_TYPE_MORE.
+                    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_following_more, parent, false);
+                    return new MoreHolder(v, this, getPhoto(position));
+                }
             }
         }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.onBindView(position);
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (!isFooter(position)) {
+            if (holder instanceof TitleHolder) {
+                ((TitleHolder) holder).onBindView(
+                        resultList.get(typeList.get(position).resultPosition));
+            } else if (holder instanceof PhotoHolder) {
+                ((PhotoHolder) holder).onBindView(
+                        getPhoto(position), position);
+            } else if (holder instanceof UserHolder) {
+                ((UserHolder) holder).onBindView(getUser(position), position);
+            } else if (holder instanceof MoreHolder) {
+                ((MoreHolder) holder).onBindView(
+                        resultList.get(typeList.get(position).resultPosition), getPhoto(position), position);
+            }
+        }
     }
 
     public void setActivity(MysplashActivity a) {
@@ -116,19 +139,22 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     /** <br> data. */
 
     @Override
-    public int getItemCount() {
-        return typeList.size();
-    }
-
-    @Override
     public int getItemViewType(int position) {
         return position;
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        holder.onRecycled();
+        if (holder instanceof TitleHolder) {
+            ((TitleHolder) holder).onRecycled();
+        } else if (holder instanceof PhotoHolder) {
+            ((PhotoHolder) holder).onRecycled();
+        } else if (holder instanceof UserHolder) {
+            ((UserHolder) holder).onRecycled();
+        } else if (holder instanceof MoreHolder) {
+            ((MoreHolder) holder).onRecycled();
+        }
     }
 
     public void insertItem(FollowingResult item) {
@@ -143,7 +169,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         notifyDataSetChanged();
     }
 
-    private void setLikeForAPhoto(boolean like, int position) {
+    void setLikeForAPhoto(boolean like, int position) {
         if (photoService == null) {
             photoService = PhotoService.getService();
         }
@@ -202,24 +228,25 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
 
     private void addType(FollowingResult result, int i) {
         if (result.verb.equals(FollowingResult.VERB_FOLLOWED)) {
-            typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
+            typeList.add(new ViewType(i, -1, TitleHolder.VIEW_TYPE_TITLE));
             for (int j = 0; j < result.objects.size(); j ++) {
-                typeList.add(new ViewType(i, j, VIEW_TYPE_USER));
+                typeList.add(new ViewType(i, j, UserHolder.VIEW_TYPE_USER));
             }
         } else {
             for (int j = 0; j < result.objects.size(); j ++) {
-                if (result.objects.get(j).width == 0 || result.objects.get(j).height == 0) {
+                if (result.objects.get(j).width == 0 || result.objects.get(j).height == 0
+                        || result.objects.get(j).castToPhoto() == null) {
                     result.objects.remove(j);
                     j --;
                 }
             }
             if (result.objects.size() > 0) {
-                typeList.add(new ViewType(i, -1, VIEW_TYPE_TITLE));
+                typeList.add(new ViewType(i, -1, TitleHolder.VIEW_TYPE_TITLE));
                 for (int j = 0; j < MAX_DISPLAY_PHOTO_COUNT && j < result.objects.size(); j ++) {
-                    typeList.add(new ViewType(i, j, VIEW_TYPE_PHOTO));
+                    typeList.add(new ViewType(i, j, PhotoHolder.VIEW_TYPE_PHOTO));
                 }
                 if (result.objects.size() > MAX_DISPLAY_PHOTO_COUNT) {
-                    typeList.add(new ViewType(i, MAX_DISPLAY_PHOTO_COUNT, VIEW_TYPE_MORE));
+                    typeList.add(new ViewType(i, MAX_DISPLAY_PHOTO_COUNT, MoreHolder.VIEW_TYPE_MORE));
                 }
             }
         }
@@ -228,9 +255,9 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     private User getUser(int position) {
         ViewType viewType = typeList.get(position);
         switch (viewType.type) {
-            case VIEW_TYPE_TITLE:
-            case VIEW_TYPE_PHOTO:
-            case VIEW_TYPE_MORE:
+            case TitleHolder.VIEW_TYPE_TITLE:
+            case PhotoHolder.VIEW_TYPE_PHOTO:
+            case MoreHolder.VIEW_TYPE_MORE:
                 return resultList.get(viewType.resultPosition)
                         .actors.get(0);
 
@@ -245,8 +272,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
     private Photo getPhoto(int position) {
         ViewType viewType = typeList.get(position);
         switch (viewType.type) {
-            case VIEW_TYPE_PHOTO:
-            case VIEW_TYPE_MORE:
+            case PhotoHolder.VIEW_TYPE_PHOTO:
+            case MoreHolder.VIEW_TYPE_MORE:
                 return resultList.get(viewType.resultPosition)
                         .objects.get(viewType.objectPosition)
                         .castToPhoto();
@@ -256,39 +283,44 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         }
     }
 
-    private void updatePhoto(Photo photo, int position) {
+    void updatePhoto(Photo photo, int position) {
         FollowingResult result = resultList.get(typeList.get(position).resultPosition);
         result.objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
         resultList.set(typeList.get(position).resultPosition, result);
     }
 
-    private void updateUser(User user, int position) {
+    void updateUser(User user, int position) {
         FollowingResult result = resultList.get(typeList.get(position).resultPosition);
         result.objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(user));
         resultList.set(typeList.get(position).resultPosition, result);
     }
 
-    private Collection getCollection(int position) {
-        return resultList.get(typeList.get(position).resultPosition)
-                .targets.get(0);
-    }
-
-    public boolean isHeaderView(int position) {
-        return typeList.get(position).type == VIEW_TYPE_TITLE;
-    }
-
     public boolean isFooterView(int position) {
         return typeList.size() <= position + 1
-                || typeList.get(position + 1).type == VIEW_TYPE_TITLE;
+                || typeList.get(position + 1).type == TitleHolder.VIEW_TYPE_TITLE;
     }
 
     public User getActor(int position) {
         return resultList.get(typeList.get(position).resultPosition).actors.get(0);
     }
 
+    public List<FollowingResult> getFeeds() {
+        List<FollowingResult> list = new ArrayList<>();
+        list.addAll(resultList);
+        return list;
+    }
+
+    public void setFeeds(List<FollowingResult> list) {
+        resultList.clear();
+        resultList.addAll(list);
+        typeList = new ArrayList<>();
+        buildTypeList(list);
+        notifyDataSetChanged();
+    }
+
     /** <br> interface. */
 
-    // on set like listener.
+    // on set like swipeListener.
 
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
         // data
@@ -362,7 +394,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
                 int firstPosition = layoutManager.findFirstVisibleItemPosition();
                 int lastPosition = layoutManager.findLastVisibleItemPosition();
                 if (firstPosition <= position && position <= lastPosition) {
-                    ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                    PhotoHolder holder = (PhotoHolder) recyclerView.findViewHolderForAdapterPosition(position);
                     holder.likeButton.setResultState(
                             to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
                 }
@@ -370,7 +402,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
         }
     }
 
-    // on collections changed listener.
+    // on collections changed swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -398,434 +430,515 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.View
             this.type = type;
         }
     }
+}
 
-    // view holder.
+class TitleHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+    // widget
+    private RelativeLayout background;
+    private CircleImageView avatar;
+    private TextView actor;
+    private TextView verb;
 
-    class ViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
-        // widget
-        public RelativeLayout background;
+    // data
+    private FollowingResult result;
+    static final int VIEW_TYPE_TITLE = 0;
 
-        CircleImageView avatar;
-        TextView actor;
-        TextView verb;
+    // life cycle.
 
-        public FreedomImageView image;
-        TextView title;
-        ImageButton collectionButton;
-        CircularProgressIcon likeButton;
+    TitleHolder(View itemView) {
+        super(itemView);
 
-        TextView more;
+        this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_title_background);
 
-        // data
-        private int position;
+        this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_title_avatar);
+        avatar.setOnClickListener(this);
 
-        // life cycle.
+        this.actor = (TextView) itemView.findViewById(R.id.item_following_title_actor);
+        actor.setOnClickListener(this);
 
-        ViewHolder(View itemView, int position) {
-            super(itemView);
-            this.position = position;
-            switch (typeList.get(position).type) {
-                case VIEW_TYPE_TITLE: {
-                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_title_background);
+        this.verb = (TextView) itemView.findViewById(R.id.item_following_title_verb);
+        DisplayUtils.setTypeface(itemView.getContext(), verb);
+        verb.setOnClickListener(this);
+    }
 
-                    this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_title_avatar);
-                    avatar.setOnClickListener(this);
+    // UI.
 
-                    this.actor = (TextView) itemView.findViewById(R.id.item_following_title_actor);
-                    actor.setOnClickListener(this);
+    void onBindView(FollowingResult result) {
+        this.result = result;
 
-                    this.verb = (TextView) itemView.findViewById(R.id.item_following_title_verb);
-                    DisplayUtils.setTypeface(itemView.getContext(), verb);
-                    verb.setOnClickListener(this);
-                    break;
+        Context context = Mysplash.getInstance().getTopActivity();
+        User user = result.actors.get(0);
+
+        actor.setText(user.name);
+        ImageHelper.loadAvatar(context, avatar, user, null);
+        switch (result.verb) {
+            case FollowingResult.VERB_LIKED:
+                verb.setVisibility(View.VISIBLE);
+                verb.setText(
+                        context.getString(R.string.liked)
+                                + " " + result.objects.size()
+                                + " " + context.getString(R.string.photos)
+                                + ".");
+                break;
+
+            case FollowingResult.VERB_COLLECTED:
+                verb.setVisibility(View.VISIBLE);
+                verb.setText(
+                        Html.fromHtml(
+                                context.getString(R.string.collected)
+                                        + " " + result.objects.size()
+                                        + " " + context.getString(R.string.photos) + " " + context.getString(R.string.to)
+                                        + " <u>" + result.targets.get(0).title + "</u>"
+                                        + "."));
+                break;
+
+            case FollowingResult.VERB_FOLLOWED:
+                verb.setVisibility(View.VISIBLE);
+                verb.setText(
+                        context.getString(R.string.followed)
+                                + " " + result.objects.size()
+                                + " " + context.getString(R.string.users)
+                                + ".");
+                break;
+
+            case FollowingResult.VERB_RELEASE:
+                verb.setVisibility(View.VISIBLE);
+                verb.setText(
+                        context.getString(R.string.released)
+                                + " " + result.objects.size()
+                                + " " + context.getString(R.string.photos)
+                                + ".");
+                break;
+
+            case FollowingResult.VERB_PUBLISHED:
+                verb.setVisibility(View.VISIBLE);
+                verb.setText(
+                        context.getString(R.string.published)
+                                + " " + result.objects.size()
+                                + " " + context.getString(R.string.photos)
+                                + ".");
+                break;
+
+            case FollowingResult.VERB_CURATED:
+                verb.setVisibility(View.VISIBLE);
+                verb.setText(
+                        Html.fromHtml(
+                                context.getString(R.string.curated)
+                                        + " " + result.objects.size()
+                                        + " " + context.getString(R.string.photos)
+                                        + (result.targets.size() > 0 ?
+                                        " " + context.getString(R.string.to)
+                                                + " <u>" + result.targets.get(0).title + "</u>"
+                                        :
+                                        "")
+                                        + "."));
+                break;
+
+            default:
+                verb.setVisibility(View.GONE);
+                break;
+        }
+    }
+
+    void onRecycled() {
+        ImageHelper.releaseImageView(avatar);
+    }
+
+    // interface.
+
+    @Override
+    public void onClick(View v) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        switch (v.getId()) {
+            case R.id.item_following_title_avatar:
+            case R.id.item_following_title_actor: {
+                IntentHelper.startUserActivity(
+                        a,
+                        avatar,
+                        result.actors.get(0),
+                        UserActivity.PAGE_PHOTO);
+                break;
+            }
+            case R.id.item_following_title_verb: {
+                switch (result.verb) {
+                    case FollowingResult.VERB_COLLECTED:
+                    case FollowingResult.VERB_CURATED:
+                        IntentHelper.startCollectionActivity(
+                                a,
+                                avatar,
+                                background,
+                                result.targets.get(0));
+                        break;
+                    case FollowingResult.VERB_RELEASE:
+                    case FollowingResult.VERB_PUBLISHED:
+                        IntentHelper.startUserActivity(
+                                a,
+                                avatar,
+                                result.actors.get(0),
+                                UserActivity.PAGE_PHOTO);
+                        break;
+                    case FollowingResult.VERB_LIKED:
+                        IntentHelper.startUserActivity(
+                                a,
+                                avatar,
+                                result.actors.get(0),
+                                UserActivity.PAGE_LIKE);
+                        break;
                 }
-                case VIEW_TYPE_PHOTO: {
-                    Photo photo = getPhoto(position);
-                    assert photo != null;
-
-                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_photo_background);
-                    background.setOnClickListener(this);
-
-                    this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_photo_image);
-                    image.setSize(photo.width, photo.height);
-
-                    this.title = (TextView) itemView.findViewById(R.id.item_following_photo_title);
-                    DisplayUtils.setTypeface(itemView.getContext(), title);
-
-                    this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_following_photo_collectionButton);
-                    collectionButton.setOnClickListener(this);
-
-                    this.likeButton = (CircularProgressIcon) itemView.findViewById(R.id.item_following_photo_likeButton);
-                    likeButton.setOnClickListener(this);
-
-                    itemView.findViewById(R.id.item_following_photo_downloadButton).setOnClickListener(this);
-                    break;
-                }
-                case VIEW_TYPE_USER: {
-                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_user_background);
-                    background.setOnClickListener(this);
-
-                    this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_user_avatar);
-                    this.actor = (TextView) itemView.findViewById(R.id.item_following_user_title);
-
-                    this.verb = (TextView) itemView.findViewById(R.id.item_following_user_subtitle);
-                    DisplayUtils.setTypeface(a, verb);
-                    break;
-                }
-                case VIEW_TYPE_MORE: {
-                    Photo photo = getPhoto(position);
-                    assert photo != null;
-
-                    this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_more_background);
-                    background.setOnClickListener(this);
-
-                    this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_more_image);
-                    image.setSize(photo.width, photo.height);
-
-                    this.more = (TextView) itemView.findViewById(R.id.item_following_more_title);
-
-                    this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_more_avatar);
-                    avatar.setOnClickListener(this);
-                    break;
-                }
+                break;
             }
         }
+    }
+}
 
-        // UI.
+class PhotoHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+    // widget
+    private RelativeLayout background;
+    private FreedomImageView image;
+    private TextView title;
+    private ImageButton collectionButton;
+    CircularProgressIcon likeButton;
 
-        void onBindView(final int position) {
-            switch (typeList.get(position).type) {
-                case VIEW_TYPE_TITLE: {
-                    actor.setText(getUser(position).name);
-                    ImageHelper.loadAvatar(a, avatar, getUser(position), null);
-                    switch (resultList.get(typeList.get(position).resultPosition).verb) {
-                        case FollowingResult.VERB_LIKED:
-                            verb.setVisibility(View.VISIBLE);
-                            verb.setText(
-                                    a.getString(R.string.liked)
-                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                            + " " + a.getString(R.string.photos)
-                                            + ".");
-                            break;
+    // data
+    private FollowingAdapter adapter;
+    private Photo photo;
+    private int position;
+    static final int VIEW_TYPE_PHOTO = 1;
 
-                        case FollowingResult.VERB_COLLECTED:
-                            verb.setVisibility(View.VISIBLE);
-                            verb.setText(
-                                    Html.fromHtml(
-                                            a.getString(R.string.collected)
-                                                    + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                                    + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
-                                                    + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
-                                                    + "."));
-                            break;
+    // life cycle.
 
-                        case FollowingResult.VERB_FOLLOWED:
-                            verb.setVisibility(View.VISIBLE);
-                            verb.setText(
-                                    a.getString(R.string.followed)
-                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                            + " " + a.getString(R.string.users)
-                                            + ".");
-                            break;
+    PhotoHolder(View itemView, FollowingAdapter adapter, Photo photo) {
+        super(itemView);
 
-                        case FollowingResult.VERB_RELEASE:
-                            verb.setVisibility(View.VISIBLE);
-                            verb.setText(
-                                    a.getString(R.string.released)
-                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                            + " " + a.getString(R.string.photos)
-                                            + ".");
-                            break;
+        this.adapter = adapter;
 
-                        case FollowingResult.VERB_PUBLISHED:
-                            verb.setVisibility(View.VISIBLE);
-                            verb.setText(
-                                    a.getString(R.string.published)
-                                            + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                            + " " + a.getString(R.string.photos)
-                                            + ".");
-                            break;
+        this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_photo_background);
+        background.setOnClickListener(this);
 
-                        case FollowingResult.VERB_CURATED:
-                            verb.setVisibility(View.VISIBLE);
-                            verb.setText(
-                                    Html.fromHtml(
-                                            a.getString(R.string.curated)
-                                                    + " " + resultList.get(typeList.get(position).resultPosition).objects.size()
-                                                    + " " + a.getString(R.string.photos)
-                                                    + (resultList.get(typeList.get(position).resultPosition).targets.size() > 0 ?
-                                                    " " + a.getString(R.string.to)
-                                                            + " <u>" + resultList.get(typeList.get(position).resultPosition).targets.get(0).title + "</u>"
-                                                    :
-                                                    "")
-                                                    + "."));
-                            break;
+        this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_photo_image);
+        image.setSize(photo.width, photo.height);
 
-                        default:
-                            verb.setVisibility(View.GONE);
-                            break;
-                    }
-                    break;
+        this.title = (TextView) itemView.findViewById(R.id.item_following_photo_title);
+        DisplayUtils.setTypeface(itemView.getContext(), title);
+
+        this.collectionButton = (ImageButton) itemView.findViewById(R.id.item_following_photo_collectionButton);
+        collectionButton.setOnClickListener(this);
+
+        this.likeButton = (CircularProgressIcon) itemView.findViewById(R.id.item_following_photo_likeButton);
+        likeButton.setOnClickListener(this);
+
+        ImageButton downloadButton = (ImageButton) itemView.findViewById(R.id.item_following_photo_downloadButton);
+        downloadButton.setOnClickListener(this);
+    }
+
+    // UI.
+
+    void onBindView(final Photo photo, final int position) {
+        final MysplashActivity a = Mysplash.getInstance().getTopActivity();
+
+        this.photo = photo;
+        this.position = position;
+
+        title.setText("");
+        image.setShowShadow(false);
+
+        ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
+            @Override
+            public void onLoadSucceed() {
+                photo.loadPhotoSuccess = true;
+                if (!photo.hasFadedIn) {
+                    photo.hasFadedIn = true;
+                    adapter.updatePhoto(photo, position);
+                    ImageHelper.startSaturationAnimation(a, image);
                 }
-                case VIEW_TYPE_PHOTO: {
-                    final Photo photo = getPhoto(position);
-                    assert photo != null;
-                    title.setText("");
-                    image.setShowShadow(false);
-
-                    ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
-                        @Override
-                        public void onLoadSucceed() {
-                            photo.loadPhotoSuccess = true;
-                            if (!photo.hasFadedIn) {
-                                photo.hasFadedIn = true;
-                                updatePhoto(photo, position);
-                                ImageHelper.startSaturationAnimation(a, image);
-                            }
-                            title.setText(photo.user.name);
-                            image.setShowShadow(true);
-                        }
-
-                        @Override
-                        public void onLoadFailed() {
-                            // do nothing.
-                        }
-                    });
-
-                    if (photo.current_user_collections.size() != 0) {
-                        collectionButton.setImageResource(R.drawable.ic_item_added);
-                    } else {
-                        collectionButton.setImageResource(R.drawable.ic_item_plus);
-                    }
-
-                    if (photo.settingLike) {
-                        likeButton.forceSetProgressState();
-                    } else {
-                        likeButton.forceSetResultState(photo.liked_by_user ?
-                                R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
-                    }
-
-                    background.setBackgroundColor(ImageHelper.computeCardBackgroundColor(photo.color));
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        image.setTransitionName(photo.id + "-" + position + "-image");
-                        background.setTransitionName(photo.id + "-" + position + "-background");
-                    }
-                    break;
-                }
-                case VIEW_TYPE_USER:
-                    final User user = getUser(position);
-                    actor.setText(user.name);
-                    if (TextUtils.isEmpty(user.bio)) {
-                        verb.setText(
-                                user.total_photos + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
-                                        + user.total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
-                                        + user.total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
-                    } else {
-                        verb.setText(user.bio);
-                    }
-
-                    ImageHelper.loadAvatar(a, avatar, getUser(position), new ImageHelper.OnLoadImageListener() {
-                        @Override
-                        public void onLoadSucceed() {
-                            if (!user.hasFadedIn) {
-                                user.hasFadedIn = true;
-                                updateUser(user, position);
-                                ImageHelper.startSaturationAnimation(a, avatar);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed() {
-                            // do nothing.
-                        }
-                    });
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        avatar.setTransitionName(user.username + "-" + position + "-avatar");
-                        background.setTransitionName(user.username + "-" + position + "-background");
-                    }
-                    break;
-
-                case VIEW_TYPE_MORE: {
-                    final Photo photo = getPhoto(position);
-                    assert photo != null;
-                    more.setText(
-                            (resultList.get(typeList.get(position).resultPosition).objects.size() - MAX_DISPLAY_PHOTO_COUNT)
-                                    + " " + a.getString(R.string.more));
-                    ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
-                        @Override
-                        public void onLoadSucceed() {
-                            photo.loadPhotoSuccess = true;
-                            if (!photo.hasFadedIn) {
-                                photo.hasFadedIn = true;
-                                updatePhoto(photo, position);
-                                ImageHelper.startSaturationAnimation(a, image);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed() {
-                            // do nothing.
-                        }
-                    });
-                    ImageHelper.loadAvatar(a, avatar, getUser(position), null);
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        avatar.setTransitionName(getUser(position).username + "-" + position + "-avatar");
-                        background.setTransitionName(getUser(position).username + "-" + position + "-background");
-                    }
-                    break;
-                }
+                title.setText(photo.user.name);
+                image.setShowShadow(true);
             }
+
+            @Override
+            public void onLoadFailed() {
+                // do nothing.
+            }
+        });
+
+        if (photo.current_user_collections.size() != 0) {
+            collectionButton.setImageResource(R.drawable.ic_item_added);
+        } else {
+            collectionButton.setImageResource(R.drawable.ic_item_plus);
         }
 
-        void onRecycled() {
-            if (image != null) {
-                ImageHelper.releaseImageView(image);
-            }
-            if (avatar != null) {
-                ImageHelper.releaseImageView(avatar);
-            }
+        if (photo.settingLike) {
+            likeButton.forceSetProgressState();
+        } else {
+            likeButton.forceSetResultState(photo.liked_by_user ?
+                    R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
         }
 
-        // interface.
+        background.setBackgroundColor(ImageHelper.computeCardBackgroundColor(photo.color));
 
-        @Override
-        public void onClick(View view) {
-            switch (typeList.get(position).type) {
-                case VIEW_TYPE_TITLE:
-                    switch (view.getId()) {
-                        case R.id.item_following_title_avatar:
-                        case R.id.item_following_title_actor: {
-                            IntentHelper.startUserActivity(
-                                    (MysplashActivity) a,
-                                    avatar,
-                                    getUser(position),
-                                    UserActivity.PAGE_PHOTO);
-                            break;
-                        }
-                        case R.id.item_following_title_verb: {
-                            if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_COLLECTED)
-                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_CURATED)) {
-                                IntentHelper.startCollectionActivity(
-                                        (MysplashActivity) a,
-                                        avatar,
-                                        background,
-                                        getCollection(position));
-                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_RELEASE)
-                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_PUBLISHED)) {
-                                IntentHelper.startUserActivity(
-                                        (MysplashActivity) a,
-                                        avatar,
-                                        getUser(position),
-                                        UserActivity.PAGE_PHOTO);
-                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_LIKED)) {
-                                IntentHelper.startUserActivity(
-                                        (MysplashActivity) a,
-                                        avatar,
-                                        getUser(position),
-                                        UserActivity.PAGE_LIKE);
-                            }
-                            break;
-                        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            image.setTransitionName(photo.id + "-" + position + "-image");
+            background.setTransitionName(photo.id + "-" + position + "-background");
+        }
+    }
+
+    void onRecycled() {
+        ImageHelper.releaseImageView(image);
+    }
+
+    // interface.
+
+    @Override
+    public void onClick(View v) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        switch (v.getId()) {
+            case R.id.item_following_photo_background:
+                IntentHelper.startPhotoActivity(
+                        a,
+                        image,
+                        background,
+                        photo);
+                break;
+
+            case R.id.item_following_photo_likeButton:
+                if (AuthManager.getInstance().isAuthorized()) {
+                    if (likeButton.isUsable() && photo != null) {
+                        likeButton.setProgressState();
+                        adapter.setLikeForAPhoto(!photo.liked_by_user, position);
                     }
-                    break;
+                } else {
+                    IntentHelper.startLoginActivity(a);
+                }
+                break;
 
-                case VIEW_TYPE_PHOTO:
-                    switch (view.getId()) {
-                        case R.id.item_following_photo_background:
-                            IntentHelper.startPhotoActivity(
-                                    (MysplashActivity) a,
-                                    image,
-                                    background,
-                                    getPhoto(position));
-                            break;
+            case R.id.item_following_photo_collectionButton:
+                if (!AuthManager.getInstance().isAuthorized()) {
+                    IntentHelper.startLoginActivity(a);
+                } else {
+                    SelectCollectionDialog dialog = new SelectCollectionDialog();
+                    dialog.setPhotoAndListener(photo, adapter);
+                    dialog.show(a.getFragmentManager(), null);
+                }
+                break;
 
-                        case R.id.item_following_photo_likeButton:
-                            if (AuthManager.getInstance().isAuthorized()) {
-                                Photo photo = getPhoto(position);
-                                if (likeButton.isUsable() && photo != null) {
-                                    likeButton.setProgressState();
-                                    setLikeForAPhoto(!photo.liked_by_user, position);
-                                }
-                            } else {
-                                IntentHelper.startLoginActivity((MysplashActivity) a);
-                            }
-                            break;
+            case R.id.item_following_photo_downloadButton:
+                if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) == 0) {
+                    DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
+                } else {
+                    NotificationHelper.showSnackbar(
+                            a.getString(R.string.feedback_download_repeat),
+                            Snackbar.LENGTH_SHORT);
+                }
+                break;
+        }
+    }
+}
 
-                        case R.id.item_following_photo_collectionButton:
-                            if (!AuthManager.getInstance().isAuthorized()) {
-                                IntentHelper.startLoginActivity((MysplashActivity) a);
-                            } else {
-                                SelectCollectionDialog dialog = new SelectCollectionDialog();
-                                dialog.setPhotoAndListener(getPhoto(position), FollowingAdapter.this);
-                                dialog.show(((Activity) a).getFragmentManager(), null);
-                            }
-                            break;
+class UserHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+    // widget
+    public RelativeLayout background;
+    private CircleImageView avatar;
+    private TextView title;
+    private TextView subtitle;
 
-                        case R.id.item_following_photo_downloadButton:
-                            Photo p = getPhoto(position);
-                            assert p != null;
-                            if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(p.id) == 0) {
-                                DownloadHelper.getInstance().addMission(a, p, DownloadHelper.DOWNLOAD_TYPE);
-                            } else {
-                                NotificationHelper.showSnackbar(
-                                        a.getString(R.string.feedback_download_repeat),
-                                        Snackbar.LENGTH_SHORT);
-                            }
-                            break;
-                    }
-                    break;
+    // data
+    private FollowingAdapter adapter;
+    private User user;
+    static final int VIEW_TYPE_USER = 2;
 
-                case VIEW_TYPE_USER:
-                    switch (view.getId()) {
-                        case R.id.item_following_user_background:
-                            IntentHelper.startUserActivity(
-                                    (MysplashActivity) a,
-                                    avatar,
-                                    getUser(position),
-                                    UserActivity.PAGE_PHOTO);
-                            break;
-                    }
-                    break;
+    // life cycle.
 
-                case VIEW_TYPE_MORE:
-                    switch (view.getId()) {
-                        case R.id.item_following_more_avatar:
-                            IntentHelper.startUserActivity(
-                                    (MysplashActivity) a,
-                                    avatar,
-                                    getUser(position),
-                                    UserActivity.PAGE_LIKE);
-                            break;
+    UserHolder(View itemView, FollowingAdapter adapter) {
+        super(itemView);
 
-                        case R.id.item_following_more_background:
-                            if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_COLLECTED)
-                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_CURATED)) {
-                                IntentHelper.startCollectionActivity(
-                                        (MysplashActivity) a,
-                                        avatar,
-                                        background,
-                                        getCollection(position));
-                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_RELEASE)
-                                    || resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_PUBLISHED)) {
-                                IntentHelper.startUserActivity(
-                                        (MysplashActivity) a,
-                                        avatar,
-                                        getUser(position),
-                                        UserActivity.PAGE_PHOTO);
-                            } else if (resultList.get(typeList.get(position).resultPosition).verb.equals(FollowingResult.VERB_LIKED)) {
-                                IntentHelper.startUserActivity(
-                                        (MysplashActivity) a,
-                                        avatar,
-                                        getUser(position),
-                                        UserActivity.PAGE_LIKE);
-                            }
-                            break;
-                    }
-                    break;
+        this.adapter = adapter;
+
+        this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_user_background);
+        background.setOnClickListener(this);
+
+        this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_user_avatar);
+        this.title = (TextView) itemView.findViewById(R.id.item_following_user_title);
+
+        this.subtitle = (TextView) itemView.findViewById(R.id.item_following_user_subtitle);
+        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
+    }
+
+    // UI.
+
+    void onBindView(final User user, final int position) {
+        final MysplashActivity a = Mysplash.getInstance().getTopActivity();
+
+        this.user = user;
+
+        title.setText(user.name);
+        if (TextUtils.isEmpty(user.bio)) {
+            subtitle.setText(
+                    user.total_photos + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
+                            + user.total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
+                            + user.total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
+        } else {
+            subtitle.setText(user.bio);
+        }
+
+        ImageHelper.loadAvatar(a, avatar, user, new ImageHelper.OnLoadImageListener() {
+            @Override
+            public void onLoadSucceed() {
+                if (!user.hasFadedIn) {
+                    user.hasFadedIn = true;
+                    adapter.updateUser(user, position);
+                    ImageHelper.startSaturationAnimation(a, avatar);
+                }
             }
+
+            @Override
+            public void onLoadFailed() {
+                // do nothing.
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            avatar.setTransitionName(user.username + "-" + position + "-avatar");
+            background.setTransitionName(user.username + "-" + position + "-background");
+        }
+    }
+
+    void onRecycled() {
+        ImageHelper.releaseImageView(avatar);
+    }
+
+    // interface.
+
+    @Override
+    public void onClick(View v) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        switch (v.getId()) {
+            case R.id.item_following_user_background:
+                IntentHelper.startUserActivity(
+                        a,
+                        avatar,
+                        user,
+                        UserActivity.PAGE_PHOTO);
+                break;
+        }
+    }
+}
+
+class MoreHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+    // widget
+    private RelativeLayout background;
+    private FreedomImageView image;
+    private CircleImageView avatar;
+    private TextView more;
+
+    // data
+    private FollowingAdapter adapter;
+    private FollowingResult result;
+    static final int VIEW_TYPE_MORE = 3;
+
+    // life cycle.
+
+    MoreHolder(View itemView, FollowingAdapter adapter, Photo photo) {
+        super(itemView);
+
+        this.adapter = adapter;
+
+        this.background = (RelativeLayout) itemView.findViewById(R.id.item_following_more_background);
+        background.setOnClickListener(this);
+
+        this.image = (FreedomImageView) itemView.findViewById(R.id.item_following_more_image);
+        image.setSize(photo.width, photo.height);
+
+        this.more = (TextView) itemView.findViewById(R.id.item_following_more_title);
+
+        this.avatar = (CircleImageView) itemView.findViewById(R.id.item_following_more_avatar);
+        avatar.setOnClickListener(this);
+    }
+
+    // UI.
+
+    void onBindView(FollowingResult result, final Photo photo, final int position) {
+        final MysplashActivity a = Mysplash.getInstance().getTopActivity();
+
+        this.result = result;
+
+        more.setText(
+                (result.objects.size() - FollowingAdapter.MAX_DISPLAY_PHOTO_COUNT)
+                        + " " + a.getString(R.string.more));
+        ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
+            @Override
+            public void onLoadSucceed() {
+                photo.loadPhotoSuccess = true;
+                if (!photo.hasFadedIn) {
+                    photo.hasFadedIn = true;
+                    adapter.updatePhoto(photo, position);
+                    ImageHelper.startSaturationAnimation(a, image);
+                }
+            }
+
+            @Override
+            public void onLoadFailed() {
+                // do nothing.
+            }
+        });
+        ImageHelper.loadAvatar(a, avatar, result.actors.get(0), null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            avatar.setTransitionName(result.actors.get(0).username + "-" + position + "-avatar");
+            background.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
+        }
+    }
+
+    void onRecycled() {
+        ImageHelper.releaseImageView(image);
+        ImageHelper.releaseImageView(avatar);
+    }
+
+    // interface.
+
+    @Override
+    public void onClick(View v) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        switch (v.getId()) {
+            case R.id.item_following_more_avatar:
+                IntentHelper.startUserActivity(
+                        a,
+                        avatar,
+                        result.actors.get(0),
+                        UserActivity.PAGE_LIKE);
+                break;
+
+            case R.id.item_following_more_background:
+                switch (result.verb) {
+                    case FollowingResult.VERB_COLLECTED:
+                    case FollowingResult.VERB_CURATED:
+                        IntentHelper.startCollectionActivity(
+                                a,
+                                avatar,
+                                background,
+                                result.targets.get(0));
+                        break;
+
+                    case FollowingResult.VERB_RELEASE:
+                    case FollowingResult.VERB_PUBLISHED:
+                        IntentHelper.startUserActivity(
+                                a,
+                                avatar,
+                                result.actors.get(0),
+                                UserActivity.PAGE_PHOTO);
+                        break;
+
+                    case FollowingResult.VERB_LIKED:
+                        IntentHelper.startUserActivity(
+                                a,
+                                avatar,
+                                result.actors.get(0),
+                                UserActivity.PAGE_LIKE);
+                        break;
+                }
+                break;
         }
     }
 }

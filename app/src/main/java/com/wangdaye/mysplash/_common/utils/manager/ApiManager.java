@@ -24,9 +24,11 @@ public class ApiManager {
     private static ApiManager instance;
 
     public static ApiManager getInstance(Context context) {
-        synchronized (ApiManager.class) {
-            if (instance == null) {
-                instance = new ApiManager(context);
+        if (instance == null) {
+            synchronized (ApiManager.class) {
+                if (instance == null) {
+                    instance = new ApiManager(context);
+                }
             }
         }
         return instance;

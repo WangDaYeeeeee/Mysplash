@@ -36,12 +36,12 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(MysplashActivity a, PhotoAdapter adapter, int photosType, String order) {
+    public PhotosObject(MysplashActivity a, PhotoAdapter adapter, int photosType) {
         this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.photosType = photosType;
-        this.photosOrder = order;
+        this.photosOrder = Mysplash.getInstance().getDefaultPhotoOrder();
         RANDOM_TXT = a.getResources().getStringArray(R.array.photo_order_values)[3];
 
         this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
@@ -111,7 +111,7 @@ public class PhotosObject
 
     @Override
     public void setPageList(List<Integer> list) {
-        pageList = list;
+        pageList.addAll(list);
     }
 
     @Override

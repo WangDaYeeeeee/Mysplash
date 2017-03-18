@@ -105,7 +105,7 @@ public class CategoryObject
 
     @Override
     public void setPageList(List<Integer> list) {
-        pageList = list;
+        pageList.addAll(list);
     }
 
     @Override

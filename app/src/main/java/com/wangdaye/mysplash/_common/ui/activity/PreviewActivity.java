@@ -208,7 +208,7 @@ public class PreviewActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View v) {
@@ -227,7 +227,7 @@ public class PreviewActivity extends MysplashActivity
         }
     }
 
-    // on long click listener.
+    // on long click swipeListener.
 
     @Override
     public boolean onLongClick(View v) {
@@ -239,7 +239,7 @@ public class PreviewActivity extends MysplashActivity
         return true;
     }
 
-    // on swipe listener.
+    // on swipe swipeListener.
 
     @Override
     public boolean canSwipeBack(int dir) {

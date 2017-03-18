@@ -35,8 +35,7 @@
             android:padding="@dimen/little_margin"
             android:layout_marginRight="@dimen/little_margin"
             android:layout_marginBottom="@dimen/little_margin"
-            android:background="@android:color/transparent"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
@@ -47,8 +46,7 @@
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
             android:layout_marginBottom="@dimen/little_margin"
-            android:background="@android:color/transparent"
-            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/item_download_closeBtn"
             tools:src="@drawable/ic_item_check"
@@ -60,7 +58,7 @@
             android:layout_height="34dp"
             android:layout_margin="@dimen/little_margin"
             android:layout_centerVertical="true"
-            android:background="@android:color/transparent" />
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
         <TextView
             android:id="@+id/item_download_title"

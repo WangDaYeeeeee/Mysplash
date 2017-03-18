@@ -110,13 +110,19 @@ public class FollowingImplementor implements FollowingPresenter {
     }
 
     @Override
+    public void setOver(boolean over) {
+        model.setOver(over);
+        view.setPermitLoading(!over);
+    }
+
+    @Override
     public void setActivityForAdapter(MysplashActivity a) {
         model.getAdapter().setActivity(a);
     }
 
     @Override
     public int getAdapterItemCount() {
-        return model.getAdapter().getItemCount();
+        return model.getAdapter().getRealItemCount();
     }
 
     @Override
@@ -162,21 +168,19 @@ public class FollowingImplementor implements FollowingPresenter {
             model.setLoading(false);
             if (refresh) {
                 model.getAdapter().clearItem();
-                model.setOver(false);
+                setOver(false);
                 view.setRefreshing(false);
-                view.setPermitLoading(true);
             } else {
                 view.setLoading(false);
             }
 
             if (response.isSuccessful()
-                    && model.getAdapter().getItemCount() + response.body().results.size() > 0) {
+                    && model.getAdapter().getRealItemCount() + response.body().results.size() > 0) {
                 for (int i = 0; i < response.body().results.size(); i ++) {
                     model.getAdapter().insertItem(response.body().results.get(i));
                 }
                 if (TextUtils.isEmpty(response.body().next_page)) {
-                    model.setOver(true);
-                    view.setPermitLoading(false);
+                    setOver(true);
                 }
                 model.setNextPage(response.body().next_page);
                 view.requestFollowingFeedSuccess();

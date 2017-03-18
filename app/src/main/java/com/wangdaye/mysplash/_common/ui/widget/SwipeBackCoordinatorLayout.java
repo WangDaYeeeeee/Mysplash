@@ -6,6 +6,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
@@ -15,7 +16,7 @@ import android.view.animation.Transformation;
 
 public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     // widget
-    public OnSwipeListener listener;
+    private OnSwipeListener swipeListener;
 
     // data
     private int swipeDistance = 0;
@@ -77,7 +78,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         int newDyUnconsumed = dyUnconsumed;
         if (swipeDistance == 0) {
             int dir = dyUnconsumed < 0 ? DOWN_DIR : UP_DIR;
-            if (listener.canSwipeBack(dir)) {
+            if (swipeListener != null && swipeListener.canSwipeBack(dir)) {
                 onScroll(dyUnconsumed);
                 newDyConsumed = dyConsumed + dyUnconsumed;
                 newDyUnconsumed = 0;
@@ -123,8 +124,8 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     private void swipeBack() {
-        if (listener != null) {
-            listener.onSwipeFinish(swipeDir);
+        if (swipeListener != null) {
+            swipeListener.onSwipeFinish(swipeDir);
         }
     }
 
@@ -132,16 +133,17 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         swipeDir = NULL_DIR;
         if (swipeDistance != 0) {
             ResetAnimation a = new ResetAnimation(swipeDistance);
+            a.setDuration((long) (100.0 + 200.0 * Math.abs(swipeDistance) / SWIPE_TRIGGER));
+            a.setInterpolator(new AccelerateDecelerateInterpolator());
             a.setAnimationListener(resetAnimListener);
-            a.setDuration(300);
             startAnimation(a);
         }
     }
 
     private void setSwipeTranslation() {
         setTranslationY((float) (1.0 * swipeDistance / SWIPE_RADIO));
-        if (listener != null) {
-            listener.onSwipeProcess(
+        if (swipeListener != null) {
+            swipeListener.onSwipeProcess(
                     (float) Math.min(
                             1,
                             Math.abs(1.0 * swipeDistance / SWIPE_TRIGGER)));
@@ -220,6 +222,8 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     /** <br> interface. */
 
+    // on swipe listener.
+
     public interface OnSwipeListener {
         boolean canSwipeBack(int dir);
         void onSwipeProcess(float percent);
@@ -227,6 +231,6 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     public void setOnSwipeListener(OnSwipeListener l) {
-        this.listener = l;
+        this.swipeListener = l;
     }
 }

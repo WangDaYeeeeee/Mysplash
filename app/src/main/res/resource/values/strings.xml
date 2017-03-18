@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.0.1</string>
+    <string name="version_code">3.0.3</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -50,6 +50,8 @@
     <string name="relative_photo">relative photos</string>
     <string name="relative_collection">relative collections</string>
 
+    <string name="follow_system">Follow System</string>
+
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
     <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
@@ -67,8 +69,6 @@
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
     <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
-    <string name="downloader">FileDownloader</string>
-    <string name="about_downloader">Multitask、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>

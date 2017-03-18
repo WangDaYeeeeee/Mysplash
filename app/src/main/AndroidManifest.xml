@@ -15,7 +15,7 @@
 
         <activity
             android:name=".main.view.activity.MainActivity"
-            android:theme="@style/MysplashTheme_light"
+            android:theme="@style/MysplashTheme_light.Main"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,7 +53,7 @@
 
         <activity
             android:name="._common.ui.activity.PreviewActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Preview"
+            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation"
             android:label="@string/app_name" />
 
         <activity
@@ -145,7 +145,7 @@
             android:label="@string/app_name" />
 
         <activity android:name=".tag.view.activity.TagActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation"
             android:label="@string/app_name" />
 
         <activity android:name="._common.ui.activity.CustomApiActivity"
@@ -165,6 +165,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <!-- receiver. -->
+
+        <receiver
+            android:name="._common.receiver.DownloadReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 

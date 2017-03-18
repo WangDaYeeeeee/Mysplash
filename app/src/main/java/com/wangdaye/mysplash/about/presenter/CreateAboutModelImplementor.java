@@ -68,6 +68,11 @@ public class CreateAboutModelImplementor {
                 "Alex",
                 R.drawable.flag_ru,
                 "https://github.com/Ulop"));
+        modelList.add(new TranslatorObject(
+                "https://ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/avatars/avatar_tile_s_80.png",
+                "Sergio Otón",
+                R.drawable.flag_es,
+                "oton.translator@gmail.com"));
 
         // library.
         modelList.add(new CategoryAboutObject(c.getString(R.string.libraries)));
@@ -99,10 +104,6 @@ public class CreateAboutModelImplementor {
                 c.getString(R.string.greendao_db),
                 c.getString(R.string.about_greendao_db),
                 "https://github.com/greenrobot/greenDAO"));
-        modelList.add(new LibraryObject(
-                c.getString(R.string.downloader),
-                c.getString(R.string.about_downloader),
-                "https://github.com/lingochamp/FileDownloader"));
 
         return modelList;
     }

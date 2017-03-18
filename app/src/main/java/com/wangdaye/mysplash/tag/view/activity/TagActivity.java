@@ -24,6 +24,7 @@ import com.wangdaye.mysplash._common._basic.MysplashActivity;
 import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
@@ -34,6 +35,8 @@ import com.wangdaye.mysplash.tag.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.tag.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.tag.view.widget.TagPhotosView;
 
+import java.util.List;
+
 /**
  * Category activity.
  * */
@@ -41,13 +44,15 @@ import com.wangdaye.mysplash.tag.view.widget.TagPhotosView;
 public class TagActivity extends MysplashActivity
         implements SwipeBackManageView,
         View.OnClickListener, PhotoAdapter.OnDownloadPhotoListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener {
+        NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener {
     // model.
     private DownloadModel downloadModel;
 
     // view.
     private CoordinatorLayout container;
     private StatusBarView statusBar;
+
+    private NestedScrollAppBarLayout appBar;
     private TagPhotosView photosView;
 
     // presenter.
@@ -78,6 +83,27 @@ public class TagActivity extends MysplashActivity
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (photosView != null) {
+            photosView.cancelRequest();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        // save large data.
+        SavedStateFragment f = new SavedStateFragment();
+        if (photosView != null) {
+            f.setPhotoList(photosView.getPhotos());
+        }
+        f.saveData(this);
+
+        // save normal data.
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
@@ -88,6 +114,9 @@ public class TagActivity extends MysplashActivity
 
     @Override
     protected void backToTop() {
+        statusBar.animToInitAlpha();
+        DisplayUtils.setStatusBarStyle(this, false);
+        BackToTopUtils.showTopBar(appBar, photosView);
         photosView.scrollToTop();
     }
 
@@ -133,14 +162,16 @@ public class TagActivity extends MysplashActivity
         this.container = (CoordinatorLayout) findViewById(R.id.activity_tag_container);
 
         this.statusBar = (StatusBarView) findViewById(R.id.activity_tag_statusBar);
-        if (DisplayUtils.isNeedSetStatusBarMask()) {
-            statusBar.setBackgroundResource(R.color.colorPrimary_light);
-            statusBar.setMask(true);
+        if (getBundle() ==null) {
+            statusBar.setInitMaskAlpha();
         }
 
         SwipeBackCoordinatorLayout swipeBackView
                 = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_tag_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
+
+        this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_tag_appBar);
+        appBar.setOnNestedScrollingListener(this);
 
         String tag = getIntent().getStringExtra(KEY_TAG_ACTIVITY_TAG).toLowerCase();
         if (TextUtils.isEmpty(tag)) {
@@ -160,8 +191,10 @@ public class TagActivity extends MysplashActivity
         this.photosView = (TagPhotosView) findViewById(R.id.activity_tag_tagPhotosView);
         photosView.setActivity(this);
         photosView.setTag(tag);
-        if (getBundle() != null) {
-            photosView.readBundle(getBundle());
+
+        BaseSavedStateFragment f = SavedStateFragment.getData(this);
+        if (f != null && f instanceof SavedStateFragment) {
+            photosView.setPhotos(((SavedStateFragment) f).getPhotoList());
         } else {
             photosView.initRefresh();
         }
@@ -194,7 +227,7 @@ public class TagActivity extends MysplashActivity
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             type);
                 } else {
-                    downloadPresenter.download();
+                    downloadPresenter.download(this);
                 }
                 break;
         }
@@ -207,7 +240,7 @@ public class TagActivity extends MysplashActivity
             switch (permission[i]) {
                 case Manifest.permission.WRITE_EXTERNAL_STORAGE:
                     if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadPresenter.download();
+                        downloadPresenter.download(this);
                     } else {
                         NotificationHelper.showSnackbar(
                                 getString(R.string.feedback_need_permission),
@@ -220,7 +253,7 @@ public class TagActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -235,19 +268,46 @@ public class TagActivity extends MysplashActivity
         }
     }
 
-    // on download photo listener. (photo adapter)
+    // on download photo swipeListener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
         downloadPresenter.setDownloadKey(photo);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            downloadPresenter.download();
+            downloadPresenter.download(this);
         } else {
             requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
         }
     }
 
-    // on swipe listener.(swipe back listener)
+    // on nested scrolling swipeListener.
+
+    @Override
+    public void onStartNestedScroll() {
+        // do nothing.
+    }
+
+    @Override
+    public void onNestedScrolling() {
+        if (appBar.getY() > -appBar.getMeasuredHeight()) {
+            if (!statusBar.isInitAlpha()) {
+                statusBar.animToInitAlpha();
+                DisplayUtils.setStatusBarStyle(this, false);
+            }
+        } else {
+            if (statusBar.isInitAlpha()) {
+                statusBar.animToDarkerAlpha();
+                DisplayUtils.setStatusBarStyle(this, true);
+            }
+        }
+    }
+
+    @Override
+    public void onStopNestedScroll() {
+        // do nothing.
+    }
+
+    // on swipe swipeListener.(swipe back swipeListener)
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -256,7 +316,6 @@ public class TagActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 
@@ -275,6 +334,23 @@ public class TagActivity extends MysplashActivity
             return photosView.canSwipeBack(dir);
         } else {
             return photosView.canSwipeBack(dir);
+        }
+    }
+
+    /** <br> inner class. */
+
+    public static class SavedStateFragment extends BaseSavedStateFragment {
+        // data
+        private List<Photo> photoList;
+
+        // data.
+
+        public List<Photo> getPhotoList() {
+            return photoList;
+        }
+
+        public void setPhotoList(List<Photo> photoList) {
+            this.photoList = photoList;
         }
     }
 }

@@ -49,6 +49,30 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
+    <style
+        name="MysplashTheme_light.Translucent.TranslucentNavigation"
+        parent="MysplashTheme_light.Translucent">
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation"
+        parent="MysplashTheme_dark.Translucent">
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <!-- main activity. -->
+
+    <style name="MysplashTheme_light.Main" parent="MysplashTheme_light">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Main" parent="MysplashTheme_dark">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
     <!-- photo activity. -->
 
     <style name="MysplashTheme_light.Translucent.Photo" parent="MysplashTheme_light.Translucent">
@@ -68,25 +92,27 @@
     <!-- preview activity. -->
 
     <style name="MysplashTheme_light.Translucent.Preview" parent="MysplashTheme_light.Translucent">
-        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="MysplashTheme_dark.Translucent.Preview" parent="MysplashTheme_dark.Translucent">
-        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <!-- user activity. -->
 
-    <style name="MysplashTheme_light.Translucent.User" parent="MysplashTheme_light.Translucent">
+    <style
+        name="MysplashTheme_light.Translucent.User"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation">
         <item name="android:windowEnterTransition">@transition/user_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/user_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/user_activity_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/user_activity_shared_return</item>
     </style>
 
-    <style name="MysplashTheme_dark.Translucent.User" parent="MysplashTheme_dark.Translucent">
+    <style
+        name="MysplashTheme_dark.Translucent.User"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation">
         <item name="android:windowEnterTransition">@transition/user_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/user_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/user_activity_shared_enter</item>
@@ -95,14 +121,18 @@
 
     <!-- me activity. -->
 
-    <style name="MysplashTheme_light.Translucent.Me" parent="MysplashTheme_light.Translucent">
+    <style
+        name="MysplashTheme_light.Translucent.Me"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation">
         <item name="android:windowEnterTransition">@transition/me_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/me_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/me_activity_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/me_activity_shared_return</item>
     </style>
 
-    <style name="MysplashTheme_dark.Translucent.Me" parent="MysplashTheme_dark.Translucent">
+    <style
+        name="MysplashTheme_dark.Translucent.Me"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation">
         <item name="android:windowEnterTransition">@transition/me_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/me_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/me_activity_shared_enter</item>
@@ -111,14 +141,18 @@
 
     <!-- collection activity. -->
 
-    <style name="MysplashTheme_light.Translucent.Collection" parent="MysplashTheme_light.Translucent">
+    <style
+        name="MysplashTheme_light.Translucent.Collection"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation">
         <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>
         <item name="android:windowSharedElementReturnTransition">@transition/collection_activity_shared_return</item>
     </style>
 
-    <style name="MysplashTheme_dark.Translucent.Collection" parent="MysplashTheme_dark.Translucent">
+    <style
+        name="MysplashTheme_dark.Translucent.Collection"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation">
         <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
         <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
         <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>

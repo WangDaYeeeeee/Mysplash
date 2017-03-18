@@ -28,6 +28,7 @@ import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash._common.utils.DisplayUtils;
 import com.wangdaye.mysplash._common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.collection.model.widget.LoadObject;
 import com.wangdaye.mysplash.collection.model.widget.PhotosObject;
@@ -49,6 +50,7 @@ import com.wangdaye.mysplash.collection.presenter.widget.SwipeBackImplementor;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Collection photos view.
@@ -153,6 +155,11 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
             refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
         }
 
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+
         this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(onScrollListener);
@@ -201,6 +208,22 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         photosPresenter.setActivityForAdapter(a);
     }
 
+    public List<Photo> getPhotos() {
+        return photosPresenter.getAdapter().getPhotoData();
+    }
+
+    public void setPhotos(List<Photo> list) {
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        photosPresenter.getAdapter().setPhotoData(list);
+        if (list.size() == 0) {
+            initRefresh();
+        } else {
+            setNormalState();
+        }
+    }
+
     public void initRefresh() {
         photosPresenter.initRefresh(getContext());
     }
@@ -223,7 +246,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
 
     /** <br> interface. */
 
-    // on click listener.
+    // on click swipeListener.
 
     @Override
     public void onClick(View view) {
@@ -234,7 +257,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         }
     }
 
-    // on refresh and load listener.
+    // on refresh and load swipeListener.
 
     @Override
     public void onRefresh() {
@@ -246,7 +269,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         photosPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll listener.
+    // on scroll swipeListener.
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
@@ -256,7 +279,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         }
     };
 
-    // on collections change listener.
+    // on collections change swipeListener.
 
     @Override
     public void onAddCollection(Collection c) {
@@ -362,7 +385,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     @Override
     public void autoLoad(int dy) {
         int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
+        int totalItemCount = photosPresenter.getAdapter().getRealItemCount();
         if (photosPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
             photosPresenter.loadMore(getContext(), false);

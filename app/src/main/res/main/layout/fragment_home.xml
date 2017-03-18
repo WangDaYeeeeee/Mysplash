@@ -1,18 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-        android:id="@+id/fragment_home_statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimaryDark" />
-
-    <android.support.design.widget.CoordinatorLayout
+    <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
         android:id="@+id/fragment_home_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -21,26 +14,36 @@
             android:id="@+id/fragment_home_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
             app:theme="@style/MysplashToolbarTheme">
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/fragment_home_toolbar"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="?attr/colorPrimary"
-                app:layout_scrollFlags="scroll|snap|enterAlways"
-                app:title="@string/app_name"
-                app:popupTheme="@style/MysplashPopupMenuTheme"
-                tools:ignore="UnusedAttribute" />
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
 
-            <android.support.design.widget.TabLayout
-                android:id="@+id/fragment_home_tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/tab_layout_height"
-                app:tabIndicatorHeight="3dp"
-                app:tabIndicatorColor="?attr/title_color"
-                app:tabSelectedTextColor="?attr/content_color"
-                app:tabTextColor="?attr/subtitle_color" />
+                <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorPrimary" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/fragment_home_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="@string/app_name"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"
+                    tools:ignore="UnusedAttribute" />
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/fragment_home_tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_layout_height"
+                    style="@style/MysplashTabLayoutTheme" />
+
+            </LinearLayout>
 
         </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
@@ -50,6 +53,24 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </android.support.design.widget.CoordinatorLayout>
+        <com.wangdaye.mysplash._common.ui.widget.AutoHideInkPageIndicator
+            android:id="@+id/fragment_home_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_behavior="._common.ui.behavior.InkPageIndicatorBehavior"
+            app:animationDuration="300"
+            app:pageIndicatorColor="?attr/subtitle_color"
+            app:currentPageIndicatorColor="?attr/title_color"
+            app:dotDiameter="@dimen/little_margin"
+            app:dotGap="@dimen/little_margin" />
 
-</LinearLayout>
+    </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/fragment_home_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black" />
+
+</FrameLayout>
