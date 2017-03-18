@@ -147,7 +147,7 @@ public class MeActivity extends MysplashActivity
             f.setPhotoList(((MePhotosView) pagers[0]).getPhotos());
         }
         if (pagers[1] != null) {
-            f.setCollectionList(((MeCollectionsView) pagers[2]).getCollections());
+            f.setCollectionList(((MeCollectionsView) pagers[1]).getCollections());
         }
         if (pagers[2] != null) {
             f.setLikeList(((MePhotosView) pagers[2]).getPhotos());

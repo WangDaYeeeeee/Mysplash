@@ -109,6 +109,11 @@ public class SetWallpaperActivity extends MysplashActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // do nothing.
+    }
+
+    @Override
     public void finishActivity(int dir) {
         finish();
     }
