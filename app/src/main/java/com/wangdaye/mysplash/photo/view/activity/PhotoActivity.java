@@ -140,6 +140,11 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // do nothing.
+    }
+
+    @Override
     protected void setTheme() {
         if (Mysplash.getInstance().isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Photo);

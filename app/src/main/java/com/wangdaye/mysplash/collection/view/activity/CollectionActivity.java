@@ -222,9 +222,7 @@ public class CollectionActivity extends MysplashActivity
             this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
 
             this.statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
-            if (getBundle() == null) {
-                statusBar.setInitMaskAlpha();
-            }
+            statusBar.setInitMaskAlpha();
 
             SwipeBackCoordinatorLayout swipeBackView
                     = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_collection_swipeBackView);

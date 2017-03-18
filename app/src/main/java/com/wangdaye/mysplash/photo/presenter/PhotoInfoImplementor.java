@@ -46,8 +46,8 @@ public class PhotoInfoImplementor
         if (listener != null) {
             listener.cancel();
         }
-        model.getPhotoInfoService().cancel();
-        // model.getPhotoService().cancel();
+        // model.getPhotoInfoService().cancel();
+        model.getPhotoService().cancel();
     }
 
     @Override
