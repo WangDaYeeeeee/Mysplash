@@ -322,16 +322,6 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     @Override
-    public void requestDetailsSuccess() {
-        // do nothing.
-    }
-
-    @Override
-    public void requestDetailsFailed() {
-        // do nothing.
-    }
-
-    @Override
     public void followRequestSuccess(boolean follow) {
         // do nothing.
     }

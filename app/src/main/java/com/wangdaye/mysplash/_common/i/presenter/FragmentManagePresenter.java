@@ -14,12 +14,7 @@ public interface FragmentManagePresenter {
     List<MysplashFragment> getFragmentList(MysplashActivity a, boolean includeHidden);
     MysplashFragment getTopFragment(MysplashActivity a);
 
-    List<Integer> getIdList();
-    void clearList();
-
     void changeFragment(MysplashActivity a, int code, boolean init);
-    void addFragment(MysplashActivity a, int code);
-    void popFragment(MysplashActivity a);
 
-    int getFragmentCount();
+    int getId();
 }

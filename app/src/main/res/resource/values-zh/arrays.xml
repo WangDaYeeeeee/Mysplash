@@ -5,21 +5,21 @@
     <string-array name="home_tabs">
         <item>新作</item>
         <item>精选</item>
-        <item>收藏集</item>
+        <item>收藏</item>
     </string-array>
 
     <!-- 搜索标签 -->
     <string-array name="search_tabs">
         <item>照片</item>
-        <item>收藏集</item>
+        <item>收藏</item>
         <item>用户</item>
     </string-array>
 
     <!-- 用户标签 -->
     <string-array name="user_tabs">
         <item>照片</item>
-        <item>收藏集</item>
         <item>喜欢</item>
+        <item>收藏</item>
     </string-array>
 
     <!-- 我的关注标签 -->

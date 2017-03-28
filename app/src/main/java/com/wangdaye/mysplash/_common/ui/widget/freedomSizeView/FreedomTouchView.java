@@ -6,7 +6,6 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
 
@@ -52,14 +51,16 @@ public class FreedomTouchView extends View {
     public void setSize(int w, int h) {
         width = w;
         height = h;
-
         if (getMeasuredWidth() != 0) {
+            /*
             int[] size = getMeasureSize(getMeasuredWidth());
 
             ViewGroup.LayoutParams params = getLayoutParams();
             params.width = size[0];
             params.height = size[1];
             setLayoutParams(params);
+            */
+            requestLayout();
         }
     }
 

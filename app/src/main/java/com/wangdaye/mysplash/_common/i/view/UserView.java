@@ -8,11 +8,8 @@ import com.wangdaye.mysplash._common.data.entity.unsplash.User;
 
 public interface UserView {
 
-    void drawUserInfo(User user);
-
     void initRefreshStart();
-    void requestDetailsSuccess();
-    void requestDetailsFailed();
+    void drawUserInfo(User user);
 
     void followRequestSuccess(boolean follow);
     void followRequestFailed(boolean follow);

@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.wangdaye.mysplash.R;
@@ -158,14 +157,16 @@ public class FreedomImageView extends ImageView {
         if (!notFree) {
             width = w;
             height = h;
-
             if (getMeasuredWidth() != 0) {
-                int[] size = getMeasureSize(getMeasuredWidth());
+            /*
+            int[] size = getMeasureSize(getMeasuredWidth());
 
-                ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = size[0];
-                params.height = size[1];
-                setLayoutParams(params);
+            ViewGroup.LayoutParams params = getLayoutParams();
+            params.width = size[0];
+            params.height = size[1];
+            setLayoutParams(params);
+            */
+                requestLayout();
             }
         }
     }

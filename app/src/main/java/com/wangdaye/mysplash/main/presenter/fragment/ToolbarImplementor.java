@@ -36,7 +36,7 @@ public class ToolbarImplementor
         MainActivity activity = (MainActivity) a;
         switch (itemId) {
             case R.id.action_search:
-                activity.insertFragment(itemId);
+                activity.changeFragment(itemId);
                 break;
 
             case R.id.action_filter:

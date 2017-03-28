@@ -25,7 +25,7 @@ public class SearchBarImplementor
 
     @Override
     public void touchNavigatorIcon(MysplashActivity a) {
-        ((MainActivity) a).removeFragment();
+        ((MainActivity) a).changeFragment(R.id.action_home);
     }
 
     @Override

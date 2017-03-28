@@ -18,8 +18,8 @@
     <!-- user tab. -->
     <string-array name="user_tabs">
         <item>FOTOGRAFIE</item>
-        <item>RACCOLTE</item>
         <item>PIACIUTI</item>
+        <item>RACCOLTE</item>
     </string-array>
 
     <!-- download option. -->

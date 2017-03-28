@@ -138,6 +138,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
         followingPresenter.setNextPage(ss.nextPage);
         followingPresenter.setOver(ss.over);
+        setOffsetY(ss.offsetY);
     }
 
     @Override
@@ -509,6 +510,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         // data
         String nextPage;
         boolean over;
+        float offsetY;
 
         // life cycle.
 
@@ -516,12 +518,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             super(superState);
             this.nextPage = view.followingModel.getNextPage();
             this.over = view.followingModel.isOver();
+            this.offsetY = view.offsetY;
         }
 
         private SavedState(Parcel in) {
             super(in);
             this.nextPage = in.readString();
             this.over = in.readByte() != 0;
+            this.offsetY = in.readFloat();
         }
 
         // interface.
@@ -531,6 +535,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             super.writeToParcel(out, flags);
             out.writeString(this.nextPage);
             out.writeByte(this.over ? (byte) 1 : (byte) 0);
+            out.writeFloat(this.offsetY);
         }
 
         public static final Parcelable.Creator<SavedState> CREATOR

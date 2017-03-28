@@ -147,11 +147,6 @@
         <item name="tabIndicatorColor">?attr/title_color</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
         <item name="tabTextColor">?attr/subtitle_color</item>
-        <item name="tabTextAppearance">@style/MysplashTabTextAppearance</item>
-    </style>
-    <style name="MysplashTabTextAppearance" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/subtitle_text_size</item>
-        <item name="textAllCaps">true</item>
     </style>
 
     <!-- menu. -->

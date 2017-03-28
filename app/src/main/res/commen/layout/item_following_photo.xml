@@ -36,7 +36,7 @@
 
     <ImageButton
         android:id="@+id/item_following_photo_collectionButton"
-        android:src="@drawable/ic_item_added"
+        android:src="@drawable/ic_item_collected"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:padding="@dimen/little_margin"

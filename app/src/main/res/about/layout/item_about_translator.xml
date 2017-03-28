@@ -4,7 +4,10 @@
     android:id="@+id/item_about_translator_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    android:background="?attr/root_color"
+    android:stateListAnimator="@animator/touch_rise"
+    tools:ignore="UnusedAttribute">
 
     <com.wangdaye.mysplash._common.ui.widget.CircleImageView
         android:id="@+id/item_about_translator_avatar"

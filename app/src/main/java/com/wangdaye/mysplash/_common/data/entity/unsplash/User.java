@@ -15,6 +15,7 @@ public class User
         implements Parcelable, Previewable {
     // data
     public boolean hasFadedIn = false;
+    public boolean complete = false;
 
     /**
      * id : RfO4tDTEHg0
@@ -74,6 +75,7 @@ public class User
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.hasFadedIn ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.complete ? (byte) 1 : (byte) 0);
         dest.writeString(this.id);
         dest.writeInt(this.numeric_id);
         dest.writeString(this.username);
@@ -102,6 +104,7 @@ public class User
 
     protected User(Parcel in) {
         this.hasFadedIn = in.readByte() != 0;
+        this.complete = in.readByte() != 0;
         this.id = in.readString();
         this.numeric_id = in.readInt();
         this.username = in.readString();

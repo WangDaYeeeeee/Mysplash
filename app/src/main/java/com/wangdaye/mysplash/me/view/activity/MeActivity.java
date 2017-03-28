@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -84,13 +85,14 @@ public class MeActivity extends MysplashActivity
     // view.
     private CoordinatorLayout container;
     private StatusBarView statusBar;
+
     private NestedScrollAppBarLayout appBar;
     private Toolbar toolbar;
     private CircleImageView avatar;
     private TextView title;
+
     private ViewPager viewPager;
     private MyPagerAdapter adapter;
-    private MeProfileView meProfileView;
 
     private PagerView[] pagers = new PagerView[3];
     private DisplayUtils utils;
@@ -147,10 +149,10 @@ public class MeActivity extends MysplashActivity
             f.setPhotoList(((MePhotosView) pagers[0]).getPhotos());
         }
         if (pagers[1] != null) {
-            f.setCollectionList(((MeCollectionsView) pagers[1]).getCollections());
+            f.setLikeList(((MePhotosView) pagers[1]).getPhotos());
         }
         if (pagers[2] != null) {
-            f.setLikeList(((MePhotosView) pagers[2]).getPhotos());
+            f.setCollectionList(((MeCollectionsView) pagers[2]).getCollections());
         }
         f.saveData(this);
 
@@ -221,12 +223,15 @@ public class MeActivity extends MysplashActivity
             case COLLECTION_ACTIVITY:
                 if (resultCode == RESULT_OK) {
                     if (data.getBooleanExtra(KEY_ME_ACTIVITY_DELETE_COLLECTION, false)) {
-                        meProfileView.cutCollection(adapter);
-                        ((MeCollectionsView) pagers[1])
+                        if (AuthManager.getInstance().getMe() != null) {
+                            AuthManager.getInstance().getMe().total_collections --;
+                            drawTabTitles(AuthManager.getInstance().getMe());
+                        }
+                        ((MeCollectionsView) pagers[2])
                                 .removeCollection(
                                         (Collection) data.getParcelableExtra(KEY_ME_ACTIVITY_COLLECTION));
                     } else {
-                        ((MeCollectionsView) pagers[1])
+                        ((MeCollectionsView) pagers[2])
                                 .changeCollection(
                                         (Collection) data.getParcelableExtra(KEY_ME_ACTIVITY_COLLECTION));
                     }
@@ -297,8 +302,8 @@ public class MeActivity extends MysplashActivity
     private void initPages() {
         List<View> pageList = new ArrayList<>();
         pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_PHOTOS, R.id.activity_me_page_photo));
-        pageList.add(new MeCollectionsView(this, R.id.activity_me_page_collection));
         pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_LIKES, R.id.activity_me_page_like));
+        pageList.add(new MeCollectionsView(this, R.id.activity_me_page_collection));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -315,14 +320,14 @@ public class MeActivity extends MysplashActivity
         viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_me_tabLayout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         BaseSavedStateFragment f = SavedStateFragment.getData(this);
         if (f != null && f instanceof SavedStateFragment) {
             ((MePhotosView) pagers[0]).setPhotos(((SavedStateFragment) f).getPhotoList());
-            ((MeCollectionsView) pagers[1]).setCollections(((SavedStateFragment) f).getCollectionList());
-            ((MePhotosView) pagers[2]).setPhotos(((SavedStateFragment) f).getLikeList());
+            ((MePhotosView) pagers[1]).setPhotos(((SavedStateFragment) f).getLikeList());
+            ((MeCollectionsView) pagers[2]).setCollections(((SavedStateFragment) f).getCollectionList());
 
             if (getBundle() != null) {
                 for (PagerView pager : pagers) {
@@ -339,13 +344,31 @@ public class MeActivity extends MysplashActivity
         }
     }
 
+    private void drawTabTitles(@Nullable Me me) {
+        if (me != null) {
+            List<String> titleList = new ArrayList<>();
+            titleList.add(
+                    DisplayUtils.abridgeNumber(me.total_photos)
+                            + " " + getResources().getStringArray(R.array.user_tabs)[0]);
+            titleList.add(
+                    DisplayUtils.abridgeNumber(me.total_likes)
+                            + " " + getResources().getStringArray(R.array.user_tabs)[1]);
+            titleList.add(
+                    DisplayUtils.abridgeNumber(me.total_collections)
+                            + " " + getResources().getStringArray(R.array.user_tabs)[2]);
+            adapter.titleList = titleList;
+            adapter.notifyDataSetChanged();
+        }
+    }
+
     @SuppressLint("SetTextI18n")
     private void drawProfile() {
-        this.meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
+        MeProfileView meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
         if (AuthManager.getInstance().getMe() != null) {
             Me me = AuthManager.getInstance().getMe();
             title.setText(me.first_name + " " + me.last_name);
-            meProfileView.drawMeProfile(me, adapter);
+            meProfileView.drawMeProfile(me);
+            drawTabTitles(me);
         } else if (!TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
             title.setText(AuthManager.getInstance().getFirstName()
                     + " " + AuthManager.getInstance().getLastName());
@@ -534,15 +557,18 @@ public class MeActivity extends MysplashActivity
 
     @Override
     public void onAddCollection(Collection c) {
-        meProfileView.addCollection(adapter);
-        ((MeCollectionsView) pagers[1]).addCollection(c);
+        if (AuthManager.getInstance().getMe() != null) {
+            AuthManager.getInstance().getMe().total_collections ++;
+            drawTabTitles(AuthManager.getInstance().getMe());
+        }
+        ((MeCollectionsView) pagers[2]).addCollection(c);
     }
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
         ((MePhotosView) pagers[0]).updatePhoto(p);
-        ((MeCollectionsView) pagers[1]).changeCollection(c);
-        ((MePhotosView) pagers[2]).updatePhoto(p);
+        ((MePhotosView) pagers[1]).updatePhoto(p);
+        ((MeCollectionsView) pagers[2]).changeCollection(c);
     }
 
     // on author data changed swipeListener.

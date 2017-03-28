@@ -117,6 +117,7 @@ public class CollectionCardAdapter extends RecyclerView.Adapter<CollectionCardAd
         void onBindView(final int position) {
             title.setText("");
             subtitle.setText("");
+            name.setText("");
             image.setShowShadow(false);
 
             if (itemList.get(position).cover_photo != null) {
@@ -130,6 +131,7 @@ public class CollectionCardAdapter extends RecyclerView.Adapter<CollectionCardAd
                         title.setText(itemList.get(position).title.toUpperCase());
                         int photoNum = itemList.get(position).total_photos;
                         subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+                        name.setText("");
                         image.setShowShadow(true);
                     }
 
@@ -138,6 +140,7 @@ public class CollectionCardAdapter extends RecyclerView.Adapter<CollectionCardAd
                         title.setText(itemList.get(position).title.toUpperCase());
                         int photoNum = itemList.get(position).total_photos;
                         subtitle.setText(photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+                        name.setText("");
                         image.setShowShadow(true);
                     }
                 });
@@ -149,7 +152,6 @@ public class CollectionCardAdapter extends RecyclerView.Adapter<CollectionCardAd
             }
 
             ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, null);
-            name.setText(itemList.get(position).user.name);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 background.setTransitionName(itemList.get(position).id + "-background");

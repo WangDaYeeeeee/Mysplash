@@ -79,9 +79,9 @@ import java.util.List;
 
 public class UserActivity extends MysplashActivity
         implements PagerManageView, PopupManageView, SwipeBackManageView, BrowsableView,
-        View.OnClickListener, Toolbar.OnMenuItemClickListener, PhotoAdapter.OnDownloadPhotoListener,
-        ViewPager.OnPageChangeListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        SelectCollectionDialog.OnCollectionsChangedListener {
+        View.OnClickListener, Toolbar.OnMenuItemClickListener, UserProfileView.OnRequestUserListener,
+        PhotoAdapter.OnDownloadPhotoListener, ViewPager.OnPageChangeListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener {
     // model.
     private PagerManageModel pagerManageModel;
     private BrowsableModel browsableModel;
@@ -114,7 +114,7 @@ public class UserActivity extends MysplashActivity
     public static final String KEY_USER_ACTIVITY_PAGE_POSITION = "user_activity_page_position";
 
     public static final int PAGE_PHOTO = 0;
-    public static final int PAGE_LIKE = 2;
+    public static final int PAGE_LIKE = 1;
 
     /** <br> life cycle. */
 
@@ -157,10 +157,10 @@ public class UserActivity extends MysplashActivity
             f.setPhotoList(((UserPhotosView) pagers[0]).getPhotos());
         }
         if (pagers[1] != null) {
-            f.setCollectionList(((UserCollectionsView) pagers[1]).getCollections());
+            f.setLikeList(((UserPhotosView) pagers[1]).getPhotos());
         }
         if (pagers[2] != null) {
-            f.setLikeList(((UserPhotosView) pagers[2]).getPhotos());
+            f.setCollectionList(((UserCollectionsView) pagers[2]).getCollections());
         }
         f.saveData(this);
 
@@ -298,16 +298,21 @@ public class UserActivity extends MysplashActivity
             initPages(u);
 
             this.userProfileView = (UserProfileView) findViewById(R.id.activity_user_profileView);
-            userProfileView.setUser(u);
-            userProfileView.requestUserProfile(adapter);
+            userProfileView.setOnRequestUserListener(this);
+            userProfileView.setUser(u, adapter);
+            if (u.complete) {
+                userProfileView.drawUserInfo(u);
+            } else {
+                userProfileView.requestUserProfile();
+            }
         }
     }
 
     private void initPages(User u) {
         List<View> pageList = new ArrayList<>();
         pageList.add(new UserPhotosView(this, u, PhotosObject.PHOTOS_TYPE_PHOTOS, R.id.activity_user_page_photo));
-        pageList.add(new UserCollectionsView(this, u, R.id.activity_user_page_collection));
         pageList.add(new UserPhotosView(this, u, PhotosObject.PHOTOS_TYPE_LIKES, R.id.activity_user_page_like));
+        pageList.add(new UserCollectionsView(this, u, R.id.activity_user_page_collection));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -324,14 +329,14 @@ public class UserActivity extends MysplashActivity
         viewPager.addOnPageChangeListener(this);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_user_tabLayout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         BaseSavedStateFragment f = SavedStateFragment.getData(this);
         if (f != null && f instanceof SavedStateFragment) {
             ((UserPhotosView) pagers[0]).setPhotos(((SavedStateFragment) f).getPhotoList());
-            ((UserCollectionsView) pagers[1]).setCollections(((SavedStateFragment) f).getCollectionList());
-            ((UserPhotosView) pagers[2]).setPhotos(((SavedStateFragment) f).getLikeList());
+            ((UserPhotosView) pagers[1]).setPhotos(((SavedStateFragment) f).getLikeList());
+            ((UserCollectionsView) pagers[2]).setCollections(((SavedStateFragment) f).getCollectionList());
 
             if (getBundle() != null) {
                 for (PagerView pager : pagers) {
@@ -474,6 +479,13 @@ public class UserActivity extends MysplashActivity
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem(this, item.getItemId());
+    }
+
+    // on request user listener.
+
+    @Override
+    public void onRequestUserSucceed(User u) {
+        getIntent().putExtra(KEY_USER_ACTIVITY_USER, u);
     }
 
     // on download photo swipeListener. (photo adapter)

@@ -664,9 +664,9 @@ class PhotoHolder extends RecyclerView.ViewHolder
         });
 
         if (photo.current_user_collections.size() != 0) {
-            collectionButton.setImageResource(R.drawable.ic_item_added);
+            collectionButton.setImageResource(R.drawable.ic_item_collected);
         } else {
-            collectionButton.setImageResource(R.drawable.ic_item_plus);
+            collectionButton.setImageResource(R.drawable.ic_item_collect);
         }
 
         if (photo.settingLike) {

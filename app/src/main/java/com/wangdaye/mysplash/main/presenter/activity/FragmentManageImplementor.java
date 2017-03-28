@@ -34,13 +34,15 @@ public class FragmentManageImplementor
         this.model = model;
     }
 
+    /** <br> presenter. */
+
     @Override
     public List<MysplashFragment> getFragmentList(MysplashActivity a, boolean includeHidden) {
         List<Fragment> fragmentList = a.getSupportFragmentManager().getFragments();
         if (fragmentList == null) {
             fragmentList = new ArrayList<>();
         }
-        List<MysplashFragment> resultList = new ArrayList<>(model.getFragmentCount());
+        List<MysplashFragment> resultList = new ArrayList<>();
         for (int i = 0; i < fragmentList.size(); i ++) {
             if (fragmentList.get(i) instanceof MysplashFragment
                     && (includeHidden || !fragmentList.get(i).isHidden())) {
@@ -54,30 +56,17 @@ public class FragmentManageImplementor
     @Nullable
     public MysplashFragment getTopFragment(MysplashActivity a) {
         List<MysplashFragment> list = getFragmentList(a, false);
-        if (list.size() == getFragmentCount()) {
-            return list.get(getFragmentCount() - 1);
+        if (list.size() > 0) {
+            return list.get(list.size() - 1);
         } else {
             return null;
         }
     }
 
     @Override
-    public List<Integer> getIdList() {
-        return model.getIdList();
-    }
-
-    @Override
-    public void clearList() {
-        model.getIdList().clear();
-    }
-
-    /** <br> presenter. */
-
-    @Override
     public void changeFragment(MysplashActivity a, int code, boolean init) {
-        int oldCode = model.getIdList().get(0);
-        clearList();
-        model.addFragmentToList(code);
+        int oldCode = model.getId();
+        model.setId(code);
 
         if (init) {
             MysplashFragment f = buildFragmentByCode(code);
@@ -108,6 +97,11 @@ public class FragmentManageImplementor
     }
 
     @Override
+    public int getId() {
+        return model.getId();
+    }
+/*
+    @Override
     public void addFragment(MysplashActivity a, int code) {
         MysplashFragment f = buildFragmentByCode(code);
         model.addFragmentToList(code);
@@ -130,11 +124,7 @@ public class FragmentManageImplementor
             f.setStatusBarStyle(f.needSetOnlyWhiteStatusBarText());
         }
     }
-
-    @Override
-    public int getFragmentCount() {
-        return model.getFragmentCount();
-    }
+*/
 
     /** <br> utils. */
 
@@ -190,6 +180,8 @@ public class FragmentManageImplementor
     private int getFragmentCode(MysplashFragment f) {
         if (f instanceof HomeFragment) {
             return R.id.action_home;
+        } else if (f instanceof SearchFragment) {
+            return R.id.action_search;
         } else if (f instanceof FollowingFragment) {
             return R.id.action_following;
         } else if (f instanceof MultiFilterFragment) {

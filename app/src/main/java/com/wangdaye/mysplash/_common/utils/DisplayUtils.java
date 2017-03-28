@@ -132,4 +132,13 @@ public class DisplayUtils {
             t.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/Courier.ttf"));
         }
     }
+
+    public static String abridgeNumber(int num) {
+        if (num < 1000) {
+            return String.valueOf(num);
+        } else {
+            num = num / 100;
+            return (num / 10.0) + "K";
+        }
+    }
 }

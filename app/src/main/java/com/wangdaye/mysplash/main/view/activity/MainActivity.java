@@ -62,8 +62,8 @@ import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
 import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -101,7 +101,7 @@ public class MainActivity extends MysplashActivity
     private DownloadPresenter downloadPresenter;
 
     // data.
-    private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST = "main_activity_fragment_id_list";
+    private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID = "main_activity_fragment_id";
     private final String KEY_MAIN_ACTIVITY_SELECTED_ID = "main_activity_selected_id";
 
     /** <br> life cycle. */
@@ -144,9 +144,9 @@ public class MainActivity extends MysplashActivity
 
         // save normal data.
         super.onSaveInstanceState(outState);
-        outState.putIntegerArrayList(
-                KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST,
-                (ArrayList<Integer>) fragmentManagePresenter.getIdList());
+        outState.putInt(
+                KEY_MAIN_ACTIVITY_FRAGMENT_ID,
+                fragmentManagePresenter.getId());
         outState.putInt(
                 KEY_MAIN_ACTIVITY_SELECTED_ID,
                 drawerPresenter.getCheckedItemId());
@@ -158,13 +158,12 @@ public class MainActivity extends MysplashActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            int fragmentCounts = fragmentManagePresenter.getFragmentCount();
-            MysplashFragment f = fragmentManagePresenter.getFragmentList(this, false).get(fragmentCounts - 1);
+            MysplashFragment f = fragmentManagePresenter.getTopFragment(this);
             if (f != null
                     && f.needPagerBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
                 f.backToTop();
-            } else if (fragmentCounts > 1) {
-                fragmentManagePresenter.popFragment(this);
+            } else if (f instanceof SearchFragment) {
+                fragmentManagePresenter.changeFragment(this, R.id.action_home, false);
             } else {
                 finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
             }
@@ -286,11 +285,8 @@ public class MainActivity extends MysplashActivity
                 fragmentList.get(i).readLargeData(f);
             }
         } else {
-            List<Integer> idList = fragmentManagePresenter.getIdList();
-            fragmentManagePresenter.changeFragment(this, idList.get(0), true);
-            for (int i = 1; i < idList.size(); i ++) {
-                fragmentManagePresenter.addFragment(this, idList.get(i));
-            }
+            int id = fragmentManagePresenter.getId();
+            fragmentManagePresenter.changeFragment(this, id, true);
         }
     }
 
@@ -300,14 +296,6 @@ public class MainActivity extends MysplashActivity
         fragmentManagePresenter.changeFragment(this, code, false);
     }
 
-    public void insertFragment(int code) {
-        fragmentManagePresenter.addFragment(this, code);
-    }
-
-    public void removeFragment() {
-        fragmentManagePresenter.popFragment(this);
-    }
-
     public MysplashFragment getTopFragment() {
         return fragmentManagePresenter.getTopFragment(this);
     }
@@ -315,16 +303,16 @@ public class MainActivity extends MysplashActivity
     /** <br> model. */
 
     private void initModel(@Nullable Bundle savedInstanceState) {
-        List<Integer> idList = null;
-        if (getBundle() != null) {
-            idList = getBundle().getIntegerArrayList(KEY_MAIN_ACTIVITY_FRAGMENT_ID_LIST);
+        int fragmentId = 0;
+        if (savedInstanceState != null) {
+            fragmentId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentId);
         }
         int selectedId = R.id.action_home;
         if (savedInstanceState != null) {
             selectedId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_SELECTED_ID, selectedId);
         }
 
-        this.fragmentManageModel = new FragmentManageObject(idList, getIntent());
+        this.fragmentManageModel = new FragmentManageObject(fragmentId, getIntent());
         this.drawerModel = new DrawerObject(selectedId);
         this.downloadModel = new DownloadObject();
     }

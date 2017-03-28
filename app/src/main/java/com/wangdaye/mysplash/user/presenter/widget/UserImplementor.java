@@ -97,9 +97,10 @@ public class UserImplementor
                 return;
             }
             if (response.isSuccessful()) {
-                model.setUser(response.body());
-                view.drawUserInfo(response.body());
-                view.requestDetailsSuccess();
+                User user = response.body();
+                user.complete = true;
+                model.setUser(user);
+                view.drawUserInfo(user);
             } else {
                 requestUser();
             }

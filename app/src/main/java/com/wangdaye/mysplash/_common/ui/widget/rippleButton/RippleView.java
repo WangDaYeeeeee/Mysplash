@@ -77,6 +77,13 @@ public class RippleView extends View {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        setMeasuredDimension(
+                MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawCircle(centerX, centerY, radius, paint);
     }

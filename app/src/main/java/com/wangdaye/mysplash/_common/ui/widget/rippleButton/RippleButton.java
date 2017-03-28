@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
@@ -26,6 +27,7 @@ import com.wangdaye.mysplash._common.utils.DisplayUtils;
 public class RippleButton extends CardView
         implements View.OnClickListener, RippleView.RippleAnimatingCallback {
     // widget
+    private RelativeLayout container;
     private TextView text;
     private RippleView ripple;
     private CircularProgressView progress;
@@ -81,6 +83,7 @@ public class RippleButton extends CardView
         setRadius(utils.dpToPx(4));
         setCardElevation(utils.dpToPx(1));
 
+        this.container = (RelativeLayout) findViewById(R.id.container_ripple_button);
         this.text = (TextView) findViewById(R.id.container_ripple_button_text);
         this.progress = (CircularProgressView) findViewById(R.id.container_ripple_button_progress);
 
@@ -93,6 +96,61 @@ public class RippleButton extends CardView
         rippleAlphaShow.setInterpolator(new AccelerateDecelerateInterpolator());
         rippleAlphaHide.setDuration(200);
         rippleAlphaHide.setInterpolator(new AccelerateDecelerateInterpolator());
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int width = MeasureSpec.getSize(widthMeasureSpec);
+        int height = MeasureSpec.getSize(heightMeasureSpec);
+
+        container.measure(
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.UNSPECIFIED));
+
+        // width.
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        switch (widthMode) {
+            case MeasureSpec.EXACTLY:
+                // do nothing.
+                break;
+
+            case MeasureSpec.AT_MOST:
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec(
+                        Math.min(container.getMeasuredWidth(), width),
+                        MeasureSpec.EXACTLY);
+                break;
+
+            case MeasureSpec.UNSPECIFIED:
+                widthMeasureSpec = MeasureSpec.makeMeasureSpec(
+                        container.getMeasuredWidth(),
+                        MeasureSpec.EXACTLY);
+                break;
+        }
+
+        // height.
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        switch (heightMode) {
+            case MeasureSpec.EXACTLY:
+                // do nothing.
+                break;
+
+            case MeasureSpec.AT_MOST:
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                        Math.min(container.getMeasuredHeight(), height),
+                        MeasureSpec.EXACTLY);
+                break;
+
+            case MeasureSpec.UNSPECIFIED:
+                heightMeasureSpec = MeasureSpec.makeMeasureSpec(
+                        container.getMeasuredHeight(),
+                        MeasureSpec.EXACTLY);
+                break;
+        }
+
+        container.measure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(
+                MeasureSpec.getSize(widthMeasureSpec),
+                MeasureSpec.getSize(heightMeasureSpec));
     }
 
     private void switchUI() {

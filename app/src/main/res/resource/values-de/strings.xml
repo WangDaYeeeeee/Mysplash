@@ -212,6 +212,17 @@
     <string name="action_path">Download Adresse</string>
     <string name="action_cancel_all">Alles abbrechen</string>
 
+    <string name="action_clip_with_square">Quadratisch zuschneiden</string>
+    <string name="action_clip_with_rectangle">Rechteckig zuschneiden</string>
+
+    <string name="action_align_left">Links anheften</string>
+    <string name="action_align_center">Zentrieren</string>
+    <string name="action_align_right">Rechts anheften</string>
+
+    <string name="action_wallpaper">Hintergrundbild</string>
+    <string name="action_lockscreen">LockScreen</string>
+    <string name="action_wallpaper_lockscreen">Hintergrundbild und Sperrbildschirm</string>
+
     <!-- settings. -->
     <string name="settings_category_basic">Basisch</string>
     <string name="settings_title_back_to_top">Drücken Sie den Zurückknopf um nach oben zurückzuscrollen</string>

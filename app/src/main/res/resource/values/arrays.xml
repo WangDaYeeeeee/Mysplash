@@ -19,8 +19,8 @@
     <!-- user tab. -->
     <string-array name="user_tabs">
         <item>PHOTOS</item>
-        <item>COLLECTIONS</item>
         <item>LIKES</item>
+        <item>COLLECTIONS</item>
     </string-array>
 
     <!-- my follow tab. -->

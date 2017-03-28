@@ -3,12 +3,16 @@ package com.wangdaye.mysplash.user.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
+import android.support.transition.TransitionManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -25,6 +29,7 @@ import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash._common.i.view.LoadView;
 import com.wangdaye.mysplash._common.i.view.UserView;
 import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash._common.utils.AnimUtils;
 import com.wangdaye.mysplash._common.utils.DisplayUtils;
@@ -62,6 +67,9 @@ public class UserProfileView extends FrameLayout
     // presenter.
     private UserPresenter userPresenter;
     private LoadPresenter loadPresenter;
+
+    // widget.
+    private OnRequestUserListener listener;
 
     /** <br> life cycle. */
 
@@ -105,6 +113,8 @@ public class UserProfileView extends FrameLayout
 
     /** <br> view. */
 
+    // init.
+
     private void initView() {
         this.progressView = (CircularProgressView) findViewById(R.id.container_user_profile_progressView);
         progressView.setVisibility(VISIBLE);
@@ -132,6 +142,17 @@ public class UserProfileView extends FrameLayout
         }
     }
 
+    // interface.
+
+    @Nullable
+    private ViewParent getAppBarParent() {
+        ViewParent parent = getParent();
+        while (parent != null && !(parent instanceof NestedScrollAppBarLayout)) {
+            parent = parent.getParent();
+        }
+        return parent;
+    }
+
     /** <br> model. */
 
     // init.
@@ -143,12 +164,12 @@ public class UserProfileView extends FrameLayout
 
     // interface.
 
-    public void setUser(User user) {
+    public void setUser(User user, MyPagerAdapter adapter) {
+        this.adapter = adapter;
         userPresenter.setUser(user);
     }
 
-    public void requestUserProfile(MyPagerAdapter adapter) {
-        this.adapter = adapter;
+    public void requestUserProfile() {
         userPresenter.requestUser();
     }
 
@@ -166,7 +187,17 @@ public class UserProfileView extends FrameLayout
 
     /** <br> interface. */
 
-    // on switch swipeListener.
+    // on request user listener.
+
+    public interface OnRequestUserListener {
+        void onRequestUserSucceed(User u);
+    }
+
+    public void setOnRequestUserListener(OnRequestUserListener l) {
+        this.listener = l;
+    }
+
+    // on switch listener.
 
     @Override
     public void onSwitch(boolean switchTo) {
@@ -184,6 +215,15 @@ public class UserProfileView extends FrameLayout
     @SuppressLint("SetTextI18n")
     @Override
     public void drawUserInfo(User u) {
+        if (listener != null) {
+            listener.onRequestUserSucceed(u);
+        }
+
+        ViewParent parent = getAppBarParent();
+        if (parent != null) {
+            TransitionManager.beginDelayedTransition((ViewGroup) parent);
+        }
+
         rippleButton.forceSwitch(u.followed_by_user);
 
         if (!TextUtils.isEmpty(u.location)) {
@@ -199,26 +239,24 @@ public class UserProfileView extends FrameLayout
         }
 
         List<String> titleList = new ArrayList<>();
-        titleList.add(u.total_photos + " " + getResources().getStringArray(R.array.user_tabs)[0]);
-        titleList.add(u.total_collections + " " + getResources().getStringArray(R.array.user_tabs)[1]);
-        titleList.add(u.total_likes + " " + getResources().getStringArray(R.array.user_tabs)[2]);
+        titleList.add(
+                DisplayUtils.abridgeNumber(u.total_photos)
+                        + " " + getResources().getStringArray(R.array.user_tabs)[0]);
+        titleList.add(
+                DisplayUtils.abridgeNumber(u.total_likes)
+                        + " " + getResources().getStringArray(R.array.user_tabs)[1]);
+        titleList.add(
+                DisplayUtils.abridgeNumber(u.total_collections)
+                        + " " + getResources().getStringArray(R.array.user_tabs)[2]);
         adapter.titleList = titleList;
         adapter.notifyDataSetChanged();
+
+        loadPresenter.setNormalState();
     }
 
     @Override
     public void initRefreshStart() {
         loadPresenter.setLoadingState();
-    }
-
-    @Override
-    public void requestDetailsSuccess() {
-        loadPresenter.setNormalState();
-    }
-
-    @Override
-    public void requestDetailsFailed() {
-        loadPresenter.setFailedState();
     }
 
     @Override
@@ -230,7 +268,7 @@ public class UserProfileView extends FrameLayout
         } else {
             user.followers_count --;
         }
-        setUser(user);
+        setUser(user, adapter);
         rippleButton.setSwitchResult(true);
     }
 
@@ -262,8 +300,7 @@ public class UserProfileView extends FrameLayout
 
     @Override
     public void setLoadingState() {
-        animShow(progressView);
-        animHide(profileContainer);
+        // do nothing.
     }
 
     @Override
