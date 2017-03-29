@@ -94,7 +94,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ViewHolder) {
+        if (holder instanceof ViewHolder && position < getRealItemCount()) {
             ((ViewHolder) holder).onBindView(position);
         }
     }

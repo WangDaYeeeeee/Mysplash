@@ -70,7 +70,7 @@ public class BrowsableImplementor
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {
         if (response.isSuccessful() && response.body() != null) {
             view.dismissRequestDialog();
-            view.drawBrowsableView(response);
+            view.drawBrowsableView(response.body());
         } else {
             requestUser();
         }

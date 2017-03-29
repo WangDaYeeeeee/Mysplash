@@ -26,9 +26,8 @@ public class WallpaperWhereDialog extends MysplashDialogFragment
     private CoordinatorLayout container;
     private CircularProgressView progressView;
     private LinearLayout selector;
+
     private OnWhereSelectedListener listener;
-
-
 
     /** <br> life cycle. */
 
@@ -89,6 +88,7 @@ public class WallpaperWhereDialog extends MysplashDialogFragment
                 if (listener != null) {
                     listener.onWhereSelected(SetWallpaperActivity.WHERE_WALLPAPER);
                 }
+                setCancelable(false);
                 AnimUtils.animShow(progressView);
                 AnimUtils.animHide(selector);
                 break;
@@ -97,6 +97,7 @@ public class WallpaperWhereDialog extends MysplashDialogFragment
                 if (listener != null) {
                     listener.onWhereSelected(SetWallpaperActivity.WHERE_LOCKSCREEN);
                 }
+                setCancelable(false);
                 AnimUtils.animShow(progressView);
                 AnimUtils.animHide(selector);
                 break;
@@ -105,6 +106,7 @@ public class WallpaperWhereDialog extends MysplashDialogFragment
                 if (listener != null) {
                     listener.onWhereSelected(SetWallpaperActivity.WHERE_WALL_LOCK);
                 }
+                setCancelable(false);
                 AnimUtils.animShow(progressView);
                 AnimUtils.animHide(selector);
                 break;

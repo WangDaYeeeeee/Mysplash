@@ -292,17 +292,16 @@ public class SetWallpaperActivity extends MysplashActivity
     }
 
     private void setWallpaper(boolean wallpaper) {
-        FileInputStream stream = null;
+        FileInputStream[] streams = new FileInputStream[2];
         try {
-            stream = new FileInputStream(photoFile);
+            streams[0] = new FileInputStream(photoFile);
+            streams[1] = new FileInputStream(photoFile);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        if (stream == null) {
+        if (streams[0] == null || streams[1] == null) {
             return;
         }
-
-        Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
@@ -363,23 +362,34 @@ public class SetWallpaperActivity extends MysplashActivity
             }
         }
 
-        float left = (-leftDeltaWidth - imageBound.left) / imageBound.width();
-        float right = (screenWidth + rightDeltaWidth - imageBound.left) / imageBound.width();
-        float top = (-imageBound.top) / imageBound.height();
-        float bottom = (imageBound.bottom - imageBound.top) / imageBound.height();
+        float leftPercent = (-leftDeltaWidth - imageBound.left) / imageBound.width();
+        float rightPercent = (screenWidth + rightDeltaWidth - imageBound.left) / imageBound.width();
+        float topPercent = (-imageBound.top) / imageBound.height();
+        float bottomPercent = (imageBound.bottom - imageBound.top) / imageBound.height();
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(streams[0], new Rect(0, 0, 0, 0), options);
 
         Rect wallpaperCorp = new Rect(
-                (int) (bitmap.getWidth() * left),
-                (int) (bitmap.getHeight() * top),
-                (int) (bitmap.getWidth() * right),
-                (int) (bitmap.getHeight() * bottom));
+                (int) (options.outWidth * leftPercent),
+                (int) (options.outHeight * topPercent),
+                (int) (options.outWidth * rightPercent),
+                (int) (options.outHeight * bottomPercent));
+
+        WallpaperManager manager = WallpaperManager.getInstance(this);
+        Rect outPadding = new Rect(
+                Math.max(0, wallpaperCorp.left),
+                Math.max(0, wallpaperCorp.top),
+                Math.max(0, options.outWidth - wallpaperCorp.right),
+                Math.max(0, options.outHeight - wallpaperCorp.bottom));
+        options.inJustDecodeBounds = false;
+        options.inSampleSize = wallpaperCorp.width() / manager.getDesiredMinimumWidth();
+        Bitmap bitmap = BitmapFactory.decodeStream(streams[1], outPadding, options);
 
         try {
-            bitmap = Bitmap.createBitmap(
-                    bitmap,
-                    wallpaperCorp.left, wallpaperCorp.top, wallpaperCorp.width(), wallpaperCorp.height());
-
-            WallpaperManager manager = WallpaperManager.getInstance(this);
+            streams[0].close();
+            streams[1].close();
             if (wallpaper) {
                 manager.setBitmap(bitmap);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
