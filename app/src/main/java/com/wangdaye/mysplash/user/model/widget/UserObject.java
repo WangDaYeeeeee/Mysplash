@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash.user.model.widget;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.data.service.FollowingService;
-import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.i.model.UserModel;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.i.model.UserModel;
 
 /**
  * User object.

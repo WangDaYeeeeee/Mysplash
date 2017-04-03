@@ -1,9 +1,11 @@
 package com.wangdaye.mysplash.me.model.widget;
 
+import android.support.annotation.IntDef;
+
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.i.model.MyFollowModel;
-import com.wangdaye.mysplash._common.ui.adapter.MyFollowAdapter;
+import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.i.model.MyFollowModel;
+import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
 
 /**
  * My follow object.
@@ -14,6 +16,7 @@ public class MyFollowObject implements MyFollowModel {
     private MyFollowAdapter adapter;
     private UserService service;
 
+    @FollowTypeRule
     private int followType;
     private int userPage;
     private int deltaValue;
@@ -24,10 +27,12 @@ public class MyFollowObject implements MyFollowModel {
 
     public static final int FOLLOW_TYPE_FOLLOWERS = 0;
     public static final int FOLLOW_TYPE_FOLLOWING = 1;
+    @IntDef({FOLLOW_TYPE_FOLLOWERS, FOLLOW_TYPE_FOLLOWING})
+    public @interface FollowTypeRule {}
 
     /** <br> life cycle. */
 
-    public MyFollowObject(MyFollowAdapter adapter, int followType) {
+    public MyFollowObject(MyFollowAdapter adapter, @FollowTypeRule int followType) {
         this.adapter = adapter;
         this.service = UserService.getService();
 

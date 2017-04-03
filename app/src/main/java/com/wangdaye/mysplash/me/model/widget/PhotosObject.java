@@ -1,9 +1,12 @@
 package com.wangdaye.mysplash.me.model.widget;
 
-import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.i.model.PhotosModel;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import android.content.Context;
+import android.support.annotation.IntDef;
+
+import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.i.model.PhotosModel;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 import java.util.List;
 
@@ -17,6 +20,7 @@ public class PhotosObject
     private PhotoAdapter adapter;
     private PhotoService service;
 
+    @PhotoTypeRule
     private int photosType;
     private String photosOrder;
 
@@ -28,15 +32,17 @@ public class PhotosObject
 
     public static final int PHOTOS_TYPE_PHOTOS = 0;
     public static final int PHOTOS_TYPE_LIKES = 1;
+    @IntDef({PHOTOS_TYPE_PHOTOS, PHOTOS_TYPE_LIKES})
+    public @interface PhotoTypeRule {}
 
     /** <br> life cycle. */
 
-    public PhotosObject(PhotoAdapter adapter, int photosType) {
+    public PhotosObject(Context context, PhotoAdapter adapter, @PhotoTypeRule int photosType) {
         this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.photosType = photosType;
-        this.photosOrder = Mysplash.getInstance().getDefaultPhotoOrder();
+        this.photosOrder = SettingsOptionManager.getInstance(context).getDefaultPhotoOrder();
 
         this.photosPage = 0;
 

@@ -14,21 +14,22 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.i.model.DownloadModel;
-import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.i.model.DownloadModel;
+import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.SwipeBackManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash.common.i.view.SwipeBackManageView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.tag.model.activity.DownloadObject;
 import com.wangdaye.mysplash.tag.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.tag.presenter.activity.SwipeBackManageImplementor;
@@ -37,6 +38,10 @@ import com.wangdaye.mysplash.tag.view.widget.TagPhotosView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Category activity.
  * */
@@ -44,16 +49,17 @@ import java.util.List;
 public class TagActivity extends MysplashActivity
         implements SwipeBackManageView,
         View.OnClickListener, PhotoAdapter.OnDownloadPhotoListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener {
+        NestedScrollAppBarLayout.OnNestedScrollingListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener {
     // model.
     private DownloadModel downloadModel;
 
     // view.
-    private CoordinatorLayout container;
-    private StatusBarView statusBar;
+    @BindView(R.id.activity_tag_container) CoordinatorLayout container;
+    @BindView(R.id.activity_tag_statusBar) StatusBarView statusBar;
 
-    private NestedScrollAppBarLayout appBar;
-    private TagPhotosView photosView;
+    @BindView(R.id.activity_tag_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.activity_tag_tagPhotosView) TagPhotosView photosView;
 
     // presenter.
     private ToolbarPresenter toolbarPresenter;
@@ -78,6 +84,7 @@ public class TagActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initView();
         }
     }
@@ -105,7 +112,7 @@ public class TagActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
@@ -121,8 +128,8 @@ public class TagActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean isFullScreen() {
-        return true;
+    protected boolean operateStatusBarBySelf() {
+        return false;
     }
 
     @Override
@@ -142,7 +149,7 @@ public class TagActivity extends MysplashActivity
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -159,18 +166,10 @@ public class TagActivity extends MysplashActivity
     // init.
 
     private void initView() {
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_tag_container);
-
-        this.statusBar = (StatusBarView) findViewById(R.id.activity_tag_statusBar);
-        if (getBundle() ==null) {
-            statusBar.setInitMaskAlpha();
-        }
-
-        SwipeBackCoordinatorLayout swipeBackView
-                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_tag_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
+                this, R.id.activity_tag_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_tag_appBar);
         appBar.setOnNestedScrollingListener(this);
 
         String tag = getIntent().getStringExtra(KEY_TAG_ACTIVITY_TAG).toLowerCase();
@@ -179,16 +178,11 @@ public class TagActivity extends MysplashActivity
         }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.activity_tag_toolbar);
-        if (Mysplash.getInstance().isLightTheme()) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
-        }
+        ThemeManager.setNavigationIcon(
+                toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.setTitle(tag.substring(0, 1).toUpperCase() + tag.substring(1));
         toolbar.setNavigationOnClickListener(this);
-        toolbar.setOnClickListener(this);
 
-        this.photosView = (TagPhotosView) findViewById(R.id.activity_tag_tagPhotosView);
         photosView.setActivity(this);
         photosView.setTag(tag);
 
@@ -253,7 +247,7 @@ public class TagActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
@@ -261,14 +255,14 @@ public class TagActivity extends MysplashActivity
             case -1:
                 toolbarPresenter.touchNavigatorIcon(this);
                 break;
-
-            case R.id.activity_tag_toolbar:
-                toolbarPresenter.touchToolbar(this);
-                break;
         }
     }
 
-    // on download photo swipeListener. (photo adapter)
+    @OnClick(R.id.activity_tag_toolbar) void clickToolbar() {
+        toolbarPresenter.touchToolbar(this);
+    }
+
+    // on download photo listener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
@@ -280,7 +274,7 @@ public class TagActivity extends MysplashActivity
         }
     }
 
-    // on nested scrolling swipeListener.
+    // on nested scrolling listener.
 
     @Override
     public void onStartNestedScroll() {
@@ -290,12 +284,12 @@ public class TagActivity extends MysplashActivity
     @Override
     public void onNestedScrolling() {
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
-            if (!statusBar.isInitAlpha()) {
+            if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
                 DisplayUtils.setStatusBarStyle(this, false);
             }
         } else {
-            if (statusBar.isInitAlpha()) {
+            if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
                 DisplayUtils.setStatusBarStyle(this, true);
             }
@@ -307,7 +301,7 @@ public class TagActivity extends MysplashActivity
         // do nothing.
     }
 
-    // on swipe swipeListener.(swipe back swipeListener)
+    // on swipe listener.(swipe back listener)
 
     @Override
     public boolean canSwipeBack(int dir) {

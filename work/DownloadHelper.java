@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash._common.utils.helper;
+package com.wangdaye.mysplash.common.utils.helper;
 
 import android.app.Notification;
 import android.content.Context;
@@ -14,11 +14,11 @@ import com.liulishuo.filedownloader.FileDownloader;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
-import com.wangdaye.mysplash._common.utils.FileUtils;
+import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.utils.FileUtils;
 
 import java.util.List;
 

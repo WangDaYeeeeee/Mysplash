@@ -1,9 +1,12 @@
 package com.wangdaye.mysplash.about.model;
 
-import com.wangdaye.mysplash._common.i.model.AboutModel;
+import com.wangdaye.mysplash.common.i.model.AboutModel;
 
 /**
  * Translator object.
+ *
+ * translator information in {@link com.wangdaye.mysplash.common.ui.adapter.AboutAdapter}.
+ *
  * */
 
 public class TranslatorObject

@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_set_wallpaper_container"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -12,15 +13,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash._common.ui.widget.photoView.PhotoView
+        <com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView
             android:id="@+id/activity_set_wallpaper_photoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
             android:id="@+id/activity_set_wallpaper_statusBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:sbv_fill_in_mode="true" />
 
         <ImageButton
             android:id="@+id/activity_set_wallpaper_closeBtn"

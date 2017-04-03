@@ -9,29 +9,36 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common._basic.MysplashFragment;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.FollowingFeedView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Following fragment.
+ *
+ * This fragment is used to show the personal following feeds.
+ *
  * */
 
 public class FollowingFragment extends MysplashFragment
         implements View.OnClickListener, NestedScrollAppBarLayout.OnNestedScrollingListener {
     // view.
-    private StatusBarView statusBar;
+    @BindView(R.id.fragment_following_statusBar) StatusBarView statusBar;
 
-    private CoordinatorLayout container;
-    private NestedScrollAppBarLayout appBar;
-    private FollowingFeedView feedView;
+    @BindView(R.id.fragment_following_container) CoordinatorLayout container;
+    @BindView(R.id.fragment_following_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.fragment_following_feedView) FollowingFeedView feedView;
 
     // presenter.
     private ToolbarPresenter toolbarPresenter;
@@ -41,6 +48,7 @@ public class FollowingFragment extends MysplashFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
+        ButterKnife.bind(this, view);
         initPresenter();
         initView(view, savedInstanceState);
         return view;
@@ -53,7 +61,7 @@ public class FollowingFragment extends MysplashFragment
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -63,7 +71,7 @@ public class FollowingFragment extends MysplashFragment
     }
 
     @Override
-    public boolean needPagerBackToTop() {
+    public boolean needBackToTop() {
         return feedView.needPagerBackToTop();
     }
 
@@ -100,25 +108,14 @@ public class FollowingFragment extends MysplashFragment
     // init.
 
     private void initView(View v, Bundle saveInstanceState) {
-        this.statusBar = (StatusBarView) v.findViewById(R.id.fragment_following_statusBar);
-        statusBar.setInitMaskAlpha();
-
-        this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_following_container);
-
-        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_following_appBar);
         appBar.setOnNestedScrollingListener(this);
 
-        Toolbar toolbar = (Toolbar) v.findViewById(R.id.fragment_following_toolbar);
+        Toolbar toolbar = ButterKnife.findById(v, R.id.fragment_following_toolbar);
         toolbar.setTitle(getString(R.string.action_following));
-        if (Mysplash.getInstance().isLightTheme()) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
-        }
+        ThemeManager.setNavigationIcon(
+                toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);
         toolbar.setNavigationOnClickListener(this);
-        toolbar.setOnClickListener(this);
 
-        this.feedView = (FollowingFeedView) v.findViewById(R.id.fragment_following_feedView);
         feedView.setActivity((MysplashActivity) getActivity());
         if (saveInstanceState == null) {
             feedView.initRefresh();
@@ -146,7 +143,7 @@ public class FollowingFragment extends MysplashFragment
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
@@ -154,14 +151,14 @@ public class FollowingFragment extends MysplashFragment
             case -1:
                 toolbarPresenter.touchNavigatorIcon((MysplashActivity) getActivity());
                 break;
-
-            case R.id.fragment_following_toolbar:
-                toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
-                break;
         }
     }
 
-    // on nested scrolling swipeListener.
+    @OnClick(R.id.fragment_following_toolbar) void clickToolbar() {
+        toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
+    }
+
+    // on nested scrolling listener.
 
     @Override
     public void onStartNestedScroll() {
@@ -172,12 +169,12 @@ public class FollowingFragment extends MysplashFragment
     public void onNestedScrolling() {
         feedView.setOffsetY(-appBar.getY());
         if (needSetOnlyWhiteStatusBarText()) {
-            if (statusBar.isInitAlpha()) {
+            if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
                 setStatusBarStyle(true);
             }
         } else {
-            if (!statusBar.isInitAlpha()) {
+            if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
                 setStatusBarStyle(false);
             }

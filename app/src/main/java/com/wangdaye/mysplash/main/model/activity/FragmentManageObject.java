@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
+import com.wangdaye.mysplash.common.i.model.FragmentManageModel;
 
 /**
  * Fragment mange object.

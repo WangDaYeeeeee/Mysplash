@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.model.fragment;
 
-import com.wangdaye.mysplash._common.i.model.MultiFilterBarModel;
+import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 
 /**
  * Multi-filter object.

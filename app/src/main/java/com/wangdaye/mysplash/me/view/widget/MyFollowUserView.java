@@ -2,14 +2,12 @@ package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,28 +15,29 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.item.MyFollowUser;
-import com.wangdaye.mysplash._common.i.model.LoadModel;
-import com.wangdaye.mysplash._common.i.model.MyFollowModel;
-import com.wangdaye.mysplash._common.i.model.ScrollModel;
-import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
-import com.wangdaye.mysplash._common.i.presenter.MyFollowPresenter;
-import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
-import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
-import com.wangdaye.mysplash._common.i.view.LoadView;
-import com.wangdaye.mysplash._common.i.view.MyFollowView;
-import com.wangdaye.mysplash._common.i.view.PagerView;
-import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.i.view.SwipeBackView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.MyFollowAdapter;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.data.entity.item.MyFollowUser;
+import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.MyFollowModel;
+import com.wangdaye.mysplash.common.i.model.ScrollModel;
+import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.MyFollowPresenter;
+import com.wangdaye.mysplash.common.i.presenter.PagerPresenter;
+import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash.common.i.presenter.SwipeBackPresenter;
+import com.wangdaye.mysplash.common.i.view.LoadView;
+import com.wangdaye.mysplash.common.i.view.MyFollowView;
+import com.wangdaye.mysplash.common.i.view.PagerView;
+import com.wangdaye.mysplash.common.i.view.ScrollView;
+import com.wangdaye.mysplash.common.i.view.SwipeBackView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
+import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
@@ -50,14 +49,21 @@ import com.wangdaye.mysplash.me.presenter.widget.SwipeBackImplementor;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * My follow user view.
+ *
+ * This view is used to show followers fo application user.
+ *
  * */
 
 @SuppressLint("ViewConstructor")
 public class MyFollowUserView extends NestedScrollFrameLayout
         implements MyFollowView, PagerView, LoadView, ScrollView, SwipeBackView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         MyFollowAdapter.OnFollowStateChangedListener {
     // model.
     private MyFollowModel myFollowModel;
@@ -65,12 +71,12 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     private ScrollModel scrollModel;
 
     // view.
-    private CircularProgressView progressView;
-    private RelativeLayout feedbackContainer;
-    private TextView feedbackText;
+    @BindView(R.id.container_loading_view_large_progressView) CircularProgressView progressView;
+    @BindView(R.id.container_loading_view_large_feedbackContainer) RelativeLayout feedbackContainer;
+    @BindView(R.id.container_loading_view_large_feedbackTxt) TextView feedbackText;
 
-    private BothWaySwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
+    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
+    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
 
     // presenter.
     private MyFollowPresenter myFollowPresenter;
@@ -88,12 +94,15 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize(MysplashActivity a, int followType) {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, this, false);
+        View loadingView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
+        ButterKnife.bind(this, this);
         initModel(a, followType);
         initPresenter();
         initView();
@@ -122,38 +131,27 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     }
 
     private void initContentView() {
-        this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
+        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
-        if (Mysplash.getInstance().isLightTheme()) {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
-        } else {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
-        }
         refreshLayout.setPermitRefresh(false);
         refreshLayout.setVisibility(GONE);
 
-        this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(myFollowPresenter.getAdapter());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(onScrollListener);
     }
 
     private void initLoadingView() {
-        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_large_progressView);
         progressView.setVisibility(VISIBLE);
 
-        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
 
-        ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
+        ImageView feedbackImg = ButterKnife.findById(
+                this, R.id.container_loading_view_large_feedbackImg);
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
 
-        this.feedbackText = (TextView) findViewById(R.id.container_loading_view_large_feedbackTxt);
-
-        Button retryButton = (Button) findViewById(R.id.container_loading_view_large_feedbackBtn);
-        retryButton.setOnClickListener(this);
     }
 
     /** <br> model. */
@@ -176,18 +174,13 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.container_loading_view_large_feedbackBtn:
-                myFollowPresenter.initRefresh(getContext());
-                break;
-        }
+    @OnClick(R.id.container_loading_view_large_feedbackBtn) void retryRefresh() {
+        myFollowPresenter.initRefresh(getContext());
     }
 
-    // on refresh an load swipeListener.
+    // on refresh an load listener.
 
     @Override
     public void onRefresh() {
@@ -199,7 +192,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         myFollowPresenter.loadMore(getContext(), false);
     }
 
-    // on follow state changed swipeListener.
+    // on follow state changed listener.
 
     @Override
     public void onFollowStateChanged(String username, int position, boolean switchTo, boolean succeed) {
@@ -212,11 +205,11 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         if (firstPosition <= position && position <= lastPosition) {
             MyFollowAdapter.ViewHolder holder
                     = (MyFollowAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-            holder.rippleButton.setSwitchResult(succeed);
+            holder.setSwitchResult(succeed);
         }
     }
 
-    // on scroll swipeListener.
+    // on scroll listener.
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override

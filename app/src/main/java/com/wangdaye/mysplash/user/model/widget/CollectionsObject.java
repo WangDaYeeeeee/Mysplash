@@ -3,11 +3,11 @@ package com.wangdaye.mysplash.user.model.widget;
 import android.app.Activity;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.i.model.CollectionsModel;
-import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.CollectionService;
+import com.wangdaye.mysplash.common.i.model.CollectionsModel;
+import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 
 import java.util.ArrayList;
 

@@ -6,19 +6,22 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingFeedResult;
-import com.wangdaye.mysplash._common.data.service.FollowingService;
-import com.wangdaye.mysplash._common.i.model.FollowingModel;
-import com.wangdaye.mysplash._common.i.presenter.FollowingPresenter;
-import com.wangdaye.mysplash._common.i.view.FollowingView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.FollowingAdapter;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeedResult;
+import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.i.model.FollowingModel;
+import com.wangdaye.mysplash.common.i.presenter.FollowingPresenter;
+import com.wangdaye.mysplash.common.i.view.FollowingView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import retrofit2.Call;
 
 /**
  * Following implementor.
+ *
+ * A {@link FollowingPresenter} for {@link com.wangdaye.mysplash.main.view.widget.FollowingFeedView}.
+ *
  * */
 
 public class FollowingImplementor implements FollowingPresenter {

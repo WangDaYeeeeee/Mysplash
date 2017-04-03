@@ -4,22 +4,28 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.i.model.AboutModel;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.LibraryObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Library holder.
+ *
+ * This ViewHolder is used to show library for {@link AboutAdapter}.
+ *
  * */
 
-public class LibraryHolder extends AboutAdapter.ViewHolder
-        implements View.OnClickListener {
+public class LibraryHolder extends AboutAdapter.ViewHolder {
     // widget
-    private TextView title;
-    private TextView content;
+    @BindView(R.id.item_about_library_title) TextView title;
+    @BindView(R.id.item_about_library_content) TextView content;
 
     // data
     private String uri;
@@ -28,13 +34,8 @@ public class LibraryHolder extends AboutAdapter.ViewHolder
 
     public LibraryHolder(View itemView) {
         super(itemView);
-
-        itemView.findViewById(R.id.item_about_library_container).setOnClickListener(this);
-
-        this.title = (TextView) itemView.findViewById(R.id.item_about_library_title);
+        ButterKnife.bind(this, itemView);
         DisplayUtils.setTypeface(itemView.getContext(), title);
-
-        this.content = (TextView) itemView.findViewById(R.id.item_about_library_content);
         DisplayUtils.setTypeface(itemView.getContext(), content);
     }
 
@@ -56,12 +57,7 @@ public class LibraryHolder extends AboutAdapter.ViewHolder
 
     /** <br> interface. */
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.item_about_library_container:
-                IntentHelper.startWebActivity(v.getContext(), uri);
-                break;
-        }
+    @OnClick(R.id.item_about_library_container) void clickItem() {
+        IntentHelper.startWebActivity(itemView.getContext(), uri);
     }
 }

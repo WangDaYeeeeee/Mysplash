@@ -7,7 +7,7 @@
     android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground">
 
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/container_nav_header_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -20,7 +20,7 @@
         android:layout_margin="@dimen/normal_margin"
         tools:ignore="RtlHardcoded">
 
-        <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+        <com.wangdaye.mysplash.common.ui.widget.CircleImageView
             android:id="@+id/container_nav_header_avatar"
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"

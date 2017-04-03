@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.model.fragment;
 
-import com.wangdaye.mysplash._common.i.model.PagerManageModel;
+import com.wangdaye.mysplash.common.i.model.PagerManageModel;
 
 /**
  * Pager manage object.

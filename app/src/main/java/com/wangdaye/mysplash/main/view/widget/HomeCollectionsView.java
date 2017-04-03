@@ -4,13 +4,11 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,26 +16,27 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.i.model.CollectionsModel;
-import com.wangdaye.mysplash._common.i.model.LoadModel;
-import com.wangdaye.mysplash._common.i.model.ScrollModel;
-import com.wangdaye.mysplash._common.i.presenter.CollectionsPresenter;
-import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
-import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
-import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.i.view.CollectionsView;
-import com.wangdaye.mysplash._common.i.view.LoadView;
-import com.wangdaye.mysplash._common.i.view.PagerView;
-import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.i.model.CollectionsModel;
+import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.ScrollModel;
+import com.wangdaye.mysplash.common.i.presenter.CollectionsPresenter;
+import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.PagerPresenter;
+import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
+import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.i.view.CollectionsView;
+import com.wangdaye.mysplash.common.i.view.LoadView;
+import com.wangdaye.mysplash.common.i.view.PagerView;
+import com.wangdaye.mysplash.common.i.view.ScrollView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.widget.CollectionsObject;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
@@ -49,26 +48,34 @@ import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Home collections view.
+ * 
+ * This view is used to show collections for 
+ * {@link com.wangdaye.mysplash.main.view.fragment.HomeFragment}.
+ * 
  * */
 
 @SuppressLint("ViewConstructor")
 public class HomeCollectionsView extends NestedScrollFrameLayout
         implements CollectionsView, PagerView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
     private CollectionsModel collectionsModel;
     private LoadModel loadModel;
     private ScrollModel scrollModel;
 
     // view.
-    private CircularProgressView progressView;
-    private RelativeLayout feedbackContainer;
-    private TextView feedbackText;
+    @BindView(R.id.container_loading_view_large_progressView) CircularProgressView progressView;
+    @BindView(R.id.container_loading_view_large_feedbackContainer) RelativeLayout feedbackContainer;
+    @BindView(R.id.container_loading_view_large_feedbackTxt) TextView feedbackText;
 
-    private BothWaySwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
+    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
+    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
 
     // presenter.
     private CollectionsPresenter collectionsPresenter;
@@ -86,12 +93,15 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize(MysplashActivity a) {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_large, this, false);
+        View loadingView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
+        ButterKnife.bind(this, this);
         initModel(a);
         initPresenter();
         initView();
@@ -119,42 +129,28 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
     }
 
     private void initContentView() {
-        this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
+        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
-        if (Mysplash.getInstance().isLightTheme()) {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
-        } else {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
-        }
         refreshLayout.setVisibility(GONE);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         refreshLayout.setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
-
-        this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+        
         recyclerView.setAdapter(collectionsPresenter.getAdapter());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(onScrollListener);
     }
 
     private void initLoadingView() {
-        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_view_large_progressView);
         progressView.setVisibility(VISIBLE);
-
-        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
 
         ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_view_large_feedbackImg);
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
-
-        this.feedbackText = (TextView) findViewById(R.id.container_loading_view_large_feedbackTxt);
-
-        Button retryButton = (Button) findViewById(R.id.container_loading_view_large_feedbackBtn);
-        retryButton.setOnClickListener(this);
     }
 
     /** <br> model. */
@@ -163,6 +159,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     private void initModel(MysplashActivity a) {
         this.collectionsModel = new CollectionsObject(
+                a,
                 new CollectionAdapter(
                         a,
                         new ArrayList<Collection>(Mysplash.DEFAULT_PER_PAGE)));
@@ -172,10 +169,20 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     // interface.
 
+    /**
+     * Get the collections from the adapter in this view.
+     *
+     * @return Collections in adapter.
+     * */
     public List<Collection> getCollections() {
         return collectionsPresenter.getAdapter().getCollectionData();
     }
 
+    /**
+     * Set collections to the adapter in this view.
+     *
+     * @param list Collections that will be set to the adapter.
+     * */
     public void setCollections(List<Collection> list) {
         if (list == null) {
             list = new ArrayList<>();
@@ -190,18 +197,13 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.container_loading_view_large_feedbackBtn:
-                collectionsPresenter.initRefresh(getContext());
-                break;
-        }
+    @OnClick(R.id.container_loading_view_large_feedbackBtn) void retryRefresh() {
+        collectionsPresenter.initRefresh(getContext());
     }
 
-    // on refresh an load swipeListener.
+    // on refresh an load listener.
 
     @Override
     public void onRefresh() {
@@ -213,7 +215,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         collectionsPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll swipeListener.
+    // on scroll listener.
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override

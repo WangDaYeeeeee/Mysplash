@@ -7,28 +7,28 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.i.model.PagerManageModel;
-import com.wangdaye.mysplash._common.i.model.UserModel;
-import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
-import com.wangdaye.mysplash._common.i.view.PagerManageView;
-import com.wangdaye.mysplash._common.i.view.PagerView;
-import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common.i.view.UserView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.i.model.PagerManageModel;
+import com.wangdaye.mysplash.common.i.model.UserModel;
+import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.SwipeBackManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash.common.i.presenter.UserPresenter;
+import com.wangdaye.mysplash.common.i.view.PagerManageView;
+import com.wangdaye.mysplash.common.i.view.PagerView;
+import com.wangdaye.mysplash.common.i.view.SwipeBackManageView;
+import com.wangdaye.mysplash.common.i.view.UserView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.me.model.activity.UserObject;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
@@ -42,8 +42,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * My follow activity.
+ *
+ * This activity is used to show followers for application user.
+ *
  * */
 
 public class MyFollowActivity extends MysplashActivity
@@ -55,10 +61,10 @@ public class MyFollowActivity extends MysplashActivity
     private PagerManageModel pagerManageModel;
 
     // view.
-    private CoordinatorLayout container;
-    private StatusBarView statusBar;
-    private NestedScrollAppBarLayout appBar;
-    private ViewPager viewPager;
+    @BindView(R.id.activity_my_follow_container) CoordinatorLayout container;
+    @BindView(R.id.activity_my_follow_statusBar) StatusBarView statusBar;
+    @BindView(R.id.activity_my_follow_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.activity_my_follow_viewPager) ViewPager viewPager;
 
     private PagerView[] pagers = new PagerView[2];
     private DisplayUtils utils;
@@ -87,6 +93,7 @@ public class MyFollowActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initView();
             userPresenter.requestUser();
         }
@@ -130,7 +137,7 @@ public class MyFollowActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
@@ -144,8 +151,8 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean isFullScreen() {
-        return true;
+    protected boolean operateStatusBarBySelf() {
+        return false;
     }
 
     @Override
@@ -164,7 +171,7 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -182,26 +189,14 @@ public class MyFollowActivity extends MysplashActivity
     // init.
 
     private void initView() {
-        SwipeBackCoordinatorLayout swipeBackView
-                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_my_follow_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
+                this, R.id.activity_my_follow_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        this.statusBar = (StatusBarView) findViewById(R.id.activity_my_follow_statusBar);
-        if (DisplayUtils.isNeedSetStatusBarMask()) {
-            statusBar.setBackgroundResource(R.color.colorPrimary_light);
-            statusBar.setMask(true);
-        }
-
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_my_follow_container);
-        this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_my_follow_appBar);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_my_follow_toolbar);
-        if (Mysplash.getInstance().isLightTheme()) {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
-        } else {
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
-        }
+        Toolbar toolbar = ButterKnife.findById(this, R.id.activity_my_follow_toolbar);
         toolbar.setTitle(getString(R.string.my_follow));
+        ThemeManager.setNavigationIcon(
+                toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.setNavigationOnClickListener(this);
 
         initPages();
@@ -229,12 +224,11 @@ public class MyFollowActivity extends MysplashActivity
         Collections.addAll(tabList, myFollowTabs);
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
-        this.viewPager = (ViewPager) findViewById(R.id.activity_my_follow_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.activity_my_follow_tabLayout);
+        TabLayout tabLayout = ButterKnife.findById(this, R.id.activity_my_follow_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -254,7 +248,7 @@ public class MyFollowActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
@@ -265,7 +259,7 @@ public class MyFollowActivity extends MysplashActivity
         }
     }
 
-    // on page change swipeListener.
+    // on page change listener.
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -285,7 +279,7 @@ public class MyFollowActivity extends MysplashActivity
         // do nothing.
     }
 
-    // on swipe swipeListener.(swipe back swipeListener)
+    // on swipe listener.(swipe back listener)
 
     @Override
     public boolean canSwipeBack(int dir) {

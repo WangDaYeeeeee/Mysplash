@@ -1,11 +1,14 @@
 package com.wangdaye.mysplash.user.model.widget;
 
+import android.support.annotation.IntDef;
+
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.i.model.PhotosModel;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.i.model.PhotosModel;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class PhotosObject
 
     private User requestKey;
 
+    @TypeRule
     private int photosType;
     private String photosOrder;
 
@@ -34,17 +38,19 @@ public class PhotosObject
 
     public static final int PHOTOS_TYPE_PHOTOS = 0;
     public static final int PHOTOS_TYPE_LIKES = 1;
+    @IntDef({PHOTOS_TYPE_PHOTOS, PHOTOS_TYPE_LIKES})
+    private @interface TypeRule {}
 
     /** <br> life cycle. */
 
-    public PhotosObject(UserActivity a, User u, int photosType) {
+    public PhotosObject(UserActivity a, User u, @TypeRule int photosType) {
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a);
         this.service = PhotoService.getService();
 
         this.requestKey = u;
 
         this.photosType = photosType;
-        this.photosOrder = Mysplash.getInstance().getDefaultPhotoOrder();
+        this.photosOrder = SettingsOptionManager.getInstance(a).getDefaultPhotoOrder();
 
         this.photosPage = 0;
 

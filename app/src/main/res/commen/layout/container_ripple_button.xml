@@ -14,7 +14,7 @@
         android:textStyle="bold"
         tools:text="FOLLOW" />
 
-    <com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleView
+    <com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleView
         android:id="@+id/container_ripple_button_ripple"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

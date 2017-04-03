@@ -21,41 +21,42 @@ import android.widget.ImageView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.item.DownloadMission;
-import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
-import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
-import com.wangdaye.mysplash._common.ui.widget.PhotoDownloadView;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.FileUtils;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
-import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.i.model.BrowsableModel;
-import com.wangdaye.mysplash._common.i.model.DownloadModel;
-import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
-import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
-import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash._common.i.presenter.PhotoInfoPresenter;
-import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
-import com.wangdaye.mysplash._common.i.view.BrowsableView;
-import com.wangdaye.mysplash._common.i.view.PhotoInfoView;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
-import com.wangdaye.mysplash._common.ui.dialog.StatsDialog;
-import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash._common._basic.FlagRunnable;
-import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
+import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash.common.i.view.MessageManageView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.FileUtils;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.i.model.BrowsableModel;
+import com.wangdaye.mysplash.common.i.model.DownloadModel;
+import com.wangdaye.mysplash.common.i.model.PhotoInfoModel;
+import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
+import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.PhotoInfoPresenter;
+import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash.common.i.view.BrowsableView;
+import com.wangdaye.mysplash.common.i.view.PhotoInfoView;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
+import com.wangdaye.mysplash.common.ui.dialog.StatsDialog;
+import com.wangdaye.mysplash.common.ui.popup.PhotoMenuPopupWindow;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash.common._basic.FlagRunnable;
+import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.photo.model.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.DownloadObject;
 import com.wangdaye.mysplash.photo.model.PhotoInfoObject;
@@ -68,8 +69,14 @@ import com.wangdaye.mysplash.photo.view.holder.BaseHolder;
 import com.wangdaye.mysplash.photo.view.holder.MoreHolder;
 import com.wangdaye.mysplash.photo.view.holder.ProgressHolder;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Photo activity.
+ *
+ * This activity is used to show details of a photo.
+ *
  * */
 
 public class PhotoActivity extends MysplashActivity
@@ -83,16 +90,15 @@ public class PhotoActivity extends MysplashActivity
 
     // view.
     private RequestBrowsableDataDialog requestDialog;
-
-    private CoordinatorLayout container;
-    private FreedomImageView photoImage;
-
-    private RecyclerView recyclerView;
-
-    private StatusBarView statusBar;
-    private StatusBarView flowStatusBar;
-
     private SafeHandler<PhotoActivity> handler;
+
+    @BindView(R.id.activity_photo_container) CoordinatorLayout container;
+    @BindView(R.id.activity_photo_image) FreedomImageView photoImage;
+
+    @BindView(R.id.activity_photo_recyclerView) RecyclerView recyclerView;
+
+    @BindView(R.id.activity_photo_translucentStatusBar) StatusBarView translucentStatusBar;
+    @BindView(R.id.activity_photo_statusBar) StatusBarView statusBar;
 
     // presenter.
     private PhotoInfoPresenter photoInfoPresenter;
@@ -114,7 +120,6 @@ public class PhotoActivity extends MysplashActivity
         setContentView(R.layout.activity_photo);
         initModel();
         initPresenter();
-        runnable.setRunning(false);
     }
 
     @Override
@@ -122,6 +127,7 @@ public class PhotoActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initView(true);
         }
     }
@@ -146,7 +152,7 @@ public class PhotoActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Photo);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Photo);
@@ -159,8 +165,8 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean isFullScreen() {
-        return false;
+    protected boolean operateStatusBarBySelf() {
+        return true;
     }
 
     @Override
@@ -184,7 +190,7 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -205,18 +211,15 @@ public class PhotoActivity extends MysplashActivity
     @SuppressLint({"SetTextI18n", "CutPasteId"})
     private void initView(boolean init) {
         this.handler = new SafeHandler<>(this);
-
         if (init && browsablePresenter.isBrowsable() && photoInfoPresenter.getPhoto() == null) {
             browsablePresenter.requestBrowsableData();
         } else {
-            this.container = (CoordinatorLayout) findViewById(R.id.activity_photo_container);
-
-            SwipeBackCoordinatorLayout swipeBackView
-                    = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_photo_swipeBackView);
+            SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
+                    this, R.id.activity_photo_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
-            this.photoImage = (FreedomImageView) findViewById(R.id.activity_photo_image);
-            photoImage.setSize(photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
+            photoImage.setSize(
+                    photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
             ImageHelper.loadRegularPhoto(
                     this, photoImage, photoInfoPresenter.getPhoto(),
                     new ImageHelper.OnLoadImageListener() {
@@ -235,7 +238,6 @@ public class PhotoActivity extends MysplashActivity
                 }
             });
 
-            this.recyclerView = (RecyclerView) findViewById(R.id.activity_photo_recyclerView);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 recyclerView.addOnScrollListener(new OnScrollListener((photoInfoPresenter.getPhoto())));
             } else {
@@ -244,15 +246,7 @@ public class PhotoActivity extends MysplashActivity
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             recyclerView.setAdapter(photoInfoPresenter.getAdapter());
 
-            this.statusBar = (StatusBarView) findViewById(R.id.activity_photo_statusBar);
-            statusBar.setAlpha(0.1f);
-
-            this.flowStatusBar = (StatusBarView) findViewById(R.id.activity_photo_flowStatusBar);
-            if (DisplayUtils.isNeedSetStatusBarMask()) {
-                flowStatusBar.setBackgroundResource(R.color.colorPrimary_light);
-                flowStatusBar.setMask(true);
-            }
-            flowStatusBar.setAlpha(0f);
+            statusBar.setAlpha(0f);
 
             if (!photoInfoPresenter.getPhoto().complete) {
                 initRefresh();
@@ -267,7 +261,7 @@ public class PhotoActivity extends MysplashActivity
     }
 
     public void visitParentActivity() {
-        browsablePresenter.visitParentView();
+        browsablePresenter.visitPreviousPage();
     }
 
     public void showPopup(Context c, View anchor, String value, int position) {
@@ -416,7 +410,7 @@ public class PhotoActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on check or download swipeListener.
+    // on check or download listener.
 
     @Override
     public void onCheck(Object obj) {
@@ -434,8 +428,11 @@ public class PhotoActivity extends MysplashActivity
         }
     }
 
-    // on scroll changed swipeListener.
+    // on scroll changed listener.
 
+    /**
+     * This listener is used to set footer image position and control the style of status bars.
+     * */
     private class OnScrollListener extends RecyclerView.OnScrollListener {
         // data.
         int scrollY;
@@ -448,15 +445,14 @@ public class PhotoActivity extends MysplashActivity
         // life cycle.
 
         OnScrollListener(Photo photo) {
-            DisplayUtils utils = new DisplayUtils(PhotoActivity.this);
-
             statusBarHeight = DisplayUtils.getStatusBarHeight(getResources());
             screenHeight = getResources().getDisplayMetrics().heightPixels;
-            footerHeight = utils.dpToPx(72);
+            footerHeight = getResources().getDimensionPixelSize(R.dimen.design_icon_size);
 
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
             int screenHeight = getResources().getDisplayMetrics().heightPixels;
-            float limitHeight = screenHeight - utils.dpToPx(300);
+            float limitHeight = screenHeight
+                    - getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
 
             if (1.0 * photo.height / photo.width * screenWidth <= limitHeight) {
                 showFlowStatusBarTrigger = limitHeight - statusBarHeight;
@@ -478,11 +474,13 @@ public class PhotoActivity extends MysplashActivity
 
             // status bar & toolbar.
             if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
-                AnimUtils.animHide(statusBar, 150, statusBar.getAlpha(), 0, false);
-                AnimUtils.animShow(flowStatusBar, 150, flowStatusBar.getAlpha(), 1);
+                translucentStatusBar.animToDarkerAlpha();
+                // AnimUtils.animHide(translucentStatusBar, 150, translucentStatusBar.getAlpha(), 0, false);
+                AnimUtils.animShow(statusBar, 150, statusBar.getAlpha(), 1);
             } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
-                AnimUtils.animHide(flowStatusBar, 150, flowStatusBar.getAlpha(), 0, false);
-                AnimUtils.animShow(statusBar, 150, statusBar.getAlpha(), 0.1f);
+                translucentStatusBar.animToInitAlpha();
+                // AnimUtils.animShow(translucentStatusBar, 150, translucentStatusBar.getAlpha(), 0.1f);
+                AnimUtils.animHide(statusBar, 150, statusBar.getAlpha(), 0, false);
             }
 
             // more.
@@ -495,6 +493,9 @@ public class PhotoActivity extends MysplashActivity
         }
     }
 
+    /**
+     * This listener is used to control the text color for status bar. Only for Android M.
+     * */
     @RequiresApi(api = Build.VERSION_CODES.M)
     private class MScrollListener extends OnScrollListener {
 
@@ -517,7 +518,7 @@ public class PhotoActivity extends MysplashActivity
         }
     }
 
-    // on swipe swipeListener.
+    // on swipe listener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -538,7 +539,7 @@ public class PhotoActivity extends MysplashActivity
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(this, message.what, message.obj);
+        messageManagePresenter.responseMessage(message.what, message.obj);
     }
 
     // view.
@@ -624,7 +625,7 @@ public class PhotoActivity extends MysplashActivity
     }
 
     @Override
-    public void visitParentView() {
+    public void visitPreviousPage() {
         IntentHelper.startMainActivity(this);
     }
 
@@ -650,7 +651,10 @@ public class PhotoActivity extends MysplashActivity
 
     /** <br> inner class. */
 
-    private FlagRunnable runnable = new FlagRunnable(true) {
+    /**
+     * This runnable is used to poll download progress.
+     * */
+    private FlagRunnable runnable = new FlagRunnable(false) {
         @Override
         public void run() {
             while (isRunning()) {

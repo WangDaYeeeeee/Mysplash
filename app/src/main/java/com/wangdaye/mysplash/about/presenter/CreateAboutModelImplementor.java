@@ -2,12 +2,12 @@ package com.wangdaye.mysplash.about.presenter;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash.about.model.AppAboutObject;
-import com.wangdaye.mysplash.about.model.CategoryAboutObject;
-import com.wangdaye.mysplash.about.model.HeaderAboutObject;
+import com.wangdaye.mysplash.common.i.model.AboutModel;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.about.model.AppObject;
+import com.wangdaye.mysplash.about.model.CategoryObject;
+import com.wangdaye.mysplash.about.model.HeaderObject;
 import com.wangdaye.mysplash.about.model.LibraryObject;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
 
@@ -16,38 +16,42 @@ import java.util.List;
 
 /**
  * Create about model implementor.
+ *
+ * This implementor is used to build a list by {@link AboutModel}. This list will provide data for
+ * {@link com.wangdaye.mysplash.common.ui.adapter.AboutAdapter}.
+ *
  * */
 
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(20);
-        boolean light = Mysplash.getInstance().isLightTheme();
+        List<AboutModel> modelList = new ArrayList<>(21);
+        boolean light = ThemeManager.getInstance(c).isLightTheme();
 
         // header.
-        modelList.add(new HeaderAboutObject());
+        modelList.add(new HeaderObject());
 
         // about app.
-        modelList.add(new CategoryAboutObject(c.getString(R.string.about_app)));
-        modelList.add(new AppAboutObject(
+        modelList.add(new CategoryObject(c.getString(R.string.about_app)));
+        modelList.add(new AppObject(
                 1,
                 light ? R.drawable.ic_book_light : R.drawable.ic_book_dark,
                 c.getString(R.string.introduce)));
-        modelList.add(new AppAboutObject(
+        modelList.add(new AppObject(
                 2,
                 light ? R.drawable.ic_github_light : R.drawable.ic_github_dark,
                 c.getString(R.string.gitHub)));
-        modelList.add(new AppAboutObject(
+        modelList.add(new AppObject(
                 3,
                 light ? R.drawable.ic_email_light : R.drawable.ic_email_dark,
                 c.getString(R.string.email)));
-        modelList.add(new AppAboutObject(
+        modelList.add(new AppObject(
                 4,
                 light ? R.drawable.ic_android_studio_light : R.drawable.ic_android_studio_dark,
                 c.getString(R.string.source_code)));
 
         // translator.
-        modelList.add(new CategoryAboutObject(c.getString(R.string.translators)));
+        modelList.add(new CategoryObject(c.getString(R.string.translators)));
         modelList.add(new TranslatorObject(
                 "https://lh3.googleusercontent.com/-zf-IZfbNHg4/AAAAAAAAAAI/AAAAAAAANfM/-0-pEtFp5a8/s60-p-rw-no/photo.jpg",
                 "Federico Cappelletti",
@@ -75,7 +79,7 @@ public class CreateAboutModelImplementor {
                 "oton.translator@gmail.com"));
 
         // library.
-        modelList.add(new CategoryAboutObject(c.getString(R.string.libraries)));
+        modelList.add(new CategoryObject(c.getString(R.string.libraries)));
         modelList.add(new LibraryObject(
                 c.getString(R.string.retrofit),
                 c.getString(R.string.about_retrofit),
@@ -104,6 +108,10 @@ public class CreateAboutModelImplementor {
                 c.getString(R.string.greendao_db),
                 c.getString(R.string.about_greendao_db),
                 "https://github.com/greenrobot/greenDAO"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.butter_knife),
+                c.getString(R.string.about_butter_knife),
+                "https://github.com/JakeWharton/butterknife"));
 
         return modelList;
     }

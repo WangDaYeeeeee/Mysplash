@@ -2,43 +2,41 @@ package com.wangdaye.mysplash;
 
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
+import android.support.annotation.IntRange;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringDef;
 import android.text.TextUtils;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.utils.manager.ApiManager;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * My application.
+ * Mysplash.
+ *
+ * Application class for Mysplash.
+ *
  * */
 
 public class Mysplash extends Application {
-    // data
+    // widget.
     private List<MysplashActivity> activityList;
-    private boolean lightTheme;
-    private String language;
-    private String defaultPhotoOrder;
-    private String defaultCollectionType;
-    private String downloadScale;
-    private String backToTopType;
-    private boolean notifiedSetBackToTop;
 
-    private String customApiKey;
-    private String customApiSecret;
+    // data
 
     // transfer
     private Photo photo;
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
+    public static final String UNSPLASH_FOLLOWING_FEED_URL = "XXX";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
@@ -49,8 +47,15 @@ public class Mysplash extends Application {
     public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
     public static final String DOWNLOAD_PHOTO_FORMAT = ".jpg";
     public static final String DOWNLOAD_COLLECTION_FORMAT = ".zip";
+    @StringDef({DOWNLOAD_PHOTO_FORMAT, DOWNLOAD_COLLECTION_FORMAT})
+    public @interface DownloadFormatRule {}
 
     public static final int DEFAULT_PER_PAGE = 15;
+    @IntRange(from = 1, to = 30)
+    public @interface PerPageRule {}
+
+    @IntRange(from = 1)
+    public @interface PageRule {}
 
     public static final int CATEGORY_TOTAL_NEW = 0;
     public static final int CATEGORY_TOTAL_FEATURED = 1;
@@ -60,6 +65,16 @@ public class Mysplash extends Application {
     public static final int CATEGORY_OBJECTS_ID = 8;
     public static final int CATEGORY_PEOPLE_ID = 6;
     public static final int CATEGORY_TECHNOLOGY_ID = 7;
+    @IntDef({CATEGORY_TOTAL_NEW, CATEGORY_TOTAL_FEATURED})
+    public @interface PhotosTypeRule {}
+    @IntDef({
+            CATEGORY_BUILDINGS_ID,
+            CATEGORY_FOOD_DRINK_ID,
+            CATEGORY_NATURE_ID,
+            CATEGORY_OBJECTS_ID,
+            CATEGORY_PEOPLE_ID,
+            CATEGORY_TECHNOLOGY_ID})
+    public @interface CategoryIdRule {}
 
     public static int TOTAL_NEW_PHOTOS_COUNT = 17444;
     public static int TOTAL_FEATURED_PHOTOS_COUNT = 1192;
@@ -71,8 +86,9 @@ public class Mysplash extends Application {
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
     // activity code.
-    public static final int ME_ACTIVITY = 1;
-    public static final int CUSTOM_API_ACTIVITY = 2;
+    public static final int COLLECTION_ACTIVITY = 1;
+    public static final int ME_ACTIVITY = 2;
+    public static final int CUSTOM_API_ACTIVITY = 3;
 
     // permission code.
     public static final int WRITE_EXTERNAL_STORAGE = 1;
@@ -94,23 +110,6 @@ public class Mysplash extends Application {
 
         instance = this;
         activityList = new ArrayList<>();
-
-        ApiManager.getInstance(this);
-        AuthManager.getInstance();
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        lightTheme = sharedPreferences.getBoolean(getString(R.string.key_light_theme), true);
-        language = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
-        defaultPhotoOrder = sharedPreferences.getString(getString(R.string.key_default_photo_order), "latest");
-        defaultCollectionType = sharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
-        downloadScale = sharedPreferences.getString(getString(R.string.key_download_scale), "compact");
-        backToTopType = sharedPreferences.getString(getString(R.string.key_back_to_top), "all");
-        notifiedSetBackToTop = sharedPreferences.getBoolean(getString(R.string.key_notified_set_back_to_top), false);
-
-        String[] customApis = ApiManager.getInstance(this).readCustomApi();
-        ApiManager.getInstance(this).destroy();
-        customApiKey = customApis[0];
-        customApiSecret = customApis[1];
     }
 
     /** <br> data. */
@@ -118,26 +117,26 @@ public class Mysplash extends Application {
     public static String getAppId(Context c, boolean auth) {
         if (isDebug(c)) {
             return BuildConfig.APP_ID_BETA;
-        } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
-                || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
+        } else if (TextUtils.isEmpty(CustomApiManager.getInstance(c).getCustomApiKey())
+                || TextUtils.isEmpty(CustomApiManager.getInstance(c).getCustomApiSecret())) {
             if (auth) {
                 return BuildConfig.APP_ID_RELEASE;
             } else {
                 return BuildConfig.APP_ID_RELEASE_UNAUTH;
             }
         } else {
-            return getInstance().getCustomApiKey();
+            return CustomApiManager.getInstance(c).getCustomApiKey();
         }
     }
 
     public static String getSecret(Context c) {
         if (isDebug(c)) {
             return BuildConfig.SECRET_BETA;
-        } else if (TextUtils.isEmpty(getInstance().getCustomApiKey())
-                || TextUtils.isEmpty(getInstance().getCustomApiSecret())) {
+        } else if (TextUtils.isEmpty(CustomApiManager.getInstance(c).getCustomApiKey())
+                || TextUtils.isEmpty(CustomApiManager.getInstance(c).getCustomApiSecret())) {
             return BuildConfig.SECRET_RELEASE;
         } else {
-            return getInstance().getCustomApiSecret();
+            return CustomApiManager.getInstance(c).getCustomApiSecret();
         }
     }
 
@@ -159,7 +158,7 @@ public class Mysplash extends Application {
                 + "&scope=" + "public+read_user+write_user+read_photos+write_photos+write_likes+write_followers+read_collections+write_collections";
     }
 
-    public void addActivity(MysplashActivity a) {
+    public void addActivity(@NonNull MysplashActivity a) {
         for (MysplashActivity activity : activityList) {
             if (activity.equals(a)) {
                 return;
@@ -172,6 +171,7 @@ public class Mysplash extends Application {
         activityList.remove(a);
     }
 
+    @Nullable
     public MysplashActivity getTopActivity() {
         if (activityList != null && activityList.size() > 0) {
             return activityList.get(activityList.size() - 1);
@@ -180,6 +180,7 @@ public class Mysplash extends Application {
         }
     }
 
+    @Nullable
     public MainActivity getMainActivity() {
         if (activityList != null && activityList.size() > 0
                 && activityList.get(0) instanceof MainActivity) {
@@ -197,83 +198,12 @@ public class Mysplash extends Application {
         }
     }
 
-    public boolean isLightTheme() {
-        return lightTheme;
-    }
-
-    public void changeTheme() {
-        this.lightTheme = !lightTheme;
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
-
-    public String getDefaultPhotoOrder() {
-        return defaultPhotoOrder;
-    }
-
-    public void setDefaultPhotoOrder(String order) {
-        this.defaultPhotoOrder = order;
-    }
-
-    public String getDefaultCollectionType() {
-        return defaultCollectionType;
-    }
-
-    public void setDefaultCollectionType(String type) {
-        this.defaultCollectionType = type;
-    }
-
-    public String getDownloadScale() {
-        return downloadScale;
-    }
-
-    public void setDownloadScale(String scale) {
-        this.downloadScale = scale;
-    }
-
-    public String getBackToTopType() {
-        return backToTopType;
-    }
-
-    public void setBackToTopType(String type) {
-        this.backToTopType = type;
-    }
-
-    public boolean isNotifiedSetBackToTop() {
-        return notifiedSetBackToTop;
-    }
-
-    public void setNotifiedSetBackToTop() {
-        this.notifiedSetBackToTop = true;
-    }
-
+    @Nullable
     public Photo getPhoto() {
         return photo;
     }
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
-    }
-
-    public String getCustomApiKey() {
-        return customApiKey;
-    }
-
-    public void setCustomApiKey(String customApiKey) {
-        this.customApiKey = customApiKey;
-    }
-
-    public String getCustomApiSecret() {
-        return customApiSecret;
-    }
-
-    public void setCustomApiSecret(String customApiSecret) {
-        this.customApiSecret = customApiSecret;
     }
 }

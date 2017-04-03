@@ -4,21 +4,24 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomTouchView;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
+import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomTouchView;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Touch holder.
  * */
 
-public class TouchHolder extends PhotoInfoAdapter.ViewHolder
-        implements View.OnClickListener {
+public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
     // widget
-    private FreedomTouchView touchView;
+    @BindView(R.id.item_photo_touch) FreedomTouchView touchView;
 
     // data
     private Photo photo;
@@ -29,11 +32,11 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder
 
     public TouchHolder(View itemView) {
         super(itemView);
+        ButterKnife.bind(this, itemView);
 
-        this.touchView = (FreedomTouchView) itemView.findViewById(R.id.item_photo_touch);
-        touchView.setOnClickListener(this);
-        if (Mysplash.getInstance().getTopActivity() instanceof PhotoActivity) {
-            Photo photo = ((PhotoActivity) Mysplash.getInstance().getTopActivity()).getPhoto();
+        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+        if (activity != null && activity instanceof PhotoActivity) {
+            Photo photo = ((PhotoActivity) activity).getPhoto();
             touchView.setSize(photo.width, photo.height);
         }
     }
@@ -50,13 +53,8 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder
 
     /** <br> interface. */
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.item_photo_touch:
-                IntentHelper.startPreviewActivity(
-                        Mysplash.getInstance().getTopActivity(), photo, true);
-                break;
-        }
+    @OnClick(R.id.item_photo_touch) void clickItem() {
+        IntentHelper.startPreviewActivity(
+                Mysplash.getInstance().getTopActivity(), photo, true);
     }
 }

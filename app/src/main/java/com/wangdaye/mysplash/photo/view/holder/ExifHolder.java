@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.photo.view.holder;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.Snackbar;
@@ -10,24 +11,31 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Exif holder.
+ *
+ * This view holder is used to show the exif information of the photo.
+ *
  * */
 
-public class ExifHolder extends PhotoInfoAdapter.ViewHolder 
-        implements View.OnClickListener {
+public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
     // widget
-    private TextView leftText;
-    private TextView rightText;
-    private ImageView leftImage;
-    private ImageView rightImage;
-    private FrameLayout colorSample;
+    @BindView(R.id.item_photo_exif_leftText) TextView leftText;
+    @BindView(R.id.item_photo_exif_rightText) TextView rightText;
+    @BindView(R.id.item_photo_exif_leftImage) ImageView leftImage;
+    @BindView(R.id.item_photo_exif_rightImage) ImageView rightImage;
+    @BindView(R.id.item_photo_exif_colorSample) FrameLayout colorSample;
 
     // data
     private int position;
@@ -37,20 +45,10 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
     
     public ExifHolder(View itemView) {
         super(itemView);
+        ButterKnife.bind(this, itemView);
 
-        itemView.findViewById(R.id.item_photo_exif_leftContainer).setOnClickListener(this);
-        itemView.findViewById(R.id.item_photo_exif_rightContainer).setOnClickListener(this);
-
-        this.leftText = (TextView) itemView.findViewById(R.id.item_photo_exif_leftText);
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), leftText);
-
-        this.rightText = (TextView) itemView.findViewById(R.id.item_photo_exif_rightText);
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), rightText);
-
-        this.leftImage = (ImageView) itemView.findViewById(R.id.item_photo_exif_leftImage);
-        this.rightImage = (ImageView) itemView.findViewById(R.id.item_photo_exif_rightImage);
-
-        this.colorSample = (FrameLayout) itemView.findViewById(R.id.item_photo_exif_colorSample);
     }
 
     /** <br> UI. */
@@ -60,11 +58,11 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
         // do nothing.
     }
 
-    public void drawExif(int viewType, Photo photo) {
+    public void drawExif(Context context, int viewType, Photo photo) {
         position = viewType - TYPE_EXIF;
         switch (position) {
             case 0:
-                if (Mysplash.getInstance().isLightTheme()) {
+                if (ThemeManager.getInstance(context).isLightTheme()) {
                     leftImage.setImageResource(R.drawable.ic_size_light);
                     rightImage.setImageResource(R.drawable.ic_exposure_light);
                 } else {
@@ -77,7 +75,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
                 break;
 
             case 1:
-                if (Mysplash.getInstance().isLightTheme()) {
+                if (ThemeManager.getInstance(context).isLightTheme()) {
                     leftImage.setImageResource(R.drawable.ic_color_light);
                     rightImage.setImageResource(R.drawable.ic_aperture_light);
                 } else {
@@ -91,7 +89,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
                 break;
 
             case 2:
-                if (Mysplash.getInstance().isLightTheme()) {
+                if (ThemeManager.getInstance(context).isLightTheme()) {
                     leftImage.setImageResource(R.drawable.ic_location_light);
                     rightImage.setImageResource(R.drawable.ic_focal_light);
                 } else {
@@ -112,7 +110,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
                 break;
 
             case 3:
-                if (Mysplash.getInstance().isLightTheme()) {
+                if (ThemeManager.getInstance(context).isLightTheme()) {
                     leftImage.setImageResource(R.drawable.ic_camera_light);
                     rightImage.setImageResource(R.drawable.ic_iso_light);
                 } else {
@@ -133,64 +131,59 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder
     }
 
     /** <br> interface. */
-    
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.item_photo_exif_leftContainer:
-                switch (position) {
-                    case 0:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_size),
-                                leftText.getText().toString());
-                        break;
 
-                    case 1:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_color),
-                                leftText.getText().toString());
-                        break;
-
-                    case 2:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_location),
-                                leftText.getText().toString());
-                        break;
-
-                    case 3:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_model),
-                                leftText.getText().toString());
-                        break;
-                }
+    @OnClick(R.id.item_photo_exif_leftContainer) void clickLeft() {
+        switch (position) {
+            case 0:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_size),
+                        leftText.getText().toString());
                 break;
 
-            case R.id.item_photo_exif_rightContainer:
-                switch (position) {
-                    case 0:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_exposure),
-                                rightText.getText().toString());
-                        break;
+            case 1:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_color),
+                        leftText.getText().toString());
+                break;
 
-                    case 1:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_aperture),
-                                rightText.getText().toString());
-                        break;
+            case 2:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_location),
+                        leftText.getText().toString());
+                break;
 
-                    case 2:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_focal),
-                                rightText.getText().toString());
-                        break;
+            case 3:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_model),
+                        leftText.getText().toString());
+                break;
+        }
+    }
 
-                    case 3:
-                        showExifDescription(
-                                view.getContext().getString(R.string.feedback_iso),
-                                rightText.getText().toString());
-                        break;
-                }
+    @OnClick(R.id.item_photo_exif_rightContainer) void clickRight() {
+        switch (position) {
+            case 0:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_exposure),
+                        rightText.getText().toString());
+                break;
+
+            case 1:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_aperture),
+                        rightText.getText().toString());
+                break;
+
+            case 2:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_focal),
+                        rightText.getText().toString());
+                break;
+
+            case 3:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_iso),
+                        rightText.getText().toString());
                 break;
         }
     }

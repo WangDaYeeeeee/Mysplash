@@ -1,10 +1,14 @@
 package com.wangdaye.mysplash.collection.presenter.widget;
 
-import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
-import com.wangdaye.mysplash._common.i.view.SwipeBackView;
+import com.wangdaye.mysplash.common.i.presenter.SwipeBackPresenter;
+import com.wangdaye.mysplash.common.i.view.SwipeBackView;
 
 /**
  * Swipe back implementor.
+ *
+ * A {@link SwipeBackPresenter} for
+ * {@link com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView}.
+ *
  * */
 
 public class SwipeBackImplementor

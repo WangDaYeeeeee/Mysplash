@@ -10,7 +10,7 @@
     android:stateListAnimator="@animator/touch_rise"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
-    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
         android:id="@+id/item_my_follow_user_avatar"
         android:layout_width="@dimen/normal_icon_size"
         android:layout_height="@dimen/normal_icon_size"
@@ -36,7 +36,7 @@
         tools:text="Wang Yueeeeee"
         tools:ignore="RtlHardcoded" />
 
-    <com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton
+    <com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton
         android:id="@+id/item_my_follow_user_button"
         android:layout_width="128dp"
         android:layout_height="@dimen/little_icon_size"

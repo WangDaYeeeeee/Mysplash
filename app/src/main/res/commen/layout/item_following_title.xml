@@ -7,7 +7,7 @@
     android:background="?attr/root_color"
     tools:ignore="UnusedAttribute">
 
-    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
         android:id="@+id/item_following_title_avatar"
         android:layout_width="@dimen/mini_icon_size"
         android:layout_height="@dimen/mini_icon_size"

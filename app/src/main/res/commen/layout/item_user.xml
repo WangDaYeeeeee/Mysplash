@@ -9,7 +9,7 @@
     android:stateListAnimator="@animator/touch_rise"
     tools:ignore="UnusedAttribute">
 
-    <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
         android:id="@+id/item_user_avatar"
         android:layout_width="@dimen/normal_icon_size"
         android:layout_height="@dimen/normal_icon_size"

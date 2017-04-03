@@ -6,14 +6,12 @@ import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,27 +20,28 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingResult;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.i.model.FollowingModel;
-import com.wangdaye.mysplash._common.i.model.LoadModel;
-import com.wangdaye.mysplash._common.i.model.ScrollModel;
-import com.wangdaye.mysplash._common.i.presenter.FollowingPresenter;
-import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
-import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.i.view.FollowingView;
-import com.wangdaye.mysplash._common.i.view.LoadView;
-import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.FollowingAdapter;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.i.model.FollowingModel;
+import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.ScrollModel;
+import com.wangdaye.mysplash.common.i.presenter.FollowingPresenter;
+import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash.common.i.view.FollowingView;
+import com.wangdaye.mysplash.common.i.view.LoadView;
+import com.wangdaye.mysplash.common.i.view.ScrollView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
+import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.widget.FollowingObject;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
@@ -54,28 +53,36 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Following feed view.
+ *
+ * This view is used to show following feeds for
+ * {@link com.wangdaye.mysplash.main.view.fragment.FollowingFragment}.
+ *
  * */
 
 public class FollowingFeedView extends NestedScrollFrameLayout
         implements FollowingView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
     // model.
     private FollowingModel followingModel;
     private LoadModel loadModel;
     private ScrollModel scrollModel;
 
     // view.
-    private CircularProgressView progressView;
-    private RelativeLayout feedbackContainer;
-    private TextView feedbackText;
+    @BindView(R.id.container_loading_in_following_view_large_progressView) CircularProgressView progressView;
+    @BindView(R.id.container_loading_in_following_view_large_feedbackContainer) RelativeLayout feedbackContainer;
+    @BindView(R.id.container_loading_in_following_view_large_feedbackTxt) TextView feedbackText;
 
-    private BothWaySwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
+    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
+    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
 
-    private RelativeLayout avatarContainer;
-    private CircleImageView avatar;
+    @BindView(R.id.container_following_avatar_avatarContainer) RelativeLayout avatarContainer;
+    @BindView(R.id.container_following_avatar_avatar) CircleImageView avatar;
 
     // presenter.
     private FollowingPresenter followingPresenter;
@@ -83,6 +90,9 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     private ScrollPresenter scrollPresenter;
 
     // data
+
+    // the offset of this view that was caused by nested scrolling. The avatar should ensure the
+    // location by this value.
     private float offsetY = 0;
     private float AVATAR_SIZE;
     private float STATUS_BAR_HEIGHT;
@@ -112,15 +122,19 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_in_following_view_large, this, false);
+        View searchingView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_loading_in_following_view_large, this, false);
         addView(searchingView);
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
-        View avatarView = LayoutInflater.from(getContext()).inflate(R.layout.container_following_avatar, null);
+        View avatarView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_following_avatar, null);
         addView(avatarView);
 
+        ButterKnife.bind(this, this);
         initModel();
         initPresenter();
         initView();
@@ -165,41 +179,27 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     private void initAvatarView() {
-        this.avatarContainer = (RelativeLayout) findViewById(R.id.container_following_avatar_avatarContainer);
-        avatarContainer.setOnClickListener(this);
-
-        this.avatar = (CircleImageView) findViewById(R.id.container_following_avatar_avatar);
-        avatar.setOnClickListener(this);
-
-        DisplayUtils utils = new DisplayUtils(getContext());
-
         FrameLayout.LayoutParams containerParams = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
-        int size = (int) utils.dpToPx(56);
+        int size = getResources().getDimensionPixelSize(R.dimen.large_icon_size);
         containerParams.width = size;
         containerParams.height = size + DisplayUtils.getStatusBarHeight(getResources());
         avatarContainer.setLayoutParams(containerParams);
     }
 
     private void initContentView() {
-        this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
+        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
         refreshLayout.setVisibility(GONE);
-        if (Mysplash.getInstance().isLightTheme()) {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
-        } else {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
-        }
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         refreshLayout.setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
-        this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(followingPresenter.getAdapter());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
         avatarScrollListener = new AvatarScrollListener();
         recyclerView.addOnScrollListener(avatarScrollListener);
@@ -208,19 +208,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     private void initLoadingView() {
-        this.progressView = (CircularProgressView) findViewById(R.id.container_loading_in_following_view_large_progressView);
         progressView.setVisibility(VISIBLE);
-
-        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_loading_in_following_view_large_feedbackContainer);
         feedbackContainer.setVisibility(GONE);
 
-        ImageView feedbackImg = (ImageView) findViewById(R.id.container_loading_in_following_view_large_feedbackImg);
+        ImageView feedbackImg = ButterKnife.findById(
+                this, R.id.container_loading_in_following_view_large_feedbackImg);
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
-
-        this.feedbackText = (TextView) findViewById(R.id.container_loading_in_following_view_large_feedbackTxt);
-
-        Button retryButton = (Button) findViewById(R.id.container_loading_in_following_view_large_feedbackBtn);
-        retryButton.setOnClickListener(this);
     }
 
     // interface.
@@ -247,14 +240,29 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     // interface.
 
+    /**
+     * Set activity for the adapter in this view.
+     *
+     * @param a Container activity.
+     * */
     public void setActivity(MysplashActivity a) {
         followingPresenter.setActivityForAdapter(a);
     }
 
+    /**
+     * Get the following feeds from the adapter in this view.
+     *
+     * @return Following feeds in adapter.
+     * */
     public List<FollowingResult> getFeeds() {
         return followingPresenter.getAdapter().getFeeds();
     }
 
+    /**
+     * Set Following feeds to the adapter in this view.
+     *
+     * @param list Following feeds that will be set to the adapter.
+     * */
     public void setFeeds(List<FollowingResult> list) {
         if (list == null) {
             list = new ArrayList<>();
@@ -279,6 +287,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         return scrollPresenter.needBackToTop();
     }
 
+    /**
+     * Set the offset of this view that was caused by nested scrolling. The offset value will
+     * effect the position of avatar.
+     *
+     * @param offsetY The offset value.
+     * */
     public void setOffsetY(float offsetY) {
         if (this.offsetY != offsetY) {
             this.offsetY = offsetY;
@@ -292,38 +306,38 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         return offsetY;
     }
 
+    /**
+     * Get the effective offset value. --> top of this view - bottom of status bar.
+     * 
+     * @return The effective offset value.
+     * */
     private float getRealOffset() {
         return Math.max(getOffsetY() - AVATAR_SIZE, 0);
     }
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.container_following_avatar_avatarContainer:
-                // do nothing.
-                break;
-
-            case R.id.container_following_avatar_avatar:
-                int adapterPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                        .findFirstVisibleItemPosition();
-                IntentHelper.startUserActivity(
-                        Mysplash.getInstance().getTopActivity(),
-                        avatar,
-                        followingPresenter.getAdapter().getActor(adapterPosition),
-                        UserActivity.PAGE_PHOTO);
-                break;
-
-            case R.id.container_loading_in_following_view_large_feedbackBtn:
-                followingPresenter.initRefresh(getContext());
-                break;
-        }
+    @OnClick(R.id.container_following_avatar_avatarContainer) void clickAvatarContainer() {
+        // do nothing.
     }
 
-    // on refresh an load swipeListener.
+    @OnClick(R.id.container_following_avatar_avatar) void clickAvatar() {
+        int adapterPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+        IntentHelper.startUserActivity(
+                Mysplash.getInstance().getTopActivity(),
+                avatar,
+                followingPresenter.getAdapter().getActor(adapterPosition),
+                UserActivity.PAGE_PHOTO);
+    }
+
+    @OnClick(R.id.container_loading_in_following_view_large_feedbackBtn) void retryRefresh() {
+        followingPresenter.initRefresh(getContext());
+    }
+
+    // on refresh an load listener.
 
     @Override
     public void onRefresh() {
@@ -335,8 +349,11 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         followingPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll swipeListener.
+    // on scroll listener.
 
+    /**
+     * This listener is used to control the automatic load of {@link RecyclerView}.
+     * */
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
@@ -346,6 +363,9 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
     };
 
+    /**
+     * This listener is used to control the avatar's position.
+     * */
     private AvatarScrollListener avatarScrollListener;
     private class AvatarScrollListener extends RecyclerView.OnScrollListener {
         // widget
@@ -364,7 +384,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
             int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
             if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)) {
-
+                // the first visible item is a footer item.
+                // --> the second visible item is a header item (title item).
                 View firstVisibleView = manager.findViewByPosition(firstVisibleItemPosition);
                 View secondVisibleView = manager.findViewByPosition(firstVisibleItemPosition + 1);
                 if (firstVisibleView != null && secondVisibleView != null) {
@@ -372,14 +393,22 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                     float headerTop = secondVisibleView.getY();
 
                     if (footerBottom < AVATAR_SIZE + getRealOffset() && headerTop > getRealOffset()) {
+                        // the footer item is moving out of the screen, and the header item has
+                        // not yet reached the trigger position.
+                        // --> the avatar needs to move with footer item.
                         avatarContainer.setTranslationY(footerBottom - AVATAR_SIZE - STATUS_BAR_HEIGHT);
                         setAvatarImage(firstVisibleItemPosition);
                     } else {
+                        // the footer item is moving out of the screen, and the header item has
+                        // already reached the trigger position.
+                        // --> the avatar needs to move with header item.
                         avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
                         setAvatarImage(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
                     }
                 }
             } else {
+                // the first item is not a footer item.
+                // --> avatar needs to stay on the trigger position.
                 avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
                 if (lastActor == null) {
                     setAvatarImage(firstVisibleItemPosition);
@@ -390,6 +419,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         private void setAvatarImage(int position) {
             User user = followingPresenter.getAdapter().getActor(position);
             if (lastActor == null || !lastActor.username.equals(user.username)) {
+                // actor changed.
                 lastActor = user;
                 ImageHelper.loadAvatar(getContext(), avatar, user, null);
             }

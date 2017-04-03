@@ -5,11 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common._basic.MysplashFragment;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.i.model.FragmentManageModel;
+import com.wangdaye.mysplash.common.i.presenter.FragmentManagePresenter;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
@@ -21,6 +21,10 @@ import java.util.List;
 
 /**
  * Fragment manage implementor.
+ *
+ * A {@link FragmentManagePresenter} for
+ * {@link com.wangdaye.mysplash.main.view.activity.MainActivity}.
+ *
  * */
 
 public class FragmentManageImplementor

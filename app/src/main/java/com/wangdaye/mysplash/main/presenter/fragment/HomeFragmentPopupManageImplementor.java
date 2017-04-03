@@ -3,13 +3,16 @@ package com.wangdaye.mysplash.main.presenter.fragment;
 import android.content.Context;
 import android.view.View;
 
-import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.popup.CollectionTypePopupWindow;
-import com.wangdaye.mysplash._common.ui.popup.PhotoOrderPopupWindow;
+import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.ui.popup.CollectionTypePopupWindow;
+import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 
 /**
  * Popup manage implementor.
+ *
+ * A {@link PopupManagePresenter} for {@link com.wangdaye.mysplash.main.view.fragment.HomeFragment}.
+ *
  * */
 
 public class HomeFragmentPopupManageImplementor

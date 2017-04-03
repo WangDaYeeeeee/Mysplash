@@ -1,8 +1,7 @@
 package com.wangdaye.mysplash.photo.presenter;
 
-import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
-import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash.common.i.view.MessageManageView;
 
 /**
  * Message manage implementor.
@@ -26,7 +25,7 @@ public class MessageManageImplementor implements MessageManagePresenter {
     }
 
     @Override
-    public void responseMessage(MysplashActivity a, int what, Object o) {
+    public void responseMessage(int what, Object o) {
         view.responseMessage(what, o);
     }
 }

@@ -1,12 +1,16 @@
 package com.wangdaye.mysplash.collection.presenter.widget;
 
-import com.wangdaye.mysplash._common.i.model.LoadModel;
-import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
-import com.wangdaye.mysplash._common.i.view.LoadView;
+import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.collection.model.widget.LoadObject;
 
 /**
  * Load implementor.
+ *
+ * A {@link LoadPresenter} for
+ * {@link com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView}.
+ *
  * */
 
 public class LoadImplementor

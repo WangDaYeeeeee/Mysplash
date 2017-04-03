@@ -6,21 +6,27 @@ import android.widget.Button;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Progress holder.
+ *
+ * This view holder is used to show the progress.
+ *
  * */
 
-public class ProgressHolder extends PhotoInfoAdapter.ViewHolder
-        implements View.OnClickListener {
+public class ProgressHolder extends PhotoInfoAdapter.ViewHolder {
     // widget
-    private CircularProgressView progress;
-    private Button button;
+    @BindView(R.id.item_photo_progress_progressView) CircularProgressView progress;
+    @BindView(R.id.item_photo_progress_button) Button button;
 
     // data
     private boolean failed;
@@ -30,9 +36,7 @@ public class ProgressHolder extends PhotoInfoAdapter.ViewHolder
 
     public ProgressHolder(View itemView) {
         super(itemView);
-
-        this.progress = (CircularProgressView) itemView.findViewById(R.id.item_photo_progress_progressView);
-        this.button = (Button) itemView.findViewById(R.id.item_photo_progress_button);
+        ButterKnife.bind(this, itemView);
     }
 
     /** <br> UI. */
@@ -71,13 +75,11 @@ public class ProgressHolder extends PhotoInfoAdapter.ViewHolder
 
     /** <br> interface. */
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.item_photo_progress_button:
-                setProgressState();
-                ((PhotoActivity) Mysplash.getInstance().getTopActivity()).initRefresh();
-                break;
+    @OnClick(R.id.item_photo_progress_button) void retryRefresh() {
+        MysplashActivity activity =  Mysplash.getInstance().getTopActivity();
+        if (activity != null && activity instanceof PhotoActivity) {
+            setProgressState();
+            ((PhotoActivity) activity).initRefresh();
         }
     }
 }

@@ -20,7 +20,7 @@
         android:layout_height="match_parent"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
+        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
             android:id="@+id/item_collection_card_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+            <com.wangdaye.mysplash.common.ui.widget.CircleImageView
                 android:id="@+id/item_collection_card_avatar"
                 android:layout_width="@dimen/mini_icon_size"
                 android:layout_height="@dimen/mini_icon_size"

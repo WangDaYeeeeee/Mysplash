@@ -52,7 +52,7 @@
         </activity>
 
         <activity
-            android:name="._common.ui.activity.PreviewActivity"
+            android:name=".common.ui.activity.PreviewActivity"
             android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation"
             android:label="@string/app_name" />
 
@@ -86,7 +86,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="._common.ui.activity.LoginActivity"
+        <activity android:name=".common.ui.activity.LoginActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name"
             android:launchMode="singleInstance">
@@ -115,12 +115,12 @@
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
-        <activity android:name="._common.ui.activity.UpdateMeActivity"
+        <activity android:name=".common.ui.activity.UpdateMeActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
         <activity
-            android:name="._common.ui.activity.DownloadManageActivity"
+            android:name=".common.ui.activity.DownloadManageActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name">
             <intent-filter>
@@ -130,7 +130,7 @@
         </activity>
 
         <activity
-            android:name="._common.ui.activity.SettingsActivity"
+            android:name=".common.ui.activity.SettingsActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Settings"
             android:label="@string/action_settings" />
 
@@ -140,7 +140,7 @@
             android:label="@string/action_about"/>
 
         <activity
-            android:name="._common.ui.activity.IntroduceActivity"
+            android:name=".common.ui.activity.IntroduceActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
@@ -148,15 +148,15 @@
             android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation"
             android:label="@string/app_name" />
 
-        <activity android:name="._common.ui.activity.CustomApiActivity"
+        <activity android:name=".common.ui.activity.CustomApiActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
-        <activity android:name="._common.ui.activity.RelativeActivity"
+        <activity android:name=".common.ui.activity.RelativeActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
-        <activity android:name="._common.ui.activity.SetWallpaperActivity"
+        <activity android:name=".common.ui.activity.SetWallpaperActivity"
             android:theme="@style/MysplashTheme_dark.SetWallpaper"
             android:label="@string/app_name">
             <intent-filter>
@@ -169,7 +169,7 @@
         <!-- receiver. -->
 
         <receiver
-            android:name="._common.receiver.DownloadReceiver">
+            android:name=".common.receiver.DownloadReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>

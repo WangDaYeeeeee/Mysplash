@@ -2,11 +2,11 @@ package com.wangdaye.mysplash.photo.presenter;
 
 import android.net.Uri;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.service.PhotoInfoService;
-import com.wangdaye.mysplash._common.i.model.BrowsableModel;
-import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
-import com.wangdaye.mysplash._common.i.view.BrowsableView;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
+import com.wangdaye.mysplash.common.i.model.BrowsableModel;
+import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
+import com.wangdaye.mysplash.common.i.view.BrowsableView;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -44,12 +44,13 @@ public class BrowsableImplementor
     @Override
     public void requestBrowsableData() {
         view.showRequestDialog();
-        ((PhotoInfoService) model.getService()).requestAPhoto(model.getBrowsableDataKey(), this);
+        ((PhotoInfoService) model.getService())
+                .requestAPhoto(model.getBrowsableDataKey().get(0), this);
     }
 
     @Override
-    public void visitParentView() {
-        view.visitParentView();
+    public void visitPreviousPage() {
+        view.visitPreviousPage();
     }
 
     @Override
@@ -67,12 +68,14 @@ public class BrowsableImplementor
             view.dismissRequestDialog();
             view.drawBrowsableView(photo);
         } else {
-            ((PhotoInfoService) model.getService()).requestAPhoto(model.getBrowsableDataKey(), this);
+            ((PhotoInfoService) model.getService())
+                    .requestAPhoto(model.getBrowsableDataKey().get(0), this);
         }
     }
 
     @Override
     public void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t) {
-        ((PhotoInfoService) model.getService()).requestAPhoto(model.getBrowsableDataKey(), this);
+        ((PhotoInfoService) model.getService())
+                .requestAPhoto(model.getBrowsableDataKey().get(0), this);
     }
 }

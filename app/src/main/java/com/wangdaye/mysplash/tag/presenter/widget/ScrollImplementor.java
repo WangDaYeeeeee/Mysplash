@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.tag.presenter.widget;
 
-import com.wangdaye.mysplash._common.i.model.ScrollModel;
-import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.i.view.ScrollView;
+import com.wangdaye.mysplash.common.i.model.ScrollModel;
+import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash.common.i.view.ScrollView;
 
 /**
  * Scroll implementor.

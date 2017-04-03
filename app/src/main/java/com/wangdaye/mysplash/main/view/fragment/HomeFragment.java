@@ -12,23 +12,24 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.PagerManageModel;
-import com.wangdaye.mysplash._common.i.presenter.PagerManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common._basic.MysplashFragment;
-import com.wangdaye.mysplash._common.ui.widget.AutoHideInkPageIndicator;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.i.view.PagerManageView;
-import com.wangdaye.mysplash._common.i.view.PagerView;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.i.model.PagerManageModel;
+import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.i.view.PagerManageView;
+import com.wangdaye.mysplash.common.i.view.PagerView;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
-import com.wangdaye.mysplash._common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
@@ -37,8 +38,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Home fragment.
+ *
+ * This fragment is used to show the home page of Mysplash.
+ *
  * */
 
 public class HomeFragment extends MysplashFragment
@@ -49,13 +57,13 @@ public class HomeFragment extends MysplashFragment
     private PagerManageModel pagerManageModel;
 
     // view.
-    private StatusBarView statusBar;
+    @BindView(R.id.fragment_home_statusBar) StatusBarView statusBar;
 
-    private CoordinatorLayout container;
-    private NestedScrollAppBarLayout appBar;
-    private Toolbar toolbar;
-    private ViewPager viewPager;
-    private AutoHideInkPageIndicator indicator;
+    @BindView(R.id.fragment_home_container) CoordinatorLayout container;
+    @BindView(R.id.fragment_home_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.fragment_home_toolbar) Toolbar toolbar;
+    @BindView(R.id.fragment_home_viewPager) ViewPager viewPager;
+    @BindView(R.id.fragment_home_indicator) AutoHideInkPageIndicator indicator;
     private PagerView[] pagers = new PagerView[3];
 
     // presenter.
@@ -71,6 +79,7 @@ public class HomeFragment extends MysplashFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        ButterKnife.bind(this, view);
         initModel(savedInstanceState);
         initPresenter();
         initView(view, savedInstanceState);
@@ -97,7 +106,7 @@ public class HomeFragment extends MysplashFragment
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -107,7 +116,7 @@ public class HomeFragment extends MysplashFragment
     }
 
     @Override
-    public boolean needPagerBackToTop() {
+    public boolean needBackToTop() {
         return pagerManagePresenter.needPagerBackToTop();
     }
 
@@ -122,26 +131,33 @@ public class HomeFragment extends MysplashFragment
     @Override
     public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
         if (pagers[0] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeNewList(((HomePhotosView) pagers[0]).getPhotos());
+            ((MainActivity.SavedStateFragment) outState).setHomeNewList(
+                    ((HomePhotosView) pagers[0]).getPhotos());
         }
         if (pagers[1] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeFeaturedList(((HomePhotosView) pagers[1]).getPhotos());
+            ((MainActivity.SavedStateFragment) outState).setHomeFeaturedList(
+                    ((HomePhotosView) pagers[1]).getPhotos());
         }
         if (pagers[2] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeCollectionList(((HomeCollectionsView) pagers[2]).getCollections());
+            ((MainActivity.SavedStateFragment) outState).setHomeCollectionList(
+                    ((HomeCollectionsView) pagers[2]).getCollections());
         }
     }
 
     @Override
     public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
         if (pagers[0] != null) {
-            ((HomePhotosView) pagers[0]).setPhotos(((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
+            ((HomePhotosView) pagers[0]).setPhotos(
+                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
         }
         if (pagers[1] != null) {
-            ((HomePhotosView) pagers[1]).setPhotos(((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
+            ((HomePhotosView) pagers[1])
+                    .setPhotos(
+                            ((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
         }
         if (pagers[2] != null) {
-            ((HomeCollectionsView) pagers[2]).setCollections(((MainActivity.SavedStateFragment) savedInstanceState).getHomeCollectionList());
+            ((HomeCollectionsView) pagers[2]).setCollections(
+                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeCollectionList());
         }
     }
 
@@ -158,25 +174,14 @@ public class HomeFragment extends MysplashFragment
     // init.
 
     private void initView(View v, Bundle savedInstanceState) {
-        this.statusBar = (StatusBarView) v.findViewById(R.id.fragment_home_statusBar);
-        statusBar.setInitMaskAlpha();
-
-        this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_home_container);
-
-        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_home_appBar);
         appBar.setOnNestedScrollingListener(this);
 
-        this.toolbar = (Toolbar) v.findViewById(R.id.fragment_home_toolbar);
-        if (Mysplash.getInstance().isLightTheme()) {
-            toolbar.inflateMenu(R.menu.fragment_home_toolbar_light);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
-        } else {
-            toolbar.inflateMenu(R.menu.fragment_home_toolbar_dark);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
-        }
+        ThemeManager.inflateMenu(
+                toolbar, R.menu.fragment_home_toolbar_light, R.menu.fragment_home_toolbar_dark);
+        ThemeManager.setNavigationIcon(
+                toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
-        toolbar.setOnClickListener(this);
 
         initPages(v, savedInstanceState);
     }
@@ -208,16 +213,14 @@ public class HomeFragment extends MysplashFragment
 
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
-        this.viewPager = (ViewPager) v.findViewById(R.id.fragment_home_viewPager);
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
         viewPager.addOnPageChangeListener(this);
 
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.fragment_home_tabLayout);
+        TabLayout tabLayout = ButterKnife.findById(v, R.id.fragment_home_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
-        this.indicator = (AutoHideInkPageIndicator) v.findViewById(R.id.fragment_home_indicator);
         indicator.setViewPager(viewPager);
         indicator.setAlpha(0f);
 
@@ -253,7 +256,7 @@ public class HomeFragment extends MysplashFragment
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
@@ -261,21 +264,21 @@ public class HomeFragment extends MysplashFragment
             case -1:
                 toolbarPresenter.touchNavigatorIcon((MysplashActivity) getActivity());
                 break;
-
-            case R.id.fragment_home_toolbar:
-                toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
-                break;
         }
     }
 
-    // on menu item click swipeListener.
+    @OnClick(R.id.fragment_home_toolbar) void clickToolbar() {
+        toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
+    }
+
+    // on menu item click listener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
     }
 
-    // on page changed swipeListener.
+    // on page changed listener.
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -303,7 +306,7 @@ public class HomeFragment extends MysplashFragment
         }
     }
 
-    // on nested scrolling swipeListener.
+    // on nested scrolling listener.
 
     @Override
     public void onStartNestedScroll() {
@@ -313,12 +316,12 @@ public class HomeFragment extends MysplashFragment
     @Override
     public void onNestedScrolling() {
         if (needSetOnlyWhiteStatusBarText()) {
-            if (statusBar.isInitAlpha()) {
+            if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
                 setStatusBarStyle(true);
             }
         } else {
-            if (!statusBar.isInitAlpha()) {
+            if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
                 setStatusBarStyle(false);
             }

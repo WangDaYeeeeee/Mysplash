@@ -2,16 +2,20 @@ package com.wangdaye.mysplash.main.model.widget;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.i.model.PhotosModel;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.i.model.PhotosModel;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Photos object.
+ *
+ * A {@link PhotosModel} for {@link com.wangdaye.mysplash.main.view.widget.HomePhotosView}.
+ *
  * */
 
 public class PhotosObject
@@ -20,6 +24,7 @@ public class PhotosObject
     private PhotoAdapter adapter;
     private PhotoService service;
 
+    @Mysplash.PhotosTypeRule
     private int photosType;
     private String photosOrder;
 
@@ -36,12 +41,13 @@ public class PhotosObject
 
     /** <br> life cycle. */
 
-    public PhotosObject(MysplashActivity a, PhotoAdapter adapter, int photosType) {
+    public PhotosObject(MysplashActivity a,
+                        PhotoAdapter adapter, @Mysplash.PhotosTypeRule int photosType) {
         this.adapter = adapter;
         this.service = PhotoService.getService();
 
         this.photosType = photosType;
-        this.photosOrder = Mysplash.getInstance().getDefaultPhotoOrder();
+        this.photosOrder = SettingsOptionManager.getInstance(a).getDefaultPhotoOrder();
         RANDOM_TXT = a.getResources().getStringArray(R.array.photo_order_values)[3];
 
         this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;

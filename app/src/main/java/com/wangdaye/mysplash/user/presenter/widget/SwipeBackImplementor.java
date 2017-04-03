@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
-import com.wangdaye.mysplash._common.i.presenter.SwipeBackPresenter;
-import com.wangdaye.mysplash._common.i.view.SwipeBackView;
+import com.wangdaye.mysplash.common.i.presenter.SwipeBackPresenter;
+import com.wangdaye.mysplash.common.i.view.SwipeBackView;
 
 /**
  * Swipe back implementor.

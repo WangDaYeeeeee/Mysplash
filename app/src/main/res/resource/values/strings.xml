@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.0.6</string>
+    <string name="version_code">3.0.7</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -69,6 +69,8 @@
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
     <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="butter_knife">Butter Knife</string>
+    <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
@@ -254,8 +256,6 @@
     <string name="settings_title_download_scale">Download scale</string>
 
     <!-- share preferences. -->
-    <string name="key_light_theme">light_theme</string>
-
     <string name="key_back_to_top">back_to_top</string>
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>

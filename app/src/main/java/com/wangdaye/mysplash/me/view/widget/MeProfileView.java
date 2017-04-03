@@ -20,21 +20,28 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Me;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.i.model.LoadModel;
-import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
-import com.wangdaye.mysplash._common.i.view.LoadView;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash.common.i.view.LoadView;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Me profile view.
+ *
+ * This view is used to show application's profile.
+ *
  * */
 
 public class MeProfileView  extends FrameLayout
@@ -44,12 +51,12 @@ public class MeProfileView  extends FrameLayout
     private LoadModel loadModel;
 
     // view.
-    private CircularProgressView progressView;
+    @BindView(R.id.container_user_profile_progressView) CircularProgressView progressView;
 
-    private RelativeLayout profileContainer;
-    private RippleButton rippleButton;
-    private TextView locationTxt;
-    private TextView bioTxt;
+    @BindView(R.id.container_user_profile_profileContainer) RelativeLayout profileContainer;
+    @BindView(R.id.container_user_profile_followBtn) RippleButton rippleButton;
+    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
+    @BindView(R.id.container_user_profile_bio) TextView bioTxt;
 
     // presenter.
     private LoadPresenter loadPresenter;
@@ -82,6 +89,7 @@ public class MeProfileView  extends FrameLayout
         View v = LayoutInflater.from(getContext()).inflate(R.layout.container_user_profile, null);
         addView(v);
 
+        ButterKnife.bind(this, this);
         initModel();
         initPresenter();
         initView();
@@ -98,29 +106,19 @@ public class MeProfileView  extends FrameLayout
     // init.
 
     private void initView() {
-        this.progressView = (CircularProgressView) findViewById(R.id.container_user_profile_progressView);
         progressView.setVisibility(VISIBLE);
 
-        this.rippleButton = (RippleButton) findViewById(R.id.container_user_profile_followBtn);
         rippleButton.setDontAnimate(true);
         rippleButton.setOnSwitchListener(this);
 
-        this.profileContainer = (RelativeLayout) findViewById(R.id.container_user_profile_profileContainer);
         profileContainer.setVisibility(GONE);
 
-        this.locationTxt = (TextView) findViewById(R.id.container_user_profile_locationTxt);
         DisplayUtils.setTypeface(getContext(), locationTxt);
-
-        this.bioTxt = (TextView) findViewById(R.id.container_user_profile_bio);
         DisplayUtils.setTypeface(getContext(), bioTxt);
 
-        if (Mysplash.getInstance().isLightTheme()) {
-            ((ImageView) findViewById(R.id.container_user_profile_locationIcon))
-                    .setImageResource(R.drawable.ic_location_light);
-        } else {
-            ((ImageView) findViewById(R.id.container_user_profile_locationIcon))
-                    .setImageResource(R.drawable.ic_location_dark);
-        }
+        ImageView locationIcon = ButterKnife.findById(this, R.id.container_user_profile_locationIcon);
+        ThemeManager.setImageResource(
+                locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);
     }
 
     // interface.
@@ -176,7 +174,7 @@ public class MeProfileView  extends FrameLayout
 
     /** <br> interface. */
 
-    // on switch swipeListener.
+    // on switch listener.
 
     @Override
     public void onSwitch(boolean switchTo) {

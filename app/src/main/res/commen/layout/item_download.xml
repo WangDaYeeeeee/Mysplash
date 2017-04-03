@@ -52,7 +52,7 @@
             tools:src="@drawable/ic_item_check"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
-        <com.wangdaye.mysplash._common.ui.widget.CircularProgressIcon
+        <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
             android:id="@+id/item_download_stateIcon"
             android:layout_width="34dp"
             android:layout_height="34dp"

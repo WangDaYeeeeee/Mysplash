@@ -5,12 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
         android:id="@+id/fragment_category_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
             android:id="@+id/fragment_category_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,10 +22,10 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="?attr/colorPrimary" />
+                    app:sbv_fill_in_mode="true" />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/fragment_category_toolbar"
@@ -64,7 +64,7 @@
 
             </LinearLayout>
 
-        </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
         <com.wangdaye.mysplash.main.view.widget.CategoryPhotosView
             android:id="@+id/fragment_category_categoryPhotosView"
@@ -72,12 +72,12 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/fragment_category_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black" />
+        app:sbv_translucent_mode="true" />
 
 </FrameLayout>

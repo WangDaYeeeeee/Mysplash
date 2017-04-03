@@ -2,12 +2,12 @@ package com.wangdaye.mysplash.photo.presenter;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.service.PhotoInfoService;
-import com.wangdaye.mysplash._common.i.model.PhotoInfoModel;
-import com.wangdaye.mysplash._common.i.presenter.PhotoInfoPresenter;
-import com.wangdaye.mysplash._common.i.view.PhotoInfoView;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
+import com.wangdaye.mysplash.common.i.model.PhotoInfoModel;
+import com.wangdaye.mysplash.common.i.presenter.PhotoInfoPresenter;
+import com.wangdaye.mysplash.common.i.view.PhotoInfoView;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 
 import retrofit2.Call;
 import retrofit2.Response;

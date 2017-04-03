@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.me.presenter.widget;
 
-import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
-import com.wangdaye.mysplash._common.i.view.PagerView;
+import com.wangdaye.mysplash.common.i.presenter.PagerPresenter;
+import com.wangdaye.mysplash.common.i.view.PagerView;
 
 /**
  * Pager implementor.

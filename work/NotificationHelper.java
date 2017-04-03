@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash._common.utils.helper;
+package com.wangdaye.mysplash.common.utils.helper;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,11 +19,11 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.table.DownloadMissionEntity;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash._common._basic.FlagRunnable;
+import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash.common._basic.FlagRunnable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,14 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.wangdaye.mysplash._common.data.service.CollectionService;
-import com.wangdaye.mysplash._common.i.model.BrowsableModel;
+import com.wangdaye.mysplash.common.data.service.CollectionService;
+import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
 import java.util.List;
 
 /**
- * Browsable object.
+ * Browsable object. *
  * */
 
 public class BorwsableObject
@@ -49,13 +49,8 @@ public class BorwsableObject
     }
 
     @Override
-    public String getBrowsableDataKey() {
-        List<String> segmentList = intentUri.getPathSegments();
-        StringBuilder result = new StringBuilder(segmentList.get(0));
-        for (int i = 1; i < segmentList.size(); i ++) {
-            result.append(",").append(segmentList.get(i));
-        }
-        return result.toString();
+    public List<String> getBrowsableDataKey() {
+        return intentUri.getPathSegments();
     }
 
     @Override

@@ -14,7 +14,7 @@
     </changeBounds>
 
     <transition
-        class="com.wangdaye.mysplash._common.ui.transition.CoverTransition"
+        class="com.wangdaye.mysplash.common.ui.transition.CoverTransition"
         android:interpolator="@android:interpolator/fast_out_slow_in"
         tools:ignore="NewApi">
         <targets>
@@ -23,7 +23,7 @@
     </transition>
 
     <pathMotion
-        class="com.wangdaye.mysplash._common.ui.transition.GravityArcMotion"
+        class="com.wangdaye.mysplash.common.ui.transition.GravityArcMotion"
         android:maximumAngle="50" />
 
 </transitionSet>

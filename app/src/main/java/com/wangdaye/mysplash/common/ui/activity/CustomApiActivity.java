@@ -1,0 +1,207 @@
+package com.wangdaye.mysplash.common.ui.activity;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Message;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.text.TextUtils;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
+import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+/**
+ * Custom api dialog.
+ *
+ * This activity can help user to save personal API key.
+ *
+ * */
+
+public class CustomApiActivity extends MysplashActivity
+        implements SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
+    // widget
+    private SafeHandler<CustomApiActivity> handler;
+
+    @BindView(R.id.activity_custom_api_container) CoordinatorLayout container;
+    @BindView(R.id.activity_custom_api_statusBar) StatusBarView statusBar;
+    @BindView(R.id.activity_custom_api_key) EditText key;
+    @BindView(R.id.activity_custom_api_secret) EditText secret;
+
+    // data
+    private boolean backPressed = false; // mark the first click action.
+
+    /** <br> life cycle. */
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_custom_api);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!isStarted()) {
+            setStarted();
+            ButterKnife.bind(this);
+            initWidget();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void setTheme() {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+        }
+    }
+
+    @Override
+    protected void backToTop() {
+        // do nothing.
+    }
+
+    @Override
+    protected boolean operateStatusBarBySelf() {
+        return false;
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        switch (dir) {
+            case SwipeBackCoordinatorLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
+    }
+
+    @Override
+    public void handleBackPressed() {
+        // double click to exit.
+        if (backPressed) {
+            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        } else {
+            backPressed = true;
+            NotificationHelper.showSnackbar(
+                    getString(R.string.feedback_click_again_to_exit),
+                    Snackbar.LENGTH_SHORT);
+
+            new Timer().schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    handler.obtainMessage(1).sendToTarget();
+                }
+            }, 2000);
+        }
+    }
+
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
+
+    /** <br> UI. */
+
+    private void initWidget() {
+        this.handler = new SafeHandler<>(this);
+
+        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
+                this, R.id.activity_custom_api_swipeBackView);
+        swipeBackView.setOnSwipeListener(this);
+
+        ImageButton closeBtn = ButterKnife.findById(this, R.id.activity_custom_api_closeBtn);
+        ThemeManager.setImageResource(closeBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
+
+        DisplayUtils.setTypeface(this, key);
+        if (!TextUtils.isEmpty(CustomApiManager.getInstance(this).getCustomApiKey())) {
+            key.setText(CustomApiManager.getInstance(this).getCustomApiKey());
+        }
+
+        DisplayUtils.setTypeface(this, secret);
+        if (!TextUtils.isEmpty(CustomApiManager.getInstance(this).getCustomApiSecret())) {
+            secret.setText(CustomApiManager.getInstance(this).getCustomApiSecret());
+        }
+
+        TextView redirectUri = (TextView) findViewById(R.id.activity_custom_api_redirectUri);
+        DisplayUtils.setTypeface(this, redirectUri);
+    }
+
+    /** <br> interface. */
+
+    // on click listener.
+
+    @OnClick({
+            R.id.activity_custom_api_closeBtn,
+            R.id.activity_custom_api_cancelBtn}) void cancel() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+    }
+
+    @OnClick(R.id.activity_custom_api_enterBtn) void enter() {
+        boolean changed = CustomApiManager.getInstance(this)
+                .setCustomApi(
+                        this,
+                        key.getText().toString(),
+                        secret.getText().toString());
+
+        Intent intent = new Intent();
+        setResult(changed ? RESULT_OK : RESULT_CANCELED, intent);
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+    }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return true;
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        statusBar.setAlpha(1 - percent);
+        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+    }
+
+    @Override
+    public void onSwipeFinish(int dir) {
+        finishActivity(dir);
+    }
+
+    // handler.
+
+    @Override
+    public void handleMessage(Message message) {
+        switch (message.what) {
+            case 1:
+                backPressed = false;
+                break;
+        }
+    }
+}

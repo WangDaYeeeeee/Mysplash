@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.collection.presenter.activity;
 
-import com.wangdaye.mysplash._common.i.model.EditResultModel;
-import com.wangdaye.mysplash._common.i.presenter.EditResultPresenter;
-import com.wangdaye.mysplash._common.i.view.EditResultView;
+import com.wangdaye.mysplash.common.i.model.EditResultModel;
+import com.wangdaye.mysplash.common.i.presenter.EditResultPresenter;
+import com.wangdaye.mysplash.common.i.view.EditResultView;
 
 /**
  * Edit result implementor.

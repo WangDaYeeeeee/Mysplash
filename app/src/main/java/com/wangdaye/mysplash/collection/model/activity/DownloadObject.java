@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.collection.model.activity;
 
-import com.wangdaye.mysplash._common.i.model.DownloadModel;
+import com.wangdaye.mysplash.common.i.model.DownloadModel;
 
 /**
  * Download object.

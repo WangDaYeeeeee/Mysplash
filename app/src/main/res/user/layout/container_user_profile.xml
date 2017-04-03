@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.wangdaye.mysplash._common.ui.widget.rippleButton.RippleButton
+        <com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton
             android:id="@+id/container_user_profile_followBtn"
             android:layout_width="128dp"
             android:layout_height="@dimen/little_icon_size"

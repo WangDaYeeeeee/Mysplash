@@ -54,7 +54,7 @@
 
             </RelativeLayout>
 
-            <com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout
+            <com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout
                 android:id="@+id/dialog_select_collection_selectorRefreshView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -66,7 +66,7 @@
                     android:paddingTop="@dimen/little_margin"
                     android:clipToPadding="false" />
 
-            </com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout>
+            </com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout>
 
         </LinearLayout>
 

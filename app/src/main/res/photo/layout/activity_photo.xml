@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
         android:id="@+id/activity_photo_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,7 +15,7 @@
         android:transitionName="@string/transition_photo_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash._common.ui.widget.freedomSizeView.FreedomImageView
+        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
             android:id="@+id/activity_photo_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +23,7 @@
             android:transitionName="@string/transition_photo_image"
             android:foreground="?attr/selectableItemBackground"
             app:fiv_cover_mode="true"
-            app:layout_behavior="._common.ui.behavior.PhotoCoverBehavior"
+            app:layout_behavior=".common.ui.behavior.PhotoCoverBehavior"
             tools:ignore="UnusedAttribute" />
 
         <android.support.v7.widget.RecyclerView
@@ -34,18 +34,19 @@
             android:scrollbars="vertical"
             android:scrollbarStyle="outsideOverlay" />
 
-        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-            android:id="@+id/activity_photo_flowStatusBar"
-            android:background="?attr/colorPrimaryDark"
+        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_photo_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-    </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
-        android:id="@+id/activity_photo_statusBar"
-        android:background="@android:color/black"
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/activity_photo_translucentStatusBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true"
+        app:sbv_init_alpha="0.1"
+        app:sbv_darker_alpha="0.0" />
 
 </android.support.design.widget.CoordinatorLayout>

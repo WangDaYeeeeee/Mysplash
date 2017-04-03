@@ -5,15 +5,15 @@ import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.i.model.MyFollowModel;
-import com.wangdaye.mysplash._common.i.presenter.MyFollowPresenter;
-import com.wangdaye.mysplash._common.i.view.MyFollowView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.MyFollowAdapter;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.i.model.MyFollowModel;
+import com.wangdaye.mysplash.common.i.presenter.MyFollowPresenter;
+import com.wangdaye.mysplash.common.i.view.MyFollowView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class MyFollowImplementor
             }
             switch (model.getFollowType()) {
                 case MyFollowObject.FOLLOW_TYPE_FOLLOWERS:
-                    page = refresh ? 1: page + 1;
+                    page = Math.max(1, refresh ? 1: page + 1);
                     listener = new OnRequestUsersListener(c, page, refresh);
                     model.getService()
                             .requestFollowers(
@@ -64,7 +64,7 @@ public class MyFollowImplementor
                     break;
 
                 case MyFollowObject.FOLLOW_TYPE_FOLLOWING:
-                    page = refresh ? 1: page + 1;
+                    page = Math.max(1, refresh ? 1: page + 1);
                     listener = new OnRequestUsersListener(c, page, refresh);
                     model.getService()
                             .requestFollowing(

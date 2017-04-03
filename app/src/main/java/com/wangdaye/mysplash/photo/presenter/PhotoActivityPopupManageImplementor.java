@@ -3,9 +3,9 @@ package com.wangdaye.mysplash.photo.presenter;
 import android.content.Context;
 import android.view.View;
 
-import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.popup.PhotoMenuPopupWindow;
+import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.ui.popup.PhotoMenuPopupWindow;
 
 /**
  * Photo activity popup manage implementor.

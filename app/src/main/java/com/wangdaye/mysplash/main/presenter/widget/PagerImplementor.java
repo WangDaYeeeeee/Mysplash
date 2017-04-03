@@ -1,10 +1,16 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
-import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
-import com.wangdaye.mysplash._common.i.view.PagerView;
+import com.wangdaye.mysplash.common.i.presenter.PagerPresenter;
+import com.wangdaye.mysplash.common.i.view.PagerView;
 
 /**
  * Pager implementor.
+ *
+ * A {@link PagerPresenter} for {@link PagerView} in
+ * {@link com.wangdaye.mysplash.main.view.widget.HomePhotosView},
+ * {@link com.wangdaye.mysplash.main.view.widget.HomeSearchView},
+ * {@link com.wangdaye.mysplash.main.view.widget.HomeCollectionsView}.
+ *
  * */
 
 public class PagerImplementor

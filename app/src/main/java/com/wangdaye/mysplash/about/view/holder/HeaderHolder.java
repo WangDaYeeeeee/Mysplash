@@ -7,42 +7,42 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash._common.ui.dialog.TotalDialog;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.i.model.AboutModel;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
+import com.wangdaye.mysplash.common.ui.dialog.TotalDialog;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Header holder.
+ *
+ * This ViewHolder class is used to show header for {@link AboutAdapter}.
+ *
  * */
 
-public class HeaderHolder extends AboutAdapter.ViewHolder
-        implements View.OnClickListener {
+public class HeaderHolder extends AboutAdapter.ViewHolder {
     // widget
-    private ImageView appIcon;
+    @BindView(R.id.item_about_header_appIcon) ImageView appIcon;
 
     /** <br> life cycle. */
 
     public HeaderHolder(View itemView) {
         super(itemView);
+        ButterKnife.bind(this, itemView);
 
-        ImageButton backBtn = (ImageButton) itemView.findViewById(R.id.item_about_header_backButton);
-        if (Mysplash.getInstance().isLightTheme()) {
-            backBtn.setImageResource(R.drawable.ic_toolbar_back_light);
-        } else {
-            backBtn.setImageResource(R.drawable.ic_toolbar_back_dark);
-        }
-        backBtn.setOnClickListener(this);
-
-        this.appIcon = (ImageView) itemView.findViewById(R.id.item_about_header_appIcon);
+        ImageButton backBtn = ButterKnife.findById(itemView, R.id.item_about_header_backButton);
+        ThemeManager.setImageResource(
+                backBtn, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
 
         TextView version = (TextView) itemView.findViewById(R.id.item_about_header_versionCode);
         DisplayUtils.setTypeface(itemView.getContext(), version);
-
-        itemView.findViewById(R.id.item_about_header_unsplashContainer).setOnClickListener(this);
 
         TextView unsplashTitle = (TextView) itemView.findViewById(R.id.item_about_header_unsplashTitle);
         unsplashTitle.setText(itemView.getContext().getString(R.string.unsplash));
@@ -67,19 +67,20 @@ public class HeaderHolder extends AboutAdapter.ViewHolder
 
     /** <br> interface. */
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.item_about_header_backButton:
-                Mysplash.getInstance()
-                        .getTopActivity()
-                        .finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-                break;
+    @OnClick(R.id.item_about_header_backButton) void close() {
+        MysplashActivity activity = Mysplash.getInstance()
+                .getTopActivity();
+        if (activity != null) {
+            activity.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        }
+    }
 
-            case R.id.item_about_header_unsplashContainer:
-                TotalDialog dialog = new TotalDialog();
-                dialog.show(Mysplash.getInstance().getTopActivity().getFragmentManager(), null);
-                break;
+    @OnClick(R.id.item_about_header_unsplashContainer) void checkTotal() {
+        MysplashActivity activity = Mysplash.getInstance()
+                .getTopActivity();
+        if (activity != null) {
+            TotalDialog dialog = new TotalDialog();
+            dialog.show(activity.getFragmentManager(), null);
         }
     }
 }

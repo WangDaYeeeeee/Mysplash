@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.content.ContextCompat;
+import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,29 +19,30 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.i.model.LoadModel;
-import com.wangdaye.mysplash._common.i.model.ScrollModel;
-import com.wangdaye.mysplash._common.i.model.SearchModel;
-import com.wangdaye.mysplash._common.i.presenter.LoadPresenter;
-import com.wangdaye.mysplash._common.i.presenter.PagerPresenter;
-import com.wangdaye.mysplash._common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;
-import com.wangdaye.mysplash._common.i.view.PagerView;
-import com.wangdaye.mysplash._common.ui.adapter.CollectionAdapter;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;
-import com.wangdaye.mysplash._common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
-import com.wangdaye.mysplash._common.utils.AnimUtils;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.i.view.LoadView;
-import com.wangdaye.mysplash._common.i.view.ScrollView;
-import com.wangdaye.mysplash._common.i.view.SearchView;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.ScrollModel;
+import com.wangdaye.mysplash.common.i.model.SearchModel;
+import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.PagerPresenter;
+import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
+import com.wangdaye.mysplash.common.i.presenter.SearchPresenter;
+import com.wangdaye.mysplash.common.i.view.PagerView;
+import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.UserAdapter;
+import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
+import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.i.view.LoadView;
+import com.wangdaye.mysplash.common.i.view.ScrollView;
+import com.wangdaye.mysplash.common.i.view.SearchView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.model.widget.SearchCollectionsObject;
@@ -52,21 +53,29 @@ import com.wangdaye.mysplash.main.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.SearchCollectionsImplementor;
 import com.wangdaye.mysplash.main.presenter.widget.SearchPhotosImplementor;
-import com.wangdaye.mysplash._common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.main.presenter.widget.SearchUsersImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
- * Search content view.
+ * Home search view.
+ *
+ * This view is used to search photos, collections, users for
+ * {@link com.wangdaye.mysplash.main.view.fragment.SearchFragment}.
+ *
  * */
 
 @SuppressLint("ViewConstructor")
 public class HomeSearchView extends NestedScrollFrameLayout
         implements SearchView, PagerView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, 
         SelectCollectionDialog.OnCollectionsChangedListener{
     // model.
     private SearchModel searchModel;
@@ -74,13 +83,13 @@ public class HomeSearchView extends NestedScrollFrameLayout
     private ScrollModel scrollModel;
 
     // view.
-    private BothWaySwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
+    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
+    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
 
-    private CircularProgressView progressView;
-    private RelativeLayout feedbackContainer;
-    private TextView feedbackText;
-    private Button feedbackButton;
+    @BindView(R.id.container_searching_view_large_progressView) CircularProgressView progressView;
+    @BindView(R.id.container_searching_view_large_feedbackContainer) RelativeLayout feedbackContainer;
+    @BindView(R.id.container_searching_view_large_feedbackTxt) TextView feedbackText;
+    @BindView(R.id.container_searching_view_large_feedbackBtn) Button feedbackButton;
 
     // presenter.
     private SearchPresenter searchPresenter;
@@ -92,23 +101,28 @@ public class HomeSearchView extends NestedScrollFrameLayout
     public static final int SEARCH_PHOTOS_TYPE = 0;
     public static final int SEARCH_COLLECTIONS_TYPE = 1;
     public static final int SEARCH_USERS_TYPE = 2;
+    @IntDef({SEARCH_PHOTOS_TYPE, SEARCH_COLLECTIONS_TYPE, SEARCH_USERS_TYPE})
+    private @interface TypeRule {}
 
     /** <br> life cycle. */
 
-    public HomeSearchView(MainActivity a, int type, int id) {
+    public HomeSearchView(MainActivity a, @TypeRule int type, int id) {
         super(a);
         this.setId(id);
         this.initialize(a, type);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(MainActivity a, int type) {
-        View searchingView = LayoutInflater.from(getContext()).inflate(R.layout.container_searching_view_large, this, false);
+    private void initialize(MainActivity a, @TypeRule int type) {
+        View searchingView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_searching_view_large, this, false);
         addView(searchingView);
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
+        ButterKnife.bind(this, this);
         initModel(a, type);
         initPresenter(type);
         initView(type);
@@ -125,7 +139,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
 
     /** <br> presenter. */
 
-    private void initPresenter(int type) {
+    private void initPresenter(@TypeRule int type) {
         switch (type) {
             case SEARCH_PHOTOS_TYPE:
                 this.searchPresenter = new SearchPhotosImplementor(searchModel, this);
@@ -154,23 +168,16 @@ public class HomeSearchView extends NestedScrollFrameLayout
     }
 
     private void initContentView() {
-        this.refreshLayout = (BothWaySwipeRefreshLayout) findViewById(R.id.container_photo_list_swipeRefreshLayout);
+        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
-        if (Mysplash.getInstance().isLightTheme()) {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_light));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_light);
-        } else {
-            refreshLayout.setColorSchemeColors(ContextCompat.getColor(getContext(), R.color.colorTextContent_dark));
-            refreshLayout.setProgressBackgroundColorSchemeResource(R.color.colorPrimary_dark);
-        }
         refreshLayout.setVisibility(GONE);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         refreshLayout.setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
-        this.recyclerView = (RecyclerView) findViewById(R.id.container_photo_list_recyclerView);
         recyclerView.setAdapter(searchPresenter.getAdapter());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnScrollListener(scrollListener);
@@ -180,25 +187,23 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    private void initSearchingView(int type) {
-        this.progressView = (CircularProgressView) findViewById(R.id.container_searching_view_large_progressView);
+    private void initSearchingView(@TypeRule int type) {
         if (loadPresenter.getLoadState() == LoadObject.FAILED_STATE) {
             progressView.setVisibility(GONE);
         } else {
             progressView.setVisibility(VISIBLE);
         }
 
-        this.feedbackContainer = (RelativeLayout) findViewById(R.id.container_searching_view_large_feedbackContainer);
         if (loadPresenter.getLoadState() == LoadObject.FAILED_STATE) {
             feedbackContainer.setVisibility(VISIBLE);
         } else {
             feedbackContainer.setVisibility(GONE);
         }
 
-        ImageView feedbackImg = (ImageView) findViewById(R.id.container_searching_view_large_feedbackImg);
+        ImageView feedbackImg = ButterKnife.findById(
+                this, R.id.container_searching_view_large_feedbackImg);
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_search);
 
-        this.feedbackText = (TextView) findViewById(R.id.container_searching_view_large_feedbackTxt);
         switch (type) {
             case SEARCH_PHOTOS_TYPE:
                 feedbackText.setText(getContext().getString(R.string.feedback_search_photos_tv));
@@ -213,9 +218,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
                 break;
         }
 
-        this.feedbackButton = (Button) findViewById(R.id.container_searching_view_large_feedbackBtn);
         feedbackButton.setVisibility(GONE);
-        feedbackButton.setOnClickListener(this);
     }
 
     // interface.
@@ -239,7 +242,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
 
     // init.
 
-    private void initModel(MainActivity a, int type) {
+    private void initModel(MainActivity a, @TypeRule int type) {
         this.scrollModel = new ScrollObject(true);
         this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
 
@@ -273,10 +276,20 @@ public class HomeSearchView extends NestedScrollFrameLayout
         return scrollPresenter.needBackToTop();
     }
 
+    /**
+     * Get the photos from the adapter in this view.
+     *
+     * @return Photos in adapter.
+     * */
     public List<Photo> getPhotos() {
         return ((PhotoAdapter) searchPresenter.getAdapter()).getPhotoData();
     }
 
+    /**
+     * Set photos to the adapter in this view.
+     *
+     * @param list Photos that will be set to the adapter.
+     * */
     public void setPhotos(List<Photo> list) {
         if (list == null) {
             list = new ArrayList<>();
@@ -290,10 +303,20 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
+    /**
+     * Get the collections from the adapter in this view.
+     *
+     * @return Collections in adapter.
+     * */
     public List<Collection> getCollections() {
         return ((CollectionAdapter) searchPresenter.getAdapter()).getCollectionData();
     }
 
+    /**
+     * Set collections to the adapter in this view.
+     *
+     * @param list Collections that will be set to the adapter.
+     * */
     public void setCollections(List<Collection> list) {
         if (list == null) {
             list = new ArrayList<>();
@@ -304,10 +327,20 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
+    /**
+     * Get the users from the adapter in this view.
+     *
+     * @return Users in adapter.
+     * */
     public List<User> getUsers() {
         return ((UserAdapter) searchPresenter.getAdapter()).getUserData();
     }
 
+    /**
+     * Set users to the adapter in this view.
+     *
+     * @param list Users that will be set to the adapter.
+     * */
     public void setUsers(List<User> list) {
         if (list == null) {
             list = new ArrayList<>();
@@ -318,20 +351,20 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    /** <br> interface. */
-
-    // on click swipeListener.
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.container_searching_view_large_feedbackBtn:
-                searchPresenter.initRefresh(getContext());
-                break;
-        }
+    public HomeSearchView setClickListenerForFeedbackView(OnClickListener l) {
+        findViewById(R.id.container_searching_view_large).setOnClickListener(l);
+        return this;
     }
 
-    // on refresh and load swipeListener.
+    /** <br> interface. */
+
+    // on click listener.
+
+    @OnClick(R.id.container_searching_view_large_feedbackBtn) void retrySearch() {
+        searchPresenter.initRefresh(getContext());
+    }
+
+    // on refresh and load listener.
 
     @Override
     public void onRefresh() {
@@ -343,7 +376,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
         searchPresenter.loadMore(getContext(), false);
     }
 
-    // on scroll swipeListener.
+    // on scroll listener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
@@ -354,7 +387,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     };
 
-    // on change collections swipeListener.
+    // on change collections listener.
 
     @Override
     public void onAddCollection(Collection c) {

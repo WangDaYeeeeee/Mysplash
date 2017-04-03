@@ -2,11 +2,11 @@ package com.wangdaye.mysplash.user.presenter.activity;
 
 import android.net.Uri;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.i.model.BrowsableModel;
-import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
-import com.wangdaye.mysplash._common.i.view.BrowsableView;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.i.model.BrowsableModel;
+import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
+import com.wangdaye.mysplash.common.i.view.BrowsableView;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -48,8 +48,8 @@ public class BrowsableImplementor
     }
 
     @Override
-    public void visitParentView() {
-        view.visitParentView();
+    public void visitPreviousPage() {
+        view.visitPreviousPage();
     }
 
     @Override
@@ -60,8 +60,9 @@ public class BrowsableImplementor
     /** <br> utils. */
 
     private void requestUser() {
-        String[] keys = model.getBrowsableDataKey().split(",");
-        ((UserService) model.getService()).requestUserProfile(keys[0].substring(1), this);
+        ((UserService) model.getService()).requestUserProfile(
+                model.getBrowsableDataKey().get(0).substring(1),
+                this);
     }
 
     /** <br> swipeListener. */

@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 306
-        versionName "3.0.6"
+        versionCode 307
+        versionName "3.0.7"
     }
     sourceSets {
         main {
@@ -66,6 +66,8 @@ greendao {
     generateTests false
 }
 
+apply plugin: 'com.neenbedankt.android-apt'
+
 allprojects {
     repositories {
         maven { url "https://jitpack.io" }
@@ -87,4 +89,6 @@ dependencies {
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }

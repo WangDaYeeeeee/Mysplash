@@ -10,6 +10,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
@@ -24,49 +25,54 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.data.entity.unsplash.FollowingResult;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.i.model.DownloadModel;
-import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash._common._basic.MysplashFragment;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.i.model.DrawerModel;
-import com.wangdaye.mysplash._common.i.presenter.DrawerPresenter;
-import com.wangdaye.mysplash._common.i.presenter.FragmentManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
-import com.wangdaye.mysplash._common.i.view.DrawerView;
-import com.wangdaye.mysplash._common.i.view.MeManageView;
-import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.utils.manager.ShortcutsManager;
-import com.wangdaye.mysplash._common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.i.model.DownloadModel;
+import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
+import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.i.model.DrawerModel;
+import com.wangdaye.mysplash.common.i.presenter.DrawerPresenter;
+import com.wangdaye.mysplash.common.i.presenter.FragmentManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.MeManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash.common.i.view.DrawerView;
+import com.wangdaye.mysplash.common.i.view.MeManageView;
+import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.main.model.activity.DownloadObject;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
-import com.wangdaye.mysplash._common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.i.view.MessageManageView;
+import com.wangdaye.mysplash.common.i.model.FragmentManageModel;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.main.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
-import com.wangdaye.mysplash._common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Main activity.
@@ -83,8 +89,8 @@ public class MainActivity extends MysplashActivity
     private DownloadModel downloadModel;
 
     // view
-    private DrawerLayout drawer;
-    private NavigationView nav;
+    @BindView(R.id.activity_main_drawerLayout) DrawerLayout drawer;
+    @BindView(R.id.activity_main_navView) NavigationView nav;
     private ImageView appIcon;
     private CircleImageView navAvatar;
     private TextView navTitle;
@@ -119,6 +125,7 @@ public class MainActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initView();
             buildFragmentStack();
             ThreadManager.getInstance().execute(runnable);
@@ -160,7 +167,7 @@ public class MainActivity extends MysplashActivity
         } else {
             MysplashFragment f = fragmentManagePresenter.getTopFragment(this);
             if (f != null
-                    && f.needPagerBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
+                    && f.needBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
                 f.backToTop();
             } else if (f instanceof SearchFragment) {
                 fragmentManagePresenter.changeFragment(this, R.id.action_home, false);
@@ -172,7 +179,7 @@ public class MainActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Main);
         } else {
             setTheme(R.style.MysplashTheme_dark_Main);
@@ -185,8 +192,8 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean isFullScreen() {
-        return true;
+    protected boolean operateStatusBarBySelf() {
+        return false;
     }
 
     @Override
@@ -195,7 +202,7 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return fragmentManagePresenter.getTopFragment(this).getSnackbarContainer();
     }
 
@@ -209,7 +216,7 @@ public class MainActivity extends MysplashActivity
         }
     }
 
-    public void changeTheme() {
+    private void changeTheme() {
         DisplayUtils.changeTheme(this);
         reboot();
     }
@@ -240,10 +247,7 @@ public class MainActivity extends MysplashActivity
     private void initView() {
         this.handler = new SafeHandler<>(this);
 
-        this.drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
-
-        this.nav = (NavigationView) findViewById(R.id.activity_main_navView);
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             nav.inflateMenu(R.menu.activity_main_drawer_light);
         } else {
             nav.inflateMenu(R.menu.activity_main_drawer_dark);
@@ -260,20 +264,20 @@ public class MainActivity extends MysplashActivity
         View header = nav.getHeaderView(0);
         header.setOnClickListener(this);
 
-        this.navAvatar = (CircleImageView) header.findViewById(R.id.container_nav_header_avatar);
+        this.navAvatar = ButterKnife.findById(header, R.id.container_nav_header_avatar);
 
-        this.appIcon = (ImageView) header.findViewById(R.id.container_nav_header_appIcon);
+        this.appIcon = ButterKnife.findById(header, R.id.container_nav_header_appIcon);
         Glide.with(this)
                 .load(R.drawable.ic_launcher)
                 .into(appIcon);
 
-        this.navTitle = (TextView) header.findViewById(R.id.container_nav_header_title);
+        this.navTitle = ButterKnife.findById(header, R.id.container_nav_header_title);
         DisplayUtils.setTypeface(this, navTitle);
 
-        this.navSubtitle = (TextView) header.findViewById(R.id.container_nav_header_subtitle);
+        this.navSubtitle = ButterKnife.findById(header, R.id.container_nav_header_subtitle);
         DisplayUtils.setTypeface(this, navSubtitle);
 
-        this.navButton = (ImageButton) header.findViewById(R.id.container_nav_header_button);
+        this.navButton = ButterKnife.findById(header, R.id.container_nav_header_button);
         navButton.setOnClickListener(this);
     }
 
@@ -356,7 +360,7 @@ public class MainActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
@@ -371,7 +375,7 @@ public class MainActivity extends MysplashActivity
         }
     }
 
-    // on navigation item select swipeListener.
+    // on navigation item select listener.
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -379,7 +383,7 @@ public class MainActivity extends MysplashActivity
         return true;
     }
 
-    // on download photo swipeListener. (photo adapter)
+    // on download photo listener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
@@ -391,7 +395,7 @@ public class MainActivity extends MysplashActivity
         }
     }
 
-    // on write data swipeListener. (authorize manager)
+    // on write data listener. (authorize manager)
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -427,7 +431,7 @@ public class MainActivity extends MysplashActivity
             drawMeSubtitle();
             drawMeButton();
         } else {
-            messageManagePresenter.responseMessage(this, message.what, message.obj);
+            messageManagePresenter.responseMessage(message.what, message.obj);
         }
     }
 
@@ -447,7 +451,27 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void responseMessage(int what, Object o) {
-        // do nothing.
+        switch (what) {
+            case R.id.action_change_theme:
+                changeTheme();
+                break;
+
+            case R.id.action_download_manage:
+                IntentHelper.startDownloadManageActivity(this);
+                break;
+
+            case R.id.action_settings:
+                IntentHelper.startSettingsActivity(this);
+                break;
+
+            case R.id.action_about:
+                IntentHelper.startAboutActivity(this);
+                break;
+
+            default:
+                changeFragment(what);
+                break;
+        }
     }
 
     // me manage view.
@@ -506,17 +530,11 @@ public class MainActivity extends MysplashActivity
     @Override
     public void drawMeButton() {
         if (!AuthManager.getInstance().isAuthorized()) {
-            if (Mysplash.getInstance().isLightTheme()) {
-                navButton.setImageResource(R.drawable.ic_plus_mini_light);
-            } else {
-                navButton.setImageResource(R.drawable.ic_plus_mini_dark);
-            }
+            ThemeManager.setImageResource(
+                    navButton, R.drawable.ic_plus_mini_light, R.drawable.ic_plus_mini_dark);
         } else {
-            if (Mysplash.getInstance().isLightTheme()) {
-                navButton.setImageResource(R.drawable.ic_close_mini_light);
-            } else {
-                navButton.setImageResource(R.drawable.ic_close_mini_dark);
-            }
+            ThemeManager.setImageResource(
+                    navButton, R.drawable.ic_close_mini_light, R.drawable.ic_close_mini_dark);
         }
     }
 

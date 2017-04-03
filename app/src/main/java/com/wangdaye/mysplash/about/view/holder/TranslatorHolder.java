@@ -5,29 +5,35 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.i.model.AboutModel;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Translator holder.
+ *
+ * This ViewHolder class is used to show translator for {@link AboutAdapter}.
+ *
  * */
 
-public class TranslatorHolder extends AboutAdapter.ViewHolder
-        implements View.OnClickListener {
+public class TranslatorHolder extends AboutAdapter.ViewHolder {
     // widget
-    private CircleImageView avatar;
-    private ImageView flag;
-    private TextView title;
-    private TextView subtitle;
+    @BindView(R.id.item_about_translator_avatar) CircleImageView avatar;
+    @BindView(R.id.item_about_translator_flag) ImageView flag;
+    @BindView(R.id.item_about_translator_title) TextView title;
+    @BindView(R.id.item_about_translator_subtitle) TextView subtitle;
 
     // data
     private String url;
@@ -36,14 +42,7 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder
 
     public TranslatorHolder(View itemView) {
         super(itemView);
-
-        itemView.findViewById(R.id.item_about_translator_container).setOnClickListener(this);
-
-        this.avatar = (CircleImageView) itemView.findViewById(R.id.item_about_translator_avatar);
-        this.title = (TextView) itemView.findViewById(R.id.item_about_translator_title);
-        this.flag = (ImageView) itemView.findViewById(R.id.item_about_translator_flag);
-
-        this.subtitle = (TextView) itemView.findViewById(R.id.item_about_translator_subtitle);
+        ButterKnife.bind(this, itemView);
         DisplayUtils.setTypeface(itemView.getContext(), subtitle);
     }
 
@@ -67,17 +66,12 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder
         ImageHelper.releaseImageView(flag);
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.item_about_translator_container:
-                String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
-                Pattern regex = Pattern.compile(check);
-                Matcher matcher = regex.matcher(url);
-                IntentHelper.startWebActivity(
-                        v.getContext(),
-                        matcher.matches() ? "mailto:" + url : url);
-                break;
-        }
+    @OnClick(R.id.item_about_translator_container) void clickItem() {
+        String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern regex = Pattern.compile(check);
+        Matcher matcher = regex.matcher(url);
+        IntentHelper.startWebActivity(
+                itemView.getContext(),
+                matcher.matches() ? "mailto:" + url : url);
     }
 }

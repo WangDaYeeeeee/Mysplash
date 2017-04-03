@@ -4,16 +4,20 @@ import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.api.PhotoApi;
-import com.wangdaye.mysplash._common.data.service.PhotoService;
-import com.wangdaye.mysplash._common.i.model.CategoryModel;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.data.api.PhotoApi;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.i.model.CategoryModel;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Category object.
+ *
+ * A {@link CategoryModel} for {@link com.wangdaye.mysplash.main.view.widget.CategoryPhotosView}.
+ *
  * */
 
 public class CategoryObject
@@ -22,6 +26,7 @@ public class CategoryObject
     private PhotoAdapter adapter;
     private PhotoService service;
 
+    @Mysplash.CategoryIdRule
     private int photosCategory;
     private String photosOrder;
 
@@ -42,7 +47,7 @@ public class CategoryObject
 
         RANDOM_TXT = c.getResources().getStringArray(R.array.photo_order_values)[3];
         this.photosCategory = Mysplash.CATEGORY_BUILDINGS_ID;
-        this.photosOrder = Mysplash.getInstance()
+        this.photosOrder = SettingsOptionManager.getInstance(c)
                 .getDefaultPhotoOrder().equals(RANDOM_TXT) ? RANDOM_TXT : PhotoApi.ORDER_BY_LATEST;
 
         this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;

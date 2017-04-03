@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.User;
-import com.wangdaye.mysplash._common.data.service.FollowingService;
-import com.wangdaye.mysplash._common.data.service.UserService;
-import com.wangdaye.mysplash._common.i.model.UserModel;
-import com.wangdaye.mysplash._common.i.presenter.UserPresenter;
-import com.wangdaye.mysplash._common.i.view.UserView;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.i.model.UserModel;
+import com.wangdaye.mysplash.common.i.presenter.UserPresenter;
+import com.wangdaye.mysplash.common.i.view.UserView;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -62,7 +62,7 @@ public class UserImplementor
             followListener.cancel();
         }
         model.getUserService().cancel();
-        model.getFollowingService().cancel();
+        // model.getFollowingService().cancel();
     }
 
     @Override

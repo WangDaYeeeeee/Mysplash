@@ -6,22 +6,28 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.AboutModel;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.activity.IntroduceActivity;
-import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.about.model.AppAboutObject;
+import com.wangdaye.mysplash.common.i.model.AboutModel;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
+import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.about.model.AppObject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * App holder.
+ *
+ * This ViewHolder class is used to show app information for {@link AboutAdapter}.
+ *
  * */
 
-public class AppHolder extends AboutAdapter.ViewHolder
-        implements View.OnClickListener {
+public class AppHolder extends AboutAdapter.ViewHolder {
     // widget
-    private ImageView icon;
-    private TextView text;
+    @BindView(R.id.item_about_app_icon) ImageView icon;
+    @BindView(R.id.item_about_app_title) TextView text;
 
     // data
     private int id;
@@ -30,18 +36,14 @@ public class AppHolder extends AboutAdapter.ViewHolder
 
     public AppHolder(View itemView) {
         super(itemView);
-
-        itemView.findViewById(R.id.item_about_app_container).setOnClickListener(this);
-
-        this.icon = (ImageView) itemView.findViewById(R.id.item_about_app_icon);
-        this.text = (TextView) itemView.findViewById(R.id.item_about_app_title);
+        ButterKnife.bind(this, itemView);
     }
 
     /** <br> UI. */
 
     @Override
     public void onBindView(MysplashActivity a, AboutModel model) {
-        AppAboutObject object = (AppAboutObject) model;
+        AppObject object = (AppObject) model;
 
         icon.setImageResource(object.iconId);
         text.setText(object.text);
@@ -55,27 +57,22 @@ public class AppHolder extends AboutAdapter.ViewHolder
 
     /** <br> interface. */
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.item_about_app_container:
-                switch (id) {
-                    case 1:
-                        IntroduceActivity.watchAllIntroduce(Mysplash.getInstance().getTopActivity());
-                        break;
+    @OnClick(R.id.item_about_app_container) void clickItem() {
+        switch (id) {
+            case 1:
+                IntroduceActivity.watchAllIntroduce(Mysplash.getInstance().getTopActivity());
+                break;
 
-                    case 2:
-                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee");
-                        break;
+            case 2:
+                IntentHelper.startWebActivity(itemView.getContext(), "https://github.com/WangDaYeeeeee");
+                break;
 
-                    case 3:
-                        IntentHelper.startWebActivity(v.getContext(), "mailto:wangdayeeeeee@gmail.com");
-                        break;
+            case 3:
+                IntentHelper.startWebActivity(itemView.getContext(), "mailto:wangdayeeeeee@gmail.com");
+                break;
 
-                    case 4:
-                        IntentHelper.startWebActivity(v.getContext(), "https://github.com/WangDaYeeeeee/MySplash");
-                        break;
-                }
+            case 4:
+                IntentHelper.startWebActivity(itemView.getContext(), "https://github.com/WangDaYeeeeee/MySplash");
                 break;
         }
     }

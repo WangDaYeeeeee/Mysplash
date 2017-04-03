@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.model.activity;
 
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.i.model.DownloadModel;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.i.model.DownloadModel;
 
 /**
  * Download object.

@@ -12,28 +12,36 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.model.CategoryManageModel;
-import com.wangdaye.mysplash._common.i.presenter.CategoryManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
-import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common.i.view.CategoryManageView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common._basic.MysplashFragment;
-import com.wangdaye.mysplash._common.ui.popup.SearchCategoryPopupWindow;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.i.model.CategoryManageModel;
+import com.wangdaye.mysplash.common.i.presenter.CategoryManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash.common.i.view.CategoryManageView;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.ui.popup.SearchCategoryPopupWindow;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.CategoryPhotosView;
-import com.wangdaye.mysplash._common.utils.ValueUtils;
+import com.wangdaye.mysplash.common.utils.ValueUtils;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Category fragment.
+ *
+ * This fragment is used to show photos in a category.
+ *
  * */
 
 public class CategoryFragment extends MysplashFragment
@@ -45,14 +53,14 @@ public class CategoryFragment extends MysplashFragment
     private CategoryManageModel categoryManageModel;
 
     // view.
-    private StatusBarView statusBar;
+    @BindView(R.id.fragment_category_statusBar) StatusBarView statusBar;
 
-    private CoordinatorLayout container;
-    private NestedScrollAppBarLayout appBar;
-    private Toolbar toolbar;
-    private TextView title;
-    private ImageButton titleBtn;
-    private CategoryPhotosView photosView;
+    @BindView(R.id.fragment_category_container) CoordinatorLayout container;
+    @BindView(R.id.fragment_category_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.fragment_category_toolbar) Toolbar toolbar;
+    @BindView(R.id.fragment_category_title) TextView title;
+    @BindView(R.id.fragment_category_titleBtn) ImageButton titleBtn;
+    @BindView(R.id.fragment_category_categoryPhotosView) CategoryPhotosView photosView;
 
     // presenter.
     private CategoryManagePresenter categoryManagePresenter;
@@ -67,9 +75,10 @@ public class CategoryFragment extends MysplashFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_category, container, false);
+        ButterKnife.bind(this, view);
         initModel(savedInstanceState);
         initPresenter();
-        initView(view, savedInstanceState);
+        initView(savedInstanceState);
         return view;
     }
 
@@ -86,7 +95,7 @@ public class CategoryFragment extends MysplashFragment
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -129,44 +138,26 @@ public class CategoryFragment extends MysplashFragment
 
     // init.
 
-    private void initView(View v, Bundle savedInstanceState) {
-        this.statusBar = (StatusBarView) v.findViewById(R.id.fragment_category_statusBar);
-        statusBar.setInitMaskAlpha();
-
-        this.container = (CoordinatorLayout) v.findViewById(R.id.fragment_category_container);
-
-        this.appBar = (NestedScrollAppBarLayout) v.findViewById(R.id.fragment_category_appBar);
+    private void initView(Bundle savedInstanceState) {
         appBar.setOnNestedScrollingListener(this);
 
-        this.toolbar = (Toolbar) v.findViewById(R.id.fragment_category_toolbar);
-        if (Mysplash.getInstance().isLightTheme()) {
-            toolbar.inflateMenu(R.menu.fragment_category_toolbar_light);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_light);
-        } else {
-            toolbar.inflateMenu(R.menu.fragment_category_toolbar_dark);
-            toolbar.setNavigationIcon(R.drawable.ic_toolbar_menu_dark);
-        }
+        ThemeManager.inflateMenu(
+                toolbar,
+                R.menu.fragment_category_toolbar_light,
+                R.menu.fragment_category_toolbar_dark);
+        ThemeManager.setNavigationIcon(
+                toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
-        toolbar.setOnClickListener(this);
 
-        v.findViewById(R.id.fragment_category_touchBar).setOnClickListener(this);
-
-        this.title = (TextView) v.findViewById(R.id.fragment_category_title);
         title.setText(
                 ValueUtils.getToolbarTitleByCategory(
                         getActivity(),
                         categoryManagePresenter.getCategoryId()));
 
-        this.titleBtn = (ImageButton) v.findViewById(R.id.fragment_category_titleBtn);
-        if (Mysplash.getInstance().isLightTheme()) {
-            titleBtn.setImageResource(R.drawable.ic_menu_down_light);
-        } else {
-            titleBtn.setImageResource(R.drawable.ic_menu_down_dark);
-        }
-        titleBtn.setOnClickListener(this);
+        ThemeManager.setImageResource(
+                titleBtn, R.drawable.ic_menu_down_light, R.drawable.ic_menu_down_dark);
 
-        this.photosView = (CategoryPhotosView) v.findViewById(R.id.fragment_category_categoryPhotosView);
         photosView.setActivity((MainActivity) getActivity());
         photosView.setCategory(categoryManagePresenter.getCategoryId());
         if (savedInstanceState == null) {
@@ -194,13 +185,13 @@ public class CategoryFragment extends MysplashFragment
 
     // interface.
 
-    public boolean needPagerBackToTop() {
+    public boolean needBackToTop() {
         return photosView.needPagerBackToTop();
     }
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
@@ -208,31 +199,32 @@ public class CategoryFragment extends MysplashFragment
             case -1:
                 toolbarPresenter.touchNavigatorIcon((MysplashActivity) getActivity());
                 break;
-
-            case R.id.fragment_category_toolbar:
-                toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
-                break;
-
-            case R.id.fragment_category_touchBar:
-            case R.id.fragment_category_titleBtn:
-                SearchCategoryPopupWindow popup = new SearchCategoryPopupWindow(
-                        getActivity(),
-                        titleBtn,
-                        categoryManagePresenter.getCategoryId(),
-                        false);
-                popup.setOnSearchCategoryChangedListener(this);
-                break;
         }
     }
 
-    // on menu item click swipeListener.
+    @OnClick(R.id.fragment_category_toolbar) void clickToolbar() {
+        toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
+    }
+
+    @OnClick({
+            R.id.fragment_category_touchBar,
+            R.id.fragment_category_titleBtn}) void showCategoryList() {
+        SearchCategoryPopupWindow popup = new SearchCategoryPopupWindow(
+                getActivity(),
+                titleBtn,
+                categoryManagePresenter.getCategoryId(),
+                false);
+        popup.setOnSearchCategoryChangedListener(this);
+    }
+
+    // on menu item click listener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem((MysplashActivity) getActivity(), item.getItemId());
     }
 
-    // on nested scrolling swipeListener.
+    // on nested scrolling listener.
 
     @Override
     public void onStartNestedScroll() {
@@ -242,12 +234,12 @@ public class CategoryFragment extends MysplashFragment
     @Override
     public void onNestedScrolling() {
         if (needSetOnlyWhiteStatusBarText()) {
-            if (statusBar.isInitAlpha()) {
+            if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
                 setStatusBarStyle(true);
             }
         } else {
-            if (!statusBar.isInitAlpha()) {
+            if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
                 setStatusBarStyle(false);
             }
@@ -259,7 +251,7 @@ public class CategoryFragment extends MysplashFragment
         // do nothing.
     }
 
-    // on search category changed swipeListener.
+    // on search category changed listener.
 
     @Override
     public void onSearchCategoryChanged(int categoryId) {

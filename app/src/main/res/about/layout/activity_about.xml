@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
             android:id="@+id/activity_about_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimaryDark" />
 
-        <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+        <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
             android:id="@+id/activity_about_swipeBackView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+        </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
     </LinearLayout>
 

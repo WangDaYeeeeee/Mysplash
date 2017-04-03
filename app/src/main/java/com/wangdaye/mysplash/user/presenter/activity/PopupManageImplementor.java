@@ -5,10 +5,10 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.i.presenter.PopupManagePresenter;
-import com.wangdaye.mysplash._common.i.view.PopupManageView;
-import com.wangdaye.mysplash._common.ui.popup.PhotoOrderPopupWindow;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 /**
  * Popup manage implementor.

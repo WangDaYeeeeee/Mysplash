@@ -7,14 +7,14 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
         android:id="@+id/activity_tag_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?attr/root_color"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
             android:id="@+id/activity_tag_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -26,7 +26,7 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -40,7 +40,7 @@
 
             </LinearLayout>
 
-        </com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
         <com.wangdaye.mysplash.tag.view.widget.TagPhotosView
             android:id="@+id/activity_tag_tagPhotosView"
@@ -48,12 +48,12 @@
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout>
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
-    <com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/activity_tag_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/black" />
+        app:sbv_translucent_mode="true" />
 
 </android.support.design.widget.CoordinatorLayout>

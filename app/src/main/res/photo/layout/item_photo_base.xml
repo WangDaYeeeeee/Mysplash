@@ -41,7 +41,7 @@
             tools:text="ON 2016-07-23"
             tools:ignore="RtlHardcoded" />
 
-        <com.wangdaye.mysplash._common.ui.widget.CircleImageView
+        <com.wangdaye.mysplash.common.ui.widget.CircleImageView
             android:id="@+id/item_photo_base_avatar"
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
@@ -57,7 +57,7 @@
 
     </RelativeLayout>
 
-    <com.wangdaye.mysplash._common.ui.widget.PhotoDownloadView
+    <com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView
         android:id="@+id/item_photo_base_btnBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

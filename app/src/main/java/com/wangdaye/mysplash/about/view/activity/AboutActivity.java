@@ -4,26 +4,30 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * About activity.
+ *
+ * This activity is used to show the about app information.
+ *
  * */
 
 public class AboutActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener {
-    // widget
-    private CoordinatorLayout container;
-    private StatusBarView statusBar;
-    private RecyclerView recyclerView;
+    // widget.
+    @BindView(R.id.activity_about_container) CoordinatorLayout container;
+    @BindView(R.id.activity_about_statusBar) StatusBarView statusBar;
+    @BindView(R.id.activity_about_recyclerView) RecyclerView recyclerView;
 
     /** <br> life cycle. */
 
@@ -38,13 +42,14 @@ public class AboutActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initWidget();
         }
     }
 
     @Override
     protected void setTheme() {
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
@@ -57,8 +62,8 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean isFullScreen() {
-        return true;
+    protected boolean operateStatusBarBySelf() {
+        return false;
     }
 
     @Override
@@ -82,33 +87,25 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
     /** <br> UI. */
 
     private void initWidget() {
-        this.container = (CoordinatorLayout) findViewById(R.id.activity_about_container);
-
-        SwipeBackCoordinatorLayout swipeBackView
-                = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_about_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
+                this, R.id.activity_about_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        this.statusBar = (StatusBarView) findViewById(R.id.activity_about_statusBar);
-        if (DisplayUtils.isNeedSetStatusBarMask()) {
-            statusBar.setBackgroundResource(R.color.colorPrimary_light);
-            statusBar.setMask(true);
-        }
-
-        this.recyclerView = (RecyclerView) findViewById(R.id.activity_about_recyclerView);
         recyclerView.setAdapter(new AboutAdapter(this));
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
     /** <br> interface. */
 
-    // on swipe swipeListener.
+    // on swipe listener.
 
     @Override
     public boolean canSwipeBack(int dir) {

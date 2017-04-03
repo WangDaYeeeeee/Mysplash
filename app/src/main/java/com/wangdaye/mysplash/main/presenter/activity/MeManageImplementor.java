@@ -5,16 +5,19 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.i.presenter.MeManagePresenter;
-import com.wangdaye.mysplash._common.i.view.MeManageView;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.i.presenter.MeManagePresenter;
+import com.wangdaye.mysplash.common.i.view.MeManageView;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 /**
  * Me manage implementor.
+ *
+ * A {@link MeManagePresenter} for {@link com.wangdaye.mysplash.main.view.activity.MainActivity}.
+ *
  * */
 
 public class MeManageImplementor

@@ -1,11 +1,15 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
-import com.wangdaye.mysplash._common.i.presenter.MessageManagePresenter;
-import com.wangdaye.mysplash._common.i.view.MessageManageView;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash.common.i.view.MessageManageView;
 
 /**
  * Message manage implementor.
+ *
+ * A {@link MessageManagePresenter} for
+ * {@link com.wangdaye.mysplash.main.view.fragment.SearchFragment},
+ * {@link com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment}.
+ *
  * */
 
 public class MessageManageImplementor
@@ -25,7 +29,7 @@ public class MessageManageImplementor
     }
 
     @Override
-    public void responseMessage(final MysplashActivity a, int what, Object o) {
+    public void responseMessage(int what, Object o) {
         switch (what) {
             case 1:
                 view.responseMessage(what, o);

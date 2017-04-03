@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.model.activity;
 
-import com.wangdaye.mysplash._common.i.model.DrawerModel;
+import com.wangdaye.mysplash.common.i.model.DrawerModel;
 
 /**
  * Drawer object.

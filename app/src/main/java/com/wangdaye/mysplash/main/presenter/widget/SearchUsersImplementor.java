@@ -6,18 +6,21 @@ import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.SearchUsersResult;
-import com.wangdaye.mysplash._common.data.service.SearchService;
-import com.wangdaye.mysplash._common.i.model.SearchModel;
-import com.wangdaye.mysplash._common.i.presenter.SearchPresenter;
-import com.wangdaye.mysplash._common.i.view.SearchView;
-import com.wangdaye.mysplash._common.ui.adapter.UserAdapter;
+import com.wangdaye.mysplash.common.data.entity.unsplash.SearchUsersResult;
+import com.wangdaye.mysplash.common.data.service.SearchService;
+import com.wangdaye.mysplash.common.i.model.SearchModel;
+import com.wangdaye.mysplash.common.i.presenter.SearchPresenter;
+import com.wangdaye.mysplash.common.i.view.SearchView;
+import com.wangdaye.mysplash.common.ui.adapter.UserAdapter;
 
 import retrofit2.Call;
 import retrofit2.Response;
 
 /**
  * Search users implementor.
+ *
+ * A {@link SearchPresenter} for {@link com.wangdaye.mysplash.main.view.widget.HomeSearchView}.
+ *
  * */
 
 public class SearchUsersImplementor
@@ -46,7 +49,7 @@ public class SearchUsersImplementor
             } else {
                 model.setLoading(true);
             }
-            page = refresh ? 1 : page + 1;
+            page = Math.max(1, refresh ? 1 : page + 1);
             listener = new OnRequestUsersListener(c, page, refresh);
             model.getService()
                     .searchUsers(

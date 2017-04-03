@@ -19,33 +19,34 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common.i.model.DownloadModel;
-import com.wangdaye.mysplash._common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash._common.ui.dialog.DownloadRepeatDialog;
-import com.wangdaye.mysplash._common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash._common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash._common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.FileUtils;
-import com.wangdaye.mysplash._common.utils.helper.DatabaseHelper;
-import com.wangdaye.mysplash._common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash._common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash._common.utils.manager.AuthManager;
-import com.wangdaye.mysplash._common.i.model.BrowsableModel;
-import com.wangdaye.mysplash._common.i.model.EditResultModel;
-import com.wangdaye.mysplash._common.i.presenter.BrowsablePresenter;
-import com.wangdaye.mysplash._common.i.presenter.EditResultPresenter;
-import com.wangdaye.mysplash._common.i.presenter.SwipeBackManagePresenter;
-import com.wangdaye.mysplash._common.i.view.BrowsableView;
-import com.wangdaye.mysplash._common.i.view.EditResultView;
-import com.wangdaye.mysplash._common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash._common.ui.dialog.RequestBrowsableDataDialog;
-import com.wangdaye.mysplash._common.ui.dialog.UpdateCollectionDialog;
-import com.wangdaye.mysplash._common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.i.model.DownloadModel;
+import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.FileUtils;
+import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.i.model.BrowsableModel;
+import com.wangdaye.mysplash.common.i.model.EditResultModel;
+import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
+import com.wangdaye.mysplash.common.i.presenter.EditResultPresenter;
+import com.wangdaye.mysplash.common.i.presenter.SwipeBackManagePresenter;
+import com.wangdaye.mysplash.common.i.view.BrowsableView;
+import com.wangdaye.mysplash.common.i.view.EditResultView;
+import com.wangdaye.mysplash.common.i.view.SwipeBackManageView;
+import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
+import com.wangdaye.mysplash.common.ui.dialog.UpdateCollectionDialog;
+import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.collection.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.collection.model.activity.DownloadObject;
 import com.wangdaye.mysplash.collection.model.activity.EditResultObject;
@@ -55,17 +56,24 @@ import com.wangdaye.mysplash.collection.presenter.activity.EditResultImplementor
 import com.wangdaye.mysplash.collection.presenter.activity.SwipeBackManageImplementor;
 import com.wangdaye.mysplash.collection.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash._common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 /**
  * Collection activity.
+ *
+ * This activity is used to show a collection.
+ *
  * */
 
 public class CollectionActivity extends MysplashActivity
@@ -82,13 +90,13 @@ public class CollectionActivity extends MysplashActivity
     // view.
     private RequestBrowsableDataDialog requestDialog;
 
-    private StatusBarView statusBar;
+    @BindView(R.id.activity_collection_statusBar) StatusBarView statusBar;
 
-    private CoordinatorLayout container;
-    private NestedScrollAppBarLayout appBar;
-    private RelativeLayout creatorBar;
-    private CircleImageView avatarImage;
-    private CollectionPhotosView photosView;
+    @BindView(R.id.activity_collection_container) CoordinatorLayout container;
+    @BindView(R.id.activity_collection_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.activity_collection_creatorBar) RelativeLayout creatorBar;
+    @BindView(R.id.activity_collection_avatar) CircleImageView avatarImage;
+    @BindView(R.id.activity_collection_photosView) CollectionPhotosView photosView;
     
     // presenter.
     private ToolbarPresenter toolbarPresenter;
@@ -116,6 +124,7 @@ public class CollectionActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initView(true);
         }
     }
@@ -144,7 +153,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (Mysplash.getInstance().isLightTheme()) {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Collection);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Collection);
@@ -170,15 +179,21 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean isFullScreen() {
-        return true;
+    protected boolean operateStatusBarBySelf() {
+        return false;
     }
 
     @Override
     public void finishActivity(int dir) {
         Intent result = new Intent();
-        result.putExtra(MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION, editResultPresenter.getEditKey() == null);
-        result.putExtra(MeActivity.KEY_ME_ACTIVITY_COLLECTION, getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
+        // told parent if this collection was deleted.
+        result.putExtra(
+                MeActivity.KEY_ME_ACTIVITY_DELETE_COLLECTION,
+                editResultPresenter.getEditKey() == null);
+        // told parent if this collection is created by the user.
+        result.putExtra(
+                MeActivity.KEY_ME_ACTIVITY_COLLECTION,
+                getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         setResult(RESULT_OK, result);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         finish();
@@ -194,7 +209,7 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    public View getSnackbarContainer() {
+    public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
@@ -219,24 +234,19 @@ public class CollectionActivity extends MysplashActivity
         } else {
             Collection c = (Collection) editResultPresenter.getEditKey();
 
-            this.container = (CoordinatorLayout) findViewById(R.id.activity_collection_container);
-
-            this.statusBar = (StatusBarView) findViewById(R.id.activity_collection_statusBar);
-            statusBar.setInitMaskAlpha();
-
-            SwipeBackCoordinatorLayout swipeBackView
-                    = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_collection_swipeBackView);
+            SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
+                    this, R.id.activity_collection_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
-            this.appBar = (NestedScrollAppBarLayout) findViewById(R.id.activity_collection_appBar);
             appBar.setOnNestedScrollingListener(this);
 
-            TextView title = (TextView) findViewById(R.id.activity_collection_title);
+            TextView title = ButterKnife.findById(this, R.id.activity_collection_title);
             title.setText(c.title);
 
-            StatusBarView titleStatusBar = (StatusBarView) findViewById(R.id.activity_collection_titleStatusBar);
+            StatusBarView titleStatusBar = ButterKnife.findById(
+                    this, R.id.activity_collection_titleStatusBar);
 
-            TextView description = (TextView) findViewById(R.id.activity_collection_description);
+            TextView description = ButterKnife.findById(this, R.id.activity_collection_description);
             if (TextUtils.isEmpty(c.description)) {
                 titleStatusBar.setVisibility(View.GONE);
                 description.setVisibility(View.GONE);
@@ -245,24 +255,19 @@ public class CollectionActivity extends MysplashActivity
                 description.setText(c.description);
             }
 
-            Toolbar toolbar = (Toolbar) findViewById(R.id.activity_collection_toolbar);
-            if (Mysplash.getInstance().isLightTheme()) {
-                if (browsablePresenter.isBrowsable()) {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_light);
-                } else {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_light);
-                }
-                toolbar.inflateMenu(R.menu.activity_collection_toolbar_light);
-                toolbar.setOnMenuItemClickListener(this);
+            Toolbar toolbar = ButterKnife.findById(this, R.id.activity_collection_toolbar);
+            if (browsablePresenter.isBrowsable()) {
+                ThemeManager.setNavigationIcon(
+                        toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
             } else {
-                if (browsablePresenter.isBrowsable()) {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
-                } else {
-                    toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
-                }
-                toolbar.inflateMenu(R.menu.activity_collection_toolbar_dark);
-                toolbar.setOnMenuItemClickListener(this);
+                ThemeManager.setNavigationIcon(
+                        toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
             }
+            ThemeManager.inflateMenu(
+                    toolbar,
+                    R.menu.activity_collection_toolbar_light,
+                    R.menu.activity_collection_toolbar_dark);
+            toolbar.setOnMenuItemClickListener(this);
             toolbar.setNavigationOnClickListener(this);
             if (AuthManager.getInstance().getUsername() != null
                     && AuthManager.getInstance().getUsername().equals(c.user.username)) {
@@ -276,18 +281,12 @@ public class CollectionActivity extends MysplashActivity
                 toolbar.getMenu().getItem(2).setVisible(false);
             }
 
-            this.creatorBar = (RelativeLayout) findViewById(R.id.activity_collection_creatorBar);
-
-            findViewById(R.id.activity_collection_touchBar).setOnClickListener(this);
-
-            this.avatarImage = (CircleImageView) findViewById(R.id.activity_collection_avatar);
             ImageHelper.loadAvatar(this, avatarImage, c.user, null);
 
-            TextView subtitle = (TextView) findViewById(R.id.activity_collection_subtitle);
+            TextView subtitle = ButterKnife.findById(this, R.id.activity_collection_subtitle);
             DisplayUtils.setTypeface(this, subtitle);
             subtitle.setText(getString(R.string.by) + " " + c.user.name);
 
-            this.photosView = (CollectionPhotosView) findViewById(R.id.activity_collection_photosView);
             photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
 
             BaseSavedStateFragment f = SavedStateFragment.getData(this);
@@ -333,11 +332,11 @@ public class CollectionActivity extends MysplashActivity
             dialog.setOnCheckOrDownloadListener(this);
             dialog.show(getFragmentManager(), null);
         } else {
-            onDownload();
+            requestPermissionAndDownload();
         }
     }
 
-    private void onDownload() {
+    private void requestPermissionAndDownload() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             downloadPresenter.download(this);
         } else {
@@ -365,7 +364,8 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permission, @NonNull int[] grantResult) {
         super.onRequestPermissionsResult(requestCode, permission, grantResult);
         for (int i = 0; i < permission.length; i ++) {
             switch (permission[i]) {
@@ -384,36 +384,36 @@ public class CollectionActivity extends MysplashActivity
 
     /** <br> interface. */
 
-    // on click swipeListener.
+    // on click listener.
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
                 if (browsablePresenter.isBrowsable()) {
-                    browsablePresenter.visitParentView();
+                    browsablePresenter.visitPreviousPage();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
-                break;
-
-            case R.id.activity_collection_touchBar:
-                IntentHelper.startUserActivity(
-                        this,
-                        avatarImage,
-                        ((Collection) editResultPresenter.getEditKey()).user,
-                        UserActivity.PAGE_PHOTO);
                 break;
         }
     }
 
-    // on menu item click swipeListener.
+    @OnClick(R.id.activity_collection_touchBar) void checkAuthor() {
+        IntentHelper.startUserActivity(
+                this,
+                avatarImage,
+                ((Collection) editResultPresenter.getEditKey()).user,
+                UserActivity.PAGE_PHOTO);
+    }
+
+    // on menu item click listener.
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         return toolbarPresenter.touchMenuItem(this, item.getItemId());
     }
 
-    // on download photo swipeListener. (photo adapter)
+    // on download photo listener. (photo adapter)
 
     @Override
     public void onDownload(Photo photo) {
@@ -425,7 +425,7 @@ public class CollectionActivity extends MysplashActivity
         }
     }
 
-    // on nested scrolling swipeListener.
+    // on nested scrolling listener.
 
     @Override
     public void onStartNestedScroll() {
@@ -435,12 +435,14 @@ public class CollectionActivity extends MysplashActivity
     @Override
     public void onNestedScrolling() {
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
-            if (!statusBar.isInitAlpha()) {
+            // the app bar layout can be seen.
+            if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
                 DisplayUtils.setStatusBarStyle(this, false);
             }
         } else {
-            if (statusBar.isInitAlpha()) {
+            // the app bar layout has been hidden.
+            if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
                 DisplayUtils.setStatusBarStyle(this, true);
             }
@@ -452,7 +454,7 @@ public class CollectionActivity extends MysplashActivity
         // do nothing.
     }
 
-    // on swipe swipeListener.
+    // on swipe listener.
 
     @Override
     public boolean canSwipeBack(int dir) {
@@ -469,7 +471,7 @@ public class CollectionActivity extends MysplashActivity
         swipeBackManagePresenter.swipeBackFinish(this, dir);
     }
 
-    // on collection changed swipeListener.
+    // on collection changed listener.
 
     @Override
     public void onEditCollection(Collection c) {
@@ -483,7 +485,7 @@ public class CollectionActivity extends MysplashActivity
         editResultPresenter.deleteSomething(c);
     }
 
-    // on check or download swipeListener. (Collection)
+    // on check or download listener. (Collection)
 
     @Override
     public void onCheck(Object obj) {
@@ -492,7 +494,7 @@ public class CollectionActivity extends MysplashActivity
 
     @Override
     public void onDownload(Object obj) {
-        onDownload();
+        requestPermissionAndDownload();
     }
 
     // view.
@@ -562,7 +564,7 @@ public class CollectionActivity extends MysplashActivity
     }
 
     @Override
-    public void visitParentView() {
+    public void visitPreviousPage() {
         IntentHelper.startMainActivity(this);
     }
 

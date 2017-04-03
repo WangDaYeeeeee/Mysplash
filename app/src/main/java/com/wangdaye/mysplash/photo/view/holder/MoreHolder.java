@@ -5,21 +5,27 @@ import android.widget.ImageView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash._common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash._common._basic.MysplashActivity;
-import com.wangdaye.mysplash._common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash._common.utils.DisplayUtils;
-import com.wangdaye.mysplash._common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash._common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * More holder.
+ *
+ * This view holder is used to show related photos and collections information.
+ *
  * */
 
-public class MoreHolder extends PhotoInfoAdapter.ViewHolder 
-        implements View.OnClickListener {
+public class MoreHolder extends PhotoInfoAdapter.ViewHolder {
     // widget
-    private ImageView imageView;
+    @BindView(R.id.item_photo_more_image) ImageView imageView;
     private OnLoadImageCallback callback;
     
     // data
@@ -31,10 +37,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
 
     public MoreHolder(View itemView) {
         super(itemView);
-        
-        itemView.findViewById(R.id.item_photo_more).setOnClickListener(this);
-        
-        this.imageView = (ImageView) itemView.findViewById(R.id.item_photo_more_image);
+        ButterKnife.bind(this, itemView);
     }
 
     /** <br> UI. */
@@ -93,14 +96,9 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
 
     // on click swipeListener.
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.item_photo_more:
-                IntentHelper.startRelativeActivity(
-                        Mysplash.getInstance().getTopActivity(),
-                        photo);
-                break;
-        }
+    @OnClick(R.id.item_photo_more) void clickItem() {
+        IntentHelper.startRelativeActivity(
+                Mysplash.getInstance().getTopActivity(),
+                photo);
     }
 }
