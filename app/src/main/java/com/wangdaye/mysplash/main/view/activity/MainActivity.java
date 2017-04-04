@@ -22,7 +22,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
@@ -109,6 +108,10 @@ public class MainActivity extends MysplashActivity
     // data.
     private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID = "main_activity_fragment_id";
     private final String KEY_MAIN_ACTIVITY_SELECTED_ID = "main_activity_selected_id";
+
+    private final int REFRESH_PROFILE = 1;
+    private final int REFRESH_SHORTCUTS = 2;
+    private final int DRAW_PROFILE = 3;
 
     /** <br> life cycle. */
 
@@ -267,9 +270,7 @@ public class MainActivity extends MysplashActivity
         this.navAvatar = ButterKnife.findById(header, R.id.container_nav_header_avatar);
 
         this.appIcon = ButterKnife.findById(header, R.id.container_nav_header_appIcon);
-        Glide.with(this)
-                .load(R.drawable.ic_launcher)
-                .into(appIcon);
+        ImageHelper.loadIcon(this, appIcon, R.drawable.ic_launcher);
 
         this.navTitle = ButterKnife.findById(header, R.id.container_nav_header_title);
         DisplayUtils.setTypeface(this, navTitle);
@@ -425,13 +426,27 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void handleMessage(Message message) {
-        if (message.what == 1) {
-            drawMeAvatar();
-            drawMeTitle();
-            drawMeSubtitle();
-            drawMeButton();
-        } else {
-            messageManagePresenter.responseMessage(message.what, message.obj);
+        switch (message.what) {
+            case REFRESH_PROFILE:
+                AuthManager.getInstance().refreshPersonalProfile();
+                break;
+
+            case REFRESH_SHORTCUTS:
+                if (Build.VERSION.SDK_INT >= 25) {
+                    ShortcutsManager.refreshShortcuts(MainActivity.this);
+                }
+                break;
+
+            case DRAW_PROFILE:
+                drawMeAvatar();
+                drawMeTitle();
+                drawMeSubtitle();
+                drawMeButton();
+                break;
+
+            default:
+                messageManagePresenter.responseMessage(message.what, message.obj);
+                break;
         }
     }
 
@@ -484,18 +499,14 @@ public class MainActivity extends MysplashActivity
         } else if (TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
             navAvatar.setVisibility(View.VISIBLE);
             appIcon.setVisibility(View.GONE);
-            Glide.with(Mysplash.getInstance())
-                    .load(R.drawable.default_avatar)
-                    .override(128, 128)
-                    .into(navAvatar);
+            ImageHelper.loadAvatar(this, navAvatar, new User(), null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 navAvatar.setTransitionName(AuthManager.getInstance().getAccessToken());
             }
         } else {
             navAvatar.setVisibility(View.VISIBLE);
             appIcon.setVisibility(View.GONE);
-            Glide.clear(navAvatar);
-            ImageHelper.loadAvatar(Mysplash.getInstance(), navAvatar, AuthManager.getInstance().getAvatarPath(), null);
+            ImageHelper.loadAvatar(this, navAvatar, AuthManager.getInstance().getAvatarPath(), null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 navAvatar.setTransitionName(AuthManager.getInstance().getAccessToken());
             }
@@ -559,12 +570,12 @@ public class MainActivity extends MysplashActivity
             AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
             if (AuthManager.getInstance().isAuthorized()
                     && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
-                AuthManager.getInstance().refreshPersonalProfile();
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                ShortcutsManager.refreshShortcuts(MainActivity.this);
+                handler.obtainMessage(REFRESH_PROFILE).sendToTarget();
+            } else {
+                handler.obtainMessage(REFRESH_SHORTCUTS).sendToTarget();
             }
             IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
-            handler.obtainMessage(1).sendToTarget();
+            handler.obtainMessage(DRAW_PROFILE).sendToTarget();
         }
     };
 

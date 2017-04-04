@@ -22,8 +22,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.wangdaye.mysplash.Mysplash;
@@ -179,20 +177,19 @@ public class SetWallpaperActivity extends MysplashActivity
         photoView.setMaxScale(2.5f);
         photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         ImageHelper.loadImage(this, photoView, photoFile);
-
-        Glide.with(this)
-                .load(photoFile)
-                .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(new SimpleTarget<Bitmap>(100, 100) {
+        ImageHelper.loadBitmap(
+                this,
+                new SimpleTarget<Bitmap>(100, 100) {
                     @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                    public void onResourceReady(Bitmap resource,
+                                                GlideAnimation<? super Bitmap> glideAnimation) {
                         int color = computeBackgroundColor(resource);
                         container.setBackgroundColor(color);
                         light = isLightColor(color);
                         setStyle();
                     }
-                });
+                },
+                photoFile);
     }
 
     /**

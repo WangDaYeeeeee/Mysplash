@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.os.Build;
@@ -234,6 +235,31 @@ public class ImageHelper {
             builder.transform(transformation);
         }
         builder.into(view);
+    }
+
+    public static void loadBitmap(Context context,
+                                  Target<Bitmap> target, String url, boolean clipWithCircle) {
+        if (clipWithCircle) {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .transform(new CircleTransformation(context))
+                    .into(target);
+        } else {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(target);
+        }
+    }
+
+    public static void loadBitmap(Context context, Target<Bitmap> target, File file) {
+        Glide.with(context)
+                .load(file)
+                .asBitmap()
+                .into(target);
     }
 
     public static void loadImage(Context context, ImageView view, File file) {

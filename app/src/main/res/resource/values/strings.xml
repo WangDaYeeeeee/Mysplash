@@ -47,8 +47,8 @@
     <string name="to">to</string>
     <string name="more">MORE</string>
 
-    <string name="relative_photo">relative photos</string>
-    <string name="relative_collection">relative collections</string>
+    <string name="relative_photo">related photos</string>
+    <string name="relative_collection">related collections</string>
 
     <string name="follow_system">Follow System</string>
 
@@ -75,13 +75,13 @@
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
 
-    <string name="feedback_load_failed_tv">LOAD FAILED</string>
-    <string name="feedback_load_failed_toast">Load failed.</string>
+    <string name="feedback_load_failed_tv">FAILED TO LOAD</string>
+    <string name="feedback_load_failed_toast">Failed to load.</string>
     <string name="feedback_load_nothing_tv">LOAD NOTHING</string>
     <string name="feedback_load_nothing_toast">Load nothing.</string>
 
-    <string name="feedback_search_failed_tv">SEARCH FAILED</string>
-    <string name="feedback_search_failed_toast">Search failed.</string>
+    <string name="feedback_search_failed_tv">FAILED TO SEARCH</string>
+    <string name="feedback_search_failed_toast">Failed to search.</string>
     <string name="feedback_search_nothing_tv">SEARCH NOTHING</string>
     <string name="feedback_search_nothing_toast">Search nothing.</string>
     <string name="feedback_search_bar">Search photos, collections or users</string>
@@ -93,18 +93,18 @@
 
     <string name="feedback_notify_restart">Restart to work.</string>
 
-    <string name="feedback_download_success">Download succeed.</string>
-    <string name="feedback_download_photo_success">Download photo succeed.</string>
+    <string name="feedback_download_success">Download successfully.</string>
+    <string name="feedback_download_photo_success">Download photo successfully.</string>
     <string name="feedback_download_photo_failed">Download photo failed.</string>
-    <string name="feedback_download_collection_success">Download collection succeed.</string>
+    <string name="feedback_download_collection_success">Download collection successfully.</string>
     <string name="feedback_download_collection_failed">Download collection failed.</string>
     <string name="feedback_downloading">DOWNLOADING</string>
-    <string name="feedback_download_start">Download start.</string>
+    <string name="feedback_download_start">Start download.</string>
     <string name="feedback_no_sd_card">Cannot found SD card.</string>
     <string name="feedback_create_file_failed">Create file failed.</string>
     <string name="feedback_need_permission">Failed to get permission.</string>
     <string name="feedback_choose_share_app">Share photo</string>
-    <string name="feedback_choose_wallpaper_app">Set wallpaper</string>
+    <string name="feedback_choose_wallpaper_app">Set as wallpaper</string>
     <string name="feedback_download_repeat">Download repeat.</string>
 
     <string name="feedback_size">Size</string>
@@ -116,8 +116,8 @@
     <string name="feedback_focal">Focal length</string>
     <string name="feedback_iso">Iso</string>
 
-    <string name="feedback_portfolio_is_null">Portfolio link is null.</string>
-    <string name="feedback_no_filter">No filter item.</string>
+    <string name="feedback_portfolio_is_null">Portfolio link is empty.</string>
+    <string name="feedback_no_filter">No filter options.</string>
 
     <string name="feedback_request_token_failed">Request access token failed.</string>
     <string name="feedback_login_text">Login to your Unsplash account.</string>
@@ -128,7 +128,7 @@
     <string name="feedback_edit_first_name">First name</string>
     <string name="feedback_edit_last_name">Last name</string>
     <string name="feedback_edit_email">Email address</string>
-    <string name="feedback_edit_portfolio">Personal site/portfolio</string>
+    <string name="feedback_edit_portfolio">Personal site / portfolio</string>
     <string name="feedback_edit_location">Location</string>
     <string name="feedback_edit_bio">Bio</string>
     <string name="feedback_update_profile_failed">Cannot edit profile.</string>
@@ -144,7 +144,7 @@
     <string name="feedback_name_is_required">Name is required.</string>
     <string name="feedback_sure">Are you sure?</string>
 
-    <string name="feedback_notify_set_back_to_top">You can set the back pressed effect.</string>
+    <string name="feedback_notify_set_back_to_top">You can set the effect of back pressed.</string>
 
     <string name="feedback_add_photo_failed">Add photo failed.</string>
     <string name="feedback_delete_photo_failed">Delete photo failed.</string>
@@ -156,9 +156,9 @@
     <string name="feedback_exceed_rate_limit">In this hour, the visits of Uysplash API exceed the rate limit, So we cannot load anything now.\n\nYou can try again in next hour.</string>
 
     <string name="feedback_confirm_change_theme">Confirm Change Theme</string>
-    <string name="feedback_change_theme_warning">Change theme now will make downloads canceled.</string>
+    <string name="feedback_change_theme_warning">Switch theme now will cause download tasks to fail.</string>
     <string name="feedback_confirm_restart">Confirm Restart</string>
-    <string name="feedback_restart_warning">Restart application now will make downloads canceled.</string>
+    <string name="feedback_restart_warning">Restart app now will cause download tasks to fail.</string>
 
     <string name="feedback_click_again_to_exit">Click again to exit.</string>
 

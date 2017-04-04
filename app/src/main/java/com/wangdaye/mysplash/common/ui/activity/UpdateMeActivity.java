@@ -27,6 +27,7 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 
@@ -99,6 +100,7 @@ public class UpdateMeActivity extends MysplashActivity
         super.onStart();
         if (!isStarted()) {
             setStarted();
+            ButterKnife.bind(this);
             initData();
             initWidget();
         }
@@ -368,6 +370,9 @@ public class UpdateMeActivity extends MysplashActivity
     public void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response) {
         if (response.isSuccessful() && response.body() != null) {
             AuthManager.getInstance().writeUserInfo(response.body());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                ShortcutsManager.refreshShortcuts(this);
+            }
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else {
             setState(INPUT_STATE);
