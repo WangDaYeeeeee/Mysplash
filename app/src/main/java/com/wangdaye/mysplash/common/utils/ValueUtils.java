@@ -70,13 +70,29 @@ public class ValueUtils {
     public static String getBackToTopName(Context c, String key) {
         switch (key) {
             case "all":
-                return c.getResources().getStringArray(R.array.back_to_top_type)[0];
+                return c.getResources().getStringArray(R.array.back_to_top_types)[0];
 
             case "home":
-                return c.getResources().getStringArray(R.array.back_to_top_type)[1];
+                return c.getResources().getStringArray(R.array.back_to_top_types)[1];
 
             case "none":
-                return c.getResources().getStringArray(R.array.back_to_top_type)[2];
+                return c.getResources().getStringArray(R.array.back_to_top_types)[2];
+
+            default:
+                return null;
+        }
+    }
+
+    public static String getSaturationAnimationDurationName(Context c, String key) {
+        switch (key) {
+            case "300":
+                return c.getResources().getStringArray(R.array.saturation_animation_durations)[0];
+
+            case "1000":
+                return c.getResources().getStringArray(R.array.saturation_animation_durations)[1];
+
+            case "2000":
+                return c.getResources().getStringArray(R.array.saturation_animation_durations)[2];
 
             default:
                 return null;

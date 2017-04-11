@@ -131,6 +131,7 @@ public class MePhotosView extends NestedScrollFrameLayout
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
+        refreshLayout.setPermitRefresh(false);
         refreshLayout.setVisibility(GONE);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());

@@ -36,7 +36,9 @@ public class Mysplash extends Application {
 
     // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
-    public static final String UNSPLASH_FOLLOWING_FEED_URL = "XXX";
+    public static final String STREAM_API_BASE_URL = "";
+    public static final String UNSPLASH_FOLLOWING_FEED_URL = "napi/feeds/following";
+    public static final String UNSPLASH_NOTIFICATION_URL = "";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
@@ -182,12 +184,14 @@ public class Mysplash extends Application {
 
     @Nullable
     public MainActivity getMainActivity() {
-        if (activityList != null && activityList.size() > 0
-                && activityList.get(0) instanceof MainActivity) {
-            return (MainActivity) activityList.get(0);
-        } else {
-            return null;
+        if (activityList != null && activityList.size() > 0) {
+            for (int i = 0; i < activityList.size(); i ++) {
+                if (activityList.get(i) instanceof MainActivity) {
+                    return (MainActivity) activityList.get(i);
+                }
+            }
         }
+        return null;
     }
 
     public int getActivityCount() {

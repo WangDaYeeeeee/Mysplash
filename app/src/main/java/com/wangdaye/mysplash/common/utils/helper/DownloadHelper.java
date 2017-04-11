@@ -96,7 +96,7 @@ public class DownloadHelper {
         FileUtils.deleteFile(entity);
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
-                .setTitle(entity.getRealTitle())
+                .setTitle(entity.getNotificationTitle())
                 .setDescription(c.getString(R.string.feedback_downloading))
                 .setDestinationInExternalPublicDir(
                         Mysplash.DOWNLOAD_PATH,
@@ -210,7 +210,10 @@ public class DownloadHelper {
     private float getMissionProcess(@NotNull Cursor cursor) {
         long soFar = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
         long total = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
-        return (int) (100.0 * soFar / total);
+        int result = (int) (100.0 * soFar / total);
+        result = Math.max(0, result);
+        result = Math.min(100, result);
+        return result;
     }
 
     private boolean isMissionSuccess(long id) {

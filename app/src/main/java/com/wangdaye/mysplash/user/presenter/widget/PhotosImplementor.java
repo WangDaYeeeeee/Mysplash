@@ -170,7 +170,7 @@ public class PhotosImplementor
     /** <br> utils. */
 
     private void requestUserPhotos(Context c, int page, boolean refresh, String order) {
-        page = refresh ? 1 : page + 1;
+        page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestPhotosListener(c, page, refresh);
         model.getService()
                 .requestUserPhotos(
@@ -182,7 +182,7 @@ public class PhotosImplementor
     }
 
     private void requestUserLikes(Context c, int page, boolean refresh, String order) {
-        page = refresh ? 1 : page + 1;
+        page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestPhotosListener(c, page, refresh);
         model.getService()
                 .requestUserLikes(

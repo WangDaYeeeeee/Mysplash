@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.0.7</string>
+    <string name="version_code">3.0.8</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -106,6 +106,7 @@
     <string name="feedback_choose_share_app">Share photo</string>
     <string name="feedback_choose_wallpaper_app">Set as wallpaper</string>
     <string name="feedback_download_repeat">Download repeat.</string>
+    <string name="feedback_file_does_not_exist">File does not exist.</string>
 
     <string name="feedback_size">Size</string>
     <string name="feedback_color">Color</string>
@@ -132,7 +133,7 @@
     <string name="feedback_edit_location">Location</string>
     <string name="feedback_edit_bio">Bio</string>
     <string name="feedback_update_profile_failed">Cannot edit profile.</string>
-
+    
     <string name="feedback_add_to_collection">Add to collection</string>
     <string name="feedback_delete_from_collection">Delete from collection</string>
     <string name="feedback_create_collection">Create new collection</string>
@@ -244,6 +245,7 @@
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_back_to_top">Press back button to scroll to top</string>
+    <string name="settings_title_saturation_animation_duration">Saturation animation duration</string>
     <string name="settings_title_custom_api_key">Custom API key</string>
     <string name="settings_summary_custom_api_key">Set your own API key and Secret.</string>
     <string name="settings_title_language">Language</string>
@@ -257,6 +259,7 @@
 
     <!-- share preferences. -->
     <string name="key_back_to_top">back_to_top</string>
+    <string name="key_saturation_animation_duration">saturation_animation_duration</string>
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
     <string name="key_default_photo_order">default_photo_order</string>

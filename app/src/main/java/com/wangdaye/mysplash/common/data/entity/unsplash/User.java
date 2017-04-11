@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.data.entity.unsplash;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common._basic.Previewable;
 
@@ -149,7 +150,11 @@ public class User
 
     @Override
     public String getFullUrl() {
-        return profile_image.large;
+        if (TextUtils.isEmpty(profile_image.custom)) {
+            return getRegularUrl();
+        } else {
+            return profile_image.custom;
+        }
     }
 
     @Override

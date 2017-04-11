@@ -96,11 +96,11 @@ public class DownloadMissionEntity {
     }
 
     /**
-     * Get the real title of downloading notification description title text.
+     * Get the title of downloading notification description title text.
      *
      * @return notification description title text.
      * */
-    public String getRealTitle() {
+    public String getNotificationTitle() {
         if (downloadType == DownloadHelper.COLLECTION_TYPE) {
             return "COLLECTION #" + title;
         } else {

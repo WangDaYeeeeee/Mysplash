@@ -56,6 +56,9 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     private void initialize() {
         SWIPE_TRIGGER = (float) (getResources().getDisplayMetrics().heightPixels / 5.0);
+
+
+
     }
 
     /** <br> nested scroll. */

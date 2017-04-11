@@ -16,7 +16,9 @@ import android.text.TextUtils;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.ArrayList;
@@ -106,7 +108,7 @@ public class ShortcutsManager {
                         .setIcon(Icon.createWithResource(context, R.drawable.ic_shortcut_search))
                         .setShortLabel(context.getString(R.string.action_search))
                         .setLongLabel(context.getString(R.string.action_search))
-                        .setIntent(new Intent("com.wangdaye.mysplash.Search"))
+                        .setIntent(new Intent(MainActivity.ACTION_SEARCH))
                         .setRank(2)
                         .build());
         shortcutList.add(
@@ -114,7 +116,7 @@ public class ShortcutsManager {
                         .setIcon(Icon.createWithResource(context, R.drawable.ic_shortcut_download))
                         .setShortLabel(context.getString(R.string.action_download_manage))
                         .setLongLabel(context.getString(R.string.action_download_manage))
-                        .setIntent(new Intent("com.wangdaye.mysplash.DownloadManager"))
+                        .setIntent(new Intent(DownloadManageActivity.ACTION_DOWNLOAD_MANAGER))
                         .setRank(3)
                         .build());
         if (AuthManager.getInstance().isAuthorized()) {

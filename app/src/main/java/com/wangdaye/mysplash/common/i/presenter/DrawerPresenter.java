@@ -10,5 +10,7 @@ package com.wangdaye.mysplash.common.i.presenter;
 public interface DrawerPresenter {
 
     void touchNavItem(int id);
+
     int getCheckedItemId();
+    void setCheckedItemId(int id);
 }

@@ -11,5 +11,6 @@ package com.wangdaye.mysplash.common.i.view;
 public interface DrawerView {
 
     void touchNavItem(int id);
+
     void setCheckedItem(int id);
 }

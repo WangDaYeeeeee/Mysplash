@@ -28,7 +28,7 @@ public class UserService {
     /** <br> data. */
 
     public void requestUserProfile(String username, final OnRequestUserProfileListener l) {
-        Call<User> getUserProfile = buildApi(buildClient()).getUserProfile(username, 128, 128);
+        Call<User> getUserProfile = buildApi(buildClient()).getUserProfile(username, 256, 256);
         getUserProfile.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {

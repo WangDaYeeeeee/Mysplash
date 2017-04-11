@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/action_home"
@@ -29,6 +30,14 @@
         android:icon="@drawable/ic_tag_light"
         android:title="@string/action_category"
         android:checkable="true" />
+
+    <item
+        android:id="@+id/action_checkable"
+        android:orderInCategory="100"
+        android:title="action_checkable"
+        android:checkable="true"
+        android:visible="false"
+        tools:ignore="HardcodedText" />
 
     <item
         android:id="@+id/action_change_theme"

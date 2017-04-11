@@ -2,13 +2,8 @@ package com.wangdaye.mysplash.common.ui.popup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,20 +40,10 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
     private void initialize(Context c, View anchor, String valueNow) {
         View v = LayoutInflater.from(c).inflate(R.layout.popup_search_featured, null);
         setContentView(v);
-        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
 
         initData(valueNow);
         initWidget();
-
-        setFocusable(true);
-        setTouchable(true);
-        setOutsideTouchable(true);
-        setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(10);
-        }
-        showAsDropDown(anchor, 0, 0, Gravity.CENTER);
+        show(anchor, 0, 0);
     }
 
     /** <br> UI. */

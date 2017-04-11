@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -72,9 +72,15 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             // footer.
             return FooterHolder.buildInstance(parent);
         } else {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_collection, parent, false);
-            return new ViewHolder(v, itemList.get(position));
+            if (horizontal) {
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_collection_card, parent, false);
+                return new ViewHolder(v, itemList.get(position));
+            } else {
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_collection, parent, false);
+                return new ViewHolder(v, itemList.get(position));
+            }
         }
     }
 
@@ -154,7 +160,8 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     /** <br> inner class. */
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener {
         // widget
         @BindView(R.id.item_collection_background) RelativeLayout background;
         @BindView(R.id.item_collection_cover) FreedomImageView image;
@@ -180,6 +187,9 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                             collection.cover_photo.width,
                             collection.cover_photo.height);
                 }
+                itemView.findViewById(R.id.item_collection_card).setOnClickListener(this);
+            } else {
+                background.setOnClickListener(this);
             }
 
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
@@ -246,13 +256,19 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
         // interface.
 
-        @OnClick(R.id.item_collection_background) void openCollection() {
-            if (a instanceof MysplashActivity) {
-                IntentHelper.startCollectionActivity(
-                        (MysplashActivity) a,
-                        avatar,
-                        background,
-                        collection);
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.item_collection_card:
+                case R.id.item_collection_background:
+                    if (a instanceof MysplashActivity) {
+                        IntentHelper.startCollectionActivity(
+                                (MysplashActivity) a,
+                                avatar,
+                                background,
+                                collection);
+                    }
+                    break;
             }
         }
 

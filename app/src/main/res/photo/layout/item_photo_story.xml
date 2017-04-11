@@ -16,7 +16,7 @@
         style="@style/content_text"
         tools:text="One of the best parts of online communities is the ability to be inspired by others and challenged to try new projects. I saw friends posting photos of frozen bubbles on Instagram. So I decided to try it on context morning when it was 10 degrees outside. My hands almost froze off, but it was worth it." />
 
-    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView
         android:id="@+id/item_photo_story_avatar"
         android:layout_width="@dimen/little_icon_size"
         android:layout_height="@dimen/little_icon_size"

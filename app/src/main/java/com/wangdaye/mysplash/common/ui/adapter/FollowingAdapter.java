@@ -13,12 +13,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
+import com.wangdaye.mysplash.common.data.entity.unsplash.ActionObject;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
@@ -27,7 +29,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -37,6 +39,7 @@ import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
@@ -190,7 +193,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         if (photo != null) {
             photo.settingLike = true;
             resultList.get(typeList.get(position).resultPosition)
-                    .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+                    .objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
             photoService.setLikeForAPhoto(
                     photo.id,
                     like,
@@ -217,7 +220,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         position ++;
                     }
                     if (resultList.get(i).objects.get(j).id.equals(p.id)) {
-                        resultList.get(i).objects.set(j, new FollowingResult.Object(p));
+                        resultList.get(i).objects.set(j, new ActionObject(p));
                         if (j < MAX_DISPLAY_PHOTO_COUNT) {
                             notifyItemChanged(position);
                         }
@@ -312,13 +315,13 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     void updatePhoto(Photo photo, int position) {
         FollowingResult result = resultList.get(typeList.get(position).resultPosition);
-        result.objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+        result.objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
         resultList.set(typeList.get(position).resultPosition, result);
     }
 
     void updateUser(User user, int position) {
         FollowingResult result = resultList.get(typeList.get(position).resultPosition);
-        result.objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(user));
+        result.objects.set(typeList.get(position).objectPosition, new ActionObject(user));
         resultList.set(typeList.get(position).resultPosition, result);
     }
 
@@ -329,6 +332,10 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     public User getActor(int position) {
         return resultList.get(typeList.get(position).resultPosition).actors.get(0);
+    }
+
+    public String getVerb(int position) {
+        return resultList.get(typeList.get(position).resultPosition).verb;
     }
 
     public List<FollowingResult> getFeeds() {
@@ -384,7 +391,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     }
 
                     resultList.get(typeList.get(position).resultPosition)
-                            .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+                            .objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
 
                     updateView(photo.liked_by_user);
                 }
@@ -407,7 +414,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                             Snackbar.LENGTH_SHORT);
 
                     resultList.get(typeList.get(position).resultPosition)
-                            .objects.set(typeList.get(position).objectPosition, new FollowingResult.Object(photo));
+                            .objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
                     updateView(photo.liked_by_user);
                 }
             }
@@ -483,6 +490,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
     // widget
     @BindView(R.id.item_following_title_background) RelativeLayout background;
     @BindView(R.id.item_following_title_avatar) CircleImageView avatar;
+    @BindView(R.id.item_following_title_verbIcon) ImageView verbIcon;
     @BindView(R.id.item_following_title_actor) TextView actor;
     @BindView(R.id.item_following_title_verb) TextView verb;
 
@@ -504,12 +512,17 @@ class TitleHolder extends RecyclerView.ViewHolder {
         this.result = result;
 
         Context context = Mysplash.getInstance().getTopActivity();
+        if (context == null) {
+            return;
+        }
         User user = result.actors.get(0);
 
         actor.setText(user.name);
         ImageHelper.loadAvatar(context, avatar, user, null);
+
         switch (result.verb) {
             case FollowingResult.VERB_LIKED:
+                verbIcon.setImageResource(R.drawable.ic_verb_liked);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         context.getString(R.string.liked)
@@ -519,6 +532,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 break;
 
             case FollowingResult.VERB_COLLECTED:
+                verbIcon.setImageResource(R.drawable.ic_verb_collected);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         Html.fromHtml(
@@ -530,6 +544,9 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 break;
 
             case FollowingResult.VERB_FOLLOWED:
+                verbIcon.setImageResource(
+                        ThemeManager.getInstance(context).isLightTheme() ?
+                                R.drawable.ic_verb_followed_light : R.drawable.ic_verb_followed_dark);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         context.getString(R.string.followed)
@@ -539,6 +556,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 break;
 
             case FollowingResult.VERB_RELEASE:
+                verbIcon.setImageResource(R.drawable.ic_verb_published);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         context.getString(R.string.released)
@@ -548,6 +566,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 break;
 
             case FollowingResult.VERB_PUBLISHED:
+                verbIcon.setImageResource(R.drawable.ic_verb_published);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         context.getString(R.string.published)
@@ -557,6 +576,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 break;
 
             case FollowingResult.VERB_CURATED:
+                verbIcon.setImageResource(R.drawable.ic_verb_curated);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         Html.fromHtml(

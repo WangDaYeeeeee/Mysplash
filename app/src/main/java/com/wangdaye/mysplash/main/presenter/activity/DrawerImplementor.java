@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.presenter.activity;
 
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.model.DrawerModel;
 import com.wangdaye.mysplash.common.i.presenter.DrawerPresenter;
 import com.wangdaye.mysplash.common.i.view.DrawerView;
@@ -33,20 +32,16 @@ public class DrawerImplementor
         if (oldId != id) {
             view.touchNavItem(id);
         }
-        if (id != R.id.action_change_theme
-                && id != R.id.action_download_manage
-                && id != R.id.action_settings
-                && id != R.id.action_about) {
-            model.setCheckedItemId(id);
-            view.setCheckedItem(id);
-        } else {
-            model.setCheckedItemId(oldId);
-            view.setCheckedItem(oldId);
-        }
     }
 
     @Override
     public int getCheckedItemId() {
         return model.getCheckedItemId();
+    }
+
+    @Override
+    public void setCheckedItemId(int id) {
+        model.setCheckedItemId(id);
+        view.setCheckedItem(id);
     }
 }

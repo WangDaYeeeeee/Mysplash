@@ -155,6 +155,27 @@
         <item name="android:colorBackground">?attr/root_color</item>
         <item name="android:textColor">?attr/content_color</item>
     </style>
+    
+    <!-- Popup window. -->
+    <style name="MysplashPopupWindowAnimation.Top.Left" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_show_top_left</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
+
+    <style name="MysplashPopupWindowAnimation.Top.Right" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_show_top_right</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
+
+    <style name="MysplashPopupWindowAnimation.Bottom.Left" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_show_bottom_left</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
+
+    <style name="MysplashPopupWindowAnimation.Bottom.Right" parent="android:Animation">
+        <item name="android:windowEnterAnimation">@anim/popup_show_bottom_right</item>
+        <item name="android:windowExitAnimation">@anim/popup_hide</item>
+    </style>
 
     <!-- Text -->
 

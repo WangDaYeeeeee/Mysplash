@@ -167,8 +167,8 @@ public class TagPhotosView extends NestedScrollFrameLayout
     private void initContentView() {
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setPermitRefresh(false);
         refreshLayout.setOnRefreshAndLoadListener(this);
+        refreshLayout.setPermitRefresh(false);
         refreshLayout.setVisibility(GONE);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());

@@ -9,6 +9,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +34,7 @@ import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -83,6 +84,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @BindView(R.id.container_following_avatar_avatarContainer) RelativeLayout avatarContainer;
     @BindView(R.id.container_following_avatar_avatar) CircleImageView avatar;
+    @BindView(R.id.container_following_avatar_verbIcon) ImageView verbIcon;
 
     // presenter.
     private FollowingPresenter followingPresenter;
@@ -373,12 +375,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
         // data
         private User lastActor;
+        private String lastVerb;
 
         // life cycle.
 
         AvatarScrollListener() {
             this.manager = (LinearLayoutManager) recyclerView.getLayoutManager();
             this.lastActor = null;
+            this.lastVerb = null;
         }
 
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
@@ -398,12 +402,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         // --> the avatar needs to move with footer item.
                         avatarContainer.setTranslationY(footerBottom - AVATAR_SIZE - STATUS_BAR_HEIGHT);
                         setAvatarImage(firstVisibleItemPosition);
+                        setAvatarVerb(firstVisibleItemPosition);
                     } else {
                         // the footer item is moving out of the screen, and the header item has
                         // already reached the trigger position.
                         // --> the avatar needs to move with header item.
                         avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
                         setAvatarImage(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
+                        setAvatarVerb(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
                     }
                 }
             } else {
@@ -412,6 +418,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
                 if (lastActor == null) {
                     setAvatarImage(firstVisibleItemPosition);
+                    setAvatarVerb(firstVisibleItemPosition);
                 }
             }
         }
@@ -422,6 +429,40 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 // actor changed.
                 lastActor = user;
                 ImageHelper.loadAvatar(getContext(), avatar, user, null);
+            }
+        }
+
+        private void setAvatarVerb(int position) {
+            String verb = followingPresenter.getAdapter().getVerb(position);
+            if (TextUtils.isEmpty(lastVerb) || !lastVerb.equals(verb)) {
+                lastVerb = verb;
+                switch (verb) {
+                    case FollowingResult.VERB_LIKED:
+                        verbIcon.setImageResource(R.drawable.ic_verb_liked);
+                        break;
+
+                    case FollowingResult.VERB_COLLECTED:
+                        verbIcon.setImageResource(R.drawable.ic_verb_collected);
+                        break;
+
+                    case FollowingResult.VERB_FOLLOWED:
+                        verbIcon.setImageResource(
+                                ThemeManager.getInstance(getContext()).isLightTheme() ?
+                                        R.drawable.ic_verb_followed_light : R.drawable.ic_verb_followed_dark);
+                        break;
+
+                    case FollowingResult.VERB_RELEASE:
+                        verbIcon.setImageResource(R.drawable.ic_verb_published);
+                        break;
+
+                    case FollowingResult.VERB_PUBLISHED:
+                        verbIcon.setImageResource(R.drawable.ic_verb_published);
+                        break;
+
+                    case FollowingResult.VERB_CURATED:
+                        verbIcon.setImageResource(R.drawable.ic_verb_curated);
+                        break;
+                }
             }
         }
     }
@@ -507,6 +548,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @Override
     public void scrollToTop() {
         avatarScrollListener.setAvatarImage(0);
+        avatarScrollListener.setAvatarVerb(0);
         BackToTopUtils.scrollToTop(recyclerView);
     }
 

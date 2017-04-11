@@ -57,10 +57,17 @@
     </string-array>
 
     <!-- 返回顶部 -->
-    <string-array name="back_to_top_type">
+    <string-array name="back_to_top_types">
         <item>应用于所有的照片列表界面</item>
         <item>只应用于主页列表</item>
         <item>关闭</item>
+    </string-array>
+
+    <!-- 饱和度动画时长 -->
+    <string-array name="saturation_animation_durations">
+        <item>短 (300 ms)</item>
+        <item>中 (1000 ms)</item>
+        <item>正常 (2000 ms)</item>
     </string-array>
 
     <!-- 搜索规格 -->

@@ -62,6 +62,8 @@ public class DownloadManageActivity extends MysplashActivity
     // if we need to restart a mission, we need save it by this object and request permission.
     private DownloadMissionEntity readyToDownloadEntity;
 
+    public static final String ACTION_DOWNLOAD_MANAGER = "com.wangdaye.mysplash.DownloadManager";
+
     // we can get a boolean object from intent by using this string as a key.
     // If is true, that means this activity was opened by click downloading notification.
     public static final String EXTRA_NOTIFICATION = "notification";

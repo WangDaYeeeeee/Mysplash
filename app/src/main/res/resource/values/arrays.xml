@@ -73,7 +73,7 @@
     </string-array>
 
     <!-- back to top. -->
-    <string-array name="back_to_top_type">
+    <string-array name="back_to_top_types">
         <item>All of the list view</item>
         <item>Only Home</item>
         <item>None</item>
@@ -82,6 +82,18 @@
         <item>all</item>
         <item>home</item>
         <item>none</item>
+    </string-array>
+
+    <!-- saturation animation duration. -->
+    <string-array name="saturation_animation_durations">
+        <item>Short (300 ms)</item>
+        <item>Middle (1000 ms)</item>
+        <item>Normal (2000 ms)</item>
+    </string-array>
+    <string-array name="saturation_animation_duration_values">
+        <item>300</item>
+        <item>1000</item>
+        <item>2000</item>
     </string-array>
 
     <!-- language. -->

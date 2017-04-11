@@ -79,6 +79,7 @@
     <string name="feedback_choose_share_app">分享照片</string>
     <string name="feedback_choose_wallpaper_app">设为壁纸</string>
     <string name="feedback_download_repeat">下载任务重复</string>
+    <string name="feedback_file_does_not_exist">文件不存在</string>
 
     <string name="feedback_size">尺寸</string>
     <string name="feedback_color">颜色</string>

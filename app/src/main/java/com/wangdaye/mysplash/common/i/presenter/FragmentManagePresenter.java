@@ -17,7 +17,7 @@ public interface FragmentManagePresenter {
     List<MysplashFragment> getFragmentList(MysplashActivity a, boolean includeHidden);
     MysplashFragment getTopFragment(MysplashActivity a);
 
-    void changeFragment(MysplashActivity a, int code, boolean init);
+    void changeFragment(MysplashActivity a, int code);
 
     int getId();
 }

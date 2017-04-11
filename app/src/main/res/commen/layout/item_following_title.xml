@@ -7,15 +7,27 @@
     android:background="?attr/root_color"
     tools:ignore="UnusedAttribute">
 
-    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView
         android:id="@+id/item_following_title_avatar"
         android:layout_width="@dimen/mini_icon_size"
         android:layout_height="@dimen/mini_icon_size"
         android:layout_margin="@dimen/normal_margin"
         android:stateListAnimator="@animator/touch_rise"
         android:foreground="?attr/selectableItemBackground"
-        tools:src="@drawable/default_avatar"
+        tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription" />
+
+    <ImageView
+        android:id="@+id/item_following_title_verbIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignRight="@id/item_following_title_avatar"
+        android:layout_alignBottom="@id/item_following_title_avatar"
+        android:layout_marginRight="-8dp"
+        android:layout_marginBottom="-8dp"
+        android:elevation="10dp"
+        tools:src="@drawable/ic_verb_published"
+        tools:ignore="ContentDescription,RtlHardcoded" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,10 +38,11 @@
 
         <TextView
             android:id="@+id/item_following_title_actor"
+            android:layout_width="match_parent"
             android:maxLines="1"
             android:textStyle="bold"
             android:paddingTop="@dimen/normal_margin"
-            android:paddingRight="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
             android:gravity="bottom"
             android:textAlignment="gravity"
             android:foreground="?attr/selectableItemBackground"
@@ -39,9 +52,10 @@
 
         <TextView
             android:id="@+id/item_following_title_verb"
+            android:layout_width="match_parent"
             android:layout_below="@id/item_following_title_actor"
             android:paddingBottom="@dimen/normal_margin"
-            android:paddingRight="@dimen/normal_margin"
+            android:layout_marginRight="@dimen/normal_margin"
             android:foreground="?attr/selectableItemBackground"
             style="@style/subtitle_text"
             tools:text="added 3 photos to Unsplash Instant 2"

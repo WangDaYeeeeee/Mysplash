@@ -28,6 +28,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.widget.glide.CircleTransformation;
 import com.wangdaye.mysplash.common.utils.widget.glide.FadeAnimator;
@@ -292,7 +293,8 @@ public class ImageHelper {
                     target.setColorFilter(new ColorMatrixColorFilter(matrix));
                 }
             });
-            saturation.setDuration(2000L);
+            saturation.setDuration(
+                    SettingsOptionManager.getInstance(c).getSaturationAnimationDuration());
             saturation.setInterpolator(AnimUtils.getFastOutSlowInInterpolator(c));
             saturation.addListener(new AnimatorListenerAdapter() {
                 @Override

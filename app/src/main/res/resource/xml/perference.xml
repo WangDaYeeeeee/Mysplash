@@ -8,9 +8,16 @@
         <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_back_to_top"
             android:key="@string/key_back_to_top"
-            android:entries="@array/back_to_top_type"
+            android:entries="@array/back_to_top_types"
             android:entryValues="@array/back_to_top_type_values"
             android:defaultValue="all" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
+            android:title="@string/settings_title_saturation_animation_duration"
+            android:key="@string/key_saturation_animation_duration"
+            android:entries="@array/saturation_animation_durations"
+            android:entryValues="@array/saturation_animation_duration_values"
+            android:defaultValue="2000" />
 
         <com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference
             android:title="@string/settings_title_custom_api_key"

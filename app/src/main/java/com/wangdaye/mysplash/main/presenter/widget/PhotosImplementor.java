@@ -182,10 +182,11 @@ public class PhotosImplementor
     /** <br> utils. */
 
     private void requestNewPhotosOrders(Context c, int page, boolean refresh) {
+        page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestPhotosListener(c, page, refresh, false);
         model.getService()
                 .requestPhotos(
-                        Math.max(1, refresh ? 1: page + 1),
+                        page,
                         Mysplash.DEFAULT_PER_PAGE,
                         model.getPhotosOrder(),
                         listener);
@@ -206,11 +207,11 @@ public class PhotosImplementor
     }
 
     private void requestFeaturePhotosOrders(Context c, int page, boolean refresh) {
-        page = refresh ? 1 : page + 1;
+        page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestPhotosListener(c, page, refresh, false);
         model.getService()
                 .requestCuratePhotos(
-                        Math.max(1, refresh ? 1: page + 1),
+                        page,
                         Mysplash.DEFAULT_PER_PAGE,
                         model.getPhotosOrder(),
                         listener);

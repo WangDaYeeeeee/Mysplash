@@ -21,6 +21,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
@@ -81,6 +82,13 @@ public class SettingsFragment extends PreferenceFragment
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
         backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
+
+        // saturation animation duration.
+        MysplashListPreference duration = (MysplashListPreference) findPreference(getString(R.string.key_saturation_animation_duration));
+        String durationValue = sharedPreferences.getString(getString(R.string.key_saturation_animation_duration), "2000");
+        String durationName = ValueUtils.getSaturationAnimationDurationName(getActivity(), durationValue);
+        duration.setSummary(getString(R.string.now) + " : " + durationName);
+        duration.setOnPreferenceChangeListener(this);
 
         // language.
         MysplashListPreference language = (MysplashListPreference) findPreference(getString(R.string.key_language));
@@ -153,6 +161,11 @@ public class SettingsFragment extends PreferenceFragment
             SettingsOptionManager.getInstance(getActivity()).setBackToTopType((String) o);
             String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + backType);
+        } else if (preference.getKey().equals(getString(R.string.key_saturation_animation_duration))) {
+            // saturation animation duration.
+            SettingsOptionManager.getInstance(getActivity()).setSaturationAnimationDuration((String) o);
+            String duration = ValueUtils.getSaturationAnimationDurationName(getActivity(), (String) o);
+            preference.setSummary(getString(R.string.now) + " : " + duration);
         } else if (preference.getKey().equals(getString(R.string.key_language))) {
             // language.
             SettingsOptionManager.getInstance(getActivity()).setLanguage((String) o);
@@ -185,6 +198,7 @@ public class SettingsFragment extends PreferenceFragment
     private View.OnClickListener rebootListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            ((SettingsActivity) getActivity()).finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
             MainActivity a = Mysplash.getInstance().getMainActivity();
             if (a != null) {
                 a.reboot();

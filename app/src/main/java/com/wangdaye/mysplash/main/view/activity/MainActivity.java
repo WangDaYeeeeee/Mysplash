@@ -31,8 +31,9 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.ui.activity.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -64,7 +65,7 @@ import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
+import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 
 import java.util.List;
 import java.util.Timer;
@@ -106,6 +107,8 @@ public class MainActivity extends MysplashActivity
     private DownloadPresenter downloadPresenter;
 
     // data.
+    public static final String ACTION_SEARCH = "com.wangdaye.mysplash.Search";
+
     private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID = "main_activity_fragment_id";
     private final String KEY_MAIN_ACTIVITY_SELECTED_ID = "main_activity_selected_id";
 
@@ -143,6 +146,14 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (isSearchIntent(intent)) {
+            changeFragment(R.id.action_search);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -172,10 +183,10 @@ public class MainActivity extends MysplashActivity
             if (f != null
                     && f.needBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
                 f.backToTop();
-            } else if (f instanceof SearchFragment) {
-                fragmentManagePresenter.changeFragment(this, R.id.action_home, false);
-            } else {
+            } else if (f instanceof HomeFragment) {
                 finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            } else {
+                changeFragment(R.id.action_home);
             }
         }
     }
@@ -225,12 +236,10 @@ public class MainActivity extends MysplashActivity
     }
 
     public void reboot() {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        int enter_anim = android.R.anim.fade_in;
-        int exit_anim = android.R.anim.fade_out;
+        Intent intent = new Intent(this, RestartActivity.class);
         startActivity(intent);
-        overridePendingTransition(enter_anim, exit_anim);
+        overridePendingTransition(0, android.R.anim.fade_out);
+        finish();
     }
 
     /** <br> presenter. */
@@ -291,14 +300,15 @@ public class MainActivity extends MysplashActivity
             }
         } else {
             int id = fragmentManagePresenter.getId();
-            fragmentManagePresenter.changeFragment(this, id, true);
+            changeFragment(id);
         }
     }
 
     // interface.
 
     public void changeFragment(int code) {
-        fragmentManagePresenter.changeFragment(this, code, false);
+        drawerPresenter.setCheckedItemId(code);
+        fragmentManagePresenter.changeFragment(this, code);
     }
 
     public MysplashFragment getTopFragment() {
@@ -308,18 +318,24 @@ public class MainActivity extends MysplashActivity
     /** <br> model. */
 
     private void initModel(@Nullable Bundle savedInstanceState) {
-        int fragmentId = 0;
-        if (savedInstanceState != null) {
-            fragmentId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentId);
-        }
+        int fragmentId = R.id.action_home;
         int selectedId = R.id.action_home;
         if (savedInstanceState != null) {
+            fragmentId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentId);
             selectedId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_SELECTED_ID, selectedId);
+        } else if (isSearchIntent(getIntent())) {
+            fragmentId = R.id.action_search;
+            selectedId = R.id.action_search;
         }
 
         this.fragmentManageModel = new FragmentManageObject(fragmentId, getIntent());
         this.drawerModel = new DrawerObject(selectedId);
         this.downloadModel = new DownloadObject();
+    }
+
+    private boolean isSearchIntent(Intent intent) {
+        return !(intent == null || TextUtils.isEmpty(intent.getAction()))
+                && intent.getAction().equals(ACTION_SEARCH);
     }
 
     /** <br> permission. */
@@ -467,6 +483,10 @@ public class MainActivity extends MysplashActivity
     @Override
     public void responseMessage(int what, Object o) {
         switch (what) {
+            case R.id.action_checkable:
+                // do nothing.
+                break;
+
             case R.id.action_change_theme:
                 changeTheme();
                 break;
@@ -559,7 +579,14 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public void setCheckedItem(int id) {
-        nav.setCheckedItem(id);
+        if (id != R.id.action_home
+                && id != R.id.action_following
+                && id != R.id.action_multi_filter
+                && id != R.id.action_category) {
+            nav.setCheckedItem(R.id.action_checkable);
+        } else {
+            nav.setCheckedItem(id);
+        }
     }
 
     /** <br> inner class. */

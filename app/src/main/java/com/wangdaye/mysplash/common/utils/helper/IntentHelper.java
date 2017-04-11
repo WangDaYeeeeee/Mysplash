@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.utils.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -48,7 +49,7 @@ import java.util.List;
 
 public class IntentHelper {
 
-    public static void startMainActivity(MysplashActivity a) {
+    public static void startMainActivity(Activity a) {
         Intent intent = new Intent(a, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         a.startActivity(intent);

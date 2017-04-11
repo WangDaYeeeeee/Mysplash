@@ -162,7 +162,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                 case DownloadHelper.RESULT_DOWNLOADING:
                     stateIcon.forceSetProgressState();
                     title.setText(
-                            itemList.get(position).entity.getRealTitle().toUpperCase()
+                            itemList.get(position).entity.getNotificationTitle().toUpperCase()
                                     + " : "
                                     + ((int) (itemList.get(position).process)) + "%");
                     retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
@@ -170,13 +170,13 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
 
                 case DownloadHelper.RESULT_SUCCEED:
                     stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
-                    title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
+                    title.setText(itemList.get(position).entity.getNotificationTitle().toUpperCase());
                     retryCheckBtn.setImageResource(R.drawable.ic_item_check);
                     break;
 
                 case DownloadHelper.RESULT_FAILED:
                     stateIcon.forceSetResultState(R.drawable.ic_item_state_error);
-                    title.setText(itemList.get(position).entity.getRealTitle().toUpperCase());
+                    title.setText(itemList.get(position).entity.getNotificationTitle().toUpperCase());
                     retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
                     break;
             }
@@ -188,7 +188,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                 retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
             }
             title.setText(
-                    mission.entity.getRealTitle().toUpperCase() + " : " + ((int) mission.process) + "%");
+                    mission.entity.getNotificationTitle().toUpperCase() + " : " + ((int) mission.process) + "%");
         }
 
         void onRecycled() {
@@ -199,8 +199,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         // interface.
 
         @OnClick(R.id.item_download_card) void clickItem() {
-            if (itemList.get(getAdapterPosition()).entity.downloadType
-                    == DownloadHelper.COLLECTION_TYPE) {
+            if (itemList.get(getAdapterPosition()).entity.downloadType == DownloadHelper.COLLECTION_TYPE) {
                 IntentHelper.startCollectionActivity(
                         Mysplash.getInstance().getTopActivity(),
                         itemList.get(getAdapterPosition()).entity.title.replaceAll("#", ""));
@@ -221,15 +220,26 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         }
 
         @OnClick(R.id.item_download_retry_check_btn) void checkOrRetry() {
-            if (itemList.get(getAdapterPosition()).entity.result == DownloadHelper.RESULT_SUCCEED) {
-                IntentHelper.startCheckPhotoActivity(
-                        c, itemList.get(getAdapterPosition()).entity.title);
+            DownloadMissionEntity entity = itemList.get(getAdapterPosition()).entity;
+            if (entity.result == DownloadHelper.RESULT_SUCCEED) {
+                if (entity.downloadType == DownloadHelper.COLLECTION_TYPE) {
+                    if (FileUtils.isCollectionExists(c, entity.title)) {
+                        IntentHelper.startCheckCollectionActivity(c, entity.title);
+                        return;
+                    }
+                } else {
+                    if (FileUtils.isPhotoExists(c, entity.title)) {
+                        IntentHelper.startCheckPhotoActivity(c, entity.title);
+                        return;
+                    }
+                }
+                NotificationHelper.showSnackbar(
+                        c.getString(R.string.feedback_file_does_not_exist),
+                        Snackbar.LENGTH_SHORT);
             } else {
                 // If there is another mission that is downloading the same thing, we cannot restart
                 // this mission.
-                int limitCount = itemList.get(getAdapterPosition())
-                        .entity.result == DownloadHelper.RESULT_DOWNLOADING ? 1 : 0;
-                DownloadMissionEntity entity = itemList.get(getAdapterPosition()).entity;
+                int limitCount = entity.result == DownloadHelper.RESULT_DOWNLOADING ? 1 : 0;
                 if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > limitCount) {
                     NotificationHelper.showSnackbar(
                             c.getString(R.string.feedback_download_repeat),

@@ -111,7 +111,7 @@ public class FollowingService {
     /** <br> interface. */
 
     public interface OnRequestFollowingFeedListener {
-        void onRequestFollowingFeedSuccess(Call<FollowingFeedResult> call, retrofit2.Response<FollowingFeedResult> response);
+        void onRequestFollowingFeedSuccess(Call<FollowingFeedResult> call, Response<FollowingFeedResult> response);
         void onRequestFollowingFeedFailed(Call<FollowingFeedResult> call, Throwable t);
     }
 

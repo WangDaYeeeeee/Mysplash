@@ -50,7 +50,7 @@ public class CollectionsImplementor
             } else {
                 model.setLoading(true);
             }
-            page = refresh ? 1 : page + 1;
+            page = Math.max(1, refresh ? 1 : page + 1);
             listener = new OnRequestCollectionsListener(c, page, refresh);
             model.getService()
                     .requestUserCollections(

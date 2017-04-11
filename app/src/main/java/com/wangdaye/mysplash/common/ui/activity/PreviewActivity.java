@@ -201,10 +201,14 @@ public class PreviewActivity extends MysplashActivity
     private float calcMaxiScale() {
         float screenWidth = getResources().getDisplayMetrics().widthPixels;
         float screenHeight = getResources().getDisplayMetrics().heightPixels;
-        if (previewable.getWidth() >= previewable.getHeight()) {
-            return (float) (1.0 * screenHeight * previewable.getWidth() / screenWidth / previewable.getHeight());
+        if (previewable.getWidth() == 128) {
+            return 0.5f;
         } else {
-            return (float) (1.0 * screenWidth * previewable.getHeight() / screenHeight / previewable.getWidth());
+            if (previewable.getWidth() >= previewable.getHeight()) {
+                return (float) (1.0 * screenHeight * previewable.getWidth() / screenWidth / previewable.getHeight());
+            } else {
+                return (float) (1.0 * screenWidth * previewable.getHeight() / screenHeight / previewable.getWidth());
+            }
         }
     }
 

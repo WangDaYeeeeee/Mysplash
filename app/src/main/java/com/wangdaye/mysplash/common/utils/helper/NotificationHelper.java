@@ -41,7 +41,7 @@ public class NotificationHelper {
         NotificationManagerCompat.from(c)
                 .notify(
                         getNotificationId(c),
-                        buildSingleNotification(c, "Photo", entity.getRealTitle(), true, true));
+                        buildSingleNotification(c, "Photo", entity.getNotificationTitle(), true, true));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)
@@ -54,7 +54,7 @@ public class NotificationHelper {
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(
-                                c, "Collection", entity.getRealTitle(), false, true));
+                                c, "Collection", entity.getNotificationTitle(), false, true));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)
@@ -66,7 +66,7 @@ public class NotificationHelper {
         NotificationManagerCompat.from(c)
                 .notify(
                         getNotificationId(c),
-                        buildSingleNotification(c, "Photo", entity.getRealTitle(), true, false));
+                        buildSingleNotification(c, "Photo", entity.getNotificationTitle(), true, false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)
@@ -79,7 +79,7 @@ public class NotificationHelper {
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(
-                                c, "Collection", entity.getRealTitle(), false, false));
+                                c, "Collection", entity.getNotificationTitle(), false, false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             NotificationManagerCompat.from(c)

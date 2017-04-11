@@ -68,35 +68,35 @@ public class FragmentManageImplementor
     }
 
     @Override
-    public void changeFragment(MysplashActivity a, int code, boolean init) {
+    public void changeFragment(MysplashActivity a, int code) {
         int oldCode = model.getId();
         model.setId(code);
 
-        if (init) {
-            MysplashFragment f = buildFragmentByCode(code);
-            replaceFragment(a, f);
-        } else {
-            MysplashFragment newF = null;
-            MysplashFragment oldF = null;
+        MysplashFragment newF = null;
+        MysplashFragment oldF = null;
 
-            List<MysplashFragment> list = getFragmentList(a, true);
-            for (int i = 0; i < list.size(); i ++) {
-                if (getFragmentCode(list.get(i)) == oldCode) {
-                    oldF = list.get(i);
-                }
-                if (getFragmentCode(list.get(i)) == code) {
-                    newF = list.get(i);
-                }
-                if (newF != null && oldF != null) {
-                    break;
-                }
+        List<MysplashFragment> list = getFragmentList(a, true);
+        for (int i = 0; i < list.size(); i ++) {
+            if (getFragmentCode(list.get(i)) == oldCode) {
+                oldF = list.get(i);
             }
+            if (getFragmentCode(list.get(i)) == code) {
+                newF = list.get(i);
+            }
+            if (newF != null && oldF != null) {
+                break;
+            }
+        }
+        if (oldF == null) {
             if (newF == null) {
                 newF = buildFragmentByCode(code);
-                showAndHideNewFragment(a, newF, oldF);
-            } else {
-                showAndHideFragment(a, newF, oldF);
             }
+            replaceFragment(a, newF);
+        } else if (newF == null) {
+            newF = buildFragmentByCode(code);
+            showAndHideNewFragment(a, newF, oldF);
+        } else {
+            showAndHideFragment(a, newF, oldF);
         }
     }
 

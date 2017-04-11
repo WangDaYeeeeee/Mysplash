@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 307
-        versionName "3.0.7"
+        versionCode 308
+        versionName "3.0.8"
     }
     sourceSets {
         main {
@@ -44,6 +44,8 @@ android {
             it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
             it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
             it.buildConfigField 'String', 'APP_ID_RELEASE_UNAUTH', APP_ID_RELEASE_UNAUTH
+            it.buildConfigField 'String', 'GET_STREAM_KEY', GET_STREAM_KEY
+            it.buildConfigField 'String', 'GET_STREAM_AUTH_CODE', GET_STREAM_AUTH_CODE
         }
     }
     repositories {

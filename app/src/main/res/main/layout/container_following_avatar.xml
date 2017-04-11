@@ -6,11 +6,11 @@
     android:layout_height="@dimen/large_icon_size">
 
     <FrameLayout
-        android:layout_width="40dp"
+        android:layout_width="48dp"
         android:layout_height="match_parent"
         android:background="?attr/root_color" />
 
-    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView
         android:id="@+id/container_following_avatar_avatar"
         android:layout_width="@dimen/mini_icon_size"
         android:layout_height="@dimen/mini_icon_size"
@@ -18,7 +18,19 @@
         android:layout_alignParentBottom="true"
         android:stateListAnimator="@animator/touch_rise"
         android:foreground="?attr/selectableItemBackground"
-        tools:src="@drawable/default_avatar"
+        tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription,UnusedAttribute" />
+
+    <ImageView
+        android:id="@+id/container_following_avatar_verbIcon"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignRight="@id/container_following_avatar_avatar"
+        android:layout_alignBottom="@id/container_following_avatar_avatar"
+        android:layout_marginRight="-8dp"
+        android:layout_marginBottom="-8dp"
+        android:elevation="10dp"
+        tools:src="@drawable/ic_verb_followed_light"
+        tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
 
 </RelativeLayout>

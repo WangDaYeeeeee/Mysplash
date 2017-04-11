@@ -15,12 +15,13 @@ import com.wangdaye.mysplash.R;
 
 public class SettingsOptionManager {
     // data
+    private String backToTopType;
+    private boolean notifiedSetBackToTop;
+    private int saturationAnimationDuration;
     private String language;
     private String defaultPhotoOrder;
     private String defaultCollectionType;
     private String downloadScale;
-    private String backToTopType;
-    private boolean notifiedSetBackToTop;
 
     /** <br> singleton. */
 
@@ -41,6 +42,15 @@ public class SettingsOptionManager {
 
     private SettingsOptionManager(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.backToTopType = sharedPreferences.getString(
+                context.getString(R.string.key_back_to_top),
+                "all");
+        this.notifiedSetBackToTop = sharedPreferences.getBoolean(
+                context.getString(R.string.key_notified_set_back_to_top),
+                false);
+        this.saturationAnimationDuration = Integer.parseInt(
+                sharedPreferences.getString(
+                        context.getString(R.string.key_saturation_animation_duration), "2000"));
         this.language = sharedPreferences.getString(
                 context.getString(R.string.key_language),
                 "follow_system");
@@ -53,15 +63,36 @@ public class SettingsOptionManager {
         this.downloadScale = sharedPreferences.getString(
                 context.getString(R.string.key_download_scale),
                 "compact");
-        this.backToTopType = sharedPreferences.getString(
-                context.getString(R.string.key_back_to_top),
-                "all");
-        this.notifiedSetBackToTop = sharedPreferences.getBoolean(
-                context.getString(R.string.key_notified_set_back_to_top),
-                false);
     }
 
     /** <br> data. */
+
+    public String getBackToTopType() {
+        return backToTopType;
+    }
+
+    public void setBackToTopType(String backToTopType) {
+        this.backToTopType = backToTopType;
+    }
+
+    public boolean isNotifiedSetBackToTop() {
+        return notifiedSetBackToTop;
+    }
+
+    public void setNotifiedSetBackToTop(Context context, boolean notifiedSetBackToTop) {
+        this.notifiedSetBackToTop = notifiedSetBackToTop;
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
+        editor.putBoolean(context.getString(R.string.key_notified_set_back_to_top), notifiedSetBackToTop);
+        editor.apply();
+    }
+
+    public int getSaturationAnimationDuration() {
+        return saturationAnimationDuration;
+    }
+
+    public void setSaturationAnimationDuration(String duration) {
+        this.saturationAnimationDuration = Integer.parseInt(duration);
+    }
 
     public String getLanguage() {
         return language;
@@ -93,24 +124,5 @@ public class SettingsOptionManager {
 
     public void setDownloadScale(String downloadScale) {
         this.downloadScale = downloadScale;
-    }
-
-    public String getBackToTopType() {
-        return backToTopType;
-    }
-
-    public void setBackToTopType(String backToTopType) {
-        this.backToTopType = backToTopType;
-    }
-
-    public boolean isNotifiedSetBackToTop() {
-        return notifiedSetBackToTop;
-    }
-
-    public void setNotifiedSetBackToTop(Context context, boolean notifiedSetBackToTop) {
-        this.notifiedSetBackToTop = notifiedSetBackToTop;
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-        editor.putBoolean(context.getString(R.string.key_notified_set_back_to_top), notifiedSetBackToTop);
-        editor.apply();
     }
 }

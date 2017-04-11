@@ -163,11 +163,12 @@ public class CategoryImplementor
     /** <br> utils. */
 
     private void requestPhotosInCategoryOrders(Context c, int page, boolean refresh) {
+        page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestPhotosListener(c, page, refresh, false);
         model.getService()
                 .requestPhotosInAGivenCategory(
                         model.getPhotosCategory(),
-                        Math.max(1, refresh ? 1: page + 1),
+                        page,
                         Mysplash.DEFAULT_PER_PAGE,
                         listener);
     }

@@ -57,7 +57,7 @@
     </string-array>
 
     <!-- back to top. -->
-    <string-array name="back_to_top_type">
+    <string-array name="back_to_top_types">
         <item>Alles aus der Listenabsicht</item>
         <item>Nur Startseite</item>
         <item>Nichts</item>

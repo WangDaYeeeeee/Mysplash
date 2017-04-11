@@ -45,7 +45,7 @@ public class SearchImplementor
             } else {
                 model.setLoading(true);
             }
-            page = refresh ? 1 : page + 1;
+            page = Math.max(1, refresh ? 1 : page + 1);
             listener = new OnRequestPhotosListener(c, page, refresh);
             model.getService()
                     .searchPhotos(
