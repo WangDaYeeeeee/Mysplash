@@ -1,4 +1,4 @@
-![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/work/cover_github.png)
+![PREVIEW](https://github.com/WangDaYeeeeee/Mysplash/blob/master/work/art/cover_google_play.png)
 
 ## <context href="#chinese">中文</context> | <context href="#english">English</context>
 
