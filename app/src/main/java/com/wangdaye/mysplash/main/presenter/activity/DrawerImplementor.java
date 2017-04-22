@@ -13,18 +13,14 @@ import com.wangdaye.mysplash.common.i.view.DrawerView;
 
 public class DrawerImplementor
         implements DrawerPresenter {
-    // model & view.
+
     private DrawerModel model;
     private DrawerView view;
-
-    /** <br> life cycle. */
 
     public DrawerImplementor(DrawerModel model, DrawerView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void touchNavItem(int id) {

@@ -22,10 +22,33 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class UserService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static UserService getService() {
+        return new UserService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor())
+                .readTimeout(15, TimeUnit.SECONDS)
+                .writeTimeout(15, TimeUnit.SECONDS)
+                .build();
+    }
+
+    private UserApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((UserApi.class));
+    }
 
     public void requestUserProfile(String username, final OnRequestUserProfileListener l) {
         Call<User> getUserProfile = buildApi(buildClient()).getUserProfile(username, 256, 256);
@@ -137,34 +160,7 @@ public class UserService {
         }
     }
 
-    /** <br> build. */
-
-    public static UserService getService() {
-        return new UserService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor())
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
-                .build();
-    }
-
-    private UserApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((UserApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestUserProfileListener {
         void onRequestUserProfileSuccess(Call<User> call, Response<User> response);

@@ -17,17 +17,14 @@ import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
  * */
 
 public class NestedScrollPhotoView extends PhotoView {
-    // widget
+
     private NestedScrollingParent parent;
 
-    // data
     private boolean isBeingDragged;
     private boolean isNestedScrolling;
 
     private float oldY;
     private float touchSlop;
-
-    /** <br> life cycle. */
 
     public NestedScrollPhotoView(Context context) {
         super(context);
@@ -47,8 +44,6 @@ public class NestedScrollPhotoView extends PhotoView {
     private void initialize() {
         this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
-
-    /** <br> touch. */
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

@@ -36,15 +36,25 @@ import retrofit2.Response;
 
 public class StatsDialog extends MysplashDialogFragment
         implements PhotoService.OnRequestStatsListener {
-    // widget
-    @BindView(R.id.dialog_stats_container) CoordinatorLayout container;
-    @BindView(R.id.dialog_stats_progress) CircularProgressView progress;
-    @BindView(R.id.dialog_stats_dataContainer) LinearLayout dataContainer;
-    @BindView(R.id.dialog_stats_likeNum) TextView likeNum;
-    @BindView(R.id.dialog_stats_viewNum) TextView viewNum;
-    @BindView(R.id.dialog_stats_downloadNum) TextView downloadNum;
 
-    // data
+    @BindView(R.id.dialog_stats_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.dialog_stats_progress)
+    CircularProgressView progress;
+
+    @BindView(R.id.dialog_stats_dataContainer)
+    LinearLayout dataContainer;
+
+    @BindView(R.id.dialog_stats_likeNum)
+    TextView likeNum;
+
+    @BindView(R.id.dialog_stats_viewNum)
+    TextView viewNum;
+
+    @BindView(R.id.dialog_stats_downloadNum)
+    TextView downloadNum;
+
     private PhotoService service;
     private Photo photo;
 
@@ -55,8 +65,6 @@ public class StatsDialog extends MysplashDialogFragment
     private static final int SUCCESS_STATE = 1;
     @IntDef({LOADING_STATE, SUCCESS_STATE})
     private @interface StateRule {}
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -85,8 +93,6 @@ public class StatsDialog extends MysplashDialogFragment
         return container;
     }
 
-    /** <br> UI. */
-
     private void initWidget(View v) {
         this.service = PhotoService.getService();
 
@@ -110,6 +116,10 @@ public class StatsDialog extends MysplashDialogFragment
                 view, R.drawable.ic_eye_light, R.drawable.ic_eye_dark);
     }
 
+    public void setPhoto(Photo photo) {
+        this.photo = photo;
+    }
+
     private void setState(@StateRule int stateTo) {
         if (stateTo == SUCCESS_STATE && state == LOADING_STATE) {
             AnimUtils.animHide(progress);
@@ -118,13 +128,7 @@ public class StatsDialog extends MysplashDialogFragment
         this.state = stateTo;
     }
 
-    /** <br> data. */
-
-    public void setPhoto(Photo photo) {
-        this.photo = photo;
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on request stats listener.
 

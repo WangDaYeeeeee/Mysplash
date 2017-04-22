@@ -1,8 +1,6 @@
 package com.wangdaye.mysplash.common.ui.widget.coordinatorView;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -17,8 +15,6 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 public class NavigationBarView extends View {
 
-    /** <br> life cycle. */
-
     public NavigationBarView(Context context) {
         super(context);
     }
@@ -30,13 +26,6 @@ public class NavigationBarView extends View {
     public NavigationBarView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public NavigationBarView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    /** <br> UI. */
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {

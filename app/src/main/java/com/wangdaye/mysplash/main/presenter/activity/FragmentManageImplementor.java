@@ -29,16 +29,12 @@ import java.util.List;
 
 public class FragmentManageImplementor
         implements FragmentManagePresenter {
-    // model & view.
-    private FragmentManageModel model;
 
-    /** <br> life cycle. */
+    private FragmentManageModel model;
 
     public FragmentManageImplementor(FragmentManageModel model) {
         this.model = model;
     }
-
-    /** <br> presenter. */
 
     @Override
     public List<MysplashFragment> getFragmentList(MysplashActivity a, boolean includeHidden) {
@@ -129,8 +125,6 @@ public class FragmentManageImplementor
         }
     }
 */
-
-    /** <br> utils. */
 
     private void replaceFragment(MysplashActivity a, MysplashFragment f) {
         a.getSupportFragmentManager()

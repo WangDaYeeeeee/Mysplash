@@ -32,20 +32,22 @@ import butterknife.OnLongClick;
 
 public class PreviewActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener {
-    // widget
-    @BindView(R.id.activity_preview_container) CoordinatorLayout container;
-    @BindView(R.id.activity_preview_widgetContainer) LinearLayout widgetContainer;
-    @BindView(R.id.activity_preview_iconContainer) LinearLayout iconContainer;
 
-    // data
+    @BindView(R.id.activity_preview_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_preview_widgetContainer)
+    LinearLayout widgetContainer;
+
+    @BindView(R.id.activity_preview_iconContainer)
+    LinearLayout iconContainer;
+
     private Previewable previewable; // this object will provide data for picture.
     private boolean showIcon = false; // If set true, the icon view will become visible when user tap picture.
     private boolean showingIcon = false; // If set true, it means the icon view is visible.
 
     public static final String KEY_PREVIEW_ACTIVITY_PREVIEW = "preview_activity_preview";
     public static final String KEY_PREVIEW_ACTIVITY_SHOW_ICON = "preview_activity_show_icon";
-
-    /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,11 +67,6 @@ public class PreviewActivity extends MysplashActivity
     }
 
     @Override
-    public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         Mysplash.getInstance().removeActivity(this);
@@ -85,11 +82,6 @@ public class PreviewActivity extends MysplashActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
-    }
-
-    @Override
-    protected void backToTop() {
-        // do nothing.
     }
 
     @Override
@@ -112,13 +104,26 @@ public class PreviewActivity extends MysplashActivity
     }
 
     @Override
+    protected void backToTop() {
+        // do nothing.
+    }
+
+    @Override
+    public void handleBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+    }
+
+    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
-    /** <br> view. */
-
     // init.
+
+    private void initData() {
+        this.previewable = getIntent().getParcelableExtra(KEY_PREVIEW_ACTIVITY_PREVIEW);
+        this.showIcon = getIntent().getBooleanExtra(KEY_PREVIEW_ACTIVITY_SHOW_ICON, false);
+    }
 
     private void initWidget() {
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
@@ -145,7 +150,7 @@ public class PreviewActivity extends MysplashActivity
         });
     }
 
-    // anim.
+    // control.
 
     private void showIcons() {
         TranslateAnimation show = new TranslateAnimation(
@@ -191,20 +196,13 @@ public class PreviewActivity extends MysplashActivity
         widgetContainer.startAnimation(hide);
     }
 
-    /** <br> data. */
-
-    private void initData() {
-        this.previewable = getIntent().getParcelableExtra(KEY_PREVIEW_ACTIVITY_PREVIEW);
-        this.showIcon = getIntent().getBooleanExtra(KEY_PREVIEW_ACTIVITY_SHOW_ICON, false);
-    }
-
     private float calcMaxiScale() {
         float screenWidth = getResources().getDisplayMetrics().widthPixels;
         float screenHeight = getResources().getDisplayMetrics().heightPixels;
         if (previewable.getWidth() == 128) {
             return 0.5f;
         } else {
-            if (previewable.getWidth() >= previewable.getHeight()) {
+            if (1.0 * previewable.getWidth() / previewable.getHeight() >= 1.0 * screenWidth / screenHeight) {
                 return (float) (1.0 * screenHeight * previewable.getWidth() / screenWidth / previewable.getHeight());
             } else {
                 return (float) (1.0 * screenWidth * previewable.getHeight() / screenHeight / previewable.getWidth());
@@ -212,7 +210,7 @@ public class PreviewActivity extends MysplashActivity
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 

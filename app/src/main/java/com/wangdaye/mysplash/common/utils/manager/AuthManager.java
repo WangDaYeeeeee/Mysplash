@@ -35,45 +35,6 @@ import retrofit2.Response;
 
 public class AuthManager
         implements UserService.OnRequestMeProfileListener, UserService.OnRequestUserProfileListener {
-    // widget
-    private List<OnAuthDataChangedListener> listenerList;
-
-    // data
-    private Me me;
-    private User user;
-    private UserService service;
-
-    private String access_token;
-    private String username;
-    private String first_name;
-    private String last_name;
-    private String email;
-    private String avatar_path;
-    private boolean authorized;
-
-    private UserCollectionsManager collectionsManager; // cache of user's collections.
-
-    private static final String PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER = "mysplash_authorize_manager";
-    private static final String KEY_ACCESS_TOKEN = "access_token";
-    private static final String KEY_USERNAME = "username";
-    private static final String KEY_FIRST_NAME = "first_name";
-    private static final String KEY_LAST_NAME = "last_name";
-    private static final String KEY_EMAIL = "email";
-    private static final String KEY_AVATAR_PATH = "avatar_path";
-
-    @StateRule
-    private int state;
-    public static final int FREEDOM_STATE = 0;
-    public static final int LOADING_ME_STATE = 1;
-    public static final int LOADING_USER_STATE = 2;
-    @IntDef({FREEDOM_STATE, LOADING_ME_STATE, LOADING_USER_STATE})
-    private @interface StateRule {}
-
-    // if version code is increased, the user need to login again.
-    private static final String KEY_VERSION = "version";
-    private static final int VERSION_CODE = 8;
-
-    /** singleton. */
 
     private static AuthManager instance;
 
@@ -88,7 +49,45 @@ public class AuthManager
         return instance;
     }
 
-    /** <br> life cycle. */
+    private List<OnAuthDataChangedListener> listenerList;
+
+    private Me me;
+    private User user;
+    private UserService service;
+
+    private String access_token;
+    private String username;
+    private String first_name;
+    private String last_name;
+    private String email;
+    private String avatar_path;
+    private int numericId;
+    private boolean authorized;
+
+    private UserCollectionsManager collectionsManager; // cache of user's collections.
+    private UserNotificationManager notificationManager; // manage user's notification feeds.
+
+    private static final String PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER = "mysplash_authorize_manager";
+    private static final String KEY_ACCESS_TOKEN = "access_token";
+    private static final String KEY_USERNAME = "username";
+    private static final String KEY_FIRST_NAME = "first_name";
+    private static final String KEY_LAST_NAME = "last_name";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_AVATAR_PATH = "avatar_path";
+    private static final String KEY_NUMERIC_ID = "numeric_id";
+
+    @StateRule
+    private int state;
+    public static final int FREEDOM_STATE = 0;
+    public static final int LOADING_ME_STATE = 1;
+    public static final int LOADING_USER_STATE = 2;
+
+    @IntDef({FREEDOM_STATE, LOADING_ME_STATE, LOADING_USER_STATE})
+    private @interface StateRule {}
+
+    // if version code is increased, the user need to login again.
+    private static final String KEY_VERSION = "version";
+    private static final int VERSION_CODE = 8;
 
     private AuthManager() {
         SharedPreferences sharedPreferences = Mysplash.getInstance()
@@ -107,8 +106,10 @@ public class AuthManager
             this.last_name = sharedPreferences.getString(KEY_LAST_NAME, null);
             this.email = sharedPreferences.getString(KEY_EMAIL, null);
             this.avatar_path = sharedPreferences.getString(KEY_AVATAR_PATH, null);
+            this.numericId = sharedPreferences.getInt(KEY_NUMERIC_ID, -1);
         }
         this.collectionsManager = new UserCollectionsManager();
+        this.notificationManager = new UserNotificationManager();
 
         this.me = null;
         this.user = null;
@@ -139,11 +140,9 @@ public class AuthManager
         }
     }
 
-    /** <br> data. */
+    // HTTP request.
 
-    // refresh.
-
-    public void refreshPersonalProfile() {
+    public void requestPersonalProfile() {
         if (authorized) {
             service.cancel();
             state = LOADING_ME_STATE;
@@ -151,8 +150,21 @@ public class AuthManager
         }
     }
 
+    public void requestPersonalNotifications() {
+        if (authorized && numericId >= 0) {
+            notificationManager.requestPersonalNotifications();
+        }
+    }
+
+    public void refreshPersonalNotifications() {
+        if (authorized && numericId >= 0) {
+            notificationManager.checkToRefreshNotification();
+        }
+    }
+
     public void cancelRequest() {
         service.cancel();
+        notificationManager.cancelRequest(true);
     }
 
     // getter.
@@ -189,6 +201,10 @@ public class AuthManager
         return avatar_path;
     }
 
+    public int getNumericId() {
+        return numericId;
+    }
+
     public boolean isAuthorized() {
         return authorized;
     }
@@ -199,6 +215,10 @@ public class AuthManager
 
     public UserCollectionsManager getCollectionsManager() {
         return collectionsManager;
+    }
+
+    public UserNotificationManager getNotificationManager() {
+        return notificationManager;
     }
 
     // setter.
@@ -248,10 +268,17 @@ public class AuthManager
         editor.putString(KEY_FIRST_NAME, user.first_name);
         editor.putString(KEY_LAST_NAME, user.last_name);
         editor.putString(KEY_AVATAR_PATH, user.profile_image.large);
+        editor.putInt(KEY_NUMERIC_ID, user.numeric_id);
         editor.apply();
+
+        if (numericId < 0) {
+            numericId = user.numeric_id;
+            requestPersonalNotifications();
+        }
 
         this.user = user;
         avatar_path = user.profile_image.large;
+        numericId = user.numeric_id;
 
         for (int i = 0; i < listenerList.size(); i ++) {
             listenerList.get(i).onWriteAvatarPath();
@@ -279,6 +306,7 @@ public class AuthManager
         this.avatar_path = null;
         this.authorized = false;
         this.collectionsManager.clearCollections();
+        this.notificationManager.clearNotifications(true);
 
         this.me = null;
         this.user = null;
@@ -293,7 +321,7 @@ public class AuthManager
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on auth data changed swipeListener.
 
@@ -354,3 +382,4 @@ public class AuthManager
         }
     }
 }
+

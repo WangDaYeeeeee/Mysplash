@@ -24,11 +24,10 @@ import android.widget.FrameLayout;
 
 public abstract class NestedScrollFrameLayout extends FrameLayout
         implements NestedScrollingChild, NestedScrollingParent {
-    // widget
+
     private NestedScrollingChildHelper nestedScrollingChildHelper;
     private NestedScrollingParentHelper nestedScrollingParentHelper;
 
-    // data
     private boolean isBeingDragged;
     @DirectionRule
     private int swipeDir;
@@ -41,8 +40,6 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
     private static final int DIR_NULL = 0;
     @IntDef({DIR_TOP, DIR_BOTTOM, DIR_NULL})
     private @interface DirectionRule {}
-
-    /** <br> life cycle. */
 
     public NestedScrollFrameLayout(Context context) {
         super(context);
@@ -72,15 +69,6 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
 
         this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
-
-    /** <br> data. */
-
-    /**
-     * If return true, the view will eliminate the error by compute the offset of it's parent view.
-     * */
-    public abstract boolean isParentOffset();
-
-    /** <br> touch event. */
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
@@ -131,7 +119,12 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
         return true;
     }
 
-    /** <br> interface. */
+    /**
+     * If return true, the view will eliminate the error by compute the offset of it's parent view.
+     * */
+    public abstract boolean isParentOffset();
+
+    // interface.
 
     // nested scrolling parent.
 

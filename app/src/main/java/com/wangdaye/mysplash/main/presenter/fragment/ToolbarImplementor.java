@@ -21,8 +21,6 @@ import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 public class ToolbarImplementor
         implements ToolbarPresenter {
 
-    /** <br> presenter. */
-
     @Override
     public void touchNavigatorIcon(MysplashActivity a) {
         DrawerLayout drawer = (DrawerLayout) a.findViewById(R.id.activity_main_drawerLayout);
@@ -31,7 +29,10 @@ public class ToolbarImplementor
 
     @Override
     public void touchToolbar(MysplashActivity a) {
-        ((MainActivity) a).getTopFragment().backToTop();
+        MysplashFragment fragment = ((MainActivity) a).getTopFragment();
+        if (fragment != null) {
+            fragment.backToTop();
+        }
     }
 
     @Override

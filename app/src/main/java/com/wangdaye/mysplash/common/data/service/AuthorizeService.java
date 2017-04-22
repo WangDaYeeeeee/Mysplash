@@ -17,10 +17,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class AuthorizeService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static AuthorizeService getService() {
+        return new AuthorizeService();
+    }
+
+    private AuthorizeApi buildApi() {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create((AuthorizeApi.class));
+    }
 
     public void requestAccessToken(Context c, String code, final OnRequestAccessTokenListener l) {
         Call<AccessToken> getAccessToken = buildApi()
@@ -54,21 +64,7 @@ public class AuthorizeService {
         }
     }
 
-    /** <br> build. */
-
-    public static AuthorizeService getService() {
-        return new AuthorizeService();
-    }
-
-    private AuthorizeApi buildApi() {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create((AuthorizeApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestAccessTokenListener {
         void onRequestAccessTokenSuccess(Call<AccessToken> call, retrofit2.Response<AccessToken> response);

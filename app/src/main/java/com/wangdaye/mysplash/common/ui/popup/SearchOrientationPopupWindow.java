@@ -24,15 +24,12 @@ import butterknife.ButterKnife;
 
 public class SearchOrientationPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnSearchOrientationChangedListener listener;
 
-    // data
     private String[] names;
     private String[] values;
     private String valueNow;
-
-    /** <br> life cycle. */
 
     public SearchOrientationPopupWindow(Context c, View anchor, String valueNow) {
         super(c);
@@ -49,7 +46,11 @@ public class SearchOrientationPopupWindow extends MysplashPopupWindow
         show(anchor, 0, 0);
     }
 
-    /** <br> UI. */
+    private void initData(Context c, String valueNow) {
+        names = c.getResources().getStringArray(R.array.search_orientations);
+        values = c.getResources().getStringArray(R.array.search_orientation_values);
+        this.valueNow = valueNow;
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -108,15 +109,9 @@ public class SearchOrientationPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(Context c, String valueNow) {
-        names = c.getResources().getStringArray(R.array.search_orientations);
-        values = c.getResources().getStringArray(R.array.search_orientation_values);
-        this.valueNow = valueNow;
-    }
-
-    /** <br> interface. */
+    // on search orientation changed listener.
 
     public interface OnSearchOrientationChangedListener {
         void onSearchOrientationChanged(String orientationValue);
@@ -125,6 +120,8 @@ public class SearchOrientationPopupWindow extends MysplashPopupWindow
     public void setOnSearchOrientationChangedListener(OnSearchOrientationChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

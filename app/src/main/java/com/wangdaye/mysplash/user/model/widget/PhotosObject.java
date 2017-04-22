@@ -20,7 +20,7 @@ import java.util.List;
 
 public class PhotosObject
         implements PhotosModel {
-    // data
+
     private PhotoAdapter adapter;
     private PhotoService service;
 
@@ -41,8 +41,6 @@ public class PhotosObject
     @IntDef({PHOTOS_TYPE_PHOTOS, PHOTOS_TYPE_LIKES})
     private @interface TypeRule {}
 
-    /** <br> life cycle. */
-
     public PhotosObject(UserActivity a, User u, @TypeRule int photosType) {
         this.adapter = new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a);
         this.service = PhotoService.getService();
@@ -58,8 +56,6 @@ public class PhotosObject
         this.loading = false;
         this.over = false;
     }
-
-    /** <br> model. */
 
     @Override
     public PhotoAdapter getAdapter() {

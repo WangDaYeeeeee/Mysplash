@@ -12,7 +12,9 @@ public interface MultiFilterBarView {
     void touchNavigationIcon();
     void touchSearchButton();
     void touchMenuContainer(int position);
+
     void showKeyboard();
     void hideKeyboard();
+
     void submitSearchInfo();
 }

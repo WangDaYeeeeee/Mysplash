@@ -14,11 +14,9 @@ import com.wangdaye.mysplash.common.i.view.ScrollView;
 
 public class ScrollImplementor
         implements ScrollPresenter {
-    // model & view.
+
     private ScrollModel model;
     private ScrollView view;
-
-    /** <br> life cycle. */
 
     public ScrollImplementor(ScrollModel model, ScrollView view) {
         this.model = model;
@@ -35,7 +33,10 @@ public class ScrollImplementor
         model.setToTop(top);
     }
 
-    /** <br> presenter. */
+    @Override
+    public boolean needBackToTop() {
+        return view.needBackToTop();
+    }
 
     @Override
     public void scrollToTop() {
@@ -46,10 +47,5 @@ public class ScrollImplementor
     @Override
     public void autoLoad(int dy) {
         view.autoLoad(dy);
-    }
-
-    @Override
-    public boolean needBackToTop() {
-        return view.needBackToTop();
     }
 }

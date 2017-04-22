@@ -14,16 +14,6 @@ import com.wangdaye.mysplash.R;
  * */
 
 public class SettingsOptionManager {
-    // data
-    private String backToTopType;
-    private boolean notifiedSetBackToTop;
-    private int saturationAnimationDuration;
-    private String language;
-    private String defaultPhotoOrder;
-    private String defaultCollectionType;
-    private String downloadScale;
-
-    /** <br> singleton. */
 
     private static SettingsOptionManager instance;
 
@@ -38,7 +28,13 @@ public class SettingsOptionManager {
         return instance;
     }
 
-    /** <br> life cycle. */
+    private String backToTopType;
+    private boolean notifiedSetBackToTop;
+    private int saturationAnimationDuration;
+    private String language;
+    private String defaultPhotoOrder;
+    private String defaultCollectionType;
+    private String downloadScale;
 
     private SettingsOptionManager(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -64,8 +60,6 @@ public class SettingsOptionManager {
                 context.getString(R.string.key_download_scale),
                 "compact");
     }
-
-    /** <br> data. */
 
     public String getBackToTopType() {
         return backToTopType;

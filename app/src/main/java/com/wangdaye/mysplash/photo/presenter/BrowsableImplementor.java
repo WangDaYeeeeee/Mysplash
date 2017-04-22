@@ -18,18 +18,14 @@ import retrofit2.Response;
 public class BrowsableImplementor
         implements BrowsablePresenter,
         PhotoInfoService.OnRequestSinglePhotoListener {
-    // model & view.
+
     private BrowsableModel model;
     private BrowsableView view;
-
-    /** <br> life cycle. */
 
     public BrowsableImplementor(BrowsableModel model, BrowsableView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public Uri getIntentUri() {
@@ -58,7 +54,7 @@ public class BrowsableImplementor
         ((PhotoInfoService) model.getService()).cancel();
     }
 
-    /** <br> swipeListener. */
+    // interface.
 
     @Override
     public void onRequestSinglePhotoSuccess(Call<Photo> call, Response<Photo> response) {

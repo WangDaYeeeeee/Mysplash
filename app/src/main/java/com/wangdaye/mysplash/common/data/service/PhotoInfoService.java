@@ -18,10 +18,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class PhotoInfoService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static PhotoInfoService getService() {
+        return new PhotoInfoService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor())
+                .build();
+    }
+
+    private PhotoInfoApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((PhotoInfoApi.class));
+    }
 
     public void requestAPhoto(String id, final OnRequestSinglePhotoListener l) {
         Call<Photo> getPhotoInfo = buildApi(buildClient()).getPhotoInfo(id);
@@ -49,32 +70,7 @@ public class PhotoInfoService {
         }
     }
 
-    /** <br> build. */
-
-    public static PhotoInfoService getService() {
-        return new PhotoInfoService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor())
-                .build();
-    }
-
-    private PhotoInfoApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((PhotoInfoApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestSinglePhotoListener {
         void onRequestSinglePhotoSuccess(Call<Photo> call, retrofit2.Response<Photo> response);

@@ -2,10 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -68,29 +66,87 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         implements MultiFilterView, LoadView, ScrollView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
-    // model.
+
+    @BindView(R.id.container_filtering_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_filtering_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_filtering_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_filtering_view_large_feedbackBtn)
+    Button feedbackButton;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private MultiFilterModel multiFilterModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_filtering_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_filtering_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_filtering_view_large_feedbackTxt) TextView feedbackText;
-    @BindView(R.id.container_filtering_view_large_feedbackBtn) Button feedbackButton;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private MultiFilterPresenter multiFilterPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
 
-    // widget.
     private OnMultiFilterDataInputInterface inputInterface;
 
-    /** <br> life cycle. */
+    private static class SavedState extends BaseSavedState {
+
+        String query;
+        String user;
+        int category;
+        String orientation;
+        boolean featured;
+        boolean over;
+
+        SavedState(MultiFilterPhotosView view, Parcelable superState) {
+            super(superState);
+            this.query = view.multiFilterModel.getQuery();
+            this.user = view.multiFilterModel.getUsername();
+            this.category = view.multiFilterModel.getCategory();
+            this.orientation = view.multiFilterModel.getOrientation();
+            this.featured = view.multiFilterModel.isFeatured();
+            this.over = view.multiFilterModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.query = in.readString();
+            this.user = in.readString();
+            this.category = in.readInt();
+            this.orientation = in.readString();
+            this.featured = in.readByte() != 0;
+            this.over = in.readByte() != 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(this.query);
+            out.writeString(this.user);
+            out.writeInt(this.category);
+            out.writeString(this.orientation);
+            out.writeByte(this.featured ? (byte) 1 : (byte) 0);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public MultiFilterPhotosView(Context context) {
         super(context);
@@ -107,11 +163,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MultiFilterPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
@@ -128,6 +180,63 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         initPresenter();
         initView();
     }
+
+    private void initModel() {
+        this.multiFilterModel = new MultiFilterObject(
+                new PhotoAdapter(
+                        getContext(),
+                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                        this,
+                        null));
+        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+        this.scrollModel = new ScrollObject(true);
+    }
+
+    private void initPresenter() {
+        this.multiFilterPresenter = new MultiFilterImplementor(multiFilterModel, this);
+        this.loadPresenter = new LoadImplementor(loadModel, this);
+        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
+    }
+
+    private void initView() {
+        this.initContentView();
+        this.initLoadingView();
+    }
+
+    private void initContentView() {
+        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
+        refreshLayout.setOnRefreshAndLoadListener(this);
+        refreshLayout.setVisibility(GONE);
+
+        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
+        refreshLayout.setDragTriggerDistance(
+                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+
+        recyclerView.setAdapter(multiFilterPresenter.getAdapter());
+        recyclerView.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.addOnScrollListener(scrollListener);
+
+        multiFilterPresenter.getAdapter().setRecyclerView(recyclerView);
+    }
+
+    private void initLoadingView() {
+        progressView.setVisibility(GONE);
+
+        ImageView feedbackImg = ButterKnife.findById(
+                this, R.id.container_filtering_view_large_feedbackImg);
+        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_search);
+
+        feedbackText.setText(R.string.feedback_search_photos_tv);
+        feedbackText.setVisibility(GONE);
+
+        feedbackButton.setText(getContext().getString(R.string.search));
+        feedbackButton.setVisibility(VISIBLE);
+    }
+
+    // save state.
 
     @Override
     public Parcelable onSaveInstanceState() {
@@ -147,83 +256,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         multiFilterPresenter.setOver(ss.over);
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return false;
-    }
-
-    /** <br> presenter. */
-
-    private void initPresenter() {
-        this.multiFilterPresenter = new MultiFilterImplementor(multiFilterModel, this);
-        this.loadPresenter = new LoadImplementor(loadModel, this);
-        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
-    }
-
-    /** <br> view. */
-
-    // init.
-
-    private void initView() {
-        this.initContentView();
-        this.initLoadingView();
-    }
-
-    private void initContentView() {
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setVisibility(GONE);
-
-        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
-        refreshLayout.setDragTriggerDistance(
-                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
-        
-        recyclerView.setAdapter(multiFilterPresenter.getAdapter());
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
-        recyclerView.addOnScrollListener(scrollListener);
-
-        multiFilterPresenter.getAdapter().setRecyclerView(recyclerView);
-    }
-
-    private void initLoadingView() {
-        progressView.setVisibility(GONE);
-
-        ImageView feedbackImg = ButterKnife.findById(
-                this, R.id.container_filtering_view_large_feedbackImg);
-        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_search);
-        
-        feedbackText.setText(R.string.feedback_search_photos_tv);
-        feedbackText.setVisibility(GONE);
-        
-        feedbackButton.setText(getContext().getString(R.string.search));
-        feedbackButton.setVisibility(VISIBLE);
-    }
-
-    // interface.
-
-    public void pagerScrollToTop() {
-        scrollPresenter.scrollToTop();
-    }
-
-    /** <br> model. */
-
-    // init
-
-    private void initModel() {
-        this.multiFilterModel = new MultiFilterObject(
-                new PhotoAdapter(
-                        getContext(),
-                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
-                        this,
-                        null));
-        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-        this.scrollModel = new ScrollObject(true);
-    }
-
-    // interface.
+    // control.
 
     /**
      * Set activity for the adapter in this view.
@@ -233,6 +266,21 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     public void setActivity(MainActivity a) {
         multiFilterPresenter.setActivityForAdapter(a);
         multiFilterPresenter.getAdapter().setOnDownloadPhotoListener(a);
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
+    }
+
+    public void setClickListenerForFeedbackView(OnClickListener l) {
+        findViewById(R.id.container_filtering_view_large).setOnClickListener(l);
+    }
+
+    // photo.
+
+    public void updatePhoto(Photo photo) {
+        multiFilterPresenter.getAdapter().updatePhoto(photo, true, false);
     }
 
     /**
@@ -260,6 +308,8 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         }
     }
 
+    // HTTP request.
+
     public void doSearch(int categoryId, boolean featured,
                          String username, String query,
                          String orientation) {
@@ -275,15 +325,17 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         multiFilterPresenter.cancelRequest();
     }
 
+    // back to top.
+
     public boolean needPagerBackToTop() {
         return scrollPresenter.needBackToTop();
     }
 
-    public void setClickListenerForFeedbackView(OnClickListener l) {
-        findViewById(R.id.container_filtering_view_large).setOnClickListener(l);
+    public void pagerScrollToTop() {
+        scrollPresenter.scrollToTop();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on multi-filter data input interface.
 
@@ -344,7 +396,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        multiFilterPresenter.getAdapter().updatePhoto(p, true);
+        multiFilterPresenter.getAdapter().updatePhoto(p, true, true);
     }
 
     // view.
@@ -454,63 +506,5 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState extends BaseSavedState {
-        // data
-        String query;
-        String user;
-        int category;
-        String orientation;
-        boolean featured;
-        boolean over;
-
-        // life cycle.
-
-        SavedState(MultiFilterPhotosView view, Parcelable superState) {
-            super(superState);
-            this.query = view.multiFilterModel.getQuery();
-            this.user = view.multiFilterModel.getUsername();
-            this.category = view.multiFilterModel.getCategory();
-            this.orientation = view.multiFilterModel.getOrientation();
-            this.featured = view.multiFilterModel.isFeatured();
-            this.over = view.multiFilterModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            this.query = in.readString();
-            this.user = in.readString();
-            this.category = in.readInt();
-            this.orientation = in.readString();
-            this.featured = in.readByte() != 0;
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(this.query);
-            out.writeString(this.user);
-            out.writeInt(this.category);
-            out.writeString(this.orientation);
-            out.writeByte(this.featured ? (byte) 1 : (byte) 0);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

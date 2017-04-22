@@ -40,120 +40,30 @@ import butterknife.OnClick;
 
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHolder>
         implements DownloadRepeatDialog.OnCheckOrDownloadListener {
-    // widget
+
     private Context c;
     private OnRetryListener listener;
 
-    // data
     public List<DownloadMission> itemList;
-
-    /** <br> life cycle. */
-
-    public DownloadAdapter(Context c, OnRetryListener l) {
-        this.c = c;
-        this.listener = l;
-
-        this.itemList = new ArrayList<>();
-        List<DownloadMissionEntity> entityList;
-        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_FAILED);
-        for (int i = 0; i < entityList.size(); i ++) {
-            itemList.add(
-                    new DownloadMission(
-                            entityList.get(i)));
-        }
-        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_DOWNLOADING);
-        for (int i = 0; i < entityList.size(); i ++) {
-            itemList.add(
-                    DownloadHelper.getInstance(c)
-                            .getDownloadMission(
-                                    c,
-                                    entityList.get(i).missionId));
-        }
-        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_SUCCEED);
-        for (int i = 0; i < entityList.size(); i ++) {
-            itemList.add(
-                    new DownloadMission(
-                            entityList.get(i)));
-        }
-    }
-
-    /** <br> UI. */
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_download, parent, false);
-        return new ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.onBindView(position);
-    }
-
-    /** <br> data. */
-
-    @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
-        holder.onRecycled();
-    }
-
-    /** <br> interface. */
-
-    // on retry listener.
-
-    public interface OnRetryListener {
-        void onRetry(DownloadMissionEntity entity);
-    }
-
-    // on check or download listener.
-
-    @Override
-    public void onCheck(Object obj) {
-        DownloadMissionEntity entity = (DownloadMissionEntity) obj;
-        if (entity.downloadType == DownloadHelper.COLLECTION_TYPE) {
-            IntentHelper.startCheckCollectionActivity(c, entity.title);
-        } else {
-            IntentHelper.startCheckPhotoActivity(c, entity.title);
-        }
-    }
-
-    @Override
-    public void onDownload(Object obj) {
-        if (listener != null) {
-            listener.onRetry((DownloadMissionEntity) obj);
-        }
-    }
-
-    /** <br> inner class. */
-
-    // view holder.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         // widget
-        @BindView(R.id.item_download_image) ImageView image;
-        @BindView(R.id.item_download_stateIcon) CircularProgressIcon stateIcon;
-        @BindView(R.id.item_download_title) TextView title;
-        @BindView(R.id.item_download_retry_check_btn) ImageButton retryCheckBtn;
+        @BindView(R.id.item_download_image)
+        ImageView image;
 
-        // life cycle.
+        @BindView(R.id.item_download_stateIcon)
+        CircularProgressIcon stateIcon;
+
+        @BindView(R.id.item_download_title)
+        TextView title;
+
+        @BindView(R.id.item_download_retry_check_btn)
+        ImageButton retryCheckBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-        // UI.
 
         void onBindView(int position) {
             ImageHelper.loadPhoto(c, image, itemList.get(position).entity.getPhotoUri(), false, null);
@@ -182,6 +92,11 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             }
         }
 
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
+            stateIcon.recycleImageView();
+        }
+
         public void drawProcessStatus(DownloadMission mission, boolean switchState) {
             if (switchState) {
                 stateIcon.setProgressState();
@@ -189,11 +104,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             }
             title.setText(
                     mission.entity.getNotificationTitle().toUpperCase() + " : " + ((int) mission.process) + "%");
-        }
-
-        void onRecycled() {
-            ImageHelper.releaseImageView(image);
-            stateIcon.recycleImageView();
         }
 
         // interface.
@@ -257,6 +167,88 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                     listener.onRetry(entity);
                 }
             }
+        }
+    }
+
+    public DownloadAdapter(Context c, OnRetryListener l) {
+        this.c = c;
+        this.listener = l;
+
+        this.itemList = new ArrayList<>();
+        List<DownloadMissionEntity> entityList;
+        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_FAILED);
+        for (int i = 0; i < entityList.size(); i ++) {
+            itemList.add(
+                    new DownloadMission(
+                            entityList.get(i)));
+        }
+        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_DOWNLOADING);
+        for (int i = 0; i < entityList.size(); i ++) {
+            itemList.add(
+                    DownloadHelper.getInstance(c)
+                            .getDownloadMission(
+                                    c,
+                                    entityList.get(i).missionId));
+        }
+        entityList = DatabaseHelper.getInstance(c).readDownloadEntityList(DownloadHelper.RESULT_SUCCEED);
+        for (int i = 0; i < entityList.size(); i ++) {
+            itemList.add(
+                    new DownloadMission(
+                            entityList.get(i)));
+        }
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_download, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
+    }
+
+    @Override
+    public int getItemCount() {
+        return itemList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    // interface.
+
+    // on retry listener.
+
+    public interface OnRetryListener {
+        void onRetry(DownloadMissionEntity entity);
+    }
+
+    // on check or download listener.
+
+    @Override
+    public void onCheck(Object obj) {
+        DownloadMissionEntity entity = (DownloadMissionEntity) obj;
+        if (entity.downloadType == DownloadHelper.COLLECTION_TYPE) {
+            IntentHelper.startCheckCollectionActivity(c, entity.title);
+        } else {
+            IntentHelper.startCheckPhotoActivity(c, entity.title);
+        }
+    }
+
+    @Override
+    public void onDownload(Object obj) {
+        if (listener != null) {
+            listener.onRetry((DownloadMissionEntity) obj);
         }
     }
 }

@@ -2,8 +2,6 @@ package com.wangdaye.mysplash.common.ui.widget.freedomSizeView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -17,11 +15,9 @@ import com.wangdaye.mysplash.R;
  * */
 
 public class FreedomTouchView extends View {
-    // data
+
     private float width = 1;
     private float height = 0.666F;
-
-    /** <br> life cycle. */
 
     public FreedomTouchView(Context context) {
         super(context);
@@ -35,13 +31,6 @@ public class FreedomTouchView extends View {
         super(context, attrs, defStyleAttr);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public FreedomTouchView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    /** <br> UI. */
-
     @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -49,7 +38,9 @@ public class FreedomTouchView extends View {
         setMeasuredDimension(size[0], size[1]);
     }
 
-    /** <br> data. */
+    public float[] getSize() {
+        return new float[] {width, height};
+    }
 
     public void setSize(int w, int h) {
         width = w;
@@ -65,10 +56,6 @@ public class FreedomTouchView extends View {
             */
             requestLayout();
         }
-    }
-
-    public float[] getSize() {
-        return new float[] {width, height};
     }
 
     private int[] getMeasureSize(int measureWidth) {

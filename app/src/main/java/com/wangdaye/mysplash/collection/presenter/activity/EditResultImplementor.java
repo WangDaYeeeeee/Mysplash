@@ -10,18 +10,14 @@ import com.wangdaye.mysplash.common.i.view.EditResultView;
 
 public class EditResultImplementor
         implements EditResultPresenter {
-    // model & view.
+
     private EditResultModel model;
     private EditResultView view;
-
-    /** <br> life cycle. */
 
     public EditResultImplementor(EditResultModel model, EditResultView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void createSomething(Object newKey) {

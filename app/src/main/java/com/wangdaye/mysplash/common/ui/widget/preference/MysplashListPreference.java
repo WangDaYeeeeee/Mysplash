@@ -23,8 +23,6 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 public class MysplashListPreference extends ListPreference {
 
-    /** <br> life cycle. */
-
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MysplashListPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -42,8 +40,6 @@ public class MysplashListPreference extends ListPreference {
     public MysplashListPreference(Context context) {
         super(context);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(View view) {

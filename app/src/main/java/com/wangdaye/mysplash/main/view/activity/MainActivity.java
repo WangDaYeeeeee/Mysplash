@@ -1,18 +1,14 @@
 package com.wangdaye.mysplash.main.view.activity;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.TextUtils;
@@ -24,6 +20,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -33,12 +30,10 @@ import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common._basic.MysplashFragment;
 import com.wangdaye.mysplash.common.ui.activity.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.i.model.DrawerModel;
@@ -57,7 +52,6 @@ import com.wangdaye.mysplash.main.model.activity.DownloadObject;
 import com.wangdaye.mysplash.main.model.activity.DrawerObject;
 import com.wangdaye.mysplash.main.model.activity.FragmentManageObject;
 import com.wangdaye.mysplash.common.i.model.FragmentManageModel;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.main.presenter.activity.DownloadImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.DrawerImplementor;
@@ -78,19 +72,18 @@ import butterknife.ButterKnife;
  * Main activity.
  * */
 
-public class MainActivity extends MysplashActivity
+public class MainActivity extends ReadWriteActivity
         implements MessageManageView, MeManageView, DrawerView,
         View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
         PhotoAdapter.OnDownloadPhotoListener, AuthManager.OnAuthDataChangedListener,
         SafeHandler.HandlerContainer {
-    // model.
-    private FragmentManageModel fragmentManageModel;
-    private DrawerModel drawerModel;
-    private DownloadModel downloadModel;
 
-    // view
-    @BindView(R.id.activity_main_drawerLayout) DrawerLayout drawer;
-    @BindView(R.id.activity_main_navView) NavigationView nav;
+    @BindView(R.id.activity_main_drawerLayout)
+    DrawerLayout drawer;
+
+    @BindView(R.id.activity_main_navView)
+    NavigationView nav;
+
     private ImageView appIcon;
     private CircleImageView navAvatar;
     private TextView navTitle;
@@ -99,14 +92,19 @@ public class MainActivity extends MysplashActivity
 
     private SafeHandler<MainActivity> handler;
 
-    // presenter.
+    private FragmentManageModel fragmentManageModel;
     private FragmentManagePresenter fragmentManagePresenter;
+
     private MessageManagePresenter messageManagePresenter;
+
     private MeManagePresenter meManagePresenter;
+
+    private DrawerModel drawerModel;
     private DrawerPresenter drawerPresenter;
+
+    private DownloadModel downloadModel;
     private DownloadPresenter downloadPresenter;
 
-    // data.
     public static final String ACTION_SEARCH = "com.wangdaye.mysplash.Search";
 
     private final String KEY_MAIN_ACTIVITY_FRAGMENT_ID = "main_activity_fragment_id";
@@ -116,7 +114,112 @@ public class MainActivity extends MysplashActivity
     private final int REFRESH_SHORTCUTS = 2;
     private final int DRAW_PROFILE = 3;
 
-    /** <br> life cycle. */
+    private Runnable initRunnable = new Runnable() {
+        @Override
+        public void run() {
+            AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
+            if (AuthManager.getInstance().isAuthorized()
+                    && (TextUtils.isEmpty(AuthManager.getInstance().getUsername())
+                    || AuthManager.getInstance().getNumericId() < 0)) {
+                handler.obtainMessage(REFRESH_PROFILE).sendToTarget();
+            } else {
+                handler.obtainMessage(REFRESH_SHORTCUTS).sendToTarget();
+            }
+            IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
+            handler.obtainMessage(DRAW_PROFILE).sendToTarget();
+        }
+    };
+
+    public static class SavedStateFragment extends BaseSavedStateFragment {
+        // data
+        private List<Photo> homeNewList;
+        private List<Photo> homeFeaturedList;
+        private List<Collection> homeCollectionList;
+
+        private List<Photo> searchPhotoList;
+        private List<Collection> searchCollectionList;
+        private List<User> searchUserList;
+
+        private List<FollowingResult> followingFeedList;
+
+        private List<Photo> multiFilterList;
+
+        private List<Photo> categoryList;
+
+        // data.
+
+        public List<Photo> getHomeNewList() {
+            return homeNewList;
+        }
+
+        public void setHomeNewList(List<Photo> homeNewList) {
+            this.homeNewList = homeNewList;
+        }
+
+        public List<Photo> getHomeFeaturedList() {
+            return homeFeaturedList;
+        }
+
+        public void setHomeFeaturedList(List<Photo> homeFeaturedList) {
+            this.homeFeaturedList = homeFeaturedList;
+        }
+
+        public List<Collection> getHomeCollectionList() {
+            return homeCollectionList;
+        }
+
+        public void setHomeCollectionList(List<Collection> homeCollectionList) {
+            this.homeCollectionList = homeCollectionList;
+        }
+
+        public List<User> getSearchUserList() {
+            return searchUserList;
+        }
+
+        public void setSearchUserList(List<User> searchUserList) {
+            this.searchUserList = searchUserList;
+        }
+
+        public List<Photo> getSearchPhotoList() {
+            return searchPhotoList;
+        }
+
+        public void setSearchPhotoList(List<Photo> searchPhotoList) {
+            this.searchPhotoList = searchPhotoList;
+        }
+
+        public List<Collection> getSearchCollectionList() {
+            return searchCollectionList;
+        }
+
+        public void setSearchCollectionList(List<Collection> searchCollectionList) {
+            this.searchCollectionList = searchCollectionList;
+        }
+
+        public List<FollowingResult> getFollowingFeedList() {
+            return followingFeedList;
+        }
+
+        public void setFollowingFeedList(List<FollowingResult> followingFeedList) {
+            this.followingFeedList = followingFeedList;
+        }
+
+        public List<Photo> getMultiFilterList() {
+            return multiFilterList;
+        }
+
+        public void setMultiFilterList(List<Photo> multiFilterList) {
+            this.multiFilterList = multiFilterList;
+        }
+
+        public List<Photo> getCategoryList() {
+            return categoryList;
+        }
+
+        public void setCategoryList(List<Photo> categoryList) {
+            this.categoryList = categoryList;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +230,14 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (isSearchIntent(intent)) {
+            changeFragment(R.id.action_search);
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         if (!isStarted()) {
@@ -134,8 +245,26 @@ public class MainActivity extends MysplashActivity
             ButterKnife.bind(this);
             initView();
             buildFragmentStack();
-            ThreadManager.getInstance().execute(runnable);
+            ThreadManager.getInstance().execute(initRunnable);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        MysplashFragment fragment = getTopFragment();
+        if (fragment != null) {
+            fragment.handleActivityResult(requestCode, resultCode, data);
+        }
+        if (requestCode == Mysplash.ME_ACTIVITY) {
+            drawMeAvatar();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AuthManager.getInstance().refreshPersonalNotifications();
     }
 
     @Override
@@ -143,14 +272,6 @@ public class MainActivity extends MysplashActivity
         super.onDestroy();
         AuthManager.getInstance().removeOnWriteDataListener(this);
         AuthManager.getInstance().cancelRequest();
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (isSearchIntent(intent)) {
-            changeFragment(R.id.action_search);
-        }
     }
 
     @Override
@@ -174,12 +295,21 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
+    protected void setTheme() {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Main);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Main);
+        }
+    }
+
+    @Override
     public void handleBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            MysplashFragment f = fragmentManagePresenter.getTopFragment(this);
+            MysplashFragment f = getTopFragment();
             if (f != null
                     && f.needBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
                 f.backToTop();
@@ -192,22 +322,8 @@ public class MainActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Main);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Main);
-        }
-    }
-
-    @Override
     protected void backToTop() {
         // do nothing.
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
     }
 
     @Override
@@ -217,32 +333,31 @@ public class MainActivity extends MysplashActivity
 
     @Override
     public CoordinatorLayout getSnackbarContainer() {
-        return fragmentManagePresenter.getTopFragment(this).getSnackbarContainer();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case Mysplash.ME_ACTIVITY:
-                drawMeAvatar();
-                break;
+        MysplashFragment fragment = getTopFragment();
+        if (fragment == null) {
+            return null;
+        } else {
+            return fragment.getSnackbarContainer();
         }
     }
 
-    private void changeTheme() {
-        DisplayUtils.changeTheme(this);
-        reboot();
-    }
+    // init.
 
-    public void reboot() {
-        Intent intent = new Intent(this, RestartActivity.class);
-        startActivity(intent);
-        overridePendingTransition(0, android.R.anim.fade_out);
-        finish();
-    }
+    private void initModel(@Nullable Bundle savedInstanceState) {
+        int fragmentId = R.id.action_home;
+        int selectedId = R.id.action_home;
+        if (savedInstanceState != null) {
+            fragmentId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentId);
+            selectedId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_SELECTED_ID, selectedId);
+        } else if (isSearchIntent(getIntent())) {
+            fragmentId = R.id.action_search;
+            selectedId = R.id.action_search;
+        }
 
-    /** <br> presenter. */
+        this.fragmentManageModel = new FragmentManageObject(fragmentId, getIntent());
+        this.drawerModel = new DrawerObject(selectedId);
+        this.downloadModel = new DownloadObject();
+    }
 
     private void initPresenter() {
         this.fragmentManagePresenter = new FragmentManageImplementor(fragmentManageModel);
@@ -251,10 +366,6 @@ public class MainActivity extends MysplashActivity
         this.drawerPresenter = new DrawerImplementor(drawerModel, this);
         this.downloadPresenter = new DownloadImplementor(downloadModel);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         this.handler = new SafeHandler<>(this);
@@ -304,33 +415,28 @@ public class MainActivity extends MysplashActivity
         }
     }
 
-    // interface.
+    // control.
+
+    private void changeTheme() {
+        DisplayUtils.changeTheme(this);
+        reboot();
+    }
+
+    public void reboot() {
+        Intent intent = new Intent(this, RestartActivity.class);
+        startActivity(intent);
+        overridePendingTransition(0, android.R.anim.fade_out);
+        finish();
+    }
 
     public void changeFragment(int code) {
         drawerPresenter.setCheckedItemId(code);
         fragmentManagePresenter.changeFragment(this, code);
     }
 
+    @Nullable
     public MysplashFragment getTopFragment() {
         return fragmentManagePresenter.getTopFragment(this);
-    }
-
-    /** <br> model. */
-
-    private void initModel(@Nullable Bundle savedInstanceState) {
-        int fragmentId = R.id.action_home;
-        int selectedId = R.id.action_home;
-        if (savedInstanceState != null) {
-            fragmentId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentId);
-            selectedId = savedInstanceState.getInt(KEY_MAIN_ACTIVITY_SELECTED_ID, selectedId);
-        } else if (isSearchIntent(getIntent())) {
-            fragmentId = R.id.action_search;
-            selectedId = R.id.action_search;
-        }
-
-        this.fragmentManageModel = new FragmentManageObject(fragmentId, getIntent());
-        this.drawerModel = new DrawerObject(selectedId);
-        this.downloadModel = new DownloadObject();
     }
 
     private boolean isSearchIntent(Intent intent) {
@@ -338,44 +444,14 @@ public class MainActivity extends MysplashActivity
                 && intent.getAction().equals(ACTION_SEARCH);
     }
 
-    /** <br> permission. */
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestPermission(int permissionCode, int type) {
-        switch (permissionCode) {
-            case Mysplash.WRITE_EXTERNAL_STORAGE:
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    this.requestPermissions(
-                            new String[] {
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            type);
-                } else {
-                    downloadPresenter.download(this);
-                }
-                break;
-        }
-    }
+    // permission.
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
-        super.onRequestPermissionsResult(requestCode, permission, grantResult);
-        for (int i = 0; i < permission.length; i ++) {
-            switch (permission[i]) {
-                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadPresenter.download(this);
-                    } else {
-                        NotificationHelper.showSnackbar(
-                                getString(R.string.feedback_need_permission),
-                                Snackbar.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
+    protected void requestReadWritePermissionSucceed(int requestCode) {
+        downloadPresenter.download(this);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -408,7 +484,7 @@ public class MainActivity extends MysplashActivity
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             downloadPresenter.download(this);
         } else {
-            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
+            requestReadWritePermission();
         }
     }
 
@@ -444,7 +520,7 @@ public class MainActivity extends MysplashActivity
     public void handleMessage(Message message) {
         switch (message.what) {
             case REFRESH_PROFILE:
-                AuthManager.getInstance().refreshPersonalProfile();
+                AuthManager.getInstance().requestPersonalProfile();
                 break;
 
             case REFRESH_SHORTCUTS:
@@ -586,114 +662,6 @@ public class MainActivity extends MysplashActivity
             nav.setCheckedItem(R.id.action_checkable);
         } else {
             nav.setCheckedItem(id);
-        }
-    }
-
-    /** <br> inner class. */
-
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
-            if (AuthManager.getInstance().isAuthorized()
-                    && TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
-                handler.obtainMessage(REFRESH_PROFILE).sendToTarget();
-            } else {
-                handler.obtainMessage(REFRESH_SHORTCUTS).sendToTarget();
-            }
-            IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
-            handler.obtainMessage(DRAW_PROFILE).sendToTarget();
-        }
-    };
-
-    public static class SavedStateFragment extends BaseSavedStateFragment {
-        // data
-        private List<Photo> homeNewList;
-        private List<Photo> homeFeaturedList;
-        private List<Collection> homeCollectionList;
-
-        private List<Photo> searchPhotoList;
-        private List<Collection> searchCollectionList;
-        private List<User> searchUserList;
-
-        private List<FollowingResult> followingFeedList;
-
-        private List<Photo> multiFilterList;
-
-        private List<Photo> categoryList;
-
-        // data.
-
-        public List<Photo> getHomeNewList() {
-            return homeNewList;
-        }
-
-        public void setHomeNewList(List<Photo> homeNewList) {
-            this.homeNewList = homeNewList;
-        }
-
-        public List<Photo> getHomeFeaturedList() {
-            return homeFeaturedList;
-        }
-
-        public void setHomeFeaturedList(List<Photo> homeFeaturedList) {
-            this.homeFeaturedList = homeFeaturedList;
-        }
-
-        public List<Collection> getHomeCollectionList() {
-            return homeCollectionList;
-        }
-
-        public void setHomeCollectionList(List<Collection> homeCollectionList) {
-            this.homeCollectionList = homeCollectionList;
-        }
-
-        public List<User> getSearchUserList() {
-            return searchUserList;
-        }
-
-        public void setSearchUserList(List<User> searchUserList) {
-            this.searchUserList = searchUserList;
-        }
-
-        public List<Photo> getSearchPhotoList() {
-            return searchPhotoList;
-        }
-
-        public void setSearchPhotoList(List<Photo> searchPhotoList) {
-            this.searchPhotoList = searchPhotoList;
-        }
-
-        public List<Collection> getSearchCollectionList() {
-            return searchCollectionList;
-        }
-
-        public void setSearchCollectionList(List<Collection> searchCollectionList) {
-            this.searchCollectionList = searchCollectionList;
-        }
-
-        public List<FollowingResult> getFollowingFeedList() {
-            return followingFeedList;
-        }
-
-        public void setFollowingFeedList(List<FollowingResult> followingFeedList) {
-            this.followingFeedList = followingFeedList;
-        }
-
-        public List<Photo> getMultiFilterList() {
-            return multiFilterList;
-        }
-
-        public void setMultiFilterList(List<Photo> multiFilterList) {
-            this.multiFilterList = multiFilterList;
-        }
-
-        public List<Photo> getCategoryList() {
-            return categoryList;
-        }
-
-        public void setCategoryList(List<Photo> categoryList) {
-            this.categoryList = categoryList;
         }
     }
 }

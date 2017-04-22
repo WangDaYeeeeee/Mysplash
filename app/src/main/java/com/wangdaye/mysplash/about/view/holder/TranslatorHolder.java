@@ -8,7 +8,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.model.AboutModel;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -29,24 +29,26 @@ import butterknife.OnClick;
  * */
 
 public class TranslatorHolder extends AboutAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_about_translator_avatar) CircleImageView avatar;
-    @BindView(R.id.item_about_translator_flag) ImageView flag;
-    @BindView(R.id.item_about_translator_title) TextView title;
-    @BindView(R.id.item_about_translator_subtitle) TextView subtitle;
 
-    // data
+    @BindView(R.id.item_about_translator_avatar)
+    CircleImageView avatar;
+
+    @BindView(R.id.item_about_translator_flag)
+    ImageView flag;
+
+    @BindView(R.id.item_about_translator_title)
+    TextView title;
+
+    @BindView(R.id.item_about_translator_subtitle)
+    TextView subtitle;
+
     private String url;
-
-    /** <br> life cycle. */
 
     public TranslatorHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         DisplayUtils.setTypeface(itemView.getContext(), subtitle);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {

@@ -23,7 +23,7 @@ import com.wangdaye.mysplash.R;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class LiftOff extends Transition {
-    // data.
+
     private static final String PROPNAME_ELEVATION = "mysplash:liftoff:elevation";
 
     private static final String[] transitionProperties = {
@@ -33,8 +33,6 @@ public class LiftOff extends Transition {
     private final float initialElevation;
     private final float finalElevation;
 
-    /** <br> life cycle. */
-
     public LiftOff(Context context, AttributeSet attrs) {
         super(context, attrs);
         final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.LiftOff);
@@ -42,8 +40,6 @@ public class LiftOff extends Transition {
         finalElevation = a.getDimension(R.styleable.LiftOff_finalElevation, 0f);
         a.recycle();
     }
-
-    /** <br> data. */
 
     @Override
     public String[] getTransitionProperties() {

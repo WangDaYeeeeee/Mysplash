@@ -2,8 +2,6 @@ package com.wangdaye.mysplash.collection.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,25 +64,29 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         implements PhotosView, LoadView, ScrollView, SwipeBackView,
         View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
-    // model.
+
+    @BindView(R.id.container_loading_view_mini_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_view_mini_retryButton)
+    Button retryButton;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private PhotosModel photosModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_view_mini_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_view_mini_retryButton) Button retryButton;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private PhotosPresenter photosPresenter;
-    private LoadPresenter loadPresenter;
-    private ScrollPresenter scrollPresenter;
-    private SwipeBackPresenter swipeBackPresenter;
 
-    /** <br> life cycle. */
+    private LoadModel loadModel;
+    private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
+    private ScrollPresenter scrollPresenter;
+
+    private SwipeBackPresenter swipeBackPresenter;
 
     public CollectionPhotosView(Context context) {
         super(context);
@@ -101,48 +103,21 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public CollectionPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View loadingView = LayoutInflater.from(getContext()).inflate(R.layout.container_loading_view_mini, this, false);
+        View loadingView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_loading_view_mini, this, false);
         addView(loadingView);
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.container_photo_list, null);
+        View contentView = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_photo_list, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
         initView();
     }
-
-    @Override
-    public boolean isParentOffset() {
-        return false;
-    }
-
-    public void initMP(CollectionActivity a, Collection c) {
-        initModel(a, c);
-        initPresenter();
-        recyclerView.setAdapter(photosPresenter.getAdapter());
-        photosPresenter.getAdapter().setRecyclerView(recyclerView);
-    }
-
-    /** <br> presenter. */
-
-    private void initPresenter() {
-        this.photosPresenter = new PhotosImplementor(photosModel, this);
-        this.loadPresenter = new LoadImplementor(loadModel, this);
-        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
-        this.swipeBackPresenter = new SwipeBackImplementor(this);
-    }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         this.initContentView();
@@ -170,25 +145,12 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         retryButton.setOnClickListener(this);
     }
 
-    // interface.
-
-    /**
-     * Control the photo list in this view to scroll to the top.
-     * */
-    public void pagerBackToTop() {
-        scrollPresenter.scrollToTop();
+    public void initMP(CollectionActivity a, Collection c) {
+        initModel(a, c);
+        initPresenter();
+        recyclerView.setAdapter(photosPresenter.getAdapter());
+        photosPresenter.getAdapter().setRecyclerView(recyclerView);
     }
-
-    /**
-     * Execute the initialize animation.
-     * */
-    public void initAnimShow() {
-        AnimUtils.animInitShow(progressView, 400);
-    }
-
-    /** <br> model. */
-
-    // init.
 
     private void initModel(CollectionActivity a, Collection c) {
         PhotoAdapter adapter = new PhotoAdapter(
@@ -205,7 +167,21 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         this.scrollModel = new ScrollObject();
     }
 
-    // interface.
+    private void initPresenter() {
+        this.photosPresenter = new PhotosImplementor(photosModel, this);
+        this.loadPresenter = new LoadImplementor(loadModel, this);
+        this.scrollPresenter = new ScrollImplementor(scrollModel, this);
+        this.swipeBackPresenter = new SwipeBackImplementor(this);
+    }
+
+    // control nested scroll.
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
+    }
+
+    // control.
 
     /**
      * Set activity for the adapter in this view.
@@ -214,6 +190,44 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
      * */
     public void setActivity(MysplashActivity a) {
         photosPresenter.setActivityForAdapter(a);
+    }
+
+    /**
+     * Execute the initialize animation.
+     * */
+    public void initAnimShow() {
+        AnimUtils.animInitShow(progressView, 400);
+    }
+
+    public void initRefresh() {
+        photosPresenter.initRefresh(getContext());
+    }
+
+    public void cancelRequest() {
+        photosPresenter.cancelRequest();
+    }
+
+    public boolean needPagerBackToTop() {
+        return scrollPresenter.needBackToTop();
+    }
+
+    /**
+     * Control the photo list in this view to scroll to the top.
+     * */
+    public void pagerBackToTop() {
+        scrollPresenter.scrollToTop();
+    }
+
+    public boolean canSwipeBack(int dir) {
+        return swipeBackPresenter.checkCanSwipeBack(dir);
+    }
+
+    public Collection getCollection() {
+        return (Collection) photosPresenter.getRequestKey();
+    }
+
+    public void updatePhoto(Photo photo) {
+        photosPresenter.getAdapter().updatePhoto(photo, false, false);
     }
 
     /**
@@ -242,27 +256,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         }
     }
 
-    public void initRefresh() {
-        photosPresenter.initRefresh(getContext());
-    }
-
-    public void cancelRequest() {
-        photosPresenter.cancelRequest();
-    }
-
-    public Collection getCollection() {
-        return (Collection) photosPresenter.getRequestKey();
-    }
-
-    public boolean canSwipeBack(int dir) {
-        return swipeBackPresenter.checkCanSwipeBack(dir);
-    }
-
-    public boolean needPagerBackToTop() {
-        return scrollPresenter.needBackToTop();
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -306,7 +300,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        photosPresenter.getAdapter().updatePhoto(p, false);
+        photosPresenter.getAdapter().updatePhoto(p, false, true);
         if (((Collection) photosPresenter.getRequestKey()).id == c.id) {
             for (int i = 0; i < p.current_user_collections.size(); i ++) {
                 if (p.current_user_collections.get(i).id == c.id) {
@@ -430,7 +424,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
             case LoadObject.NORMAL_STATE:
-                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || photosPresenter.getAdapter().getRealItemCount() <= 0;
 
             default:

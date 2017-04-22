@@ -28,14 +28,17 @@ import butterknife.OnClick;
  * */
 
 public class WallpaperWhereDialog extends MysplashDialogFragment {
-    // widget
-    @BindView(R.id.dialog_wallpaper_where_container) CoordinatorLayout container;
-    @BindView(R.id.dialog_wallpaper_where_progress) CircularProgressView progressView;
-    @BindView(R.id.dialog_wallpaper_where_selector) LinearLayout selector;
+
+    @BindView(R.id.dialog_wallpaper_where_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.dialog_wallpaper_where_progress)
+    CircularProgressView progressView;
+
+    @BindView(R.id.dialog_wallpaper_where_selector)
+    LinearLayout selector;
 
     private OnWhereSelectedListener listener;
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -55,8 +58,6 @@ public class WallpaperWhereDialog extends MysplashDialogFragment {
         return container;
     }
 
-    /** <br> UI. */
-
     private void initWidget() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             progressView.setVisibility(View.GONE);
@@ -70,7 +71,7 @@ public class WallpaperWhereDialog extends MysplashDialogFragment {
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on where selected listener.
 

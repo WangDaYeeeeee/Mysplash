@@ -26,25 +26,26 @@ import java.util.List;
  * */
 
 public class Mysplash extends Application {
-    // widget.
+
+    private static Mysplash instance;
+
+    public static Mysplash getInstance() {
+        return instance;
+    }
+
     private List<MysplashActivity> activityList;
 
-    // data
-
-    // transfer
     private Photo photo;
 
-    // Unsplash url.
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
-    public static final String STREAM_API_BASE_URL = "";
-    public static final String UNSPLASH_FOLLOWING_FEED_URL = "napi/feeds/following";
-    public static final String UNSPLASH_NOTIFICATION_URL = "";
+    public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
+    public static final String UNSPLASH_FOLLOWING_FEED_URL = "XXX";
+    public static final String UNSPLASH_NOTIFICATION_URL = "napi/feeds/enrich";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
     public static final String UNSPLASH_LOGIN_CALLBACK = "unsplash-auth-callback";
 
-    // application data.
     public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
     public static final String DOWNLOAD_PHOTO_FORMAT = ".jpg";
@@ -87,24 +88,11 @@ public class Mysplash extends Application {
     public static int PEOPLE_PHOTOS_COUNT = 3410;
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
-    // activity code.
-    public static final int COLLECTION_ACTIVITY = 1;
-    public static final int ME_ACTIVITY = 2;
-    public static final int CUSTOM_API_ACTIVITY = 3;
-
-    // permission code.
-    public static final int WRITE_EXTERNAL_STORAGE = 1;
-    public static final int READ_EXTERNAL_STORAGE = 2;
-
-    /** <br> singleton. */
-
-    private static Mysplash instance;
-
-    public static Mysplash getInstance() {
-        return instance;
-    }
-
-    /** <br> life cycle. */
+    public static final int PHOTO_ACTIVITY = 1;
+    public static final int COLLECTION_ACTIVITY = 2;
+    public static final int USER_ACTIVITY = 3;
+    public static final int ME_ACTIVITY = 4;
+    public static final int CUSTOM_API_ACTIVITY = 0;
 
     @Override
     public void onCreate() {
@@ -113,8 +101,6 @@ public class Mysplash extends Application {
         instance = this;
         activityList = new ArrayList<>();
     }
-
-    /** <br> data. */
 
     public static String getAppId(Context c, boolean auth) {
         if (isDebug(c)) {

@@ -30,10 +30,22 @@ import java.util.List;
  * */
 
 public class DownloadHelper {
-    // widget
+
+    private static DownloadHelper instance;
+
+    public static DownloadHelper getInstance(Context context) {
+        if (instance == null) {
+            synchronized (DownloadHelper.class) {
+                if (instance == null) {
+                    instance = new DownloadHelper(context);
+                }
+            }
+        }
+        return instance;
+    }
+
     private DownloadManager downloadManager;
 
-    // data
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
     public static final int WALLPAPER_TYPE = 3;
@@ -55,28 +67,9 @@ public class DownloadHelper {
             DownloadHelper.RESULT_FAILED})
     public @interface DownloadResultRule {}
 
-    /** <br> singleton. */
-
-    private static DownloadHelper instance;
-
-    public static DownloadHelper getInstance(Context context) {
-        if (instance == null) {
-            synchronized (DownloadHelper.class) {
-                if (instance == null) {
-                    instance = new DownloadHelper(context);
-                }
-            }
-        }
-        return instance;
-    }
-
-    /** <br> life cycle. */
-
     private DownloadHelper(Context context) {
         this.downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
     }
-
-    /** <br> data. */
 
     // insert.
 
@@ -296,12 +289,13 @@ public class DownloadHelper {
     private static void shareDownloadSuccess(Context c, DownloadMissionEntity entity) {
         // Uri file = Uri.parse("file://" + entity.getFilePath());
         Uri file = FileUtils.filePathToUri(c, entity.getFilePath());
-        Intent action = new Intent(Intent.ACTION_SEND);
-        action.putExtra(Intent.EXTRA_STREAM, file);
-        action.setType("image/*");
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM, file);
+        intent.setType("image/*");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(
                         Intent.createChooser(
-                                action,
+                                intent,
                                 Mysplash.getInstance()
                                         .getString(R.string.feedback_choose_share_app)));
     }
@@ -309,12 +303,13 @@ public class DownloadHelper {
     private static void wallpaperDownloadSuccess(Context c, DownloadMissionEntity entity) {
         // Uri file = Uri.parse("file://" + entity.getFilePath());
         Uri file = FileUtils.filePathToUri(c, entity.getFilePath());
-        Intent action = new Intent(Intent.ACTION_ATTACH_DATA);
-        action.setDataAndType(file, "image/jpg");
-        action.putExtra("mimeType", "image/jpg");
+        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+        intent.setDataAndType(file, "image/jpg");
+        intent.putExtra("mimeType", "image/jpg");
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(
                         Intent.createChooser(
-                                action,
+                                intent,
                                 Mysplash.getInstance()
                                         .getString(R.string.feedback_choose_wallpaper_app)));
     }

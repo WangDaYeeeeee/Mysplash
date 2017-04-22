@@ -25,17 +25,14 @@ import butterknife.ButterKnife;
 
 public class PhotoMenuPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnSelectItemListener listener;
 
-    // data
     public static final int ITEM_STATS = 1;
     public static final int ITEM_DOWNLOAD_PAGE = 2;
     public static final int ITEM_STORY_PAGE = 3;
     @IntDef({ITEM_STATS, ITEM_DOWNLOAD_PAGE, ITEM_STORY_PAGE})
     private @interface MenuItemRule {}
-
-    /** <br> life cycle. */
 
     public PhotoMenuPopupWindow(Context c, View anchor) {
         super(c);
@@ -50,8 +47,6 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
         initWidget();
         show(anchor, anchor.getMeasuredWidth(), 0);
     }
-
-    /** <br> UI. */
 
     private void initWidget() {
         View v = getContentView();
@@ -80,7 +75,9 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> interface. */
+    // interface.
+
+    // on select item listener.
 
     public interface OnSelectItemListener {
         void onSelectItem(@MenuItemRule int id);
@@ -89,6 +86,8 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
     public void setOnSelectItemListener(OnSelectItemListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

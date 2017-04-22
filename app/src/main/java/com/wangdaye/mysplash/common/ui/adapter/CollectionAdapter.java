@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -35,145 +35,34 @@ import butterknife.OnClick;
  * */
 
 public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
-    // widget
+
     private Context a;
     private List<Collection> itemList;
 
-    // data
     private boolean horizontal;
-
-    /** <br> life cycle. */
-
-    public CollectionAdapter(Context a, List<Collection> list) {
-        this(a, list, false);
-    }
-
-    public CollectionAdapter(Context a, List<Collection> list, boolean horizontal) {
-        this.a = a;
-        this.itemList = list;
-        this.horizontal = horizontal;
-    }
-
-    @Override
-    protected boolean hasFooter() {
-        return !horizontal && DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
-    }
-
-    @Override
-    public int getRealItemCount() {
-        return itemList.size();
-    }
-
-    /** <br> UI. */
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-        if (isFooter(position)) {
-            // footer.
-            return FooterHolder.buildInstance(parent);
-        } else {
-            if (horizontal) {
-                View v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_collection_card, parent, false);
-                return new ViewHolder(v, itemList.get(position));
-            } else {
-                View v = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_collection, parent, false);
-                return new ViewHolder(v, itemList.get(position));
-            }
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ViewHolder) {
-            ((ViewHolder) holder).onBindView(itemList.get(position));
-        }
-    }
-
-    public void setActivity(MysplashActivity a) {
-        this.a = a;
-    }
-
-    /** <br> data. */
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof ViewHolder) {
-            ((ViewHolder) holder).onRecycled();
-        }
-    }
-
-    public void insertItem(Collection c, int position) {
-        itemList.add(position, c);
-        notifyItemInserted(position);
-    }
-
-    public void removeItem(Collection c) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == c.id) {
-                itemList.remove(i);
-                notifyItemRemoved(i);
-                return;
-            }
-        }
-    }
-
-    public void changeItem(Collection c) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == c.id) {
-                itemList.remove(i);
-                itemList.add(i, c);
-                notifyItemChanged(i);
-                return;
-            }
-        }
-        insertItem(c, 0);
-    }
-
-    public void clearItem() {
-        itemList.clear();
-        notifyDataSetChanged();
-    }
-
-    public List<Collection> getItemList() {
-        return itemList;
-    }
-
-    public void setCollectionData(List<Collection> list) {
-        itemList.clear();
-        itemList.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    public List<Collection> getCollectionData() {
-        List<Collection> list = new ArrayList<>();
-        list.addAll(itemList);
-        return list;
-    }
-
-    /** <br> inner class. */
 
     class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
-        // widget
-        @BindView(R.id.item_collection_background) RelativeLayout background;
-        @BindView(R.id.item_collection_cover) FreedomImageView image;
-        @BindView(R.id.item_collection_title) TextView title;
-        @BindView(R.id.item_collection_subtitle) TextView subtitle;
-        @BindView(R.id.item_collection_avatar) CircleImageView avatar;
-        @BindView(R.id.item_collection_name) TextView name;
 
-        // data
+        @BindView(R.id.item_collection_background)
+        RelativeLayout background;
+
+        @BindView(R.id.item_collection_cover)
+        FreedomImageView image;
+
+        @BindView(R.id.item_collection_title)
+        TextView title;
+
+        @BindView(R.id.item_collection_subtitle)
+        TextView subtitle;
+
+        @BindView(R.id.item_collection_avatar)
+        CircleImageView avatar;
+
+        @BindView(R.id.item_collection_name)
+        TextView name;
+
         private Collection collection;
-
-        // life cycle.
 
         ViewHolder(View itemView, Collection collection) {
             super(itemView);
@@ -196,10 +85,14 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             DisplayUtils.setTypeface(itemView.getContext(), name);
         }
 
-        // UI.
-
         public void onBindView(final Collection collection) {
             this.collection = collection;
+
+            float[] sizes = image.getSize();
+            if (collection.cover_photo != null
+                    && (sizes[0] != collection.cover_photo.width || sizes[1] != collection.cover_photo.height)) {
+                image.setSize(collection.cover_photo.width, collection.cover_photo.height);
+            }
 
             title.setText("");
             subtitle.setText("");
@@ -281,5 +174,124 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                         UserActivity.PAGE_PHOTO);
             }
         }
+    }
+
+    public CollectionAdapter(Context a, List<Collection> list) {
+        this(a, list, false);
+    }
+
+    public CollectionAdapter(Context a, List<Collection> list, boolean horizontal) {
+        this.a = a;
+        this.itemList = list;
+        this.horizontal = horizontal;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+        if (isFooter(position)) {
+            // footer.
+            return FooterHolder.buildInstance(parent);
+        } else {
+            if (horizontal) {
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_collection_card, parent, false);
+                return new ViewHolder(v, itemList.get(position));
+            } else {
+                View v = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_collection, parent, false);
+                return new ViewHolder(v, itemList.get(position));
+            }
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onBindView(itemList.get(position));
+        }
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onRecycled();
+        }
+    }
+
+    @Override
+    public int getRealItemCount() {
+        return itemList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    protected boolean hasFooter() {
+        return !horizontal && DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+    }
+
+    public void setActivity(MysplashActivity a) {
+        this.a = a;
+    }
+
+    public void insertItem(Collection c, int position) {
+        itemList.add(position, c);
+        notifyItemInserted(position);
+    }
+
+    public void removeItem(Collection c) {
+        for (int i = 0; i < itemList.size(); i ++) {
+            if (itemList.get(i).id == c.id) {
+                itemList.remove(i);
+                notifyItemRemoved(i);
+                return;
+            }
+        }
+    }
+
+    public void clearItem() {
+        itemList.clear();
+        notifyDataSetChanged();
+    }
+
+    public List<Collection> getItemList() {
+        return itemList;
+    }
+
+    public void updateCollection(Collection c, boolean probablyRepeat, boolean refreshView) {
+        for (int i = 0; i < getRealItemCount(); i ++) {
+            if (itemList.get(i).id == c.id) {
+                c.insertingPhoto = itemList.get(i).insertingPhoto;
+                if (c.cover_photo != null && itemList.get(i).cover_photo != null) {
+                    c.cover_photo.loadPhotoSuccess = itemList.get(i).cover_photo.loadPhotoSuccess;
+                    c.cover_photo.hasFadedIn = itemList.get(i).cover_photo.hasFadedIn;
+                    c.cover_photo.settingLike = itemList.get(i).cover_photo.settingLike;
+                }
+
+                itemList.set(i, c);
+                if (refreshView) {
+                    notifyItemChanged(i);
+                }
+                if (!probablyRepeat) {
+                    return;
+                }
+            }
+        }
+    }
+
+    public void setCollectionData(List<Collection> list) {
+        itemList.clear();
+        itemList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public List<Collection> getCollectionData() {
+        List<Collection> list = new ArrayList<>();
+        list.addAll(itemList);
+        return list;
     }
 }

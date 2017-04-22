@@ -16,13 +16,9 @@ import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 
 public class PhotoCoverBehavior<V extends FreedomImageView> extends CoordinatorLayout.Behavior<V> {
 
-    /** <br> life cycle. */
-
     public PhotoCoverBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
-    /** <br> layout. */
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {

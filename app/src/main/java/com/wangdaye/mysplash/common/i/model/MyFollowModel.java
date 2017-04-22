@@ -16,17 +16,14 @@ public interface MyFollowModel {
     MyFollowAdapter getAdapter();
     UserService getService();
 
-    int getFollowType();
+    // manage HTTP request parameters.
 
-    /**
-     * +2 --> added 2 followers / followed 2 user.
-     * -2 --> reduced 2 followers / canceled follow 2 user.
-     * */
-    int getDeltaValue();
-    void setDeltaValue(int delta);
+    int getFollowType();
 
     int getUsersPage();
     void setUsersPage(@Mysplash.PageRule int page);
+
+    // control load state.
 
     boolean isRefreshing();
     void setRefreshing(boolean refreshing);
@@ -37,4 +34,13 @@ public interface MyFollowModel {
     /** The flag to mark the photos already load over. */
     boolean isOver();
     void setOver(boolean over);
+
+    // record.
+
+    /**
+     * +2 --> added 2 followers / followed 2 user.
+     * -2 --> reduced 2 followers / canceled follow 2 user.
+     * */
+    int getDeltaValue();
+    void setDeltaValue(int delta);
 }

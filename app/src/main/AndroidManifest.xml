@@ -39,6 +39,10 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".main.view.activity.NotificationActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:label="@string/app_name" />
+
         <activity
             android:name=".photo.view.activity.PhotoActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Photo"

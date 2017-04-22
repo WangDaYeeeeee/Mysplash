@@ -29,7 +29,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -60,11 +60,10 @@ import retrofit2.Response;
 
 public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         implements SelectCollectionDialog.OnCollectionsChangedListener {
-    // widget
+
     private Context a;
     private RecyclerView recyclerView;
 
-    // data
     private List<FollowingResult> resultList; // this list is used to save the feed data.
     private List<ViewType> typeList; // this list is used to save the display information of view holder.
 
@@ -72,7 +71,30 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     static final int MAX_DISPLAY_PHOTO_COUNT = 7;
 
-    /** <br> life cycle. */
+    /**
+     * This class is used to save the view holder's information.
+     * */
+    private class ViewType {
+        // data
+        int resultPosition;
+        int objectPosition;
+
+        @ViewTypeRule
+        int type;
+
+        ViewType(int resultPosition, int objectPosition, int type) {
+            this.resultPosition = resultPosition;
+            this.objectPosition = objectPosition;
+            this.type = type;
+        }
+    }
+
+    @IntDef({
+            TitleHolder.VIEW_TYPE_TITLE,
+            PhotoHolder.VIEW_TYPE_PHOTO,
+            UserHolder.VIEW_TYPE_USER,
+            MoreHolder.VIEW_TYPE_MORE})
+    @interface ViewTypeRule {}
 
     public FollowingAdapter(Context a, List<FollowingResult> list) {
         this.a = a;
@@ -80,18 +102,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         this.typeList = new ArrayList<>();
         buildTypeList(list);
     }
-
-    @Override
-    protected boolean hasFooter() {
-        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
-    }
-
-    @Override
-    public int getRealItemCount() {
-        return typeList.size();
-    }
-
-    /** <br> UI. */
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
@@ -144,21 +154,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void setActivity(MysplashActivity a) {
-        this.a = a;
-    }
-
-    public void setRecyclerView(RecyclerView v) {
-        this.recyclerView = v;
-    }
-
-    /** <br> data. */
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
@@ -171,6 +166,31 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         } else if (holder instanceof MoreHolder) {
             ((MoreHolder) holder).onRecycled();
         }
+    }
+
+    @Override
+    public int getRealItemCount() {
+        return typeList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    protected boolean hasFooter() {
+        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+    }
+
+    // control.
+
+    public void setActivity(MysplashActivity a) {
+        this.a = a;
+    }
+
+    public void setRecyclerView(RecyclerView v) {
+        this.recyclerView = v;
     }
 
     public void insertItem(FollowingResult item) {
@@ -207,34 +227,12 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }*/
     }
 
-    public void updatePhoto(Photo p, boolean probablyRepeat) {
-        int position = -1;
-        for (int i = 0; i < resultList.size(); i ++) {
-            position ++;
-            int j = 0;
-            if (resultList.get(i).verb.equals(FollowingResult.VERB_FOLLOWED)) {
-                position += resultList.get(i).objects.size();
-            } else {
-                for (j = 0; j < resultList.get(i).objects.size(); j ++) {
-                    if (j < MAX_DISPLAY_PHOTO_COUNT) {
-                        position ++;
-                    }
-                    if (resultList.get(i).objects.get(j).id.equals(p.id)) {
-                        resultList.get(i).objects.set(j, new ActionObject(p));
-                        if (j < MAX_DISPLAY_PHOTO_COUNT) {
-                            notifyItemChanged(position);
-                        }
-                        if (!probablyRepeat) {
-                            return;
-                        }
-                    }
-                }
-            }
-            if (j > MAX_DISPLAY_PHOTO_COUNT) {
-                position ++;
-            }
-        }
+    public boolean isFooterView(int position) {
+        return typeList.size() <= position + 1
+                || typeList.get(position + 1).type == TitleHolder.VIEW_TYPE_TITLE;
     }
+
+    // type list.
 
     private void buildTypeList(List<FollowingResult> resultList) {
         for (int i = 0; i < resultList.size(); i ++) {
@@ -279,6 +277,20 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
     }
 
+    // actor.
+
+    public User getActor(int position) {
+        return resultList.get(typeList.get(position).resultPosition).actors.get(0);
+    }
+
+    // verb.
+
+    public String getVerb(int position) {
+        return resultList.get(typeList.get(position).resultPosition).verb;
+    }
+
+    // user.
+
     private User getUser(int position) {
         ViewType viewType = typeList.get(position);
         switch (viewType.type) {
@@ -295,6 +307,14 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         .castToUser();
         }
     }
+
+    void updateUser(User user, int position) {
+        FollowingResult result = resultList.get(typeList.get(position).resultPosition);
+        result.objects.set(typeList.get(position).objectPosition, new ActionObject(user));
+        resultList.set(typeList.get(position).resultPosition, result);
+    }
+
+    // photo.
 
     @Nullable
     private Photo getPhoto(int position) {
@@ -313,30 +333,42 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
     }
 
+    public void updatePhoto(Photo p, boolean probablyRepeat) {
+        int position = -1;
+        for (int i = 0; i < resultList.size(); i ++) {
+            position ++;
+            int j = 0;
+            if (resultList.get(i).verb.equals(FollowingResult.VERB_FOLLOWED)) {
+                position += resultList.get(i).objects.size();
+            } else {
+                for (j = 0; j < resultList.get(i).objects.size(); j ++) {
+                    if (j < MAX_DISPLAY_PHOTO_COUNT) {
+                        position ++;
+                    }
+                    if (resultList.get(i).objects.get(j).id.equals(p.id)) {
+                        resultList.get(i).objects.set(j, new ActionObject(p));
+                        if (j < MAX_DISPLAY_PHOTO_COUNT) {
+                            notifyItemChanged(position);
+                        }
+                        if (!probablyRepeat) {
+                            return;
+                        }
+                    }
+                }
+            }
+            if (j > MAX_DISPLAY_PHOTO_COUNT) {
+                position ++;
+            }
+        }
+    }
+
     void updatePhoto(Photo photo, int position) {
         FollowingResult result = resultList.get(typeList.get(position).resultPosition);
         result.objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
         resultList.set(typeList.get(position).resultPosition, result);
     }
 
-    void updateUser(User user, int position) {
-        FollowingResult result = resultList.get(typeList.get(position).resultPosition);
-        result.objects.set(typeList.get(position).objectPosition, new ActionObject(user));
-        resultList.set(typeList.get(position).resultPosition, result);
-    }
-
-    public boolean isFooterView(int position) {
-        return typeList.size() <= position + 1
-                || typeList.get(position + 1).type == TitleHolder.VIEW_TYPE_TITLE;
-    }
-
-    public User getActor(int position) {
-        return resultList.get(typeList.get(position).resultPosition).actors.get(0);
-    }
-
-    public String getVerb(int position) {
-        return resultList.get(typeList.get(position).resultPosition).verb;
-    }
+    // feeds.
 
     public List<FollowingResult> getFeeds() {
         List<FollowingResult> list = new ArrayList<>();
@@ -357,18 +389,14 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     // on set like listener.
 
     private class OnSetLikeListener implements PhotoService.OnSetLikeListener {
-        // data
+
         private String id;
         private int position;
-
-        // life cycle.
 
         OnSetLikeListener(String id, int position) {
             this.id = id;
             this.position = position;
         }
-
-        // interface.
 
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
@@ -420,8 +448,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             }
         }
 
-        // UI.
-
         private void updateView(boolean to) {
             if (recyclerView != null) {
                 LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
@@ -447,37 +473,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     public void onUpdateCollection(Collection c, User u, Photo p) {
         updatePhoto(p, true);
     }
-
-    /** <br> inner class. */
-
-    // view type.
-
-    /**
-     * This class is used to save the view holder's information.
-     * */
-    private class ViewType {
-        // data
-        int resultPosition;
-        int objectPosition;
-
-        @ViewTypeRule
-        int type;
-
-        ViewType(int resultPosition, int objectPosition, int type) {
-            this.resultPosition = resultPosition;
-            this.objectPosition = objectPosition;
-            this.type = type;
-        }
-    }
-
-    // @interface.
-
-    @IntDef({
-            TitleHolder.VIEW_TYPE_TITLE,
-            PhotoHolder.VIEW_TYPE_PHOTO,
-            UserHolder.VIEW_TYPE_USER,
-            MoreHolder.VIEW_TYPE_MORE})
-    @interface ViewTypeRule {}
 }
 
 /**
@@ -488,25 +483,29 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
  * */
 class TitleHolder extends RecyclerView.ViewHolder {
     // widget
-    @BindView(R.id.item_following_title_background) RelativeLayout background;
-    @BindView(R.id.item_following_title_avatar) CircleImageView avatar;
-    @BindView(R.id.item_following_title_verbIcon) ImageView verbIcon;
-    @BindView(R.id.item_following_title_actor) TextView actor;
-    @BindView(R.id.item_following_title_verb) TextView verb;
+    @BindView(R.id.item_following_title_background)
+    RelativeLayout background;
 
-    // data
+    @BindView(R.id.item_following_title_avatar)
+    CircleImageView avatar;
+
+    @BindView(R.id.item_following_title_verbIcon)
+    ImageView verbIcon;
+
+    @BindView(R.id.item_following_title_actor)
+    TextView actor;
+
+    @BindView(R.id.item_following_title_verb)
+    TextView verb;
+
     private FollowingResult result;
     static final int VIEW_TYPE_TITLE = 0;
-
-    // life cycle.
 
     TitleHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         DisplayUtils.setTypeface(itemView.getContext(), verb);
     }
-
-    // UI.
 
     void onBindView(FollowingResult result) {
         this.result = result;
@@ -655,20 +654,26 @@ class TitleHolder extends RecyclerView.ViewHolder {
  *
  * */
 class PhotoHolder extends RecyclerView.ViewHolder {
-    // widget
-    @BindView(R.id.item_following_photo_background) RelativeLayout background;
-    @BindView(R.id.item_following_photo_image) FreedomImageView image;
-    @BindView(R.id.item_following_photo_title) TextView title;
-    @BindView(R.id.item_following_photo_collectionButton) ImageButton collectionButton;
-    @BindView(R.id.item_following_photo_likeButton) CircularProgressIcon likeButton;
 
-    // data
+    @BindView(R.id.item_following_photo_background)
+    RelativeLayout background;
+
+    @BindView(R.id.item_following_photo_image)
+    FreedomImageView image;
+
+    @BindView(R.id.item_following_photo_title)
+    TextView title;
+
+    @BindView(R.id.item_following_photo_collectionButton)
+    ImageButton collectionButton;
+
+    @BindView(R.id.item_following_photo_likeButton)
+    CircularProgressIcon likeButton;
+
     private FollowingAdapter adapter;
     private Photo photo;
     private int position;
     static final int VIEW_TYPE_PHOTO = 1;
-
-    // life cycle.
 
     PhotoHolder(View itemView, FollowingAdapter adapter, Photo photo) {
         super(itemView);
@@ -679,13 +684,16 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         DisplayUtils.setTypeface(itemView.getContext(), title);
     }
 
-    // UI.
-
     void onBindView(final Photo photo, final int position) {
         final MysplashActivity a = Mysplash.getInstance().getTopActivity();
 
         this.photo = photo;
         this.position = position;
+
+        float[] sizes = image.getSize();
+        if (sizes[0] != photo.width || sizes[1] != photo.height) {
+            image.setSize(photo.width, photo.height);
+        }
 
         title.setText("");
         image.setShowShadow(false);
@@ -795,18 +803,22 @@ class PhotoHolder extends RecyclerView.ViewHolder {
  *
  * */
 class UserHolder extends RecyclerView.ViewHolder {
-    // widget
-    @BindView(R.id.item_following_user_background) RelativeLayout background;
-    @BindView(R.id.item_following_user_avatar) CircleImageView avatar;
-    @BindView(R.id.item_following_user_title) TextView title;
-    @BindView(R.id.item_following_user_subtitle) TextView subtitle;
 
-    // data
+    @BindView(R.id.item_following_user_background)
+    RelativeLayout background;
+
+    @BindView(R.id.item_following_user_avatar)
+    CircleImageView avatar;
+
+    @BindView(R.id.item_following_user_title)
+    TextView title;
+
+    @BindView(R.id.item_following_user_subtitle)
+    TextView subtitle;
+
     private FollowingAdapter adapter;
     private User user;
     static final int VIEW_TYPE_USER = 2;
-
-    // life cycle.
 
     UserHolder(View itemView, FollowingAdapter adapter) {
         super(itemView);
@@ -815,8 +827,6 @@ class UserHolder extends RecyclerView.ViewHolder {
         this.adapter = adapter;
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
     }
-
-    // UI.
 
     void onBindView(final User user, final int position) {
         final MysplashActivity a = Mysplash.getInstance().getTopActivity();
@@ -883,18 +893,22 @@ class UserHolder extends RecyclerView.ViewHolder {
  *
  * */
 class MoreHolder extends RecyclerView.ViewHolder {
-    // widget
-    @BindView(R.id.item_following_more_background) RelativeLayout background;
-    @BindView(R.id.item_following_more_image) FreedomImageView image;
-    @BindView(R.id.item_following_more_avatar) CircleImageView avatar;
-    @BindView(R.id.item_following_more_title) TextView more;
 
-    // data
+    @BindView(R.id.item_following_more_background)
+    RelativeLayout background;
+
+    @BindView(R.id.item_following_more_image)
+    FreedomImageView image;
+
+    @BindView(R.id.item_following_more_avatar)
+    CircleImageView avatar;
+
+    @BindView(R.id.item_following_more_title)
+    TextView more;
+
     private FollowingAdapter adapter;
     private FollowingResult result;
     static final int VIEW_TYPE_MORE = 3;
-
-    // life cycle.
 
     MoreHolder(View itemView, FollowingAdapter adapter, Photo photo) {
         super(itemView);
@@ -904,12 +918,15 @@ class MoreHolder extends RecyclerView.ViewHolder {
         image.setSize(photo.width, photo.height);
     }
 
-    // UI.
-
     void onBindView(FollowingResult result, final Photo photo, final int position) {
         final MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             this.result = result;
+
+            float[] sizes = image.getSize();
+            if (sizes[0] != photo.width || sizes[1] != photo.height) {
+                image.setSize(photo.width, photo.height);
+            }
 
             more.setText(
                     (result.objects.size() - FollowingAdapter.MAX_DISPLAY_PHOTO_COUNT)

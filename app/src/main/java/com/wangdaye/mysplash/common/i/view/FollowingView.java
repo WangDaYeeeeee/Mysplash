@@ -1,10 +1,12 @@
 package com.wangdaye.mysplash.common.i.view;
 
+import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
+
 /**
  * Following view.
  *
  * A view which can request
- * {@link com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeedResult} and show them.
+ * {@link FollowingFeed} and show them.
  *
  * */
 

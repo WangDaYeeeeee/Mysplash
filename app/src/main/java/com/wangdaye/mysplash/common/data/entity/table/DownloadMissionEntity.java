@@ -82,7 +82,7 @@ public class DownloadMissionEntity {
     public DownloadMissionEntity() {
     }
 
-    /** <br> data. */
+    // data.
 
     /**
      * Get the file path of the downloaded file.

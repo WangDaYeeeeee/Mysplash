@@ -25,10 +25,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class CollectionService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static CollectionService getService() {
+        return new CollectionService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor())
+                .build();
+    }
+
+    private CollectionApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((CollectionApi.class));
+    }
 
     public void requestAllCollections(@Mysplash.PageRule int page,
                                       @Mysplash.PerPageRule int per_page,
@@ -287,32 +308,7 @@ public class CollectionService {
         }
     }
 
-    /** <br> build. */
-
-    public static CollectionService getService() {
-        return new CollectionService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor())
-                .build();
-    }
-
-    private CollectionApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((CollectionApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestCollectionsListener {
         void onRequestCollectionsSuccess(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response);

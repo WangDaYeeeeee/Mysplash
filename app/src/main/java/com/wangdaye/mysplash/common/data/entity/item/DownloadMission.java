@@ -12,15 +12,13 @@ import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
  * */
 
 public class DownloadMission {
-    // data
+
     public DownloadMissionEntity entity;
     @ProcessRangeRule
     public float process;
 
     @FloatRange(from = 0.0, to = 100.0)
     public @interface ProcessRangeRule {}
-
-    /** <br> life cycle. */
 
     public DownloadMission(DownloadMissionEntity entity) {
         this.entity = entity;

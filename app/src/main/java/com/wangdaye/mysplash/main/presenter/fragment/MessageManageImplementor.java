@@ -14,10 +14,8 @@ import com.wangdaye.mysplash.common.i.view.MessageManageView;
 
 public class MessageManageImplementor
         implements MessageManagePresenter {
-    // model & view.
-    private MessageManageView view;
 
-    /** <br> life cycle. */
+    private MessageManageView view;
 
     public MessageManageImplementor(MessageManageView view) {
         this.view = view;

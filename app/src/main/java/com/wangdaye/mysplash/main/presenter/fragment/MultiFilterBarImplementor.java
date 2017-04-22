@@ -16,18 +16,14 @@ import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 
 public class MultiFilterBarImplementor
         implements MultiFilterBarPresenter {
-    // model & view.
+
     private MultiFilterBarModel model;
     private MultiFilterBarView view;
-
-    /** <br> life cycle. */
 
     public MultiFilterBarImplementor(MultiFilterBarModel model, MultiFilterBarView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void touchNavigatorIcon() {
@@ -38,7 +34,9 @@ public class MultiFilterBarImplementor
     public void touchToolbar(MysplashActivity a) {
         MainActivity activity = (MainActivity) a;
         MultiFilterFragment f = (MultiFilterFragment) activity.getTopFragment();
-        f.backToTop();
+        if (f != null) {
+            f.backToTop();
+        }
     }
 
     @Override

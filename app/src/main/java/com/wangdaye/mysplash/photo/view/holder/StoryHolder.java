@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -24,18 +24,22 @@ import butterknife.OnClick;
 /** <br> Story holder. */
 
 public class StoryHolder extends PhotoInfoAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_photo_story_title) TextView title;
-    @BindView(R.id.item_photo_story_subtitle) TextView subtitle;
-    @BindView(R.id.item_photo_story_content) TextView content;
-    @BindView(R.id.item_photo_story_avatar) CircleImageView avatar;
 
-    // data
+    @BindView(R.id.item_photo_story_title)
+    TextView title;
+
+    @BindView(R.id.item_photo_story_subtitle)
+    TextView subtitle;
+
+    @BindView(R.id.item_photo_story_content)
+    TextView content;
+
+    @BindView(R.id.item_photo_story_avatar)
+    CircleImageView avatar;
+
     private Photo photo;
 
     public static final int TYPE_STORY = 4;
-
-    /** <br> life cycle. */
 
     public StoryHolder(View itemView) {
         super(itemView);
@@ -44,8 +48,6 @@ public class StoryHolder extends PhotoInfoAdapter.ViewHolder {
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), content);
     }
-
-    /** <br> UI. */
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -72,8 +74,6 @@ public class StoryHolder extends PhotoInfoAdapter.ViewHolder {
 
         this.photo = photo;
     }
-
-    /** <br> interface. */
 
     @OnClick(R.id.item_photo_story_avatar) void checkAuthor() {
         IntentHelper.startUserActivity(

@@ -29,21 +29,16 @@ import retrofit2.Response;
 
 public class CollectionsImplementor
         implements CollectionsPresenter {
-    // model & view.
+
     private CollectionsModel model;
     private CollectionsView view;
 
-    // data
     private OnRequestCollectionsListener listener;
-
-    /** <br> life cycle. */
 
     public CollectionsImplementor(CollectionsModel model, CollectionsView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestCollections(Context c, int page, boolean refresh) {
@@ -155,8 +150,6 @@ public class CollectionsImplementor
         return model.getAdapter();
     }
 
-    /** <br> utils. */
-
     private void requestAllCollections(Context c, int page, boolean refresh) {
         listener = new OnRequestCollectionsListener(c, page, refresh);
         model.getService()
@@ -186,10 +179,10 @@ public class CollectionsImplementor
                         listener);
     }
 
-    /** <br> interface. */
+    // interface.
 
     private class OnRequestCollectionsListener implements CollectionService.OnRequestCollectionsListener {
-        // data
+
         private Context c;
         private int page;
         private boolean refresh;

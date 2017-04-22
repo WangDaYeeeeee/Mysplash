@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -17,7 +18,9 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.MultiFilterBarPresenter;
@@ -40,6 +43,7 @@ import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterBarImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -61,42 +65,49 @@ public class MultiFilterFragment extends MysplashFragment
         View.OnClickListener, EditText.OnEditorActionListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener, SafeHandler.HandlerContainer,
         MultiFilterPhotosView.OnMultiFilterDataInputInterface {
-    // model.
-    private MultiFilterBarModel multiFilterBarModel;
 
-    // view.
-    private SafeHandler<MultiFilterFragment> handler;
+    @BindView(R.id.fragment_multi_filter_statusBar)
+    StatusBarView statusBar;
 
-    @BindView(R.id.fragment_multi_filter_statusBar) StatusBarView statusBar;
+    @BindView(R.id.fragment_multi_filter_container)
+    CoordinatorLayout container;
 
-    @BindView(R.id.fragment_multi_filter_container) CoordinatorLayout container;
-    @BindView(R.id.fragment_multi_filter_appBar) NestedScrollAppBarLayout appBar;
+    @BindView(R.id.fragment_multi_filter_appBar)
+    NestedScrollAppBarLayout appBar;
+
     @BindViews({
             R.id.fragment_multi_filter_photos_editText,
-            R.id.fragment_multi_filter_users_editText}) EditText[] editTexts;
+            R.id.fragment_multi_filter_users_editText})
+    EditText[] editTexts;
     @BindViews({
             R.id.fragment_multi_filter_categoryTxt,
             R.id.fragment_multi_filter_orientationTxt,
-            R.id.fragment_multi_filter_featuredTxt}) TextView[] menuTexts;
+            R.id.fragment_multi_filter_featuredTxt})
+    TextView[] menuTexts;
+
     @BindViews({
             R.id.fragment_multi_filter_categoryBtn,
             R.id.fragment_multi_filter_orientationBtn,
-            R.id.fragment_multi_filter_featuredBtn}) ImageButton[] menuIcons;
-    @BindView(R.id.fragment_multi_filter_photosView) MultiFilterPhotosView photosView;
+            R.id.fragment_multi_filter_featuredBtn})
+    ImageButton[] menuIcons;
 
-    // presenter.
+    @BindView(R.id.fragment_multi_filter_photosView)
+    MultiFilterPhotosView photosView;
+
+    private SafeHandler<MultiFilterFragment> handler;
+
+    private MultiFilterBarModel multiFilterBarModel;
     private MultiFilterBarPresenter multiFilterBarPresenter;
+
     private PopupManagePresenter popupManagePresenter;
+
     private MessageManagePresenter messageManagePresenter;
 
-    // data.
     private final String KEY_MULTI_FILTER_FRAGMENT_QUERY = "key_multi_filter_fragment_query";
     private final String KEY_MULTI_FILTER_FRAGMENT_USER = "key_multi_filter_fragment_user";
     private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY = "key_multi_filter_fragment_photo_category";
     private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION = "key_multi_filter_fragment_photo_orientation";
     private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE = "key_multi_filter_fragment_photo_type";
-
-    /** <br> life cycle. */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -117,13 +128,8 @@ public class MultiFilterFragment extends MysplashFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, editTexts[0].getText().toString());
-        outState.putString(KEY_MULTI_FILTER_FRAGMENT_USER, editTexts[1].getText().toString());
-        outState.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, multiFilterBarPresenter.getCategory());
-        outState.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, multiFilterBarPresenter.getOrientation());
-        outState.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, multiFilterBarPresenter.isFeatured());
+    public boolean needSetOnlyWhiteStatusBarText() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
     @Override
@@ -136,21 +142,13 @@ public class MultiFilterFragment extends MysplashFragment
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
-    }
-
-    @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
-
-    @Override
-    public void backToTop() {
-        statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
-        BackToTopUtils.showTopBar(appBar, photosView);
-        photosView.pagerScrollToTop();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, editTexts[0].getText().toString());
+        outState.putString(KEY_MULTI_FILTER_FRAGMENT_USER, editTexts[1].getText().toString());
+        outState.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, multiFilterBarPresenter.getCategory());
+        outState.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, multiFilterBarPresenter.getOrientation());
+        outState.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, multiFilterBarPresenter.isFeatured());
     }
 
     @Override
@@ -172,24 +170,34 @@ public class MultiFilterFragment extends MysplashFragment
         return photosView.needPagerBackToTop();
     }
 
-    /** <br> presenter. */
-
-    private void initPresenter(Bundle saveInstanceState) {
-        this.multiFilterBarPresenter = new MultiFilterBarImplementor(multiFilterBarModel, this);
-        if (saveInstanceState != null) {
-            multiFilterBarPresenter.setQuery(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""));
-            multiFilterBarPresenter.setUsername(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""));
-            multiFilterBarPresenter.setCategory(saveInstanceState.getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, 0));
-            multiFilterBarPresenter.setOrientation(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
-            multiFilterBarPresenter.setFeatured(saveInstanceState.getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
-        }
-        this.popupManagePresenter = new MultiFilterFragmentPopupManageImplementor(this);
-        this.messageManagePresenter = new MessageManageImplementor(this);
+    @Override
+    public void backToTop() {
+        statusBar.animToInitAlpha();
+        setStatusBarStyle(false);
+        BackToTopUtils.showTopBar(appBar, photosView);
+        photosView.pagerScrollToTop();
     }
 
-    /** <br> view. */
+    @Override
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Mysplash.PHOTO_ACTIVITY) {
+            Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
+            if (photo != null) {
+                photosView.updatePhoto(photo);
+            }
+        }
+    }
+
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
 
     // init.
+
+    private void initModel() {
+        this.multiFilterBarModel = new MultiFilterBarObject();
+    }
 
     private void initView(View v) {
         this.handler = new SafeHandler<>(this);
@@ -233,7 +241,20 @@ public class MultiFilterFragment extends MysplashFragment
         photosView.setClickListenerForFeedbackView(hideKeyboardListener);
     }
 
-    // interface.
+    private void initPresenter(Bundle saveInstanceState) {
+        this.multiFilterBarPresenter = new MultiFilterBarImplementor(multiFilterBarModel, this);
+        if (saveInstanceState != null) {
+            multiFilterBarPresenter.setQuery(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""));
+            multiFilterBarPresenter.setUsername(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""));
+            multiFilterBarPresenter.setCategory(saveInstanceState.getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, 0));
+            multiFilterBarPresenter.setOrientation(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
+            multiFilterBarPresenter.setFeatured(saveInstanceState.getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
+        }
+        this.popupManagePresenter = new MultiFilterFragmentPopupManageImplementor(this);
+        this.messageManagePresenter = new MessageManageImplementor(this);
+    }
+
+    // control.
 
     public void showPopup(int position) {
         switch (position) {
@@ -263,13 +284,7 @@ public class MultiFilterFragment extends MysplashFragment
         }
     }
 
-    /** <br> model. */
-
-    private void initModel() {
-        this.multiFilterBarModel = new MultiFilterBarObject();
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 

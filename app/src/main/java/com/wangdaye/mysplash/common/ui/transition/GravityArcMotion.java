@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class GravityArcMotion extends ArcMotion {
-    // data.
+
     private static final float DEFAULT_MIN_ANGLE_DEGREES = 0;
     private static final float DEFAULT_MAX_ANGLE_DEGREES = 70;
     private static final float DEFAULT_MAX_TANGENT = (float)
@@ -29,15 +29,11 @@ public class GravityArcMotion extends ArcMotion {
     private float mMinimumVerticalTangent = 0;
     private float mMaximumTangent = DEFAULT_MAX_TANGENT;
 
-    /** <br> life cycle. */
-
     public GravityArcMotion() {}
 
     public GravityArcMotion(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
-    /** <br> data. */
 
     @Override
     public void setMinimumHorizontalAngle(float angleInDegrees) {

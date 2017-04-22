@@ -23,13 +23,10 @@ import butterknife.ButterKnife;
 
 public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnSearchFeaturedChangedListener listener;
 
-    // data
     private boolean valueNow;
-
-    /** <br> life cycle. */
 
     public SearchFeaturedPopupWindow(Context c, View anchor, String valueNow) {
         super(c);
@@ -46,7 +43,9 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         show(anchor, 0, 0);
     }
 
-    /** <br> UI. */
+    private void initData(String valueNow) {
+        this.valueNow = Boolean.parseBoolean(valueNow);
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -81,13 +80,9 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(String valueNow) {
-        this.valueNow = Boolean.parseBoolean(valueNow);
-    }
-
-    /** <br> interface. */
+    // on search featured changed listener.
 
     public interface OnSearchFeaturedChangedListener {
         void onSearchFeaturedChanged(boolean newValue);
@@ -96,6 +91,8 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
     public void setOnSearchFeaturedChangedListener(OnSearchFeaturedChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

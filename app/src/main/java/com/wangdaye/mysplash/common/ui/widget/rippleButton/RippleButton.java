@@ -46,16 +46,21 @@ import butterknife.ButterKnife;
 
 public class RippleButton extends CardView
         implements View.OnClickListener, RippleView.RippleAnimatingCallback {
-    // widget
-    @BindView(R.id.container_ripple_button) RelativeLayout container;
-    @BindView(R.id.container_ripple_button_text) TextView text;
-    @BindView(R.id.container_ripple_button_ripple) RippleView ripple;
-    @BindView(R.id.container_ripple_button_progress) CircularProgressView progress;
+
+    @BindView(R.id.container_ripple_button)
+    RelativeLayout container;
+
+    @BindView(R.id.container_ripple_button_text)
+    TextView text;
+
+    @BindView(R.id.container_ripple_button_ripple)
+    RippleView ripple;
+
+    @BindView(R.id.container_ripple_button_progress)
+    CircularProgressView progress;
 
     private ProgressAlphaAnimation progressAlphaAnimation;
     private OnSwitchListener listener;
-
-    // data
 
     // if set true, there will has no difference between this view and a Button.
     private boolean dontAnimate;
@@ -79,7 +84,38 @@ public class RippleButton extends CardView
     @Size(2)
     private int[] widgetColors;
 
-    /** <br> life cycle. */
+    private Animation rippleAlphaShow = new Animation() {
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            ripple.setAlpha((float) (0.5 + 0.5 * interpolatedTime));
+        }
+    };
+
+    private Animation rippleAlphaHide = new Animation() {
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            ripple.setAlpha(1 - interpolatedTime);
+        }
+    };
+
+    private class ProgressAlphaAnimation extends Animation {
+
+        private float from;
+        private float to;
+
+        ProgressAlphaAnimation(float from, float to) {
+            this.from = from;
+            this.to = to;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            progress.setAlpha(from + (to - from) * interpolatedTime);
+        }
+    }
 
     public RippleButton(Context context) {
         super(context);
@@ -152,8 +188,6 @@ public class RippleButton extends CardView
         rippleAlphaHide.setInterpolator(new AccelerateDecelerateInterpolator());
     }
 
-    /** <br> UI. */
-
     // draw.
 
     @Override
@@ -211,6 +245,29 @@ public class RippleButton extends CardView
                 MeasureSpec.getSize(heightMeasureSpec));
     }
 
+    // touch.
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        super.onTouchEvent(event);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_UP:
+                if (listener != null) {
+                    if (isDontAnimate()) {
+                        if (listener != null) {
+                            listener.onSwitch(!isSwitchOn());
+                        }
+                    } else {
+                        animSwitch((int) event.getX(), (int) event.getY());
+                    }
+                }
+                break;
+        }
+        return true;
+    }
+
+    // control.
+
     // interface.
 
     private void switchUI() {
@@ -218,6 +275,14 @@ public class RippleButton extends CardView
         setCardBackgroundColor(backgroundColors[isSwitchOn() ? 1 : 0]);
         text.setTextColor(widgetColors[isSwitchOn() ? 1 : 0]);
         text.setText(buttonTitles[isSwitchOn() ? 1 : 0]);
+    }
+
+    public boolean isSwitchOn() {
+        return switchOn;
+    }
+
+    public void setSwitchOn(boolean on) {
+        this.switchOn = on;
     }
 
     public void setButtonTitles(String[] titles) {
@@ -282,6 +347,27 @@ public class RippleButton extends CardView
         progress.startAnimation(progressAlphaAnimation);
     }
 
+    public boolean isDontAnimate() {
+        return dontAnimate;
+    }
+
+    public void setDontAnimate(boolean dontAnimate) {
+        this.dontAnimate = dontAnimate;
+    }
+
+    public boolean isAnimating() {
+        return animating;
+    }
+
+    public void setAnimating(boolean animating) {
+        setWaitingResponse(false);
+        setWaitingAnimation(false);
+        setSwitchSucceed(false);
+        this.animating = animating;
+    }
+
+    // callback.
+
     /**
      * A interface method for outside. When a asynchronous task complete, the callback need user
      * this method to set the result of task.
@@ -328,35 +414,6 @@ public class RippleButton extends CardView
         }
     }
 
-    /** <br> data. */
-
-    public boolean isDontAnimate() {
-        return dontAnimate;
-    }
-
-    public void setDontAnimate(boolean dontAnimate) {
-        this.dontAnimate = dontAnimate;
-    }
-
-    public boolean isAnimating() {
-        return animating;
-    }
-
-    public void setAnimating(boolean animating) {
-        setWaitingResponse(false);
-        setWaitingAnimation(false);
-        setSwitchSucceed(false);
-        this.animating = animating;
-    }
-
-    public boolean isSwitchOn() {
-        return switchOn;
-    }
-
-    public void setSwitchOn(boolean on) {
-        this.switchOn = on;
-    }
-
     public boolean isSwitchSucceed() {
         return switchSucceed;
     }
@@ -381,33 +438,7 @@ public class RippleButton extends CardView
         this.waitingResponse = waitingResponse;
     }
 
-    /** <br> touch. */
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                if (listener != null) {
-                    if (isDontAnimate()) {
-                        if (listener != null) {
-                            listener.onSwitch(!isSwitchOn());
-                        }
-                    } else {
-                        animSwitch((int) event.getX(), (int) event.getY());
-                    }
-                }
-                break;
-        }
-        return true;
-    }
-
-    @Override
-    public void onClick(View view) {
-        // do nothing.
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on switch swipeListener.
 
@@ -417,6 +448,13 @@ public class RippleButton extends CardView
 
     public void setOnSwitchListener(OnSwitchListener l) {
         this.listener = l;
+    }
+
+    // on click listener.
+
+    @Override
+    public void onClick(View view) {
+        // do nothing.
     }
 
     // ripple animating callback.
@@ -449,43 +487,6 @@ public class RippleButton extends CardView
         } else {
             setWaitingResponse(true);
             doProgressAnimation(0, 1);
-        }
-    }
-
-    /** <br> inner class. */
-
-    private Animation rippleAlphaShow = new Animation() {
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            ripple.setAlpha((float) (0.5 + 0.5 * interpolatedTime));
-        }
-    };
-
-    private Animation rippleAlphaHide = new Animation() {
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            ripple.setAlpha(1 - interpolatedTime);
-        }
-    };
-
-    private class ProgressAlphaAnimation extends Animation {
-        // data
-        private float from;
-        private float to;
-
-        // life cycle.
-
-        ProgressAlphaAnimation(float from, float to) {
-            this.from = from;
-            this.to = to;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            progress.setAlpha(from + (to - from) * interpolatedTime);
         }
     }
 }

@@ -14,8 +14,12 @@ import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 
 public interface FollowingPresenter {
 
+    // HTTP request.
+
     void requestFollowingFeed(Context c, boolean refresh);
     void cancelRequest();
+
+    // load data interface.
 
     /**
      * The param notify is used to control the SwipeRefreshLayout. If set true, the
@@ -28,6 +32,8 @@ public interface FollowingPresenter {
     boolean canLoadMore();
     boolean isRefreshing();
     boolean isLoading();
+
+    // manage HTTP request parameters.
 
     void setNextPage(String nextPage);
     String getNextPage();

@@ -12,16 +12,12 @@ import com.wangdaye.mysplash.common.i.model.ScrollModel;
 
 public class ScrollObject
         implements ScrollModel {
-    // data
-    private boolean toTop;
 
-    /** <br> life cycle. */
+    private boolean toTop;
 
     public ScrollObject(boolean top) {
         this.toTop = top;
     }
-
-    /** <br> model. */
 
     @Override
     public boolean isToTop() {

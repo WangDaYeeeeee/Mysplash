@@ -22,6 +22,7 @@ import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
 import com.wangdaye.mysplash.common.ui.activity.RelativeActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
+import com.wangdaye.mysplash.main.view.activity.NotificationActivity;
 import com.wangdaye.mysplash.tag.view.activity.TagActivity;
 import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
@@ -55,6 +56,12 @@ public class IntentHelper {
         a.startActivity(intent);
     }
 
+    public static void startNotificationActivity(MysplashActivity a) {
+        Intent intent = new Intent(a, NotificationActivity.class);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
+    }
+
     public static void startPhotoActivity(MysplashActivity a, View image, View background, Photo p) {
         Mysplash.getInstance().setPhoto(p);
 
@@ -67,14 +74,16 @@ public class IntentHelper {
                             background,
                             (int) background.getX(), (int) background.getY(),
                             background.getMeasuredWidth(), background.getMeasuredHeight());
-            ActivityCompat.startActivity(a, intent, options.toBundle());
+            ActivityCompat.startActivityForResult(
+                    a, intent, Mysplash.PHOTO_ACTIVITY, options.toBundle());
         } else {
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(
                             a,
                             Pair.create(image, a.getString(R.string.transition_photo_image)),
                             Pair.create(background, a.getString(R.string.transition_photo_background)));
-            ActivityCompat.startActivity(a, intent, options.toBundle());
+            ActivityCompat.startActivityForResult(
+                    a, intent, Mysplash.PHOTO_ACTIVITY, options.toBundle());
         }
     }
 
@@ -121,19 +130,8 @@ public class IntentHelper {
                             Pair.create(background, a.getString(R.string.transition_collection_background)));
         }
 
-        if (AuthManager.getInstance().getUsername() != null
-                &&
-                AuthManager.getInstance()
-                        .getUsername()
-                        .equals(c.user.username)) {
-            ActivityCompat.startActivityForResult(
-                    a,
-                    intent,
-                    Mysplash.COLLECTION_ACTIVITY,
-                    options.toBundle());
-        } else {
-            ActivityCompat.startActivity(a, intent, options.toBundle());
-        }
+        ActivityCompat.startActivityForResult(
+                a, intent, Mysplash.COLLECTION_ACTIVITY, options.toBundle());
     }
 
     public static void startCollectionActivity(MysplashActivity a, String collectionId) {
@@ -162,7 +160,8 @@ public class IntentHelper {
                         .makeSceneTransitionAnimation(
                                 a,
                                 Pair.create(avatar, a.getString(R.string.transition_user_avatar)));
-                ActivityCompat.startActivity(a, intent, options.toBundle());
+                ActivityCompat.startActivityForResult(
+                        a, intent, Mysplash.USER_ACTIVITY, options.toBundle());
             }
         }
     }
@@ -184,7 +183,8 @@ public class IntentHelper {
                     .makeSceneTransitionAnimation(
                             a,
                             Pair.create(avatar, a.getString(R.string.transition_me_avatar)));
-            ActivityCompat.startActivity(a, intent, options.toBundle());
+            ActivityCompat.startActivityForResult(
+                    a, intent, Mysplash.ME_ACTIVITY, options.toBundle());
         } else {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);

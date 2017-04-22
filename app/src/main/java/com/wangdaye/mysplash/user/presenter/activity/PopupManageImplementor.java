@@ -16,16 +16,12 @@ import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 public class PopupManageImplementor
         implements PopupManagePresenter {
-    // model & view.
-    private PopupManageView view;
 
-    /** <br> life cycle. */
+    private PopupManageView view;
 
     public PopupManageImplementor(PopupManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void showPopup(Context c, View anchor, String value, final int position) {

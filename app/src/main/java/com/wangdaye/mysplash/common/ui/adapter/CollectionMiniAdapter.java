@@ -33,87 +33,30 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
     private Context c;
     private OnCollectionResponseListener listener;
 
-    // data
     private Photo photo;
 
-    /** <br> life cycle. */
-
-    public CollectionMiniAdapter(Context c, Photo p) {
-        this.c = c;
-        updatePhoto(p);
-    }
-
-    /** <br> UI. */
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_collection_mini, parent, false);
-        return new ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.onBindView(position);
-    }
-
-    /** <br> data. */
-
-    @Override
-    public int getItemCount() {
-        return AuthManager.getInstance()
-                .getCollectionsManager()
-                .getCollectionList()
-                .size() + 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
-        holder.onRecycled();
-    }
-
-    public void updatePhoto(Photo p) {
-        this.photo = p;
-    }
-
-    /** <br> interface. */
-
-    public interface OnCollectionResponseListener {
-        void onCreateCollection();
-        void onClickCollectionItem(int collectionId, int adapterPosition);
-    }
-
-    public void setOnCollectionResponseListener(OnCollectionResponseListener l) {
-        this.listener = l;
-    }
-
-    /** <br> inner class. */
-
-    // view holder.
-
     public class ViewHolder extends RecyclerView.ViewHolder {
-        // widget
-        @BindView(R.id.item_collection_mini_image) ImageView image;
-        @BindView(R.id.item_collection_mini_title) TextView title;
-        @BindView(R.id.item_collection_mini_subtitle) TextView subtitle;
-        @BindView(R.id.item_collection_mini_lockIcon) ImageView lockIcon;
-        @BindView(R.id.item_collection_icon) CircularProgressIcon stateIcon;
 
-        // life cycle.
+        @BindView(R.id.item_collection_mini_image)
+        ImageView image;
+
+        @BindView(R.id.item_collection_mini_title)
+        TextView title;
+
+        @BindView(R.id.item_collection_mini_subtitle)
+        TextView subtitle;
+
+        @BindView(R.id.item_collection_mini_lockIcon)
+        ImageView lockIcon;
+
+        @BindView(R.id.item_collection_icon)
+        CircularProgressIcon stateIcon;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
-
-        // UI.
 
         void onBindView(int position) {
             if (position == 0) {
@@ -158,6 +101,10 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             }
         }
 
+        void onRecycled() {
+            ImageHelper.releaseImageView(image);
+        }
+
         public void setProgressState() {
             stateIcon.setProgressState();
         }
@@ -190,12 +137,6 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             }
         }
 
-        void onRecycled() {
-            ImageHelper.releaseImageView(image);
-        }
-
-        // interface.
-
         @OnClick(R.id.item_collection_mini_card) void clickItem() {
             if (getAdapterPosition() == 0 && listener != null) {
                 listener.onCreateCollection();
@@ -216,5 +157,56 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                         getAdapterPosition());
             }
         }
+    }
+
+    public CollectionMiniAdapter(Context c, Photo p) {
+        this.c = c;
+        updatePhoto(p);
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_collection_mini, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
+    }
+
+    @Override
+    public int getItemCount() {
+        return AuthManager.getInstance()
+                .getCollectionsManager()
+                .getCollectionList()
+                .size() + 1;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    public void updatePhoto(Photo p) {
+        this.photo = p;
+    }
+
+    // interface.
+
+    public interface OnCollectionResponseListener {
+        void onCreateCollection();
+        void onClickCollectionItem(int collectionId, int adapterPosition);
+    }
+
+    public void setOnCollectionResponseListener(OnCollectionResponseListener l) {
+        this.listener = l;
     }
 }

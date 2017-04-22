@@ -12,8 +12,6 @@ import com.wangdaye.mysplash.tag.view.activity.TagActivity;
 public class ToolbarImplementor
         implements ToolbarPresenter {
 
-    /** <br> presenter. */
-
     @Override
     public void touchNavigatorIcon(MysplashActivity a) {
         a.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);

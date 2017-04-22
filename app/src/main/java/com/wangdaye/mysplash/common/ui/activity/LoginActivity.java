@@ -245,7 +245,7 @@ public class LoginActivity extends MysplashActivity
     public void onRequestAccessTokenSuccess(Call<AccessToken> call, Response<AccessToken> response) {
         if (response.isSuccessful()) {
             AuthManager.getInstance().writeAccessToken(response.body());
-            AuthManager.getInstance().refreshPersonalProfile();
+            AuthManager.getInstance().requestPersonalProfile();
             IntentHelper.startMainActivity(this);
             finish();
         } else {

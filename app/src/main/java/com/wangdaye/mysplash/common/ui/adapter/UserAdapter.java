@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -37,106 +37,26 @@ import butterknife.OnClick;
  * */
 
 public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
-    // widget
+
     private Context a;
     private List<User> itemList;
 
-    /** <br> life cycle. */
-
-    public UserAdapter(Context a, List<User> list) {
-        this.a = a;
-        this.itemList = list;
-    }
-
-    @Override
-    protected boolean hasFooter() {
-        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
-    }
-
-    @Override
-    public int getRealItemCount() {
-        return itemList.size();
-    }
-
-    /** <br> UI. */
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
-        if (isFooter(position)) {
-            // footer.
-            return FooterHolder.buildInstance(parent);
-        } else {
-            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
-            return new ViewHolder(v);
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ViewHolder) {
-            ((ViewHolder) holder).onBindView(position);
-        }
-    }
-
-    public void setActivity(MysplashActivity a) {
-        this.a = a;
-    }
-
-    /** <br> data. */
-
-    @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
-    @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof ViewHolder) {
-            ((ViewHolder) holder).onRecycled();
-        }
-    }
-
-    public void insertItem(User u, int position) {
-        itemList.add(position, u);
-        notifyItemInserted(position);
-    }
-
-    public void clearItem() {
-        itemList.clear();
-        notifyDataSetChanged();
-    }
-
-    public void setUserData(List<User> list) {
-        itemList.clear();
-        itemList.addAll(list);
-        notifyDataSetChanged();
-    }
-
-    public List<User> getUserData() {
-        List<User> list = new ArrayList<>();
-        list.addAll(itemList);
-        return list;
-    }
-
-    /** <br> inner class. */
-
-    // view holder.
-
     class ViewHolder extends RecyclerView.ViewHolder {
-        // widget
-        @BindView(R.id.item_user_background) RelativeLayout background;
-        @BindView(R.id.item_user_avatar) CircleImageView avatar;
-        @BindView(R.id.item_user_portfolio) ImageButton portfolioBtn;
-        @BindView(R.id.item_user_title) TextView title;
-        @BindView(R.id.item_user_subtitle) TextView subtitle;
 
-        // life cycle.
+        @BindView(R.id.item_user_background)
+        RelativeLayout background;
+
+        @BindView(R.id.item_user_avatar)
+        CircleImageView avatar;
+
+        @BindView(R.id.item_user_portfolio)
+        ImageButton portfolioBtn;
+
+        @BindView(R.id.item_user_title)
+        TextView title;
+
+        @BindView(R.id.item_user_subtitle)
+        TextView subtitle;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -144,15 +64,16 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
-        // UI.
-
         void onBindView(final int position) {
             title.setText(itemList.get(position).name);
             if (TextUtils.isEmpty(itemList.get(position).bio)) {
                 subtitle.setText(
-                        itemList.get(position).total_photos + a.getResources().getStringArray(R.array.user_tabs)[0] +
-                                + itemList.get(position).total_collections + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
-                                + itemList.get(position).total_likes + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
+                        itemList.get(position).total_photos
+                                + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
+                                + itemList.get(position).total_collections
+                                + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
+                                + itemList.get(position).total_likes
+                                + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
             } else {
                 subtitle.setText(itemList.get(position).bio);
             }
@@ -208,5 +129,93 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 IntentHelper.startWebActivity(a, itemList.get(getAdapterPosition()).portfolio_url);
             }
         }
+    }
+
+    public UserAdapter(Context a, List<User> list) {
+        this.a = a;
+        this.itemList = list;
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+        if (isFooter(position)) {
+            // footer.
+            return FooterHolder.buildInstance(parent);
+        } else {
+            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
+            return new ViewHolder(v);
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onBindView(position);
+        }
+    }
+
+    @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        super.onViewRecycled(holder);
+        if (holder instanceof ViewHolder) {
+            ((ViewHolder) holder).onRecycled();
+        }
+    }
+
+    @Override
+    public int getRealItemCount() {
+        return itemList.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
+    protected boolean hasFooter() {
+        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+    }
+
+    public void setActivity(MysplashActivity a) {
+        this.a = a;
+    }
+
+    public void insertItem(User u, int position) {
+        itemList.add(position, u);
+        notifyItemInserted(position);
+    }
+
+    public void clearItem() {
+        itemList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void updateUser(User u, boolean probablyRepeat, boolean refreshView) {
+        for (int i = 0; i < getRealItemCount(); i ++) {
+            if (itemList.get(i).id.equals(u.id)) {
+                u.hasFadedIn = itemList.get(i).hasFadedIn;
+
+                itemList.set(i, u);
+                if (refreshView) {
+                    notifyItemChanged(i);
+                }
+                if (!probablyRepeat) {
+                    return;
+                }
+            }
+        }
+    }
+
+    public void setUserData(List<User> list) {
+        itemList.clear();
+        itemList.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public List<User> getUserData() {
+        List<User> list = new ArrayList<>();
+        list.addAll(itemList);
+        return list;
     }
 }

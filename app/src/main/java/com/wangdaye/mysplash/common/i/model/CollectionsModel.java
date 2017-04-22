@@ -16,6 +16,8 @@ public interface CollectionsModel {
     CollectionAdapter getAdapter();
     CollectionService getService();
 
+    // manage HTTP request parameters.
+
     Object getRequestKey();
     void setRequestKey(Object key);
 
@@ -25,6 +27,8 @@ public interface CollectionsModel {
     @Mysplash.PageRule
     int getCollectionsPage();
     void setCollectionsPage(@Mysplash.PageRule int page);
+
+    // control load state.
 
     boolean isRefreshing();
     void setRefreshing(boolean refreshing);

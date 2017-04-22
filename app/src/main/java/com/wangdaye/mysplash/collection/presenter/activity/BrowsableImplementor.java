@@ -20,18 +20,14 @@ import retrofit2.Response;
 public class BrowsableImplementor
         implements BrowsablePresenter,
         CollectionService.OnRequestSingleCollectionListener {
-    // model & view.
+
     private BrowsableModel model;
     private BrowsableView view;
-
-    /** <br> life cycle. */
 
     public BrowsableImplementor(BrowsableModel model, BrowsableView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public Uri getIntentUri() {
@@ -44,22 +40,20 @@ public class BrowsableImplementor
     }
 
     @Override
+    public void visitPreviousPage() {
+        view.visitPreviousPage();
+    }
+
+    @Override
     public void requestBrowsableData() {
         view.showRequestDialog();
         requestCollection();
     }
 
     @Override
-    public void visitPreviousPage() {
-        view.visitPreviousPage();
-    }
-
-    @Override
     public void cancelRequest() {
         ((CollectionService) model.getService()).cancel();
     }
-
-    /** <br> utils. */
 
     private void requestCollection() {
         List<String> keyList = model.getBrowsableDataKey();
@@ -70,7 +64,9 @@ public class BrowsableImplementor
         }
     }
 
-    /** <br> interface. */
+    // interface.
+
+    // on request single collection listener.
 
     @Override
     public void onRequestSingleCollectionSuccess(Call<Collection> call, Response<Collection> response) {

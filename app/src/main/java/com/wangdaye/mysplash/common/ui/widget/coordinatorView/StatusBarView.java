@@ -24,10 +24,8 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
  * */
 
 public class StatusBarView extends View {
-    // widget
-    private ObjectAnimator alphaAnimator;
 
-    // data
+    private ObjectAnimator alphaAnimator;
 
     // if set true, the status bar view will add a translucent black drawMask when the view is being drawn.
     private boolean drawMask = false;
@@ -48,8 +46,6 @@ public class StatusBarView extends View {
     public static final float LIGHT_INIT_MASK_ALPHA = 0.03f;
     public static final float DARK_INIT_MASK_ALPHA = 0.2f;
     public static final float DARKER_MASK_ALPHA = 0.2f;
-
-    /** <br> life cycle. */
 
     public StatusBarView(Context context) {
         super(context);
@@ -94,8 +90,6 @@ public class StatusBarView extends View {
             setBackgroundColor(ThemeManager.getPrimaryDarkColor(getContext()));
         }
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -168,8 +162,6 @@ public class StatusBarView extends View {
             alphaAnimator.cancel();
         }
     }
-
-    /** <br> data. */
 
     /**
      * Get the alpha by build version code, theme and state.

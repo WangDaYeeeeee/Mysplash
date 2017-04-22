@@ -27,21 +27,16 @@ import retrofit2.Response;
 
 public class MyFollowImplementor
         implements MyFollowPresenter {
-    // model & view.
+
     private MyFollowModel model;
     private MyFollowView view;
 
-    // data
     private OnRequestUsersListener listener;
-
-    /** <br> life cycle. */
 
     public MyFollowImplementor(MyFollowModel model, MyFollowView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestMyFollow(Context c, int page, boolean refresh) {
@@ -145,10 +140,10 @@ public class MyFollowImplementor
         return model.getAdapter();
     }
 
-    /** <br> interface. */
+    // interface.
 
     private class OnRequestUsersListener implements UserService.OnRequestUsersListener {
-        // data
+
         private Context c;
         private int page;
         private boolean refresh;

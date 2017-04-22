@@ -30,19 +30,25 @@ import butterknife.OnClick;
  * */
 
 public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_photo_exif_leftText) TextView leftText;
-    @BindView(R.id.item_photo_exif_rightText) TextView rightText;
-    @BindView(R.id.item_photo_exif_leftImage) ImageView leftImage;
-    @BindView(R.id.item_photo_exif_rightImage) ImageView rightImage;
-    @BindView(R.id.item_photo_exif_colorSample) FrameLayout colorSample;
 
-    // data
+    @BindView(R.id.item_photo_exif_leftText)
+    TextView leftText;
+
+    @BindView(R.id.item_photo_exif_rightText)
+    TextView rightText;
+
+    @BindView(R.id.item_photo_exif_leftImage)
+    ImageView leftImage;
+
+    @BindView(R.id.item_photo_exif_rightImage)
+    ImageView rightImage;
+
+    @BindView(R.id.item_photo_exif_colorSample)
+    FrameLayout colorSample;
+
     private int position;
     public static final int TYPE_EXIF = 50;
-    
-    /** <br> life cycle. */
-    
+
     public ExifHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -51,8 +57,6 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), rightText);
     }
 
-    /** <br> UI. */
-    
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {
         // do nothing.
@@ -130,7 +134,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
                 Snackbar.LENGTH_SHORT);
     }
 
-    /** <br> interface. */
+    // interface.
 
     @OnClick(R.id.item_photo_exif_leftContainer) void clickLeft() {
         switch (position) {

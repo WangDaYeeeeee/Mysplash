@@ -34,21 +34,27 @@ import retrofit2.Response;
 
 public class TotalDialog extends MysplashDialogFragment
         implements StatusService.OnRequestTotalListener {
-    // widget
-    @BindView(R.id.dialog_total_container) CoordinatorLayout container;
-    @BindView(R.id.dialog_total_progress) CircularProgressView progress;
-    @BindView(R.id.dialog_total_dataContainer) LinearLayout dataContainer;
-    @BindView(R.id.dialog_total_totalPhotosNum) TextView photoNum;
-    @BindView(R.id.dialog_total_photoDownloadsNum) TextView downloadNum;
 
-    // data
+    @BindView(R.id.dialog_total_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.dialog_total_progress)
+    CircularProgressView progress;
+
+    @BindView(R.id.dialog_total_dataContainer)
+    LinearLayout dataContainer;
+
+    @BindView(R.id.dialog_total_totalPhotosNum)
+    TextView photoNum;
+
+    @BindView(R.id.dialog_total_photoDownloadsNum)
+    TextView downloadNum;
+
     private StatusService service;
 
     private int state = 0;
     private final int LOADING_STATE = 0;
     private final int SUCCESS_STATE = 1;
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -76,8 +82,6 @@ public class TotalDialog extends MysplashDialogFragment
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
-
-    /** <br> UI. */
 
     private void initWidget(View v) {
         this.service = StatusService.getService();
@@ -109,7 +113,7 @@ public class TotalDialog extends MysplashDialogFragment
         this.state = stateTo;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on request stats listener.
 

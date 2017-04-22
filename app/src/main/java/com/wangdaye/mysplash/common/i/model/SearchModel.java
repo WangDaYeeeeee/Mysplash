@@ -19,11 +19,15 @@ public interface SearchModel {
     SearchService getService();
     void setActivity(MysplashActivity a);
 
+    // manage HTTP request parameters.
+
     String getSearchQuery();
     void setSearchQuery(String query);
 
     int getPhotosPage();
     void setPhotosPage(@Mysplash.PageRule int page);
+
+    // control load state.
 
     boolean isRefreshing();
     void setRefreshing(boolean refreshing);

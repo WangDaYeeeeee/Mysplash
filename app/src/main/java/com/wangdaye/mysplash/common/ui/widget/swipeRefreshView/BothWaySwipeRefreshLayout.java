@@ -122,8 +122,6 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private int mCircleWidth;
     private int mCircleHeight;
 
-    /** <br> life cycle. */
-
     public BothWaySwipeRefreshLayout(Context context) {
         this(context, null);
     }
@@ -181,9 +179,30 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         reset();
     }
 
-    /** <br> UI. */
+    // control.
 
-    // layout.
+    private void ensureTarget() {
+        // Don't bother getting the parent height if the parent hasn't been laid
+        // out yet.
+        if (mTarget == null) {
+            for (int i = 0; i < getChildCount(); i++) {
+                View child = getChildAt(i);
+                if (!child.equals(mCircleViews[0]) && !child.equals(mCircleViews[1])) {
+                    mTarget = child;
+                    break;
+                }
+            }
+        }
+    }
+
+    public void setDragTriggerDistance(int dir, int distance) {
+        if (dir == DIRECTION_BOTTOM) {
+            distance += mCircleHeight;
+        }
+        mDragTriggerDistances[dir] = distance;
+    }
+
+    // draw.
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -266,278 +285,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
     }
 
-    private void ensureTarget() {
-        // Don't bother getting the parent height if the parent hasn't been laid
-        // out yet.
-        if (mTarget == null) {
-            for (int i = 0; i < getChildCount(); i++) {
-                View child = getChildAt(i);
-                if (!child.equals(mCircleViews[0]) && !child.equals(mCircleViews[1])) {
-                    mTarget = child;
-                    break;
-                }
-            }
-        }
-    }
-
-    // position.
-
-    private void moveSpinner(int dir, float dragDistance) {
-        mProgress[dir].showArrow(true);
-        float originalDragPercent = Math.abs(dragDistance) / mDragTriggerDistances[dir];
-
-        float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
-        float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
-        float extraOS = Math.abs(dragDistance) - mDragTriggerDistances[dir];
-        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, mDragTriggerDistances[dir] * 2) / mDragTriggerDistances[dir]);
-        float tensionPercent = (float) ((tensionSlingshotPercent / 4) - Math.pow((tensionSlingshotPercent / 4), 2)) * 2f;
-        float extraMove = (mDragTriggerDistances[dir]) * tensionPercent * 2;
-
-        int offset = (int) ((mDragTriggerDistances[dir] * dragPercent) + extraMove) * (dir == DIRECTION_TOP ? 1 : -1);
-
-        // where 1.0f is a full circle
-        if (mCircleViews[dir].getVisibility() != View.VISIBLE) {
-            mCircleViews[dir].setVisibility(View.VISIBLE);
-        }
-
-        if (!mScale) {
-            ViewCompat.setScaleX(mCircleViews[dir], 1f);
-            ViewCompat.setScaleY(mCircleViews[dir], 1f);
-        }
-
-        if (mScale) {
-            setAnimationProgress(dir, Math.min(1f, Math.abs(dragDistance / mDragTriggerDistances[dir])));
-        }
-        if (Math.abs(dragDistance) < mDragTriggerDistances[dir]) {
-            if (mProgress[dir].getAlpha() > STARTING_PROGRESS_ALPHA
-                    && !isAnimationRunning(mAlphaStartAnimation)) {
-                // Animate the alpha
-                startProgressAlphaStartAnimation(dir);
-            }
-        } else {
-            if (mProgress[dir].getAlpha() < MAX_ALPHA && !isAnimationRunning(mAlphaMaxAnimation)) {
-                // Animate the alpha
-                startProgressAlphaMaxAnimation(dir);
-            }
-        }
-        float strokeStart = adjustedPercent * .8f;
-        mProgress[dir].setStartEndTrim(0f, Math.min(MAX_PROGRESS_ANGLE, strokeStart));
-        mProgress[dir].setArrowScale(Math.min(1f, adjustedPercent));
-
-        float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
-        mProgress[dir].setProgressRotation(rotation);
-        setTargetOffsetTopAndBottom(dir, offset - mDragOffsetDistance);
-    }
-
-    private void finishSpinner(final int dir, float dragDistance) {
-        if (Math.abs(dragDistance) > mDragTriggerDistances[dir]) {
-            if (dir == DIRECTION_TOP) {
-                setRefreshing(true, true /* notify */);
-            } else {
-                setLoading(true, true);
-            }
-        } else {
-            // cancel refresh
-            if (dir == DIRECTION_TOP) {
-                mRefreshing = false;
-            } else {
-                mLoading = false;
-            }
-            mProgress[dir].setStartEndTrim(0f, 0f);
-            Animation.AnimationListener listener = null;
-            if (!mScale) {
-                listener = new Animation.AnimationListener() {
-
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        if (!mScale) {
-                            startScaleDownAnimation(dir, null);
-                        }
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-                    }
-
-                };
-            }
-            animateOffsetToStartPosition(dir, mDragOffsetDistance, listener);
-            mProgress[dir].showArrow(false);
-        }
-    }
-
-    private void moveToStart(int dir, float interpolatedTime) {
-        int offset = (int) (mFrom * (1 - interpolatedTime));
-        setTargetOffsetTopAndBottom(dir, offset - mDragOffsetDistance);
-    }
-
-    private void setTargetOffsetTopAndBottom(int dir, int offset) {
-        mCircleViews[dir].bringToFront();
-        mCircleViews[dir].offsetTopAndBottom(offset);
-        mDragOffsetDistance += offset;
-    }
-
-    private void reset() {
-        int oldOffset = mDragOffsetDistance;
-        for (int i = 0; i < 2; i ++) {
-            mCircleViews[i].clearAnimation();
-            mProgress[i].stop();
-            mCircleViews[i].setVisibility(View.GONE);
-            setColorViewAlpha(i, MAX_ALPHA);
-            // Return the circle to its start position
-            if (mScale) {
-                setAnimationProgress(i, 0 /* animation complete and view is hidden */);
-            } else {
-                setTargetOffsetTopAndBottom(i, -oldOffset);
-            }
-        }
-        mDragOffsetDistance = 0;
-    }
-
-    // state.
-
-    /**
-     * Notify the widget that refresh state has changed. Do not call this when
-     * refresh is triggered by a swipe gesture.
-     *
-     * @param refreshing Whether or not the view should show refresh progress.
-     */
-    public void setRefreshing(boolean refreshing) {
-        if (refreshing && (mRefreshing || mLoading)) {
-            return;
-        }
-        if (refreshing) {
-            mCircleViews[DIRECTION_BOTTOM].setVisibility(GONE);
-            // scale and show
-            mRefreshing = true;
-            setTargetOffsetTopAndBottom(DIRECTION_TOP, (int) (mDragTriggerDistances[DIRECTION_TOP] - mDragOffsetDistance));
-            mNotify = false;
-            startScaleUpAnimation(DIRECTION_TOP, mRefreshListener);
-        } else {
-            setRefreshing(false, false /* notify */);
-        }
-    }
-
-    /**
-     * Notify the widget that load state has changed. Do not call this when
-     * load is triggered by a swipe gesture.
-     *
-     * @param loading Whether or not the view should show load progress.
-     */
-    public void setLoading(boolean loading) {
-        if (loading && (mRefreshing || mLoading)) {
-            return;
-        }
-        if (loading) {
-            mCircleViews[DIRECTION_TOP].setVisibility(GONE);
-            // scale and show
-            mLoading = true;
-            setTargetOffsetTopAndBottom(DIRECTION_BOTTOM, (int) (-mDragTriggerDistances[DIRECTION_BOTTOM] - mDragOffsetDistance));
-            mNotify = false;
-            startScaleUpAnimation(DIRECTION_BOTTOM, mLoadListener);
-        } else {
-            setLoading(false, false /* notify */);
-        }
-    }
-
-    private void setRefreshing(boolean refreshing, final boolean notify) {
-        if (refreshing && (mRefreshing || mLoading)) {
-            return;
-        }
-        if (mRefreshing != refreshing) {
-            mNotify = notify;
-            ensureTarget();
-            mRefreshing = refreshing;
-            if (mRefreshing) {
-                animateOffsetToCorrectPosition(DIRECTION_TOP, mDragOffsetDistance, mRefreshListener);
-            } else {
-                startScaleDownAnimation(DIRECTION_TOP, mRefreshListener);
-            }
-        }
-    }
-
-    private void setLoading(boolean loading, final boolean notify) {
-        if (loading && (mRefreshing || mLoading)) {
-            return;
-        }
-        if (mLoading != loading) {
-            mNotify = notify;
-            ensureTarget();
-            mLoading = loading;
-            if (mLoading) {
-                animateOffsetToCorrectPosition(DIRECTION_BOTTOM, mDragOffsetDistance, mLoadListener);
-            } else {
-                startScaleDownAnimation(DIRECTION_BOTTOM, mLoadListener);
-            }
-        }
-    }
-
-    // color.
-
-    private void setColorViewAlpha(int dir, int targetAlpha) {
-        mCircleViews[dir].getBackground().setAlpha(targetAlpha);
-        mProgress[dir].setAlpha(targetAlpha);
-    }
-
-    /**
-     * Set the background color of the progress spinner disc.
-     *
-     * @param colorRes Resource id of the color.
-     */
-    public void setProgressBackgroundColorSchemeResource(@ColorRes int colorRes) {
-        setProgressBackgroundColorSchemeColor(ContextCompat.getColor(getContext(), colorRes));
-    }
-
-    /**
-     * Set the background color of the progress spinner disc.
-     *
-     * @param color Color.
-     */
-    public void setProgressBackgroundColorSchemeColor(@ColorInt int color) {
-        for (int i = 0; i < 2; i ++) {
-            mCircleViews[i].setBackgroundColor(color);
-            mProgress[i].setBackgroundColor(color);
-        }
-    }
-
-    /**
-     * Set the color resources used in the progress animation from color resources.
-     * The first color will also be the color of the bar that grows in response
-     * to a user swipe gesture.
-     *
-     * @param colorResIds Colors.
-     */
-    public void setColorSchemeResources(@ColorRes int... colorResIds) {
-        int[] colorRes = new int[colorResIds.length];
-        for (int i = 0; i < colorResIds.length; i++) {
-            colorRes[i] = ContextCompat.getColor(getContext(), colorResIds[i]);
-        }
-        setColorSchemeColors(colorRes);
-    }
-
-    /**
-     * Set the colors used in the progress animation. The first
-     * color will also be the color of the bar that grows in response to a user
-     * swipe gesture.
-     *
-     * @param colors Color.
-     */
-    @SuppressLint("SupportAnnotationUsage")
-    @ColorInt
-    public void setColorSchemeColors(int... colors) {
-        ensureTarget();
-        for (int i = 0; i < 2; i ++) {
-            mProgress[i].setColorSchemeColors(colors);
-        }
-    }
-
-    /** <br> touch. */
-
-    // touch event.
+    // touch
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -638,6 +386,114 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         return true;
     }
 
+    private void moveSpinner(int dir, float dragDistance) {
+        mProgress[dir].showArrow(true);
+        float originalDragPercent = Math.abs(dragDistance) / mDragTriggerDistances[dir];
+
+        float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
+        float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
+        float extraOS = Math.abs(dragDistance) - mDragTriggerDistances[dir];
+        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, mDragTriggerDistances[dir] * 2) / mDragTriggerDistances[dir]);
+        float tensionPercent = (float) ((tensionSlingshotPercent / 4) - Math.pow((tensionSlingshotPercent / 4), 2)) * 2f;
+        float extraMove = (mDragTriggerDistances[dir]) * tensionPercent * 2;
+
+        int offset = (int) ((mDragTriggerDistances[dir] * dragPercent) + extraMove) * (dir == DIRECTION_TOP ? 1 : -1);
+
+        // where 1.0f is a full circle
+        if (mCircleViews[dir].getVisibility() != View.VISIBLE) {
+            mCircleViews[dir].setVisibility(View.VISIBLE);
+        }
+
+        if (!mScale) {
+            ViewCompat.setScaleX(mCircleViews[dir], 1f);
+            ViewCompat.setScaleY(mCircleViews[dir], 1f);
+        }
+
+        if (mScale) {
+            setAnimationProgress(dir, Math.min(1f, Math.abs(dragDistance / mDragTriggerDistances[dir])));
+        }
+        if (Math.abs(dragDistance) < mDragTriggerDistances[dir]) {
+            if (mProgress[dir].getAlpha() > STARTING_PROGRESS_ALPHA
+                    && !isAnimationRunning(mAlphaStartAnimation)) {
+                // Animate the alpha
+                startProgressAlphaStartAnimation(dir);
+            }
+        } else {
+            if (mProgress[dir].getAlpha() < MAX_ALPHA && !isAnimationRunning(mAlphaMaxAnimation)) {
+                // Animate the alpha
+                startProgressAlphaMaxAnimation(dir);
+            }
+        }
+        float strokeStart = adjustedPercent * .8f;
+        mProgress[dir].setStartEndTrim(0f, Math.min(MAX_PROGRESS_ANGLE, strokeStart));
+        mProgress[dir].setArrowScale(Math.min(1f, adjustedPercent));
+
+        float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
+        mProgress[dir].setProgressRotation(rotation);
+        setTargetOffsetTopAndBottom(dir, offset - mDragOffsetDistance);
+    }
+
+    private void finishSpinner(final int dir, float dragDistance) {
+        if (Math.abs(dragDistance) > mDragTriggerDistances[dir]) {
+            if (dir == DIRECTION_TOP) {
+                setRefreshing(true, true /* notify */);
+            } else {
+                setLoading(true, true);
+            }
+        } else {
+            // cancel refresh
+            if (dir == DIRECTION_TOP) {
+                mRefreshing = false;
+            } else {
+                mLoading = false;
+            }
+            mProgress[dir].setStartEndTrim(0f, 0f);
+            Animation.AnimationListener listener = null;
+            if (!mScale) {
+                listener = new Animation.AnimationListener() {
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (!mScale) {
+                            startScaleDownAnimation(dir, null);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                };
+            }
+            animateOffsetToStartPosition(dir, mDragOffsetDistance, listener);
+            mProgress[dir].showArrow(false);
+        }
+    }
+
+    private boolean isAnimationRunning(Animation animation) {
+        return animation != null && animation.hasStarted() && !animation.hasEnded();
+    }
+
+    /**
+     * @return Whether it is possible for the child view of this layout to
+     *         scroll up. Override this if the child view is a custom view.
+     */
+    public boolean canChildScrollUp() {
+        return ViewCompat.canScrollVertically(mTarget, -1);
+    }
+
+    /**
+     * @return Whether it is possible for the child view of this layout to
+     *         scroll down. Override this if the child view is a custom view.
+     */
+    public boolean canChildScrollDown() {
+        return ViewCompat.canScrollVertically(mTarget, 1);
+    }
+
     @Override
     public void requestDisallowInterceptTouchEvent(boolean b) {
         if ((android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
@@ -648,164 +504,83 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
     }
 
-    // nested scroll parent.
+    // state.
 
-    @Override
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        return isEnabled()
-                && !mReturningToStart && !mRefreshing && !mLoading
-                && (mPermitRefresh || mPermitLoad)
-                && (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+    /**
+     * Notify the widget that refresh state has changed. Do not call this when
+     * refresh is triggered by a swipe gesture.
+     *
+     * @param refreshing Whether or not the view should show refresh progress.
+     */
+    public void setRefreshing(boolean refreshing) {
+        if (refreshing && (mRefreshing || mLoading)) {
+            return;
+        }
+        if (refreshing) {
+            mCircleViews[DIRECTION_BOTTOM].setVisibility(GONE);
+            // scale and show
+            mRefreshing = true;
+            setTargetOffsetTopAndBottom(DIRECTION_TOP, (int) (mDragTriggerDistances[DIRECTION_TOP] - mDragOffsetDistance));
+            mNotify = false;
+            startScaleUpAnimation(DIRECTION_TOP, mRefreshListener);
+        } else {
+            setRefreshing(false, false /* notify */);
+        }
     }
 
-    @Override
-    public void onNestedScrollAccepted(View child, View target, int axes) {
-        // Reset the counter of how much leftover scroll needs to be consumed.
-        mNestedScrollingParentHelper.onNestedScrollAccepted(child, target, axes);
-        // Dispatch up to the nested parent
-        startNestedScroll(axes & ViewCompat.SCROLL_AXIS_VERTICAL);
-        mTotalUnconsumed = 0;
-        mNestedScrollInProgress = true;
+    /**
+     * Notify the widget that load state has changed. Do not call this when
+     * load is triggered by a swipe gesture.
+     *
+     * @param loading Whether or not the view should show load progress.
+     */
+    public void setLoading(boolean loading) {
+        if (loading && (mRefreshing || mLoading)) {
+            return;
+        }
+        if (loading) {
+            mCircleViews[DIRECTION_TOP].setVisibility(GONE);
+            // scale and show
+            mLoading = true;
+            setTargetOffsetTopAndBottom(DIRECTION_BOTTOM, (int) (-mDragTriggerDistances[DIRECTION_BOTTOM] - mDragOffsetDistance));
+            mNotify = false;
+            startScaleUpAnimation(DIRECTION_BOTTOM, mLoadListener);
+        } else {
+            setLoading(false, false /* notify */);
+        }
     }
 
-    @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
-        // If we are in the middle of consuming, a scroll, then we want to move the spinner back up
-        // before allowing the list to scroll
-        if (dy > 0 && mTotalUnconsumed > 0) {
-            if (dy > mTotalUnconsumed) {
-                consumed[1] = (int) mTotalUnconsumed;
-                mTotalUnconsumed = 0;
+    private void setRefreshing(boolean refreshing, final boolean notify) {
+        if (refreshing && (mRefreshing || mLoading)) {
+            return;
+        }
+        if (mRefreshing != refreshing) {
+            mNotify = notify;
+            ensureTarget();
+            mRefreshing = refreshing;
+            if (mRefreshing) {
+                animateOffsetToCorrectPosition(DIRECTION_TOP, mDragOffsetDistance, mRefreshListener);
             } else {
-                mTotalUnconsumed -= dy;
-                consumed[1] = dy;
+                startScaleDownAnimation(DIRECTION_TOP, mRefreshListener);
             }
-            moveSpinner(DIRECTION_TOP, mTotalUnconsumed);
-        } else if (dy < 0 && mTotalUnconsumed < 0) {
-            if (dy < mTotalUnconsumed) {
-                consumed[1] = (int) mTotalUnconsumed;
-                mTotalUnconsumed = 0;
+        }
+    }
+
+    private void setLoading(boolean loading, final boolean notify) {
+        if (loading && (mRefreshing || mLoading)) {
+            return;
+        }
+        if (mLoading != loading) {
+            mNotify = notify;
+            ensureTarget();
+            mLoading = loading;
+            if (mLoading) {
+                animateOffsetToCorrectPosition(DIRECTION_BOTTOM, mDragOffsetDistance, mLoadListener);
             } else {
-                mTotalUnconsumed -= dy;
-                consumed[1] = dy;
+                startScaleDownAnimation(DIRECTION_BOTTOM, mLoadListener);
             }
-            moveSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
-        }
-
-        // Now let our nested parent consume the leftovers
-        final int[] parentConsumed = mParentScrollConsumed;
-        if (dispatchNestedPreScroll(dx - consumed[0], dy - consumed[1], parentConsumed, null)) {
-            consumed[0] += parentConsumed[0];
-            consumed[1] += parentConsumed[1];
         }
     }
-
-    @Override
-    public int getNestedScrollAxes() {
-        return mNestedScrollingParentHelper.getNestedScrollAxes();
-    }
-
-    @Override
-    public void onNestedScroll(final View target, final int dxConsumed, final int dyConsumed,
-                               final int dxUnconsumed, final int dyUnconsumed) {
-        // Dispatch up to the nested parent first
-        dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
-                mParentOffsetInWindow);
-
-        // This is a bit of a hack. Nested scrolling works from the bottom up, and as we are
-        // sometimes between two nested scrolling views, we need a way to be able to know when any
-        // nested scrolling parent has stopped handling events. We do that by using the
-        // 'offset in window 'functionality to see if we have been moved from the event.
-        // This is a decent indication of whether we should take over the event stream or not.
-        final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (dy < 0 && !canChildScrollUp() && !mRefreshing && mPermitRefresh) {
-            mTotalUnconsumed -= dy;
-            moveSpinner(DIRECTION_TOP, mTotalUnconsumed);
-        } else if (dy > 0 && !canChildScrollDown() && !mLoading && mPermitLoad) {
-            mTotalUnconsumed -= dy;
-            moveSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
-        }
-    }
-
-    @Override
-    public void onStopNestedScroll(View target) {
-        mNestedScrollingParentHelper.onStopNestedScroll(target);
-        mNestedScrollInProgress = false;
-        // Finish the spinner for nested scrolling if we ever consumed any
-        // unconsumed nested scroll
-        if (mTotalUnconsumed > 0) {
-            finishSpinner(DIRECTION_TOP, mTotalUnconsumed);
-        } else if (mTotalUnconsumed < 0) {
-            finishSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
-        }
-        mTotalUnconsumed = 0;
-        // Dispatch up our nested parent
-        stopNestedScroll();
-    }
-
-    // nested scrolling child.
-
-    @Override
-    public void setNestedScrollingEnabled(boolean enabled) {
-        mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
-    }
-
-    @Override
-    public boolean isNestedScrollingEnabled() {
-        return mNestedScrollingChildHelper.isNestedScrollingEnabled();
-    }
-
-    @Override
-    public boolean startNestedScroll(int axes) {
-        return mNestedScrollingChildHelper.startNestedScroll(axes);
-    }
-
-    @Override
-    public void stopNestedScroll() {
-        mNestedScrollingChildHelper.stopNestedScroll();
-    }
-
-    @Override
-    public boolean hasNestedScrollingParent() {
-        return mNestedScrollingChildHelper.hasNestedScrollingParent();
-    }
-
-    @Override
-    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
-                                        int dyUnconsumed, int[] offsetInWindow) {
-        return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed,
-                dxUnconsumed, dyUnconsumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
-        return mNestedScrollingChildHelper.dispatchNestedPreScroll(
-                dx, dy, consumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean onNestedPreFling(View target, float velocityX,
-                                    float velocityY) {
-        return dispatchNestedPreFling(velocityX, velocityY);
-    }
-
-    @Override
-    public boolean onNestedFling(View target, float velocityX, float velocityY,
-                                 boolean consumed) {
-        return dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
-        return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
-        return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
-    }
-
-    /** <br> data. */
 
     /**
      * @return Whether the BothWaySwipeRefreshWidget is actively showing refresh
@@ -847,34 +622,96 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
     }
 
-    public void setDragTriggerDistance(int dir, int distance) {
-        if (dir == DIRECTION_BOTTOM) {
-            distance += mCircleHeight;
+    // position.
+
+    private void moveToStart(int dir, float interpolatedTime) {
+        int offset = (int) (mFrom * (1 - interpolatedTime));
+        setTargetOffsetTopAndBottom(dir, offset - mDragOffsetDistance);
+    }
+
+    private void setTargetOffsetTopAndBottom(int dir, int offset) {
+        mCircleViews[dir].bringToFront();
+        mCircleViews[dir].offsetTopAndBottom(offset);
+        mDragOffsetDistance += offset;
+    }
+
+    private void reset() {
+        int oldOffset = mDragOffsetDistance;
+        for (int i = 0; i < 2; i ++) {
+            mCircleViews[i].clearAnimation();
+            mProgress[i].stop();
+            mCircleViews[i].setVisibility(View.GONE);
+            setColorViewAlpha(i, MAX_ALPHA);
+            // Return the circle to its start position
+            if (mScale) {
+                setAnimationProgress(i, 0 /* animation complete and view is hidden */);
+            } else {
+                setTargetOffsetTopAndBottom(i, -oldOffset);
+            }
         }
-        mDragTriggerDistances[dir] = distance;
+        mDragOffsetDistance = 0;
     }
 
-    private boolean isAnimationRunning(Animation animation) {
-        return animation != null && animation.hasStarted() && !animation.hasEnded();
-    }
+    // color.
 
-    /**
-     * @return Whether it is possible for the child view of this layout to
-     *         scroll up. Override this if the child view is a custom view.
-     */
-    public boolean canChildScrollUp() {
-        return ViewCompat.canScrollVertically(mTarget, -1);
+    private void setColorViewAlpha(int dir, int targetAlpha) {
+        mCircleViews[dir].getBackground().setAlpha(targetAlpha);
+        mProgress[dir].setAlpha(targetAlpha);
     }
 
     /**
-     * @return Whether it is possible for the child view of this layout to
-     *         scroll down. Override this if the child view is a custom view.
+     * Set the background color of the progress spinner disc.
+     *
+     * @param colorRes Resource id of the color.
      */
-    public boolean canChildScrollDown() {
-        return ViewCompat.canScrollVertically(mTarget, 1);
+    public void setProgressBackgroundColorSchemeResource(@ColorRes int colorRes) {
+        setProgressBackgroundColorSchemeColor(ContextCompat.getColor(getContext(), colorRes));
     }
 
-    /** <br> animation. */
+    /**
+     * Set the background color of the progress spinner disc.
+     *
+     * @param color Color.
+     */
+    public void setProgressBackgroundColorSchemeColor(@ColorInt int color) {
+        for (int i = 0; i < 2; i ++) {
+            mCircleViews[i].setBackgroundColor(color);
+            mProgress[i].setBackgroundColor(color);
+        }
+    }
+
+    /**
+     * Set the color resources used in the progress animation from color resources.
+     * The first color will also be the color of the bar that grows in response
+     * to a user swipe gesture.
+     *
+     * @param colorResIds Colors.
+     */
+    public void setColorSchemeResources(@ColorRes int... colorResIds) {
+        int[] colorRes = new int[colorResIds.length];
+        for (int i = 0; i < colorResIds.length; i++) {
+            colorRes[i] = ContextCompat.getColor(getContext(), colorResIds[i]);
+        }
+        setColorSchemeColors(colorRes);
+    }
+
+    /**
+     * Set the colors used in the progress animation. The first
+     * color will also be the color of the bar that grows in response to a user
+     * swipe gesture.
+     *
+     * @param colors Color.
+     */
+    @SuppressLint("SupportAnnotationUsage")
+    @ColorInt
+    public void setColorSchemeColors(int... colors) {
+        ensureTarget();
+        for (int i = 0; i < 2; i ++) {
+            mProgress[i].setColorSchemeColors(colors);
+        }
+    }
+
+    // animation.
 
     // to correct position.
 
@@ -1064,7 +901,177 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         return alpha;
     }
 
-    /** <br> interface. */
+    // listener.
+
+    // on refresh and load listener.
+
+    public interface OnRefreshAndLoadListener {
+        void onRefresh();
+        void onLoad();
+    }
+
+    public void setOnRefreshAndLoadListener(OnRefreshAndLoadListener listener) {
+        mListener = listener;
+    }
+
+    // nested scroll parent.
+
+    @Override
+    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
+        return isEnabled()
+                && !mReturningToStart && !mRefreshing && !mLoading
+                && (mPermitRefresh || mPermitLoad)
+                && (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+    }
+
+    @Override
+    public void onNestedScrollAccepted(View child, View target, int axes) {
+        // Reset the counter of how much leftover scroll needs to be consumed.
+        mNestedScrollingParentHelper.onNestedScrollAccepted(child, target, axes);
+        // Dispatch up to the nested parent
+        startNestedScroll(axes & ViewCompat.SCROLL_AXIS_VERTICAL);
+        mTotalUnconsumed = 0;
+        mNestedScrollInProgress = true;
+    }
+
+    @Override
+    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+        // If we are in the middle of consuming, a scroll, then we want to move the spinner back up
+        // before allowing the list to scroll
+        if (dy > 0 && mTotalUnconsumed > 0) {
+            if (dy > mTotalUnconsumed) {
+                consumed[1] = (int) mTotalUnconsumed;
+                mTotalUnconsumed = 0;
+            } else {
+                mTotalUnconsumed -= dy;
+                consumed[1] = dy;
+            }
+            moveSpinner(DIRECTION_TOP, mTotalUnconsumed);
+        } else if (dy < 0 && mTotalUnconsumed < 0) {
+            if (dy < mTotalUnconsumed) {
+                consumed[1] = (int) mTotalUnconsumed;
+                mTotalUnconsumed = 0;
+            } else {
+                mTotalUnconsumed -= dy;
+                consumed[1] = dy;
+            }
+            moveSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
+        }
+
+        // Now let our nested parent consume the leftovers
+        final int[] parentConsumed = mParentScrollConsumed;
+        if (dispatchNestedPreScroll(dx - consumed[0], dy - consumed[1], parentConsumed, null)) {
+            consumed[0] += parentConsumed[0];
+            consumed[1] += parentConsumed[1];
+        }
+    }
+
+    @Override
+    public int getNestedScrollAxes() {
+        return mNestedScrollingParentHelper.getNestedScrollAxes();
+    }
+
+    @Override
+    public void onNestedScroll(final View target, final int dxConsumed, final int dyConsumed,
+                               final int dxUnconsumed, final int dyUnconsumed) {
+        // Dispatch up to the nested parent first
+        dispatchNestedScroll(dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
+                mParentOffsetInWindow);
+
+        // This is a bit of a hack. Nested scrolling works from the bottom up, and as we are
+        // sometimes between two nested scrolling views, we need a way to be able to know when any
+        // nested scrolling parent has stopped handling events. We do that by using the
+        // 'offset in window 'functionality to see if we have been moved from the event.
+        // This is a decent indication of whether we should take over the event stream or not.
+        final int dy = dyUnconsumed + mParentOffsetInWindow[1];
+        if (dy < 0 && !canChildScrollUp() && !mRefreshing && mPermitRefresh) {
+            mTotalUnconsumed -= dy;
+            moveSpinner(DIRECTION_TOP, mTotalUnconsumed);
+        } else if (dy > 0 && !canChildScrollDown() && !mLoading && mPermitLoad) {
+            mTotalUnconsumed -= dy;
+            moveSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
+        }
+    }
+
+    @Override
+    public void onStopNestedScroll(View target) {
+        mNestedScrollingParentHelper.onStopNestedScroll(target);
+        mNestedScrollInProgress = false;
+        // Finish the spinner for nested scrolling if we ever consumed any
+        // unconsumed nested scroll
+        if (mTotalUnconsumed > 0) {
+            finishSpinner(DIRECTION_TOP, mTotalUnconsumed);
+        } else if (mTotalUnconsumed < 0) {
+            finishSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
+        }
+        mTotalUnconsumed = 0;
+        // Dispatch up our nested parent
+        stopNestedScroll();
+    }
+
+    // nested scrolling child.
+
+    @Override
+    public void setNestedScrollingEnabled(boolean enabled) {
+        mNestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
+    }
+
+    @Override
+    public boolean isNestedScrollingEnabled() {
+        return mNestedScrollingChildHelper.isNestedScrollingEnabled();
+    }
+
+    @Override
+    public boolean startNestedScroll(int axes) {
+        return mNestedScrollingChildHelper.startNestedScroll(axes);
+    }
+
+    @Override
+    public void stopNestedScroll() {
+        mNestedScrollingChildHelper.stopNestedScroll();
+    }
+
+    @Override
+    public boolean hasNestedScrollingParent() {
+        return mNestedScrollingChildHelper.hasNestedScrollingParent();
+    }
+
+    @Override
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed,
+                                        int dyUnconsumed, int[] offsetInWindow) {
+        return mNestedScrollingChildHelper.dispatchNestedScroll(dxConsumed, dyConsumed,
+                dxUnconsumed, dyUnconsumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+        return mNestedScrollingChildHelper.dispatchNestedPreScroll(
+                dx, dy, consumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean onNestedPreFling(View target, float velocityX,
+                                    float velocityY) {
+        return dispatchNestedPreFling(velocityX, velocityY);
+    }
+
+    @Override
+    public boolean onNestedFling(View target, float velocityX, float velocityY,
+                                 boolean consumed) {
+        return dispatchNestedFling(velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+        return mNestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+        return mNestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
+    }
+
+    // animation listener.
 
     private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
 
@@ -1121,15 +1128,4 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             }
         }
     };
-
-    // on refresh and load listener.
-
-    public interface OnRefreshAndLoadListener {
-        void onRefresh();
-        void onLoad();
-    }
-
-    public void setOnRefreshAndLoadListener(OnRefreshAndLoadListener listener) {
-        mListener = listener;
-    }
 }

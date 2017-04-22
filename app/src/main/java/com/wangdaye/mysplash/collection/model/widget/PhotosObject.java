@@ -12,14 +12,16 @@ import java.util.List;
  * Photos object.
  * */
 
-public class PhotosObject implements PhotosModel {
-    // data
+public class PhotosObject
+        implements PhotosModel {
+
     private PhotoAdapter adapter;
     private PhotoService service;
 
     private Object key;
     @TypeRule
     private int photosType;
+
     private int photosPage;
 
     private boolean refreshing;
@@ -30,8 +32,6 @@ public class PhotosObject implements PhotosModel {
     public static final int PHOTOS_TYPE_CURATED = 1;
     @IntDef({PHOTOS_TYPE_NORMAL, PHOTOS_TYPE_CURATED})
     private @interface TypeRule {}
-
-    /** <br> life cycle. */
 
     public PhotosObject(PhotoAdapter adapter, Object key, @TypeRule int photosType) {
         this.adapter = adapter;
@@ -47,8 +47,6 @@ public class PhotosObject implements PhotosModel {
         this.over = false;
     }
 
-    /** <br> model. */
-
     @Override
     public PhotoAdapter getAdapter() {
         return adapter;
@@ -58,6 +56,8 @@ public class PhotosObject implements PhotosModel {
     public PhotoService getService() {
         return service;
     }
+
+    // control HTTP request parameters.
 
     @Override
     public Object getRequestKey() {
@@ -109,6 +109,8 @@ public class PhotosObject implements PhotosModel {
     public void setPageList(List<Integer> list) {
         // do nothing.
     }
+
+    // control load state.
 
     @Override
     public boolean isRefreshing() {

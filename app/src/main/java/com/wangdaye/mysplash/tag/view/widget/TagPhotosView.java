@@ -68,26 +68,72 @@ public class TagPhotosView extends NestedScrollFrameLayout
         implements SearchView, LoadView, ScrollView, SwipeBackView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
-    // model.
+
+    @BindView(R.id.container_loading_in_category_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_in_category_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_loading_in_category_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private SearchModel searchModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_in_category_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_in_category_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_loading_in_category_view_large_feedbackTxt) TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private SearchPresenter searchPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
+
     private SwipeBackPresenter swipeBackPresenter;
 
-    /** <br> life cycle. */
+    private static class SavedState extends BaseSavedState {
+
+        String query;
+        int page;
+        boolean over;
+
+        SavedState(TagPhotosView view, Parcelable superState) {
+            super(superState);
+            this.query = view.searchModel.getSearchQuery();
+            this.page = view.searchModel.getPhotosPage();
+            this.over = view.searchModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.query = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(this.query);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public TagPhotosView(Context context) {
         super(context);
@@ -104,11 +150,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public TagPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
@@ -126,27 +168,17 @@ public class TagPhotosView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        return new SavedState(this, super.onSaveInstanceState());
+    private void initModel() {
+        this.searchModel = new SearchObject(
+                new PhotoAdapter(
+                        getContext(),
+                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                        this,
+                        null),
+                "");
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject(true);
     }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        searchPresenter.setQuery(ss.query);
-        searchPresenter.setPage(ss.page);
-        searchPresenter.setOver(ss.over);
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return false;
-    }
-
-    /** <br> presenter. */
 
     private void initPresenter() {
         this.searchPresenter = new SearchImplementor(searchModel, this);
@@ -154,10 +186,6 @@ public class TagPhotosView extends NestedScrollFrameLayout
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         this.initContentView();
@@ -196,29 +224,24 @@ public class TagPhotosView extends NestedScrollFrameLayout
                 .into(feedbackImg);
     }
 
-    // interface.
+    // save state.
 
-    public void pagerScrollToTop() {
-        scrollPresenter.scrollToTop();
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return new SavedState(this, super.onSaveInstanceState());
     }
 
-    /** <br> model. */
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
 
-    // init
-
-    private void initModel() {
-        this.searchModel = new SearchObject(
-                new PhotoAdapter(
-                        getContext(),
-                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
-                        this,
-                        null),
-                "");
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject(true);
+        searchPresenter.setQuery(ss.query);
+        searchPresenter.setPage(ss.page);
+        searchPresenter.setOver(ss.over);
     }
 
-    // interface.
+    // control.
 
     /**
      * Set activity for the adapter in this view.
@@ -228,6 +251,21 @@ public class TagPhotosView extends NestedScrollFrameLayout
     public void setActivity(TagActivity a) {
         ((PhotoAdapter) searchPresenter.getAdapter()).setActivity(a);
         ((PhotoAdapter) searchPresenter.getAdapter()).setOnDownloadPhotoListener(a);
+    }
+
+    public void setTag(String key) {
+        searchPresenter.setQuery(key);
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
+    }
+
+    // photo.
+
+    public void updatePhoto(Photo photo) {
+        ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(photo, true, false);
     }
 
     /**
@@ -256,27 +294,33 @@ public class TagPhotosView extends NestedScrollFrameLayout
         }
     }
 
-    public void setTag(String key) {
-        searchPresenter.setQuery(key);
+    // HTTP request.
+
+    public void initRefresh() {
+        searchPresenter.initRefresh(getContext());
     }
 
     public void cancelRequest() {
         searchPresenter.cancelRequest();
     }
 
-    public void initRefresh() {
-        searchPresenter.initRefresh(getContext());
-    }
+    // back to top.
 
     public boolean needPagerBackToTop() {
         return scrollPresenter.needBackToTop();
     }
 
+    public void pagerScrollToTop() {
+        scrollPresenter.scrollToTop();
+    }
+
+    // swipe back.
+
     public boolean canSwipeBack(int dir) {
         return swipeBackPresenter.checkCanSwipeBack(dir);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click swipeListener.
 
@@ -316,7 +360,7 @@ public class TagPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, false);
+        ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true, true);
     }
 
     // view.
@@ -432,57 +476,11 @@ public class TagPhotosView extends NestedScrollFrameLayout
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
             case com.wangdaye.mysplash.user.model.widget.LoadObject.NORMAL_STATE:
-                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || ((PhotoAdapter) searchPresenter.getAdapter()).getRealItemCount() <= 0;
 
             default:
                 return true;
         }
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState extends BaseSavedState {
-        // data
-        String query;
-        int page;
-        boolean over;
-
-        // life cycle.
-
-        SavedState(TagPhotosView view, Parcelable superState) {
-            super(superState);
-            this.query = view.searchModel.getSearchQuery();
-            this.page = view.searchModel.getPhotosPage();
-            this.over = view.searchModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            this.query = in.readString();
-            this.page = in.readInt();
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(this.query);
-            out.writeInt(this.page);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

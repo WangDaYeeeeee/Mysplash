@@ -16,8 +16,6 @@ import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 public class RestartActivity extends Activity {
 
-    /** <br> life cycle. */
-
     @Override
     protected void onCreate(Bundle savedStateInstance) {
         super.onCreate(savedStateInstance);

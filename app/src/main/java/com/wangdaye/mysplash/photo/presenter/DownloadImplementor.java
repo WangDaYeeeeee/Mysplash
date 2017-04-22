@@ -13,16 +13,12 @@ import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 
 public class DownloadImplementor
         implements DownloadPresenter {
-    // model & view.
-    private DownloadModel model;
 
-    /** <br> life cycle. */
+    private DownloadModel model;
 
     public DownloadImplementor(DownloadModel model) {
         this.model = model;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void download(Context context) {
@@ -48,8 +44,6 @@ public class DownloadImplementor
     public void setDownloadKey(Object key) {
         model.setDownloadKey(key);
     }
-
-    /** <br> utils. */
 
     private void doDownload(Context context, int type) {
         Photo p = (Photo) model.getDownloadKey();

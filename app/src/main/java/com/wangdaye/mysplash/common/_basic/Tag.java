@@ -9,6 +9,7 @@ package com.wangdaye.mysplash.common._basic;
  * */
 
 public interface Tag {
+
     String getTitle();
     String getUrl();
 }

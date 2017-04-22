@@ -14,18 +14,14 @@ import com.wangdaye.mysplash.common.i.view.CategoryManageView;
 
 public class CategoryManageImplementor
         implements CategoryManagePresenter {
-    // model & view.
+
     private CategoryManageModel model;
     private CategoryManageView view;
-
-    /** <br> life cycle. */
 
     public CategoryManageImplementor(CategoryManageModel model, CategoryManageView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public int getCategoryId() {

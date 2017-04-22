@@ -9,16 +9,12 @@ import com.wangdaye.mysplash.common.i.model.DownloadModel;
 
 public class DownloadObject
         implements DownloadModel {
-    // data
-    private Photo photo;
 
-    /** <br> life cycle. */
+    private Photo photo;
 
     public DownloadObject(Photo p) {
         this.photo = p;
     }
-
-    /** <br> model. */
 
     @Override
     public Object getDownloadKey() {

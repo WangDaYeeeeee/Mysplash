@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.common.i.model.LoadModel;
  * */
 
 public class LoadObject implements LoadModel {
-    // data
+
     @StateRule
     private int state;
 
@@ -22,8 +22,6 @@ public class LoadObject implements LoadModel {
     public static final int NORMAL_STATE = 1;
     @IntDef({LOADING_STATE, FAILED_STATE, NORMAL_STATE})
     private @interface StateRule {}
-
-    /** <br> life cycle. */
 
     public LoadObject(@StateRule int state) {
         this.state = state;

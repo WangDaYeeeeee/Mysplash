@@ -14,11 +14,9 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
  * */
 
 public class AutoHideInkPageIndicator extends InkPageIndicator {
-    // widget
+
     private ObjectAnimator showAnimator;
     private ObjectAnimator dismissAnimator;
-
-    /** <br> life cycle. */
 
     public AutoHideInkPageIndicator(Context context) {
         super(context);
@@ -31,8 +29,6 @@ public class AutoHideInkPageIndicator extends InkPageIndicator {
     public AutoHideInkPageIndicator(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
-
-    /** <br> UI. */
 
     public void setDisplayState(boolean show) {
         if (dismissAnimator != null) {

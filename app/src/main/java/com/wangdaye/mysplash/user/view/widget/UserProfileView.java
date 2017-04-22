@@ -2,9 +2,7 @@ package com.wangdaye.mysplash.user.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
 import android.text.TextUtils;
@@ -56,28 +54,31 @@ import butterknife.ButterKnife;
 public class UserProfileView extends FrameLayout
         implements UserView, LoadView,
         RippleButton.OnSwitchListener {
-    // model.
-    private UserModel userModel;
-    private LoadModel loadModel;
 
-    // view.
-    @BindView(R.id.container_user_profile_progressView) CircularProgressView progressView;
+    @BindView(R.id.container_user_profile_progressView)
+    CircularProgressView progressView;
 
-    @BindView(R.id.container_user_profile_profileContainer) RelativeLayout profileContainer;
-    @BindView(R.id.container_user_profile_followBtn) RippleButton rippleButton;
-    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
-    @BindView(R.id.container_user_profile_bio) TextView bioTxt;
+    @BindView(R.id.container_user_profile_profileContainer)
+    RelativeLayout profileContainer;
+
+    @BindView(R.id.container_user_profile_followBtn)
+    RippleButton rippleButton;
+
+    @BindView(R.id.container_user_profile_locationTxt)
+    TextView locationTxt;
+
+    @BindView(R.id.container_user_profile_bio)
+    TextView bioTxt;
 
     private MyPagerAdapter adapter;
 
-    // presenter.
+    private UserModel userModel;
     private UserPresenter userPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
 
-    // widget.
     private OnRequestUserListener listener;
-
-    /** <br> life cycle. */
 
     public UserProfileView(Context context) {
         super(context);
@@ -94,11 +95,7 @@ public class UserProfileView extends FrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public UserProfileView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
@@ -111,16 +108,17 @@ public class UserProfileView extends FrameLayout
         initView();
     }
 
-    /** <br> presenter. */
+    // init.
+
+    private void initModel() {
+        this.userModel = new UserObject();
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+    }
 
     private void initPresenter() {
         this.userPresenter = new UserImplementor(userModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         progressView.setVisibility(VISIBLE);
@@ -141,7 +139,7 @@ public class UserProfileView extends FrameLayout
                 locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);
     }
 
-    // interface.
+    // control.
 
     @Nullable
     private ViewParent getAppBarParent() {
@@ -152,21 +150,20 @@ public class UserProfileView extends FrameLayout
         return parent;
     }
 
-    /** <br> model. */
-
-    // init.
-
-    private void initModel() {
-        this.userModel = new UserObject();
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+    public User getUser() {
+        return userPresenter.getUser();
     }
-
-    // interface.
 
     public void setUser(User user, MyPagerAdapter adapter) {
         this.adapter = adapter;
         userPresenter.setUser(user);
     }
+
+    public String getUserPortfolio() {
+        return userPresenter.getUser().portfolio_url;
+    }
+
+    // HTTP request.
 
     public void requestUserProfile() {
         userPresenter.requestUser();
@@ -176,15 +173,7 @@ public class UserProfileView extends FrameLayout
         userPresenter.cancelRequest();
     }
 
-    public User getUser() {
-        return userPresenter.getUser();
-    }
-
-    public String getUserPortfolio() {
-        return userPresenter.getUser().portfolio_url;
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on request user listener.
 

@@ -31,21 +31,18 @@ import retrofit2.Response;
 
 public class PhotosImplementor
         implements PhotosPresenter {
-    // model & view.
+
     private PhotosModel model;
     private PhotosView view;
 
-    // data
     private OnRequestPhotosListener listener;
-
-    /** <br> life cycle. */
 
     public PhotosImplementor(PhotosModel model, PhotosView view) {
         this.model = model;
         this.view = view;
     }
 
-    /** <br> presenter. */
+    // HTTP request.
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
@@ -77,6 +74,8 @@ public class PhotosImplementor
         model.setRefreshing(false);
         model.setLoading(false);
     }
+
+    // load data interface.
 
     @Override
     public void refreshNew(Context c, boolean notify) {
@@ -172,7 +171,7 @@ public class PhotosImplementor
         return model.getAdapter();
     }
 
-    /** <br> utils. */
+    // HTTP request.
 
     private void requestCollectionPhotos(Context context,
                                          Collection collection, int page, boolean refresh) {
@@ -196,7 +195,9 @@ public class PhotosImplementor
                         listener);
     }
 
-    /** <br> interface. */
+    // interface.
+
+    // on request photos listener.
 
     private class OnRequestPhotosListener implements PhotoService.OnRequestPhotosListener {
         // data

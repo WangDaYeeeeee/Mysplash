@@ -43,22 +43,33 @@ import retrofit2.Response;
 public class UpdateCollectionDialog extends MysplashDialogFragment
         implements CollectionService.OnRequestACollectionListener,
         CollectionService.OnDeleteCollectionListener {
-    // widget
-    @BindView(R.id.dialog_update_collection_container) CoordinatorLayout container;
 
-    @BindView(R.id.dialog_update_collection_progressView) CircularProgressView progressView;
+    @BindView(R.id.dialog_update_collection_container)
+    CoordinatorLayout container;
 
-    @BindView(R.id.dialog_update_collection_contentView) LinearLayout contentView;
-    @BindView(R.id.dialog_update_collection_name) EditText nameTxt;
-    @BindView(R.id.dialog_update_collection_description) EditText descriptionTxt;
-    @BindView(R.id.dialog_update_collection_checkBox) CheckBox checkBox;
+    @BindView(R.id.dialog_update_collection_progressView)
+    CircularProgressView progressView;
 
-    @BindView(R.id.dialog_update_collection_baseBtnContainer) RelativeLayout baseBtnContainer;
-    @BindView(R.id.dialog_update_collection_confirmBtnContainer) RelativeLayout confirmBtnContainer;
+    @BindView(R.id.dialog_update_collection_contentView)
+    LinearLayout contentView;
+
+    @BindView(R.id.dialog_update_collection_name)
+    EditText nameTxt;
+
+    @BindView(R.id.dialog_update_collection_description)
+    EditText descriptionTxt;
+
+    @BindView(R.id.dialog_update_collection_checkBox)
+    CheckBox checkBox;
+
+    @BindView(R.id.dialog_update_collection_baseBtnContainer)
+    RelativeLayout baseBtnContainer;
+
+    @BindView(R.id.dialog_update_collection_confirmBtnContainer)
+    RelativeLayout confirmBtnContainer;
 
     private OnCollectionChangedListener listener;
 
-    // data
     private Collection collection;
     private CollectionService service;
 
@@ -71,8 +82,6 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
     private static final int DELETE_STATE = 4;
     @IntDef({INPUT_STATE, UPDATE_STATE, CONFIRM_STATE, DELETE_STATE})
     private @interface StateRule {}
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -99,7 +108,10 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         return container;
     }
 
-    /** <br> UI. */
+    private void initData() {
+        this.service = CollectionService.getService();
+        this.state = INPUT_STATE;
+    }
 
     private void initWidget() {
         progressView.setVisibility(View.GONE);
@@ -116,6 +128,47 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
 
         baseBtnContainer.setVisibility(View.VISIBLE);
         confirmBtnContainer.setVisibility(View.GONE);
+    }
+
+    public void setCollection(Collection c) {
+        collection = c;
+    }
+
+    private void updateCollection() {
+        String title = nameTxt.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            Toast.makeText(
+                    getActivity(),
+                    getString(R.string.feedback_name_is_required),
+                    Toast.LENGTH_SHORT).show();
+        } else {
+            String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
+                    null : descriptionTxt.getText().toString();
+            boolean privateX = checkBox.isChecked();
+            service.updateCollection(
+                    collection.id,
+                    title,
+                    description,
+                    privateX,
+                    this);
+            setState(UPDATE_STATE);
+        }
+    }
+
+    private void deleteCollection() {
+        service.deleteCollection(collection.id, this);
+    }
+
+    private void notifyUpdateFailed() {
+        NotificationHelper.showSnackbar(
+                getString(R.string.feedback_update_collection_failed),
+                Toast.LENGTH_SHORT);
+    }
+
+    private void notifyDeleteFailed() {
+        NotificationHelper.showSnackbar(
+                getString(R.string.feedback_delete_collection_failed),
+                Toast.LENGTH_SHORT);
     }
 
     private void setState(@StateRule int newState) {
@@ -164,55 +217,9 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         manager.hideSoftInputFromWindow(descriptionTxt.getWindowToken(), 0);
     }
 
-    private void notifyUpdateFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_update_collection_failed),
-                Toast.LENGTH_SHORT);
-    }
+    // interface.
 
-    private void notifyDeleteFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_delete_collection_failed),
-                Toast.LENGTH_SHORT);
-    }
-
-    /** <br> data. */
-
-    private void initData() {
-        this.service = CollectionService.getService();
-        this.state = INPUT_STATE;
-    }
-
-    public void setCollection(Collection c) {
-        collection = c;
-    }
-
-    private void updateCollection() {
-        String title = nameTxt.getText().toString();
-        if (TextUtils.isEmpty(title)) {
-            Toast.makeText(
-                    getActivity(),
-                    getString(R.string.feedback_name_is_required),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
-                    null : descriptionTxt.getText().toString();
-            boolean privateX = checkBox.isChecked();
-            service.updateCollection(
-                    collection.id,
-                    title,
-                    description,
-                    privateX,
-                    this);
-            setState(UPDATE_STATE);
-        }
-    }
-
-    private void deleteCollection() {
-        service.deleteCollection(collection.id, this);
-    }
-
-    /** <br> interface. */
+    // on collection changed listener.
 
     public interface OnCollectionChangedListener {
         void onEditCollection(Collection c);

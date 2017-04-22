@@ -24,12 +24,15 @@ import butterknife.ButterKnife;
 
 public class AboutActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener {
-    // widget.
-    @BindView(R.id.activity_about_container) CoordinatorLayout container;
-    @BindView(R.id.activity_about_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_about_recyclerView) RecyclerView recyclerView;
 
-    /** <br> life cycle. */
+    @BindView(R.id.activity_about_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_about_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_about_recyclerView)
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +60,13 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    protected void backToTop() {
-        // do nothing.
+    public void handleBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -82,16 +85,9 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-    }
-
-    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
-
-    /** <br> UI. */
 
     private void initWidget() {
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
@@ -103,13 +99,15 @@ public class AboutActivity extends MysplashActivity
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
-    /** <br> interface. */
+    // ---------------------------------------------------------------------------------------------
+    // interface.
+    // ---------------------------------------------------------------------------------------------
 
     // on swipe listener.
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir);
     }
 
     @Override

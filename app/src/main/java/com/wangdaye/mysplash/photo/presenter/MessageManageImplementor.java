@@ -8,16 +8,12 @@ import com.wangdaye.mysplash.common.i.view.MessageManageView;
  * */
 
 public class MessageManageImplementor implements MessageManagePresenter {
-    // view.
-    private MessageManageView view;
 
-    /** <br> life cycle. */
+    private MessageManageView view;
 
     public MessageManageImplementor(MessageManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void sendMessage(int what, Object o) {

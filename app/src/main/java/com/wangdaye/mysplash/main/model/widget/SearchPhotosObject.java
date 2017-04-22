@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 
 public class SearchPhotosObject
         implements SearchModel {
-    // data
+
     private PhotoAdapter adapter;
     private SearchService service;
 
@@ -26,8 +26,6 @@ public class SearchPhotosObject
     private boolean refreshing;
     private boolean loading;
     private boolean over;
-
-    /** <br> life cycle. */
 
     public SearchPhotosObject(PhotoAdapter adapter) {
         this.adapter = adapter;

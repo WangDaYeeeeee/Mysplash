@@ -13,7 +13,7 @@ import java.util.List;
  * */
 
 public class UserCollectionsManager {
-    // data
+
     private List<Collection> collectionList;
 
     // if set true, it means all of the user's collections have been loaded. Next time, if a view
@@ -21,14 +21,10 @@ public class UserCollectionsManager {
     // cache data here.
     private boolean loadFinish;
 
-    /** <br> life cycle. */
-
     UserCollectionsManager() {
         collectionList = new ArrayList<>();
         loadFinish = false;
     }
-
-    /** <br> data. */
 
     public List<Collection> getCollectionList() {
         return collectionList;

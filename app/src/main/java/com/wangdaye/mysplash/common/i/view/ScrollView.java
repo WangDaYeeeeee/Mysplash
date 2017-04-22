@@ -10,7 +10,8 @@ package com.wangdaye.mysplash.common.i.view;
 
 public interface ScrollView {
 
-    void scrollToTop();
-    void autoLoad(int dy);
     boolean needBackToTop();
+    void scrollToTop();
+
+    void autoLoad(int dy);
 }

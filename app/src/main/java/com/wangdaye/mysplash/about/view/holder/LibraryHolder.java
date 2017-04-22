@@ -23,14 +23,14 @@ import butterknife.OnClick;
  * */
 
 public class LibraryHolder extends AboutAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_about_library_title) TextView title;
-    @BindView(R.id.item_about_library_content) TextView content;
 
-    // data
+    @BindView(R.id.item_about_library_title)
+    TextView title;
+
+    @BindView(R.id.item_about_library_content)
+    TextView content;
+
     private String uri;
-
-    /** <br> life cycle. */
 
     public LibraryHolder(View itemView) {
         super(itemView);
@@ -38,8 +38,6 @@ public class LibraryHolder extends AboutAdapter.ViewHolder {
         DisplayUtils.setTypeface(itemView.getContext(), title);
         DisplayUtils.setTypeface(itemView.getContext(), content);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {
@@ -54,8 +52,6 @@ public class LibraryHolder extends AboutAdapter.ViewHolder {
     protected void onRecycled() {
         // do nothing.
     }
-
-    /** <br> interface. */
 
     @OnClick(R.id.item_about_library_container) void clickItem() {
         IntentHelper.startWebActivity(itemView.getContext(), uri);

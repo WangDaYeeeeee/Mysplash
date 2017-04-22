@@ -1,10 +1,8 @@
 package com.wangdaye.mysplash.common.ui.widget;
 
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,14 +27,16 @@ import butterknife.ButterKnife;
  * */
 
 public class CircularProgressIcon extends FrameLayout {
-    // widget
-    @BindView(R.id.container_circular_progress_icon_image) ImageView image;
-    @BindView(R.id.container_circular_progress_icon_progress) CircularProgressView progress;
+
+    @BindView(R.id.container_circular_progress_icon_image)
+    ImageView image;
+
+    @BindView(R.id.container_circular_progress_icon_progress)
+    CircularProgressView progress;
 
     private ShowAnimation showAnimation;
     private HideAnimation hideAnimation;
 
-    // data
     private boolean animating;
 
     @StateRule
@@ -47,7 +47,63 @@ public class CircularProgressIcon extends FrameLayout {
     @IntDef({STATE_PROGRESS, STATE_RESULT})
     private @interface StateRule {}
 
-    /** <br> life cycle. */
+    private class ShowAnimation extends Animation {
+
+        private View target;
+
+        ShowAnimation(View target) {
+            this.target = target;
+            setDuration(150);
+            setInterpolator(new AccelerateDecelerateInterpolator());
+            setAnimationListener(animationListener);
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            target.setAlpha(interpolatedTime);
+            target.setScaleX((float) (0.5 + 0.5 * interpolatedTime));
+            target.setScaleY((float) (0.5 + 0.5 * interpolatedTime));
+            target.setRotation(-90 + 90 * interpolatedTime);
+        }
+    }
+
+    private class HideAnimation extends Animation {
+
+        private View target;
+
+        HideAnimation(View target) {
+            this.target = target;
+            setDuration(150);
+            setInterpolator(new AccelerateDecelerateInterpolator());
+            setAnimationListener(animationListener);
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            target.setAlpha(1 - interpolatedTime);
+            target.setScaleX((float) (1 - 0.5 * interpolatedTime));
+            target.setScaleY((float) (1 - 0.5 * interpolatedTime));
+        }
+    }
+
+    private Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+            setAnimating(true);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            setAnimating(false);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+            // do nothing.
+        }
+    };
 
     public CircularProgressIcon(Context context) {
         super(context);
@@ -64,12 +120,6 @@ public class CircularProgressIcon extends FrameLayout {
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public CircularProgressIcon(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
-
     private void initialize() {
         initWidget();
         forceSetResultState(android.R.color.transparent);
@@ -82,7 +132,23 @@ public class CircularProgressIcon extends FrameLayout {
         ButterKnife.bind(this, this);
     }
 
-    /** <br> UI. */
+    // control.
+
+    /**
+     * Whether the button is free.
+     * */
+    public boolean isUsable() {
+        return getState() == STATE_RESULT && !isAnimating();
+    }
+
+    @StateRule
+    public int getState() {
+        return state;
+    }
+
+    public void setState(@StateRule int state) {
+        this.state = state;
+    }
 
     // force.
 
@@ -153,28 +219,6 @@ public class CircularProgressIcon extends FrameLayout {
         }
     }
 
-    public void recycleImageView() {
-        ImageHelper.releaseImageView(image);
-    }
-
-    /** <br> data. */
-
-    /**
-     * Whether the button is free..
-     * */
-    public boolean isUsable() {
-        return getState() == STATE_RESULT && !isAnimating();
-    }
-
-    @StateRule
-    public int getState() {
-        return state;
-    }
-
-    public void setState(@StateRule int state) {
-        this.state = state;
-    }
-
     public boolean isAnimating() {
         return animating;
     }
@@ -183,65 +227,9 @@ public class CircularProgressIcon extends FrameLayout {
         this.animating = animating;
     }
 
-    /** <br> inner class. */
+    // image.
 
-    private class ShowAnimation extends Animation {
-        // widget
-        private View target;
-
-        // life cycle.
-        ShowAnimation(View target) {
-            this.target = target;
-            setDuration(150);
-            setInterpolator(new AccelerateDecelerateInterpolator());
-            setAnimationListener(animationListener);
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            target.setAlpha(interpolatedTime);
-            target.setScaleX((float) (0.5 + 0.5 * interpolatedTime));
-            target.setScaleY((float) (0.5 + 0.5 * interpolatedTime));
-            target.setRotation(-90 + 90 * interpolatedTime);
-        }
+    public void recycleImageView() {
+        ImageHelper.releaseImageView(image);
     }
-
-    private class HideAnimation extends Animation {
-        // widget
-        private View target;
-
-        // life cycle.
-        HideAnimation(View target) {
-            this.target = target;
-            setDuration(150);
-            setInterpolator(new AccelerateDecelerateInterpolator());
-            setAnimationListener(animationListener);
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            target.setAlpha(1 - interpolatedTime);
-            target.setScaleX((float) (1 - 0.5 * interpolatedTime));
-            target.setScaleY((float) (1 - 0.5 * interpolatedTime));
-        }
-    }
-
-    private Animation.AnimationListener animationListener = new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-            setAnimating(true);
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            setAnimating(false);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-            // do nothing.
-        }
-    };
 }

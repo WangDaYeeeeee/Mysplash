@@ -9,7 +9,9 @@ package com.wangdaye.mysplash.common.i.view;
 
 public interface PagerManageView {
 
-    PagerView getPagerView(int position);
-    boolean canPagerSwipeBack(int position, int dir);
     int getPagerItemCount(int position);
+
+    PagerView getPagerView(int position);
+
+    boolean canPagerSwipeBack(int position, int dir);
 }

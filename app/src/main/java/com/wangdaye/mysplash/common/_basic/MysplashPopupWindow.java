@@ -22,8 +22,6 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 public class MysplashPopupWindow extends PopupWindow {
 
-    /** <br> life cycle. */
-
     public MysplashPopupWindow(Context context) {
         super(context);
         final MysplashActivity activity = Mysplash.getInstance().getTopActivity();
@@ -44,8 +42,6 @@ public class MysplashPopupWindow extends PopupWindow {
             setElevation(10);
         }
     }
-
-    /** <br> UI. */
 
     public void setContentView(View contentView) {
         contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);

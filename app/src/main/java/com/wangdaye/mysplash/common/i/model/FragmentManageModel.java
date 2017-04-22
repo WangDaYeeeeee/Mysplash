@@ -9,6 +9,6 @@ package com.wangdaye.mysplash.common.i.model;
 
 public interface FragmentManageModel {
 
-    void setId(int id);
     int getId();
+    void setId(int id);
 }

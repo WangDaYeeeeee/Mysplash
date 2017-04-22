@@ -9,12 +9,12 @@
     android:stateListAnimator="@animator/touch_rise"
     tools:ignore="UnusedAttribute">
 
-    <com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
         android:id="@+id/item_user_avatar"
         android:layout_width="@dimen/normal_icon_size"
         android:layout_height="@dimen/normal_icon_size"
         android:layout_margin="@dimen/normal_margin"
-        tools:src="@drawable/default_avatar"
+        tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription" />
 
     <FrameLayout

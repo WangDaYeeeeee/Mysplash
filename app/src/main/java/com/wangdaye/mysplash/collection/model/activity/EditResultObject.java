@@ -9,16 +9,12 @@ import com.wangdaye.mysplash.common.i.model.EditResultModel;
 
 public class EditResultObject
         implements EditResultModel {
-    // data
-    private Object key;
 
-    /** <br> life cycle. */
+    private Object key;
 
     public EditResultObject(Collection c) {
         this.key = c;
     }
-
-    /** <br> model. */
 
     @Override
     public Object getEditKey() {

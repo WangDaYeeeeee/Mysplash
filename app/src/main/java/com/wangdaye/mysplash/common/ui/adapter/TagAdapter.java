@@ -29,61 +29,25 @@ import butterknife.OnClick;
  * */
 
 public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
-    // widget
+
     private Context context;
     private List<Tag> itemList;
 
-    /** <br> life cycle. */
-
-    public TagAdapter(Context context, List<Tag> list) {
-        this.context = context;
-        this.itemList = list;
-    }
-
-    /** <br> UI. */
-
-    @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag, parent, false);
-        return new ViewHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.onBindView(position);
-    }
-
-    @Override
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
-        holder.onRecycled();
-    }
-
-    /** <br> data. */
-
-    @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    /** <br> inner class. */
-
-    // view holder.
-
     class ViewHolder extends RecyclerView.ViewHolder {
-        // widget.
-        @BindView(R.id.item_tag_text) TextView text;
-        @BindView(R.id.item_tag_layoutText) TextView layoutText;
-        @BindView(R.id.item_tag_image) ImageView image;
 
-        // life cycle.
+        @BindView(R.id.item_tag_text)
+        TextView text;
+
+        @BindView(R.id.item_tag_layoutText)
+        TextView layoutText;
+
+        @BindView(R.id.item_tag_image)
+        ImageView image;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
-
-        // UI.
 
         void onBindView(int position) {
             text.setText(itemList.get(position).getTitle());
@@ -103,5 +67,32 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
                     Mysplash.getInstance().getTopActivity(),
                     itemList.get(getAdapterPosition()).getTitle());
         }
+    }
+
+    public TagAdapter(Context context, List<Tag> list) {
+        this.context = context;
+        this.itemList = list;
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag, parent, false);
+        return new ViewHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        holder.onBindView(position);
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
+    }
+
+    @Override
+    public int getItemCount() {
+        return itemList.size();
     }
 }

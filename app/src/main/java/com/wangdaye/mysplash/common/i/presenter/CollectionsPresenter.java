@@ -15,8 +15,12 @@ import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 
 public interface CollectionsPresenter {
 
+    // HTTP request.
+
     void requestCollections(Context c, @Mysplash.PageRule int page, boolean refresh);
     void cancelRequest();
+
+    // load data interface.
 
     /**
      * The param notify is used to control the SwipeRefreshLayout. If set true, the
@@ -29,6 +33,8 @@ public interface CollectionsPresenter {
     boolean canLoadMore();
     boolean isRefreshing();
     boolean isLoading();
+
+    // manage HTTP request parameters.
 
     Object getRequestKey();
     void setRequestKey(Object k);

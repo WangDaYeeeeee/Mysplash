@@ -30,7 +30,7 @@
         android:layout_marginBottom="@dimen/little_margin"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:background="@android:color/transparent"
-        android:layout_alignBottom="@+id/item_following_photo_image"
+        android:layout_alignBottom="@id/item_following_photo_image"
         android:layout_alignParentRight="true"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -43,7 +43,7 @@
         android:layout_marginBottom="@dimen/little_margin"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:background="@android:color/transparent"
-        android:layout_alignBottom="@+id/item_following_photo_image"
+        android:layout_alignBottom="@id/item_following_photo_image"
         android:layout_toLeftOf="@id/item_following_photo_likeButton"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -56,7 +56,7 @@
         android:layout_marginBottom="@dimen/little_margin"
         android:foreground="?attr/selectableItemBackgroundBorderless"
         android:background="@android:color/transparent"
-        android:layout_alignBottom="@+id/item_following_photo_image"
+        android:layout_alignBottom="@id/item_following_photo_image"
         android:layout_toLeftOf="@id/item_following_photo_collectionButton"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -70,7 +70,7 @@
         android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginRight="@dimen/normal_margin"
         android:layout_marginBottom="@dimen/little_margin"
-        android:layout_alignBottom="@+id/item_following_photo_image"
+        android:layout_alignBottom="@id/item_following_photo_image"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@id/item_following_photo_downloadButton"
         android:maxLines="1"

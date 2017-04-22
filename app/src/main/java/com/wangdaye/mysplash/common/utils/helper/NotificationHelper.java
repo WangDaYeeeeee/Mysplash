@@ -19,7 +19,7 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
- * Notification helper.
+ * NotificationFeed helper.
  *
  * A helper class that makes the operations of {@link NotificationManagerCompat} and
  * {@link Snackbar} easier.
@@ -27,13 +27,12 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
  * */
 
 public class NotificationHelper {
-    // data
+
     private static final String NOTIFICATION_GROUP_KEY = "mysplash_download_result_notification";
     private static final String PREFERENCE_NOTIFICATION = "notification";
     private static final String KEY_NOTIFICATION_ID = "notification_id";
-    private static final int NOTIFICATION_GROUP_SUMMARY_ID = 1001;
 
-    /** <br> notification. */
+    private static final int NOTIFICATION_GROUP_SUMMARY_ID = 1001;
 
     // feedback.
 
@@ -146,24 +145,25 @@ public class NotificationHelper {
         return id;
     }
 
-    /** <br> snackbar & toast. */
+    // snack bar.
 
     public static void showSnackbar(String content, int duration) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             View container = a.provideSnackbarContainer();
+            if (container != null) {
+                Snackbar snackbar = Snackbar
+                        .make(container, content, duration);
 
-            Snackbar snackbar = Snackbar
-                    .make(container, content, duration);
+                Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+                snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
 
-            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-            snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
+                TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
+                DisplayUtils.setTypeface(a, contentTxt);
+                contentTxt.setTextColor(ThemeManager.getContentColor(a));
 
-            TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            DisplayUtils.setTypeface(a, contentTxt);
-            contentTxt.setTextColor(ThemeManager.getContentColor(a));
-
-            snackbar.show();
+                snackbar.show();
+            }
         }
     }
 
@@ -172,22 +172,23 @@ public class NotificationHelper {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             View container = a.provideSnackbarContainer();
+            if (container != null) {
+                Snackbar snackbar = Snackbar
+                        .make(container, content, duration)
+                        .setAction(action, l);
 
-            Snackbar snackbar = Snackbar
-                    .make(container, content, duration)
-                    .setAction(action, l);
+                Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+                snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
 
-            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-            snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
+                TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
+                DisplayUtils.setTypeface(a, contentTxt);
+                contentTxt.setTextColor(ThemeManager.getContentColor(a));
 
-            TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
-            DisplayUtils.setTypeface(a, contentTxt);
-            contentTxt.setTextColor(ThemeManager.getContentColor(a));
+                Button actionBtn = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
+                actionBtn.setTextColor(ThemeManager.getTitleColor(a));
 
-            Button actionBtn = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
-            actionBtn.setTextColor(ThemeManager.getTitleColor(a));
-
-            snackbar.show();
+                snackbar.show();
+            }
         }
     }
 }

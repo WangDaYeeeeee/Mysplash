@@ -15,10 +15,14 @@ public interface FollowingModel {
     FollowingAdapter getAdapter();
     FollowingService getService();
 
+    // manage HTTP request parameters.
+
     /** {@link com.wangdaye.mysplash.common.data.api.FollowingApi#getFollowingFeed(String)} */
     String getFirstPage();
     String getNextPage();
     void setNextPage(String nextPage);
+
+    // control load state.
 
     boolean isRefreshing();
     void setRefreshing(boolean refreshing);

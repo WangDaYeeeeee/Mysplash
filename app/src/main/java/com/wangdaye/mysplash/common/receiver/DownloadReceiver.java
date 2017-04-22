@@ -17,8 +17,6 @@ import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 public class DownloadReceiver extends BroadcastReceiver {
 
-    /** <br> life cycle. */
-
     @Override
     public void onReceive(Context context, Intent intent) {
         switch (intent.getAction()) {

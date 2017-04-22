@@ -24,23 +24,20 @@ import butterknife.OnClick;
  * */
 
 public class MoreHolder extends PhotoInfoAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_photo_more_image) ImageView imageView;
+
+    @BindView(R.id.item_photo_more_image)
+    ImageView imageView;
+
     private OnLoadImageCallback callback;
     
-    // data
     private Photo photo;
 
     public static final int TYPE_MORE = 7;
-
-    /** <br> life cycle. */
 
     public MoreHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {
@@ -82,7 +79,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder {
         return imageView;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on load image callback.
 

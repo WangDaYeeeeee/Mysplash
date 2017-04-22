@@ -14,13 +14,6 @@ import java.util.List;
 public interface BrowsableModel {
 
     /**
-     * Get the uri from intent which is used to start the browsable activity.
-     *
-     * @return The uri.
-     * */
-    Uri getIntentUri();
-
-    /**
      * Get if the browsable activity is opened from website and need to request data.
      *
      * @return If it is browsable.
@@ -28,16 +21,23 @@ public interface BrowsableModel {
     boolean isBrowsable();
 
     /**
-     * Get the key words in browsable intent data, like a username, or a photo id.
-     *
-     * @return Key words.
-     * */
-    List<String> getBrowsableDataKey();
-
-    /**
      * Get the Service class to request the browsable data.
      *
      * @return Service class.
      * */
     Object getService();
+
+    /**
+     * Get the uri from intent which is used to start the browsable activity.
+     *
+     * @return The uri.
+     * */
+    Uri getIntentUri();
+
+    /**
+     * Get the key words in browsable intent data, like a username, or a photo id.
+     *
+     * @return Key words.
+     * */
+    List<String> getBrowsableDataKey();
 }

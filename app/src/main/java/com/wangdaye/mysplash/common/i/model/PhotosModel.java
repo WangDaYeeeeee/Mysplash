@@ -18,6 +18,8 @@ public interface PhotosModel {
     PhotoAdapter getAdapter();
     PhotoService getService();
 
+    // manage HTTP request parameters.
+
     Object getRequestKey();
     void setRequestKey(Object key);
 
@@ -33,6 +35,8 @@ public interface PhotosModel {
     /** {@link com.wangdaye.mysplash.common.utils.ValueUtils#getPageListByCategory(int)} */
     List<Integer> getPageList();
     void setPageList(List<Integer> list);
+
+    // control load state.
 
     boolean isRefreshing();
     void setRefreshing(boolean refreshing);

@@ -64,32 +64,82 @@ import butterknife.OnClick;
 public class HomeCollectionsView extends NestedScrollFrameLayout
         implements CollectionsView, PagerView, LoadView, ScrollView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-    // model.
+
+    @BindView(R.id.container_loading_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_loading_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private CollectionsModel collectionsModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_loading_view_large_feedbackTxt) TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private CollectionsPresenter collectionsPresenter;
+
     private PagerPresenter pagerPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
 
-    /** <br> life cycle. */
+    private static class SavedState implements Parcelable {
+
+        String type;
+        int page;
+        boolean over;
+
+        SavedState(HomeCollectionsView view) {
+            this.type = view.collectionsModel.getCollectionsType();
+            this.page = view.collectionsModel.getCollectionsPage();
+            this.over = view.collectionsModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.type = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.type);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public HomeCollectionsView(MysplashActivity a, int id) {
         super(a);
         this.setId(id);
         this.initialize(a);
     }
+
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize(MysplashActivity a) {
@@ -107,12 +157,15 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return true;
+    private void initModel(MysplashActivity a) {
+        this.collectionsModel = new CollectionsObject(
+                a,
+                new CollectionAdapter(
+                        a,
+                        new ArrayList<Collection>(Mysplash.DEFAULT_PER_PAGE)));
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject(true);
     }
-
-    /** <br> presenter. */
 
     private void initPresenter() {
         this.collectionsPresenter = new CollectionsImplementor(collectionsModel, this);
@@ -120,8 +173,6 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
-
-    /** <br> view. */
 
     private void initView() {
         this.initContentView();
@@ -138,7 +189,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         refreshLayout.setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
-        
+
         recyclerView.setAdapter(collectionsPresenter.getAdapter());
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
@@ -153,21 +204,18 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
-    /** <br> model. */
+    // control.
 
-    // init.
-
-    private void initModel(MysplashActivity a) {
-        this.collectionsModel = new CollectionsObject(
-                a,
-                new CollectionAdapter(
-                        a,
-                        new ArrayList<Collection>(Mysplash.DEFAULT_PER_PAGE)));
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject(true);
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 
-    // interface.
+    // collection.
+
+    public void updateCollection(Collection collection) {
+        collectionsPresenter.getAdapter().updateCollection(collection, false, false);
+    }
 
     /**
      * Get the collections from the adapter in this view.
@@ -195,7 +243,7 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -406,53 +454,5 @@ public class HomeCollectionsView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState implements Parcelable {
-        // data
-        String type;
-        int page;
-        boolean over;
-
-        // life cycle.
-
-        SavedState(HomeCollectionsView view) {
-            this.type = view.collectionsModel.getCollectionsType();
-            this.page = view.collectionsModel.getCollectionsPage();
-            this.over = view.collectionsModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            this.type = in.readString();
-            this.page = in.readInt();
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            out.writeString(this.type);
-            out.writeInt(this.page);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

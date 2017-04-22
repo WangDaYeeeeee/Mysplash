@@ -24,14 +24,11 @@ import butterknife.ButterKnife;
 
 public class SearchCategoryPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnSearchCategoryChangedListener listener;
 
-    // data
     private int valueNow;
     private boolean showAll = true;
-
-    /** <br> life cycle. */
 
     public SearchCategoryPopupWindow(Context c, View anchor, int valueNow, boolean showAll) {
         super(c);
@@ -48,7 +45,10 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
         show(anchor, 0, 0);
     }
 
-    /** <br> UI. */
+    private void initData(int valueNow, boolean showAll) {
+        this.valueNow = valueNow;
+        this.showAll = showAll;
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -143,14 +143,9 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(int valueNow, boolean showAll) {
-        this.valueNow = valueNow;
-        this.showAll = showAll;
-    }
-
-    /** <br> interface. */
+    // on search category changed listener.
 
     public interface OnSearchCategoryChangedListener {
         void onSearchCategoryChanged(int categoryId);
@@ -159,6 +154,8 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
     public void setOnSearchCategoryChangedListener(OnSearchCategoryChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

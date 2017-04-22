@@ -30,21 +30,16 @@ import retrofit2.Response;
 
 public class CategoryImplementor
         implements CategoryPresenter {
-    // model & view.
+
     private CategoryModel model;
     private CategoryView view;
 
-    // data
     private OnRequestPhotosListener listener;
-
-    /** <br> life cycle. */
 
     public CategoryImplementor(CategoryModel model, CategoryView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
@@ -160,8 +155,6 @@ public class CategoryImplementor
         return model.getAdapter();
     }
 
-    /** <br> utils. */
-
     private void requestPhotosInCategoryOrders(Context c, int page, boolean refresh) {
         page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestPhotosListener(c, page, refresh, false);
@@ -187,10 +180,10 @@ public class CategoryImplementor
                         listener);
     }
 
-    /** <br> interface. */
+    // interface.
 
     private class OnRequestPhotosListener implements PhotoService.OnRequestPhotosListener {
-        // data
+
         private Context c;
         private int page;
         private boolean refresh;

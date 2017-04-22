@@ -8,10 +8,8 @@ import com.wangdaye.mysplash.common.i.model.DownloadModel;
  * */
 
 public class DownloadObject implements DownloadModel {
-    // data
-    private Photo photo;
 
-    /** <br> model. */
+    private Photo photo;
 
     @Override
     public Object getDownloadKey() {

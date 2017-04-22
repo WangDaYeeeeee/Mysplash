@@ -42,6 +42,9 @@
     <string name="photos">Fotos</string>
     <string name="users">Benutzer</string>
     <string name="to">zu</string>
+    <string name="your">Ihre</string>
+    <string name="you">Sie</string>
+    <string name="photo">Foto</string>
     <string name="more">MEHR</string>
 
     <string name="relative_photo">Relative Fotos</string>

@@ -16,8 +16,12 @@ import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
 
 public interface MyFollowPresenter {
 
+    // HTTP request.
+
     void requestMyFollow(Context c, @Mysplash.PageRule int page, boolean refresh);
     void cancelRequest();
+
+    // load data interface.
 
     /**
      * The param notify is used to control the SwipeRefreshLayout. If set true, the
@@ -30,6 +34,8 @@ public interface MyFollowPresenter {
     boolean canLoadMore();
     boolean isRefreshing();
     boolean isLoading();
+
+    // load data interface.
 
     /** {@link MyFollowModel#getDeltaValue()} */
     int getDeltaValue();

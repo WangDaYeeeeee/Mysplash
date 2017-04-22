@@ -17,22 +17,6 @@ import com.wangdaye.mysplash.R;
 
 public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
-    /** <br> data. */
-
-    protected abstract boolean hasFooter();
-    public abstract int getRealItemCount();
-
-    protected boolean isFooter(int position) {
-        return hasFooter() && position == getItemCount() - 1;
-    }
-
-    @Override
-    public int getItemCount() {
-        return getRealItemCount() + (hasFooter() ? 1 : 0);
-    }
-
-    /** <br> inner class. */
-
     /**
      * Basic ViewHolder for {@link FooterAdapter}. This holder is used to fill the location of
      * navigation bar.
@@ -48,5 +32,18 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
                     LayoutInflater.from(parent.getContext()).inflate(R.layout.item_footer, parent, false));
         }
     }
+
+    protected abstract boolean hasFooter();
+
+    protected boolean isFooter(int position) {
+        return hasFooter() && position == getItemCount() - 1;
+    }
+
+    @Override
+    public int getItemCount() {
+        return getRealItemCount() + (hasFooter() ? 1 : 0);
+    }
+
+    public abstract int getRealItemCount();
 }
 

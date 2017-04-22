@@ -22,9 +22,9 @@ public interface PagerView {
     void scrollToPageTop();
     void cancelRequest();
 
-    void setKey(String key);
     String getKey();
+    void setKey(String key);
 
-    boolean canSwipeBack(int dir);
     int getItemCount();
+    boolean canSwipeBack(int dir);
 }

@@ -33,9 +33,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
-                    app:title="@string/app_name"
                     app:popupTheme="@style/MysplashPopupMenuTheme"
-                    tools:ignore="UnusedAttribute" />
+                    tools:ignore="UnusedAttribute">
+
+                    <include layout="@layout/container_notification_bar" />
+
+                </android.support.v7.widget.Toolbar>
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/fragment_home_tabLayout"

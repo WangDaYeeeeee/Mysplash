@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.common.data.entity.item.MyFollowUser;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.FollowingService;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
@@ -40,15 +40,84 @@ import retrofit2.Response;
  * */
 
 public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHolder> {
-    // widget
+
     private Context a;
     private List<MyFollowUser> itemList;
     private OnFollowStateChangedListener listener;
 
-    // data
     private FollowingService service;
 
-    /** <br> life cycle. */
+    public class ViewHolder extends RecyclerView.ViewHolder
+            implements RippleButton.OnSwitchListener {
+
+        @BindView(R.id.item_my_follow_user_background)
+        RelativeLayout background;
+
+        @BindView(R.id.item_my_follow_user_avatar)
+        CircleImageView avatar;
+
+        @BindView(R.id.item_my_follow_user_title)
+        TextView title;
+
+        @BindView(R.id.item_my_follow_user_button)
+        RippleButton rippleButton;
+
+        ViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
+
+        void onBindView(int position) {
+            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, null);
+
+            title.setText(itemList.get(position).user.name);
+
+            if (itemList.get(position).requesting) {
+                rippleButton.forceProgress(itemList.get(position).switchTo);
+            } else {
+                rippleButton.forceSwitch(itemList.get(position).user.followed_by_user);
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
+                background.setTransitionName(itemList.get(position).user.username + "-background");
+            }
+        }
+
+        void onRecycled() {
+            ImageHelper.releaseImageView(avatar);
+        }
+
+        public void setSwitchResult(boolean result) {
+            rippleButton.setSwitchResult(result);
+        }
+
+        // interface.
+
+        @OnClick(R.id.item_my_follow_user_background) void clickItem() {
+            if (a instanceof MysplashActivity) {
+                IntentHelper.startUserActivity(
+                        (MysplashActivity) a,
+                        avatar,
+                        itemList.get(getAdapterPosition()).user,
+                        UserActivity.PAGE_PHOTO);
+            }
+        }
+
+        @Override
+        public void onSwitch(boolean switchTo) {
+            MyFollowUser myFollowUser = itemList.get(getAdapterPosition());
+            myFollowUser.requesting = true;
+            myFollowUser.switchTo = switchTo;
+            itemList.set(getAdapterPosition(), myFollowUser);
+            service.setFollowUser(
+                    itemList.get(getAdapterPosition()).user.username,
+                    switchTo,
+                    new OnSetFollowListener(
+                            itemList.get(getAdapterPosition()).user.username,
+                            switchTo));
+        }
+    }
 
     public MyFollowAdapter(Context a, List<MyFollowUser> list, OnFollowStateChangedListener l) {
         this.a = a;
@@ -56,8 +125,6 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         this.listener = l;
         this.service = FollowingService.getService();
     }
-
-    /** <br> UI. */
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -71,11 +138,10 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         holder.onBindView(position);
     }
 
-    public void setActivity(MysplashActivity a) {
-        this.a = a;
+    public void onViewRecycled(ViewHolder holder) {
+        super.onViewRecycled(holder);
+        holder.onRecycled();
     }
-
-    /** <br> data. */
 
     @Override
     public int getItemCount() {
@@ -87,9 +153,8 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         return position;
     }
 
-    public void onViewRecycled(ViewHolder holder) {
-        super.onViewRecycled(holder);
-        holder.onRecycled();
+    public void setActivity(MysplashActivity a) {
+        this.a = a;
     }
 
     public void insertItem(User u, int position) {
@@ -102,7 +167,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on follow state changed listener.
 
@@ -192,81 +257,6 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
                     }
                 }
             }
-        }
-    }
-
-    /** <br> inner class. */
-
-    // view holder.
-
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements RippleButton.OnSwitchListener {
-        // widget
-        @BindView(R.id.item_my_follow_user_background) RelativeLayout background;
-        @BindView(R.id.item_my_follow_user_avatar) CircleImageView avatar;
-        @BindView(R.id.item_my_follow_user_title) TextView title;
-        @BindView(R.id.item_my_follow_user_button) RippleButton rippleButton;
-
-        // life cycle.
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        // UI.
-
-        void onBindView(int position) {
-            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, null);
-
-            title.setText(itemList.get(position).user.name);
-
-            if (itemList.get(position).requesting) {
-                rippleButton.forceProgress(itemList.get(position).switchTo);
-            } else {
-                rippleButton.forceSwitch(itemList.get(position).user.followed_by_user);
-            }
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                avatar.setTransitionName(itemList.get(position).user.username + "-avatar");
-                background.setTransitionName(itemList.get(position).user.username + "-background");
-            }
-        }
-
-        public void setSwitchResult(boolean result) {
-            rippleButton.setSwitchResult(result);
-        }
-
-        // data.
-
-        void onRecycled() {
-            ImageHelper.releaseImageView(avatar);
-        }
-
-        // interface.
-
-        @OnClick(R.id.item_my_follow_user_background) void clickItem() {
-            if (a instanceof MysplashActivity) {
-                IntentHelper.startUserActivity(
-                        (MysplashActivity) a,
-                        avatar,
-                        itemList.get(getAdapterPosition()).user,
-                        UserActivity.PAGE_PHOTO);
-            }
-        }
-
-        @Override
-        public void onSwitch(boolean switchTo) {
-            MyFollowUser myFollowUser = itemList.get(getAdapterPosition());
-            myFollowUser.requesting = true;
-            myFollowUser.switchTo = switchTo;
-            itemList.set(getAdapterPosition(), myFollowUser);
-            service.setFollowUser(
-                    itemList.get(getAdapterPosition()).user.username,
-                    switchTo,
-                    new OnSetFollowListener(
-                            itemList.get(getAdapterPosition()).user.username,
-                            switchTo));
         }
     }
 }

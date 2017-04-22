@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.0.8</string>
+    <string name="version_code">3.1.0</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -45,7 +45,17 @@
     <string name="photos">photos</string>
     <string name="users">users</string>
     <string name="to">to</string>
+    <string name="your">your</string>
+    <string name="you">you</string>
+    <string name="photo">photo</string>
     <string name="more">MORE</string>
+
+    <string name="year_ago">years ago</string>
+    <string name="month_ago">months ago</string>
+    <string name="day_ago">days ago</string>
+    <string name="hour_ago">hours ago</string>
+    <string name="minute_ago">minutes ago</string>
+    <string name="second_ago">seconds ago</string>
 
     <string name="relative_photo">related photos</string>
     <string name="relative_collection">related collections</string>
@@ -178,6 +188,8 @@
 
     <string name="feedback_story_is_null">Story does not exist or has not been loaded.</string>
 
+    <string name="feedback_get_notification_failed">Failed to load notifications.</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">Scroll To Top</string>
     <string name="introduce_description_back_top">Click top bar or back button, the photo list view will scroll back to the top.</string>
@@ -201,6 +213,9 @@
 
     <string name="action_search">Search</string>
     <string name="action_filter">Filter</string>
+    <string name="action_notification">Notification</string>
+
+    <string name="action_refresh">Refresh</string>
 
     <string name="action_clear_text">Clear text</string>
 

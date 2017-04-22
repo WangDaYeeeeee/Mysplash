@@ -23,15 +23,12 @@ import butterknife.ButterKnife;
 
 public class CollectionTypePopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnCollectionTypeChangedListener listener;
 
-    // data
     private String[] names;
     private String[] values;
     private String valueNow;
-
-    /** <br> life cycle. */
 
     public CollectionTypePopupWindow(Context c, View anchor, String valueNow) {
         super(c);
@@ -48,7 +45,11 @@ public class CollectionTypePopupWindow extends MysplashPopupWindow
         show(anchor, anchor.getMeasuredWidth(), 0);
     }
 
-    /** <br> UI. */
+    private void initData(Context c, String valueNow) {
+        names = c.getResources().getStringArray(R.array.collection_types);
+        values = c.getResources().getStringArray(R.array.collection_type_values);
+        this.valueNow = valueNow;
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -83,15 +84,9 @@ public class CollectionTypePopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(Context c, String valueNow) {
-        names = c.getResources().getStringArray(R.array.collection_types);
-        values = c.getResources().getStringArray(R.array.collection_type_values);
-        this.valueNow = valueNow;
-    }
-
-    /** <br> interface. */
+    // on collection type changed listener.
 
     public interface OnCollectionTypeChangedListener {
         void CollectionTypeChange(String typeValue);
@@ -100,6 +95,8 @@ public class CollectionTypePopupWindow extends MysplashPopupWindow
     public void setOnCollectionTypeChangedListener(OnCollectionTypeChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

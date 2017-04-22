@@ -1,15 +1,10 @@
 package com.wangdaye.mysplash.user.view.activity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +15,8 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
@@ -28,12 +25,10 @@ import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
@@ -48,7 +43,6 @@ import com.wangdaye.mysplash.common.i.view.PagerManageView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
 import com.wangdaye.mysplash.common.i.view.SwipeBackManageView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -56,6 +50,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.model.activity.BorwsableObject;
 import com.wangdaye.mysplash.user.model.activity.DownloadObject;
 import com.wangdaye.mysplash.user.model.activity.PagerManageObject;
@@ -85,38 +80,51 @@ import butterknife.OnClick;
  *
  * */
 
-public class UserActivity extends MysplashActivity
+public class UserActivity extends ReadWriteActivity
         implements PagerManageView, PopupManageView, SwipeBackManageView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, UserProfileView.OnRequestUserListener,
         PhotoAdapter.OnDownloadPhotoListener, ViewPager.OnPageChangeListener,
         SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener {
-    // model.
-    private PagerManageModel pagerManageModel;
-    private BrowsableModel browsableModel;
-    private DownloadModel downloadModel;
 
-    // view.
-    private RequestBrowsableDataDialog requestDialog;
+    @BindView(R.id.activity_user_container)
+    CoordinatorLayout container;
 
-    @BindView(R.id.activity_user_container) CoordinatorLayout container;
-    @BindView(R.id.activity_user_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_user_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R.id.activity_user_toolbar) Toolbar toolbar;
-    @BindView(R.id.activity_user_profileView) UserProfileView userProfileView;
-    @BindView(R.id.activity_user_viewPager) ViewPager viewPager;
+    @BindView(R.id.activity_user_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_user_appBar)
+    NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.activity_user_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.activity_user_profileView)
+    UserProfileView userProfileView;
+
+    @BindView(R.id.activity_user_viewPager)
+    ViewPager viewPager;
+
     private MyPagerAdapter adapter;
 
     private PagerView[] pagers = new PagerView[3];
 
-    // presenter.
+    private RequestBrowsableDataDialog requestDialog;
+
     private ToolbarPresenter toolbarPresenter;
+
+    private PagerManageModel pagerManageModel;
     private PagerManagePresenter pagerManagePresenter;
+
     private PopupManagePresenter popupManagePresenter;
+
     private SwipeBackManagePresenter swipeBackManagePresenter;
+
+    private BrowsableModel browsableModel;
     private BrowsablePresenter browsablePresenter;
+
+    private DownloadModel downloadModel;
     private DownloadPresenter downloadPresenter;
 
-    // data
     public static final String KEY_USER_ACTIVITY_USER = "user_activity_user";
     public static final String KEY_USER_ACTIVITY_PAGE_POSITION = "user_activity_page_position";
 
@@ -126,7 +134,36 @@ public class UserActivity extends MysplashActivity
     @IntDef({PAGE_PHOTO, PAGE_LIKE, PAGE_COLLECTION})
     public @interface UserPageRule {}
 
-    /** <br> life cycle. */
+    public static class SavedStateFragment extends BaseSavedStateFragment {
+
+        private List<Photo> photoList;
+        private List<Collection> collectionList;
+        private List<Photo> likeList;
+
+        public List<Photo> getPhotoList() {
+            return photoList;
+        }
+
+        public void setPhotoList(List<Photo> photoList) {
+            this.photoList = photoList;
+        }
+
+        public List<Collection> getCollectionList() {
+            return collectionList;
+        }
+
+        public void setCollectionList(List<Collection> collectionList) {
+            this.collectionList = collectionList;
+        }
+
+        public List<Photo> getLikeList() {
+            return likeList;
+        }
+
+        public void setLikeList(List<Photo> likeList) {
+            this.likeList = likeList;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,6 +184,28 @@ public class UserActivity extends MysplashActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Mysplash.PHOTO_ACTIVITY:
+                Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
+                if (photo != null) {
+                    ((UserPhotosView) pagers[0]).updatePhoto(photo, false);
+                    ((UserPhotosView) pagers[1]).updatePhoto(photo, false);
+                }
+                break;
+
+            case Mysplash.COLLECTION_ACTIVITY:
+                Collection collection = data.getParcelableExtra(
+                        CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
+                if (collection != null) {
+                    ((UserCollectionsView) pagers[2]).updateCollection(collection, false);
+                }
+                break;
+        }
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         browsablePresenter.cancelRequest();
@@ -157,6 +216,15 @@ public class UserActivity extends MysplashActivity
             if (p != null) {
                 p.cancelRequest();
             }
+        }
+    }
+
+    @Override
+    protected void setTheme() {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Translucent_User);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Translucent_User);
         }
     }
 
@@ -191,23 +259,9 @@ public class UserActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_User);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_User);
-        }
-    }
-
-    @Override
     protected void backToTop() {
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
     }
 
     @Override
@@ -235,7 +289,19 @@ public class UserActivity extends MysplashActivity
         return container;
     }
 
-    /** <br> presenter. */
+    // init.
+
+    private void initModel(Bundle savedInstanceState) {
+        int page = 0;
+        if (savedInstanceState != null) {
+            page = savedInstanceState.getInt(KEY_USER_ACTIVITY_PAGE_POSITION, page);
+        } else {
+            page = getIntent().getIntExtra(KEY_USER_ACTIVITY_PAGE_POSITION, page);
+        }
+        this.pagerManageModel = new PagerManageObject(page);
+        this.browsableModel = new BorwsableObject(getIntent());
+        this.downloadModel = new DownloadObject();
+    }
 
     private void initPresenter() {
         this.toolbarPresenter = new ToolbarImplementor();
@@ -245,10 +311,6 @@ public class UserActivity extends MysplashActivity
         this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
         this.downloadPresenter = new DownloadImplementor(downloadModel);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView(boolean init) {
         User u = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
@@ -340,7 +402,15 @@ public class UserActivity extends MysplashActivity
         }
     }
 
-    // interface.
+    // control.
+
+    public User getUser() {
+        return userProfileView.getUser();
+    }
+
+    public String getUserPortfolio() {
+        return userProfileView.getUserPortfolio();
+    }
 
     public void showPopup() {
         int page = pagerManagePresenter.getPagerPosition();
@@ -351,74 +421,18 @@ public class UserActivity extends MysplashActivity
                 page);
     }
 
-    /** <br> model. */
-
-    // init.
-
-    private void initModel(Bundle savedInstanceState) {
-        int page = 0;
-        if (savedInstanceState != null) {
-            page = savedInstanceState.getInt(KEY_USER_ACTIVITY_PAGE_POSITION, page);
-        } else {
-            page = getIntent().getIntExtra(KEY_USER_ACTIVITY_PAGE_POSITION, page);
-        }
-        this.pagerManageModel = new PagerManageObject(page);
-        this.browsableModel = new BorwsableObject(getIntent());
-        this.downloadModel = new DownloadObject();
-    }
-
-    // interface.
-
-    public User getUser() {
-        return userProfileView.getUser();
-    }
-
-    public String getUserPortfolio() {
-        return userProfileView.getUserPortfolio();
-    }
-
     public boolean isBrowsable() {
         return browsablePresenter.isBrowsable();
     }
 
-    /** <br> permission. */
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestPermission(int permissionCode, int type) {
-        switch (permissionCode) {
-            case Mysplash.WRITE_EXTERNAL_STORAGE:
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    this.requestPermissions(
-                            new String[] {
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            type);
-                } else {
-                    downloadPresenter.download(this);
-                }
-                break;
-        }
-    }
+    // permission.
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
-        super.onRequestPermissionsResult(requestCode, permission, grantResult);
-        for (int i = 0; i < permission.length; i ++) {
-            switch (permission[i]) {
-                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        downloadPresenter.download(this);
-                    } else {
-                        NotificationHelper.showSnackbar(
-                                getString(R.string.feedback_need_permission),
-                                Snackbar.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
+    protected void requestReadWritePermissionSucceed(int requestCode) {
+        downloadPresenter.download(this);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -483,7 +497,7 @@ public class UserActivity extends MysplashActivity
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             downloadPresenter.download(this);
         } else {
-            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
+            requestReadWritePermission();
         }
     }
 
@@ -534,7 +548,7 @@ public class UserActivity extends MysplashActivity
     public void onUpdateCollection(Collection c, User u, Photo p) {
         for (PagerView pager : pagers) {
             if (pager instanceof UserPhotosView) {
-                ((UserPhotosView) pager).updatePhoto(p);
+                ((UserPhotosView) pager).updatePhoto(p, true);
             }
         }
     }
@@ -615,40 +629,5 @@ public class UserActivity extends MysplashActivity
     @Override
     public void visitPreviousPage() {
         IntentHelper.startMainActivity(this);
-    }
-
-    /** <br> inner class. */
-
-    public static class SavedStateFragment extends BaseSavedStateFragment {
-        // data
-        private List<Photo> photoList;
-        private List<Collection> collectionList;
-        private List<Photo> likeList;
-
-        // data.
-
-        public List<Photo> getPhotoList() {
-            return photoList;
-        }
-
-        public void setPhotoList(List<Photo> photoList) {
-            this.photoList = photoList;
-        }
-
-        public List<Collection> getCollectionList() {
-            return collectionList;
-        }
-
-        public void setCollectionList(List<Collection> collectionList) {
-            this.collectionList = collectionList;
-        }
-
-        public List<Photo> getLikeList() {
-            return likeList;
-        }
-
-        public void setLikeList(List<Photo> likeList) {
-            this.likeList = likeList;
-        }
     }
 }

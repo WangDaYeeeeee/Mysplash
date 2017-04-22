@@ -22,7 +22,7 @@ import java.util.List;
 
 public class CategoryObject
         implements CategoryModel {
-    // data
+
     private PhotoAdapter adapter;
     private PhotoService service;
 
@@ -38,8 +38,6 @@ public class CategoryObject
     private boolean over;
 
     private final String RANDOM_TXT;
-
-    /** <br> life cycle. */
 
     public CategoryObject(Context c, PhotoAdapter adapter) {
         this.adapter = adapter;

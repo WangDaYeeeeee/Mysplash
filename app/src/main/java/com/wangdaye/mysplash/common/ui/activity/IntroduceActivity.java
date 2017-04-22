@@ -48,14 +48,18 @@ import butterknife.ButterKnife;
 public class IntroduceActivity extends MysplashActivity
         implements View.OnClickListener, ViewPager.OnPageChangeListener,
         SafeHandler.HandlerContainer {
-    // widget
+
+    @BindView(R.id.activity_introduce_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_introduce_viewPager)
+    ViewPager viewPager;
+
+    @BindView(R.id.activity_introduce_button)
+    Button button;
+
     private SafeHandler<IntroduceActivity> handler;
 
-    @BindView(R.id.activity_introduce_container) CoordinatorLayout container;
-    @BindView(R.id.activity_introduce_viewPager) ViewPager viewPager;
-    @BindView(R.id.activity_introduce_button) Button button;
-
-    // data
     private boolean backPressed = false; // mark the first click action.
 
     private List<IntroduceModel> introduceModelList;
@@ -67,7 +71,23 @@ public class IntroduceActivity extends MysplashActivity
     public static final String PREFERENCE_NAME = "mysplash_introduce";
     private static final String KEY_INTRODUCE_VERSION = "introduce_version";
 
-    /** <br> life cycle. */
+    /**
+     * Model of introduce page.
+     * */
+    private class IntroduceModel {
+        // data.
+        public String title;
+        int imageRes;
+        String description;
+
+        // life cycle.
+
+        IntroduceModel(int titleRes, int imageRes, int descriptionRes) {
+            this.title = getString(titleRes);
+            this.imageRes = imageRes;
+            this.description = getString(descriptionRes);
+        }
+    }
 
     public static void checkAndStartIntroduce(final MysplashActivity a) {
         SharedPreferences sharedPreferences = a.getSharedPreferences(
@@ -126,22 +146,6 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
-    protected void backToTop() {
-        // do nothing.
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
-    }
-
-    @Override
-    public void finishActivity(int dir) {
-        finish();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-    }
-
-    @Override
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
@@ -162,11 +166,44 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
+    protected void backToTop() {
+        // do nothing.
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+    }
+
+    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
-    /** <br> UI. */
+    // init.
+
+    private void initData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                PREFERENCE_NAME,
+                Context.MODE_PRIVATE);
+        int versionCode = sharedPreferences.getInt(KEY_INTRODUCE_VERSION, FIRST_VERSION);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(KEY_INTRODUCE_VERSION, VERSION_CODE);
+        editor.apply();
+
+        introduceModelList = new ArrayList<>();
+        switch (versionCode) {
+            case FIRST_VERSION:
+                introduceModelList.add(
+                        new IntroduceModel(
+                                R.string.introduce_title_back_top,
+                                R.drawable.illustration_back_top,
+                                R.string.introduce_description_back_top));
+                break;
+        }
+    }
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
@@ -216,6 +253,8 @@ public class IntroduceActivity extends MysplashActivity
         viewPager.addOnPageChangeListener(this);
     }
 
+    // control.
+
     private void setBottomButtonStyle(int page) {
         if (page == introduceModelList.size() - 1) {
             button.setText(getString(R.string.enter));
@@ -248,31 +287,7 @@ public class IntroduceActivity extends MysplashActivity
         }
     }
 
-    /** <br> data. */
-
-    private void initData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
-        int versionCode = sharedPreferences.getInt(KEY_INTRODUCE_VERSION, FIRST_VERSION);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt(KEY_INTRODUCE_VERSION, VERSION_CODE);
-        editor.apply();
-
-        introduceModelList = new ArrayList<>();
-        switch (versionCode) {
-            case FIRST_VERSION:
-                introduceModelList.add(
-                        new IntroduceModel(
-                                R.string.introduce_title_back_top,
-                                R.drawable.illustration_back_top,
-                                R.string.introduce_description_back_top));
-                break;
-        }
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -331,26 +346,6 @@ public class IntroduceActivity extends MysplashActivity
             case 1:
                 backPressed = false;
                 break;
-        }
-    }
-
-    /** <br> inner class. */
-
-    /**
-     * Model of introduce page.
-     * */
-    private class IntroduceModel {
-        // data.
-        public String title;
-        int imageRes;
-        String description;
-
-        // life cycle.
-
-        IntroduceModel(int titleRes, int imageRes, int descriptionRes) {
-            this.title = getString(titleRes);
-            this.imageRes = imageRes;
-            this.description = getString(descriptionRes);
         }
     }
 }

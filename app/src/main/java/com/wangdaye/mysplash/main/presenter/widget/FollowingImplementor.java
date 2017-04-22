@@ -3,10 +3,9 @@ package com.wangdaye.mysplash.main.presenter.widget;
 import android.content.Context;
 import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeedResult;
+import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
 import com.wangdaye.mysplash.common.data.service.FollowingService;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.i.presenter.FollowingPresenter;
@@ -25,21 +24,16 @@ import retrofit2.Call;
  * */
 
 public class FollowingImplementor implements FollowingPresenter {
-    // model & view.
+
     private FollowingModel model;
     private FollowingView view;
 
-    // data
     private OnRequestFollowingFeedListener listener;
-
-    /** <br> life cycle. */
 
     public FollowingImplementor(FollowingModel model, FollowingView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestFollowingFeed(Context c, boolean refresh) {
@@ -133,8 +127,6 @@ public class FollowingImplementor implements FollowingPresenter {
         return model.getAdapter();
     }
 
-    /** <br> utils. */
-
     private void requestFollowingFeed(Context c, String nextPage, boolean refresh) {
         listener = new OnRequestFollowingFeedListener(c, refresh);
         model.getService()
@@ -143,10 +135,10 @@ public class FollowingImplementor implements FollowingPresenter {
                         listener);
     }
 
-    /** <br> interface. */
+    // interface.
 
     private class OnRequestFollowingFeedListener implements FollowingService.OnRequestFollowingFeedListener {
-        // data
+
         private Context c;
         private boolean refresh;
         private boolean canceled;
@@ -162,7 +154,7 @@ public class FollowingImplementor implements FollowingPresenter {
         }
 
         @Override
-        public void onRequestFollowingFeedSuccess(Call<FollowingFeedResult> call, retrofit2.Response<FollowingFeedResult> response) {
+        public void onRequestFollowingFeedSuccess(Call<FollowingFeed> call, retrofit2.Response<FollowingFeed> response) {
             if (canceled) {
                 return;
             }
@@ -193,7 +185,7 @@ public class FollowingImplementor implements FollowingPresenter {
         }
 
         @Override
-        public void onRequestFollowingFeedFailed(Call<FollowingFeedResult> call, Throwable t) {
+        public void onRequestFollowingFeedFailed(Call<FollowingFeed> call, Throwable t) {
             if (canceled) {
                 return;
             }
@@ -207,7 +199,6 @@ public class FollowingImplementor implements FollowingPresenter {
             NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
                     Snackbar.LENGTH_SHORT);
-            Log.d("FOLLOWING", t.getMessage());
             view.requestFollowingFeedFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }

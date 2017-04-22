@@ -64,32 +64,81 @@ import butterknife.OnClick;
 public class MePhotosView extends NestedScrollFrameLayout
         implements PhotosView, PagerView, LoadView, ScrollView, SwipeBackView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-    // model.
+
+    @BindView(R.id.container_loading_view_mini_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_view_mini_retryButton)
+    Button retryButton;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private PhotosModel photosModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_view_mini_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_view_mini_retryButton) Button retryButton;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private PhotosPresenter photosPresenter;
+
     private PagerPresenter pagerPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
+
     private SwipeBackPresenter swipeBackPresenter;
 
-    /** <br> life cycle. */
+    private static class SavedState implements Parcelable {
+
+        String order;
+        int page;
+        boolean over;
+
+        SavedState(MePhotosView view) {
+            this.order = view.photosModel.getPhotosOrder();
+            this.page = view.photosModel.getPhotosPage();
+            this.over = view.photosModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.order = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.order);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public MePhotosView(MeActivity a, int type, int id) {
         super(a);
         this.setId(id);
         this.initialize(a, type);
     }
+
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize(MeActivity a, int type) {
@@ -106,12 +155,16 @@ public class MePhotosView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return true;
-    }
+    // init.
 
-    /** <br> presenter. */
+    private void initModel(MeActivity a, int type) {
+        this.photosModel = new PhotosObject(
+                a,
+                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a),
+                type);
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject();
+    }
 
     private void initPresenter() {
         this.photosPresenter = new PhotosImplementor(photosModel, this);
@@ -120,10 +173,6 @@ public class MePhotosView extends NestedScrollFrameLayout
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         retryButton.setVisibility(GONE);
@@ -147,26 +196,18 @@ public class MePhotosView extends NestedScrollFrameLayout
         photosPresenter.getAdapter().setRecyclerView(recyclerView);
     }
 
-    // interface.
+    // control.
 
-    public void updatePhoto(Photo p) {
-        photosPresenter.getAdapter().updatePhoto(p, false);
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 
-    /** <br> model. */
+    // photo.
 
-    // init.
-
-    private void initModel(MeActivity a, int type) {
-        this.photosModel = new PhotosObject(
-                a,
-                new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), a, a),
-                type);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject();
+    public void updatePhoto(Photo p, boolean refreshView) {
+        photosPresenter.getAdapter().updatePhoto(p, false, refreshView);
     }
-
-    // interface.
 
     /**
      * Get the photos from the adapter in this view.
@@ -194,7 +235,7 @@ public class MePhotosView extends NestedScrollFrameLayout
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -412,59 +453,11 @@ public class MePhotosView extends NestedScrollFrameLayout
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
             case LoadObject.NORMAL_STATE:
-                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || photosPresenter.getAdapter().getRealItemCount() <= 0;
 
             default:
                 return true;
         }
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState implements Parcelable {
-        // data
-        String order;
-        int page;
-        boolean over;
-
-        // life cycle.
-
-        SavedState(MePhotosView view) {
-            this.order = view.photosModel.getPhotosOrder();
-            this.page = view.photosModel.getPhotosPage();
-            this.over = view.photosModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            this.order = in.readString();
-            this.page = in.readInt();
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            out.writeString(this.order);
-            out.writeInt(this.page);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

@@ -30,13 +30,14 @@ import butterknife.ButterKnife;
 
 public class SettingsActivity extends MysplashActivity
         implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener {
-    // widget
-    @BindView(R.id.activity_settings_container) CoordinatorLayout container;
-    @BindView(R.id.activity_settings_statusBar) StatusBarView statusBar;
+
+    @BindView(R.id.activity_settings_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_settings_statusBar)
+    StatusBarView statusBar;
 
     private SettingsFragment fragment;
-
-    /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +62,20 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case Mysplash.CUSTOM_API_ACTIVITY:
+                if (resultCode == RESULT_OK) {
+                    showSnackbar(
+                            getString(R.string.feedback_please_login),
+                            Snackbar.LENGTH_LONG);
+                }
+                break;
+        }
+    }
+
+    @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_Settings);
@@ -70,13 +85,13 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
-    protected void backToTop() {
-        // do nothing.
+    public void handleBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -95,30 +110,11 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
-    public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-    }
-
-    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case Mysplash.CUSTOM_API_ACTIVITY:
-                if (resultCode == RESULT_OK) {
-                    showSnackbar(
-                            getString(R.string.feedback_please_login),
-                            Snackbar.LENGTH_LONG);
-                }
-                break;
-        }
-    }
-
-    /** <br> UI. */
+    // init.
 
     private void initWidget() {
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
@@ -130,6 +126,8 @@ public class SettingsActivity extends MysplashActivity
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.setNavigationOnClickListener(this);
     }
+
+    // control.
 
     private void showSnackbar(String content, int duration) {
         View container = provideSnackbarContainer();
@@ -147,7 +145,7 @@ public class SettingsActivity extends MysplashActivity
         snackbar.show();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -166,7 +164,7 @@ public class SettingsActivity extends MysplashActivity
     public boolean canSwipeBack(int dir) {
         ListView listView = fragment.getScrolledView();
         return listView != null
-                && SwipeBackCoordinatorLayout.canSwipeBackForThisView(listView, dir);
+                && SwipeBackCoordinatorLayout.canSwipeBack(listView, dir);
     }
 
     @Override

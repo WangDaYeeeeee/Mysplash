@@ -1,11 +1,14 @@
 package com.wangdaye.mysplash.common.data.service;
 
 import com.google.gson.GsonBuilder;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.api.NotificationApi;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Notification;
+import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationFeed;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.NotificationInterceptor;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -13,27 +16,50 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Notification service.
+ * NotificationFeed service.
  * */
 
 public class NotificationService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static NotificationService getService() {
+        return new NotificationService();
+    }
 
-    public void requestFollowingFeed(String enrich, final OnRequestNotificationListener l) {
-        Call<Notification> getNotification = buildApi(buildClient()).getNotification(enrich);
-        getNotification.enqueue(new Callback<Notification>() {
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new NotificationInterceptor())
+                .build();
+    }
+
+    private NotificationApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder().setLenient().create()))
+                .build()
+                .create((NotificationApi.class));
+    }
+
+    public void requestNotificationFeed(String enrich, final OnRequestNotificationListener l) {
+        Call<NotificationFeed> getNotification = buildApi(buildClient())
+                .getNotification(
+                        RequestBody.create(
+                                MediaType.parse("text/plain"),
+                                enrich));
+        getNotification.enqueue(new Callback<NotificationFeed>() {
             @Override
-            public void onResponse(Call<Notification> call, retrofit2.Response<Notification> response) {
+            public void onResponse(Call<NotificationFeed> call, retrofit2.Response<NotificationFeed> response) {
                 if (l != null) {
                     l.onRequestNotificationSucceed(call, response);
                 }
             }
 
             @Override
-            public void onFailure(Call<Notification> call, Throwable t) {
+            public void onFailure(Call<NotificationFeed> call, Throwable t) {
                 if (l != null) {
                     l.onRequestNotificationFailed(call, t);
                 }
@@ -48,33 +74,10 @@ public class NotificationService {
         }
     }
 
-    /** <br> build. */
-
-    public static NotificationService getService() {
-        return new NotificationService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new NotificationInterceptor())
-                .build();
-    }
-
-    private NotificationApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl("https://unsplash.com/")
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder().setLenient().create()))
-                .build()
-                .create((NotificationApi.class));
-    }
-    
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestNotificationListener {
-        void onRequestNotificationSucceed(Call<Notification> call, Response<Notification> response);
-        void onRequestNotificationFailed(Call<Notification> call, Throwable t);
+        void onRequestNotificationSucceed(Call<NotificationFeed> call, Response<NotificationFeed> response);
+        void onRequestNotificationFailed(Call<NotificationFeed> call, Throwable t);
     }
 }

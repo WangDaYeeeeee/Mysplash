@@ -16,13 +16,6 @@ import java.util.List;
  * */
 
 public class DatabaseHelper {
-    // widget
-    private DaoMaster.DevOpenHelper openHelper;
-
-    // data
-    private static final String BD_NAME = "Mysplash_db";
-
-    /** <br> singleton. */
 
     private static DatabaseHelper instance;
 
@@ -37,13 +30,12 @@ public class DatabaseHelper {
         return instance;
     }
 
-    /** <br> life cycle. */
+    private DaoMaster.DevOpenHelper openHelper;
+    private static final String BD_NAME = "Mysplash_db";
 
     private DatabaseHelper(Context c) {
         openHelper = new DaoMaster.DevOpenHelper(c, BD_NAME, null);
     }
-
-    /** <br> data. */
 
     public void writeDownloadEntity(DownloadMissionEntity entity) {
         DownloadMissionEntity.insertDownloadEntity(openHelper.getWritableDatabase(), entity);

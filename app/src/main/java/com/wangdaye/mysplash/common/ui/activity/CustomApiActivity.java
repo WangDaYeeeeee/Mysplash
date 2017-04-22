@@ -36,18 +36,22 @@ import butterknife.OnClick;
 
 public class CustomApiActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
-    // widget
+
+    @BindView(R.id.activity_custom_api_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_custom_api_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_custom_api_key)
+    EditText key;
+
+    @BindView(R.id.activity_custom_api_secret)
+    EditText secret;
+
     private SafeHandler<CustomApiActivity> handler;
 
-    @BindView(R.id.activity_custom_api_container) CoordinatorLayout container;
-    @BindView(R.id.activity_custom_api_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_custom_api_key) EditText key;
-    @BindView(R.id.activity_custom_api_secret) EditText secret;
-
-    // data
     private boolean backPressed = false; // mark the first click action.
-
-    /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,30 +84,6 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     @Override
-    protected void backToTop() {
-        // do nothing.
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
-    }
-
-    @Override
-    public void finishActivity(int dir) {
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
@@ -124,11 +104,28 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     @Override
+    protected void backToTop() {
+        // do nothing.
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        switch (dir) {
+            case SwipeBackCoordinatorLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
+    }
+
+    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
-
-    /** <br> UI. */
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
@@ -154,7 +151,7 @@ public class CustomApiActivity extends MysplashActivity
         DisplayUtils.setTypeface(this, redirectUri);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 

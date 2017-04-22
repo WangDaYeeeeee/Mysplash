@@ -11,16 +11,14 @@ import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import java.util.List;
 
 /**
- * Browsable object. *
+ * Browsable object.
  * */
 
 public class BorwsableObject
         implements BrowsableModel {
-    // data
+
     private Uri intentUri;
     private CollectionService service;
-
-    /** <br> life cycle. */
 
     public BorwsableObject(Intent intent) {
         if (intent.getDataString() == null) {
@@ -36,7 +34,15 @@ public class BorwsableObject
         service = CollectionService.getService();
     }
 
-    /** <br> model. */
+    @Override
+    public boolean isBrowsable() {
+        return intentUri != null;
+    }
+
+    @Override
+    public Object getService() {
+        return service;
+    }
 
     @Override
     public Uri getIntentUri() {
@@ -44,17 +50,7 @@ public class BorwsableObject
     }
 
     @Override
-    public boolean isBrowsable() {
-        return intentUri != null;
-    }
-
-    @Override
     public List<String> getBrowsableDataKey() {
         return intentUri.getPathSegments();
-    }
-
-    @Override
-    public Object getService() {
-        return service;
     }
 }

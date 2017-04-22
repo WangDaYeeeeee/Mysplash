@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
  * */
 
 public class FollowingObject implements FollowingModel {
-    // data
+
     private FollowingAdapter adapter;
     private FollowingService service;
 
@@ -22,8 +22,6 @@ public class FollowingObject implements FollowingModel {
     private boolean refreshing;
     private boolean loading;
     private boolean over;
-
-    /** <br> life cycle. */
 
     public FollowingObject(FollowingAdapter adapter) {
         this.adapter = adapter;
@@ -35,8 +33,6 @@ public class FollowingObject implements FollowingModel {
         this.loading = false;
         this.over = false;
     }
-
-    /** <br> model. */
 
     @Override
     public FollowingAdapter getAdapter() {

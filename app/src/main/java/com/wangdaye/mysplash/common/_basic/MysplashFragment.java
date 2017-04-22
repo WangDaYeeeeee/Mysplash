@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common._basic;
 
+import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 
@@ -14,20 +15,11 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 public abstract class MysplashFragment extends Fragment {
 
-    /** <br> view. */
+    // style.
 
     public void setStatusBarStyle(boolean onlyWhite) {
         DisplayUtils.setStatusBarStyle(getActivity(), onlyWhite);
     }
-
-    /**
-     * Get the container CoordinatorLayout of snack bar.
-     *
-     * @return The container layout of snack bar.
-     * */
-    public abstract CoordinatorLayout getSnackbarContainer();
-
-    /** <br> data. */
 
     /**
      * This method can tell you if we need set status bar style only white.
@@ -36,13 +28,7 @@ public abstract class MysplashFragment extends Fragment {
      * */
     public abstract boolean needSetOnlyWhiteStatusBarText();
 
-    /**
-     * This method can tell you if the list view need back to top when user press the back button.
-     *
-     * @return if list view need back to top.
-     * */
-    public abstract boolean needBackToTop();
-    public abstract void backToTop();
+    // save instance.
 
     /**
      * Write large data to the BaseSavedStateFragment when application saving instance state.
@@ -52,9 +38,39 @@ public abstract class MysplashFragment extends Fragment {
     public abstract void writeLargeData(MysplashActivity.BaseSavedStateFragment outState);
 
     /**
-     * read large data from the BaseSavedStateFragment when application restarting.
+     * Read large data from the BaseSavedStateFragment when application restarting.
      *
      * @param savedInstanceState The BaseSavedStateFragment which is used to save large data.
      * */
     public abstract void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState);
+
+    // snack bar.
+
+    /**
+     * Get the container CoordinatorLayout of snack bar.
+     *
+     * @return The container layout of snack bar.
+     * */
+    public abstract CoordinatorLayout getSnackbarContainer();
+
+    // control.
+
+    /**
+     * Handle the result data from last activity.
+     *
+     * @param requestCode {@link android.app.Activity#onActivityResult(int, int, Intent)}.
+     * @param resultCode  {@link android.app.Activity#onActivityResult(int, int, Intent)}.
+     * @param data        {@link android.app.Activity#onActivityResult(int, int, Intent)}.
+     * */
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        // do nothing.
+    }
+
+    /**
+     * This method can tell you if the list view need back to top when user press the back button.
+     *
+     * @return if list view need back to top.
+     * */
+    public abstract boolean needBackToTop();
+    public abstract void backToTop();
 }

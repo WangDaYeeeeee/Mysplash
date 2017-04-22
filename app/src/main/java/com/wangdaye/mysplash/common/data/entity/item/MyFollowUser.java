@@ -10,12 +10,10 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
  * */
 
 public class MyFollowUser {
-    // data
+
     public boolean requesting;
     public boolean switchTo;
     public User user;
-
-    /** <br> life cycle. */
 
     public MyFollowUser(User u) {
         this.requesting = false;

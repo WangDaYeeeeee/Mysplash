@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 
 public class SearchCollectionsObject
         implements SearchModel {
-    // data
+
     private CollectionAdapter adapter;
     private SearchService service;
 
@@ -26,8 +26,6 @@ public class SearchCollectionsObject
     private boolean refreshing;
     private boolean loading;
     private boolean over;
-
-    /** <br> life cycle. */
 
     public SearchCollectionsObject(CollectionAdapter adapter) {
         this.adapter = adapter;

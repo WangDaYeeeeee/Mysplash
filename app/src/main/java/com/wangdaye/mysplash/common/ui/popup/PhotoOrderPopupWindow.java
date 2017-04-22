@@ -24,10 +24,9 @@ import butterknife.ButterKnife;
 
 public class PhotoOrderPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnPhotoOrderChangedListener listener;
 
-    // data
     private String[] names;
     private String[] values;
     private String valueNow;
@@ -40,8 +39,6 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
     public static final int NO_RANDOM_TYPE = 2;
     @IntDef({NORMAL_TYPE, CATEGORY_TYPE, NO_RANDOM_TYPE})
     private @interface TypeRule {}
-
-    /** <br> life cycle. */
 
     public PhotoOrderPopupWindow(Context c, View anchor, String valueNow, @TypeRule int type) {
         super(c);
@@ -58,7 +55,13 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
         show(anchor, anchor.getMeasuredWidth(), 0);
     }
 
-    /** <br> UI. */
+    private void initData(Context c, String valueNow, @TypeRule int type) {
+        names = c.getResources().getStringArray(R.array.photo_orders);
+        values = c.getResources().getStringArray(R.array.photo_order_values);
+        this.valueNow = valueNow;
+
+        this.type = type;
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -108,17 +111,9 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(Context c, String valueNow, @TypeRule int type) {
-        names = c.getResources().getStringArray(R.array.photo_orders);
-        values = c.getResources().getStringArray(R.array.photo_order_values);
-        this.valueNow = valueNow;
-
-        this.type = type;
-    }
-
-    /** <br> interface. */
+    // on photo order changed listener.
 
     public interface OnPhotoOrderChangedListener {
         void onPhotoOrderChange(String orderValue);
@@ -127,6 +122,8 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
     public void setOnPhotoOrderChangedListener(OnPhotoOrderChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

@@ -25,18 +25,32 @@ import java.util.List;
  * */
 
 public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> {
-    // widget
+
     private MysplashActivity a;
     private List<AboutModel> itemList;
 
-    /** <br> data. */
+    /**
+     * Basic ViewHolder class for {@link AboutAdapter}.
+     * */
+    public static abstract class ViewHolder extends RecyclerView.ViewHolder {
+
+        // life cycle.
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        // UI.
+
+        protected abstract void onBindView(MysplashActivity a, AboutModel model);
+
+        protected abstract void onRecycled();
+    }
 
     public AboutAdapter(MysplashActivity a) {
         this.a = a;
         this.itemList = CreateAboutModelImplementor.createModelList(a);
     }
-
-    /** <br> UI. */
 
     @Override
     public AboutAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -83,8 +97,6 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
         holder.onRecycled();
     }
 
-    /** <br> data. */
-
     @Override
     public int getItemCount() {
         return itemList.size();
@@ -93,25 +105,5 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     @Override
     public int getItemViewType(int position) {
         return position;
-    }
-
-    /** <br> inner class. */
-
-    /**
-     * Basic ViewHolder class for {@link AboutAdapter}.
-     * */
-    public static abstract class ViewHolder extends RecyclerView.ViewHolder {
-
-        // life cycle.
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        // UI.
-
-        protected abstract void onBindView(MysplashActivity a, AboutModel model);
-
-        protected abstract void onRecycled();
     }
 }

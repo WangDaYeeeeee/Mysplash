@@ -10,18 +10,18 @@ package com.wangdaye.mysplash.common.i.model;
 public interface MultiFilterBarModel {
     /** {@link com.wangdaye.mysplash.common.data.api.PhotoApi#getRandomPhotos(Integer, Boolean, String, String, String, int)} */
 
-    void setQuery(String query);
     String getQuery();
+    void setQuery(String query);
 
-    void setUsername(String username);
     String getUsername();
+    void setUsername(String username);
 
-    void setCategory(int c);
     int getCategory();
+    void setCategory(int c);
 
-    void setOrientation(String o);
     String getOrientation();
+    void setOrientation(String o);
 
-    void setFeatured(boolean f);
     boolean isFeatured();
+    void setFeatured(boolean f);
 }

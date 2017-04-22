@@ -11,18 +11,14 @@ import com.wangdaye.mysplash.common.i.view.PagerView;
 
 public class PagerManageImplementor
         implements PagerManagePresenter {
-    // model & view.
+
     private PagerManageModel model;
     private PagerManageView view;
-
-    /** <br> life cycle. */
 
     public PagerManageImplementor(PagerManageModel model, PagerManageView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public int getPagerPosition() {

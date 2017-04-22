@@ -16,7 +16,7 @@ import java.util.List;
 
 public class PhotosObject
         implements PhotosModel {
-    // data
+
     private PhotoAdapter adapter;
     private PhotoService service;
 
@@ -35,8 +35,6 @@ public class PhotosObject
     @IntDef({PHOTOS_TYPE_PHOTOS, PHOTOS_TYPE_LIKES})
     public @interface PhotoTypeRule {}
 
-    /** <br> life cycle. */
-
     public PhotosObject(Context context, PhotoAdapter adapter, @PhotoTypeRule int photosType) {
         this.adapter = adapter;
         this.service = PhotoService.getService();
@@ -50,8 +48,6 @@ public class PhotosObject
         this.loading = false;
         this.over = false;
     }
-
-    /** <br> model. */
 
     @Override
     public PhotoAdapter getAdapter() {

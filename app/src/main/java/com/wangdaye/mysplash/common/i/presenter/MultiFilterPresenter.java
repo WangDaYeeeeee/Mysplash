@@ -14,8 +14,12 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 
 public interface MultiFilterPresenter {
 
+    // HTTP request.
+
     void requestPhotos(Context c, boolean refresh);
     void cancelRequest();
+
+    // load data interface.
 
     /**
      * The param notify is used to control the SwipeRefreshLayout. If set true, the
@@ -28,6 +32,8 @@ public interface MultiFilterPresenter {
     boolean canLoadMore();
     boolean isRefreshing();
     boolean isLoading();
+
+    // manage HTTP request parameters.
 
     void setQuery(String query);
     String getQuery();

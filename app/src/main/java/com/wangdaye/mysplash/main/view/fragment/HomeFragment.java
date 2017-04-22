@@ -1,18 +1,29 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.text.TextPaint;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.PagerManageModel;
+import com.wangdaye.mysplash.common.i.presenter.NotificationBarPresenter;
 import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
@@ -23,8 +34,12 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.i.view.PagerManageView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.manager.UserNotificationManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
+import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentNotificationBarImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
@@ -33,6 +48,7 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,29 +68,53 @@ import butterknife.OnClick;
 public class HomeFragment extends MysplashFragment
         implements PopupManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener {
-    // model.
-    private PagerManageModel pagerManageModel;
+        NestedScrollAppBarLayout.OnNestedScrollingListener,
+        UserNotificationManager.OnUpdateNotificationListener {
 
-    // view.
-    @BindView(R.id.fragment_home_statusBar) StatusBarView statusBar;
+    @BindView(R.id.fragment_home_statusBar)
+    StatusBarView statusBar;
 
-    @BindView(R.id.fragment_home_container) CoordinatorLayout container;
-    @BindView(R.id.fragment_home_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R.id.fragment_home_toolbar) Toolbar toolbar;
-    @BindView(R.id.fragment_home_viewPager) ViewPager viewPager;
-    @BindView(R.id.fragment_home_indicator) AutoHideInkPageIndicator indicator;
+    @BindView(R.id.fragment_home_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.fragment_home_appBar)
+    NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.fragment_home_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.container_notification_bar_button)
+    ImageButton bellBtn;
+
+    @BindView(R.id.container_notification_bar_unreadFlag)
+    ImageView redDot;
+
+    @BindView(R.id.fragment_home_viewPager)
+    ViewPager viewPager;
+
+    @BindView(R.id.fragment_home_indicator)
+    AutoHideInkPageIndicator indicator;
+
     private PagerView[] pagers = new PagerView[3];
 
-    // presenter.
     private ToolbarPresenter toolbarPresenter;
+
     private HomeFragmentPopupManageImplementor popupManageImplementor;
+
+    private PagerManageModel pagerManageModel;
     private PagerManagePresenter pagerManagePresenter;
 
-    // data.
+    private NotificationBarPresenter notificationBarPresenter;
+
     private final String KEY_HOME_FRAGMENT_PAGE_POSITION = "home_fragment_page_position";
 
-    /** <br> life cycle. */
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        AuthManager.getInstance()
+                .getNotificationManager()
+                .addOnUpdateNotificationListener(this);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,11 +129,19 @@ public class HomeFragment extends MysplashFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        AuthManager.getInstance()
+                .getNotificationManager()
+                .removeOnUpdateNotificationListener(this);
         for (PagerView p : pagers) {
             if (p != null) {
                 p.cancelRequest();
             }
         }
+    }
+
+    @Override
+    public boolean needSetOnlyWhiteStatusBarText() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
     @Override
@@ -103,29 +151,6 @@ public class HomeFragment extends MysplashFragment
         for (PagerView p : pagers) {
             p.onSaveInstanceState(outState);
         }
-    }
-
-    @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
-    }
-
-    @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
-
-    @Override
-    public boolean needBackToTop() {
-        return pagerManagePresenter.needPagerBackToTop();
-    }
-
-    @Override
-    public void backToTop() {
-        statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
-        BackToTopUtils.showTopBar(appBar, viewPager);
-        pagerManagePresenter.pagerScrollToTop();
     }
 
     @Override
@@ -151,9 +176,8 @@ public class HomeFragment extends MysplashFragment
                     ((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
         }
         if (pagers[1] != null) {
-            ((HomePhotosView) pagers[1])
-                    .setPhotos(
-                            ((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
+            ((HomePhotosView) pagers[1]).setPhotos(
+                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
         }
         if (pagers[2] != null) {
             ((HomeCollectionsView) pagers[2]).setCollections(
@@ -161,17 +185,52 @@ public class HomeFragment extends MysplashFragment
         }
     }
 
-    /** <br> presenter. */
-
-    private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImplementor();
-        this.popupManageImplementor = new HomeFragmentPopupManageImplementor(this);
-        this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
+    @Override
+    public boolean needBackToTop() {
+        return pagerManagePresenter.needPagerBackToTop();
     }
 
-    /** <br> view. */
+    @Override
+    public void backToTop() {
+        statusBar.animToInitAlpha();
+        setStatusBarStyle(false);
+        BackToTopUtils.showTopBar(appBar, viewPager);
+        pagerManagePresenter.pagerScrollToTop();
+    }
+
+    @Override
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Mysplash.PHOTO_ACTIVITY:
+                Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
+                if (photo != null) {
+                    ((HomePhotosView) pagers[0]).updatePhoto(photo);
+                    ((HomePhotosView) pagers[1]).updatePhoto(photo);
+                }
+                break;
+
+            case Mysplash.COLLECTION_ACTIVITY:
+                Collection collection = data.getParcelableExtra(
+                        CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
+                if (collection != null) {
+                    ((HomeCollectionsView) pagers[2]).updateCollection(collection);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
 
     // init.
+
+    private void initModel(Bundle savedInstanceState) {
+        this.pagerManageModel = new PagerManageObject(
+                savedInstanceState == null ?
+                        0 : savedInstanceState.getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, 0));
+    }
 
     private void initView(View v, Bundle savedInstanceState) {
         appBar.setOnNestedScrollingListener(this);
@@ -182,6 +241,16 @@ public class HomeFragment extends MysplashFragment
                 toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
+
+        TextView title = ButterKnife.findById(v, R.id.container_notification_bar_title);
+        TextPaint paint = title.getPaint();
+        paint.setFakeBoldText(true);
+
+        notificationBarPresenter.setVisible(bellBtn, redDot);
+        if (AuthManager.getInstance().isAuthorized()
+                && AuthManager.getInstance().getNumericId() > 0) {
+            AuthManager.getInstance().getNotificationManager().requestPersonalNotifications();
+        }
 
         initPages(v, savedInstanceState);
     }
@@ -235,7 +304,14 @@ public class HomeFragment extends MysplashFragment
         }
     }
 
-    // interface.
+    private void initPresenter() {
+        this.toolbarPresenter = new ToolbarImplementor();
+        this.popupManageImplementor = new HomeFragmentPopupManageImplementor(this);
+        this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
+        this.notificationBarPresenter = new HomeFragmentNotificationBarImplementor();
+    }
+
+    // control.
 
     public void showPopup() {
         int page = pagerManagePresenter.getPagerPosition();
@@ -246,15 +322,7 @@ public class HomeFragment extends MysplashFragment
                 page);
     }
 
-    /** <br> model. */
-
-    private void initModel(Bundle savedInstanceState) {
-        this.pagerManageModel = new PagerManageObject(
-                savedInstanceState == null ?
-                        0 : savedInstanceState.getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, 0));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -269,6 +337,10 @@ public class HomeFragment extends MysplashFragment
 
     @OnClick(R.id.fragment_home_toolbar) void clickToolbar() {
         toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
+    }
+
+    @OnClick(R.id.container_notification_bar_button) void clickBellBtn() {
+        IntentHelper.startNotificationActivity((MysplashActivity) getActivity());
     }
 
     // on menu item click listener.
@@ -331,6 +403,35 @@ public class HomeFragment extends MysplashFragment
     @Override
     public void onStopNestedScroll() {
         // do nothing.
+    }
+
+    // on update notification listener.
+
+    @Override
+    public void onRequestNotificationSucceed(List<NotificationResult> resultList) {
+        notificationBarPresenter.setImage(bellBtn, redDot);
+    }
+
+    @Override
+    public void onRequestNotificationFailed() {
+        // do nothing.
+    }
+
+    @Override
+    public void onAddNotification(NotificationResult result, int position) {
+        if (position == 0) {
+            notificationBarPresenter.setImage(bellBtn, redDot);
+        }
+    }
+
+    @Override
+    public void onClearNotification() {
+        notificationBarPresenter.setImage(bellBtn, redDot);
+    }
+
+    @Override
+    public void onSetLatestTime() {
+        notificationBarPresenter.setVisible(bellBtn, redDot);
     }
 
     // view.

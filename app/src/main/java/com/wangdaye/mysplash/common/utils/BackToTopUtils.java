@@ -28,90 +28,6 @@ import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 public class BackToTopUtils {
 
-    /** <br> data. */
-
-    public static boolean isSetBackToTop(boolean home) {
-        if (home) {
-            return !SettingsOptionManager.getInstance(Mysplash.getInstance())
-                    .getBackToTopType().equals("none");
-        } else {
-            return SettingsOptionManager.getInstance(Mysplash.getInstance())
-                    .getBackToTopType().equals("all");
-        }
-    }
-
-    /** <br> UI. */
-
-    private static void showSetBackToTopSnackbar() {
-        if (!SettingsOptionManager.getInstance(Mysplash.getInstance())
-                .isNotifiedSetBackToTop()) {
-            final Context c = Mysplash.getInstance().getTopActivity();
-            if (c != null) {
-                SharedPreferences.Editor editor = PreferenceManager
-                        .getDefaultSharedPreferences(Mysplash.getInstance())
-                        .edit();
-                editor.putBoolean(
-                        c.getString(R.string.key_notified_set_back_to_top),
-                        true);
-                editor.apply();
-
-                SettingsOptionManager.getInstance(Mysplash.getInstance())
-                        .setNotifiedSetBackToTop(Mysplash.getInstance(), true);
-
-                NotificationHelper.showActionSnackbar(
-                        c.getString(R.string.feedback_notify_set_back_to_top),
-                        c.getString(R.string.set),
-                        Snackbar.LENGTH_LONG,
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent s = new Intent(c, SettingsActivity.class);
-                                c.startActivity(s);
-                            }
-                        });
-            }
-        }
-    }
-
-    public static void scrollToTop(RecyclerView recyclerView) {
-        int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
-        if (firstVisibleItem > 5) {
-            recyclerView.scrollToPosition(5);
-        }
-        recyclerView.smoothScrollToPosition(0);
-
-        if (!SettingsOptionManager.getInstance(Mysplash.getInstance())
-                .isNotifiedSetBackToTop()) {
-            BackToTopUtils.showSetBackToTopSnackbar();
-        }
-    }
-
-    /**
-     * Expand top bar, like {@link NestedScrollAppBarLayout}.
-     *
-     * @param topBar      The top bar that needs to be expand.
-     * @param contentView Content view with the top bar.
-     * */
-    public static void showTopBar(NestedScrollAppBarLayout topBar, View contentView) {
-        if (topBar.getY() < 0) {
-            ShowTopBarAnim topBarAnim = new ShowTopBarAnim(topBar);
-            topBarAnim.setDuration(300);
-            topBarAnim.setAnimationListener(new ShowTopBarListener(topBar));
-
-            ShowContentAnim contentAnim = new ShowContentAnim(topBar, contentView);
-            contentAnim.setDuration(300);
-
-            topBar.clearAnimation();
-            contentView.clearAnimation();
-
-            topBar.startAnimation(topBarAnim);
-            contentView.startAnimation(contentAnim);
-        }
-    }
-
-    /** <br> inner class. */
-
     private static class ShowTopBarAnim extends Animation {
         // widget
         private View topBar;
@@ -185,6 +101,84 @@ public class BackToTopUtils {
         @Override
         public void onAnimationRepeat(Animation animation) {
             // do nothing.
+        }
+    }
+
+    public static boolean isSetBackToTop(boolean home) {
+        if (home) {
+            return !SettingsOptionManager.getInstance(Mysplash.getInstance())
+                    .getBackToTopType().equals("none");
+        } else {
+            return SettingsOptionManager.getInstance(Mysplash.getInstance())
+                    .getBackToTopType().equals("all");
+        }
+    }
+
+    private static void showSetBackToTopSnackbar() {
+        if (!SettingsOptionManager.getInstance(Mysplash.getInstance())
+                .isNotifiedSetBackToTop()) {
+            final Context c = Mysplash.getInstance().getTopActivity();
+            if (c != null) {
+                SharedPreferences.Editor editor = PreferenceManager
+                        .getDefaultSharedPreferences(Mysplash.getInstance())
+                        .edit();
+                editor.putBoolean(
+                        c.getString(R.string.key_notified_set_back_to_top),
+                        true);
+                editor.apply();
+
+                SettingsOptionManager.getInstance(Mysplash.getInstance())
+                        .setNotifiedSetBackToTop(Mysplash.getInstance(), true);
+
+                NotificationHelper.showActionSnackbar(
+                        c.getString(R.string.feedback_notify_set_back_to_top),
+                        c.getString(R.string.set),
+                        Snackbar.LENGTH_LONG,
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent s = new Intent(c, SettingsActivity.class);
+                                c.startActivity(s);
+                            }
+                        });
+            }
+        }
+    }
+
+    public static void scrollToTop(RecyclerView recyclerView) {
+        int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+        if (firstVisibleItem > 5) {
+            recyclerView.scrollToPosition(5);
+        }
+        recyclerView.smoothScrollToPosition(0);
+
+        if (!SettingsOptionManager.getInstance(Mysplash.getInstance())
+                .isNotifiedSetBackToTop()) {
+            BackToTopUtils.showSetBackToTopSnackbar();
+        }
+    }
+
+    /**
+     * Expand top bar, like {@link NestedScrollAppBarLayout}.
+     *
+     * @param topBar      The top bar that needs to be expand.
+     * @param contentView Content view with the top bar.
+     * */
+    public static void showTopBar(NestedScrollAppBarLayout topBar, View contentView) {
+        if (topBar.getY() < 0) {
+            ShowTopBarAnim topBarAnim = new ShowTopBarAnim(topBar);
+            topBarAnim.setDuration(300);
+            topBarAnim.setAnimationListener(new ShowTopBarListener(topBar));
+
+            ShowContentAnim contentAnim = new ShowContentAnim(topBar, contentView);
+            contentAnim.setDuration(300);
+
+            topBar.clearAnimation();
+            contentView.clearAnimation();
+
+            topBar.startAnimation(topBarAnim);
+            contentView.startAnimation(contentAnim);
         }
     }
 }

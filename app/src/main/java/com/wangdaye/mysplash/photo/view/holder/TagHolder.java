@@ -23,13 +23,11 @@ import butterknife.ButterKnife;
  * */
 
 public class TagHolder extends PhotoInfoAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_photo_tag) RecyclerView recyclerView;
 
-    // data
+    @BindView(R.id.item_photo_tag)
+    RecyclerView recyclerView;
+
     public static final int TYPE_TAG = 6;
-
-    /** <br> life cycle. */
 
     public TagHolder(View itemView) {
         super(itemView);
@@ -41,8 +39,6 @@ public class TagHolder extends PhotoInfoAdapter.ViewHolder {
                         LinearLayoutManager.HORIZONTAL,
                         false));
     }
-
-    /** <br> life cycle. */
 
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {

@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
  * */
 
 public class MyFollowObject implements MyFollowModel {
-    // data
+
     private MyFollowAdapter adapter;
     private UserService service;
 
@@ -30,8 +30,6 @@ public class MyFollowObject implements MyFollowModel {
     @IntDef({FOLLOW_TYPE_FOLLOWERS, FOLLOW_TYPE_FOLLOWING})
     public @interface FollowTypeRule {}
 
-    /** <br> life cycle. */
-
     public MyFollowObject(MyFollowAdapter adapter, @FollowTypeRule int followType) {
         this.adapter = adapter;
         this.service = UserService.getService();
@@ -44,8 +42,6 @@ public class MyFollowObject implements MyFollowModel {
         this.loading = false;
         this.over = false;
     }
-
-    /** <br> model. */
 
     @Override
     public MyFollowAdapter getAdapter() {

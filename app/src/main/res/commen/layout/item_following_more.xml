@@ -41,7 +41,7 @@
             tools:text="3 MORE"
             tools:ignore="RtlHardcoded" />
 
-        <com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView
+        <com.wangdaye.mysplash.common.ui.widget.CircleImageView
             android:id="@+id/item_following_more_avatar"
             android:layout_width="@dimen/mini_icon_size"
             android:layout_height="@dimen/mini_icon_size"

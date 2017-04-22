@@ -32,7 +32,7 @@ import java.util.List;
  * */
 
 public class ShortcutsManager {
-    // data
+
     private static final String PREFERENCE_NAME = "mysplash_shortcuts_manager";
     private static final String KEY_VERSION_CODE = "version_code";
     private static final String KEY_AUTHORIZED = "authorized";
@@ -40,8 +40,6 @@ public class ShortcutsManager {
     private static final String KEY_USERNAME = "username";
 
     private static final int VERSION_CODE = 1;
-
-    /** <br> data. */
 
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     @UiThread
@@ -140,6 +138,4 @@ public class ShortcutsManager {
 
         shortcutManager.setDynamicShortcuts(shortcutList);
     }
-
-    /** <br> inner class. */
 }

@@ -18,16 +18,12 @@ import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 public class CategoryFragmentPopupManageImplementor
         implements PopupManagePresenter,
         PhotoOrderPopupWindow.OnPhotoOrderChangedListener {
-    // model & view.
-    private PopupManageView view;
 
-    /** <br> life cycle. */
+    private PopupManageView view;
 
     public CategoryFragmentPopupManageImplementor(PopupManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void showPopup(Context c, View anchor, String value, int position) {

@@ -12,17 +12,14 @@ import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
  * Download implementor.
  * */
 
-public class DownloadImplementor implements DownloadPresenter {
-    // model & view.
-    private DownloadModel model;
+public class DownloadImplementor
+        implements DownloadPresenter {
 
-    /** <br> life cycle. */
+    private DownloadModel model;
 
     public DownloadImplementor(DownloadModel model) {
         this.model = model;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void download(Context context) {

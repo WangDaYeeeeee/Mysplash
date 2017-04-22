@@ -25,7 +25,28 @@ public class PhotoService {
     // widget
     private Call call;
 
-    /** <br> data. */
+    public static PhotoService getService() {
+        return new PhotoService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor())
+                .build();
+    }
+
+    private PhotoApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((PhotoApi.class));
+    }
 
     public void requestPhotos(@Mysplash.PageRule int page,
                               @Mysplash.PerPageRule int per_page,
@@ -287,32 +308,7 @@ public class PhotoService {
         }
     }
 
-    /** <br> build. */
-
-    public static PhotoService getService() {
-        return new PhotoService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor())
-                .build();
-    }
-
-    private PhotoApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((PhotoApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestPhotosListener {
         void onRequestPhotosSuccess(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response);

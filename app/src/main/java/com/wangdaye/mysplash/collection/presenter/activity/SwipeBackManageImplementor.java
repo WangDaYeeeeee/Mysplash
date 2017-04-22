@@ -10,16 +10,12 @@ import com.wangdaye.mysplash.common._basic.MysplashActivity;
 
 public class SwipeBackManageImplementor
         implements SwipeBackManagePresenter {
-    // model & view.
-    private SwipeBackManageView view;
 
-    /** <br> life cycle. */
+    private SwipeBackManageView view;
 
     public SwipeBackManageImplementor(SwipeBackManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public boolean checkCanSwipeBack(int dir) {

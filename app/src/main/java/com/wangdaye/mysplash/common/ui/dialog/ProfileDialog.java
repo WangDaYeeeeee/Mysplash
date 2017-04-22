@@ -34,17 +34,21 @@ import retrofit2.Response;
 
 public class ProfileDialog extends MysplashDialogFragment
         implements UserService.OnRequestUserProfileListener {
-    // widget
-    @BindView(R.id.dialog_profile_container) CoordinatorLayout container;
-    @BindView(R.id.dialog_profile_progress) CircularProgressView progressView;
-    @BindView(R.id.dialog_profile_scrollView) NestedScrollView scrollView;
-    @BindView(R.id.dialog_profile_text) TextView contentTxt;
 
-    // data
+    @BindView(R.id.dialog_profile_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.dialog_profile_progress)
+    CircularProgressView progressView;
+
+    @BindView(R.id.dialog_profile_scrollView)
+    NestedScrollView scrollView;
+
+    @BindView(R.id.dialog_profile_text)
+    TextView contentTxt;
+
     private UserService service;
     private String username;
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -65,24 +69,20 @@ public class ProfileDialog extends MysplashDialogFragment
         return container;
     }
 
-    /** <br> UI. */
+    private void initData() {
+        this.service = UserService.getService();
+    }
 
     private void initWidget() {
         scrollView.setVisibility(View.GONE);
         DisplayUtils.setTypeface(getActivity(), contentTxt);
     }
 
-    /** <br> data. */
-
-    private void initData() {
-        this.service = UserService.getService();
-    }
-
     public void setUsername(String username) {
         this.username = username;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 

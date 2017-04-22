@@ -22,20 +22,16 @@ import retrofit2.Response;
 
 public class SearchImplementor
         implements SearchPresenter {
-    // model & view.
+
     private SearchModel model;
     private SearchView view;
 
     private OnRequestPhotosListener listener;
 
-    /** <br> life cycle. */
-
     public SearchImplementor(SearchModel model, SearchView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestPhotos(Context c, int page, boolean refresh) {
@@ -134,7 +130,7 @@ public class SearchImplementor
         return model.getAdapter();
     }
 
-    /** >br> interface. */
+    // interface.
 
     private class OnRequestPhotosListener implements SearchService.OnRequestPhotosListener {
         // data

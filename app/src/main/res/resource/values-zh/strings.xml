@@ -39,7 +39,17 @@
     <string name="photos">张照片</string>
     <string name="users">位用户</string>
     <string name="to">至</string>
+    <string name="your">你的</string>
+    <string name="you">你</string>
+    <string name="photo">照片</string>
     <string name="more">MORE</string>
+
+    <string name="year_ago">年前</string>
+    <string name="month_ago">个月前</string>
+    <string name="day_ago">天前</string>
+    <string name="hour_ago">小时前</string>
+    <string name="minute_ago">分钟前</string>
+    <string name="second_ago">秒前</string>
 
     <string name="relative_photo">张相关照片</string>
     <string name="relative_collection">张相关收藏集</string>
@@ -53,6 +63,7 @@
     <string name="feedback_load_failed_toast">加载失败</string>
     <string name="feedback_load_nothing_tv">什么也没加载出来</string>
     <string name="feedback_load_nothing_toast">什么也没加载出来</string>
+
     <string name="feedback_search_failed_tv">搜索失败</string>
     <string name="feedback_search_failed_toast">搜索失败</string>
     <string name="feedback_search_nothing_tv">什么也没搜索到</string>
@@ -176,6 +187,9 @@
 
     <string name="action_search">搜索</string>
     <string name="action_filter">筛选</string>
+    <string name="action_notification">通知</string>
+
+    <string name="action_refresh">刷新</string>
 
     <string name="action_clear_text">清空内容</string>
 

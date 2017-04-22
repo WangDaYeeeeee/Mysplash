@@ -2,10 +2,8 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.RequiresApi;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +32,7 @@ import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -69,29 +67,39 @@ import butterknife.OnClick;
 public class FollowingFeedView extends NestedScrollFrameLayout
         implements FollowingView, LoadView, ScrollView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-    // model.
+
+    @BindView(R.id.container_loading_in_following_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_in_following_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_loading_in_following_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.container_following_avatar_avatarContainer)
+    RelativeLayout avatarContainer;
+
+    @BindView(R.id.container_following_avatar_avatar)
+    CircleImageView avatar;
+
+    @BindView(R.id.container_following_avatar_verbIcon)
+    ImageView verbIcon;
+
     private FollowingModel followingModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_in_following_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_in_following_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_loading_in_following_view_large_feedbackTxt) TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    @BindView(R.id.container_following_avatar_avatarContainer) RelativeLayout avatarContainer;
-    @BindView(R.id.container_following_avatar_avatar) CircleImageView avatar;
-    @BindView(R.id.container_following_avatar_verbIcon) ImageView verbIcon;
-
-    // presenter.
     private FollowingPresenter followingPresenter;
-    private LoadPresenter loadPresenter;
-    private ScrollPresenter scrollPresenter;
 
-    // data
+    private LoadModel loadModel;
+    private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
+    private ScrollPresenter scrollPresenter;
 
     // the offset of this view that was caused by nested scrolling. The avatar should ensure the
     // location by this value.
@@ -99,7 +107,45 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     private float AVATAR_SIZE;
     private float STATUS_BAR_HEIGHT;
 
-    /** <br> life cycle. */
+    private static class SavedState extends BaseSavedState {
+
+        String nextPage;
+        boolean over;
+        float offsetY;
+
+        SavedState(FollowingFeedView view, Parcelable superState) {
+            super(superState);
+            this.nextPage = view.followingModel.getNextPage();
+            this.over = view.followingModel.isOver();
+            this.offsetY = view.offsetY;
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.nextPage = in.readString();
+            this.over = in.readByte() != 0;
+            this.offsetY = in.readFloat();
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeString(this.nextPage);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+            out.writeFloat(this.offsetY);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public FollowingFeedView(Context context) {
         super(context);
@@ -116,11 +162,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public FollowingFeedView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
@@ -142,37 +184,23 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        return new SavedState(this, super.onSaveInstanceState());
+    private void initModel() {
+        this.followingModel = new FollowingObject(
+                new FollowingAdapter(
+                        getContext(),
+                        new ArrayList<FollowingResult>(Mysplash.DEFAULT_PER_PAGE)));
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject(true);
+
+        this.AVATAR_SIZE = new DisplayUtils(getContext()).dpToPx(56);
+        this.STATUS_BAR_HEIGHT = DisplayUtils.getStatusBarHeight(getResources());
     }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        followingPresenter.setNextPage(ss.nextPage);
-        followingPresenter.setOver(ss.over);
-        setOffsetY(ss.offsetY);
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return false;
-    }
-
-    /** <br> presenter. */
 
     private void initPresenter() {
         this.followingPresenter = new FollowingImplementor(followingModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         this.initAvatarView();
@@ -218,29 +246,24 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
-    // interface.
+    // save state.
 
-    public void pagerScrollToTop() {
-        scrollPresenter.scrollToTop();
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return new SavedState(this, super.onSaveInstanceState());
     }
 
-    /** <br> model. */
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
 
-    // init
-
-    private void initModel() {
-        this.followingModel = new FollowingObject(
-                new FollowingAdapter(
-                        getContext(),
-                        new ArrayList<FollowingResult>(Mysplash.DEFAULT_PER_PAGE)));
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject(true);
-
-        this.AVATAR_SIZE = new DisplayUtils(getContext()).dpToPx(56);
-        this.STATUS_BAR_HEIGHT = DisplayUtils.getStatusBarHeight(getResources());
+        followingPresenter.setNextPage(ss.nextPage);
+        followingPresenter.setOver(ss.over);
+        setOffsetY(ss.offsetY);
     }
 
-    // interface.
+    // control.
 
     /**
      * Set activity for the adapter in this view.
@@ -250,6 +273,13 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     public void setActivity(MysplashActivity a) {
         followingPresenter.setActivityForAdapter(a);
     }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
+    }
+
+    // following feed.
 
     /**
      * Get the following feeds from the adapter in this view.
@@ -277,17 +307,27 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
     }
 
-    public void cancelRequest() {
-        followingPresenter.cancelRequest();
-    }
+    // HTTP request.
 
     public void initRefresh() {
         followingPresenter.initRefresh(getContext());
     }
 
+    public void cancelRequest() {
+        followingPresenter.cancelRequest();
+    }
+
+    // back to top.
+
     public boolean needPagerBackToTop() {
         return scrollPresenter.needBackToTop();
     }
+
+    public void pagerScrollToTop() {
+        scrollPresenter.scrollToTop();
+    }
+
+    // UI.
 
     /**
      * Set the offset of this view that was caused by nested scrolling. The offset value will
@@ -317,7 +357,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         return Math.max(getOffsetY() - AVATAR_SIZE, 0);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -574,51 +614,5 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState extends BaseSavedState {
-        // data
-        String nextPage;
-        boolean over;
-        float offsetY;
-
-        // life cycle.
-
-        SavedState(FollowingFeedView view, Parcelable superState) {
-            super(superState);
-            this.nextPage = view.followingModel.getNextPage();
-            this.over = view.followingModel.isOver();
-            this.offsetY = view.offsetY;
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            this.nextPage = in.readString();
-            this.over = in.readByte() != 0;
-            this.offsetY = in.readFloat();
-        }
-
-        // interface.
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeString(this.nextPage);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-            out.writeFloat(this.offsetY);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

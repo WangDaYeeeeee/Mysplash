@@ -24,22 +24,20 @@ import butterknife.OnClick;
  * */
 
 public class ProgressHolder extends PhotoInfoAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_photo_progress_progressView) CircularProgressView progress;
-    @BindView(R.id.item_photo_progress_button) Button button;
 
-    // data
+    @BindView(R.id.item_photo_progress_progressView)
+    CircularProgressView progress;
+
+    @BindView(R.id.item_photo_progress_button)
+    Button button;
+
     private boolean failed;
     public static final int TYPE_PROGRESS = 3;
-
-    /** <br> life cycle. */
 
     public ProgressHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {
@@ -72,8 +70,6 @@ public class ProgressHolder extends PhotoInfoAdapter.ViewHolder {
             AnimUtils.animHide(button, 150, button.getAlpha(), 0f, true);
         }
     }
-
-    /** <br> interface. */
 
     @OnClick(R.id.item_photo_progress_button) void retryRefresh() {
         MysplashActivity activity =  Mysplash.getInstance().getTopActivity();

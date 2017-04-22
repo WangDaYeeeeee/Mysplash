@@ -62,32 +62,77 @@ import butterknife.OnClick;
 public class MeCollectionsView extends NestedScrollFrameLayout
         implements CollectionsView, PagerView, LoadView, ScrollView, SwipeBackView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-    // model.
+
+    @BindView(R.id.container_loading_view_mini_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_view_mini_retryButton)
+    Button retryButton;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private CollectionsModel collectionsModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_view_mini_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_view_mini_retryButton) Button retryButton;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private CollectionsPresenter collectionsPresenter;
+
     private PagerPresenter pagerPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
+
     private SwipeBackPresenter swipeBackPresenter;
 
-    /** <br> life cycle. */
+    private static class SavedState implements Parcelable {
+
+        int page;
+        boolean over;
+
+        SavedState(MeCollectionsView view) {
+            this.page = view.collectionsModel.getCollectionsPage();
+            this.over = view.collectionsModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public MeCollectionsView(Activity a, int id) {
         super(a);
         this.setId(id);
         this.initialize(a);
     }
+
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize(Activity a) {
@@ -104,12 +149,11 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return true;
+    private void initModel(Activity a) {
+        this.collectionsModel = new CollectionsObject(a);
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject();
     }
-
-    /** <br> presenter. */
 
     private void initPresenter() {
         this.collectionsPresenter = new CollectionsImplementor(collectionsModel, this);
@@ -118,10 +162,6 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         retryButton.setVisibility(GONE);
@@ -143,7 +183,14 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         recyclerView.addOnScrollListener(scrollListener);
     }
 
-    // interface.
+    // control.
+
+    @Override
+    public boolean isParentOffset() {
+        return true;
+    }
+
+    // collection.
 
     public void addCollection(Collection c) {
         if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
@@ -165,29 +212,17 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         }
     }
 
-    public void changeCollection(Collection c) {
+    public void updateCollection(Collection c, boolean refreshView) {
         switch (loadPresenter.getLoadState()) {
             case LoadObject.LOADING_STATE:
                 collectionsPresenter.initRefresh(getContext());
                 break;
 
             case LoadObject.NORMAL_STATE:
-                collectionsPresenter.getAdapter().changeItem(c);
+                collectionsPresenter.getAdapter().updateCollection(c, false, refreshView);
                 break;
         }
     }
-
-    /** <br> model. */
-
-    // init.
-
-    private void initModel(Activity a) {
-        this.collectionsModel = new CollectionsObject(a);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject();
-    }
-
-    // interface.
 
     /**
      * Get the collections from the adapter in this view.
@@ -215,7 +250,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -432,55 +467,11 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
             case LoadObject.NORMAL_STATE:
-                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
 
             default:
                 return true;
         }
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState implements Parcelable {
-        // data
-        int page;
-        boolean over;
-
-        // life cycle.
-
-        SavedState(MeCollectionsView view) {
-            this.page = view.collectionsModel.getCollectionsPage();
-            this.over = view.collectionsModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            this.page = in.readInt();
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            out.writeInt(this.page);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

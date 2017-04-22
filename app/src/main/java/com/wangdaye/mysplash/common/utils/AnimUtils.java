@@ -20,81 +20,8 @@ import android.view.animation.Interpolator;
  *
  */
 public class AnimUtils {
-    // widget.
+
     private static Interpolator fastOutSlowIn;
-
-    /** <br> life cycle. */
-
-    private AnimUtils() {}
-
-    /** <br> UI. */
-
-    public static void animInitShow(final View v, int delay) {
-        v.setVisibility(View.INVISIBLE);
-        DisplayUtils utils = new DisplayUtils(v.getContext());
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "translationY", utils.dpToPx(72), 0)
-                .setDuration(300);
-
-        anim.setInterpolator(new DecelerateInterpolator());
-        anim.setStartDelay(delay);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                super.onAnimationStart(animation);
-                v.setVisibility(View.VISIBLE);
-            }
-        });
-        anim.start();
-    }
-
-    public static void animShow(View v) {
-        animShow(v, 300, 0, 1);
-    }
-
-    public static void animShow(View v, int duration, float from, float to) {
-        if (v.getVisibility() == View.GONE) {
-            v.setVisibility(View.VISIBLE);
-        }
-        v.clearAnimation();
-        ObjectAnimator
-                .ofFloat(v, "alpha", from, to)
-                .setDuration(duration)
-                .start();
-
-    }
-
-    public static void animHide(final View v) {
-        animHide(v, 300, v.getAlpha(), 0, true);
-    }
-
-    public static void animHide(final View v, int duration, float from, float to, final boolean gone) {
-        v.clearAnimation();
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", from, to)
-                .setDuration(duration);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (gone) {
-                    v.setVisibility(View.GONE);
-                }
-            }
-        });
-        anim.start();
-    }
-
-    /** <br> image. */
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public static Interpolator getFastOutSlowInInterpolator(Context context) {
-        if (fastOutSlowIn == null) {
-            fastOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_slow_in);
-        }
-        return fastOutSlowIn;
-    }
 
     /**
      * An implementation of {@link android.util.Property} to be used specifically with fields of
@@ -157,5 +84,72 @@ public class AnimUtils {
                 return cm.getSaturation();
             }
         };
+    }
+
+    private AnimUtils() {}
+
+    public static void animInitShow(final View v, int delay) {
+        v.setVisibility(View.INVISIBLE);
+        DisplayUtils utils = new DisplayUtils(v.getContext());
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "translationY", utils.dpToPx(72), 0)
+                .setDuration(300);
+
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setStartDelay(delay);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                v.setVisibility(View.VISIBLE);
+            }
+        });
+        anim.start();
+    }
+
+    public static void animShow(View v) {
+        animShow(v, 300, 0, 1);
+    }
+
+    public static void animShow(View v, int duration, float from, float to) {
+        if (v.getVisibility() == View.GONE) {
+            v.setVisibility(View.VISIBLE);
+        }
+        v.clearAnimation();
+        ObjectAnimator
+                .ofFloat(v, "alpha", from, to)
+                .setDuration(duration)
+                .start();
+
+    }
+
+    public static void animHide(final View v) {
+        animHide(v, 300, v.getAlpha(), 0, true);
+    }
+
+    public static void animHide(final View v, int duration, float from, float to, final boolean gone) {
+        v.clearAnimation();
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "alpha", from, to)
+                .setDuration(duration);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                if (gone) {
+                    v.setVisibility(View.GONE);
+                }
+            }
+        });
+        anim.start();
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public static Interpolator getFastOutSlowInInterpolator(Context context) {
+        if (fastOutSlowIn == null) {
+            fastOutSlowIn = AnimationUtils.loadInterpolator(context,
+                    android.R.interpolator.fast_out_slow_in);
+        }
+        return fastOutSlowIn;
     }
 }

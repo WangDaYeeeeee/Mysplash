@@ -40,11 +40,9 @@ import butterknife.ButterKnife;
 
 public class SettingsFragment extends PreferenceFragment
         implements Preference.OnPreferenceChangeListener, NestedScrollingChild {
-    // widget
+
     private NestedScrollingChildHelper nestedScrollingChildHelper; // used to dispatch scroll action.
     private ListView listView; // preference list in preference fragment.
-
-    /** <br> life cycle. */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,10 +61,6 @@ public class SettingsFragment extends PreferenceFragment
             nestedScrollingChildHelper.setNestedScrollingEnabled(true);
         }
     }
-
-    /** <br> UI. */
-
-    // init.
 
     private void initView() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -123,8 +117,6 @@ public class SettingsFragment extends PreferenceFragment
         downloadScale.setOnPreferenceChangeListener(this);
     }
 
-    // interface.
-
     private void showRebootSnackbar() {
         NotificationHelper.showActionSnackbar(
                 getString(R.string.feedback_notify_restart),
@@ -150,7 +142,7 @@ public class SettingsFragment extends PreferenceFragment
         return true;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on preference_widget changed listener.
 
@@ -209,7 +201,7 @@ public class SettingsFragment extends PreferenceFragment
     // on touch listener.
 
     private class ScrollListener implements View.OnTouchListener {
-        // data
+
         private float oldY;
         private boolean isBeingDragged;
         private float touchSlop;

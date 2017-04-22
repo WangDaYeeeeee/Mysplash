@@ -13,14 +13,12 @@ import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 public class PhotoInfoObject
         implements PhotoInfoModel {
-    // data
+
     private Photo photo;
     private boolean failed;
     private PhotoInfoAdapter adapter;
     private PhotoInfoService photoInfoService;
     private PhotoService photoService;
-
-    /** <br> life cycle. */
 
     public PhotoInfoObject(PhotoActivity a, Photo p) {
         this.photo = p;
@@ -29,8 +27,6 @@ public class PhotoInfoObject
         this.photoInfoService = PhotoInfoService.getService();
         this.photoService = PhotoService.getService();
     }
-
-    /** <br> model. */
 
     @Override
     public PhotoInfoService getPhotoInfoService() {

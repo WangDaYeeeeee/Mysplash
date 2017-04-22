@@ -33,17 +33,73 @@ import butterknife.OnClick;
 
 public class FollowingFragment extends MysplashFragment
         implements View.OnClickListener, NestedScrollAppBarLayout.OnNestedScrollingListener {
-    // view.
-    @BindView(R.id.fragment_following_statusBar) StatusBarView statusBar;
 
-    @BindView(R.id.fragment_following_container) CoordinatorLayout container;
-    @BindView(R.id.fragment_following_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R.id.fragment_following_feedView) FollowingFeedView feedView;
+    @BindView(R.id.fragment_following_statusBar)
+    StatusBarView statusBar;
 
-    // presenter.
+    @BindView(R.id.fragment_following_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.fragment_following_appBar)
+    NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.fragment_following_feedView)
+    FollowingFeedView feedView;
+
     private ToolbarPresenter toolbarPresenter;
 
-    /** <br> life cycle. */
+    private class TopBarAnim extends Animation {
+
+        private float topBarStartY;
+        private float topBarEndY;
+
+        TopBarAnim() {
+            this.topBarStartY = appBar.getY();
+            this.topBarEndY = 0;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            appBar.setY(topBarStartY + (topBarEndY - topBarStartY) * interpolatedTime);
+        }
+    }
+
+    private class ContentAnim extends Animation {
+
+        private float contentStartY;
+        private float contentEndY;
+
+        ContentAnim() {
+            this.contentStartY = feedView.getY();
+            this.contentEndY = appBar.getMeasuredHeight();
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            feedView.setY(contentStartY + (contentEndY - contentStartY) * interpolatedTime);
+            feedView.setOffsetY(-appBar.getY());
+        }
+    }
+
+    private class TopBarAnimListener implements Animation.AnimationListener {
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+            // do nothing.
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
+            params.setBehavior(new NestedScrollAppBarLayout.Behavior());
+            appBar.setLayoutParams(params);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+            // do nothing.
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,8 +117,17 @@ public class FollowingFragment extends MysplashFragment
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
+    public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
+        if (feedView != null) {
+            ((MainActivity.SavedStateFragment) outState).setFollowingFeedList(feedView.getFeeds());
+        }
+    }
+
+    @Override
+    public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
+        if (feedView != null) {
+            feedView.setFeeds(((MainActivity.SavedStateFragment) savedInstanceState).getFollowingFeedList());
+        }
     }
 
     @Override
@@ -84,26 +149,9 @@ public class FollowingFragment extends MysplashFragment
     }
 
     @Override
-    public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
-        if (feedView != null) {
-            ((MainActivity.SavedStateFragment) outState).setFollowingFeedList(feedView.getFeeds());
-        }
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
     }
-
-    @Override
-    public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
-        if (feedView != null) {
-            feedView.setFeeds(((MainActivity.SavedStateFragment) savedInstanceState).getFollowingFeedList());
-        }
-    }
-
-    /** <br> presenter. */
-
-    private void initPresenter() {
-        this.toolbarPresenter = new ToolbarImplementor();
-    }
-
-    /** <br> view. */
 
     // init.
 
@@ -122,7 +170,11 @@ public class FollowingFragment extends MysplashFragment
         }
     }
 
-    // interface.
+    private void initPresenter() {
+        this.toolbarPresenter = new ToolbarImplementor();
+    }
+
+    // control.
 
     private void animShowTopBar() {
         if (appBar.getY() < 0) {
@@ -141,7 +193,7 @@ public class FollowingFragment extends MysplashFragment
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -184,70 +236,5 @@ public class FollowingFragment extends MysplashFragment
     @Override
     public void onStopNestedScroll() {
         // do nothing.
-    }
-
-    /** <br> inner class. */
-
-    private class TopBarAnim extends Animation {
-        // data
-        private float topBarStartY;
-        private float topBarEndY;
-
-        // life cycle.
-
-        TopBarAnim() {
-            this.topBarStartY = appBar.getY();
-            this.topBarEndY = 0;
-        }
-
-        // parent methods.
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            appBar.setY(topBarStartY + (topBarEndY - topBarStartY) * interpolatedTime);
-        }
-    }
-
-    private class ContentAnim extends Animation {
-        // data
-        private float contentStartY;
-        private float contentEndY;
-
-        // life cycle.
-
-        ContentAnim() {
-            this.contentStartY = feedView.getY();
-            this.contentEndY = appBar.getMeasuredHeight();
-        }
-
-        // parent methods.
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            feedView.setY(contentStartY + (contentEndY - contentStartY) * interpolatedTime);
-            feedView.setOffsetY(-appBar.getY());
-        }
-    }
-
-    private class TopBarAnimListener implements Animation.AnimationListener {
-
-        // interface.
-
-        @Override
-        public void onAnimationStart(Animation animation) {
-            // do nothing.
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appBar.getLayoutParams();
-            params.setBehavior(new NestedScrollAppBarLayout.Behavior());
-            appBar.setLayoutParams(params);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-            // do nothing.
-        }
     }
 }

@@ -23,20 +23,14 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class CoverTransition extends ChangeBounds {
-    // widget
+
     private Context context;
-
-    // data
     private static final String PROPNAME_BOUNDS = "android:changeBounds:bounds";
-
-    /** <br> life cycle. */
 
     public CoverTransition(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
     }
-
-    /** <br> data. */
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {

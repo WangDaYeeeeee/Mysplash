@@ -20,15 +20,12 @@ import butterknife.OnClick;
  * */
 
 public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
-    // widget
+
     @BindView(R.id.item_photo_touch) FreedomTouchView touchView;
 
-    // data
     private Photo photo;
 
     public static final int TYPE_TOUCH = 1;
-
-    /** <br> life cycle. */
 
     public TouchHolder(View itemView) {
         super(itemView);
@@ -41,8 +38,6 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
         }
     }
 
-    /** <br> UI. */
-
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {
         this.photo = photo;
@@ -50,8 +45,6 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
             touchView.setSize(photo.width, photo.height);
         }
     }
-
-    /** <br> interface. */
 
     @OnClick(R.id.item_photo_touch) void clickItem() {
         IntentHelper.startPreviewActivity(

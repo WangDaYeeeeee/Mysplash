@@ -60,24 +60,39 @@ import retrofit2.Response;
 public class SelectCollectionDialog extends MysplashDialogFragment
         implements AuthManager.OnAuthDataChangedListener,
         CollectionMiniAdapter.OnCollectionResponseListener, CollectionService.OnRequestACollectionListener {
-    // widget
-    @BindView(R.id.dialog_select_collection_container) CoordinatorLayout container;
 
-    @BindView(R.id.dialog_select_collection_progressView) CircularProgressView progressView;
+    @BindView(R.id.dialog_select_collection_container)
+    CoordinatorLayout container;
 
-    @BindView(R.id.dialog_select_collection_selectorContainer) LinearLayout selectorContainer;
-    @BindView(R.id.dialog_select_collection_titleBar) RelativeLayout selectorTitleBar;
-    @BindView(R.id.dialog_select_collection_selectorRefreshView) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.dialog_select_collection_selectorRecyclerView) RecyclerView recyclerView;
+    @BindView(R.id.dialog_select_collection_progressView)
+    CircularProgressView progressView;
 
-    @BindView(R.id.dialog_select_collection_creatorContainer) LinearLayout creatorContainer;
-    @BindView(R.id.dialog_select_collection_creatorName) EditText nameTxt;
-    @BindView(R.id.dialog_select_collection_creatorDescription) EditText descriptionTxt;
-    @BindView(R.id.dialog_select_collection_creatorCheckBox) CheckBox checkBox;
+    @BindView(R.id.dialog_select_collection_selectorContainer)
+    LinearLayout selectorContainer;
+
+    @BindView(R.id.dialog_select_collection_titleBar)
+    RelativeLayout selectorTitleBar;
+
+    @BindView(R.id.dialog_select_collection_selectorRefreshView)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.dialog_select_collection_selectorRecyclerView)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.dialog_select_collection_creatorContainer)
+    LinearLayout creatorContainer;
+
+    @BindView(R.id.dialog_select_collection_creatorName)
+    EditText nameTxt;
+
+    @BindView(R.id.dialog_select_collection_creatorDescription)
+    EditText descriptionTxt;
+
+    @BindView(R.id.dialog_select_collection_creatorCheckBox)
+    CheckBox checkBox;
 
     private OnCollectionsChangedListener listener;
 
-    // data
     private Me me;
     private Photo photo;
     private int page; // HTTP request param.
@@ -95,8 +110,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private @interface StateRule {}
 
     private boolean usable; // if set false, it means the dialog has been destroyed.
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -132,7 +145,19 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         return container;
     }
 
-    /** <br> UI. */
+    // init.
+
+    private void initData() {
+        this.me = AuthManager.getInstance().getMe();
+        this.service = CollectionService.getService();
+        this.state = SHOW_COLLECTIONS_STATE;
+        this.page = 1;
+
+        this.adapter = new CollectionMiniAdapter(getActivity(), photo);
+        adapter.setOnCollectionResponseListener(this);
+
+        this.usable = true;
+    }
 
     private void initWidget(View v) {
         setCancelable(true);
@@ -161,6 +186,65 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         DisplayUtils.setTypeface(getActivity(), descriptionTxt);
         DisplayUtils.setTypeface(getActivity(), checkBox);
     }
+
+    // control.
+
+    // HTTP request.
+
+    private void initRefresh() {
+        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE) {
+            if (AuthManager.getInstance().getMe() == null) {
+                requestProfile();
+            } else {
+                int listSize = AuthManager.getInstance()
+                        .getCollectionsManager()
+                        .getCollectionList()
+                        .size();
+                if (listSize > 0) {
+                    AuthManager.getInstance().getCollectionsManager().clearCollections();
+                    adapter.notifyItemRangeRemoved(1, listSize);
+                    adapter.notifyItemChanged(1);
+                }
+                page = 1;
+                requestCollections();
+            }
+        }
+    }
+
+    private void requestProfile() {
+        AuthManager.getInstance().requestPersonalProfile();
+    }
+
+    private void requestCollections() {
+        if (serviceListener != null) {
+            serviceListener.cancel();
+        }
+        service.cancel();
+
+        serviceListener = new OnRequestCollectionsListener();
+        service.requestUserCollections(me.username, page, Mysplash.DEFAULT_PER_PAGE, serviceListener);
+    }
+
+    private void createCollection() {
+        String title = nameTxt.getText().toString();
+        if (TextUtils.isEmpty(title)) {
+            NotificationHelper.showSnackbar(
+                    getString(R.string.feedback_name_is_required),
+                    Snackbar.LENGTH_SHORT);
+        } else {
+            String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
+                    null : descriptionTxt.getText().toString();
+            boolean privateX = checkBox.isChecked();
+            service.createCollection(
+                    title,
+                    description,
+                    privateX,
+                    this);
+            setState(CREATE_COLLECTION_STATE);
+        }
+    }
+
+    // state.
 
     private void setState(@StateRule int newState) {
         switch (newState) {
@@ -197,17 +281,15 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         state = newState;
     }
 
+    // keyboard.
+
     private void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         manager.hideSoftInputFromWindow(nameTxt.getWindowToken(), 0);
         manager.hideSoftInputFromWindow(descriptionTxt.getWindowToken(), 0);
     }
 
-    private void notifyCreateFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_create_collection_failed),
-                Snackbar.LENGTH_SHORT);
-    }
+    // feedback.
 
     /**
      * Update item view when a HTTP request completed.
@@ -257,79 +339,13 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         }
     }
 
-    /** <br> data. */
-
-    private void initData() {
-        this.me = AuthManager.getInstance().getMe();
-        this.service = CollectionService.getService();
-        this.state = SHOW_COLLECTIONS_STATE;
-        this.page = 1;
-
-        this.adapter = new CollectionMiniAdapter(getActivity(), photo);
-        adapter.setOnCollectionResponseListener(this);
-
-        this.usable = true;
+    private void notifyCreateFailed() {
+        NotificationHelper.showSnackbar(
+                getString(R.string.feedback_create_collection_failed),
+                Snackbar.LENGTH_SHORT);
     }
 
-    public void setPhotoAndListener(Photo p, OnCollectionsChangedListener l) {
-        photo = p;
-        setOnCollectionsChangedListener(l);
-    }
-
-    private void initRefresh() {
-        if (AuthManager.getInstance().getState() == AuthManager.FREEDOM_STATE) {
-            if (AuthManager.getInstance().getMe() == null) {
-                requestProfile();
-            } else {
-                int listSize = AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .getCollectionList()
-                        .size();
-                if (listSize > 0) {
-                    AuthManager.getInstance().getCollectionsManager().clearCollections();
-                    adapter.notifyItemRangeRemoved(1, listSize);
-                    adapter.notifyItemChanged(1);
-                }
-                page = 1;
-                requestCollections();
-            }
-        }
-    }
-
-    private void requestProfile() {
-        AuthManager.getInstance().refreshPersonalProfile();
-    }
-
-    private void requestCollections() {
-        if (serviceListener != null) {
-            serviceListener.cancel();
-        }
-        service.cancel();
-
-        serviceListener = new OnRequestCollectionsListener();
-        service.requestUserCollections(me.username, page, Mysplash.DEFAULT_PER_PAGE, serviceListener);
-    }
-
-    private void createCollection() {
-        String title = nameTxt.getText().toString();
-        if (TextUtils.isEmpty(title)) {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_name_is_required),
-                    Snackbar.LENGTH_SHORT);
-        } else {
-            String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
-                    null : descriptionTxt.getText().toString();
-            boolean privateX = checkBox.isChecked();
-            service.createCollection(
-                    title,
-                    description,
-                    privateX,
-                    this);
-            setState(CREATE_COLLECTION_STATE);
-        }
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnCollectionsChangedListener {
         void onAddCollection(Collection c);
@@ -338,6 +354,11 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private void setOnCollectionsChangedListener(OnCollectionsChangedListener l) {
         listener = l;
+    }
+
+    public void setPhotoAndListener(Photo p, OnCollectionsChangedListener l) {
+        photo = p;
+        setOnCollectionsChangedListener(l);
     }
 
     // on click listener.
@@ -436,14 +457,13 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private class OnRequestCollectionsListener
             implements CollectionService.OnRequestCollectionsListener {
-        // data
+
         private boolean canceled;
 
         OnRequestCollectionsListener() {
             canceled = false;
         }
 
-        // data.
         public void cancel() {
             this.canceled = true;
         }
@@ -517,7 +537,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private class OnChangeCollectionPhotoListener
             implements CollectionService.OnChangeCollectionPhotoListener {
-        // data
+
         private int collectionId;
         private boolean add;
 

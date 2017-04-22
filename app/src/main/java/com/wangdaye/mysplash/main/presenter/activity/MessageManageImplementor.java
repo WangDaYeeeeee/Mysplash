@@ -13,10 +13,8 @@ import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 public class MessageManageImplementor
         implements MessageManagePresenter {
-    // model & view.
-    private MessageManageView view;
 
-    /** <br> life cycle. */
+    private MessageManageView view;
 
     public MessageManageImplementor(MessageManageView view) {
         this.view = view;

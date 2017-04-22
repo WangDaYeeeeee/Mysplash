@@ -10,7 +10,8 @@ package com.wangdaye.mysplash.common.i.view;
 public interface SearchBarView {
 
     void clearSearchBarText();
+    void submitSearchInfo(String text);
+
     void showKeyboard();
     void hideKeyboard();
-    void submitSearchInfo(String text);
 }

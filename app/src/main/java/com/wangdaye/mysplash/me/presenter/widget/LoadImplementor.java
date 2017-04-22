@@ -10,18 +10,14 @@ import com.wangdaye.mysplash.me.model.widget.LoadObject;
  * */
 
 public class LoadImplementor implements LoadPresenter {
-    // model & view.
+
     private LoadModel model;
     private LoadView view;
-
-    /** <br> life cycle. */
 
     public LoadImplementor(LoadModel model, LoadView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void setLoadingState() {

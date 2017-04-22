@@ -22,16 +22,12 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 public class MeManageImplementor
         implements MeManagePresenter {
-    // model & view.
-    private MeManageView view;
 
-    /** <br> life cycle. */
+    private MeManageView view;
 
     public MeManageImplementor(MeManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void touchMeAvatar(MysplashActivity a) {

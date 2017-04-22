@@ -23,10 +23,9 @@ import butterknife.ButterKnife;
  * */
 
 public class RequestBrowsableDataDialog extends MysplashDialogFragment {
-    // widget
-    @BindView(R.id.dialog_request_browsable_data_container) CoordinatorLayout container;
 
-    /** <br> life cycle. */
+    @BindView(R.id.dialog_request_browsable_data_container)
+    CoordinatorLayout container;
 
     @SuppressLint("InflateParams")
     @Override

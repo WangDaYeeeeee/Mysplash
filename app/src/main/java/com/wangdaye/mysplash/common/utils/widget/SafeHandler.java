@@ -13,10 +13,8 @@ import java.lang.ref.WeakReference;
  * */
 
 public class SafeHandler<T extends SafeHandler.HandlerContainer> extends Handler {
-    // widget.
-    private WeakReference<T> mRef;
 
-    /** <br> life cycle. */
+    private WeakReference<T> mRef;
 
     public SafeHandler(T obj) {
         mRef = new WeakReference<>(obj);
@@ -25,8 +23,6 @@ public class SafeHandler<T extends SafeHandler.HandlerContainer> extends Handler
     public T getContainer() {
         return mRef.get();
     }
-
-    /** <br> data. */
 
     @Override
     public void handleMessage(android.os.Message msg) {
@@ -37,7 +33,9 @@ public class SafeHandler<T extends SafeHandler.HandlerContainer> extends Handler
         }
     }
 
-    /** <br> interface. */
+    // interface.
+
+    // handler container.
 
     public interface HandlerContainer {
         void handleMessage(Message message);

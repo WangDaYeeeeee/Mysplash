@@ -25,14 +25,13 @@ import butterknife.OnClick;
  * */
 
 public class DownloadRepeatDialog extends MysplashDialogFragment {
-    // widget
-    @BindView(R.id.dialog_download_repeat_container) CoordinatorLayout container;
+
+    @BindView(R.id.dialog_download_repeat_container)
+    CoordinatorLayout container;
+
     private OnCheckOrDownloadListener listener;
 
-    // data
     private Object downloadKey; // the thing that need to be downloaded.
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -52,20 +51,16 @@ public class DownloadRepeatDialog extends MysplashDialogFragment {
         return container;
     }
 
-    /** <br> UI. */
-
     private void initWidget(View v) {
         TextView content = ButterKnife.findById(v, R.id.dialog_download_repeat_text);
         DisplayUtils.setTypeface(getActivity(), content);
     }
 
-    /** <br> data. */
-
     public void setDownloadKey(Object obj) {
         this.downloadKey = obj;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on check or download listener.
 

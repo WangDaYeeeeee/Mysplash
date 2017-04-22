@@ -23,5 +23,6 @@ public interface BrowsableView {
      * After loading data, the view will show those data, just like a normal activity.
      * */
     void drawBrowsableView(Object result);
+
     void visitPreviousPage();
 }

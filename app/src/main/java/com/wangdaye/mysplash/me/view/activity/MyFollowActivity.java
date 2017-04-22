@@ -26,7 +26,6 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.activity.PagerManageObject;
@@ -57,28 +56,35 @@ public class MyFollowActivity extends MysplashActivity
         View.OnClickListener, ViewPager.OnPageChangeListener,
         SwipeBackCoordinatorLayout.OnSwipeListener {
     // model.
-    private UserModel userModel;
-    private PagerManageModel pagerManageModel;
+
+
 
     // view.
-    @BindView(R.id.activity_my_follow_container) CoordinatorLayout container;
-    @BindView(R.id.activity_my_follow_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_my_follow_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R.id.activity_my_follow_viewPager) ViewPager viewPager;
+    @BindView(R.id.activity_my_follow_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_my_follow_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_my_follow_appBar)
+    NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.activity_my_follow_viewPager)
+    ViewPager viewPager;
 
     private PagerView[] pagers = new PagerView[2];
-    private DisplayUtils utils;
 
-    // presenter.
+    private UserModel userModel;
     private UserPresenter userPresenter;
+
     private ToolbarPresenter toolbarPresenter;
+
+    private PagerManageModel pagerManageModel;
     private PagerManagePresenter pagerManagePresenter;
+
     private SwipeBackManagePresenter swipeBackManagePresenter;
 
-    // data
     public static final String KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION = "my_follow_activity_page_position";
-
-    /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +127,15 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     @Override
+    protected void setTheme() {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
     }
@@ -136,23 +151,9 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     protected void backToTop() {
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
     }
 
     @Override
@@ -175,7 +176,18 @@ public class MyFollowActivity extends MysplashActivity
         return container;
     }
 
-    /** <br> presenter. */
+    // init.
+
+    private void initModel(Bundle savedInstanceState) {
+        int page = 0;
+        if (savedInstanceState != null) {
+            page = savedInstanceState.getInt(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, page);
+        } else {
+            page = getIntent().getIntExtra(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, page);
+        }
+        this.userModel = new UserObject();
+        this.pagerManageModel = new PagerManageObject(page);
+    }
 
     private void initPresenter() {
         this.userPresenter = new UserImplementor(userModel, this);
@@ -183,10 +195,6 @@ public class MyFollowActivity extends MysplashActivity
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
@@ -200,7 +208,6 @@ public class MyFollowActivity extends MysplashActivity
         toolbar.setNavigationOnClickListener(this);
 
         initPages();
-        this.utils = new DisplayUtils(this);
 
         AnimUtils.animInitShow(
                 (View) pagers[pagerManagePresenter.getPagerPosition()],
@@ -233,20 +240,7 @@ public class MyFollowActivity extends MysplashActivity
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    /** <br> model. */
-
-    private void initModel(Bundle savedInstanceState) {
-        int page = 0;
-        if (savedInstanceState != null) {
-            page = savedInstanceState.getInt(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, page);
-        } else {
-            page = getIntent().getIntExtra(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, page);
-        }
-        this.userModel = new UserObject();
-        this.pagerManageModel = new PagerManageObject(page);
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -348,7 +342,7 @@ public class MyFollowActivity extends MysplashActivity
     public boolean checkCanSwipeBack(int dir) {
         if (dir == SwipeBackCoordinatorLayout.UP_DIR) {
             return pagerManagePresenter.canPagerSwipeBack(dir)
-                    && appBar.getY() <= -appBar.getMeasuredHeight() + utils.dpToPx(48);
+                    && appBar.getY() <= -appBar.getMeasuredHeight() + getResources().getDimensionPixelSize(R.dimen.tab_layout_height);
         } else {
             return pagerManagePresenter.canPagerSwipeBack(dir)
                     && appBar.getY() >= 0;

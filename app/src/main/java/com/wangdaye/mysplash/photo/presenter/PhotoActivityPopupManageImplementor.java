@@ -14,16 +14,12 @@ import com.wangdaye.mysplash.common.ui.popup.PhotoMenuPopupWindow;
 public class PhotoActivityPopupManageImplementor
         implements PopupManagePresenter,
         PhotoMenuPopupWindow.OnSelectItemListener {
-    // model & view.
-    private PopupManageView view;
 
-    /** <br> life cycle. */
+    private PopupManageView view;
 
     public PhotoActivityPopupManageImplementor(PopupManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void showPopup(Context c, View anchor, String value, int position) {

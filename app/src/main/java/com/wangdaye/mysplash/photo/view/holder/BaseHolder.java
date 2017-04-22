@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -39,22 +39,30 @@ import butterknife.OnClick;
 
 public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         implements View.OnClickListener, Toolbar.OnMenuItemClickListener {
-    // widget
+
     private PhotoActivity activity;
 
-    @BindView(R.id.item_photo_base_displayContainer) RelativeLayout displayContainer;
-    @BindView(R.id.item_photo_base_toolbar) Toolbar toolbar;
-    @BindView(R.id.item_photo_base_title) TextView title;
-    @BindView(R.id.item_photo_base_subtitle) TextView subtitle;
-    @BindView(R.id.item_photo_base_avatar) CircleImageView avatar;
-    @BindView(R.id.item_photo_base_btnBar) PhotoDownloadView downloadView;
+    @BindView(R.id.item_photo_base_displayContainer)
+    RelativeLayout displayContainer;
 
-    // data
+    @BindView(R.id.item_photo_base_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.item_photo_base_title)
+    TextView title;
+
+    @BindView(R.id.item_photo_base_subtitle)
+    TextView subtitle;
+
+    @BindView(R.id.item_photo_base_avatar)
+    CircleImageView avatar;
+
+    @BindView(R.id.item_photo_base_btnBar)
+    PhotoDownloadView downloadView;
+
     private Photo photo;
 
     public static final int TYPE_BASE = 2;
-
-    /** <br> life cycle. */
 
     public BaseHolder(PhotoActivity a, View itemView) {
         super(itemView);
@@ -77,8 +85,6 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
 
         DisplayUtils.setTypeface(activity, subtitle);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(MysplashActivity a, Photo photo) {
@@ -111,7 +117,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         return downloadView;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 

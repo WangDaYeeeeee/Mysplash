@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,24 +28,30 @@ import butterknife.ButterKnife;
  * */
 
 public class PhotoDownloadView extends FrameLayout {
-    // widget
-    @BindView(R.id.container_download_button) LinearLayout buttonView;
+
+    @BindView(R.id.container_download_button)
+    LinearLayout buttonView;
+
     @BindViews({
             R.id.container_download_downloadBtn,
             R.id.container_download_shareBtn,
-            R.id.container_download_wallBtn}) ImageButton[] optionButtons;
-    @BindView(R.id.container_download_progress) RelativeLayout progressView;
-    @BindView(R.id.container_download_progress_progressView) CircularProgressView progress;
-    @BindView(R.id.container_download_progress_text) TextView progressTxt;
+            R.id.container_download_wallBtn})
+    ImageButton[] optionButtons;
+
+    @BindView(R.id.container_download_progress)
+    RelativeLayout progressView;
+
+    @BindView(R.id.container_download_progress_progressView)
+    CircularProgressView progress;
+
+    @BindView(R.id.container_download_progress_text)
+    TextView progressTxt;
 
     private Animator show;
     private Animator hide;
 
-    // data
     private boolean showProgress;
     private int process;
-
-    /** <br> life cycle. */
 
     public PhotoDownloadView(Context context) {
         super(context);
@@ -61,12 +65,6 @@ public class PhotoDownloadView extends FrameLayout {
 
     public PhotoDownloadView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.initialize();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public PhotoDownloadView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         this.initialize();
     }
 
@@ -109,7 +107,18 @@ public class PhotoDownloadView extends FrameLayout {
         progressView.setVisibility(GONE);
     }
 
-    /** <br> UI. */
+    // draw.
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        LayoutParams params = (LayoutParams) progressView.getLayoutParams();
+        params.width = getMeasuredWidth();
+        params.height = getMeasuredHeight();
+        progressView.setLayoutParams(params);
+    }
+
+    // control.
 
     public void setButtonState() {
         if (showProgress) {
@@ -193,22 +202,9 @@ public class PhotoDownloadView extends FrameLayout {
         progressTxt.setText(process + " %");
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        LayoutParams params = (LayoutParams) progressView.getLayoutParams();
-        params.width = getMeasuredWidth();
-        params.height = getMeasuredHeight();
-        progressView.setLayoutParams(params);
-    }
-
-    /** <br> data. */
-
     public void setShowProgress(boolean show) {
         this.showProgress = show;
     }
-
-    /** <br> interface. */
 
     @Override
     public void setOnClickListener(OnClickListener l) {

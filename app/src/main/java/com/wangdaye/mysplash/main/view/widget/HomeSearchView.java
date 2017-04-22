@@ -77,40 +77,91 @@ public class HomeSearchView extends NestedScrollFrameLayout
         implements SearchView, PagerView, LoadView, ScrollView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, 
         SelectCollectionDialog.OnCollectionsChangedListener{
-    // model.
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.container_searching_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_searching_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_searching_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_searching_view_large_feedbackBtn)
+    Button feedbackButton;
+
     private SearchModel searchModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    @BindView(R.id.container_searching_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_searching_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_searching_view_large_feedbackTxt) TextView feedbackText;
-    @BindView(R.id.container_searching_view_large_feedbackBtn) Button feedbackButton;
-
-    // presenter.
     private SearchPresenter searchPresenter;
+
     private PagerPresenter pagerPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
 
-    // data.
     public static final int SEARCH_PHOTOS_TYPE = 0;
     public static final int SEARCH_COLLECTIONS_TYPE = 1;
     public static final int SEARCH_USERS_TYPE = 2;
     @IntDef({SEARCH_PHOTOS_TYPE, SEARCH_COLLECTIONS_TYPE, SEARCH_USERS_TYPE})
     private @interface TypeRule {}
 
-    /** <br> life cycle. */
+    private static class SavedState implements Parcelable {
+
+        String query;
+        int page;
+        boolean over;
+
+        SavedState(HomeSearchView view) {
+            this.query = view.searchModel.getSearchQuery();
+            this.page = view.searchModel.getPhotosPage();
+            this.over = view.searchModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            this.query = in.readString();
+            this.page = in.readInt();
+            this.over = in.readByte() != 0;
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            out.writeString(this.query);
+            out.writeInt(this.page);
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public HomeSearchView(MainActivity a, @TypeRule int type, int id) {
         super(a);
         this.setId(id);
         this.initialize(a, type);
     }
+
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize(MainActivity a, @TypeRule int type) {
@@ -132,12 +183,33 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return true;
-    }
+    private void initModel(MainActivity a, @TypeRule int type) {
+        this.scrollModel = new ScrollObject(true);
+        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
 
-    /** <br> presenter. */
+        switch (type) {
+            case SEARCH_PHOTOS_TYPE:
+                this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+                this.searchModel = new SearchPhotosObject(
+                        new PhotoAdapter(
+                                getContext(),
+                                new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                                this,
+                                a));
+                break;
+
+            case SEARCH_COLLECTIONS_TYPE:
+                this.searchModel = new SearchCollectionsObject(
+                        new CollectionAdapter(getContext(), new ArrayList<Collection>()));
+                break;
+
+            case SEARCH_USERS_TYPE:
+                this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+                this.searchModel = new SearchUsersObject(
+                        new UserAdapter(getContext(), new ArrayList<User>()));
+                break;
+        }
+    }
 
     private void initPresenter(@TypeRule int type) {
         switch (type) {
@@ -157,10 +229,6 @@ public class HomeSearchView extends NestedScrollFrameLayout
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView(int type) {
         initContentView();
@@ -221,10 +289,11 @@ public class HomeSearchView extends NestedScrollFrameLayout
         feedbackButton.setVisibility(GONE);
     }
 
-    // interface.
+    // control.
 
-    public void pagerScrollToTop() {
-        scrollPresenter.scrollToTop();
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
 
     public void clearAdapter() {
@@ -238,42 +307,17 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    /** <br> model. */
-
-    // init.
-
-    private void initModel(MainActivity a, @TypeRule int type) {
-        this.scrollModel = new ScrollObject(true);
-        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-
-        switch (type) {
-            case SEARCH_PHOTOS_TYPE:
-                this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-                this.searchModel = new SearchPhotosObject(
-                        new PhotoAdapter(
-                                getContext(),
-                                new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
-                                this,
-                                a));
-                break;
-
-            case SEARCH_COLLECTIONS_TYPE:
-                this.searchModel = new SearchCollectionsObject(
-                        new CollectionAdapter(getContext(), new ArrayList<Collection>()));
-                break;
-
-            case SEARCH_USERS_TYPE:
-                this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
-                this.searchModel = new SearchUsersObject(
-                        new UserAdapter(getContext(), new ArrayList<User>()));
-                break;
-        }
+    public HomeSearchView setClickListenerForFeedbackView(OnClickListener l) {
+        findViewById(R.id.container_searching_view_large).setOnClickListener(l);
+        return this;
     }
 
-    // interface.
+    // photo.
 
-    public boolean needPagerBackToTop() {
-        return scrollPresenter.needBackToTop();
+    public void updatePhoto(Photo photo) {
+        if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(photo, true, false);
+        }
     }
 
     /**
@@ -303,6 +347,14 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
+    // collection.
+
+    public void updateCollection(Collection collection) {
+        if (searchPresenter.getAdapter() instanceof CollectionAdapter) {
+            ((CollectionAdapter) searchPresenter.getAdapter()).updateCollection(collection, true, false);
+        }
+    }
+
     /**
      * Get the collections from the adapter in this view.
      *
@@ -324,6 +376,14 @@ public class HomeSearchView extends NestedScrollFrameLayout
         ((CollectionAdapter) searchPresenter.getAdapter()).setCollectionData(list);
         if (list.size() == 0 && !TextUtils.isEmpty(searchPresenter.getQuery())) {
             refreshPager();
+        }
+    }
+
+    // user.
+
+    public void updateUser(User user) {
+        if (searchPresenter.getAdapter() instanceof UserAdapter) {
+            ((UserAdapter) searchPresenter.getAdapter()).updateUser(user, true, false);
         }
     }
 
@@ -351,12 +411,17 @@ public class HomeSearchView extends NestedScrollFrameLayout
         }
     }
 
-    public HomeSearchView setClickListenerForFeedbackView(OnClickListener l) {
-        findViewById(R.id.container_searching_view_large).setOnClickListener(l);
-        return this;
+    // back to top.
+
+    public boolean needPagerBackToTop() {
+        return scrollPresenter.needBackToTop();
     }
 
-    /** <br> interface. */
+    public void pagerScrollToTop() {
+        scrollPresenter.scrollToTop();
+    }
+
+    // interface.
 
     // on click listener.
 
@@ -397,7 +462,7 @@ public class HomeSearchView extends NestedScrollFrameLayout
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
-            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true);
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true, true);
         }
     }
 
@@ -584,53 +649,5 @@ public class HomeSearchView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState implements Parcelable {
-        // data
-        String query;
-        int page;
-        boolean over;
-
-        // life cycle.
-
-        SavedState(HomeSearchView view) {
-            this.query = view.searchModel.getSearchQuery();
-            this.page = view.searchModel.getPhotosPage();
-            this.over = view.searchModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            this.query = in.readString();
-            this.page = in.readInt();
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            out.writeString(this.query);
-            out.writeInt(this.page);
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

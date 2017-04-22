@@ -10,6 +10,7 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.os.Build;
+import android.support.annotation.IntRange;
 import android.support.annotation.Size;
 import android.util.AttributeSet;
 import android.widget.ImageView;
@@ -25,14 +26,14 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
  * */
 
 public class FreedomImageView extends ImageView {
-    // widget
-    private Paint paint;
 
-    // data
+    private Paint paint;
 
     // measure size according the width and height. (proportion)
     private float width = 1;
-    private float height = 0.666F;
+    private float height = 0.6f;
+    @IntRange(from = 0)
+    private @interface SizeRule {}
 
     private boolean notFree = false; // if set false, there will be no different between this view and a ImageView.
     private boolean coverMode = false; // if set true, it means this ImageView is a cover in PhotoActivity.
@@ -43,8 +44,6 @@ public class FreedomImageView extends ImageView {
     private static final int POSITION_TOP = 1;
     private static final int POSITION_BOTTOM = -1;
     private static final int POSITION_BOTH = 2;
-
-    /** <br> life cycle. */
 
     public FreedomImageView(Context context) {
         super(context);
@@ -76,16 +75,18 @@ public class FreedomImageView extends ImageView {
         this.paint = new Paint();
     }
 
-    /** <br> UI. */
-
     @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (notFree) {
-            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        if (width >= 0 && height >= 0) {
+            if (notFree) {
+                super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+            } else {
+                int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
+                setMeasuredDimension(size[0], size[1]);
+            }
         } else {
-            int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
-            setMeasuredDimension(size[0], size[1]);
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }
 
@@ -157,9 +158,12 @@ public class FreedomImageView extends ImageView {
         }
     }
 
-    /** <br> data. */
+    @Size(2)
+    public float[] getSize() {
+        return new float[] {width, height};
+    }
 
-    public void setSize(int w, int h) {
+    public void setSize(@SizeRule int w, @SizeRule int h) {
         if (!notFree) {
             width = w;
             height = h;
@@ -175,10 +179,6 @@ public class FreedomImageView extends ImageView {
                 requestLayout();
             }
         }
-    }
-
-    public void setShowShadow(boolean show) {
-        this.showShadow = show;
     }
 
     @Size(2)
@@ -198,5 +198,9 @@ public class FreedomImageView extends ImageView {
         return new int[] {
                 measureWidth,
                 (int) (measureWidth * height / width)};
+    }
+
+    public void setShowShadow(boolean show) {
+        this.showShadow = show;
     }
 }

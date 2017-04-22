@@ -8,14 +8,12 @@ import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 
 public class MultiFilterBarObject
         implements MultiFilterBarModel {
-    // data
+
     private String searchQuery;
     private String searchUser;
     private int searchCategory;
     private String searchOrientation;
     private boolean searchFeatured;
-
-    /** <br> life cycle. */
 
     public MultiFilterBarObject() {
         this.searchQuery = "";
@@ -25,21 +23,14 @@ public class MultiFilterBarObject
         this.searchFeatured = false;
     }
 
-    /** <br> model. */
-
-    @Override
-    public void setQuery(String query) {
-        searchQuery = query;
-    }
-
     @Override
     public String getQuery() {
         return searchQuery;
     }
 
     @Override
-    public void setUsername(String username) {
-        searchUser = username;
+    public void setQuery(String query) {
+        searchQuery = query;
     }
 
     @Override
@@ -48,8 +39,8 @@ public class MultiFilterBarObject
     }
 
     @Override
-    public void setCategory(int c) {
-        searchCategory = c;
+    public void setUsername(String username) {
+        searchUser = username;
     }
 
     @Override
@@ -58,8 +49,8 @@ public class MultiFilterBarObject
     }
 
     @Override
-    public void setOrientation(String o) {
-        searchOrientation = o;
+    public void setCategory(int c) {
+        searchCategory = c;
     }
 
     @Override
@@ -68,12 +59,17 @@ public class MultiFilterBarObject
     }
 
     @Override
-    public void setFeatured(boolean f) {
-        searchFeatured = f;
+    public void setOrientation(String o) {
+        searchOrientation = o;
     }
 
     @Override
     public boolean isFeatured() {
         return searchFeatured;
+    }
+
+    @Override
+    public void setFeatured(boolean f) {
+        searchFeatured = f;
     }
 }

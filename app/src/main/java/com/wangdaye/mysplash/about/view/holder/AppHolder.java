@@ -25,21 +25,19 @@ import butterknife.OnClick;
  * */
 
 public class AppHolder extends AboutAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_about_app_icon) ImageView icon;
-    @BindView(R.id.item_about_app_title) TextView text;
 
-    // data
+    @BindView(R.id.item_about_app_icon)
+    ImageView icon;
+
+    @BindView(R.id.item_about_app_title)
+    TextView text;
+
     private int id;
-
-    /** <br> life cycle. */
 
     public AppHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
-    /** <br> UI. */
 
     @Override
     public void onBindView(MysplashActivity a, AboutModel model) {
@@ -54,8 +52,6 @@ public class AppHolder extends AboutAdapter.ViewHolder {
     protected void onRecycled() {
         // do nothing.
     }
-
-    /** <br> interface. */
 
     @OnClick(R.id.item_about_app_container) void clickItem() {
         switch (id) {

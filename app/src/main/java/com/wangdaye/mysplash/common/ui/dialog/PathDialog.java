@@ -28,10 +28,9 @@ import butterknife.OnClick;
  * */
 
 public class PathDialog extends MysplashDialogFragment {
-    // widget
-    @BindView(R.id.dialog_path_container) CoordinatorLayout container;
 
-    /** <br> life cycle. */
+    @BindView(R.id.dialog_path_container)
+    CoordinatorLayout container;
 
     @SuppressLint("InflateParams")
     @Override
@@ -50,14 +49,12 @@ public class PathDialog extends MysplashDialogFragment {
         return container;
     }
 
-    /** <br> UI. */
-
     private void initWidget(View v) {
         TextView content = ButterKnife.findById(v, R.id.dialog_path_text);
         DisplayUtils.setTypeface(getActivity(), content);
     }
 
-    /** <br> interface. */
+    // interface.
 
     @OnClick(R.id.dialog_path_copyBtn) void copy() {
         ((ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE))

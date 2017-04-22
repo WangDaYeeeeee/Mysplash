@@ -15,16 +15,12 @@ import com.wangdaye.mysplash.common.i.view.PagerView;
 
 public class PagerImplementor
         implements PagerPresenter {
-    // model & view.
-    private PagerView view;
 
-    /** <br> life cycle. */
+    private PagerView view;
 
     public PagerImplementor(PagerView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public boolean checkNeedRefresh() {

@@ -20,13 +20,6 @@ import com.wangdaye.mysplash.R;
  * */
 
 public class ThemeManager {
-    // data
-    private boolean lightTheme;
-
-    private static final String PREFERENCE_NAME = "mysplash_theme_manager";
-    private static final String KEY_LIGHT_THEME = "light_theme";
-
-    /** <br> singleton. */
 
     private static ThemeManager instance;
 
@@ -41,15 +34,16 @@ public class ThemeManager {
         return instance;
     }
 
-    /** <br> life cycle. */
+    private boolean lightTheme;
+
+    private static final String PREFERENCE_NAME = "mysplash_theme_manager";
+    private static final String KEY_LIGHT_THEME = "light_theme";
 
     private ThemeManager(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
                 PREFERENCE_NAME, Context.MODE_PRIVATE);
         this.lightTheme = sharedPreferences.getBoolean(KEY_LIGHT_THEME, true);
     }
-
-    /** <br> data. */
 
     public boolean isLightTheme() {
         return lightTheme;

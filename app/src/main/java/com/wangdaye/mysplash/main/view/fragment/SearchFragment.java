@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,7 +17,12 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.PagerManageModel;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
@@ -32,6 +38,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.i.view.SearchBarView;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.MessageManageImplementor;
@@ -41,6 +48,8 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomeSearchView;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,31 +72,38 @@ public class SearchFragment extends MysplashFragment
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
         ViewPager.OnPageChangeListener, NestedScrollAppBarLayout.OnNestedScrollingListener,
         SafeHandler.HandlerContainer {
-    // model.
-    private PagerManageModel pagerManageModel;
 
-    // view.
-    @BindView(R.id.fragment_search_statusBar) StatusBarView statusBar;
+    @BindView(R.id.fragment_search_statusBar)
+    StatusBarView statusBar;
 
-    @BindView(R.id.fragment_search_container) CoordinatorLayout container;
-    @BindView(R.id.fragment_search_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R.id.fragment_search_editText) EditText editText;
-    @BindView(R.id.fragment_search_viewPager) ViewPager viewPager;
-    @BindView(R.id.fragment_search_indicator) AutoHideInkPageIndicator indicator;
+    @BindView(R.id.fragment_search_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.fragment_search_appBar)
+    NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.fragment_search_editText)
+    EditText editText;
+
+    @BindView(R.id.fragment_search_viewPager)
+    ViewPager viewPager;
+
+    @BindView(R.id.fragment_search_indicator)
+    AutoHideInkPageIndicator indicator;
+
     private PagerView[] pagers = new PagerView[3];
 
     private SafeHandler<SearchFragment> handler;
 
-    // presenter.
     private SearchBarPresenter searchBarPresenter;
+
     private MessageManagePresenter messageManagePresenter;
+
+    private PagerManageModel pagerManageModel;
     private PagerManagePresenter pagerManagePresenter;
 
-    // data.
     private final String KEY_SEARCH_FRAGMENT_QUERY = "search_fragment_query";
     private final String KEY_SEARCH_FRAGMENT_PAGE_POSITION = "search_fragment_page_position";
-
-    /** <br> life cycle. */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -113,10 +129,8 @@ public class SearchFragment extends MysplashFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(KEY_SEARCH_FRAGMENT_QUERY, editText.getText().toString());
-        outState.putInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
+    public boolean needSetOnlyWhiteStatusBarText() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
     @Override
@@ -129,26 +143,10 @@ public class SearchFragment extends MysplashFragment
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
-    }
-
-    @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
-
-    @Override
-    public boolean needBackToTop() {
-        return pagerManagePresenter.needPagerBackToTop();
-    }
-
-    @Override
-    public void backToTop() {
-        statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
-        BackToTopUtils.showTopBar(appBar, viewPager);
-        pagerManagePresenter.pagerScrollToTop();
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(KEY_SEARCH_FRAGMENT_QUERY, editText.getText().toString());
+        outState.putInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
     }
 
     @Override
@@ -177,15 +175,69 @@ public class SearchFragment extends MysplashFragment
         }
     }
 
-    /** <br> presenter. */
-
-    private void initPresenter() {
-        this.searchBarPresenter = new SearchBarImplementor(this);
-        this.messageManagePresenter = new MessageManageImplementor(this);
-        this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
+    @Override
+    public boolean needBackToTop() {
+        return pagerManagePresenter.needPagerBackToTop();
     }
 
-    /** <br> view. */
+    @Override
+    public void backToTop() {
+        statusBar.animToInitAlpha();
+        setStatusBarStyle(false);
+        BackToTopUtils.showTopBar(appBar, viewPager);
+        pagerManagePresenter.pagerScrollToTop();
+    }
+
+    @Override
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Mysplash.PHOTO_ACTIVITY:
+                Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
+                if (photo != null) {
+                    ((HomeSearchView) pagers[0]).updatePhoto(photo);
+                }
+                break;
+
+            case Mysplash.COLLECTION_ACTIVITY:
+                Collection collection = data.getParcelableExtra(
+                        CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
+                if (collection != null) {
+                    ((HomeSearchView) pagers[1]).updateCollection(collection);
+                }
+                break;
+
+            case Mysplash.USER_ACTIVITY:
+                User user = data.getParcelableExtra(
+                        UserActivity.KEY_USER_ACTIVITY_USER);
+                if (user != null) {
+                    ((HomeSearchView) pagers[2]).updateUser(user);
+                }
+                break;
+
+            case Mysplash.ME_ACTIVITY:
+                User me = AuthManager.getInstance().getUser();
+                if (me != null) {
+                    ((HomeSearchView) pagers[2]).updateUser(me);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
+
+    // init.
+
+    private void initModel(Bundle saveInstanceState) {
+        if (saveInstanceState != null) {
+            this.pagerManageModel = new PagerManageObject(
+                    saveInstanceState.getInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, 0));
+        } else {
+            this.pagerManageModel = new PagerManageObject(0);
+        }
+    }
 
     private void initView(View v, Bundle savedInstanceState) {
         this.handler = new SafeHandler<>(this);
@@ -265,18 +317,13 @@ public class SearchFragment extends MysplashFragment
         }
     }
 
-    /** <br> model. */
-
-    private void initModel(Bundle saveInstanceState) {
-        if (saveInstanceState != null) {
-            this.pagerManageModel = new PagerManageObject(
-                    saveInstanceState.getInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, 0));
-        } else {
-            this.pagerManageModel = new PagerManageObject(0);
-        }
+    private void initPresenter() {
+        this.searchBarPresenter = new SearchBarImplementor(this);
+        this.messageManagePresenter = new MessageManageImplementor(this);
+        this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 

@@ -24,16 +24,12 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 public class PopupManageImplementor
         implements PopupManagePresenter,
         MeMenuPopupWindow.OnSelectItemListener {
-    // model & view.
-    private PopupManageView view;
 
-    /** <br> life cycle. */
+    private PopupManageView view;
 
     public PopupManageImplementor(PopupManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void showPopup(Context c, View anchor, String value, final int position) {
@@ -59,7 +55,7 @@ public class PopupManageImplementor
         }
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on select item swipeListener.
 

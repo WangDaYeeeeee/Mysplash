@@ -28,10 +28,9 @@ import butterknife.OnClick;
  * */
 
 public class HeaderHolder extends AboutAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_about_header_appIcon) ImageView appIcon;
 
-    /** <br> life cycle. */
+    @BindView(R.id.item_about_header_appIcon)
+    ImageView appIcon;
 
     public HeaderHolder(View itemView) {
         super(itemView);
@@ -53,8 +52,6 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
         DisplayUtils.setTypeface(itemView.getContext(), unsplashContent);
     }
 
-    /** <br> UI. */
-
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {
         ImageHelper.loadIcon(a, appIcon, R.drawable.ic_launcher);
@@ -64,8 +61,6 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
     protected void onRecycled() {
         ImageHelper.releaseImageView(appIcon);
     }
-
-    /** <br> interface. */
 
     @OnClick(R.id.item_about_header_backButton) void close() {
         MysplashActivity activity = Mysplash.getInstance()

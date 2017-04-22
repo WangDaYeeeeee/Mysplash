@@ -11,10 +11,8 @@ import com.wangdaye.mysplash.common.i.model.AboutModel;
 
 public class HeaderObject
         implements AboutModel {
-    // data
-    public int type = AboutModel.TYPE_HEADER;
 
-    /** <br> model. */
+    public int type = AboutModel.TYPE_HEADER;
 
     @Override
     public int getType() {

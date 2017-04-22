@@ -65,32 +65,41 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         implements MyFollowView, PagerView, LoadView, ScrollView, SwipeBackView,
         BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         MyFollowAdapter.OnFollowStateChangedListener {
-    // model.
+
+    @BindView(R.id.container_loading_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_loading_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private MyFollowModel myFollowModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_loading_view_large_feedbackTxt) TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private MyFollowPresenter myFollowPresenter;
-    private PagerPresenter pagerPresenter;
-    private LoadPresenter loadPresenter;
-    private ScrollPresenter scrollPresenter;
-    private SwipeBackPresenter swipeBackPresenter;
 
-    /** <br> life cycle. */
+    private PagerPresenter pagerPresenter;
+
+    private LoadModel loadModel;
+    private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
+    private ScrollPresenter scrollPresenter;
+
+    private SwipeBackPresenter swipeBackPresenter;
 
     public MyFollowUserView(MysplashActivity a, int photosType) {
         super(a);
         this.initialize(a, photosType);
     }
+
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize(MysplashActivity a, int followType) {
@@ -108,12 +117,15 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return true;
-    }
+    // init.
 
-    /** <br> presenter. */
+    private void initModel(MysplashActivity a, int followType) {
+        this.myFollowModel = new MyFollowObject(
+                new MyFollowAdapter(a, new ArrayList<MyFollowUser>(Mysplash.DEFAULT_PER_PAGE), this),
+                followType);
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject();
+    }
 
     private void initPresenter() {
         this.myFollowPresenter = new MyFollowImplementor(myFollowModel, this);
@@ -122,8 +134,6 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
     }
-
-    /** <br> view. */
 
     private void initView() {
         this.initContentView();
@@ -154,25 +164,18 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     }
 
-    /** <br> model. */
+    // control.
 
-    // init.
-
-    private void initModel(MysplashActivity a, int followType) {
-        this.myFollowModel = new MyFollowObject(
-                new MyFollowAdapter(a, new ArrayList<MyFollowUser>(Mysplash.DEFAULT_PER_PAGE), this),
-                followType);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject();
+    @Override
+    public boolean isParentOffset() {
+        return true;
     }
-
-    // interface.
 
     public int getDeltaValue() {
         return myFollowPresenter.getDeltaValue();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -402,7 +405,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
             case LoadObject.NORMAL_STATE:
-                return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir)
+                return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || myFollowPresenter.getAdapter().getItemCount() <= 0;
 
             default:

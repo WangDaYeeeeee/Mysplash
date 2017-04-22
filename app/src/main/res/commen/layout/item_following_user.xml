@@ -11,7 +11,7 @@
     android:foreground="?attr/selectableItemBackground"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
-    <com.wangdaye.mysplash.common.ui.widget.clipView.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
         android:id="@+id/item_following_user_avatar"
         android:layout_width="@dimen/normal_icon_size"
         android:layout_height="@dimen/normal_icon_size"

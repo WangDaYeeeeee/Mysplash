@@ -24,13 +24,12 @@ import android.view.animation.DecelerateInterpolator;
 @CoordinatorLayout.DefaultBehavior(NestedScrollAppBarLayout.Behavior.class)
 public class NestedScrollAppBarLayout extends AppBarLayout
         implements NestedScrollingChild {
-    // widget
+
     private NestedScrollingChildHelper nestedScrollingChildHelper;
     OnNestedScrollingListener nestedScrollingListener;
 
     private AutomaticScrollAnimator animator;
 
-    // data
     private float touchSlop;
 
     private float startY;
@@ -40,177 +39,12 @@ public class NestedScrollAppBarLayout extends AppBarLayout
     private int enterAlwaysHeight;
     private int staticHeight;
 
-    /** <br> life cycle. */
-
-    public NestedScrollAppBarLayout(Context context) {
-        super(context);
-        this.initialize();
-    }
-
-    public NestedScrollAppBarLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.initialize();
-    }
-
-    private void initialize() {
-        this.nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
-        setNestedScrollingEnabled(true);
-
-        this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
-    }
-
-    /** <br> UI. */
-
-    /**
-     * Do animation to expand the whole AppBarLayout.
-     * */
-    public void showTopBar() {
-        stopScrollAnimator();
-        doScrollAnimation(0);
-    }
-
-    /**
-     * Do animation to expand the part of AppBarLayout which has "enterAlways" flag.
-     * */
-    public void showEnterAlwaysBar() {
-        stopScrollAnimator();
-        doScrollAnimation(-scrollHeight);
-    }
-
-    /**
-     * Do animation to hide the part of AppBarLayout which has "scroll" flag.
-     * */
-    public void hideTopBar() {
-        stopScrollAnimator();
-        doScrollAnimation(staticHeight - getMeasuredHeight());
-    }
-
-    private void doScrollAnimation(int toY) {
-        if (getY() != toY) {
-            this.animator = new AutomaticScrollAnimator(toY);
-            animator.start();
-        }
-    }
-
-    public void stopScrollAnimator() {
-        if (animator != null) {
-            animator.cancel();
-        }
-    }
-
-    /** <br> data. */
-
-    public float getTouchSlop() {
-        return touchSlop;
-    }
-
-    public float getStartY() {
-        return startY;
-    }
-
-    public void setStartY(float startY) {
-        this.startY = startY;
-    }
-
-    /**
-     * compute the height of three part in AppBarLayout.
-     * */
-    void computerHeightData() {
-        scrollHeight = enterAlwaysHeight = staticHeight = 0;
-        for (int i = 0; i < getChildCount(); i ++) {
-            View v = getChildAt(i);
-            LayoutParams params = (LayoutParams) v.getLayoutParams();
-            int flags = params.getScrollFlags();
-            if ((flags & LayoutParams.SCROLL_FLAG_SNAP) == LayoutParams.SCROLL_FLAG_SNAP) {
-                scrollHeight = enterAlwaysHeight = staticHeight = 0;
-                return;
-            } else if ((flags & LayoutParams.SCROLL_FLAG_SCROLL) != LayoutParams.SCROLL_FLAG_SCROLL) {
-                staticHeight += v.getMeasuredHeight();
-            } else if ((flags & LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) == LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) {
-                enterAlwaysHeight += v.getMeasuredHeight();
-            } else {
-                scrollHeight += v.getMeasuredHeight();
-            }
-        }
-    }
-
-    /** <br> interface. */
-
-    // on nested scrolling listener.
-
-    public interface OnNestedScrollingListener {
-        void onStartNestedScroll();
-        void onNestedScrolling();
-        void onStopNestedScroll();
-    }
-
-    public void setOnNestedScrollingListener(OnNestedScrollingListener l) {
-        this.nestedScrollingListener = l;
-    }
-
-    // nested scrolling child.
-
-    @Override
-    public void setNestedScrollingEnabled(boolean enabled) {
-        nestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
-    }
-
-    @Override
-    public boolean isNestedScrollingEnabled() {
-        return nestedScrollingChildHelper.isNestedScrollingEnabled();
-    }
-
-    @Override
-    public boolean startNestedScroll(int axes) {
-        return nestedScrollingChildHelper.startNestedScroll(axes);
-    }
-
-    @Override
-    public void stopNestedScroll() {
-        nestedScrollingChildHelper.stopNestedScroll();
-    }
-
-    @Override
-    public boolean hasNestedScrollingParent() {
-        return nestedScrollingChildHelper.hasNestedScrollingParent();
-    }
-
-    @Override
-    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed,
-                                        int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
-        return nestedScrollingChildHelper.dispatchNestedScroll(
-                dxConsumed, dyConsumed,
-                dxUnconsumed, dyUnconsumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
-        return nestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
-        return nestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
-        return nestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
-    }
-
-    /** <br> inner class. */
-
-    // behavior.
-
     public static class Behavior extends AppBarLayout.Behavior {
-        // widget
+
         private NestedScrollAppBarLayout appBarLayout = null;
 
-        // data
         private float oldY;
         private boolean isBeingDragged;
-
-        // life cycle.
 
         public Behavior() {
             super();
@@ -225,8 +59,6 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                 this.appBarLayout = (NestedScrollAppBarLayout) child;
             }
         }
-
-        // touch.
 
         @Override
         public boolean onTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
@@ -267,8 +99,6 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
             return super.onTouchEvent(parent, child, ev);
         }
-
-        // nested scroll.
 
         @Override
         public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child,
@@ -339,16 +169,10 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         }
     }
 
-    // animation.
-
     private class AutomaticScrollAnimator extends ValueAnimator {
-        // widget
+
         private CoordinatorLayout.Behavior behavior = null;
-
-        // data
         private int lastY;
-
-        // life cycle.
 
         AutomaticScrollAnimator(final int toY) {
             final ViewGroup.LayoutParams params = getLayoutParams();
@@ -380,5 +204,157 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                 }
             });
         }
+    }
+
+    public NestedScrollAppBarLayout(Context context) {
+        super(context);
+        this.initialize();
+    }
+
+    public NestedScrollAppBarLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.initialize();
+    }
+
+    private void initialize() {
+        this.nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
+        setNestedScrollingEnabled(true);
+
+        this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    /**
+     * Do animation to expand the whole AppBarLayout.
+     * */
+    public void showTopBar() {
+        stopScrollAnimator();
+        doScrollAnimation(0);
+    }
+
+    /**
+     * Do animation to expand the part of AppBarLayout which has "enterAlways" flag.
+     * */
+    public void showEnterAlwaysBar() {
+        stopScrollAnimator();
+        doScrollAnimation(-scrollHeight);
+    }
+
+    /**
+     * Do animation to hide the part of AppBarLayout which has "scroll" flag.
+     * */
+    public void hideTopBar() {
+        stopScrollAnimator();
+        doScrollAnimation(staticHeight - getMeasuredHeight());
+    }
+
+    private void doScrollAnimation(int toY) {
+        if (getY() != toY) {
+            this.animator = new AutomaticScrollAnimator(toY);
+            animator.start();
+        }
+    }
+
+    public void stopScrollAnimator() {
+        if (animator != null) {
+            animator.cancel();
+        }
+    }
+
+    public float getTouchSlop() {
+        return touchSlop;
+    }
+
+    public float getStartY() {
+        return startY;
+    }
+
+    public void setStartY(float startY) {
+        this.startY = startY;
+    }
+
+    /**
+     * compute the height of three part in AppBarLayout.
+     * */
+    void computerHeightData() {
+        scrollHeight = enterAlwaysHeight = staticHeight = 0;
+        for (int i = 0; i < getChildCount(); i ++) {
+            View v = getChildAt(i);
+            LayoutParams params = (LayoutParams) v.getLayoutParams();
+            int flags = params.getScrollFlags();
+            if ((flags & LayoutParams.SCROLL_FLAG_SNAP) == LayoutParams.SCROLL_FLAG_SNAP) {
+                scrollHeight = enterAlwaysHeight = staticHeight = 0;
+                return;
+            } else if ((flags & LayoutParams.SCROLL_FLAG_SCROLL) != LayoutParams.SCROLL_FLAG_SCROLL) {
+                staticHeight += v.getMeasuredHeight();
+            } else if ((flags & LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) == LayoutParams.SCROLL_FLAG_ENTER_ALWAYS) {
+                enterAlwaysHeight += v.getMeasuredHeight();
+            } else {
+                scrollHeight += v.getMeasuredHeight();
+            }
+        }
+    }
+
+    // interface.
+
+    // on nested scrolling listener.
+
+    public interface OnNestedScrollingListener {
+        void onStartNestedScroll();
+        void onNestedScrolling();
+        void onStopNestedScroll();
+    }
+
+    public void setOnNestedScrollingListener(OnNestedScrollingListener l) {
+        this.nestedScrollingListener = l;
+    }
+
+    // nested scrolling child.
+
+    @Override
+    public void setNestedScrollingEnabled(boolean enabled) {
+        nestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
+    }
+
+    @Override
+    public boolean isNestedScrollingEnabled() {
+        return nestedScrollingChildHelper.isNestedScrollingEnabled();
+    }
+
+    @Override
+    public boolean startNestedScroll(int axes) {
+        return nestedScrollingChildHelper.startNestedScroll(axes);
+    }
+
+    @Override
+    public void stopNestedScroll() {
+        nestedScrollingChildHelper.stopNestedScroll();
+    }
+
+    @Override
+    public boolean hasNestedScrollingParent() {
+        return nestedScrollingChildHelper.hasNestedScrollingParent();
+    }
+
+    @Override
+    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed,
+                                        int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+        return nestedScrollingChildHelper.dispatchNestedScroll(
+                dxConsumed, dyConsumed,
+                dxUnconsumed, dyUnconsumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
+        return nestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
+    }
+
+    @Override
+    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
+        return nestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
+    }
+
+    @Override
+    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
+        return nestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
     }
 }

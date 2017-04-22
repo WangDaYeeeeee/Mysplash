@@ -47,8 +47,6 @@ import java.util.regex.Pattern;
 
 public class ImageHelper {
 
-    /** <br> UI. */
-
     // photo.
 
     public static void loadRegularPhoto(Context context, final ImageView view, Photo photo,
@@ -354,7 +352,9 @@ public class ImageHelper {
         Glide.clear(view);
     }
 
-    /** <br> swipeListener. */
+    // interface.
+
+    // on load image listener.
 
     public interface OnLoadImageListener {
         void onLoadSucceed();

@@ -14,8 +14,12 @@ import com.wangdaye.mysplash.Mysplash;
 
 public interface SearchPresenter {
 
+    // HTTP request.
+
     void requestPhotos(Context c, @Mysplash.PageRule int page, boolean refresh);
     void cancelRequest();
+
+    // load data interface.
 
     /**
      * The param notify is used to control the SwipeRefreshLayout. If set true, the
@@ -28,6 +32,8 @@ public interface SearchPresenter {
     boolean canLoadMore();
     boolean isRefreshing();
     boolean isLoading();
+
+    // manage HTTP request parameters.
 
     void setQuery(String key);
     String getQuery();

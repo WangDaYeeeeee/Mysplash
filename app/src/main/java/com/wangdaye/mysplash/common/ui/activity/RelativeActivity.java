@@ -1,13 +1,8 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,12 +10,11 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
@@ -28,7 +22,6 @@ import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
@@ -45,23 +38,28 @@ import butterknife.OnClick;
  *
  * */
 
-public class RelativeActivity extends MysplashActivity
+public class RelativeActivity extends ReadWriteActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener,
         SelectCollectionDialog.OnCollectionsChangedListener, PhotoAdapter.OnDownloadPhotoListener {
-    // widget
-    @BindView(R.id.activity_relative_container) CoordinatorLayout container;
-    @BindView(R.id.activity_relative_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_relative_topBar) RelativeLayout topBar;
-    @BindView(R.id.activity_relative_photoRecyclerView) RecyclerView photoRecyclerView;
+
+    @BindView(R.id.activity_relative_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_relative_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_relative_topBar)
+    RelativeLayout topBar;
+
+    @BindView(R.id.activity_relative_photoRecyclerView)
+    RecyclerView photoRecyclerView;
 
     private PhotoAdapter adapter;
     private OnScrollListener scrollListener;
 
-    // data
     private Photo downloadTarget;
-    public static final String KEY_RELATIVE_ACTIVITY_PHOTO = "relative_activity_photo";
 
-    /** <br> life cycle. */
+    public static final String KEY_RELATIVE_ACTIVITY_PHOTO = "relative_activity_photo";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +92,17 @@ public class RelativeActivity extends MysplashActivity
     }
 
     @Override
+    public void handleBackPressed() {
+        if (ViewCompat.canScrollVertically(photoRecyclerView, -1)
+                && BackToTopUtils.isSetBackToTop(false)) {
+            // need scroll to top.
+            backToTop();
+        } else {
+            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        }
+    }
+
+    @Override
     protected void backToTop() {
         int firstVisibleItem = ((LinearLayoutManager) photoRecyclerView.getLayoutManager())
                 .findFirstVisibleItemPosition();
@@ -101,11 +110,6 @@ public class RelativeActivity extends MysplashActivity
             photoRecyclerView.scrollToPosition(5);
         }
         photoRecyclerView.smoothScrollBy(0, (int) scrollListener.topBarTranslationY);
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
     }
 
     @Override
@@ -123,22 +127,11 @@ public class RelativeActivity extends MysplashActivity
     }
 
     @Override
-    public void handleBackPressed() {
-        if (ViewCompat.canScrollVertically(photoRecyclerView, -1)
-                && BackToTopUtils.isSetBackToTop(false)) {
-            // need scroll to top.
-            backToTop();
-        } else {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-        }
-    }
-
-    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
-    /** <br> UI. */
+    // init.
 
     private void initWidget() {
         Photo photo = getIntent().getParcelableExtra(KEY_RELATIVE_ACTIVITY_PHOTO);
@@ -187,46 +180,15 @@ public class RelativeActivity extends MysplashActivity
         adapter.setRecyclerView(photoRecyclerView);
     }
 
-    /** <br> permission. */
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestPermission(int permissionCode, int type) {
-        switch (permissionCode) {
-            case Mysplash.WRITE_EXTERNAL_STORAGE:
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    this.requestPermissions(
-                            new String[] {
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            type);
-                } else {
-                    DownloadHelper.getInstance(this)
-                            .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
-                }
-                break;
-        }
-    }
+    // permission.
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
-        super.onRequestPermissionsResult(requestCode, permission, grantResult);
-        for (int i = 0; i < permission.length; i ++) {
-            switch (permission[i]) {
-                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        DownloadHelper.getInstance(this)
-                                .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
-                    } else {
-                        NotificationHelper.showSnackbar(
-                                getString(R.string.feedback_need_permission),
-                                Snackbar.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
+    protected void requestReadWritePermissionSucceed(int requestCode) {
+        DownloadHelper.getInstance(this)
+                .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -257,7 +219,7 @@ public class RelativeActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(photoRecyclerView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBack(photoRecyclerView, dir);
     }
 
     @Override
@@ -280,7 +242,7 @@ public class RelativeActivity extends MysplashActivity
             DownloadHelper.getInstance(this)
                     .addMission(this, downloadTarget, DownloadHelper.DOWNLOAD_TYPE);
         } else {
-            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, DownloadHelper.DOWNLOAD_TYPE);
+            requestReadWritePermission();
         }
     }
 
@@ -293,6 +255,6 @@ public class RelativeActivity extends MysplashActivity
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        adapter.updatePhoto(p, false);
+        adapter.updatePhoto(p, false, true);
     }
 }

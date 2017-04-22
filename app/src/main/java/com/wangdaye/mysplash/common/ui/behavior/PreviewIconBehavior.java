@@ -16,13 +16,9 @@ import android.view.View;
 
 public class PreviewIconBehavior<V extends View> extends CoordinatorLayout.Behavior<V> {
 
-    /** <br> life cycle. */
-
     public PreviewIconBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
-    /** <br> UI. */
 
     @Override
     public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {

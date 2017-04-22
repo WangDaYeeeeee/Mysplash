@@ -11,13 +11,9 @@ public class ScrollObject
     // data
     private boolean toTop;
 
-    /** <br> life cycle. */
-
     public ScrollObject() {
         this.toTop = true;
     }
-
-    /** <br> model. */
 
     @Override
     public boolean isToTop() {

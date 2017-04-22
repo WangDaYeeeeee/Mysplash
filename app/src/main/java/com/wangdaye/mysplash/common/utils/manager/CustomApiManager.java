@@ -12,15 +12,6 @@ import android.text.TextUtils;
  * */
 
 public class CustomApiManager {
-    // data
-    private String customApiKey;
-    private String customApiSecret;
-
-    private static final String PREFERENCE_MYSPLASH_API_MANAGER = "mysplash_api_manager";
-    private static final String KEY_CUSTOM_API_KEY = "custom_api_key";
-    private static final String KEY_CUSTOM_API_SECRET = "custom_api_secret";
-
-    /** singleton. */
 
     private static CustomApiManager instance;
 
@@ -35,7 +26,12 @@ public class CustomApiManager {
         return instance;
     }
 
-    /** <br> life cycle. */
+    private String customApiKey;
+    private String customApiSecret;
+
+    private static final String PREFERENCE_MYSPLASH_API_MANAGER = "mysplash_api_manager";
+    private static final String KEY_CUSTOM_API_KEY = "custom_api_key";
+    private static final String KEY_CUSTOM_API_SECRET = "custom_api_secret";
 
     private CustomApiManager(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
@@ -43,8 +39,6 @@ public class CustomApiManager {
         this.customApiKey = sharedPreferences.getString(KEY_CUSTOM_API_KEY, null);
         this.customApiSecret = sharedPreferences.getString(KEY_CUSTOM_API_SECRET, null);
     }
-
-    /** <br> data. */
 
     public String getCustomApiKey() {
         return customApiKey;

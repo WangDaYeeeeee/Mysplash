@@ -1,8 +1,6 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
-import android.Manifest;
 import android.app.WallpaperManager;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -12,10 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -24,9 +19,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.ui.dialog.WallpaperWhereDialog;
 import com.wangdaye.mysplash.common.ui.popup.WallpaperAlignPopupWindow;
 import com.wangdaye.mysplash.common.ui.popup.WallpaperClipPopupWindow;
@@ -35,7 +29,6 @@ import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 
@@ -55,21 +48,31 @@ import butterknife.OnClick;
  *
  * */
 
-public class SetWallpaperActivity extends MysplashActivity
+public class SetWallpaperActivity extends ReadWriteActivity
         implements WallpaperClipPopupWindow.OnClipTypeChangedListener,
         WallpaperAlignPopupWindow.OnAlignTypeChangedListener,
         WallpaperWhereDialog.OnWhereSelectedListener, SafeHandler.HandlerContainer {
-    // widget
+
+    @BindView(R.id.activity_set_wallpaper_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_set_wallpaper_closeBtn)
+    ImageButton closeBtn;
+
+    @BindView(R.id.activity_set_wallpaper_typeBtn)
+    ImageView typeBtn;
+
+    @BindView(R.id.activity_set_wallpaper_alignBtn)
+    ImageView alignBtn;
+
+    @BindView(R.id.activity_set_wallpaper_setBtn)
+    Button setBtn;
+
+    @BindView(R.id.activity_set_wallpaper_photoView)
+    PhotoView photoView;
+
     private SafeHandler<SetWallpaperActivity> handler;
 
-    @BindView(R.id.activity_set_wallpaper_container) CoordinatorLayout container;
-    @BindView(R.id.activity_set_wallpaper_closeBtn) ImageButton closeBtn;
-    @BindView(R.id.activity_set_wallpaper_typeBtn) ImageView typeBtn;
-    @BindView(R.id.activity_set_wallpaper_alignBtn) ImageView alignBtn;
-    @BindView(R.id.activity_set_wallpaper_setBtn) Button setBtn;
-    @BindView(R.id.activity_set_wallpaper_photoView) PhotoView photoView;
-
-    // data
     private File photoFile;
 
     private boolean light;
@@ -97,7 +100,39 @@ public class SetWallpaperActivity extends MysplashActivity
     @IntDef({WHERE_WALLPAPER, WHERE_LOCKSCREEN, WHERE_WALL_LOCK})
     public  @interface WallpaperWhereRule {}
 
-    /** <br> life cycle. */
+    /**
+     * A Runnable class to set picture as wallpaper.
+     * */
+    public Runnable setWallpaper = new Runnable() {
+        @Override
+        public void run() {
+            setWallpaper(true);
+            handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
+        }
+    };
+
+    /**
+     * A Runnable class to set picture as background in lock screen.
+     * */
+    public Runnable setLockScreen = new Runnable() {
+        @Override
+        public void run() {
+            setWallpaper(false);
+            handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
+        }
+    };
+
+    /**
+     * A Runnable class to set picture as wallpaper and background in lock screen.
+     * */
+    public Runnable setWallAndLock = new Runnable() {
+        @Override
+        public void run() {
+            setWallpaper(true);
+            setWallpaper(false);
+            handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +147,7 @@ public class SetWallpaperActivity extends MysplashActivity
             setStarted();
             ButterKnife.bind(this);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermission(Mysplash.READ_EXTERNAL_STORAGE, 0);
+                requestReadWritePermission();
             } else {
                 initData();
                 initWidget();
@@ -121,28 +156,8 @@ public class SetWallpaperActivity extends MysplashActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         // do nothing.
-    }
-
-    @Override
-    public void finishActivity(int dir) {
-        finish();
-    }
-
-    @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
-    }
-
-    @Override
-    public void handleBackPressed() {
-        finishActivity(0);
     }
 
     @Override
@@ -156,16 +171,39 @@ public class SetWallpaperActivity extends MysplashActivity
     }
 
     @Override
+    protected boolean operateStatusBarBySelf() {
+        return true;
+    }
+
+    @Override
+    public void handleBackPressed() {
+        finishActivity(0);
+    }
+
+    @Override
     protected void backToTop() {
         // do nothing.
     }
 
     @Override
-    protected boolean operateStatusBarBySelf() {
-        return true;
+    public void finishActivity(int dir) {
+        finish();
     }
 
-    /** <br> UI. */
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
+
+    // init.
+
+    private void initData() {
+        this.photoFile = new File(getIntent().getData().getSchemeSpecificPart());
+        if (!photoFile.exists()) {
+            photoFile = new File(FileUtils.uriToFilePath(this, getIntent().getData()));
+        }
+        light = false;
+    }
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
@@ -191,6 +229,8 @@ public class SetWallpaperActivity extends MysplashActivity
                 },
                 photoFile);
     }
+
+    // control.
 
     /**
      * Change text and icon color when loading picture.
@@ -265,16 +305,6 @@ public class SetWallpaperActivity extends MysplashActivity
                 }
                 break;
         }
-    }
-
-    /** <br> data. */
-
-    private void initData() {
-        this.photoFile = new File(getIntent().getData().getSchemeSpecificPart());
-        if (!photoFile.exists()) {
-            photoFile = new File(FileUtils.uriToFilePath(this, getIntent().getData()));
-        }
-        light = false;
     }
 
     private int computeBackgroundColor(Bitmap bitmap) {
@@ -428,46 +458,15 @@ public class SetWallpaperActivity extends MysplashActivity
         }
     }
 
-    /** <br> permission. */
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestPermission(int permissionCode, int type) {
-        switch (permissionCode) {
-            case Mysplash.READ_EXTERNAL_STORAGE:
-                if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    this.requestPermissions(
-                            new String[] {
-                                    Manifest.permission.READ_EXTERNAL_STORAGE},
-                            type);
-                } else {
-                    initData();
-                    initWidget();
-                }
-                break;
-        }
-    }
+    // permission.
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
-        super.onRequestPermissionsResult(requestCode, permission, grantResult);
-        for (int i = 0; i < permission.length; i ++) {
-            switch (permission[i]) {
-                case Manifest.permission.READ_EXTERNAL_STORAGE:
-                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        initData();
-                        initWidget();
-                    } else {
-                        NotificationHelper.showSnackbar(
-                                getString(R.string.feedback_need_permission),
-                                Snackbar.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
+    protected void requestReadWritePermissionSucceed(int requestCode) {
+        initData();
+        initWidget();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -539,40 +538,4 @@ public class SetWallpaperActivity extends MysplashActivity
                 break;
         }
     }
-
-    /** <br> inner class. */
-
-    /**
-     * A Runnable class to set picture as wallpaper.
-     * */
-    public Runnable setWallpaper = new Runnable() {
-        @Override
-        public void run() {
-            setWallpaper(true);
-            handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
-        }
-    };
-
-    /**
-     * A Runnable class to set picture as background in lock screen.
-     * */
-    public Runnable setLockScreen = new Runnable() {
-        @Override
-        public void run() {
-            setWallpaper(false);
-            handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
-        }
-    };
-
-    /**
-     * A Runnable class to set picture as wallpaper and background in lock screen.
-     * */
-    public Runnable setWallAndLock = new Runnable() {
-        @Override
-        public void run() {
-            setWallpaper(true);
-            setWallpaper(false);
-            handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
-        }
-    };
 }

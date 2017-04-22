@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.common.ui.adapter.UserAdapter;
 
 public class SearchUsersObject
         implements SearchModel {
-    // data
+
     private UserAdapter adapter;
     private SearchService service;
 
@@ -26,8 +26,6 @@ public class SearchUsersObject
     private boolean refreshing;
     private boolean loading;
     private boolean over;
-
-    /** <br> life cycle. */
 
     public SearchUsersObject(UserAdapter adapter) {
         this.adapter = adapter;

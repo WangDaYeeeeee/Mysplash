@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash.common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
@@ -32,6 +34,7 @@ import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.CategoryPhotosView;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,28 +52,36 @@ public class CategoryFragment extends MysplashFragment
         View.OnClickListener, Toolbar.OnMenuItemClickListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener,
         SearchCategoryPopupWindow.OnSearchCategoryChangedListener {
-    // model.
+
+    @BindView(R.id.fragment_category_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.fragment_category_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.fragment_category_appBar)
+    NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.fragment_category_toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.fragment_category_title)
+    TextView title;
+
+    @BindView(R.id.fragment_category_titleBtn)
+    ImageButton titleBtn;
+
+    @BindView(R.id.fragment_category_categoryPhotosView)
+    CategoryPhotosView photosView;
+
     private CategoryManageModel categoryManageModel;
-
-    // view.
-    @BindView(R.id.fragment_category_statusBar) StatusBarView statusBar;
-
-    @BindView(R.id.fragment_category_container) CoordinatorLayout container;
-    @BindView(R.id.fragment_category_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R.id.fragment_category_toolbar) Toolbar toolbar;
-    @BindView(R.id.fragment_category_title) TextView title;
-    @BindView(R.id.fragment_category_titleBtn) ImageButton titleBtn;
-    @BindView(R.id.fragment_category_categoryPhotosView) CategoryPhotosView photosView;
-
-    // presenter.
     private CategoryManagePresenter categoryManagePresenter;
+
     private ToolbarPresenter toolbarPresenter;
+
     private PopupManagePresenter popupManagePresenter;
 
-    // data
     private static final String KEY_CATEGORY_FRAGMENT_CATEGORY_ID = "key_category_fragment_category_id";
-
-    /** <br> life cycle. */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,24 +106,6 @@ public class CategoryFragment extends MysplashFragment
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
-    }
-
-    @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
-
-    @Override
-    public void backToTop() {
-        statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
-        BackToTopUtils.showTopBar(appBar, photosView);
-        photosView.pagerScrollToTop();
-    }
-
-    @Override
     public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
         if (photosView != null) {
             ((MainActivity.SavedStateFragment) outState).setCategoryList(photosView.getPhotos());
@@ -126,17 +119,54 @@ public class CategoryFragment extends MysplashFragment
         }
     }
 
-    /** <br> presenter. */
+    @Override
+    public boolean needSetOnlyWhiteStatusBarText() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
+    }
+
+    @Override
+    public boolean needBackToTop() {
+        return photosView.needPagerBackToTop();
+    }
+
+    @Override
+    public void backToTop() {
+        statusBar.animToInitAlpha();
+        setStatusBarStyle(false);
+        BackToTopUtils.showTopBar(appBar, photosView);
+        photosView.pagerScrollToTop();
+    }
+
+    @Override
+    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Mysplash.PHOTO_ACTIVITY) {
+            Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
+            if (photo != null) {
+                photosView.updatePhoto(photo);
+            }
+        }
+    }
+
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
+
+    // init.
+
+    private void initModel(Bundle savedInstanceState) {
+        int categoryId = savedInstanceState == null ?
+                Mysplash.CATEGORY_BUILDINGS_ID
+                :
+                savedInstanceState.getInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, Mysplash.CATEGORY_BUILDINGS_ID);
+        this.categoryManageModel = new CategoryManageObject(categoryId);
+    }
 
     private void initPresenter() {
         this.categoryManagePresenter = new CategoryManageImplementor(categoryManageModel, this);
         this.toolbarPresenter = new ToolbarImplementor();
         this.popupManagePresenter = new CategoryFragmentPopupManageImplementor(this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView(Bundle savedInstanceState) {
         appBar.setOnNestedScrollingListener(this);
@@ -165,31 +195,13 @@ public class CategoryFragment extends MysplashFragment
         }
     }
 
-    // interface.
+    // control.
 
     public void showPopup() {
         popupManagePresenter.showPopup(getActivity(), toolbar, photosView.getOrder(), 0);
     }
 
-    /** <br> model. */
-
-    // init.
-
-    private void initModel(Bundle savedInstanceState) {
-        int categoryId = savedInstanceState == null ?
-                Mysplash.CATEGORY_BUILDINGS_ID
-                :
-                savedInstanceState.getInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, Mysplash.CATEGORY_BUILDINGS_ID);
-        this.categoryManageModel = new CategoryManageObject(categoryId);
-    }
-
     // interface.
-
-    public boolean needBackToTop() {
-        return photosView.needPagerBackToTop();
-    }
-
-    /** <br> interface. */
 
     // on click listener.
 

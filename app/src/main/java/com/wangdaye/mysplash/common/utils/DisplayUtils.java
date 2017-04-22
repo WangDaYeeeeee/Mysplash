@@ -26,16 +26,12 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
  * */
 
 public class DisplayUtils {
-    // data
-    private int dpi = 0;
 
-    /** <br> life cycle. */
+    private int dpi = 0;
 
     public DisplayUtils(Context context) {
         dpi = context.getResources().getDisplayMetrics().densityDpi;
     }
-
-    /** <br> data. */
 
     public float dpToPx(int dp) {
         if (dpi == 0) {

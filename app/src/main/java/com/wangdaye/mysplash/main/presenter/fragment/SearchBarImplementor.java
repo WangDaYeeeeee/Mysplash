@@ -15,16 +15,12 @@ import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 public class SearchBarImplementor
         implements SearchBarPresenter {
-    // models & view.
-    private SearchBarView view;
 
-    /** <br> life cycle. */
+    private SearchBarView view;
 
     public SearchBarImplementor(SearchBarView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void touchNavigatorIcon(MysplashActivity a) {

@@ -17,16 +17,12 @@ import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 
 public class HomeFragmentPopupManageImplementor
         implements PopupManagePresenter {
-    // model & view.
-    private PopupManageView view;
 
-    /** <br> life cycle. */
+    private PopupManageView view;
 
     public HomeFragmentPopupManageImplementor(PopupManageView view) {
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void showPopup(Context c, View anchor, String value, final int position) {

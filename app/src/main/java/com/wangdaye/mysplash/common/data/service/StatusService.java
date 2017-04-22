@@ -17,10 +17,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class StatusService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static StatusService getService() {
+        return new StatusService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor())
+                .build();
+    }
+
+    private StatusApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((StatusApi.class));
+    }
 
     public void requestTotal(final OnRequestTotalListener l) {
         Call<Total> getTotal = buildApi(buildClient()).getTotal();
@@ -48,32 +69,7 @@ public class StatusService {
         }
     }
 
-    /** <br> build. */
-
-    public static StatusService getService() {
-        return new StatusService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor())
-                .build();
-    }
-
-    private StatusApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((StatusApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestTotalListener {
         void onRequestTotalSuccess(Call<Total> call, retrofit2.Response<Total> response);

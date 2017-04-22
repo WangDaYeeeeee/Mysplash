@@ -14,11 +14,9 @@ import java.util.List;
 
 public class BorwsableObject
         implements BrowsableModel {
-    // data
+
     private Uri intentUri;
     private UserService service;
-
-    /** <br> life cycle. */
 
     public BorwsableObject(Intent intent) {
         if (intent.getDataString() == null) {
@@ -28,8 +26,6 @@ public class BorwsableObject
         }
         service = UserService.getService();
     }
-
-    /** <br> model. */
 
     @Override
     public Uri getIntentUri() {

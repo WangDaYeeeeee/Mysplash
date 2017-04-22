@@ -18,14 +18,20 @@ public abstract class MysplashDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Mysplash.getInstance().getTopActivity().getDialogList().add(this);
+        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+        if (activity != null) {
+            activity.getDialogList().add(this);
+        }
         return super.onCreateDialog(savedInstanceState);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Mysplash.getInstance().getTopActivity().getDialogList().remove(this);
+        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+        if (activity != null) {
+            activity.getDialogList().remove(this);
+        }
     }
 
     /**

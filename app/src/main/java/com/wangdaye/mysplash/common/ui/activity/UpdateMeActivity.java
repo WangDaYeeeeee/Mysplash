@@ -50,14 +50,21 @@ import retrofit2.Response;
 public class UpdateMeActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener,
         UserService.OnRequestMeProfileListener, SafeHandler.HandlerContainer {
-    // widget
-    private SafeHandler<UpdateMeActivity> handler;
 
-    @BindView(R.id.activity_update_me_container) CoordinatorLayout container;
-    @BindView(R.id.activity_update_me_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_update_me_scrollView) NestedScrollView scrollView;
-    @BindView(R.id.container_update_me_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_update_me_textContainer) LinearLayout contentView;
+    @BindView(R.id.activity_update_me_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_update_me_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_update_me_scrollView)
+    NestedScrollView scrollView;
+
+    @BindView(R.id.container_update_me_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_update_me_textContainer)
+    LinearLayout contentView;
 
     private EditText usernameTxt;
     private EditText firstNameTxt;
@@ -67,8 +74,10 @@ public class UpdateMeActivity extends MysplashActivity
     private EditText locationTxt;
     private EditText bioTxt;
 
-    // data
+    private SafeHandler<UpdateMeActivity> handler;
+
     private UserService service;
+
     private boolean backPressed = false;
 
     @StateRule
@@ -86,8 +95,6 @@ public class UpdateMeActivity extends MysplashActivity
     private final String KEY_UPDATE_ME_ACTIVITY_PORTFOLIO = "update_me_activity_portfolio";
     private final String KEY_UPDATE_ME_ACTIVITY_LOCATION = "update_me_activity_location";
     private final String KEY_UPDATE_ME_ACTIVITY_BIO = "update_me_activity_bio";
-
-    /** <br> life cycle. */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,30 +141,6 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    protected void backToTop() {
-        // do nothing.
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
-    }
-
-    @Override
-    public void finishActivity(int dir) {
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         if (state == INPUT_STATE && backPressed) {
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
@@ -177,11 +160,35 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
+    protected void backToTop() {
+        // do nothing.
+    }
+
+    @Override
+    public void finishActivity(int dir) {
+        finish();
+        switch (dir) {
+            case SwipeBackCoordinatorLayout.UP_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_top);
+                break;
+
+            case SwipeBackCoordinatorLayout.DOWN_DIR:
+                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+                break;
+        }
+    }
+
+    @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
 
-    /** <br> UI. */
+    // init.
+
+    private void initData() {
+        this.service = UserService.getService();
+        this.state = INPUT_STATE;
+    }
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
@@ -262,6 +269,8 @@ public class UpdateMeActivity extends MysplashActivity
         }
     }
 
+    // control.
+
     private void setState(int newState) {
         switch (newState) {
             case INPUT_STATE:
@@ -279,13 +288,6 @@ public class UpdateMeActivity extends MysplashActivity
                 break;
         }
         state = newState;
-    }
-
-    /** <br> data. */
-
-    private void initData() {
-        this.service = UserService.getService();
-        this.state = INPUT_STATE;
     }
 
     private void updateProfile() {
@@ -307,8 +309,6 @@ public class UpdateMeActivity extends MysplashActivity
                     Snackbar.LENGTH_SHORT);
         }
     }
-
-    /** <br> animator. */
 
     public void animShow(final View v) {
         if (v.getVisibility() == View.GONE) {
@@ -334,7 +334,7 @@ public class UpdateMeActivity extends MysplashActivity
         anim.start();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -350,7 +350,7 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(scrollView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBack(scrollView, dir);
     }
 
     @Override

@@ -2,9 +2,7 @@ package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.transition.TransitionManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -47,21 +45,24 @@ import butterknife.ButterKnife;
 public class MeProfileView  extends FrameLayout
         implements LoadView,
         RippleButton.OnSwitchListener {
-    // model.
+
+    @BindView(R.id.container_user_profile_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_user_profile_profileContainer)
+    RelativeLayout profileContainer;
+
+    @BindView(R.id.container_user_profile_followBtn)
+    RippleButton rippleButton;
+
+    @BindView(R.id.container_user_profile_locationTxt)
+    TextView locationTxt;
+
+    @BindView(R.id.container_user_profile_bio)
+    TextView bioTxt;
+
     private LoadModel loadModel;
-
-    // view.
-    @BindView(R.id.container_user_profile_progressView) CircularProgressView progressView;
-
-    @BindView(R.id.container_user_profile_profileContainer) RelativeLayout profileContainer;
-    @BindView(R.id.container_user_profile_followBtn) RippleButton rippleButton;
-    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
-    @BindView(R.id.container_user_profile_bio) TextView bioTxt;
-
-    // presenter.
     private LoadPresenter loadPresenter;
-
-    /** <br> life cycle. */
 
     public MeProfileView(Context context) {
         super(context);
@@ -78,11 +79,7 @@ public class MeProfileView  extends FrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MeProfileView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
@@ -95,15 +92,15 @@ public class MeProfileView  extends FrameLayout
         initView();
     }
 
-    /** <br> presenter. */
+    // init.
+
+    private void initModel() {
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+    }
 
     private void initPresenter() {
         this.loadPresenter = new LoadImplementor(loadModel, this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         progressView.setVisibility(VISIBLE);
@@ -121,7 +118,7 @@ public class MeProfileView  extends FrameLayout
                 locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);
     }
 
-    // interface.
+    // control.
 
     @SuppressLint("SetTextI18n")
     public void drawMeProfile(Me me) {
@@ -164,15 +161,7 @@ public class MeProfileView  extends FrameLayout
         loadPresenter.setLoadingState();
     }
 
-    /** <br> model. */
-
-    // init.
-
-    private void initModel() {
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-    }
-
-    /** <br> interface. */
+    // interface.
 
     // on switch listener.
 

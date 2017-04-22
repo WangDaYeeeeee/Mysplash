@@ -18,7 +18,7 @@ import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 public class CollectionsObject
         implements CollectionsModel {
-    // data
+
     private CollectionAdapter adapter;
     private CollectionService service;
 
@@ -29,8 +29,6 @@ public class CollectionsObject
     private boolean refreshing;
     private boolean loading;
     private boolean over;
-
-    /** <br> life cycle. */
 
     public CollectionsObject(Context context, CollectionAdapter adapter) {
         this.adapter = adapter;
@@ -44,8 +42,6 @@ public class CollectionsObject
         this.loading = false;
         this.over = false;
     }
-
-    /** <br> model. */
 
     @Override
     public CollectionAdapter getAdapter() {

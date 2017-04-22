@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.common.data.api.FollowingApi;
-import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeedResult;
+import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.FollowingInterceptor;
 
 import okhttp3.OkHttpClient;
@@ -20,24 +20,43 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class FollowingService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static FollowingService getService() {
+        return new FollowingService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new FollowingInterceptor())
+                .build();
+    }
+
+    private FollowingApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl("https://unsplash.com/")
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder().setLenient().create()))
+                .build()
+                .create((FollowingApi.class));
+    }
 
     public void requestFollowingFeed(String url, final OnRequestFollowingFeedListener l) {
         String after = Uri.parse(url).getQueryParameter("after");
-        Call<FollowingFeedResult> getFeed = buildApi(buildClient()).getFollowingFeed(after);
-        getFeed.enqueue(new Callback<FollowingFeedResult>() {
+        Call<FollowingFeed> getFeed = buildApi(buildClient()).getFollowingFeed(after);
+        getFeed.enqueue(new Callback<FollowingFeed>() {
             @Override
-            public void onResponse(Call<FollowingFeedResult> call, retrofit2.Response<FollowingFeedResult> response) {
+            public void onResponse(Call<FollowingFeed> call, retrofit2.Response<FollowingFeed> response) {
                 if (l != null) {
                     l.onRequestFollowingFeedSuccess(call, response);
                 }
             }
 
             @Override
-            public void onFailure(Call<FollowingFeedResult> call, Throwable t) {
+            public void onFailure(Call<FollowingFeed> call, Throwable t) {
                 if (l != null) {
                     l.onRequestFollowingFeedFailed(call, t);
                 }
@@ -85,34 +104,11 @@ public class FollowingService {
         }
     }
 
-    /** <br> build. */
-
-    public static FollowingService getService() {
-        return new FollowingService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new FollowingInterceptor())
-                .build();
-    }
-
-    private FollowingApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl("https://unsplash.com/")
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder().setLenient().create()))
-                .build()
-                .create((FollowingApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestFollowingFeedListener {
-        void onRequestFollowingFeedSuccess(Call<FollowingFeedResult> call, Response<FollowingFeedResult> response);
-        void onRequestFollowingFeedFailed(Call<FollowingFeedResult> call, Throwable t);
+        void onRequestFollowingFeedSuccess(Call<FollowingFeed> call, Response<FollowingFeed> response);
+        void onRequestFollowingFeedFailed(Call<FollowingFeed> call, Throwable t);
     }
 
     public interface OnFollowListener {

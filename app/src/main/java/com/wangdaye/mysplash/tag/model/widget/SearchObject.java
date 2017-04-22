@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 
 public class SearchObject
         implements SearchModel {
-    // data
+
     private PhotoAdapter adapter;
     private SearchService service;
 
@@ -23,8 +23,6 @@ public class SearchObject
     private boolean refreshing;
     private boolean loading;
     private boolean over;
-
-    /** <br> life cycle. */
 
     public SearchObject(PhotoAdapter adapter, String query) {
         this.adapter = adapter;

@@ -53,6 +53,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Category photos view.
@@ -64,27 +65,102 @@ import butterknife.ButterKnife;
 
 public class CategoryPhotosView extends NestedScrollFrameLayout
         implements CategoryView, LoadView, ScrollView,
-        View.OnClickListener, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
-    // model.
+
+    @BindView(R.id.container_loading_in_category_view_large_progressView)
+    CircularProgressView progressView;
+
+    @BindView(R.id.container_loading_in_category_view_large_feedbackContainer)
+    RelativeLayout feedbackContainer;
+
+    @BindView(R.id.container_loading_in_category_view_large_feedbackTxt)
+    TextView feedbackText;
+
+    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    BothWaySwipeRefreshLayout refreshLayout;
+
+    @BindView(R.id.container_photo_list_recyclerView)
+    RecyclerView recyclerView;
+
     private CategoryModel categoryModel;
-    private LoadModel loadModel;
-    private ScrollModel scrollModel;
-
-    // view.
-    @BindView(R.id.container_loading_in_category_view_large_progressView) CircularProgressView progressView;
-    @BindView(R.id.container_loading_in_category_view_large_feedbackContainer) RelativeLayout feedbackContainer;
-    @BindView(R.id.container_loading_in_category_view_large_feedbackTxt) TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout) BothWaySwipeRefreshLayout refreshLayout;
-    @BindView(R.id.container_photo_list_recyclerView) RecyclerView recyclerView;
-
-    // presenter.
     private CategoryPresenter categoryPresenter;
+
+    private LoadModel loadModel;
     private LoadPresenter loadPresenter;
+
+    private ScrollModel scrollModel;
     private ScrollPresenter scrollPresenter;
 
-    /** <br> life cycle. */
+    private static class SavedState extends BaseSavedState {
+        // data
+        int category;
+        String order;
+
+        int page;
+        List<Integer> pageList;
+
+        boolean over;
+
+        // life cycle.
+
+        SavedState(CategoryPhotosView view, Parcelable superState) {
+            super(superState);
+            this.category = view.categoryModel.getPhotosCategory();
+            this.order = view.categoryModel.getPhotosOrder();
+            this.page = view.categoryModel.getPhotosPage();
+            this.pageList = new ArrayList<>();
+            this.pageList.addAll(view.categoryModel.getPageList());
+            this.over = view.categoryModel.isOver();
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            this.category = in.readInt();
+            this.order = in.readString();
+            this.page = in.readInt();
+
+            this.pageList = new ArrayList<>();
+            int[] pages = new int[in.readInt()];
+            in.readIntArray(pages);
+            pageList = new ArrayList<>(pages.length);
+            for (int p : pages) {
+                pageList.add(p);
+            }
+
+            this.over = in.readByte() != 0;
+        }
+
+        // interface.
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeInt(this.category);
+            out.writeString(this.order);
+            out.writeInt(this.page);
+
+            int[] pages = new int[pageList.size()];
+            for (int i = 0; i < pages.length; i ++) {
+                pages[i] = pageList.get(i);
+            }
+            out.writeInt(pages.length);
+            out.writeIntArray(pages);
+
+            out.writeByte(this.over ? (byte) 1 : (byte) 0);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
 
     public CategoryPhotosView(Context context) {
         super(context);
@@ -101,11 +177,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public CategoryPhotosView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        this.initialize();
-    }
+    // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
@@ -123,39 +195,23 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         initView();
     }
 
-    @Override
-    public Parcelable onSaveInstanceState() {
-        return new SavedState(this, super.onSaveInstanceState());
+    private void initModel() {
+        this.categoryModel = new CategoryObject(
+                getContext(),
+                new PhotoAdapter(
+                        getContext(),
+                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
+                        this,
+                        null));
+        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.scrollModel = new ScrollObject(true);
     }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        SavedState ss = (SavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-
-        categoryPresenter.setCategory(ss.category);
-        categoryPresenter.setOrder(ss.order);
-        categoryPresenter.setPage(ss.page);
-        categoryPresenter.setPageList(ss.pageList);
-        categoryPresenter.setOver(ss.over);
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return false;
-    }
-
-    /** <br> presenter. */
 
     private void initPresenter() {
         this.categoryPresenter = new CategoryImplementor(categoryModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
     }
-
-    /** <br> view. */
-
-    // init.
 
     private void initView() {
         this.initContentView();
@@ -190,29 +246,26 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
-    // interface.
+    // save instance.
 
-    public void pagerScrollToTop() {
-        scrollPresenter.scrollToTop();
+    @Override
+    public Parcelable onSaveInstanceState() {
+        return new SavedState(this, super.onSaveInstanceState());
     }
 
-    /** <br> model. */
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
 
-    // init
-
-    private void initModel() {
-        this.categoryModel = new CategoryObject(
-                getContext(),
-                new PhotoAdapter(
-                        getContext(),
-                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
-                        this,
-                        null));
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
-        this.scrollModel = new ScrollObject(true);
+        categoryPresenter.setCategory(ss.category);
+        categoryPresenter.setOrder(ss.order);
+        categoryPresenter.setPage(ss.page);
+        categoryPresenter.setPageList(ss.pageList);
+        categoryPresenter.setOver(ss.over);
     }
 
-    // interface.
+    // control.
 
     /**
      * Set activity for the adapter in this view.
@@ -222,6 +275,17 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
     public void setActivity(MainActivity a) {
         categoryPresenter.setActivityForAdapter(a);
         categoryPresenter.getAdapter().setOnDownloadPhotoListener(a);
+    }
+
+    @Override
+    public boolean isParentOffset() {
+        return false;
+    }
+
+    // photo.
+
+    public void updatePhoto(Photo photo) {
+        categoryPresenter.getAdapter().updatePhoto(photo, false, false);
     }
 
     /**
@@ -250,6 +314,8 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         }
     }
 
+    // query.
+
     public void setCategory(int id) {
         categoryPresenter.setCategory(id);
     }
@@ -262,29 +328,32 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         categoryPresenter.setOrder(order);
     }
 
-    public void cancelRequest() {
-        categoryPresenter.cancelRequest();
-    }
+    // HTTP request.
 
     public void initRefresh() {
         categoryPresenter.initRefresh(getContext());
     }
 
+    public void cancelRequest() {
+        categoryPresenter.cancelRequest();
+    }
+
+    // back to top.
+
     public boolean needPagerBackToTop() {
         return scrollPresenter.needBackToTop();
     }
 
-    /** <br> interface. */
+    public void pagerScrollToTop() {
+        scrollPresenter.scrollToTop();
+    }
+
+    // interface.
 
     // on click listener.
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.container_loading_in_category_view_large_feedbackBtn:
-                categoryPresenter.initRefresh(getContext());
-                break;
-        }
+    @OnClick(R.id.container_loading_in_category_view_large_feedbackBtn) void retryRefresh() {
+        categoryPresenter.initRefresh(getContext());
     }
 
     // on refresh an load listener.
@@ -319,7 +388,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        categoryPresenter.getAdapter().updatePhoto(p, false);
+        categoryPresenter.getAdapter().updatePhoto(p, false, true);
     }
 
     // view.
@@ -427,77 +496,5 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
                 && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
-    }
-
-    /** <br> inner class. */
-
-    private static class SavedState extends BaseSavedState {
-        // data
-        int category;
-        String order;
-
-        int page;
-        List<Integer> pageList;
-
-        boolean over;
-
-        // life cycle.
-
-        SavedState(CategoryPhotosView view, Parcelable superState) {
-            super(superState);
-            this.category = view.categoryModel.getPhotosCategory();
-            this.order = view.categoryModel.getPhotosOrder();
-            this.page = view.categoryModel.getPhotosPage();
-            this.pageList = new ArrayList<>();
-            this.pageList.addAll(view.categoryModel.getPageList());
-            this.over = view.categoryModel.isOver();
-        }
-
-        private SavedState(Parcel in) {
-            super(in);
-            this.category = in.readInt();
-            this.order = in.readString();
-            this.page = in.readInt();
-
-            this.pageList = new ArrayList<>();
-            int[] pages = new int[in.readInt()];
-            in.readIntArray(pages);
-            pageList = new ArrayList<>(pages.length);
-            for (int p : pages) {
-                pageList.add(p);
-            }
-
-            this.over = in.readByte() != 0;
-        }
-
-        // interface.
-
-        @Override
-        public void writeToParcel(Parcel out, int flags) {
-            super.writeToParcel(out, flags);
-            out.writeInt(this.category);
-            out.writeString(this.order);
-            out.writeInt(this.page);
-
-            int[] pages = new int[pageList.size()];
-            for (int i = 0; i < pages.length; i ++) {
-                pages[i] = pageList.get(i);
-            }
-            out.writeInt(pages.length);
-            out.writeIntArray(pages);
-
-            out.writeByte(this.over ? (byte) 1 : (byte) 0);
-        }
-
-        public static final Parcelable.Creator<SavedState> CREATOR
-                = new Parcelable.Creator<SavedState>() {
-            public SavedState createFromParcel(Parcel in) {
-                return new SavedState(in);
-            }
-
-            public SavedState[] newArray(int size) {
-                return new SavedState[size];
-            }
-        };
     }
 }

@@ -23,13 +23,9 @@ import butterknife.ButterKnife;
 
 public class WallpaperAlignPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnAlignTypeChangedListener listener;
-
-    // data
     private int valueNow;
-
-    /** <br> life cycle. */
 
     public WallpaperAlignPopupWindow(Context c, View anchor, int valueNow) {
         super(c);
@@ -46,7 +42,9 @@ public class WallpaperAlignPopupWindow extends MysplashPopupWindow
         show(anchor, 0, 0);
     }
 
-    /** <br> UI. */
+    private void initData(int valueNow) {
+        this.valueNow = valueNow;
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -74,13 +72,9 @@ public class WallpaperAlignPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(int valueNow) {
-        this.valueNow = valueNow;
-    }
-
-    /** <br> interface. */
+    // on align type changed listener.
 
     public interface OnAlignTypeChangedListener {
         void onAlignTypeChanged(int type);
@@ -89,6 +83,8 @@ public class WallpaperAlignPopupWindow extends MysplashPopupWindow
     public void setAlignTypeChangedListener(OnAlignTypeChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

@@ -17,22 +17,17 @@ import retrofit2.Response;
 
 public class UserImplementor
         implements UserPresenter {
-    // model & view.
+
     private UserModel model;
     private UserView view;
 
-    // data
     private OnRequestUserProfileListener requestUserProfileListener;
     private OnFollowListener followListener;
-
-    /** <br> life cycle. */
 
     public UserImplementor(UserModel model, UserView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestUser() {
@@ -75,12 +70,12 @@ public class UserImplementor
         return model.getUser();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on request user profile swipeListener.
 
     private class OnRequestUserProfileListener implements UserService.OnRequestUserProfileListener {
-        // data
+
         private boolean canceled;
 
         OnRequestUserProfileListener() {
@@ -118,7 +113,7 @@ public class UserImplementor
     // on follow swipeListener.
 
     private class OnFollowListener implements FollowingService.OnFollowListener {
-        // data
+
         private boolean canceled;
 
         OnFollowListener() {

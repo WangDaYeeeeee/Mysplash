@@ -16,6 +16,5 @@ public interface PagerPresenter {
      * {@link PagerView#refreshPager()} method.
      * */
     boolean checkNeedRefresh();
-
     void refreshPager();
 }

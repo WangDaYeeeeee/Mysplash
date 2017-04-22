@@ -19,10 +19,31 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class SearchService {
-    // widget
+
     private Call call;
 
-    /** <br> data. */
+    public static SearchService getService() {
+        return new SearchService();
+    }
+
+    private OkHttpClient buildClient() {
+        return new OkHttpClient.Builder()
+                .addInterceptor(new AuthInterceptor())
+                .build();
+    }
+
+    private SearchApi buildApi(OkHttpClient client) {
+        return new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
+                .client(client)
+                .addConverterFactory(
+                        GsonConverterFactory.create(
+                                new GsonBuilder()
+                                        .setDateFormat(Mysplash.DATE_FORMAT)
+                                        .create()))
+                .build()
+                .create((SearchApi.class));
+    }
 
     public void searchPhotos(String query, int page, final OnRequestPhotosListener l) {
         Call<SearchPhotosResult> searchPhotos = buildApi(buildClient()).searchPhotos(query, page, Mysplash.DEFAULT_PER_PAGE);
@@ -90,32 +111,7 @@ public class SearchService {
         }
     }
 
-    /** <br> build. */
-
-    public static SearchService getService() {
-        return new SearchService();
-    }
-
-    private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
-                .addInterceptor(new AuthInterceptor())
-                .build();
-    }
-
-    private SearchApi buildApi(OkHttpClient client) {
-        return new Retrofit.Builder()
-                .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client)
-                .addConverterFactory(
-                        GsonConverterFactory.create(
-                                new GsonBuilder()
-                                        .setDateFormat(Mysplash.DATE_FORMAT)
-                                        .create()))
-                .build()
-                .create((SearchApi.class));
-    }
-
-    /** <br> interface. */
+    // interface.
 
     public interface OnRequestPhotosListener {
         void onRequestPhotosSuccess(Call<SearchPhotosResult> call, retrofit2.Response<SearchPhotosResult> response);

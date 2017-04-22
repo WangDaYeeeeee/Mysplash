@@ -18,18 +18,14 @@ import retrofit2.Response;
 public class BrowsableImplementor
         implements BrowsablePresenter,
         UserService.OnRequestUserProfileListener {
-    // model & view.
+
     private BrowsableModel model;
     private BrowsableView view;
-
-    /** <br> life cycle. */
 
     public BrowsableImplementor(BrowsableModel model, BrowsableView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public Uri getIntentUri() {
@@ -57,15 +53,13 @@ public class BrowsableImplementor
         ((UserService) model.getService()).cancel();
     }
 
-    /** <br> utils. */
-
     private void requestUser() {
         ((UserService) model.getService()).requestUserProfile(
                 model.getBrowsableDataKey().get(0).substring(1),
                 this);
     }
 
-    /** <br> swipeListener. */
+    // interface.
 
     @Override
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {

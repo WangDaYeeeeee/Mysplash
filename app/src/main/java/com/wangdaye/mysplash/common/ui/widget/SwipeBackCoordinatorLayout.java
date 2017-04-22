@@ -20,10 +20,9 @@ import android.view.animation.Transformation;
  * */
 
 public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
-    // widget
+
     private OnSwipeListener swipeListener;
 
-    // data
     private int swipeDistance = 0;
     private static float SWIPE_TRIGGER = 100;
     private static final float SWIPE_RADIO = 2.5F;
@@ -37,7 +36,59 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     @IntDef({NULL_DIR, UP_DIR, DOWN_DIR})
     public @interface DirectionRule {}
 
-    /** <br> life cycle. */
+    private class ResetAnimation extends Animation {
+
+        private int fromDistance;
+
+        ResetAnimation(int from) {
+            this.fromDistance = from;
+        }
+
+        @Override
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            swipeDistance = (int) (fromDistance * (1 - interpolatedTime));
+            setSwipeTranslation();
+        }
+    }
+
+    private static class RecolorAnimation extends Animation {
+
+        private View view;
+        private boolean showing;
+
+        RecolorAnimation(View v, boolean showing) {
+            this.view = v;
+            this.showing = showing;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            if (showing) {
+                view.setBackgroundColor(Color.argb((int) (255 * 0.5 * interpolatedTime), 0, 0, 0));
+            } else {
+                view.setBackgroundColor(Color.argb((int) (255 * 0.5 * (1 - interpolatedTime)), 0, 0, 0));
+            }
+        }
+    }
+
+    private Animation.AnimationListener resetAnimListener = new Animation.AnimationListener() {
+
+        @Override
+        public void onAnimationStart(Animation animation) {
+            setEnabled(false);
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            setEnabled(true);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+            // do nothing.
+        }
+    };
 
     public SwipeBackCoordinatorLayout(Context context) {
         super(context);
@@ -56,12 +107,9 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     private void initialize() {
         SWIPE_TRIGGER = (float) (getResources().getDisplayMetrics().heightPixels / 5.0);
-
-
-
     }
 
-    /** <br> nested scroll. */
+    // nested scroll.
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
@@ -109,8 +157,6 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
             reset();
         }
     }
-
-    /** <br> UI. */
 
     private int onPreScroll(int dy) {
         int consumed;
@@ -168,7 +214,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
      * @param v   child view.
      * @param dir drag direction.
      * */
-    public static boolean canSwipeBackForThisView(View v, int dir) {
+    public static boolean canSwipeBack(View v, int dir) {
         return !ViewCompat.canScrollVertically(v, dir);
     }
 
@@ -195,7 +241,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         background.startAnimation(a);
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on swipe listener.
 
@@ -208,60 +254,4 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     public void setOnSwipeListener(OnSwipeListener l) {
         this.swipeListener = l;
     }
-
-    /** <br> inner class. */
-
-    private class ResetAnimation extends Animation {
-        // data
-        private int fromDistance;
-
-        ResetAnimation(int from) {
-            this.fromDistance = from;
-        }
-
-        @Override
-        public void applyTransformation(float interpolatedTime, Transformation t) {
-            swipeDistance = (int) (fromDistance * (1 - interpolatedTime));
-            setSwipeTranslation();
-        }
-    }
-
-    private static class RecolorAnimation extends Animation {
-        // widget
-        private View view;
-        private boolean showing;
-
-        RecolorAnimation(View v, boolean showing) {
-            this.view = v;
-            this.showing = showing;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            if (showing) {
-                view.setBackgroundColor(Color.argb((int) (255 * 0.5 * interpolatedTime), 0, 0, 0));
-            } else {
-                view.setBackgroundColor(Color.argb((int) (255 * 0.5 * (1 - interpolatedTime)), 0, 0, 0));
-            }
-        }
-    }
-
-    private Animation.AnimationListener resetAnimListener = new Animation.AnimationListener() {
-
-        @Override
-        public void onAnimationStart(Animation animation) {
-            setEnabled(false);
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-            setEnabled(true);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-            // do nothing.
-        }
-    };
 }

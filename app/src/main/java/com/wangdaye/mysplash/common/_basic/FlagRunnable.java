@@ -8,16 +8,12 @@ package com.wangdaye.mysplash.common._basic;
  * */
 
 public abstract class FlagRunnable implements Runnable {
-    // data
-    private boolean running = true;
 
-    /** <br> life cycle. */
+    private boolean running = true;
 
     public FlagRunnable(boolean running) {
         this.running = running;
     }
-
-    /** <br> data. */
 
     public void setRunning(boolean b) {
         this.running = b;

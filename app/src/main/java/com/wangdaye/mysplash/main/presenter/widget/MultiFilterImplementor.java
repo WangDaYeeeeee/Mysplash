@@ -29,21 +29,16 @@ import retrofit2.Response;
 
 public class MultiFilterImplementor
         implements MultiFilterPresenter {
-    // model & view.
+
     private MultiFilterModel model;
     private MultiFilterView view;
 
-    // data
     private OnRequestPhotosListener listener;
-
-    /** <br> life cycle. */
 
     public MultiFilterImplementor(MultiFilterModel model, MultiFilterView view) {
         this.model = model;
         this.view = view;
     }
-
-    /** <br> presenter. */
 
     @Override
     public void requestPhotos(Context c, boolean refresh) {
@@ -187,10 +182,10 @@ public class MultiFilterImplementor
         return model.getAdapter();
     }
 
-    /** <br> interface. */
+    // interface.
 
     private class OnRequestPhotosListener implements PhotoService.OnRequestPhotosListener {
-        // data
+
         private Context c;
         private boolean refresh;
         private boolean canceled;

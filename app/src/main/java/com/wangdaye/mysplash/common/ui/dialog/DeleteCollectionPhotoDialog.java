@@ -36,14 +36,18 @@ import retrofit2.Response;
 
 public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
         implements CollectionService.OnChangeCollectionPhotoListener {
-    // widget
-    @BindView(R.id.dialog_select_collection_container) CoordinatorLayout container;
-    @BindView(R.id.dialog_delete_collection_photo_confirmContainer) RelativeLayout confirmContainer;
-    @BindView(R.id.dialog_delete_collection_photo_progress) CircularProgressView progressView;
+
+    @BindView(R.id.dialog_delete_collection_photo_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.dialog_delete_collection_photo_confirmContainer)
+    RelativeLayout confirmContainer;
+
+    @BindView(R.id.dialog_delete_collection_photo_progress)
+    CircularProgressView progressView;
 
     private OnDeleteCollectionListener listener;
 
-    // data
     private CollectionService service;
 
     private Collection collection;
@@ -57,8 +61,6 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
     private static final int DELETE_STATE = 1;
     @IntDef({CONFIRM_STATE, DELETE_STATE})
     private @interface StateRule {}
-
-    /** <br> life cycle. */
 
     @SuppressLint("InflateParams")
     @Override
@@ -85,7 +87,10 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
         return container;
     }
 
-    /** <br> UI. */
+    private void initData() {
+        this.service = CollectionService.getService();
+        this.state = CONFIRM_STATE;
+    }
 
     private void initWidget() {
         confirmContainer.setVisibility(View.VISIBLE);
@@ -113,26 +118,19 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
         state = newState;
     }
 
-    private void notifyFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_delete_photo_failed),
-                Snackbar.LENGTH_SHORT);
-    }
-
-    /** <br> data. */
-
-    private void initData() {
-        this.service = CollectionService.getService();
-        this.state = CONFIRM_STATE;
-    }
-
     public void setDeleteInfo(Collection c, Photo p, int position) {
         collection = c;
         photo = p;
         this.position = position;
     }
 
-    /** <br> interface. */
+    private void notifyFailed() {
+        NotificationHelper.showSnackbar(
+                getString(R.string.feedback_delete_photo_failed),
+                Snackbar.LENGTH_SHORT);
+    }
+
+    // interface.
 
     // on delete collection listener.
 

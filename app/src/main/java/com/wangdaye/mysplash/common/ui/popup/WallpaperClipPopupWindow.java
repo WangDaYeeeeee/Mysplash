@@ -23,13 +23,9 @@ import butterknife.ButterKnife;
 
 public class WallpaperClipPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
-    // widget
+
     private OnClipTypeChangedListener listener;
-
-    // data
     private int valueNow;
-
-    /** <br> life cycle. */
 
     public WallpaperClipPopupWindow(Context c, View anchor, int valueNow) {
         super(c);
@@ -46,7 +42,9 @@ public class WallpaperClipPopupWindow extends MysplashPopupWindow
         show(anchor, 0, 0);
     }
 
-    /** <br> UI. */
+    private void initData(int valueNow) {
+        this.valueNow = valueNow;
+    }
 
     private void initWidget() {
         View v = getContentView();
@@ -67,13 +65,9 @@ public class WallpaperClipPopupWindow extends MysplashPopupWindow
         }
     }
 
-    /** <br> data. */
+    // interface.
 
-    private void initData(int valueNow) {
-        this.valueNow = valueNow;
-    }
-
-    /** <br> interface. */
+    // on clip type changed listener.
 
     public interface OnClipTypeChangedListener {
         void onClipTypeChanged(int type);
@@ -82,6 +76,8 @@ public class WallpaperClipPopupWindow extends MysplashPopupWindow
     public void setOnClipTypeChangedListener(OnClipTypeChangedListener l) {
         listener = l;
     }
+
+    // on click listener.
 
     @Override
     public void onClick(View view) {

@@ -9,9 +9,9 @@ package com.wangdaye.mysplash.common.i.presenter;
 
 public interface LoadPresenter {
 
+    int getLoadState();
+
     void setLoadingState();
     void setFailedState();
     void setNormalState();
-
-    int getLoadState();
 }

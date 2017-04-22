@@ -1,29 +1,22 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.ui.adapter.DownloadAdapter;
@@ -46,18 +39,22 @@ import butterknife.ButterKnife;
  *
  * */
 
-public class DownloadManageActivity extends MysplashActivity
+public class DownloadManageActivity extends ReadWriteActivity
         implements View.OnClickListener, Toolbar.OnMenuItemClickListener,
         DownloadAdapter.OnRetryListener, SwipeBackCoordinatorLayout.OnSwipeListener,
         SafeHandler.HandlerContainer {
-    // widget
+
+    @BindView(R.id.activity_download_manage_container)
+    CoordinatorLayout container;
+
+    @BindView(R.id.activity_download_manage_statusBar)
+    StatusBarView statusBar;
+
+    @BindView(R.id.activity_download_manage_recyclerView)
+    RecyclerView recyclerView;
+
     private SafeHandler<DownloadManageActivity> handler;
 
-    @BindView(R.id.activity_download_manage_container) CoordinatorLayout container;
-    @BindView(R.id.activity_download_manage_statusBar) StatusBarView statusBar;
-    @BindView(R.id.activity_download_manage_recyclerView) RecyclerView recyclerView;
-
-    // data
     private DownloadAdapter adapter;
     // if we need to restart a mission, we need save it by this object and request permission.
     private DownloadMissionEntity readyToDownloadEntity;
@@ -70,7 +67,33 @@ public class DownloadManageActivity extends MysplashActivity
 
     private final int CHECK_AND_UPDATE = 1;
 
-    /** <br> life cycle. */
+    /**
+     * This Runnable class is used to poll download progress.
+     * */
+    private FlagRunnable checkRunnable = new FlagRunnable(true) {
+        @Override
+        public void run() {
+            while (isRunning()) {
+                for (int i = 0; isRunning() && i < adapter.itemList.size(); i ++) {
+                    if (adapter.itemList.get(i).entity.result == DownloadHelper.RESULT_DOWNLOADING) {
+                        DownloadMission mission = DownloadHelper.getInstance(DownloadManageActivity.this)
+                                .getDownloadMission(
+                                        DownloadManageActivity.this,
+                                        adapter.itemList.get(i).entity.missionId);
+                        if (mission != null
+                                && (mission.entity.result == DownloadHelper.RESULT_DOWNLOADING
+                                || mission.entity.result != adapter.itemList.get(i).entity.result)) {
+                            // only if the state of mission has changed or the progress changed,
+                            // then we should send a message to update the item view.
+                            handler.obtainMessage(CHECK_AND_UPDATE, mission).sendToTarget();
+                        }
+                        SystemClock.sleep(50);
+                    }
+                }
+                SystemClock.sleep(50);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +116,6 @@ public class DownloadManageActivity extends MysplashActivity
     }
 
     @Override
-    public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         checkRunnable.setRunning(false);
@@ -114,13 +132,13 @@ public class DownloadManageActivity extends MysplashActivity
     }
 
     @Override
-    protected void backToTop() {
-        // do nothing.
+    public void handleBackPressed() {
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 
     @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
+    protected void backToTop() {
+        // do nothing.
     }
 
     @Override
@@ -142,9 +160,11 @@ public class DownloadManageActivity extends MysplashActivity
         return container;
     }
 
-    /** <br> UI. */
-
     // init.
+
+    private void initData() {
+        this.adapter = new DownloadAdapter(this, this);
+    }
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
@@ -175,7 +195,7 @@ public class DownloadManageActivity extends MysplashActivity
         recyclerView.setAdapter(adapter);
     }
 
-    // interface.
+    // control.
 
     /**
      * Make item view show downloading progress and percent.
@@ -274,50 +294,14 @@ public class DownloadManageActivity extends MysplashActivity
         }
     }
 
-    /** <br> data. */
-
-    private void initData() {
-        this.adapter = new DownloadAdapter(this, this);
-    }
-
-    /** <br> permission. */
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestPermission(int permissionCode, int type) {
-        switch (permissionCode) {
-            case Mysplash.WRITE_EXTERNAL_STORAGE:
-                if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        != PackageManager.PERMISSION_GRANTED) {
-                    this.requestPermissions(
-                            new String[] {
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            type);
-                } else {
-                    restartMission();
-                }
-                break;
-        }
-    }
+    // permission.
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permission, @NonNull int[] grantResult) {
-        super.onRequestPermissionsResult(requestCode, permission, grantResult);
-        for (int i = 0; i < permission.length; i ++) {
-            switch (permission[i]) {
-                case Manifest.permission.WRITE_EXTERNAL_STORAGE:
-                    if (grantResult[i] == PackageManager.PERMISSION_GRANTED) {
-                        restartMission();
-                    } else {
-                        NotificationHelper.showSnackbar(
-                                getString(R.string.feedback_need_permission),
-                                Snackbar.LENGTH_SHORT);
-                    }
-                    break;
-            }
-        }
+    protected void requestReadWritePermissionSucceed(int requestCode) {
+        restartMission();
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on click listener.
 
@@ -364,7 +348,7 @@ public class DownloadManageActivity extends MysplashActivity
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
             restartMission();
         } else {
-            requestPermission(Mysplash.WRITE_EXTERNAL_STORAGE, 0);
+            requestReadWritePermission();
         }
     }
 
@@ -372,7 +356,7 @@ public class DownloadManageActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        return SwipeBackCoordinatorLayout.canSwipeBackForThisView(recyclerView, dir);
+        return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir);
     }
 
     @Override
@@ -447,34 +431,4 @@ public class DownloadManageActivity extends MysplashActivity
                 break;
         }
     }
-
-    /** <br> thread. */
-
-    /**
-     * This Runnable class is used to poll download progress.
-     * */
-    private FlagRunnable checkRunnable = new FlagRunnable(true) {
-        @Override
-        public void run() {
-            while (isRunning()) {
-                for (int i = 0; isRunning() && i < adapter.itemList.size(); i ++) {
-                    if (adapter.itemList.get(i).entity.result == DownloadHelper.RESULT_DOWNLOADING) {
-                        DownloadMission mission = DownloadHelper.getInstance(DownloadManageActivity.this)
-                                .getDownloadMission(
-                                        DownloadManageActivity.this,
-                                        adapter.itemList.get(i).entity.missionId);
-                        if (mission != null
-                                && (mission.entity.result == DownloadHelper.RESULT_DOWNLOADING
-                                || mission.entity.result != adapter.itemList.get(i).entity.result)) {
-                            // only if the state of mission has changed or the progress changed,
-                            // then we should send a message to update the item view.
-                            handler.obtainMessage(CHECK_AND_UPDATE, mission).sendToTarget();
-                        }
-                        SystemClock.sleep(50);
-                    }
-                }
-                SystemClock.sleep(50);
-            }
-        }
-    };
 }

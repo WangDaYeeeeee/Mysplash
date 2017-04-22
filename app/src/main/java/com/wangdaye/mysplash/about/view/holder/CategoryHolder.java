@@ -20,17 +20,14 @@ import butterknife.ButterKnife;
  * */
 
 public class CategoryHolder extends AboutAdapter.ViewHolder {
-    // widget
-    @BindView(R.id.item_about_category_title) TextView text;
 
-    /** <br> life cycle. */
+    @BindView(R.id.item_about_category_title)
+    TextView text;
 
     public CategoryHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }
-
-    /** <br> UI. */
 
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {

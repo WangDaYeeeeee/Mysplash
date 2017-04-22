@@ -29,11 +29,10 @@ import java.util.List;
  * */
 
 public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.ViewHolder> {
-    // widget
+
     private PhotoActivity a;
     private OnScrollListener scrollListener;
 
-    // data
     private Photo photo;
     private List<Integer> typeList; // information of view holder.
 
@@ -41,7 +40,14 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
     private boolean needShowInitAnim; // need do the initialize animation when first bind basic view.
     private boolean moreImageHasFadedIn; // mark whether the cover photo of more item view has been animated.
 
-    /** <br> data. */
+    public static abstract class ViewHolder extends RecyclerView.ViewHolder {
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        protected abstract void onBindView(MysplashActivity a, Photo photo);
+    }
 
     public PhotoInfoAdapter(PhotoActivity a, Photo photo) {
         this.a = a;
@@ -52,8 +58,6 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         this.moreImageHasFadedIn = false;
         buildTypeList();
     }
-
-    /** <br> UI. */
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -117,8 +121,6 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         }
     }
 
-    /** <br> data. */
-
     @Override
     public int getItemCount() {
         return typeList.size();
@@ -162,7 +164,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         return complete;
     }
 
-    /** <br> interface. */
+    // interface.
 
     // on scroll swipeListener.
 
@@ -170,14 +172,12 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
      * A scroll listener to saved scroll position of the {@link TagHolder}.
      * */
     private class OnScrollListener extends RecyclerView.OnScrollListener {
-        // data
+
         int scrollX;
 
         OnScrollListener() {
             reset();
         }
-
-        // data.
 
         void reset() {
             scrollX = 0;
@@ -189,16 +189,5 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             scrollX += dx;
         }
-    }
-
-    /** <br> inner class. */
-
-    public static abstract class ViewHolder extends RecyclerView.ViewHolder {
-
-        public ViewHolder(View itemView) {
-            super(itemView);
-        }
-
-        protected abstract void onBindView(MysplashActivity a, Photo photo);
     }
 }

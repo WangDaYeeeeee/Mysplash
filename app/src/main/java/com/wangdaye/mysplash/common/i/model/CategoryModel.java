@@ -18,6 +18,8 @@ public interface CategoryModel {
     PhotoAdapter getAdapter();
     PhotoService getService();
 
+    // manage HTTP request parameters.
+
     int getPhotosCategory();
     void setPhotosCategory(@Mysplash.CategoryIdRule int category);
 
@@ -32,6 +34,8 @@ public interface CategoryModel {
     /** {@link com.wangdaye.mysplash.common.utils.ValueUtils#getPageListByCategory(int)} */
     List<Integer> getPageList();
     void setPageList(List<Integer> list);
+
+    // control load state.
 
     boolean isRefreshing();
     void setRefreshing(boolean refreshing);

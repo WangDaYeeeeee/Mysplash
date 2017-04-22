@@ -14,18 +14,14 @@ import java.util.List;
  * */
 
 public class MyPagerAdapter extends PagerAdapter {
-    // widget
+
     private List<View> viewList;
     public List<String> titleList;
-
-    /** <br> life cycle. */
 
     public MyPagerAdapter(List<View> viewList, List<String> titleList) {
         this.viewList = viewList;
         this.titleList = titleList;
     }
-
-    /** <br> data. */
 
     @Override
     public int getCount() {
