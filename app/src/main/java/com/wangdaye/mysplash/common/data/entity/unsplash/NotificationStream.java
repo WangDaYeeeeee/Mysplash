@@ -1,5 +1,7 @@
 package com.wangdaye.mysplash.common.data.entity.unsplash;
 
+import java.util.List;
+
 /**
  * NotificationFeed stream
  * */
@@ -14,8 +16,23 @@ public class NotificationStream {
      * unseen : 0
      */
 
-    public String duration;
     public String next;
-    public int unread;
-    public int unseen;
+    /**
+     * activities : [{"actor":"User:471484","foreign_id":"activity:CollectedPhoto:2382584:1431b912d3a8c67e94233812ce8c2b15","id":"5ac6d400-235d-11e7-8080-800163d27cb2","object":"Photo:233207","origin":null,"target":"Collection:762851","time":"2017-04-17T11:02:32.000000","to":[],"verb":"collected"}]
+     * activity_count : 1
+     * actor_count : 1
+     * created_at : 2017-04-17T11:02:32.000000
+     * group : 5ac6d400-235d-11e7-8080-800163d27cb2
+     * id : 5ac6d400-235d-11e7-8080-800163d27cb2
+     * is_read : false
+     * is_seen : true
+     * updated_at : 2017-04-17T11:02:32.000000
+     * verb : collected
+     */
+
+    public List<Results> results;
+
+    public static class Results {
+        public String id;
+    }
 }

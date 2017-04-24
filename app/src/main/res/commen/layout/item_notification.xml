@@ -13,7 +13,7 @@
         android:layout_width="@dimen/little_icon_size"
         android:layout_height="@dimen/little_icon_size"
         android:layout_margin="@dimen/normal_margin"
-        android:stateListAnimator="@animator/touch_rise"
+        android:stateListAnimator="@animator/touch_rise_avatar"
         android:foreground="?attr/selectableItemBackground"
         tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription" />
@@ -44,7 +44,7 @@
         android:layout_margin="@dimen/normal_margin"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
-        android:stateListAnimator="@animator/touch_rise"
+        android:stateListAnimator="@animator/touch_rise_tag"
         android:foreground="?attr/selectableItemBackground"
         android:background="?attr/root_color"
         tools:ignore="RtlHardcoded">

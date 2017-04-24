@@ -55,11 +55,7 @@ public class MyFollowActivity extends MysplashActivity
         implements UserView, PagerManageView, SwipeBackManageView,
         View.OnClickListener, ViewPager.OnPageChangeListener,
         SwipeBackCoordinatorLayout.OnSwipeListener {
-    // model.
 
-
-
-    // view.
     @BindView(R.id.activity_my_follow_container)
     CoordinatorLayout container;
 

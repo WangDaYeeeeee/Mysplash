@@ -18,7 +18,7 @@
     <transition
         class="com.wangdaye.mysplash.common.ui.transition.LiftOff"
         android:duration="400"
-        app:initElevation="10dp" />
+        app:initElevation="@dimen/high_elevation" />
 
     <pathMotion
         class="com.wangdaye.mysplash.common.ui.transition.GravityArcMotion"

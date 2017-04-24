@@ -77,6 +77,11 @@ public class CreateAboutModelImplementor {
                 "Sergio Otón",
                 R.drawable.flag_es,
                 "oton.translator@gmail.com"));
+        modelList.add(new TranslatorObject(
+                "https://avatars2.githubusercontent.com/u/8462938?v=3&s=460",
+                "naofum",
+                R.drawable.flag_ja,
+                "https://github.com/naofum"));
 
         // library.
         modelList.add(new CategoryObject(c.getString(R.string.libraries)));

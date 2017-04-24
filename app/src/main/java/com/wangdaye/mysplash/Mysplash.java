@@ -39,7 +39,7 @@ public class Mysplash extends Application {
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
-    public static final String UNSPLASH_FOLLOWING_FEED_URL = "XXX";
+    public static final String UNSPLASH_FOLLOWING_FEED_URL = "napi/feeds/following";
     public static final String UNSPLASH_NOTIFICATION_URL = "napi/feeds/enrich";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
@@ -92,7 +92,7 @@ public class Mysplash extends Application {
     public static final int COLLECTION_ACTIVITY = 2;
     public static final int USER_ACTIVITY = 3;
     public static final int ME_ACTIVITY = 4;
-    public static final int CUSTOM_API_ACTIVITY = 0;
+    public static final int CUSTOM_API_ACTIVITY = 5;
 
     @Override
     public void onCreate() {

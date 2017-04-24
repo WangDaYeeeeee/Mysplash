@@ -7,7 +7,8 @@
     android:layout_height="wrap_content"
     android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise"
+    android:stateListAnimator="@animator/touch_rise_item"
+    android:elevation="@dimen/low_elevation"
     tools:ignore="UnusedAttribute">
 
     <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
@@ -59,7 +60,7 @@
             android:layout_width="@dimen/mini_icon_size"
             android:layout_height="@dimen/mini_icon_size"
             android:layout_margin="@dimen/normal_margin"
-            android:stateListAnimator="@animator/touch_rise"
+            android:stateListAnimator="@animator/touch_rise_avatar"
             android:foreground="?attr/selectableItemBackground"
             tools:src="@drawable/default_avatar"
             tools:ignore="ContentDescription,RtlHardcoded" />

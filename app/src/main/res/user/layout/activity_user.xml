@@ -54,7 +54,7 @@
                         android:src="?attr/line_color"
                         android:transitionName="@string/transition_user_avatar"
                         android:foreground="?attr/selectableItemBackground"
-                        android:stateListAnimator="@animator/touch_rise"
+                        android:stateListAnimator="@animator/touch_rise_avatar"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 
                     <TextView

@@ -29,4 +29,10 @@
     <dimen name="mini_margin">4dp</dimen>
     <dimen name="nano_margin">2dp</dimen>
 
+    <!-- elevation. -->
+    <dimen name="tiny_elevation">1dp</dimen>
+    <dimen name="low_elevation">2dp</dimen>
+    <dimen name="middle_elevation">4dp</dimen>
+    <dimen name="high_elevation">10dp</dimen>
+
 </resources>

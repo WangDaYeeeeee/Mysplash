@@ -16,7 +16,7 @@
         android:layout_height="@dimen/mini_icon_size"
         android:layout_margin="@dimen/normal_margin"
         android:layout_alignParentBottom="true"
-        android:stateListAnimator="@animator/touch_rise"
+        android:stateListAnimator="@animator/touch_rise_avatar"
         android:foreground="?attr/selectableItemBackground"
         tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription,UnusedAttribute" />

@@ -27,7 +27,7 @@
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_centerHorizontal="true"
             android:foreground="?attr/selectableItemBackground"
-            android:stateListAnimator="@animator/touch_rise_mini"
+            android:stateListAnimator="@animator/touch_rise_follow_button"
             app:rb_title_off="@string/follow"
             app:rb_title_on="@string/following"
             tools:ignore="UnusedAttribute" />

@@ -56,6 +56,12 @@ public class UserNotificationManager {
     private long latestRefreshTime;
 
     private String nextPage;
+    // primary key for the first result in the first page stream feed.
+    // if the first result in a new feed has a id that's same as this value,
+    // it means there is no unseen result.
+    /** {@link com.wangdaye.mysplash.common.data.entity.unsplash.NotificationStream.Results#id} */
+    private String firstResultId;
+
     private boolean loadFinish;
     private boolean requesting;
 
@@ -75,6 +81,8 @@ public class UserNotificationManager {
         notificationList = new ArrayList<>();
 
         nextPage = null;
+        firstResultId = null;
+
         loadFinish = false;
         requesting = false;
 
@@ -112,7 +120,7 @@ public class UserNotificationManager {
     void checkToRefreshNotification() {
         if (latestRefreshTime < 0) {
             requestPersonalNotifications();
-        } else if (System.currentTimeMillis() - latestRefreshTime > 1000 * 60 * 10
+        } else if (System.currentTimeMillis() - latestRefreshTime > 1000 * 60 * 15
                 // // TODO: 2017/4/22 alter time.
                 && !requesting) {
             cancelRequest(true);
@@ -164,7 +172,8 @@ public class UserNotificationManager {
     public void clearNotifications(boolean logout) {
         removeAllNotifications();
         cancelRequest(true);
-        nextPage = "";
+        nextPage = null;
+        firstResultId = null;
         loadFinish = false;
         if (logout) {
             setLatestSeenTime();
@@ -266,9 +275,6 @@ public class UserNotificationManager {
             if (canceled) {
                 return;
             }
-            setCanceled();
-            // TODO: 2017/4/22 check.
-
             String json = null;
             NotificationStream stream = null;
             try {
@@ -292,10 +298,25 @@ public class UserNotificationManager {
                 } else {
                     nextPage = stream.next;
                 }
-                requestNotificationListener = new OnRequestNotificationListener(refresh);
-                notificationService.requestNotificationFeed(
-                        streamService.getStreamUsablePart(json),
-                        requestNotificationListener);
+
+                if (stream.results != null && stream.results.size() != 0
+                        && (!refresh
+                        || TextUtils.isEmpty(firstResultId)
+                        || !stream.results.get(0).id.equals(firstResultId))) {
+                    if (refresh) {
+                        firstResultId = stream.results.get(0).id;
+                    }
+                    requestNotificationListener = new OnRequestNotificationListener(refresh);
+                    notificationService.requestNotificationFeed(
+                            streamService.getStreamUsablePart(json),
+                            requestNotificationListener);
+                } else {
+                    requesting = false;
+                    for (int j = 0; j < listenerList.size(); j ++) {
+                        listenerList.get(j).onRequestNotificationSucceed(
+                                new ArrayList<NotificationResult>());
+                    }
+                }
             }
         }
 
@@ -341,9 +362,6 @@ public class UserNotificationManager {
             if (canceled) {
                 return;
             }
-            setCanceled();
-            // TODO: 2017/4/22 check.
-
             requesting = false;
             if (!response.isSuccessful() || response.body() == null) {
                 requestFailed(response.code() + " " + response.message());
@@ -359,10 +377,8 @@ public class UserNotificationManager {
                     }
                     addNotification(response.body().results);
                 }
-                if (!refresh) {
-                    for (int j = 0; j < listenerList.size(); j ++) {
-                        listenerList.get(j).onRequestNotificationSucceed(response.body().results);
-                    }
+                for (int j = 0; j < listenerList.size(); j ++) {
+                    listenerList.get(j).onRequestNotificationSucceed(response.body().results);
                 }
             }
         }

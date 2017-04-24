@@ -140,6 +140,42 @@ public class AuthManager
         }
     }
 
+    public void logout() {
+        service.cancel();
+
+        SharedPreferences.Editor editor = Mysplash.getInstance()
+                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
+        editor.putString(KEY_ACCESS_TOKEN, null);
+        editor.putString(KEY_USERNAME, null);
+        editor.putString(KEY_FIRST_NAME, null);
+        editor.putString(KEY_LAST_NAME, null);
+        editor.putString(KEY_EMAIL, null);
+        editor.putString(KEY_AVATAR_PATH, null);
+        editor.apply();
+
+        this.access_token = null;
+        this.username = null;
+        this.first_name = null;
+        this.last_name = null;
+        this.email = null;
+        this.avatar_path = null;
+        this.authorized = false;
+        this.collectionsManager.clearCollections();
+        this.notificationManager.clearNotifications(true);
+
+        this.me = null;
+        this.user = null;
+        this.state = FREEDOM_STATE;
+
+        for (int i = 0; i < listenerList.size(); i ++) {
+            listenerList.get(i).onLogout();
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
+        }
+    }
+
     // HTTP request.
 
     public void requestPersonalProfile() {
@@ -282,42 +318,6 @@ public class AuthManager
 
         for (int i = 0; i < listenerList.size(); i ++) {
             listenerList.get(i).onWriteAvatarPath();
-        }
-    }
-
-    public void logout() {
-        service.cancel();
-
-        SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
-        editor.putString(KEY_ACCESS_TOKEN, null);
-        editor.putString(KEY_USERNAME, null);
-        editor.putString(KEY_FIRST_NAME, null);
-        editor.putString(KEY_LAST_NAME, null);
-        editor.putString(KEY_EMAIL, null);
-        editor.putString(KEY_AVATAR_PATH, null);
-        editor.apply();
-
-        this.access_token = null;
-        this.username = null;
-        this.first_name = null;
-        this.last_name = null;
-        this.email = null;
-        this.avatar_path = null;
-        this.authorized = false;
-        this.collectionsManager.clearCollections();
-        this.notificationManager.clearNotifications(true);
-
-        this.me = null;
-        this.user = null;
-        this.state = FREEDOM_STATE;
-
-        for (int i = 0; i < listenerList.size(); i ++) {
-            listenerList.get(i).onLogout();
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-            ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
         }
     }
 

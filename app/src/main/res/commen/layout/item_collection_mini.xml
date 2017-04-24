@@ -9,10 +9,11 @@
     android:layout_marginRight="@dimen/little_margin"
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise"
+    android:stateListAnimator="@animator/touch_rise_item"
     app:cardBackgroundColor="@color/colorPrimary_dark"
     app:cardCornerRadius="2dp"
     app:cardPreventCornerOverlap="true"
+    app:cardElevation="@dimen/low_elevation"
     tools:ignore="UnusedAttribute">
 
     <ImageView

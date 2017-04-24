@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
@@ -174,9 +173,8 @@ public class RippleButton extends CardView
         setOnClickListener(this);
         setPreventCornerOverlap(false);
 
-        DisplayUtils utils = new DisplayUtils(getContext());
-        setRadius(utils.dpToPx(4));
-        setCardElevation(utils.dpToPx(1));
+        setRadius(getResources().getDimensionPixelSize(R.dimen.middle_elevation));
+        setCardElevation(getResources().getDimensionPixelSize(R.dimen.tiny_elevation));
 
         ripple.setRippleAnimatingCallback(this);
 

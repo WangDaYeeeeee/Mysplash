@@ -51,6 +51,7 @@ public class HomeFragmentNotificationBarImplementor
                     if (!ended) {
                         ended = true;
                         bellBtn.clearAnimation();
+                        loadImage(bellBtn, dot);
                         bellBtn.startAnimation(new ShowAnimation(bellBtn, dot));
                     }
                 }
@@ -121,17 +122,7 @@ public class HomeFragmentNotificationBarImplementor
     @Override
     public void setVisible(ImageButton bellBtn, ImageView dot) {
         if (AuthManager.getInstance().isAuthorized()) {
-            if (AuthManager.getInstance().getNotificationManager().hasUnseenNotification()) {
-                unread = true;
-                ThemeManager.setImageResource(
-                        bellBtn, R.drawable.ic_bell_light, R.drawable.ic_bell_dark);
-                dot.setImageResource(R.drawable.ic_unread);
-            } else {
-                unread = false;
-                ThemeManager.setImageResource(
-                        bellBtn, R.drawable.ic_bell_outline_light, R.drawable.ic_bell_outline_dark);
-                dot.setImageResource(R.drawable.ic_read);
-            }
+            loadImage(bellBtn, dot);
             bellBtn.setAlpha(1F);
             bellBtn.setEnabled(true);
             dot.setAlpha(1F);
@@ -141,6 +132,20 @@ public class HomeFragmentNotificationBarImplementor
             bellBtn.setEnabled(false);
             dot.setAlpha(0F);
             dot.setEnabled(false);
+        }
+    }
+
+    private void loadImage(ImageButton bellBtn, ImageView dot) {
+        if (AuthManager.getInstance().getNotificationManager().hasUnseenNotification()) {
+            unread = true;
+            ThemeManager.setImageResource(
+                    bellBtn, R.drawable.ic_bell_light, R.drawable.ic_bell_dark);
+            dot.setImageResource(R.drawable.ic_unread);
+        } else {
+            unread = false;
+            ThemeManager.setImageResource(
+                    bellBtn, R.drawable.ic_bell_outline_light, R.drawable.ic_bell_outline_dark);
+            dot.setImageResource(R.drawable.ic_read);
         }
     }
 }

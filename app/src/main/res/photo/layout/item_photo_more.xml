@@ -6,7 +6,7 @@
     android:layout_height="72dp"
     android:background="@color/colorPrimary_dark"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise"
+    android:stateListAnimator="@animator/touch_rise_tag"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
     <ImageView

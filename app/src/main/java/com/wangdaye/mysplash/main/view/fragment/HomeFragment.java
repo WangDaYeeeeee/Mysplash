@@ -145,6 +145,13 @@ public class HomeFragment extends MysplashFragment
     }
 
     @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden) {
+            notificationBarPresenter.setVisible(bellBtn, redDot);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(KEY_HOME_FRAGMENT_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
@@ -419,14 +426,12 @@ public class HomeFragment extends MysplashFragment
 
     @Override
     public void onAddNotification(NotificationResult result, int position) {
-        if (position == 0) {
-            notificationBarPresenter.setImage(bellBtn, redDot);
-        }
+        // do nothing.
     }
 
     @Override
     public void onClearNotification() {
-        notificationBarPresenter.setImage(bellBtn, redDot);
+        notificationBarPresenter.setVisible(bellBtn, redDot);
     }
 
     @Override

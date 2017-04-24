@@ -49,6 +49,10 @@ public class LanguageUtils {
                     configuration.setLocale(new Locale("es"));
                     break;
 
+                case "japanese":
+                    configuration.setLocale(new Locale("ja"));
+                    break;
+
                 default:
                     configuration.setLocale(new Locale("en"));
                     break;

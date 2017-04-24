@@ -51,7 +51,7 @@
             android:layout_marginBottom="@dimen/little_icon_size"
             android:scaleType="centerCrop"
             android:src="?attr/line_color"
-            android:stateListAnimator="@animator/touch_rise"
+            android:stateListAnimator="@animator/touch_rise_avatar"
             android:foreground="?attr/selectableItemBackground"
             tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
 

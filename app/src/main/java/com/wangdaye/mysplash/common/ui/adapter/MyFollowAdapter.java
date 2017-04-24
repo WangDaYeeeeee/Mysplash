@@ -77,6 +77,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
             } else {
                 rippleButton.forceSwitch(itemList.get(position).user.followed_by_user);
             }
+            rippleButton.setOnSwitchListener(this);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 avatar.setTransitionName(itemList.get(position).user.username + "-avatar");

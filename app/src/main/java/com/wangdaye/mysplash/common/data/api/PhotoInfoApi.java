@@ -12,6 +12,6 @@ import retrofit2.http.Path;
 
 public interface PhotoInfoApi {
 
-    @GET("napi/photos/{id}/info")
+    @GET("XXX")
     Call<Photo> getPhotoInfo(@Path("id") String id);
 }

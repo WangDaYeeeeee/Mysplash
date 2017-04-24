@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- home tab. -->
+    <string-array name="home_tabs">
+        <item>新規</item>
+        <item>注目</item>
+        <item>コレクション</item>
+    </string-array>
+
+    <!-- search tab. -->
+    <string-array name="search_tabs">
+        <item>写真</item>
+        <item>コレクション</item>
+        <item>ユーザー</item>
+    </string-array>
+
+    <!-- user tab. -->
+    <string-array name="user_tabs">
+        <item>写真</item>
+        <item>いいね</item>
+        <item>コレクション</item>
+    </string-array>
+
+    <!-- my follow tab. -->
+    <string-array name="my_follow_tabs">
+        <item>フォロワー</item>
+        <item>フォロー中</item>
+    </string-array>
+
+    <!-- download option. -->
+    <string-array name="download_options">
+        <item>ダウンロード</item>
+        <item>共有</item>
+        <item>壁紙</item>
+    </string-array>
+
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
+        <item>最新から</item>
+        <item>古いものから</item>
+        <item>人気</item>
+        <item>ランダム</item>
+    </string-array>
+
+    <!-- collection type. -->
+    <string-array name="collection_types">
+        <item>すべて</item>
+        <item>収集済</item>
+        <item>注目</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>コンパクト</item>
+        <item>Raw</item>
+    </string-array>
+
+    <!-- back to top. -->
+    <string-array name="back_to_top_types">
+        <item>リスト表示のすべて</item>
+        <item>ホームのみ</item>
+        <item>なし</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>横向き</item>
+        <item>縦向き</item>
+        <item>正方形</item>
+    </string-array>
+
+</resources>

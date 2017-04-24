@@ -9,7 +9,9 @@
     android:layout_marginRight="@dimen/little_margin"
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise_mini"
+    android:stateListAnimator="@animator/touch_rise_horizontal_card"
+    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardElevation="@dimen/low_elevation"
     app:cardCornerRadius="2dp"
     app:cardPreventCornerOverlap="true"
     tools:ignore="RtlHardcoded,UnusedAttribute">
@@ -18,6 +20,7 @@
         android:id="@+id/item_collection_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/root_color"
         tools:ignore="UnusedAttribute">
 
         <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
@@ -72,7 +75,7 @@
                 android:layout_margin="@dimen/normal_margin"
                 tools:src="@drawable/default_avatar"
                 android:foreground="?attr/selectableItemBackground"
-                android:stateListAnimator="@animator/touch_rise"
+                android:stateListAnimator="@animator/touch_rise_avatar"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
             <TextView
