@@ -1,7 +1,17 @@
+<<<<<<< HEAD
 <resources>
 
     <!-- application. -->
     <string name="app_name">Mysplash</string>
+=======
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- application. -->
+    <string name="app_name">Mysplash</string>
+    <string name="powered">Powered by Unsplash.com</string>
+    <string name="version_code">3.0.7</string>
+>>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
 
     <!-- key words. -->
     <string name="about_app">アプリについて</string>
@@ -14,7 +24,11 @@
     <string name="enter">入力</string>
     <string name="copy">コピー</string>
     <string name="next">次へ</string>
+<<<<<<< HEAD
     <string name="cancel">キャンセル</string>
+=======
+    <string name="cancel" tools:ignore="ButtonCase">キャンセル</string>
+>>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
     <string name="backstage">バックステージ</string>
     <string name="details">詳細</string>
     <string name="restart">再起動</string>
@@ -49,6 +63,29 @@
 
     <string name="follow_system">システムをフォロー</string>
 
+<<<<<<< HEAD
+=======
+    <!-- about. -->
+    <string name="unsplash">Unsplash.com</string>
+    <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
+    <string name="retrofit">Retrofit 2.0</string>
+    <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
+    <string name="glide">Glide</string>
+    <string name="about_glide">An image loading and caching library for Android focused on smooth scrolling.</string>
+    <string name="circular_progress_view">CircularProgressView</string>
+    <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
+    <string name="circle_image_view">CircleImageView</string>
+    <string name="about_circle_image_view">A circular ImageView for Android.</string>
+    <string name="photo_view">PhotoView</string>
+    <string name="about_photo_view">Implementation of ImageView for Android that supports zooming, by various touch gestures.</string>
+    <string name="page_indicator">InkPageIndicator</string>
+    <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
+    <string name="greendao_db">greenDAO</string>
+    <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="butter_knife">Butter Knife</string>
+    <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
+
+>>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
     <!-- feedback. -->
     <string name="feedback_click_retry">クリックすると再試行</string>
 
@@ -200,11 +237,31 @@
     <string name="action_align_left">左寄せ</string>
     <string name="action_align_center">中央寄せ</string>
     <string name="action_align_right">右寄せ</string>
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
     <string name="action_wallpaper">壁紙</string>
     <string name="action_lockscreen">ロック画面</string>
     <string name="action_wallpaper_lockscreen">壁紙とロック画面</string>
 
+<<<<<<< HEAD
+=======
+    <!-- transition name. -->
+    <string name="transition_activity_container">activity_container</string>
+
+    <string name="transition_photo_image">photo_image</string>
+    <string name="transition_photo_background">photo_background</string>
+
+    <string name="transition_user_avatar">user_avatar</string>
+
+    <string name="transition_me_avatar">me_avatar</string>
+
+    <string name="transition_collection_avatar">collection_avatar</string>
+    <string name="transition_collection_background">collection_background</string>
+
+>>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
     <!-- settings. -->
     <string name="settings_category_basic">基本</string>
     <string name="settings_title_back_to_top">戻るボタンを押すと先頭にスクロールします</string>
@@ -219,4 +276,18 @@
     <string name="settings_category_download">ダウンロード</string>
     <string name="settings_title_download_scale">ダウンロードのスケール</string>
 
+<<<<<<< HEAD
 </resources>
+=======
+    <!-- share preferences. -->
+    <string name="key_back_to_top">back_to_top</string>
+    <string name="key_custom_api_key">custom_api_key</string>
+    <string name="key_language">language</string>
+    <string name="key_default_photo_order">default_photo_order</string>
+    <string name="key_default_collection_type">default_collection_type</string>
+    <string name="key_download_scale">download_scale</string>
+
+    <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
+
+</resources>
+>>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
