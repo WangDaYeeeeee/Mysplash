@@ -43,15 +43,6 @@
         <item>人気</item>
         <item>ランダム</item>
     </string-array>
-<<<<<<< HEAD
-=======
-    <string-array name="photo_order_values">
-        <item>latest</item>
-        <item>oldest</item>
-        <item>popular</item>
-        <item>random</item>
-    </string-array>
->>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
 
     <!-- collection type. -->
     <string-array name="collection_types">
@@ -59,43 +50,18 @@
         <item>収集済</item>
         <item>注目</item>
     </string-array>
-<<<<<<< HEAD
-=======
-    <string-array name="collection_type_values">
-        <item>all</item>
-        <item>curated</item>
-        <item>featured</item>
-    </string-array>
->>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
 
     <!-- download type. -->
     <string-array name="download_types">
         <item>コンパクト</item>
         <item>Raw</item>
     </string-array>
-<<<<<<< HEAD
 
     <!-- back to top. -->
     <string-array name="back_to_top_types">
-=======
-    <string-array name="download_type_values">
-        <item>compact</item>
-        <item>raw</item>
-    </string-array>
-
-    <!-- back to top. -->
-    <string-array name="back_to_top_type">
->>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
         <item>リスト表示のすべて</item>
         <item>ホームのみ</item>
         <item>なし</item>
-    </string-array>
-<<<<<<< HEAD
-=======
-    <string-array name="back_to_top_type_values">
-        <item>all</item>
-        <item>home</item>
-        <item>none</item>
     </string-array>
 
     <!-- language. -->
@@ -110,18 +76,6 @@
         <item>Español</item>
         <item>日本語</item>
     </string-array>
-    <string-array name="language_values">
-        <item>follow_system</item>
-        <item>english</item>
-        <item>chinese</item>
-        <item>italian</item>
-        <item>turkish</item>
-        <item>german</item>
-        <item>russian</item>
-        <item>spanish</item>
-        <item>japanese</item>
-    </string-array>
->>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
 
     <!-- search orientation. -->
     <string-array name="search_orientations">
@@ -129,68 +83,5 @@
         <item>縦向き</item>
         <item>正方形</item>
     </string-array>
-<<<<<<< HEAD
-=======
-    <string-array name="search_orientation_values">
-        <item>landscape</item>
-        <item>portrait</item>
-        <item>square</item>
-    </string-array>
-
-    <!-- explore. --><!--
-    <string-array name="explore_items">
-        <item>buildings</item>
-        <item>nature</item>
-        <item>object</item>
-        <item>people</item>
-        <item>technology</item>
-        <item>computer</item>
-        <item>girl</item>
-        <item>food</item>
-        <item>work</item>
-        <item>office</item>
-        <item>music</item>
-        <item>landscape</item>
-        <item>family</item>
-        <item>couple</item>
-        <item>coffee</item>
-        <item>pug</item>
-        <item>canada</item>
-        <item>wedding</item>
-        <item>bike</item>
-        <item>laptop</item>
-        <item>rain</item>
-        <item>fitness</item>
-        <item>new york</item>
-        <item>autumn</item>
-        <item>desk</item>
-        <item>flowers</item>
-        <item>woman</item>
-        <item>clothing</item>
-        <item>happy</item>
-        <item>clock</item>
-        <item>love</item>
-        <item>iphone</item>
-        <item>road</item>
-        <item>yoga</item>
-        <item>man</item>
-        <item>business</item>
-        <item>home</item>
-        <item>tree</item>
-        <item>mountains</item>
-        <item>city</item>
-        <item>summer</item>
-        <item>nasa</item>
-        <item>feet</item>
-        <item>friend</item>
-        <item>japan</item>
-        <item>shopping</item>
-        <item>typewriter</item>
-        <item>house</item>
-        <item>restaurant</item>
-        <item>sky</item>
-        <item>watch</item>
-    </string-array>-->
->>>>>>> 8d33332845e616aacb6d35fc8ca80586a2167b11
 
 </resources>
