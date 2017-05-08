@@ -11,8 +11,7 @@
     android:layout_marginBottom="@dimen/normal_margin"
     android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise_item"
-    android:elevation="@dimen/low_elevation"
+    android:stateListAnimator="@animator/touch_rise_avatar"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
     <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView

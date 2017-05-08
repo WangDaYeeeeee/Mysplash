@@ -2,10 +2,15 @@ package com.wangdaye.mysplash.common.ui.widget.freedomSizeView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Paint;
+import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * Freedom touch view.
@@ -16,26 +21,59 @@ import com.wangdaye.mysplash.R;
 
 public class FreedomTouchView extends View {
 
+    private Paint paint;
+
     private float width = 1;
     private float height = 0.666F;
 
+    private boolean showShadow;
+
     public FreedomTouchView(Context context) {
         super(context);
+        this.initialize();
     }
 
     public FreedomTouchView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.initialize();
     }
 
     public FreedomTouchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        this.initialize();
+    }
+
+    private void initialize() {
+        this.paint = new Paint();
+        this.showShadow = false;
     }
 
     @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
-        setMeasuredDimension(size[0], size[1]);
+        int[] sizes = FreedomImageView.getMeasureSize(
+                getContext(), MeasureSpec.getSize(widthMeasureSpec), width, height, true);
+        setMeasuredDimension(sizes[0], sizes[1]);
+    }
+
+    @SuppressLint("DrawAllocation")
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        if (showShadow) {
+            int bottomTextHeight = (int) new DisplayUtils(getContext()).dpToPx(72);
+            paint.setShader(new LinearGradient(
+                    0, getMeasuredHeight(),
+                    0, getMeasuredHeight() - bottomTextHeight,
+                    new int[]{
+                            Color.argb((int) (255 * 0.3), 0, 0, 0),
+                            Color.argb((int) (255 * 0.1), 0, 0, 0),
+                            Color.argb((int) (255 * 0.03), 0, 0, 0),
+                            Color.argb(0, 0, 0, 0)},
+                    null,
+                    Shader.TileMode.CLAMP));
+            canvas.drawRect(0, 0, getMeasuredWidth(), getMeasuredHeight(), paint);
+        }
     }
 
     public float[] getSize() {
@@ -46,32 +84,11 @@ public class FreedomTouchView extends View {
         width = w;
         height = h;
         if (getMeasuredWidth() != 0) {
-            /*
-            int[] size = getMeasureSize(getMeasuredWidth());
-
-            ViewGroup.LayoutParams params = getLayoutParams();
-            params.width = size[0];
-            params.height = size[1];
-            setLayoutParams(params);
-            */
             requestLayout();
         }
     }
 
-    private int[] getMeasureSize(int measureWidth) {
-        int screenWidth = getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = getResources().getDisplayMetrics().heightPixels;
-        float limitHeight = screenHeight
-                - getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
-
-        if (1.0 * height / width * screenWidth <= limitHeight) {
-            return new int[] {
-                    screenWidth,
-                    (int) limitHeight};
-        } else {
-            return new int[] {
-                    measureWidth,
-                    (int) (measureWidth * height / width)};
-        }
+    public void setShowShadow(boolean show) {
+        this.showShadow = show;
     }
 }

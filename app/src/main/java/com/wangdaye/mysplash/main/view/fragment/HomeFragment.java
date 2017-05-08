@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -8,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -250,6 +252,15 @@ public class HomeFragment extends MysplashFragment
         toolbar.setNavigationOnClickListener(this);
 
         TextView title = ButterKnife.findById(v, R.id.container_notification_bar_title);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            title.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    getContext().getResources().getDimension(R.dimen.subtitle_text_size));
+        } else {
+            title.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    getContext().getResources().getDimension(R.dimen.large_title_text_size));
+        }
         TextPaint paint = title.getPaint();
         paint.setFakeBoldText(true);
 

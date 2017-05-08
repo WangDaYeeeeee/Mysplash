@@ -47,7 +47,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     public List<DownloadMission> itemList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        // widget
+
         @BindView(R.id.item_download_image)
         ImageView image;
 

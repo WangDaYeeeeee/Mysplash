@@ -159,8 +159,10 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
     }
 
     public void insertItem(User u, int position) {
-        itemList.add(position, new MyFollowUser(u));
-        notifyItemInserted(position);
+        if (position <= itemList.size()) {
+            itemList.add(position, new MyFollowUser(u));
+            notifyItemInserted(position);
+        }
     }
 
     public void clearItem() {

@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -214,6 +215,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         containerParams.width = size;
         containerParams.height = size + DisplayUtils.getStatusBarHeight(getResources());
         avatarContainer.setLayoutParams(containerParams);
+
+        if (DisplayUtils.getGirdColumnCount(getContext()) > 1) {
+            avatarContainer.setVisibility(GONE);
+        } else {
+            avatarContainer.setVisibility(VISIBLE);
+        }
     }
 
     private void initContentView() {
@@ -227,9 +234,16 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
+        int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         recyclerView.setAdapter(followingPresenter.getAdapter());
+        if (columnCount > 1) {
+            int margin = getResources().getDimensionPixelSize(R.dimen.little_margin);
+            recyclerView.setPadding(margin, 0, 0, 0);
+        } else {
+            recyclerView.setPadding(0, 0, 0, 0);
+        }
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
         recyclerView.addOnScrollListener(scrollListener);
         avatarScrollListener = new AvatarScrollListener();
         recyclerView.addOnScrollListener(avatarScrollListener);
@@ -411,7 +425,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     private AvatarScrollListener avatarScrollListener;
     private class AvatarScrollListener extends RecyclerView.OnScrollListener {
         // widget
-        private LinearLayoutManager manager;
+        private StaggeredGridLayoutManager manager;
 
         // data
         private User lastActor;
@@ -420,13 +434,13 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         // life cycle.
 
         AvatarScrollListener() {
-            this.manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            this.manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
             this.lastActor = null;
             this.lastVerb = null;
         }
 
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-            int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
+            int firstVisibleItemPosition = manager.findFirstVisibleItemPositions(null)[0];
             if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)) {
                 // the first visible item is a footer item.
                 // --> the second visible item is a header item (title item).
@@ -594,10 +608,13 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+        int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
+                .findLastVisibleItemPositions(null);
         int totalItemCount = followingPresenter.getAdapter().getRealItemCount();
         if (followingPresenter.canLoadMore()
-                && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
+                && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
+                && totalItemCount > 0
+                && dy > 0) {
             followingPresenter.loadMore(getContext(), false);
         }
         if (!ViewCompat.canScrollVertically(recyclerView, -1)) {

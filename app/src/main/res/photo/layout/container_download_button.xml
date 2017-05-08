@@ -5,7 +5,6 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/normal_margin"
     tools:ignore="DisableBaselineAlignment">
 
     <RelativeLayout
@@ -19,6 +18,7 @@
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
             android:padding="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
             android:layout_centerHorizontal="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             tools:ignore="ContentDescription" />
@@ -49,6 +49,7 @@
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
             android:padding="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
             android:layout_centerHorizontal="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             tools:ignore="ContentDescription" />
@@ -79,6 +80,7 @@
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
             android:padding="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
             android:layout_centerHorizontal="true"
             android:background="?attr/selectableItemBackgroundBorderless"
             tools:ignore="ContentDescription" />

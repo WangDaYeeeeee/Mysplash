@@ -30,11 +30,13 @@ public class SettingsOptionManager {
 
     private String backToTopType;
     private boolean notifiedSetBackToTop;
-    private int saturationAnimationDuration;
     private String language;
     private String defaultPhotoOrder;
     private String defaultCollectionType;
     private String downloadScale;
+    private int saturationAnimationDuration;
+    private boolean showGridInPort;
+    private boolean showGridInLand;
 
     private SettingsOptionManager(Context context) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -44,9 +46,6 @@ public class SettingsOptionManager {
         this.notifiedSetBackToTop = sharedPreferences.getBoolean(
                 context.getString(R.string.key_notified_set_back_to_top),
                 false);
-        this.saturationAnimationDuration = Integer.parseInt(
-                sharedPreferences.getString(
-                        context.getString(R.string.key_saturation_animation_duration), "2000"));
         this.language = sharedPreferences.getString(
                 context.getString(R.string.key_language),
                 "follow_system");
@@ -59,6 +58,15 @@ public class SettingsOptionManager {
         this.downloadScale = sharedPreferences.getString(
                 context.getString(R.string.key_download_scale),
                 "compact");
+        this.saturationAnimationDuration = Integer.parseInt(
+                sharedPreferences.getString(
+                        context.getString(R.string.key_saturation_animation_duration), "2000"));
+        this.showGridInPort = sharedPreferences.getBoolean(
+                context.getString(R.string.key_grid_list_in_port),
+                true);
+        this.showGridInLand = sharedPreferences.getBoolean(
+                context.getString(R.string.key_grid_list_in_land),
+                true);
     }
 
     public String getBackToTopType() {
@@ -118,5 +126,13 @@ public class SettingsOptionManager {
 
     public void setDownloadScale(String downloadScale) {
         this.downloadScale = downloadScale;
+    }
+
+    public boolean isShowGridInPort() {
+        return showGridInPort;
+    }
+
+    public boolean isShowGridInLand() {
+        return showGridInLand;
     }
 }

@@ -55,6 +55,11 @@ public class ProgressHolder extends PhotoInfoAdapter.ViewHolder {
         }
     }
 
+    @Override
+    protected void onRecycled() {
+        // do nothing.
+    }
+
     public void setFailedState() {
         if (!failed) {
             failed = true;

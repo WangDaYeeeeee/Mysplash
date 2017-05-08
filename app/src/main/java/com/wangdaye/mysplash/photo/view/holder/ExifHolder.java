@@ -62,6 +62,11 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
         // do nothing.
     }
 
+    @Override
+    protected void onRecycled() {
+        // do nothing.
+    }
+
     public void drawExif(Context context, int viewType, Photo photo) {
         position = viewType - TYPE_EXIF;
         switch (position) {

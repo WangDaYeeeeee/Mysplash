@@ -52,7 +52,6 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         void onBindView(int position) {
             text.setText(itemList.get(position).getTitle());
             layoutText.setText(itemList.get(position).getTitle());
-
             ImageHelper.loadPhoto(context, image, itemList.get(position).getUrl(), true, null);
         }
 

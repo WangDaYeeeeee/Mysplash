@@ -102,7 +102,7 @@ public class TagActivity extends ReadWriteActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Mysplash.PHOTO_ACTIVITY) {
+        if (requestCode == Mysplash.PHOTO_ACTIVITY && data != null) {
             Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
             if (photo != null) {
                 photosView.updatePhoto(photo);
@@ -124,6 +124,9 @@ public class TagActivity extends ReadWriteActivity
             setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+        }
+        if (DisplayUtils.isLandscape(this)) {
+            DisplayUtils.cancelTranslucentNavigation(this);
         }
     }
 

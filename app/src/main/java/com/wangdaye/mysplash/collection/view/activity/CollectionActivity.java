@@ -149,7 +149,7 @@ public class CollectionActivity extends ReadWriteActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Mysplash.PHOTO_ACTIVITY) {
+        if (requestCode == Mysplash.PHOTO_ACTIVITY && data != null) {
             Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
             if (photo != null) {
                 photosView.updatePhoto(photo);
@@ -167,6 +167,18 @@ public class CollectionActivity extends ReadWriteActivity
     }
 
     @Override
+    protected void setTheme() {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Translucent_Collection);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Translucent_Collection);
+        }
+        if (DisplayUtils.isLandscape(this)) {
+            DisplayUtils.cancelTranslucentNavigation(this);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -177,15 +189,6 @@ public class CollectionActivity extends ReadWriteActivity
 
         // save normal data.
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Collection);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Collection);
-        }
     }
 
     @Override

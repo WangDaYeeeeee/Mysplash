@@ -20,7 +20,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
-import com.wangdaye.mysplash.common.ui.activity.RelativeActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.main.view.activity.NotificationActivity;
 import com.wangdaye.mysplash.tag.view.activity.TagActivity;
@@ -52,7 +51,8 @@ public class IntentHelper {
 
     public static void startMainActivity(Activity a) {
         Intent intent = new Intent(a, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         a.startActivity(intent);
     }
 
@@ -132,6 +132,13 @@ public class IntentHelper {
 
         ActivityCompat.startActivityForResult(
                 a, intent, Mysplash.COLLECTION_ACTIVITY, options.toBundle());
+    }
+
+    public static void startCollectionActivity(MysplashActivity a, Collection c) {
+        Intent intent = new Intent(a, CollectionActivity.class);
+        intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startCollectionActivity(MysplashActivity a, String collectionId) {
@@ -217,7 +224,7 @@ public class IntentHelper {
 
     public static void startDownloadManageActivityFromNotification(Context context) {
         Intent intent = new Intent(context, DownloadManageActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(DownloadManageActivity.EXTRA_NOTIFICATION, true);
         context.startActivity(intent);
     }
@@ -302,13 +309,6 @@ public class IntentHelper {
     public static void startCustomApiActivity(SettingsActivity a) {
         Intent intent = new Intent(a, CustomApiActivity.class);
         a.startActivityForResult(intent, Mysplash.CUSTOM_API_ACTIVITY);
-        a.overridePendingTransition(R.anim.activity_in, 0);
-    }
-
-    public static void startRelativeActivity(MysplashActivity a, Photo photo) {
-        Intent intent = new Intent(a, RelativeActivity.class);
-        intent.putExtra(RelativeActivity.KEY_RELATIVE_ACTIVITY_PHOTO, photo);
-        a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 

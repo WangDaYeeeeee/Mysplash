@@ -5,11 +5,11 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
  * Photo download view.
  * */
 
-public class PhotoDownloadView extends FrameLayout {
+public class PhotoDownloadView extends RelativeLayout {
 
     @BindView(R.id.container_download_button)
     LinearLayout buttonView;
@@ -112,7 +113,19 @@ public class PhotoDownloadView extends FrameLayout {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        LayoutParams params = (LayoutParams) progressView.getLayoutParams();
+
+        LayoutParams params = (LayoutParams) buttonView.getLayoutParams();
+        if (DisplayUtils.isTabletDevice(getContext())
+                || getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            params.width = getResources()
+                    .getDimensionPixelSize(R.dimen.tablet_download_button_bar_width);
+        } else {
+            params.width = getMeasuredWidth();
+        }
+        params.addRule(CENTER_IN_PARENT);
+        buttonView.setLayoutParams(params);
+
+        params = (LayoutParams) progressView.getLayoutParams();
         params.width = getMeasuredWidth();
         params.height = getMeasuredHeight();
         progressView.setLayoutParams(params);

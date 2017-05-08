@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.common._basic;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 

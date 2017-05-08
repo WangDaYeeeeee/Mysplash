@@ -133,8 +133,8 @@ public class PreviewActivity extends MysplashActivity
         final NestedScrollPhotoView photoView = ButterKnife.findById(this, R.id.activity_preview_photoView);
         photoView.enable();
         photoView.enableRotate();
+        photoView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         photoView.setMaxScale(calcMaxiScale());
-        photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         ImageHelper.loadFullPhoto(
                 this, photoView, previewable.getFullUrl(), previewable.getRegularUrl(),
                 new ImageHelper.OnLoadImageListener() {
@@ -197,16 +197,10 @@ public class PreviewActivity extends MysplashActivity
     }
 
     private float calcMaxiScale() {
-        float screenWidth = getResources().getDisplayMetrics().widthPixels;
-        float screenHeight = getResources().getDisplayMetrics().heightPixels;
         if (previewable.getWidth() == 128) {
-            return 0.5f;
+            return 0.5F;
         } else {
-            if (1.0 * previewable.getWidth() / previewable.getHeight() >= 1.0 * screenWidth / screenHeight) {
-                return (float) (1.0 * screenHeight * previewable.getWidth() / screenWidth / previewable.getHeight());
-            } else {
-                return (float) (1.0 * screenWidth * previewable.getHeight() / screenHeight / previewable.getWidth());
-            }
+            return 5;
         }
     }
 

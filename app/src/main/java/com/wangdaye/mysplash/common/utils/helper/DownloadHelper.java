@@ -292,7 +292,7 @@ public class DownloadHelper {
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.putExtra(Intent.EXTRA_STREAM, file);
         intent.setType("image/*");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(
                         Intent.createChooser(
                                 intent,
@@ -306,7 +306,7 @@ public class DownloadHelper {
         Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
         intent.setDataAndType(file, "image/jpg");
         intent.putExtra("mimeType", "image/jpg");
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         c.startActivity(
                         Intent.createChooser(
                                 intent,

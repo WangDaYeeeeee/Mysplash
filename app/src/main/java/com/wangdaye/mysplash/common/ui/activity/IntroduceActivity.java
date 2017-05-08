@@ -219,6 +219,11 @@ public class IntroduceActivity extends MysplashActivity
 
         InkPageIndicator indicator = ButterKnife.findById(this, R.id.activity_introduce_indicator);
         indicator.setViewPager(viewPager);
+        if (introduceModelList.size() <= 1) {
+            indicator.setAlpha(0f);
+        } else {
+            indicator.setAlpha(1f);
+        }
     }
 
     @SuppressLint("InflateParams")

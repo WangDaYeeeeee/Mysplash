@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.me.view.widget;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -36,6 +37,7 @@ import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrame
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
@@ -149,7 +151,9 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
         recyclerView.setAdapter(myFollowPresenter.getAdapter());
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+                new GridLayoutManager(
+                        getContext(),
+                        DisplayUtils.getGirdColumnCount(getContext())));
         recyclerView.addOnScrollListener(onScrollListener);
     }
 
@@ -377,7 +381,8 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+        int lastVisibleItem = ((GridLayoutManager) recyclerView.getLayoutManager())
+                .findLastVisibleItemPosition();
         int totalItemCount = recyclerView.getAdapter().getItemCount();
         if (myFollowPresenter.canLoadMore()
                 && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {

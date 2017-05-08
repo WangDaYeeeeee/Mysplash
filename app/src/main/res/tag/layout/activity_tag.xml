@@ -28,7 +28,8 @@
 
                 <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true" />
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/activity_tag_toolbar"

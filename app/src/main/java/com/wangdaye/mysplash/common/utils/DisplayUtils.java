@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.utils;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,11 +12,13 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.view.Display;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
@@ -111,6 +114,10 @@ public class DisplayUtils {
                 && ThemeManager.getInstance(c).isLightTheme();
     }
 
+    public static void cancelTranslucentNavigation(Activity a) {
+        a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+    }
+
     public static void changeTheme(Context c) {
         ThemeManager.getInstance(c)
                 .setLightTheme(
@@ -131,5 +138,37 @@ public class DisplayUtils {
             num = num / 100;
             return (num / 10.0) + "K";
         }
+    }
+
+    public static boolean isTabletDevice(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
+    }
+
+    public static int getGirdColumnCount(Context context) {
+        if (isLandscape(context)) {
+            if (SettingsOptionManager.getInstance(context).isShowGridInLand()) {
+                if (isTabletDevice(context)) {
+                    return 3;
+                } else {
+                    return 2;
+                }
+            } else {
+                return 1;
+            }
+        } else  {
+            if (SettingsOptionManager.getInstance(context).isShowGridInPort()
+                    && isTabletDevice(context)) {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+    }
+
+    public static boolean isLandscape(Context context) {
+        return context.getResources()
+                .getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 }

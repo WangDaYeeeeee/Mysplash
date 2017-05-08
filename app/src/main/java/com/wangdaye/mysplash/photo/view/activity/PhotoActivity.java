@@ -11,11 +11,11 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
@@ -24,6 +24,7 @@ import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
@@ -63,6 +64,7 @@ import com.wangdaye.mysplash.photo.presenter.MessageManageImplementor;
 import com.wangdaye.mysplash.photo.presenter.PhotoActivityPopupManageImplementor;
 import com.wangdaye.mysplash.photo.presenter.PhotoInfoImplementor;
 import com.wangdaye.mysplash.photo.view.holder.BaseHolder;
+import com.wangdaye.mysplash.photo.view.holder.BaseLandscapeHolder;
 import com.wangdaye.mysplash.photo.view.holder.MoreHolder;
 import com.wangdaye.mysplash.photo.view.holder.ProgressHolder;
 
@@ -183,7 +185,7 @@ public class PhotoActivity extends ReadWriteActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState) {
         // do nothing.
     }
 
@@ -276,13 +278,23 @@ public class PhotoActivity extends ReadWriteActivity
                 }
             });
 
+            recyclerView.setAdapter(photoInfoPresenter.getAdapter());
+            int columnCount;
+            if (DisplayUtils.isLandscape(this)) {
+                columnCount = 2;
+            } else {
+                columnCount = 1;
+            }
+            GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
+            layoutManager.setSpanSizeLookup(
+                    new PhotoInfoAdapter.SpanSizeLookup(
+                            photoInfoPresenter.getAdapter(), columnCount));
+            recyclerView.setLayoutManager(layoutManager);
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                 recyclerView.addOnScrollListener(new OnScrollListener((photoInfoPresenter.getPhoto())));
             } else {
                 recyclerView.addOnScrollListener(new MScrollListener((photoInfoPresenter.getPhoto())));
             }
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            recyclerView.setAdapter(photoInfoPresenter.getAdapter());
 
             statusBar.setAlpha(0f);
 
@@ -320,26 +332,36 @@ public class PhotoActivity extends ReadWriteActivity
 
     @Nullable
     private PhotoDownloadView getPhotoDownloadView() {
-        LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
         int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
         int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
         if (firstVisibleItemPosition <= 1 && 1 <= lastVisibleItemPosition) {
-            return ((BaseHolder) recyclerView.findViewHolderForAdapterPosition(1)).getDownloadView();
+            PhotoInfoAdapter.ViewHolder holder
+                    = (PhotoInfoAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(1);
+            if (holder instanceof BaseHolder) {
+                return ((BaseHolder) holder).getDownloadView();
+            } else if (holder instanceof BaseLandscapeHolder) {
+                return ((BaseLandscapeHolder) holder).getDownloadView();
+            } else {
+                return null;
+            }
         } else {
             return null;
         }
     }
 
     @Nullable
-    private ImageView getMoreImage() {
+    private ViewPager getMoreImageContainer() {
         if (!photoInfoPresenter.getAdapter().isComplete()) {
             return null;
         } else {
-            int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+            int lastVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPosition();
             if (lastVisibleItemPosition == photoInfoPresenter.getAdapter().getItemCount() - 1) {
-                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(lastVisibleItemPosition);
+                RecyclerView.ViewHolder holder
+                        = recyclerView.findViewHolderForAdapterPosition(lastVisibleItemPosition);
                 if (holder instanceof MoreHolder) {
-                    return ((MoreHolder) holder).getImageView();
+                    return ((MoreHolder) holder).getViewPager();
                 } else {
                     return null;
                 }
@@ -356,7 +378,8 @@ public class PhotoActivity extends ReadWriteActivity
     // download.
 
     public void readyToDownload(int type) {
-        if (DatabaseHelper.getInstance(this).readDownloadingEntityCount(photoInfoPresenter.getPhoto().id) > 0) {
+        if (DatabaseHelper.getInstance(this)
+                .readDownloadingEntityCount(photoInfoPresenter.getPhoto().id) > 0) {
             NotificationHelper.showSnackbar(
                     getString(R.string.feedback_download_repeat),
                     Snackbar.LENGTH_SHORT);
@@ -435,7 +458,7 @@ public class PhotoActivity extends ReadWriteActivity
      * This listener is used to set footer image position and control the style of status bars.
      * */
     private class OnScrollListener extends RecyclerView.OnScrollListener {
-        // data.
+
         int scrollY;
 
         float statusBarHeight;
@@ -448,17 +471,21 @@ public class PhotoActivity extends ReadWriteActivity
         OnScrollListener(Photo photo) {
             statusBarHeight = DisplayUtils.getStatusBarHeight(getResources());
             screenHeight = getResources().getDisplayMetrics().heightPixels;
-            footerHeight = getResources().getDimensionPixelSize(R.dimen.design_icon_size);
+            footerHeight = getResources().getDimensionPixelSize(R.dimen.item_photo_more_vertical_height);
 
             int screenWidth = getResources().getDisplayMetrics().widthPixels;
             int screenHeight = getResources().getDisplayMetrics().heightPixels;
             float limitHeight = screenHeight
                     - getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
 
-            if (1.0 * photo.height / photo.width * screenWidth <= limitHeight) {
-                showFlowStatusBarTrigger = limitHeight - statusBarHeight;
+            if (DisplayUtils.isLandscape(PhotoActivity.this)) {
+                showFlowStatusBarTrigger = getResources().getDisplayMetrics().heightPixels - statusBarHeight;
             } else {
-                showFlowStatusBarTrigger = screenWidth * photo.height / photo.width - statusBarHeight;
+                if (1.0 * photo.height / photo.width * screenWidth <= limitHeight) {
+                    showFlowStatusBarTrigger = limitHeight - statusBarHeight;
+                } else {
+                    showFlowStatusBarTrigger = screenWidth * photo.height / photo.width - statusBarHeight;
+                }
             }
         }
 
@@ -476,20 +503,19 @@ public class PhotoActivity extends ReadWriteActivity
             // status bar & toolbar.
             if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
                 translucentStatusBar.animToDarkerAlpha();
-                // AnimUtils.animHide(translucentStatusBar, 150, translucentStatusBar.getAlpha(), 0, false);
                 AnimUtils.animShow(statusBar, 150, statusBar.getAlpha(), 1);
             } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
                 translucentStatusBar.animToInitAlpha();
-                // AnimUtils.animShow(translucentStatusBar, 150, translucentStatusBar.getAlpha(), 0.1f);
                 AnimUtils.animHide(statusBar, 150, statusBar.getAlpha(), 0, false);
             }
 
             // more.
-            ImageView moreImage = getMoreImage();
-            if (moreImage != null) {
-                View moreButton = (View) moreImage.getParent();
-                moreImage.setTranslationY(
-                        (float) (0.5 * (recyclerView.getBottom() - moreButton.getTop() - footerHeight)));
+            ViewPager moreContainer = getMoreImageContainer();
+            if (moreContainer != null) {
+                moreContainer.setTranslationY(
+                        (float) (0.5 * (recyclerView.getBottom()
+                                - ((View) moreContainer.getParent()).getTop()
+                                - footerHeight)));
             }
         }
     }
@@ -500,13 +526,9 @@ public class PhotoActivity extends ReadWriteActivity
     @RequiresApi(api = Build.VERSION_CODES.M)
     private class MScrollListener extends OnScrollListener {
 
-        // life cycle.
-
         MScrollListener(Photo photo) {
             super(photo);
         }
-
-        // interface.
 
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -589,7 +611,7 @@ public class PhotoActivity extends ReadWriteActivity
 
     @Override
     public void requestPhotoFailed() {
-        if (((LinearLayoutManager) recyclerView.getLayoutManager())
+        if (((GridLayoutManager) recyclerView.getLayoutManager())
                 .findLastVisibleItemPosition() == 2) {
             ProgressHolder holder = (ProgressHolder) recyclerView.findViewHolderForAdapterPosition(2);
             holder.setFailedState();

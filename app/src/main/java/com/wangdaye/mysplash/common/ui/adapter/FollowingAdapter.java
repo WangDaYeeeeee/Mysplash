@@ -5,8 +5,8 @@ import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -69,7 +69,10 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     private PhotoService photoService;
 
-    static final int MAX_DISPLAY_PHOTO_COUNT = 7;
+    private int columnCount;
+
+    private static final int MAXI_PHOTO_COUNT_LIST = 7;
+    private static final int MAXI_PHOTO_COUNT_GIRD = 11;
 
     /**
      * This class is used to save the view holder's information.
@@ -97,10 +100,15 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     @interface ViewTypeRule {}
 
     public FollowingAdapter(Context a, List<FollowingResult> list) {
+        this(a, list, DisplayUtils.getGirdColumnCount(a));
+    }
+
+    private FollowingAdapter(Context a, List<FollowingResult> list, int columnCount) {
         this.a = a;
         this.resultList = list;
         this.typeList = new ArrayList<>();
         buildTypeList(list);
+        this.columnCount = columnCount;
     }
 
     @Override
@@ -114,23 +122,23 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 case TitleHolder.VIEW_TYPE_TITLE: {
                     View v = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_following_title, parent, false);
-                    return new TitleHolder(v);
+                    return new TitleHolder(v, columnCount);
                 }
                 case PhotoHolder.VIEW_TYPE_PHOTO: {
                     View v = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_following_photo, parent, false);
-                    return new PhotoHolder(v, this, getPhoto(position));
+                    return new PhotoHolder(v, this);
                 }
                 case UserHolder.VIEW_TYPE_USER: {
                     View v = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_following_user, parent, false);
-                    return new UserHolder(v, this);
+                    return new UserHolder(v, this, columnCount);
                 }
                 case MoreHolder.VIEW_TYPE_MORE:
                 default: {
                     View v = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_following_more, parent, false);
-                    return new MoreHolder(v, this, getPhoto(position));
+                    return new MoreHolder(v, this);
                 }
             }
         }
@@ -141,15 +149,19 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         if (!isFooter(position)) {
             if (holder instanceof TitleHolder) {
                 ((TitleHolder) holder).onBindView(
-                        resultList.get(typeList.get(position).resultPosition));
+                        a, resultList.get(typeList.get(position).resultPosition));
             } else if (holder instanceof PhotoHolder) {
                 ((PhotoHolder) holder).onBindView(
-                        getPhoto(position), position);
+                        a,  getPhoto(position), position, columnCount);
             } else if (holder instanceof UserHolder) {
-                ((UserHolder) holder).onBindView(getUser(position), position);
+                ((UserHolder) holder).onBindView(a, getUser(position), position);
             } else if (holder instanceof MoreHolder) {
                 ((MoreHolder) holder).onBindView(
-                        resultList.get(typeList.get(position).resultPosition), getPhoto(position), position);
+                        a,
+                        resultList.get(typeList.get(position).resultPosition),
+                        getPhoto(position),
+                        position,
+                        columnCount);
             }
         }
     }
@@ -232,6 +244,14 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 || typeList.get(position + 1).type == TitleHolder.VIEW_TYPE_TITLE;
     }
 
+    int getMaxiPhotoCount() {
+        if (columnCount > 1) {
+            return MAXI_PHOTO_COUNT_GIRD;
+        } else {
+            return MAXI_PHOTO_COUNT_LIST;
+        }
+    }
+
     // type list.
 
     private void buildTypeList(List<FollowingResult> resultList) {
@@ -265,13 +285,13 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 // then, add title view.
                 typeList.add(new ViewType(i, -1, TitleHolder.VIEW_TYPE_TITLE));
                 // after that, add up to 'MAX_DISPLAY_PHOTO_COUNT' photos.
-                for (int j = 0; j < MAX_DISPLAY_PHOTO_COUNT && j < result.objects.size(); j ++) {
+                for (int j = 0; j < getMaxiPhotoCount() && j < result.objects.size(); j ++) {
                     typeList.add(new ViewType(i, j, PhotoHolder.VIEW_TYPE_PHOTO));
                 }
                 // at last, if the number of photos is more than 'MAX_DISPLAY_PHOTO_COUNT',
                 // add a view to show that there are more photos.
-                if (result.objects.size() > MAX_DISPLAY_PHOTO_COUNT) {
-                    typeList.add(new ViewType(i, MAX_DISPLAY_PHOTO_COUNT, MoreHolder.VIEW_TYPE_MORE));
+                if (result.objects.size() > getMaxiPhotoCount()) {
+                    typeList.add(new ViewType(i, getMaxiPhotoCount(), MoreHolder.VIEW_TYPE_MORE));
                 }
             }
         }
@@ -342,12 +362,12 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 position += resultList.get(i).objects.size();
             } else {
                 for (j = 0; j < resultList.get(i).objects.size(); j ++) {
-                    if (j < MAX_DISPLAY_PHOTO_COUNT) {
+                    if (j < getMaxiPhotoCount()) {
                         position ++;
                     }
                     if (resultList.get(i).objects.get(j).id.equals(p.id)) {
                         resultList.get(i).objects.set(j, new ActionObject(p));
-                        if (j < MAX_DISPLAY_PHOTO_COUNT) {
+                        if (j < getMaxiPhotoCount()) {
                             notifyItemChanged(position);
                         }
                         if (!probablyRepeat) {
@@ -356,7 +376,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     }
                 }
             }
-            if (j > MAX_DISPLAY_PHOTO_COUNT) {
+            if (j > getMaxiPhotoCount()) {
                 position ++;
             }
         }
@@ -450,10 +470,12 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         private void updateView(boolean to) {
             if (recyclerView != null) {
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                int firstPosition = layoutManager.findFirstVisibleItemPosition();
-                int lastPosition = layoutManager.findLastVisibleItemPosition();
-                if (firstPosition <= position && position <= lastPosition) {
+                StaggeredGridLayoutManager layoutManager
+                        = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+                int[] firstPositions = layoutManager.findFirstVisibleItemPositions(null);
+                int[] lastPositions = layoutManager.findLastVisibleItemPositions(null);
+                if (firstPositions[0] <= position
+                        && position <= lastPositions[lastPositions.length - 1]) {
                     PhotoHolder holder = (PhotoHolder) recyclerView.findViewHolderForAdapterPosition(position);
                     holder.likeButton.setResultState(
                             to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
@@ -482,7 +504,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
  *
  * */
 class TitleHolder extends RecyclerView.ViewHolder {
-    // widget
+
     @BindView(R.id.item_following_title_background)
     RelativeLayout background;
 
@@ -501,32 +523,35 @@ class TitleHolder extends RecyclerView.ViewHolder {
     private FollowingResult result;
     static final int VIEW_TYPE_TITLE = 0;
 
-    TitleHolder(View itemView) {
+    TitleHolder(View itemView, int columnCount) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         DisplayUtils.setTypeface(itemView.getContext(), verb);
+
+        if (columnCount > 1) {
+            StaggeredGridLayoutManager.LayoutParams params
+                    = (StaggeredGridLayoutManager.LayoutParams) background.getLayoutParams();
+            params.setFullSpan(true);
+            background.setLayoutParams(params);
+        }
     }
 
-    void onBindView(FollowingResult result) {
+    void onBindView(Context a, FollowingResult result) {
         this.result = result;
 
-        Context context = Mysplash.getInstance().getTopActivity();
-        if (context == null) {
-            return;
-        }
         User user = result.actors.get(0);
 
         actor.setText(user.name);
-        ImageHelper.loadAvatar(context, avatar, user, null);
+        ImageHelper.loadAvatar(a, avatar, user, null);
 
         switch (result.verb) {
             case FollowingResult.VERB_LIKED:
                 verbIcon.setImageResource(R.drawable.ic_verb_liked);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
-                        context.getString(R.string.liked)
+                        a.getString(R.string.liked)
                                 + " " + result.objects.size()
-                                + " " + context.getString(R.string.photos)
+                                + " " + a.getString(R.string.photos)
                                 + ".");
                 break;
 
@@ -535,22 +560,22 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         Html.fromHtml(
-                                context.getString(R.string.collected)
+                                a.getString(R.string.collected)
                                         + " " + result.objects.size()
-                                        + " " + context.getString(R.string.photos) + " " + context.getString(R.string.to)
+                                        + " " + a.getString(R.string.photos) + " " + a.getString(R.string.to)
                                         + " <u>" + result.targets.get(0).title + "</u>"
                                         + "."));
                 break;
 
             case FollowingResult.VERB_FOLLOWED:
                 verbIcon.setImageResource(
-                        ThemeManager.getInstance(context).isLightTheme() ?
+                        ThemeManager.getInstance(a).isLightTheme() ?
                                 R.drawable.ic_verb_followed_light : R.drawable.ic_verb_followed_dark);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
-                        context.getString(R.string.followed)
+                        a.getString(R.string.followed)
                                 + " " + result.objects.size()
-                                + " " + context.getString(R.string.users)
+                                + " " + a.getString(R.string.users)
                                 + ".");
                 break;
 
@@ -558,9 +583,9 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 verbIcon.setImageResource(R.drawable.ic_verb_published);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
-                        context.getString(R.string.released)
+                        a.getString(R.string.released)
                                 + " " + result.objects.size()
-                                + " " + context.getString(R.string.photos)
+                                + " " + a.getString(R.string.photos)
                                 + ".");
                 break;
 
@@ -568,9 +593,9 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 verbIcon.setImageResource(R.drawable.ic_verb_published);
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
-                        context.getString(R.string.published)
+                        a.getString(R.string.published)
                                 + " " + result.objects.size()
-                                + " " + context.getString(R.string.photos)
+                                + " " + a.getString(R.string.photos)
                                 + ".");
                 break;
 
@@ -579,11 +604,11 @@ class TitleHolder extends RecyclerView.ViewHolder {
                 verb.setVisibility(View.VISIBLE);
                 verb.setText(
                         Html.fromHtml(
-                                context.getString(R.string.curated)
+                                a.getString(R.string.curated)
                                         + " " + result.objects.size()
-                                        + " " + context.getString(R.string.photos)
+                                        + " " + a.getString(R.string.photos)
                                         + (result.targets.size() > 0 ?
-                                        " " + context.getString(R.string.to)
+                                        " " + a.getString(R.string.to)
                                                 + " <u>" + result.targets.get(0).title + "</u>"
                                         :
                                         "")
@@ -675,25 +700,31 @@ class PhotoHolder extends RecyclerView.ViewHolder {
     private int position;
     static final int VIEW_TYPE_PHOTO = 1;
 
-    PhotoHolder(View itemView, FollowingAdapter adapter, Photo photo) {
+    PhotoHolder(View itemView, FollowingAdapter adapter) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-
         this.adapter = adapter;
-        image.setSize(photo.width, photo.height);
         DisplayUtils.setTypeface(itemView.getContext(), title);
     }
 
-    void onBindView(final Photo photo, final int position) {
-        final MysplashActivity a = Mysplash.getInstance().getTopActivity();
-
+    void onBindView(final Context a,
+                    final Photo photo,
+                    final int position, int columnCount) {
         this.photo = photo;
         this.position = position;
 
-        float[] sizes = image.getSize();
-        if (sizes[0] != photo.width || sizes[1] != photo.height) {
-            image.setSize(photo.width, photo.height);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
+        int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
+        if (columnCount > 1) {
+            params.setMargins(0, 0, margin, margin);
+            background.setLayoutParams(params);
+        } else {
+            params.setMargins(
+                    a.getResources().getDimensionPixelSize(R.dimen.large_icon_size), 0, margin, margin);
+            background.setLayoutParams(params);
         }
+
+        image.setSize(photo.width, photo.height);
 
         title.setText("");
         image.setShowShadow(false);
@@ -820,20 +851,21 @@ class UserHolder extends RecyclerView.ViewHolder {
     private User user;
     static final int VIEW_TYPE_USER = 2;
 
-    UserHolder(View itemView, FollowingAdapter adapter) {
+    UserHolder(View itemView, FollowingAdapter adapter, int columnCount) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-
         this.adapter = adapter;
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
+
+        if (columnCount > 1) {
+            StaggeredGridLayoutManager.LayoutParams params
+                    = (StaggeredGridLayoutManager.LayoutParams) background.getLayoutParams();
+            params.setFullSpan(true);
+            background.setLayoutParams(params);
+        }
     }
 
-    void onBindView(final User user, final int position) {
-        final MysplashActivity a = Mysplash.getInstance().getTopActivity();
-        if (a == null) {
-            return;
-        }
-
+    void onBindView(final Context a, final User user, final int position) {
         this.user = user;
 
         title.setText(user.name);
@@ -910,48 +942,53 @@ class MoreHolder extends RecyclerView.ViewHolder {
     private FollowingResult result;
     static final int VIEW_TYPE_MORE = 3;
 
-    MoreHolder(View itemView, FollowingAdapter adapter, Photo photo) {
+    MoreHolder(View itemView, FollowingAdapter adapter) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-
         this.adapter = adapter;
-        image.setSize(photo.width, photo.height);
     }
 
-    void onBindView(FollowingResult result, final Photo photo, final int position) {
-        final MysplashActivity a = Mysplash.getInstance().getTopActivity();
-        if (a != null) {
-            this.result = result;
+    void onBindView(final Context a,
+                    FollowingResult result, final Photo photo,
+                    final int position, int columnCount) {
+        this.result = result;
 
-            float[] sizes = image.getSize();
-            if (sizes[0] != photo.width || sizes[1] != photo.height) {
-                image.setSize(photo.width, photo.height);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
+        int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
+        if (columnCount > 1) {
+            params.setMargins(0, 0, margin, margin);
+            background.setLayoutParams(params);
+        } else {
+            params.setMargins(
+                    a.getResources().getDimensionPixelSize(R.dimen.large_icon_size), 0, margin, margin);
+            background.setLayoutParams(params);
+        }
+
+        image.setSize(photo.width, photo.height);
+
+        more.setText(
+                (result.objects.size() - adapter.getMaxiPhotoCount())
+                        + " " + a.getString(R.string.more));
+        ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
+            @Override
+            public void onLoadSucceed() {
+                photo.loadPhotoSuccess = true;
+                if (!photo.hasFadedIn) {
+                    photo.hasFadedIn = true;
+                    adapter.updatePhoto(photo, position);
+                    ImageHelper.startSaturationAnimation(a, image);
+                }
             }
 
-            more.setText(
-                    (result.objects.size() - FollowingAdapter.MAX_DISPLAY_PHOTO_COUNT)
-                            + " " + a.getString(R.string.more));
-            ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
-                @Override
-                public void onLoadSucceed() {
-                    photo.loadPhotoSuccess = true;
-                    if (!photo.hasFadedIn) {
-                        photo.hasFadedIn = true;
-                        adapter.updatePhoto(photo, position);
-                        ImageHelper.startSaturationAnimation(a, image);
-                    }
-                }
-
-                @Override
-                public void onLoadFailed() {
-                    // do nothing.
-                }
-            });
-            ImageHelper.loadAvatar(a, avatar, result.actors.get(0), null);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                avatar.setTransitionName(result.actors.get(0).username + "-" + position + "-avatar");
-                background.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
+            @Override
+            public void onLoadFailed() {
+                // do nothing.
             }
+        });
+        ImageHelper.loadAvatar(a, avatar, result.actors.get(0), null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            avatar.setTransitionName(result.actors.get(0).username + "-" + position + "-avatar");
+            background.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
         }
     }
 

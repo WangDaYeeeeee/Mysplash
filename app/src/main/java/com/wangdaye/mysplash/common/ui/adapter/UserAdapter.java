@@ -182,8 +182,10 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     }
 
     public void insertItem(User u, int position) {
-        itemList.add(position, u);
-        notifyItemInserted(position);
+        if (position <= itemList.size()) {
+            itemList.add(position, u);
+            notifyItemInserted(position);
+        }
     }
 
     public void clearItem() {

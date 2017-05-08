@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.ui.widget.freedomSizeView;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -82,7 +83,9 @@ public class FreedomImageView extends ImageView {
             if (notFree) {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             } else {
-                int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec));
+                int[] size = getMeasureSize(
+                        getContext(),
+                        MeasureSpec.getSize(widthMeasureSpec), width, height, coverMode);
                 setMeasuredDimension(size[0], size[1]);
             }
         } else {
@@ -168,39 +171,61 @@ public class FreedomImageView extends ImageView {
             width = w;
             height = h;
             if (getMeasuredWidth() != 0) {
-                /*
-                int[] size = getMeasureSize(getMeasuredWidth());
-
-                ViewGroup.LayoutParams params = getLayoutParams();
-                params.width = size[0];
-                params.height = size[1];
-                setLayoutParams(params);
-                */
                 requestLayout();
             }
         }
     }
 
     @Size(2)
-    private int[] getMeasureSize(int measureWidth) {
+    public static int[] getMeasureSize(Context c,
+                                       int measureWidth, float w, float h, boolean coverMode) {
         if (coverMode) {
-            int screenWidth = getResources().getDisplayMetrics().widthPixels;
-            int screenHeight = getResources().getDisplayMetrics().heightPixels;
-            float limitHeight = screenHeight
-                    - getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
-
-            if (1.0 * height / width * screenWidth <= limitHeight) {
+            int screenWidth = c.getResources().getDisplayMetrics().widthPixels;
+            int screenHeight = c.getResources().getDisplayMetrics().heightPixels;
+            if (DisplayUtils.isLandscape(c)) {
                 return new int[] {
-                        (int) (limitHeight * width / height),
+                        measureWidth,
+                        screenHeight};
+            }
+
+            float limitHeight;
+            if (c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                limitHeight = screenHeight;
+            } else {
+                limitHeight = screenHeight
+                        - c.getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
+            }
+
+            if (1.0 * h / w * screenWidth <= limitHeight) {
+                return new int[] {
+                        // (int) (limitHeight * w / h),
+                        measureWidth,
                         (int) limitHeight};
             }
         }
         return new int[] {
                 measureWidth,
-                (int) (measureWidth * height / width)};
+                (int) (measureWidth * h / w)};
     }
 
     public void setShowShadow(boolean show) {
         this.showShadow = show;
     }
+
+/*
+    @Size(4) // l, t, r, b.
+    public static int[] getLayoutArea(Context c, int[] parentSizes, int[] childSizes) {
+        int deltaWidth = childSizes[0] - parentSizes[0];
+        int deltaHeight = childSizes[1]
+                - (c.getResources()
+                .getConfiguration()
+                .orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                c.getResources().getDisplayMetrics().heightPixels : childSizes[1]);
+        return new int[] {
+                (int) (-deltaWidth / 2.0),
+                (int) (-deltaHeight / 2.0),
+                (int) (childSizes[0] - deltaWidth / 2.0),
+                (int) (childSizes[1] - deltaHeight / 2.0)};
+    }
+*/
 }

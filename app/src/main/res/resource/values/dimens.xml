@@ -6,6 +6,8 @@
     <dimen name="mini_loading_view_height">80dp</dimen>
     <dimen name="user_cover_view_height">240dp</dimen>
     <dimen name="photo_info_base_view_height">300dp</dimen>
+    <dimen name="tablet_download_button_bar_width">386dp</dimen>
+    <dimen name="item_photo_more_vertical_height">72dp</dimen>
 
     <!-- text -->
     <dimen name="design_title_text_size">24sp</dimen>

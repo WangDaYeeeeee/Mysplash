@@ -23,7 +23,6 @@
             android:transitionName="@string/transition_photo_image"
             android:foreground="?attr/selectableItemBackground"
             app:fiv_cover_mode="true"
-            app:layout_behavior=".common.ui.behavior.PhotoCoverBehavior"
             tools:ignore="UnusedAttribute" />
 
         <android.support.v7.widget.RecyclerView

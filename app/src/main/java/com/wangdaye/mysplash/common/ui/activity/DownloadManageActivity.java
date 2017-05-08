@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -16,6 +16,7 @@ import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
@@ -191,7 +192,8 @@ public class DownloadManageActivity extends ReadWriteActivity
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnMenuItemClickListener(this);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.setLayoutManager(
+                new GridLayoutManager(this, DisplayUtils.getGirdColumnCount(this)));
         recyclerView.setAdapter(adapter);
     }
 
@@ -208,7 +210,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     private void drawRecyclerItemProcess(int position, DownloadMission mission, boolean switchState) {
         adapter.itemList.set(position, mission);
 
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+        GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
         int firstPosition = layoutManager.findFirstVisibleItemPosition();
         int lastPosition = layoutManager.findLastVisibleItemPosition();
         if (firstPosition <= position && position <= lastPosition) {

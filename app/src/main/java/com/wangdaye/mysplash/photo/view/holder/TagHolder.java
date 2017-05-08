@@ -4,7 +4,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.Tag;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -29,13 +28,13 @@ public class TagHolder extends PhotoInfoAdapter.ViewHolder {
 
     public static final int TYPE_TAG = 6;
 
-    public TagHolder(View itemView) {
+    public TagHolder(View itemView, MysplashActivity a) {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(
-                        Mysplash.getInstance().getTopActivity(),
+                        a,
                         LinearLayoutManager.HORIZONTAL,
                         false));
     }
@@ -54,6 +53,11 @@ public class TagHolder extends PhotoInfoAdapter.ViewHolder {
             }
         }
         recyclerView.setAdapter(new TagAdapter(a, tagList));
+    }
+
+    @Override
+    protected void onRecycled() {
+        // do nothing.
     }
 
     public void setScrollListener(RecyclerView.OnScrollListener listener) {

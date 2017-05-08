@@ -6,8 +6,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -231,11 +232,11 @@ public class HomeSearchView extends NestedScrollFrameLayout
     }
 
     private void initView(int type) {
-        initContentView();
+        initContentView(type);
         initSearchingView(type);
     }
 
-    private void initContentView() {
+    private void initContentView(int type) {
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
@@ -246,8 +247,20 @@ public class HomeSearchView extends NestedScrollFrameLayout
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
+        int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         recyclerView.setAdapter(searchPresenter.getAdapter());
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        if (type == SEARCH_USERS_TYPE) {
+            recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
+        } else {
+            if (columnCount > 1) {
+                int margin = getResources().getDimensionPixelSize(R.dimen.little_margin);
+                recyclerView.setPadding(margin, margin, 0, 0);
+            } else {
+                recyclerView.setPadding(0, 0, 0, 0);
+            }
+            recyclerView.setLayoutManager(
+                    new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+        }
         recyclerView.addOnScrollListener(scrollListener);
 
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
@@ -629,10 +642,21 @@ public class HomeSearchView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+        int lastVisibleItem;
+        if (manager instanceof StaggeredGridLayoutManager) {
+            int[] lastVisibleItems = ((StaggeredGridLayoutManager) manager)
+                    .findLastVisibleItemPositions(null);
+            lastVisibleItem = lastVisibleItems[lastVisibleItems.length - 1];
+        } else {
+            lastVisibleItem = ((GridLayoutManager) manager).findLastVisibleItemPosition();
+        }
+
         int totalItemCount = recyclerView.getAdapter().getItemCount() - 1;
         if (searchPresenter.canLoadMore()
-                && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
+                && lastVisibleItem >= totalItemCount - 10
+                && totalItemCount > 0
+                && dy > 0) {
             searchPresenter.loadMore(getContext(), false);
         }
         if (!ViewCompat.canScrollVertically(recyclerView, -1)) {

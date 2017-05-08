@@ -93,7 +93,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
 
         ImageHelper.loadAvatar(a, avatar, photo.user, null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            avatar.setTransitionName(photo.user.username);
+            avatar.setTransitionName(photo.user.username + "-1");
         }
 
         if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) > 0) {
@@ -104,6 +104,11 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         }
 
         this.photo = photo;
+    }
+
+    @Override
+    protected void onRecycled() {
+        ImageHelper.releaseImageView(avatar);
     }
 
     public void showInitAnim() {

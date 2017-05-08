@@ -155,6 +155,15 @@ public class Mysplash extends Application {
         activityList.add(a);
     }
 
+    public void addActivityToFirstPosition(@NonNull MysplashActivity a) {
+        for (MysplashActivity activity : activityList) {
+            if (activity.equals(a)) {
+                return;
+            }
+        }
+        activityList.add(0, a);
+    }
+
     public void removeActivity(MysplashActivity a) {
         activityList.remove(a);
     }

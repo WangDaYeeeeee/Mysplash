@@ -253,7 +253,7 @@ public class MainActivity extends ReadWriteActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         MysplashFragment fragment = getTopFragment();
-        if (fragment != null) {
+        if (fragment != null && data != null) {
             fragment.handleActivityResult(requestCode, resultCode, data);
         }
         if (requestCode == Mysplash.ME_ACTIVITY) {
@@ -275,6 +275,18 @@ public class MainActivity extends ReadWriteActivity
     }
 
     @Override
+    protected void setTheme() {
+        if (ThemeManager.getInstance(this).isLightTheme()) {
+            setTheme(R.style.MysplashTheme_light_Main);
+        } else {
+            setTheme(R.style.MysplashTheme_dark_Main);
+        }
+        if (DisplayUtils.isLandscape(this)) {
+            DisplayUtils.cancelTranslucentNavigation(this);
+        }
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -292,15 +304,6 @@ public class MainActivity extends ReadWriteActivity
         outState.putInt(
                 KEY_MAIN_ACTIVITY_SELECTED_ID,
                 drawerPresenter.getCheckedItemId());
-    }
-
-    @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Main);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Main);
-        }
     }
 
     @Override

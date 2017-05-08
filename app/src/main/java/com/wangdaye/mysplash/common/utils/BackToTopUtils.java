@@ -8,6 +8,7 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -146,9 +147,14 @@ public class BackToTopUtils {
     }
 
     public static void scrollToTop(RecyclerView recyclerView) {
-        int firstVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
-        if (firstVisibleItem > 5) {
+        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+        int firstVisibleItemPosition = 0;
+        if (manager instanceof LinearLayoutManager) {
+            firstVisibleItemPosition = getFirstVisibleItemPosition((LinearLayoutManager) manager);
+        } else if (manager instanceof StaggeredGridLayoutManager) {
+            firstVisibleItemPosition = getFirstVisibleItemPosition((StaggeredGridLayoutManager) manager);
+        }
+        if (firstVisibleItemPosition > 5) {
             recyclerView.scrollToPosition(5);
         }
         recyclerView.smoothScrollToPosition(0);
@@ -157,6 +163,14 @@ public class BackToTopUtils {
                 .isNotifiedSetBackToTop()) {
             BackToTopUtils.showSetBackToTopSnackbar();
         }
+    }
+
+    private static int getFirstVisibleItemPosition(LinearLayoutManager manager) {
+        return manager.findFirstVisibleItemPosition();
+    }
+
+    private static int getFirstVisibleItemPosition(StaggeredGridLayoutManager manager) {
+        return manager.findFirstVisibleItemPositions(null)[0];
     }
 
     /**

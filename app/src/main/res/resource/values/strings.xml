@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.1.1</string>
+    <string name="version_code">3.1.2</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -260,7 +260,6 @@
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_back_to_top">Press back button to scroll to top</string>
-    <string name="settings_title_saturation_animation_duration">Saturation animation duration</string>
     <string name="settings_title_custom_api_key">Custom API key</string>
     <string name="settings_summary_custom_api_key">Set your own API key and Secret.</string>
     <string name="settings_title_language">Language</string>
@@ -272,14 +271,21 @@
     <string name="settings_category_download">Download</string>
     <string name="settings_title_download_scale">Download scale</string>
 
+    <string name="settings_category_display">Display</string>
+    <string name="settings_title_saturation_animation_duration">Saturation animation duration</string>
+    <string name="settings_title_grid_list_in_port">Show image grid in vertical orientation</string>
+    <string name="settings_title_grid_list_in_land">Show image grid in horizontal orientation</string>
+
     <!-- share preferences. -->
     <string name="key_back_to_top">back_to_top</string>
-    <string name="key_saturation_animation_duration">saturation_animation_duration</string>
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
     <string name="key_default_photo_order">default_photo_order</string>
     <string name="key_default_collection_type">default_collection_type</string>
     <string name="key_download_scale">download_scale</string>
+    <string name="key_saturation_animation_duration">saturation_animation_duration</string>
+    <string name="key_grid_list_in_port">grid_list_in_port</string>
+    <string name="key_grid_list_in_land">grid_list_in_land</string>
 
     <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 

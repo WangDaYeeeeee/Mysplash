@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
@@ -23,6 +24,8 @@ import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference;
+import com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -67,6 +70,7 @@ public class SettingsFragment extends PreferenceFragment
         initBasicPart(sharedPreferences);
         initFilterPart(sharedPreferences);
         initDownloadPart(sharedPreferences);
+        initDisplayPart(sharedPreferences);
     }
 
     private void initBasicPart(SharedPreferences sharedPreferences) {
@@ -76,13 +80,6 @@ public class SettingsFragment extends PreferenceFragment
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
         backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
-
-        // saturation animation duration.
-        MysplashListPreference duration = (MysplashListPreference) findPreference(getString(R.string.key_saturation_animation_duration));
-        String durationValue = sharedPreferences.getString(getString(R.string.key_saturation_animation_duration), "2000");
-        String durationName = ValueUtils.getSaturationAnimationDurationName(getActivity(), durationValue);
-        duration.setSummary(getString(R.string.now) + " : " + durationName);
-        duration.setOnPreferenceChangeListener(this);
 
         // language.
         MysplashListPreference language = (MysplashListPreference) findPreference(getString(R.string.key_language));
@@ -115,6 +112,27 @@ public class SettingsFragment extends PreferenceFragment
         String scaleName = ValueUtils.getScaleName(getActivity(), scaleValue);
         downloadScale.setSummary(getString(R.string.now) + " : " + scaleName);
         downloadScale.setOnPreferenceChangeListener(this);
+    }
+
+    private void initDisplayPart(SharedPreferences sharedPreferences) {
+        // saturation animation duration.
+        MysplashListPreference duration = (MysplashListPreference) findPreference(getString(R.string.key_saturation_animation_duration));
+        String durationValue = sharedPreferences.getString(getString(R.string.key_saturation_animation_duration), "2000");
+        String durationName = ValueUtils.getSaturationAnimationDurationName(getActivity(), durationValue);
+        duration.setSummary(getString(R.string.now) + " : " + durationName);
+        duration.setOnPreferenceChangeListener(this);
+
+        // grid list in port.
+        MysplashSwitchPreference gridPort = (MysplashSwitchPreference) findPreference(getString(R.string.key_grid_list_in_port));
+        gridPort.setOnPreferenceChangeListener(this);
+        if (!DisplayUtils.isTabletDevice(getActivity())) {
+            PreferenceCategory display = (PreferenceCategory) findPreference("display");
+            display.removePreference(gridPort);
+        }
+
+        // grid list in land.
+        MysplashSwitchPreference gridLand = (MysplashSwitchPreference) findPreference(getString(R.string.key_grid_list_in_land));
+        gridLand.setOnPreferenceChangeListener(this);
     }
 
     private void showRebootSnackbar() {
@@ -153,11 +171,6 @@ public class SettingsFragment extends PreferenceFragment
             SettingsOptionManager.getInstance(getActivity()).setBackToTopType((String) o);
             String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + backType);
-        } else if (preference.getKey().equals(getString(R.string.key_saturation_animation_duration))) {
-            // saturation animation duration.
-            SettingsOptionManager.getInstance(getActivity()).setSaturationAnimationDuration((String) o);
-            String duration = ValueUtils.getSaturationAnimationDurationName(getActivity(), (String) o);
-            preference.setSummary(getString(R.string.now) + " : " + duration);
         } else if (preference.getKey().equals(getString(R.string.key_language))) {
             // language.
             SettingsOptionManager.getInstance(getActivity()).setLanguage((String) o);
@@ -181,6 +194,15 @@ public class SettingsFragment extends PreferenceFragment
             SettingsOptionManager.getInstance(getActivity()).setDownloadScale((String) o);
             String scale = ValueUtils.getScaleName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + scale);
+        } else if (preference.getKey().equals(getString(R.string.key_saturation_animation_duration))) {
+            // saturation animation duration.
+            SettingsOptionManager.getInstance(getActivity()).setSaturationAnimationDuration((String) o);
+            String duration = ValueUtils.getSaturationAnimationDurationName(getActivity(), (String) o);
+            preference.setSummary(getString(R.string.now) + " : " + duration);
+        } else if (preference.getKey().equals(getString(R.string.key_grid_list_in_port))
+                || preference.getKey().equals(getString(R.string.key_grid_list_in_land))) {
+            // grid.
+            showRebootSnackbar();
         }
         return true;
     }

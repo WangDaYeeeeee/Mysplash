@@ -131,10 +131,10 @@ public class UserNotificationManager {
     /**
      * This method will cancel the HTTP request.
      *
-     * @param force if set true, it means only cancel the next page HTTP request.
+     * @param force if set false, it means only cancel the next page HTTP request.
      * */
     public void cancelRequest(boolean force) {
-        if (force || (!loadFinish && TextUtils.isEmpty(nextPage))) {
+        if (force || !TextUtils.isEmpty(nextPage)) {
             requesting = false;
             if (requestStreamListener != null) {
                 requestStreamListener.setCanceled();

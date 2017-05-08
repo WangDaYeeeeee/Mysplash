@@ -147,6 +147,9 @@ public class SearchFragment extends MysplashFragment
         super.onSaveInstanceState(outState);
         outState.putString(KEY_SEARCH_FRAGMENT_QUERY, editText.getText().toString());
         outState.putInt(KEY_SEARCH_FRAGMENT_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
+        for (PagerView p : pagers) {
+            p.onSaveInstanceState(outState);
+        }
     }
 
     @Override

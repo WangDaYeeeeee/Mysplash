@@ -3,13 +3,13 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.content.Context;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -63,13 +63,15 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     private List<Photo> itemList;
     private PhotoService service;
 
+    private int columnCount;
+
     // if set true, it means these photos is in a collection that was created by user.
     private boolean inMyCollection = false;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_photo_background)
-        RelativeLayout background;
+        @BindView(R.id.item_photo)
+        CardView card;
 
         @BindView(R.id.item_photo_image)
         FreedomImageView image;
@@ -86,19 +88,27 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         @BindView(R.id.item_photo_likeButton)
         CircularProgressIcon likeButton;
 
-        ViewHolder(View itemView, int position) {
+        ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-
-            image.setSize(itemList.get(position).width, itemList.get(position).height);
             DisplayUtils.setTypeface(itemView.getContext(), title);
         }
 
         void onBindView(final int position) {
-            float[] sizes = image.getSize();
-            if (sizes[0] != itemList.get(position).width || sizes[1] != itemList.get(position).height) {
-                image.setSize(itemList.get(position).width, itemList.get(position).height);
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+            if (columnCount > 1) {
+                int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
+                params.setMargins(0, 0, margin, margin);
+                card.setLayoutParams(params);
+                card.setRadius(a.getResources().getDimensionPixelSize(R.dimen.nano_margin));
+            } else {
+                params.setMargins(0, 0, 0, 0);
+                card.setLayoutParams(params);
+                card.setRadius(0);
             }
+
+            image.setSize(itemList.get(position).width, itemList.get(position).height);
 
             title.setText("");
             image.setShowShadow(false);
@@ -139,14 +149,14 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
             }
 
-            background.setBackgroundColor(
+            card.setBackgroundColor(
                     ImageHelper.computeCardBackgroundColor(
                             a,
                             itemList.get(position).color));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 image.setTransitionName(itemList.get(position).id + "-image");
-                background.setTransitionName(itemList.get(position).id + "-background");
+                card.setTransitionName(itemList.get(position).id + "-background");
             }
         }
 
@@ -157,12 +167,12 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         // interface.
 
-        @OnClick(R.id.item_photo_background) void clickItem() {
+        @OnClick(R.id.item_photo) void clickItem() {
             if (a instanceof MysplashActivity) {
                 IntentHelper.startPhotoActivity(
                         (MysplashActivity) a,
                         image,
-                        background,
+                        card,
                         itemList.get(getAdapterPosition()));
             }
         }
@@ -229,8 +239,15 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     public PhotoAdapter(Context a, List<Photo> list,
                         SelectCollectionDialog.OnCollectionsChangedListener sl,
                         OnDownloadPhotoListener dl) {
+        this(a, list, DisplayUtils.getGirdColumnCount(a), sl, dl);
+    }
+
+    public PhotoAdapter(Context a, List<Photo> list, int columnCount,
+                        SelectCollectionDialog.OnCollectionsChangedListener sl,
+                        OnDownloadPhotoListener dl) {
         this.a = a;
         this.itemList = list;
+        this.columnCount = columnCount;
         this.collectionsChangedListener = sl;
         this.downloadPhotoListener = dl;
     }
@@ -243,7 +260,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         } else {
             View v = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_photo, parent, false);
-            return new ViewHolder(v, position);
+            return new ViewHolder(v);
         }
     }
 
@@ -417,10 +434,10 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         private void updateView(boolean to) {
             if (recyclerView != null) {
-                LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-                int firstPosition = layoutManager.findFirstVisibleItemPosition();
-                int lastPosition = layoutManager.findLastVisibleItemPosition();
-                if (firstPosition <= position && position <= lastPosition) {
+                StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+                int[] firstPositions = layoutManager.findFirstVisibleItemPositions(null);
+                int[] lastPositions = layoutManager.findLastVisibleItemPositions(null);
+                if (firstPositions[0] <= position && position <= lastPositions[lastPositions.length - 1]) {
                     ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
                     holder.likeButton.setResultState(
                             to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);

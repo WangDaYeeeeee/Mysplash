@@ -12,13 +12,6 @@
             android:entryValues="@array/back_to_top_type_values"
             android:defaultValue="all" />
 
-        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
-            android:title="@string/settings_title_saturation_animation_duration"
-            android:key="@string/key_saturation_animation_duration"
-            android:entries="@array/saturation_animation_durations"
-            android:entryValues="@array/saturation_animation_duration_values"
-            android:defaultValue="2000" />
-
         <com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference
             android:title="@string/settings_title_custom_api_key"
             android:key="@string/key_custom_api_key"
@@ -63,6 +56,30 @@
             android:entries="@array/download_types"
             android:entryValues="@array/download_type_values"
             android:defaultValue="compact" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_display"
+        android:key="display"
+        android:layout="@layout/preference_category">
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
+            android:title="@string/settings_title_saturation_animation_duration"
+            android:key="@string/key_saturation_animation_duration"
+            android:entries="@array/saturation_animation_durations"
+            android:entryValues="@array/saturation_animation_duration_values"
+            android:defaultValue="2000" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference
+            android:title="@string/settings_title_grid_list_in_port"
+            android:key="@string/key_grid_list_in_port"
+            android:defaultValue="true" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference
+            android:title="@string/settings_title_grid_list_in_land"
+            android:key="@string/key_grid_list_in_land"
+            android:defaultValue="true" />
 
     </PreferenceCategory>
 

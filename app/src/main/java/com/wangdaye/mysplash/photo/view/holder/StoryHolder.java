@@ -69,10 +69,15 @@ public class StoryHolder extends PhotoInfoAdapter.ViewHolder {
 
         ImageHelper.loadAvatar(a, avatar, photo.user, null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            avatar.setTransitionName(photo.user.username);
+            avatar.setTransitionName(photo.user.username + "-3");
         }
 
         this.photo = photo;
+    }
+
+    @Override
+    protected void onRecycled() {
+        ImageHelper.releaseImageView(avatar);
     }
 
     @OnClick(R.id.item_photo_story_avatar) void checkAuthor() {

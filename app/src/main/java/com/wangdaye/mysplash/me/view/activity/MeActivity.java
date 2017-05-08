@@ -177,6 +177,9 @@ public class MeActivity extends ReadWriteActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (data == null) {
+            return;
+        }
         switch (requestCode) {
             case Mysplash.PHOTO_ACTIVITY:
                 Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
@@ -221,6 +224,9 @@ public class MeActivity extends ReadWriteActivity
             setTheme(R.style.MysplashTheme_light_Translucent_Me);
         } else {
             setTheme(R.style.MysplashTheme_dark_Translucent_Me);
+        }
+        if (DisplayUtils.isLandscape(this)) {
+            DisplayUtils.cancelTranslucentNavigation(this);
         }
     }
 

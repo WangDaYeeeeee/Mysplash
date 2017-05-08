@@ -232,4 +232,9 @@
     <string name="settings_category_download">下载</string>
     <string name="settings_title_download_scale">下载规格</string>
 
+    <string name="settings_category_display">显示</string>
+    <string name="settings_title_saturation_animation_duration">饱和度动画时长</string>
+    <string name="settings_title_grid_list_in_port">竖屏时以网格显示图片</string>
+    <string name="settings_title_grid_list_in_land">横屏时以网格显示图片</string>
+
 </resources>

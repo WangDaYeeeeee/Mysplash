@@ -69,7 +69,11 @@ public abstract class MysplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Mysplash.getInstance().addActivity(this);
+        if (savedInstanceState == null) {
+            Mysplash.getInstance().addActivity(this);
+        } else {
+            Mysplash.getInstance().addActivityToFirstPosition(this);
+        }
 
         setTheme();
         LanguageUtils.setLanguage(this);
@@ -130,6 +134,18 @@ public abstract class MysplashActivity extends AppCompatActivity {
     protected abstract void backToTop();
 
     public abstract void finishActivity(int dir);
+
+    @Override
+    public void finish() {
+        super.finish();
+        Mysplash.getInstance().removeActivity(this);
+    }
+
+    @Override
+    public void finishAfterTransition() {
+        super.finishAfterTransition();
+        Mysplash.getInstance().removeActivity(this);
+    }
 
     // manage snack bar container.
 

@@ -48,7 +48,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private Context a;
 
     class ViewHolder extends RecyclerView.ViewHolder {
-        // widget
+
         @BindView(R.id.item_notification_background)
         RelativeLayout background;
 
@@ -76,11 +76,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public ViewHolder(View itemView, int position) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            if (hasPhoto(position)) {
-                image.setSize(
-                        getNotification(position).objects.get(0).castToPhoto().width,
-                        getNotification(position).objects.get(0).castToPhoto().height);
-            }
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
@@ -138,11 +133,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         private void bindPhoto(final int position) {
             if (hasPhoto(position)) {
                 final Photo photo = getNotification(position).objects.get(0).castToPhoto();
+
+                image.setSize(photo.width, photo.height);
+
                 imageContainer.setVisibility(View.VISIBLE);
-                float[] sizes = image.getSize();
-                if (sizes[0] != photo.width || sizes[1] != photo.height) {
-                    image.setSize(photo.width, photo.height);
-                }
+
                 ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
                     @Override
                     public void onLoadSucceed() {
