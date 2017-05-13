@@ -289,4 +289,7 @@
 
     <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 
+    <!-- muzei source. -->
+    <string name="muzei_description">Featured Photo from Unsplash</string>
+
 </resources>

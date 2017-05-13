@@ -58,7 +58,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
     }
 }
 
@@ -93,5 +93,6 @@ dependencies {
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.jakewharton:butterknife:8.0.1'
+    compile 'com.google.android.apps.muzei:muzei-api:2.0'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
 }
