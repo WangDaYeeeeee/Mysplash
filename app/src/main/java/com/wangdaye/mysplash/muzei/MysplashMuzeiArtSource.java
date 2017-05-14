@@ -50,9 +50,9 @@ public final class MysplashMuzeiArtSource extends RemoteMuzeiArtSource {
             intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photo.id);
 
             Artwork art = new Artwork.Builder()
-                    .title("By" + photo.user.name)
+                    .title(photo.user.name)
                     .byline(photo.created_at)
-                    .imageUri(Uri.parse(photo.getDownloadUrl()))
+                    .imageUri(Uri.parse(photo.getRegularUrl()))
                     .token(photo.id)
                     .viewIntent(intent)
                     .build();
