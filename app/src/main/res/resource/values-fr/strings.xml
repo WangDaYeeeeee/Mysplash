@@ -145,7 +145,7 @@
     <string name="feedback_name_is_required">Un nom est requis.</string>
     <string name="feedback_sure">Êtes-vous sûr?</string>
 
-    <string name="feedback_notify_set_back_to_top">VOus pouver changer l\'action du bouton retour.</string>
+    <string name="feedback_notify_set_back_to_top">Vous pouver changer l\'action du bouton retour.</string>
 
     <string name="feedback_add_photo_failed">Impossible d\'ajouter la photo.</string>
     <string name="feedback_delete_photo_failed">Impossible de supprimer la photo.</string>
