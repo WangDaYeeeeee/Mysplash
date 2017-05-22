@@ -25,7 +25,7 @@ public class PopupManageImplementor
 
     @Override
     public void showPopup(Context c, View anchor, String value, final int position) {
-        if (position % 2 == 0) {
+        if (position != 2) {
             PhotoOrderPopupWindow window = new PhotoOrderPopupWindow(
                     c,
                     anchor,

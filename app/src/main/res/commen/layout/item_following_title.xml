@@ -45,7 +45,6 @@
             android:layout_marginRight="@dimen/normal_margin"
             android:gravity="bottom"
             android:textAlignment="gravity"
-            android:foreground="?attr/selectableItemBackground"
             style="@style/title_text"
             tools:text="Wang Yueeeeee"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
@@ -56,7 +55,6 @@
             android:layout_below="@id/item_following_title_actor"
             android:paddingBottom="@dimen/normal_margin"
             android:layout_marginRight="@dimen/normal_margin"
-            android:foreground="?attr/selectableItemBackground"
             style="@style/subtitle_text"
             tools:text="added 3 photos to Unsplash Instant 2"
             tools:ignore="RtlHardcoded,RtlSymmetry" />

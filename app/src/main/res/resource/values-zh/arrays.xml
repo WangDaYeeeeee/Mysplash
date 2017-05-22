@@ -52,6 +52,7 @@
 
     <!-- 下载类型 -->
     <string-array name="download_types">
+        <item>极小的</item>
         <item>压缩过的</item>
         <item>未经压缩</item>
     </string-array>

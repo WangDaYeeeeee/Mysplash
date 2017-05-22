@@ -9,10 +9,10 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.Previewable;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollPhotoView;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
@@ -64,12 +64,6 @@ public class PreviewActivity extends MysplashActivity
             initData();
             initWidget();
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Mysplash.getInstance().removeActivity(this);
     }
 
     @Override
@@ -136,7 +130,11 @@ public class PreviewActivity extends MysplashActivity
         photoView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         photoView.setMaxScale(calcMaxiScale());
         ImageHelper.loadFullPhoto(
-                this, photoView, previewable.getFullUrl(), previewable.getRegularUrl(),
+                this,
+                photoView,
+                previewable instanceof Photo
+                        ? ((Photo) previewable).getWallpaperSizeUrl(this) : previewable.getFullUrl(),
+                previewable.getRegularUrl(),
                 new ImageHelper.OnLoadImageListener() {
             @Override
             public void onLoadSucceed() {

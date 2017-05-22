@@ -218,7 +218,8 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @Override
     protected boolean hasFooter() {
-        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+        return !DisplayUtils.isLandscape(a)
+                && DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
     }
 
     public void setActivity(MysplashActivity a) {
@@ -254,7 +255,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     public void updateCollection(Collection c, boolean probablyRepeat, boolean refreshView) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id == c.id) {
-                c.insertingPhoto = itemList.get(i).insertingPhoto;
+                c.editing = itemList.get(i).editing;
                 if (c.cover_photo != null && itemList.get(i).cover_photo != null) {
                     c.cover_photo.loadPhotoSuccess = itemList.get(i).cover_photo.loadPhotoSuccess;
                     c.cover_photo.hasFadedIn = itemList.get(i).cover_photo.hasFadedIn;

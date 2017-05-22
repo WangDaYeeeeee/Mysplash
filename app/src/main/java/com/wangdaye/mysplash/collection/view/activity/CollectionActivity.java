@@ -15,12 +15,17 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.collection.presenter.activity.PopupManageImplementor;
 import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
+import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
+import com.wangdaye.mysplash.common.i.view.PopupManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash.common.ui.popup.CollectionMenuPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -73,7 +78,7 @@ import butterknife.OnClick;
  * */
 
 public class CollectionActivity extends ReadWriteActivity
-        implements SwipeBackManageView, EditResultView, BrowsableView,
+        implements SwipeBackManageView, PopupManageView, EditResultView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, PhotoAdapter.OnDownloadPhotoListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener,
         UpdateCollectionDialog.OnCollectionChangedListener,
@@ -87,6 +92,9 @@ public class CollectionActivity extends ReadWriteActivity
 
     @BindView(R.id.activity_collection_appBar)
     NestedScrollAppBarLayout appBar;
+
+    @BindView(R.id.activity_collection_toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.activity_collection_creatorBar)
     RelativeLayout creatorBar;
@@ -102,6 +110,8 @@ public class CollectionActivity extends ReadWriteActivity
     private ToolbarPresenter toolbarPresenter;
 
     private SwipeBackManagePresenter swipeBackManagePresenter;
+
+    private PopupManagePresenter popupManagePresenter;
 
     private EditResultModel editResultModel;
     private EditResultPresenter editResultPresenter;
@@ -242,8 +252,13 @@ public class CollectionActivity extends ReadWriteActivity
     // init.
 
     private void initModel() {
-        this.editResultModel = new EditResultObject(
-                (Collection) getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
+        Object o = getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION);
+        if (o == null || !(o instanceof Collection)) {
+            this.editResultModel = new EditResultObject(null);
+        } else {
+            this.editResultModel = new EditResultObject((Collection) o);
+        }
+
         this.browsableModel = new BorwsableObject(getIntent());
         this.downloadModel = new DownloadObject();
     }
@@ -251,6 +266,7 @@ public class CollectionActivity extends ReadWriteActivity
     private void initPresenter() {
         this.toolbarPresenter = new ToolbarImplementor();
         this.swipeBackManagePresenter = new SwipeBackManageImplementor(this);
+        this.popupManagePresenter = new PopupManageImplementor(this);
         this.editResultPresenter = new EditResultImplementor(editResultModel, this);
         this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
         this.downloadPresenter = new DownloadImplementor(downloadModel);
@@ -284,7 +300,6 @@ public class CollectionActivity extends ReadWriteActivity
                 description.setText(c.description);
             }
 
-            Toolbar toolbar = ButterKnife.findById(this, R.id.activity_collection_toolbar);
             if (browsablePresenter.isBrowsable()) {
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
@@ -298,16 +313,10 @@ public class CollectionActivity extends ReadWriteActivity
                     R.menu.activity_collection_toolbar_dark);
             toolbar.setOnMenuItemClickListener(this);
             toolbar.setNavigationOnClickListener(this);
-            if (AuthManager.getInstance().getUsername() != null
-                    && AuthManager.getInstance().getUsername().equals(c.user.username)) {
-                toolbar.getMenu().getItem(0).setVisible(true);
+            if (CollectionMenuPopupWindow.isUsable(this, getCollection())) {
+                toolbar.getMenu().getItem(1).setVisible(true);
             } else {
-                toolbar.getMenu().getItem(0).setVisible(false);
-            }
-            if (c.curated) {
-                toolbar.getMenu().getItem(2).setVisible(true);
-            } else {
-                toolbar.getMenu().getItem(2).setVisible(false);
+                toolbar.getMenu().getItem(1).setVisible(false);
             }
 
             ImageHelper.loadAvatar(this, avatarImage, c.user, null);
@@ -326,6 +335,12 @@ public class CollectionActivity extends ReadWriteActivity
                 photosView.initRefresh();
             }
         }
+    }
+
+    // UI.
+
+    public void showPopup() {
+        popupManagePresenter.showPopup(this, toolbar, null, 0);
     }
 
     // download.
@@ -494,6 +509,40 @@ public class CollectionActivity extends ReadWriteActivity
         } else {
             return photosView.canSwipeBack(dir)
                     && appBar.getY() >= 0;
+        }
+    }
+
+    // popup manage view.
+
+    @Override
+    public void responsePopup(String value, int position) {
+        switch (position) {
+            case CollectionMenuPopupWindow.ITEM_EDIT:
+                UpdateCollectionDialog dialog = new UpdateCollectionDialog();
+                dialog.setCollection(getCollection());
+                dialog.setOnCollectionChangedListener(this);
+                dialog.show(getFragmentManager(), null);
+                break;
+
+            case CollectionMenuPopupWindow.ITEM_DOWNLOAD:
+                downloadCollection();
+                break;
+
+            case CollectionMenuPopupWindow.ITEM_SET_AS_SOURCE:
+                WallpaperSource source = DatabaseHelper.getInstance(this)
+                        .readWallpaperSource(getCollection().id);
+                if (source == null) {
+                    source = new WallpaperSource(getCollection());
+                    DatabaseHelper.getInstance(this).writeWallpaperSource(source);
+                    NotificationHelper.showSnackbar(
+                            getString(R.string.feedback_set_as_source_succeed),
+                            Snackbar.LENGTH_SHORT);
+                } else {
+                    NotificationHelper.showSnackbar(
+                            getString(R.string.feedback_set_as_source_failed),
+                            Snackbar.LENGTH_SHORT);
+                }
+                break;
         }
     }
 

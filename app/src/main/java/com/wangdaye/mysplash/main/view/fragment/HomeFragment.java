@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -22,10 +21,8 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.PagerManageModel;
-import com.wangdaye.mysplash.common.i.presenter.NotificationBarPresenter;
 import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
@@ -36,12 +33,8 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.i.view.PagerManageView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
-import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.manager.UserNotificationManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
-import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentNotificationBarImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.PagerManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
@@ -70,8 +63,8 @@ import butterknife.OnClick;
 public class HomeFragment extends MysplashFragment
         implements PopupManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener,
-        UserNotificationManager.OnUpdateNotificationListener {
+        NestedScrollAppBarLayout.OnNestedScrollingListener/*,
+        UserNotificationManager.OnUpdateNotificationListener*/ {
 
     @BindView(R.id.fragment_home_statusBar)
     StatusBarView statusBar;
@@ -106,10 +99,10 @@ public class HomeFragment extends MysplashFragment
     private PagerManageModel pagerManageModel;
     private PagerManagePresenter pagerManagePresenter;
 
-    private NotificationBarPresenter notificationBarPresenter;
+    // private NotificationBarPresenter notificationBarPresenter;
 
     private final String KEY_HOME_FRAGMENT_PAGE_POSITION = "home_fragment_page_position";
-
+/*
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +110,7 @@ public class HomeFragment extends MysplashFragment
                 .getNotificationManager()
                 .addOnUpdateNotificationListener(this);
     }
-
+*/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
@@ -131,9 +124,10 @@ public class HomeFragment extends MysplashFragment
     @Override
     public void onDestroy() {
         super.onDestroy();
+        /*
         AuthManager.getInstance()
                 .getNotificationManager()
-                .removeOnUpdateNotificationListener(this);
+                .removeOnUpdateNotificationListener(this);*/
         for (PagerView p : pagers) {
             if (p != null) {
                 p.cancelRequest();
@@ -145,14 +139,14 @@ public class HomeFragment extends MysplashFragment
     public boolean needSetOnlyWhiteStatusBarText() {
         return appBar.getY() <= -appBar.getMeasuredHeight();
     }
-
+/*
     @Override
     public void onHiddenChanged(boolean hidden) {
         if (!hidden) {
             notificationBarPresenter.setVisible(bellBtn, redDot);
         }
     }
-
+*/
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -264,12 +258,17 @@ public class HomeFragment extends MysplashFragment
         TextPaint paint = title.getPaint();
         paint.setFakeBoldText(true);
 
+        bellBtn.setAlpha(0F);
+        bellBtn.setEnabled(false);
+        redDot.setAlpha(0F);
+        redDot.setEnabled(false);
+/*
         notificationBarPresenter.setVisible(bellBtn, redDot);
         if (AuthManager.getInstance().isAuthorized()
                 && AuthManager.getInstance().getNumericId() > 0) {
             AuthManager.getInstance().getNotificationManager().requestPersonalNotifications();
         }
-
+*/
         initPages(v, savedInstanceState);
     }
 
@@ -326,7 +325,7 @@ public class HomeFragment extends MysplashFragment
         this.toolbarPresenter = new ToolbarImplementor();
         this.popupManageImplementor = new HomeFragmentPopupManageImplementor(this);
         this.pagerManagePresenter = new PagerManageImplementor(pagerManageModel, this);
-        this.notificationBarPresenter = new HomeFragmentNotificationBarImplementor();
+        // this.notificationBarPresenter = new HomeFragmentNotificationBarImplementor();
     }
 
     // control.
@@ -356,11 +355,11 @@ public class HomeFragment extends MysplashFragment
     @OnClick(R.id.fragment_home_toolbar) void clickToolbar() {
         toolbarPresenter.touchToolbar((MysplashActivity) getActivity());
     }
-
+/*
     @OnClick(R.id.container_notification_bar_button) void clickBellBtn() {
         IntentHelper.startNotificationActivity((MysplashActivity) getActivity());
     }
-
+*/
     // on menu item click listener.
 
     @Override
@@ -424,7 +423,7 @@ public class HomeFragment extends MysplashFragment
     }
 
     // on update notification listener.
-
+/*
     @Override
     public void onRequestNotificationSucceed(List<NotificationResult> resultList) {
         notificationBarPresenter.setImage(bellBtn, redDot);
@@ -449,7 +448,7 @@ public class HomeFragment extends MysplashFragment
     public void onSetLatestTime() {
         notificationBarPresenter.setVisible(bellBtn, redDot);
     }
-
+*/
     // view.
 
     // pager manage view.

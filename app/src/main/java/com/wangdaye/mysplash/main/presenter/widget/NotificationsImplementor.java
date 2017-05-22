@@ -61,7 +61,11 @@ public class NotificationsImplementor
         view.initRefreshStart();
         if (AuthManager.getInstance()
                 .getNotificationManager()
-                .getNotificationList().size() == 0) {
+                .getNotificationList().size() == 0
+                &&
+                !AuthManager.getInstance()
+                        .getNotificationManager()
+                        .isLoadFinish()) {
             requestNotifications(c, true);
         } else {
             model.setRefreshing(false);

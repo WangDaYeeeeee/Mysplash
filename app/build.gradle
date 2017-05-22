@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 25
-        versionCode 312
-        versionName "3.1.2"
+        versionCode 313
+        versionName "3.1.3"
     }
     sourceSets {
         main {
@@ -43,6 +43,7 @@ android {
             it.buildConfigField 'String', 'SECRET_BETA', SECRET_BETA
             it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
             it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
+
             it.buildConfigField 'String', 'APP_ID_RELEASE_UNAUTH', APP_ID_RELEASE_UNAUTH
             it.buildConfigField 'String', 'GET_STREAM_KEY', GET_STREAM_KEY
             it.buildConfigField 'String', 'GET_STREAM_AUTH_CODE', GET_STREAM_AUTH_CODE
@@ -64,7 +65,7 @@ buildscript {
 
 apply plugin: 'org.greenrobot.greendao'
 greendao {
-    schemaVersion 12
+    schemaVersion 13
     generateTests false
 }
 
@@ -79,19 +80,24 @@ allprojects {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:cardview-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     compile 'com.android.support:customtabs:25.3.1'
+
     compile 'com.squareup.retrofit2:retrofit:2.0.2'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
-    compile  'com.squareup.retrofit2:converter-scalars:2.0.2'
+
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
+
+    compile 'com.jakewharton:butterknife:8.0.1'
+    apt 'com.jakewharton:butterknife-compiler:8.0.1'
+
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'
     compile 'org.greenrobot:greendao:3.2.0'
-    compile 'com.jakewharton:butterknife:8.0.1'
-    apt 'com.jakewharton:butterknife-compiler:8.0.1'
+    compile 'com.google.android.apps.muzei:muzei-api:2.0'
 }

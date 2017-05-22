@@ -174,7 +174,8 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @Override
     protected boolean hasFooter() {
-        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+        return !DisplayUtils.isLandscape(a)
+                && DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
     }
 
     public void setActivity(MysplashActivity a) {

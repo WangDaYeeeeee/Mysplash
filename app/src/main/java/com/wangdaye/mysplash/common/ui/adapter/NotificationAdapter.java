@@ -103,7 +103,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         getNotification(position).actors.get(0).username + position + "-avatar");
                 if (hasPhoto(position)) {
                     image.setTransitionName(
-                            getNotification(position).objects.get(0).castToPhoto().id + position + "-image");
+                            getNotification(position).objects.get(0).castToPhoto().id + position + "-cover");
                 }
             }
         }

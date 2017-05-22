@@ -36,7 +36,7 @@ public class PopupManageImplementor
         if (position < 0) {
             MeMenuPopupWindow window = new MeMenuPopupWindow(c, anchor);
             window.setOnSelectItemListener(this);
-        } else if (position % 2 == 0) {
+        } else if (position != 2) {
             PhotoOrderPopupWindow window = new PhotoOrderPopupWindow(
                     c,
                     anchor,

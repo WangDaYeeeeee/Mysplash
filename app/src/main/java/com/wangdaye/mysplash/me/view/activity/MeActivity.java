@@ -271,7 +271,7 @@ public class MeActivity extends ReadWriteActivity
         setResult(RESULT_OK);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         if (Mysplash.getInstance().getActivityCount() > 1
-                &&Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
             finish();

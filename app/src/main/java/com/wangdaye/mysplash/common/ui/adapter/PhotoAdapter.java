@@ -155,7 +155,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                             itemList.get(position).color));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                image.setTransitionName(itemList.get(position).id + "-image");
+                image.setTransitionName(itemList.get(position).id + "-cover");
                 card.setTransitionName(itemList.get(position).id + "-background");
             }
         }
@@ -291,7 +291,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     @Override
     protected boolean hasFooter() {
-        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+        return !DisplayUtils.isLandscape(a)
+                && DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
     }
 
     public void setActivity(MysplashActivity a) {
@@ -404,7 +405,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
-            if (itemList.size() >= position
+            if (itemList.size() > position
                     && itemList.get(position).id.equals(id)) {
                 itemList.get(position).settingLike = false;
 
@@ -419,7 +420,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         @Override
         public void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t) {
-            if (itemList.size() >= position
+            if (itemList.size() > position
                     && itemList.get(position).id.equals(id)) {
                 itemList.get(position).settingLike = false;
                 updateView(itemList.get(position).liked_by_user);

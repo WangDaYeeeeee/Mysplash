@@ -10,6 +10,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.ChangeCollectionPhotoRe
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -138,6 +139,20 @@ public class CollectionService {
         call = getACollection;
     }
 
+    @Nullable
+    public Collection requestACollections(String id) {
+        Call<Collection> getACollection = buildApi(buildClient()).getACollection(id);
+        try {
+            Response<Collection> response = getACollection.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void requestACuratedCollections(String id,
                                            final OnRequestSingleCollectionListener l) {
         Call<Collection> getACuratedCollection = buildApi(buildClient()).getACuratedCollection(id);
@@ -157,6 +172,20 @@ public class CollectionService {
             }
         });
         call = getACuratedCollection;
+    }
+
+    @Nullable
+    public Collection requestACuratedCollections(String id) {
+        Call<Collection> getACuratedCollection = buildApi(buildClient()).getACuratedCollection(id);
+        try {
+            Response<Collection> response = getACuratedCollection.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void requestUserCollections(String username,

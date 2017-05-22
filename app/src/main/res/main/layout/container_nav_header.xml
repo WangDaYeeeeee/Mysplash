@@ -55,6 +55,7 @@
         android:layout_marginLeft="@dimen/normal_margin"
         android:layout_marginRight="66dp"
         android:layout_marginBottom="@dimen/little_margin"
+        android:paddingBottom="@dimen/little_margin"
         android:layout_below="@id/container_nav_header_title"
         android:layout_alignParentLeft="true"
         style="@style/subtitle_text"

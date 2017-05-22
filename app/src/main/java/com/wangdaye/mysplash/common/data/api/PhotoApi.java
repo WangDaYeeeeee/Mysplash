@@ -52,6 +52,11 @@ public interface PhotoApi {
     @GET("photos/{id}")
     Call<Photo> getAPhoto(@Path("id") String id);
 
+    @GET("photos/{id}")
+    Call<Photo> getAPhoto(@Path("id") String id,
+                          @Query("w") int w,
+                          @Query("h") int h);
+
     @GET("users/{username}/photos")
     Call<List<Photo>> getUserPhotos(@Path("username") String username,
                                     @Query("page") int page,

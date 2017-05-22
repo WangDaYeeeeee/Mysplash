@@ -4,7 +4,6 @@ import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.api.GetStreamApi;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.widget.interceptor.GetStreamInterceptor;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -27,7 +26,6 @@ public class GetStreamService {
 
     private OkHttpClient buildClient() {
         return new OkHttpClient.Builder()
-                .addInterceptor(new GetStreamInterceptor())
                 .build();
     }
 
@@ -42,8 +40,37 @@ public class GetStreamService {
     public void requestFirstPageStream(final OnRequestStreamListener l) {
         if (AuthManager.getInstance().isAuthorized()
                 && AuthManager.getInstance().getNumericId() >= 0) {
-            requestFirstPageStream(AuthManager.getInstance().getNumericId(), l);
+            optionFirstPageStream(AuthManager.getInstance().getNumericId(), l);
         }
+    }
+
+    private void optionFirstPageStream(final int numeric_id, final OnRequestStreamListener l) {
+        Call<ResponseBody> optionFirstPageStream = buildApi(buildClient())
+                .optionFirstPageStream(
+                        numeric_id,
+                        Mysplash.DEFAULT_PER_PAGE,
+                        BuildConfig.GET_STREAM_KEY,
+                        "unspecified");
+        optionFirstPageStream.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.code() / 100 == 2) {
+                    requestFirstPageStream(numeric_id, l);
+                } else {
+                    if (l != null) {
+                        l.onRequestEnrichSucceed(call, response);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestEnrichFailed(call, t);
+                }
+            }
+        });
+        call = optionFirstPageStream;
     }
 
     private void requestFirstPageStream(int numeric_id, final OnRequestStreamListener l) {
@@ -68,7 +95,31 @@ public class GetStreamService {
         call = getFirstPageStream;
     }
 
-    public void requestNextPageStream(String nextPage, final OnRequestStreamListener l) {
+    public void requestNextPageStream(final String nextPage, final OnRequestStreamListener l) {
+        Call<ResponseBody> optionNextPageStream = buildApi(buildClient()).optionNextPageStream(nextPage);
+        optionNextPageStream.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.code() / 100 == 2) {
+                    requestNextPage(nextPage, l);
+                } else {
+                    if (l != null) {
+                        l.onRequestEnrichSucceed(call, response);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestEnrichFailed(call, t);
+                }
+            }
+        });
+        call = optionNextPageStream;
+    }
+
+    private void requestNextPage(String nextPage, final OnRequestStreamListener l) {
         Call<ResponseBody> getNextPageStream = buildApi(buildClient()).getNextPageStream(nextPage);
         getNextPageStream.enqueue(new Callback<ResponseBody>() {
             @Override

@@ -26,7 +26,12 @@ public class BorwsableObject
             if (TextUtils.isEmpty(id)) {
                 intentUri = null;
             } else {
-                intentUri = Uri.parse("https://unsplash.com/collections/curated/" + id);
+                int collectionId = Integer.parseInt(id);
+                if (collectionId < 1000) {
+                    intentUri = Uri.parse("https://unsplash.com/collections/curated/" + id);
+                } else {
+                    intentUri = Uri.parse("https://unsplash.com/collections/" + id);
+                }
             }
         } else {
             intentUri = Uri.parse(intent.getDataString());

@@ -260,13 +260,13 @@ public class MainActivity extends ReadWriteActivity
             drawMeAvatar();
         }
     }
-
+/*
     @Override
     protected void onResume() {
         super.onResume();
         AuthManager.getInstance().refreshPersonalNotifications();
     }
-
+*/
     @Override
     protected void onDestroy() {
         super.onDestroy();

@@ -4,14 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_edit"
-        android:orderInCategory="100"
-        android:title="@string/action_edit"
-        android:icon="@drawable/ic_pencil_dark"
-        app:showAsAction="always"
-        tools:ignore="AlwaysShowAction" />
-
-    <item
         android:id="@+id/action_share"
         android:orderInCategory="100"
         android:title="@string/action_share"
@@ -19,10 +11,11 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_download"
+        android:id="@+id/action_menu"
         android:orderInCategory="100"
-        android:title="@string/action_download"
-        android:icon="@drawable/ic_download_dark"
-        app:showAsAction="always" />
+        android:title="@string/action_menu"
+        android:icon="@drawable/ic_menu_dark"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
 
 </menu>

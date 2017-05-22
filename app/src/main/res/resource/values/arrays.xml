@@ -64,10 +64,12 @@
 
     <!-- download type. -->
     <string-array name="download_types">
+        <item>Tiny</item>
         <item>Compact</item>
         <item>Raw</item>
     </string-array>
     <string-array name="download_type_values">
+        <item>tiny</item>
         <item>compact</item>
         <item>raw</item>
     </string-array>
@@ -107,6 +109,7 @@
         <item>Русский</item>
         <item>Español</item>
         <item>日本語</item>
+        <item>Français</item>
     </string-array>
     <string-array name="language_values">
         <item>follow_system</item>
@@ -118,6 +121,7 @@
         <item>russian</item>
         <item>spanish</item>
         <item>japanese</item>
+        <item>french</item>
     </string-array>
 
     <!-- search orientation. -->

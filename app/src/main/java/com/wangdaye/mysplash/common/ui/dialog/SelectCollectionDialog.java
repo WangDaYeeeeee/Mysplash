@@ -16,10 +16,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -35,6 +37,7 @@ import com.wangdaye.mysplash.common.data.service.CollectionService;
 import com.wangdaye.mysplash.common._basic.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionMiniAdapter;
@@ -80,7 +83,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     RecyclerView recyclerView;
 
     @BindView(R.id.dialog_select_collection_creatorContainer)
-    LinearLayout creatorContainer;
+    RelativeLayout creatorContainer;
 
     @BindView(R.id.dialog_select_collection_creatorName)
     EditText nameTxt;
@@ -131,10 +134,28 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            int height = getResources().getDimensionPixelSize(R.dimen.select_collection_dialog_height);
+            if (DisplayUtils.isTabletDevice(getActivity())) {
+                if (getResources().getDisplayMetrics().heightPixels > 2 * height) {
+                    height = 2 * height;
+                }
+                window.setLayout(window.getAttributes().width, height);
+            } else {
+                window.setLayout(window.getAttributes().width, height);
+            }
+        }
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         usable = false;
         AuthManager.getInstance().removeOnWriteDataListener(this);
+        AuthManager.getInstance().getCollectionsManager().finishEdit();
         if (serviceListener != null) {
             serviceListener.cancel();
         }
@@ -161,6 +182,13 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private void initWidget(View v) {
         setCancelable(true);
+
+        ImageView cover = ButterKnife.findById(v, R.id.dialog_select_collection_cover);
+        if (DisplayUtils.isTabletDevice(getActivity())) {
+            ImageHelper.loadRegularPhoto(getActivity(), cover, photo, null);
+        } else {
+            cover.setVisibility(View.GONE);
+        }
 
         progressView.setVisibility(View.GONE);
         selectorContainer.setVisibility(View.VISIBLE);
@@ -312,9 +340,11 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 if (firstPosition <= position && position <= lastPosition) {
                     CollectionMiniAdapter.ViewHolder holder
                             = (CollectionMiniAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-                    holder.reloadCoverImage(
-                            AuthManager.getInstance().getCollectionsManager().getCollectionList().get(i));
+                    Collection collection
+                            = AuthManager.getInstance().getCollectionsManager().getCollectionList().get(i);
+                    holder.reloadCoverImage(collection);
                     if (succeed) {
+                        holder.setSubtitle(collection);
                         if (add) {
                             holder.setResultState(R.drawable.ic_item_state_succeed);
                         } else {
@@ -559,6 +589,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     }
                     // update collection.
                     AuthManager.getInstance().getCollectionsManager().updateCollection(response.body().collection);
+                    AuthManager.getInstance().getCollectionsManager().finishEdit(response.body().collection.id);
                     // update user.
                     AuthManager.getInstance().updateUser(response.body().user);
                     // update photo.
@@ -575,6 +606,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         @Override
         public void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t) {
             if (usable) {
+                AuthManager.getInstance().getCollectionsManager().finishEdit(collectionId);
                 notifySelectCollectionResult(collectionId, add, false);
             }
         }

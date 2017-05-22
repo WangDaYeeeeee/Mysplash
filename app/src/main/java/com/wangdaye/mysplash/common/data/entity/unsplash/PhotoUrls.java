@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.data.entity.unsplash;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -15,14 +16,14 @@ public class PhotoUrls implements Parcelable {
      * regular : https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=1080&fit=max
      * small : https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=400&fit=max
      * thumb : https://images.unsplash.com/photo-1417325384643-aac51acc9e5d?q=75&fm=jpg&w=200&fit=max
+     * custom : https://images.unsplash.com/your-custom-image.jpg
      */
     public String raw;
     public String full;
     public String regular;
     public String small;
     public String thumb;
-
-    /** <br> parcel. */
+    public String custom;
 
     @Override
     public int describeContents() {
@@ -36,6 +37,7 @@ public class PhotoUrls implements Parcelable {
         dest.writeString(this.regular);
         dest.writeString(this.small);
         dest.writeString(this.thumb);
+        dest.writeString(this.custom);
     }
 
     public PhotoUrls() {
@@ -47,9 +49,10 @@ public class PhotoUrls implements Parcelable {
         this.regular = in.readString();
         this.small = in.readString();
         this.thumb = in.readString();
+        this.custom = in.readString();
     }
 
-    public static final Parcelable.Creator<PhotoUrls> CREATOR = new Parcelable.Creator<PhotoUrls>() {
+    public static final Creator<PhotoUrls> CREATOR = new Creator<PhotoUrls>() {
         @Override
         public PhotoUrls createFromParcel(Parcel source) {
             return new PhotoUrls(source);

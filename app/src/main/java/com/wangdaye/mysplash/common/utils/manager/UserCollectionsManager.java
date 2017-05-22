@@ -63,6 +63,21 @@ public class UserCollectionsManager {
         setLoadFinish(false);
     }
 
+    public void finishEdit(int id) {
+        for (int i = 0; i < collectionList.size(); i ++) {
+            if (id == collectionList.get(i).id) {
+                collectionList.get(i).editing = false;
+                return;
+            }
+        }
+    }
+
+    public void finishEdit() {
+        for (int i = 0; i < collectionList.size(); i ++) {
+            collectionList.get(i).editing = false;
+        }
+    }
+
     public boolean isLoadFinish() {
         return loadFinish;
     }

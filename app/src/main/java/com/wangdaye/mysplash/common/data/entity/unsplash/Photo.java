@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.data.entity.unsplash;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -164,6 +165,17 @@ public class Photo
 
     public int getRegularHeight() {
         return (int) (1.0 * height * getRegularWidth() / width);
+    }
+
+    public String getWallpaperSizeUrl(Context context) {
+        double scaleRatio = 0.7
+                * Math.max(
+                context.getResources().getDisplayMetrics().widthPixels,
+                context.getResources().getDisplayMetrics().heightPixels)
+                / Math.min(width, height);
+        int w = (int) (scaleRatio * width);
+        int h = (int) (scaleRatio * height);
+        return urls.raw + "?q=50&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
     }
 
     /** <br> parcel. */

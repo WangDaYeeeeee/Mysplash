@@ -107,6 +107,7 @@ public class UserNotificationManager {
 
     private void requestFirstPageNotifications() {
         requesting = true;
+        latestRefreshTime = System.currentTimeMillis();
         requestStreamListener = new OnRequestStreamListener(true);
         streamService.requestFirstPageStream(requestStreamListener);
     }
@@ -134,7 +135,7 @@ public class UserNotificationManager {
      * @param force if set false, it means only cancel the next page HTTP request.
      * */
     public void cancelRequest(boolean force) {
-        if (force || !TextUtils.isEmpty(nextPage)) {
+        if (force || (requesting && !TextUtils.isEmpty(nextPage))) {
             requesting = false;
             if (requestStreamListener != null) {
                 requestStreamListener.setCanceled();
@@ -283,15 +284,13 @@ public class UserNotificationManager {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (TextUtils.isEmpty(json) || stream == null) {
+            if (!response.isSuccessful() || response.code() / 100 != 2
+                    || TextUtils.isEmpty(json) || stream == null) {
                 // failed to request.
                 requesting = false;
-                requestFailed(response.code() + " " + response.message());
+                requestFailed(response.code() + "(" + response.message() + ")");
             } else {
                 // request successfully.
-                if (refresh) {
-                    latestRefreshTime = System.currentTimeMillis();
-                }
                 if (TextUtils.isEmpty(stream.next)) {
                     nextPage = null;
                     loadFinish = true;
@@ -363,7 +362,8 @@ public class UserNotificationManager {
                 return;
             }
             requesting = false;
-            if (!response.isSuccessful() || response.body() == null) {
+            if (!response.isSuccessful() || response.code() / 100 != 2
+                    || response.body() == null) {
                 requestFailed(response.code() + " " + response.message());
             } else {
                 // request successfully.

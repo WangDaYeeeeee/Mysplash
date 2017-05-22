@@ -52,6 +52,7 @@
 
     <!-- download type. -->
     <string-array name="download_types">
+        <item>Tiny</item>
         <item>Kompakt</item>
         <item>Roh</item>
     </string-array>

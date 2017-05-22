@@ -1,10 +1,16 @@
 package com.wangdaye.mysplash.common.utils.helper;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.wangdaye.mysplash.common.data.entity.table.DaoMaster;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
+import com.wangdaye.mysplash.common.data.entity.table.WallpaperSourceDao;
+
+import org.greenrobot.greendao.database.Database;
 
 import java.util.List;
 
@@ -30,12 +36,15 @@ public class DatabaseHelper {
         return instance;
     }
 
-    private DaoMaster.DevOpenHelper openHelper;
+    private MysplashOpenHelper openHelper;
+
     private static final String BD_NAME = "Mysplash_db";
 
     private DatabaseHelper(Context c) {
-        openHelper = new DaoMaster.DevOpenHelper(c, BD_NAME, null);
+        openHelper = new MysplashOpenHelper(c, BD_NAME, null);
     }
+
+    // download entity.
 
     public void writeDownloadEntity(DownloadMissionEntity entity) {
         DownloadMissionEntity.insertDownloadEntity(openHelper.getWritableDatabase(), entity);
@@ -73,5 +82,57 @@ public class DatabaseHelper {
 
     public int readDownloadingEntityCount(String title) {
         return DownloadMissionEntity.searchDownloadingEntityCount(openHelper.getReadableDatabase(), title);
+    }
+
+    // wallpaper source.
+
+    public void writeWallpaperSource(WallpaperSource source) {
+        WallpaperSource.insertWallpaperSource(openHelper.getWritableDatabase(), source);
+    }
+
+    public void writeWallpaperSource(List<WallpaperSource> list) {
+        WallpaperSource.insertWallpaperSource(openHelper.getWritableDatabase(), list);
+    }
+
+    public void deleteWallpaperSource(long collectionId) {
+        WallpaperSource.deleteWallpaperSource(openHelper.getWritableDatabase(), collectionId);
+    }
+
+    public void clearWallpaperSource() {
+        WallpaperSource.clearWallpaperSource(openHelper.getWritableDatabase());
+    }
+
+    public void updateWallpaperSource(WallpaperSource source) {
+        WallpaperSource.updateWallpaperSource(openHelper.getWritableDatabase(), source);
+    }
+
+    public List<WallpaperSource> readWallpaperSourceList() {
+        return WallpaperSource.readWallpaperSourceList(openHelper.getReadableDatabase());
+    }
+
+    @Nullable
+    public WallpaperSource readWallpaperSource(long collectionId) {
+        return WallpaperSource.searchWallpaperSource(openHelper.getReadableDatabase(), collectionId);
+    }
+}
+
+class MysplashOpenHelper extends DaoMaster.DevOpenHelper {
+
+    private static final int VERSION_ADD_WALLPAPER_SOURCE = 13;
+
+    MysplashOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory) {
+        super(context, name, factory);
+    }
+
+    @Override
+    public void onUpgrade(Database db, int oldVersion, int newVersion) {
+        Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
+        if (newVersion >= VERSION_ADD_WALLPAPER_SOURCE
+                && oldVersion < VERSION_ADD_WALLPAPER_SOURCE) {
+            // just create WallpaperSource table.
+            WallpaperSourceDao.createTable(db, false);
+        } else {
+            super.onUpgrade(db, oldVersion, newVersion);
+        }
     }
 }

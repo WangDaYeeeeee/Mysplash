@@ -1,5 +1,7 @@
 package com.wangdaye.mysplash.common.data.service;
 
+import android.support.annotation.Nullable;
+
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
@@ -8,6 +10,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.PhotoStats;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -251,6 +254,23 @@ public class PhotoService {
         call = getCollectionPhotos;
     }
 
+    @Nullable
+    public List<Photo> requestCollectionPhotos(int collectionId,
+                                        @Mysplash.PageRule int page,
+                                        @Mysplash.PerPageRule int per_page) {
+        Call<List<Photo>> getCollectionPhotos = buildApi(buildClient())
+                .getCollectionPhotos(collectionId, page, per_page);
+        try {
+            Response<List<Photo>> response = getCollectionPhotos.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public void requestCuratedCollectionPhotos(int collectionId,
                                                @Mysplash.PageRule int page,
                                                @Mysplash.PerPageRule int per_page,
@@ -275,7 +295,22 @@ public class PhotoService {
         call = getCuratedCollectionPhotos;
     }
 
-
+    @Nullable
+    public List<Photo> requestCurateCollectionPhotos(int collectionId,
+                                                     @Mysplash.PageRule int page,
+                                                     @Mysplash.PerPageRule int per_page) {
+        Call<List<Photo>> getCuratedCollectionPhotos = buildApi(buildClient())
+                .getCuratedCollectionPhotos(collectionId, page, per_page);
+        try {
+            Response<List<Photo>> response = getCuratedCollectionPhotos.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     public void requestRandomPhotos(Integer categoryId,
                                     Boolean featured, String username, String query, String orientation,

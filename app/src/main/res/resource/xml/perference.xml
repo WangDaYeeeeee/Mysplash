@@ -3,6 +3,7 @@
 
     <PreferenceCategory
         android:title="@string/settings_category_basic"
+        android:key="basic"
         android:layout="@layout/preference_category">
 
         <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
@@ -23,6 +24,10 @@
             android:entries="@array/languages"
             android:entryValues="@array/language_values"
             android:defaultValue="follow_system" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference
+            android:title="@string/action_muzei_settings"
+            android:key="muzei_settings" />
 
     </PreferenceCategory>
 

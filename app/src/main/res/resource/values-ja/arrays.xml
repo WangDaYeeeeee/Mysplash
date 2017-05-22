@@ -52,6 +52,7 @@
 
     <!-- download type. -->
     <string-array name="download_types">
+        <item>Tiny</item>
         <item>コンパクト</item>
         <item>Raw</item>
     </string-array>
@@ -61,19 +62,6 @@
         <item>リスト表示のすべて</item>
         <item>ホームのみ</item>
         <item>なし</item>
-    </string-array>
-
-    <!-- language. -->
-    <string-array name="languages">
-        <item>@string/follow_system</item>
-        <item>English</item>
-        <item>中文</item>
-        <item>Italiano</item>
-        <item>Türk</item>
-        <item>Deutsche</item>
-        <item>Русский</item>
-        <item>Español</item>
-        <item>日本語</item>
     </string-array>
 
     <!-- search orientation. -->

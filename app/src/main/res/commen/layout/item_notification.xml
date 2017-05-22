@@ -65,7 +65,6 @@
         android:layout_alignBottom="@id/item_notification_centerFlag"
         android:layout_toRightOf="@id/item_notification_avatar"
         android:layout_toLeftOf="@id/item_notification_imageContainer"
-        android:background="?attr/selectableItemBackground"
         style="@style/title_text"
         tools:text="Wang Yueeeeee"
         tools:ignore="RtlHardcoded" />

@@ -20,15 +20,18 @@ import android.widget.ListView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference;
+import com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
@@ -87,6 +90,13 @@ public class SettingsFragment extends PreferenceFragment
         String languageName = ValueUtils.getLanguageName(getActivity(), languageValue);
         language.setSummary(getString(R.string.now) + " : " + languageName);
         language.setOnPreferenceChangeListener(this);
+
+        // Muzei.
+        MysplashPreference muzei = (MysplashPreference) findPreference("muzei_settings");
+        if (!MuzeiOptionManager.isInstalledMuzei(getActivity())) {
+            PreferenceCategory display = (PreferenceCategory) findPreference("basic");
+            display.removePreference(muzei);
+        }
     }
 
     private void initFilterPart(SharedPreferences sharedPreferences) {
@@ -154,7 +164,9 @@ public class SettingsFragment extends PreferenceFragment
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference.getKey().equals(getString(R.string.key_custom_api_key))) {
+        if (preference.getKey().equals("muzei_settings")) {
+            IntentHelper.startMuzeiConfigrationActivity((MysplashActivity) getActivity());
+        } else if (preference.getKey().equals(getString(R.string.key_custom_api_key))) {
             IntentHelper.startCustomApiActivity((SettingsActivity) getActivity());
         }
         return true;

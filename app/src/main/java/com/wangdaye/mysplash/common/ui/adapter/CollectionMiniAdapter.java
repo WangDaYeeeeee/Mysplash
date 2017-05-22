@@ -29,7 +29,7 @@ import butterknife.OnClick;
  * */
 
 public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAdapter.ViewHolder> {
-    // widget
+
     private Context c;
     private OnCollectionResponseListener listener;
 
@@ -77,8 +77,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             lockIcon.setVisibility(View.VISIBLE);
 
             title.setText(collection.title.toUpperCase());
-            int photoNum = collection.total_photos;
-            subtitle.setText(photoNum + " " + c.getResources().getStringArray(R.array.user_tabs)[0]);
+            setSubtitle(collection);
 
             reloadCoverImage(collection);
 
@@ -88,7 +87,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                 lockIcon.setAlpha(0f);
             }
 
-            if (collection.insertingPhoto) {
+            if (collection.editing) {
                 stateIcon.forceSetProgressState();
             } else {
                 for (int i = 0; i < photo.current_user_collections.size(); i ++) {
@@ -107,6 +106,12 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         public void setProgressState() {
             stateIcon.setProgressState();
+        }
+
+        public void setSubtitle(Collection collection) {
+            subtitle.setText(
+                    collection.total_photos
+                            + " " + c.getResources().getStringArray(R.array.user_tabs)[0]);
         }
 
         public void setResultState(@DrawableRes int imageId) {
@@ -145,7 +150,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                         .getCollectionsManager()
                         .getCollectionList()
                         .get(getAdapterPosition() - 1);
-                collection.insertingPhoto = true;
+                collection.editing = true;
                 AuthManager.getInstance()
                         .getCollectionsManager()
                         .updateCollection(collection);

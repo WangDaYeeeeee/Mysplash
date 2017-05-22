@@ -192,7 +192,8 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     @Override
     protected boolean hasFooter() {
-        return DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
+        return !DisplayUtils.isLandscape(a)
+                && DisplayUtils.getNavigationBarHeight(a.getResources()) != 0;
     }
 
     // control.
@@ -764,7 +765,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         background.setBackgroundColor(ImageHelper.computeCardBackgroundColor(a, photo.color));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            image.setTransitionName(photo.id + "-" + position + "-image");
+            image.setTransitionName(photo.id + "-" + position + "-cover");
             background.setTransitionName(photo.id + "-" + position + "-background");
         }
     }

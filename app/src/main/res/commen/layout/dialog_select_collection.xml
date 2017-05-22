@@ -5,146 +5,167 @@
     android:id="@+id/dialog_select_collection_container"
     android:background="?attr/root_color"
     android:layout_width="match_parent"
-    android:layout_height="320dp">
+    android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.github.rahatarmanahmed.cpv.CircularProgressView
-            android:id="@+id/dialog_select_collection_progressView"
-            android:layout_width="@dimen/circular_progress_height"
-            android:layout_height="@dimen/circular_progress_height"
-            android:layout_centerInParent="true"
-            android:layout_margin="24dp"
-            app:cpv_animAutostart="true"
-            app:cpv_color="?attr/title_color"
-            app:cpv_indeterminate="true" />
+        <ImageView
+            android:id="@+id/dialog_select_collection_cover"
+            android:layout_width="256dp"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription" />
 
-        <LinearLayout
-            android:id="@+id/dialog_select_collection_selectorContainer"
-            android:orientation="vertical"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:background="?attr/root_color">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/dialog_select_collection_titleBar"
+            <com.github.rahatarmanahmed.cpv.CircularProgressView
+                android:id="@+id/dialog_select_collection_progressView"
+                android:layout_width="@dimen/circular_progress_height"
+                android:layout_height="@dimen/circular_progress_height"
+                android:layout_centerInParent="true"
+                android:layout_margin="24dp"
+                app:cpv_animAutostart="true"
+                app:cpv_color="?attr/title_color"
+                app:cpv_indeterminate="true" />
+
+            <LinearLayout
+                android:id="@+id/dialog_select_collection_selectorContainer"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:background="?attr/root_color">
 
-                <TextView
-                    android:text="@string/feedback_add_to_collection"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/design_title_text_size"
-                    android:layout_margin="@dimen/normal_margin"
-                    style="@style/title_text" />
+                <RelativeLayout
+                    android:id="@+id/dialog_select_collection_titleBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/root_color">
 
-                <ImageButton
-                    android:id="@+id/dialog_select_collection_selectorRefreshBtn"
-                    android:layout_width="@dimen/mini_icon_size"
-                    android:layout_height="@dimen/mini_icon_size"
-                    android:layout_margin="@dimen/normal_margin"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    tools:src="@drawable/ic_refresh_light"
-                    tools:ignore="ContentDescription,RtlHardcoded" />
+                    <TextView
+                        android:text="@string/feedback_add_to_collection"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/design_title_text_size"
+                        android:layout_margin="@dimen/normal_margin"
+                        style="@style/title_text" />
 
-            </RelativeLayout>
+                    <ImageButton
+                        android:id="@+id/dialog_select_collection_selectorRefreshBtn"
+                        android:layout_width="@dimen/mini_icon_size"
+                        android:layout_height="@dimen/mini_icon_size"
+                        android:layout_margin="@dimen/normal_margin"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        tools:src="@drawable/ic_refresh_light"
+                        tools:ignore="ContentDescription,RtlHardcoded" />
 
-            <com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout
-                android:id="@+id/dialog_select_collection_selectorRefreshView"
+                </RelativeLayout>
+
+                <com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout
+                    android:id="@+id/dialog_select_collection_selectorRefreshView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/dialog_select_collection_selectorRecyclerView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:paddingTop="@dimen/little_margin"
+                        android:clipToPadding="false" />
+
+                </com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/dialog_select_collection_creatorContainer"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/dialog_select_collection_selectorRecyclerView"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:paddingTop="@dimen/little_margin"
-                    android:clipToPadding="false" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            </com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout>
+                    <TextView
+                        android:text="@string/feedback_create_collection"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/design_title_text_size"
+                        android:layout_margin="@dimen/normal_margin"
+                        style="@style/title_text" />
 
-        </LinearLayout>
+                    <EditText
+                        android:id="@+id/dialog_select_collection_creatorName"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/little_icon_size"
+                        android:hint="@string/feedback_name"
+                        android:textColorHint="?attr/subtitle_color"
+                        android:textColorHighlight="?attr/subtitle_color"
+                        android:textSize="@dimen/content_text_size"
+                        android:textColor="?attr/content_color"
+                        android:background="@android:color/transparent"
+                        android:maxLines="1"
+                        android:maxLength="30"
+                        android:layout_marginLeft="@dimen/normal_margin"
+                        android:layout_marginRight="@dimen/normal_margin"
+                        android:layout_marginTop="@dimen/little_margin" />
 
-        <LinearLayout
-            android:id="@+id/dialog_select_collection_creatorContainer"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="320dp">
+                    <EditText
+                        android:id="@+id/dialog_select_collection_creatorDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/design_icon_size"
+                        android:hint="@string/feedback_description"
+                        android:textColorHint="?attr/subtitle_color"
+                        android:textColorHighlight="?attr/subtitle_color"
+                        android:textSize="@dimen/content_text_size"
+                        android:textColor="?attr/content_color"
+                        android:background="@android:color/transparent"
+                        android:maxLength="250"
+                        android:layout_margin="@dimen/normal_margin" />
 
-            <TextView
-                android:text="@string/feedback_create_collection"
-                android:textStyle="bold"
-                android:textSize="@dimen/design_title_text_size"
-                android:layout_margin="@dimen/normal_margin"
-                style="@style/title_text" />
+                    <CheckBox
+                        android:id="@+id/dialog_select_collection_creatorCheckBox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/normal_margin"
+                        android:text="@string/feedback_collection_private"
+                        android:textSize="@dimen/subtitle_text_size"
+                        android:textColor="?attr/subtitle_color" />
 
-            <EditText
-                android:id="@+id/dialog_select_collection_creatorName"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/little_icon_size"
-                android:hint="@string/feedback_name"
-                android:textColorHint="?attr/subtitle_color"
-                android:textColorHighlight="?attr/subtitle_color"
-                android:textSize="@dimen/content_text_size"
-                android:textColor="?attr/content_color"
-                android:background="@android:color/transparent"
-                android:maxLines="1"
-                android:maxLength="30"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/little_margin" />
+                </LinearLayout>
 
-            <EditText
-                android:id="@+id/dialog_select_collection_creatorDescription"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/design_icon_size"
-                android:hint="@string/feedback_description"
-                android:textColorHint="?attr/subtitle_color"
-                android:textColorHighlight="?attr/subtitle_color"
-                android:textSize="@dimen/content_text_size"
-                android:textColor="?attr/content_color"
-                android:background="@android:color/transparent"
-                android:maxLength="250"
-                android:layout_margin="@dimen/normal_margin" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true">
 
-            <CheckBox
-                android:id="@+id/dialog_select_collection_creatorCheckBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/normal_margin"
-                android:text="@string/feedback_collection_private"
-                android:textSize="@dimen/subtitle_text_size"
-                android:textColor="?attr/subtitle_color" />
+                    <Button
+                        android:id="@+id/dialog_select_collection_creatorCreateBtn"
+                        android:text="@string/create"
+                        android:textColor="?attr/content_color"
+                        android:layout_alignParentRight="true"
+                        style="@style/material_button"
+                        tools:ignore="RtlHardcoded" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                    <Button
+                        android:id="@+id/dialog_select_collection_creatorCancelBtn"
+                        android:text="@string/cancel"
+                        android:textColor="?attr/subtitle_color"
+                        android:layout_toLeftOf="@id/dialog_select_collection_creatorCreateBtn"
+                        style="@style/material_button"
+                        tools:ignore="RtlHardcoded" />
 
-                <Button
-                    android:id="@+id/dialog_select_collection_creatorCreateBtn"
-                    android:text="@string/create"
-                    android:textColor="?attr/content_color"
-                    android:layout_alignParentRight="true"
-                    style="@style/material_button"
-                    tools:ignore="RtlHardcoded" />
-
-                <Button
-                    android:id="@+id/dialog_select_collection_creatorCancelBtn"
-                    android:text="@string/cancel"
-                    android:textColor="?attr/subtitle_color"
-                    android:layout_toLeftOf="@id/dialog_select_collection_creatorCreateBtn"
-                    style="@style/material_button"
-                    tools:ignore="RtlHardcoded" />
+                </RelativeLayout>
 
             </RelativeLayout>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

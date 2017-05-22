@@ -56,11 +56,14 @@ public class ValueUtils {
 
     public static String getScaleName(Context c, String key) {
         switch (key) {
-            case "compact":
+            case "tiny":
                 return c.getResources().getStringArray(R.array.download_types)[0];
 
-            case "raw":
+            case "compact":
                 return c.getResources().getStringArray(R.array.download_types)[1];
+
+            case "raw":
+                return c.getResources().getStringArray(R.array.download_types)[2];
 
             default:
                 return null;
@@ -127,6 +130,9 @@ public class ValueUtils {
 
             case "japanese":
                 return c.getResources().getStringArray(R.array.languages)[8];
+
+            case "french":
+                return c.getResources().getStringArray(R.array.languages)[9];
 
             default:
                 return null;

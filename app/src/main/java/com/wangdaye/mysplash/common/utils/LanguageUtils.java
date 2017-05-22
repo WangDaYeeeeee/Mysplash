@@ -53,6 +53,10 @@ public class LanguageUtils {
                     configuration.setLocale(new Locale("ja"));
                     break;
 
+                case "french":
+                    configuration.setLocale(new Locale("fr"));
+                    break;
+
                 default:
                     configuration.setLocale(new Locale("en"));
                     break;

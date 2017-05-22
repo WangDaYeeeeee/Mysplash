@@ -9,6 +9,7 @@
     <string name="translators">译者</string>
     <string name="libraries">开源库</string>
     <string name="enter">确认</string>
+    <string name="exit">退出</string>
     <string name="copy">复制</string>
     <string name="next">下一步</string>
     <string name="cancel">取消</string>
@@ -164,9 +165,19 @@
 
     <string name="feedback_story_is_null">故事不存在或尚未加载</string>
 
+    <string name="feedback_pick_update_interval">刷新频率 (小时)</string>
+    <string name="feedback_interval_bounds">频率的范围是 1 – 24</string>
+    <string name="feedback_update_only_in_wifi">只在WIFI下进行更新</string>
+    <string name="feedback_source_collection">源收藏集</string>
+    <string name="feedback_set_as_source_succeed">设置为壁纸源成功</string>
+    <string name="feedback_set_as_source_failed">源已经存在</string>
+    <string name="feedback_confirm_exit_without_save">你希望直接退出而不保存设置么?</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">回滚至顶部</string>
     <string name="introduce_description_back_top">点击顶栏或返回键，照片列表页面将会自动回滚到顶部</string>
+
+    <string name="muzei_description">精选自 Unsplash</string>
 
     <!-- 菜单项. -->
     <string name="action_home">主页</string>
@@ -203,6 +214,7 @@
 
     <string name="action_edit">编辑</string>
     <string name="action_download">下载</string>
+    <string name="action_set_as_source">设置为Muzei壁纸源</string>
 
     <string name="action_path">下载路径</string>
     <string name="action_cancel_all">全部取消</string>
@@ -217,6 +229,8 @@
     <string name="action_wallpaper">设为壁纸</string>
     <string name="action_lockscreen">设为锁屏</string>
     <string name="action_wallpaper_lockscreen">设为壁纸和锁屏</string>
+
+    <string name="action_muzei_settings">Muzei设置</string>
 
     <!-- 设置项. -->
     <string name="settings_category_basic">基础</string>

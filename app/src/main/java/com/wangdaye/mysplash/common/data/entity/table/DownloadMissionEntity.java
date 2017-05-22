@@ -41,16 +41,16 @@ public class DownloadMissionEntity {
     @DownloadHelper.DownloadResultRule
     public int result;
 
-
-
     public DownloadMissionEntity(Context context,
                                  @NonNull Photo p,
                                  @DownloadHelper.DownloadTypeRule int type) {
         this.title = p.id;
         this.photoUri = p.urls.regular;
-        if (SettingsOptionManager.getInstance(context)
-                .getDownloadScale()
-                .equals("compact")) {
+
+        String size = SettingsOptionManager.getInstance(context).getDownloadScale();
+        if (size.equals("tiny")) {
+            this.downloadUrl = p.getWallpaperSizeUrl(context);
+        } else if (size.equals("compact")) {
             this.downloadUrl = p.urls.full;
         } else {
             this.downloadUrl = p.urls.raw;

@@ -156,11 +156,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        // do nothing.
-    }
-
-    @Override
     protected void setTheme() {
         setTheme(R.style.MysplashTheme_dark_SetWallpaper);
         getWindow().getDecorView().setSystemUiVisibility(
@@ -168,6 +163,11 @@ public class SetWallpaperActivity extends ReadWriteActivity
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        // do nothing.
     }
 
     @Override
