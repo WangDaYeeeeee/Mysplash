@@ -180,8 +180,8 @@
     <string name="feedback_get_notification_failed">Impossible de charger les notifications.</string>
 	
 	<string name="feedback_pick_update_interval">Intervalle de mise à jour. (Heures)</string>
-    <string name="feedback_interval_bounds">L'intervalle doit être inclus entre 1 et 24.</string>
-    <string name="feedback_update_only_in_wifi">Ne mettre à jour que lorsque l'appareil est connecté au WIFI.</string>
+    <string name="feedback_interval_bounds">L\'intervalle doit être inclus entre 1 et 24.</string>
+    <string name="feedback_update_only_in_wifi">Ne mettre à jour que lorsque l\'appareil est connecté au WIFI.</string>
     <string name="feedback_source_collection">Collections source.</string>
     <string name="feedback_set_as_source_succeed">Défini comme source avec succès.</string>
     <string name="feedback_set_as_source_failed">Cette source existe dejà.</string>
