@@ -18,7 +18,7 @@
     <!-- user tab. -->
     <string-array name="user_tabs">
         <item>PHOTOS</item>
-        <item>MENTIONS J\'AIME</item>
+        <item>J\'AIME</item>
         <item>COLLECTIONS</item>
     </string-array>
 
@@ -32,7 +32,7 @@
     <string-array name="download_options">
         <item>TÉLÉCHARGER</item>
         <item>PARTAGER</item>
-        <item>FOND D\'ÉCRAN</item>
+        <item>FOND ÉCRAN</item>
     </string-array>
 
     <!-- requestKey order. -->
@@ -52,8 +52,8 @@
 
     <!-- download type. -->
     <string-array name="download_types">
-        <item>Tiny</item>
-        <item>Compactes</item>
+        <item>Petits</item>
+        <item>Compacts</item>
         <item>Raw</item>
     </string-array>
 
@@ -66,9 +66,9 @@
 
     <!-- saturation animation duration. -->
     <string-array name="saturation_animation_durations">
-        <item>Court (300 ms)</item>
+        <item>Courte (300 ms)</item>
         <item>Intermédiaire (1000 ms)</item>
-        <item>Normal (2000 ms)</item>
+        <item>Normale (2000 ms)</item>
     </string-array>
 
     <!-- search orientation. -->
