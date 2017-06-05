@@ -9,10 +9,12 @@ import android.os.Build;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.util.Pair;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
@@ -39,6 +41,7 @@ import com.wangdaye.mysplash.me.view.activity.MyFollowActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -249,42 +252,72 @@ public class IntentHelper {
     }
 
     public static void startCheckPhotoActivity(Context c, String title) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        /*
-        Uri uri = Uri.parse("file://"
-                + Environment.getExternalStorageDirectory()
-                + Mysplash.DOWNLOAD_PATH
-                + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);*/
-        Uri uri = FileUtils.filePathToUri(
-                c,
-                Environment.getExternalStorageDirectory()
-                        + Mysplash.DOWNLOAD_PATH
-                        + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
-        intent.setDataAndType(uri, "image/jpg");
-
-        c.startActivity(
-                Intent.createChooser(
-                        intent,
-                        c.getString(R.string.check)));
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = FileUtils.filePathToUri(
+                    c,
+                    Environment.getExternalStorageDirectory()
+                            + Mysplash.DOWNLOAD_PATH
+                            + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+            intent.setDataAndType(uri, "image/jpg");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            c.getString(R.string.check)));
+        } catch (Exception e) {
+            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+            File file = new File(
+                    Environment.getExternalStorageDirectory()
+                            + Mysplash.DOWNLOAD_PATH
+                            + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+            Uri uri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID, file);
+            intent.setDataAndType(uri, "image/jpg");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            c.getString(R.string.check)));
+        }
     }
 
     public static void startCheckCollectionActivity(Context c, String title) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        Uri uri = Uri.parse("file://"
-                + Environment.getExternalStorageDirectory()
-                + Mysplash.DOWNLOAD_PATH
-                + title
-                + ".zip");
-        intent.setDataAndType(uri, "application/x-zip-compressed");
-
-        c.startActivity(
-                Intent.createChooser(
-                        intent,
-                        c.getString(R.string.check)));
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri uri = Uri.parse("file://"
+                    + Environment.getExternalStorageDirectory()
+                    + Mysplash.DOWNLOAD_PATH
+                    + title
+                    + ".zip");
+            intent.setDataAndType(uri, "application/x-zip-compressed");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            c.getString(R.string.check)));
+        } catch (Exception e) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            File file = new File(
+                    Environment.getExternalStorageDirectory()
+                            + Mysplash.DOWNLOAD_PATH
+                            + title
+                            + ".zip");
+            Uri uri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID, file);
+            intent.setDataAndType(uri, "application/x-zip-compressed");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            c.getString(R.string.check)));
+        }
     }
 
     public static void startWebActivity(Context c, String url) {

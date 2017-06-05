@@ -2,11 +2,9 @@ package com.wangdaye.mysplash.collection.presenter.activity;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.popup.CollectionMenuPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash.common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash.common.utils.ShareUtils;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 
@@ -36,10 +34,7 @@ public class ToolbarImplementor
                 break;
             }
             case R.id.action_menu: {
-                Collection c = ((CollectionActivity) a).getCollection();
-                if (CollectionMenuPopupWindow.isUsable(a, c)) {
-                    ((CollectionActivity) a).showPopup();
-                }
+                ((CollectionActivity) a).showPopup();
                 break;
             }
         }

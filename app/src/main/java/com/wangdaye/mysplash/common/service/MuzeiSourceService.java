@@ -32,9 +32,6 @@ import java.util.Random;
 
 public class MuzeiSourceService extends RemoteMuzeiArtSource {
 
-    private PhotoService photoService;
-    private CollectionService collectionService;
-
     private static final String SOURCE_NAME = "Mysplash";
 
     private static final long UNIT_UPDATE_INTERVAL = 60 * 60 * 1000;
@@ -42,20 +39,6 @@ public class MuzeiSourceService extends RemoteMuzeiArtSource {
 
     public MuzeiSourceService() {
         super(SOURCE_NAME);
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        photoService = PhotoService.getService();
-        collectionService = CollectionService.getService();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        photoService.cancel();
-        collectionService.cancel();
     }
 
     @Override
@@ -102,7 +85,8 @@ public class MuzeiSourceService extends RemoteMuzeiArtSource {
                     }
                 }
             } else if (collection.total_photos == 1) {
-                List<Photo> photoList = photoService.requestCollectionPhotos(collectionId, 1, 1);
+                List<Photo> photoList = PhotoService.getService()
+                        .requestCollectionPhotos(collectionId, 1, 1);
                 if (photoList != null && photoList.size() > 0) {
                     exportPhoto(photoList.get(0));
                     scheduleUpdate(System.currentTimeMillis() + UNIT_UPDATE_INTERVAL);
@@ -118,23 +102,27 @@ public class MuzeiSourceService extends RemoteMuzeiArtSource {
 
     private Collection requestCollection(int collectionId) {
         if (collectionId < 1000) {
-            return collectionService.requestACuratedCollections(String.valueOf(collectionId));
+            return CollectionService.getService()
+                    .requestACuratedCollections(String.valueOf(collectionId));
         } else {
-            return collectionService.requestACollections(String.valueOf(collectionId));
+            return CollectionService.getService()
+                    .requestACollections(String.valueOf(collectionId));
         }
     }
 
     private List<Photo> requestCollectionsPhotos(Collection collection) {
         if (collection.curated) {
-            return photoService.requestCurateCollectionPhotos(
-                    collection.id,
-                    1 + new Random().nextInt(collection.total_photos / 2), // page.
-                    2 /* per_page. */);
+            return PhotoService.getService()
+                    .requestCurateCollectionPhotos(
+                            collection.id,
+                            1 + new Random().nextInt(collection.total_photos / 2), // page.
+                            2 /* per_page. */);
         } else {
-            return photoService.requestCollectionPhotos(
-                    collection.id,
-                    1 + new Random().nextInt(collection.total_photos / 2), // page.
-                    2 /* per_page. */);
+            return PhotoService.getService()
+                    .requestCollectionPhotos(
+                            collection.id,
+                            1 + new Random().nextInt(collection.total_photos / 2), // page.
+                            2 /* per_page. */);
         }
     }
 

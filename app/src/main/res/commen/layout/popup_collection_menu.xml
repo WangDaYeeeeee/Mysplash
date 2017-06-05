@@ -38,7 +38,7 @@
 
         <ImageView
             android:id="@+id/popup_collection_menu_downloadIcon"
-            android:src="@drawable/ic_earth_light"
+            android:src="@drawable/ic_download_light"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 

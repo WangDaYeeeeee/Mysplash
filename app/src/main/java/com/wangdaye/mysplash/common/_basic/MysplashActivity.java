@@ -46,16 +46,20 @@ public abstract class MysplashActivity extends AppCompatActivity {
         }
 
         public void saveData(MysplashActivity a) {
+            Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
+            if (f != null) {
+                a.getSupportFragmentManager().beginTransaction().remove(f).commit();
+            }
             a.getSupportFragmentManager()
                     .beginTransaction()
                     .add(this, FRAGMENT_TAG)
-                    .commit();
+                    .commitAllowingStateLoss();
         }
 
         public static BaseSavedStateFragment getData(MysplashActivity a) {
             Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
-                a.getSupportFragmentManager().beginTransaction().remove(f).commit();
+                a.getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
                 return (BaseSavedStateFragment) f;
             } else {
                 return null;
@@ -112,11 +116,9 @@ public abstract class MysplashActivity extends AppCompatActivity {
         if (dialogList.size() > 0) {
             // has dialogs. --> dismiss the dialog which on the top of task.
             dialogList.get(dialogList.size() - 1).dismiss();
-            dialogList.remove(dialogList.size() - 1);
         } else if (popupList.size() > 0) {
             // has popup windows.
             popupList.get(popupList.size() - 1).dismiss();
-            popupList.remove(popupList.size() - 1);
         } else {
             // give the back pressed action to child class.
             handleBackPressed();

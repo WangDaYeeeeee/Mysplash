@@ -104,7 +104,7 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
         return collection.curated;
     }
 
-        // interface.
+    // interface.
 
     // on select item listener.
 

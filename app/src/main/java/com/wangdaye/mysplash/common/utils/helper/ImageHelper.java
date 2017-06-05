@@ -35,7 +35,7 @@ import com.wangdaye.mysplash.common.utils.widget.glide.FadeAnimator;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.util.regex.Pattern;
 
 /**
@@ -254,20 +254,24 @@ public class ImageHelper {
         }
     }
 
-    public static void loadBitmap(Context context, Target<Bitmap> target, File file) {
+    public static void loadBitmap(Context context, Target<Bitmap> target, Bitmap bitmap) {
         Glide.with(context)
-                .load(file)
+                .load(bitmapToBytes(bitmap))
                 .asBitmap()
                 .into(target);
     }
 
-    public static void loadImage(Context context, ImageView view, File file) {
-        if (file.exists()) {
-            Glide.with(context)
-                    .load(file)
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .into(view);
-        }
+    public static void loadImage(Context context, ImageView view, Bitmap bitmap) {
+        Glide.with(context)
+                .load(bitmapToBytes(bitmap))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(view);
+    }
+
+    private static byte[] bitmapToBytes(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
 
     // animation.

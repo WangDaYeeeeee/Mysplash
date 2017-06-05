@@ -193,7 +193,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ViewHolder) {
+        if (holder instanceof ViewHolder && position < itemList.size()) {
             ((ViewHolder) holder).onBindView(itemList.get(position));
         }
     }

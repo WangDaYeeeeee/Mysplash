@@ -117,7 +117,10 @@ public class MainActivity extends ReadWriteActivity
     private Runnable initRunnable = new Runnable() {
         @Override
         public void run() {
+            // add auth listener.
             AuthManager.getInstance().addOnWriteDataListener(MainActivity.this);
+
+            // refresh profile or shortcuts.
             if (AuthManager.getInstance().isAuthorized()
                     && (TextUtils.isEmpty(AuthManager.getInstance().getUsername())
                     || AuthManager.getInstance().getNumericId() < 0)) {
@@ -125,7 +128,11 @@ public class MainActivity extends ReadWriteActivity
             } else {
                 handler.obtainMessage(REFRESH_SHORTCUTS).sendToTarget();
             }
+
+            // check to show introduce.
             IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
+
+            // draw profile.
             handler.obtainMessage(DRAW_PROFILE).sendToTarget();
         }
     };

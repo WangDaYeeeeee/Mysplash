@@ -6,10 +6,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
+import android.os.ParcelFileDescriptor;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -33,9 +36,11 @@ import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 
 import java.io.File;
+import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,7 +78,8 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     private SafeHandler<SetWallpaperActivity> handler;
 
-    private File photoFile;
+    @Nullable
+    private Bitmap photo = null;
 
     private boolean light;
 
@@ -198,9 +204,25 @@ public class SetWallpaperActivity extends ReadWriteActivity
     // init.
 
     private void initData() {
-        this.photoFile = new File(getIntent().getData().getSchemeSpecificPart());
-        if (!photoFile.exists()) {
-            photoFile = new File(FileUtils.uriToFilePath(this, getIntent().getData()));
+        InputStream[] streams = new InputStream[] {getPhotoStream(), getPhotoStream()};
+        if (streams[0] != null && streams[1] != null) {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(streams[0], new Rect(0, 0, 0, 0), options);
+
+            options.inSampleSize = calculateInSampleSize(
+                    options,
+                    getResources().getDisplayMetrics().widthPixels,
+                    getResources().getDisplayMetrics().heightPixels);
+            options.inJustDecodeBounds = false;
+            photo = BitmapFactory.decodeStream(streams[1], new Rect(0, 0, 0, 0), options);
+
+            try {
+                streams[0].close();
+                streams[1].close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         light = false;
     }
@@ -214,7 +236,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
         photoView.enable();
         photoView.setMaxScale(2.5f);
         photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ImageHelper.loadImage(this, photoView, photoFile);
+        ImageHelper.loadImage(this, photoView, photo);
         ImageHelper.loadBitmap(
                 this,
                 new SimpleTarget<Bitmap>(100, 100) {
@@ -227,7 +249,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                         setStyle();
                     }
                 },
-                photoFile);
+                photo);
     }
 
     // control.
@@ -326,6 +348,63 @@ public class SetWallpaperActivity extends ReadWriteActivity
         return grey > ContextCompat.getColor(this, R.color.colorTextGrey);
     }
 
+    @Nullable
+    private InputStream getPhotoStream() {
+        Uri uri = getIntent().getData();
+        if (uri.getScheme().equals("file")) {
+            File file = new File(uri.getSchemeSpecificPart());
+            if (!file.exists()) {
+                String path = FileUtils.uriToFilePath(this, uri);
+                if (path != null) {
+                    file = new File(path);
+                    try {
+                        return new FileInputStream(file);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else if (uri.getScheme().equals("content")) {
+            try {
+                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
+                if (parcelFileDescriptor != null) {
+                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
+                    if (fileDescriptor != null) {
+                        return new FileInputStream(fileDescriptor);
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    private int calculateInSampleSize(BitmapFactory.Options options,
+                                      int requestWidth, int requestHeight) {
+        if (requestWidth == 0 || requestHeight == 0) {
+            return 1;
+        }
+
+        int width = options.outWidth;
+        int height = options.outHeight;
+        int inSampleSize = 1;
+
+        if (width > requestWidth || height > requestHeight) {
+            int halfHeight = height / 2;
+            int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and
+            // keeps both
+            // height and width larger than the requested height and width.
+            while ((halfWidth / inSampleSize) >= requestWidth
+                    && (halfHeight / inSampleSize) >= requestHeight) {
+                inSampleSize *= 2;
+            }
+        }
+        return inSampleSize;
+    }
+
     /**
      * Set picture as a wallpaper.
      *
@@ -333,13 +412,11 @@ public class SetWallpaperActivity extends ReadWriteActivity
      *                  otherwise, this picture needs to be set as a background in lock screen.
      * */
     private void setWallpaper(boolean wallpaper) {
-        FileInputStream[] streams = new FileInputStream[2];
-        try {
-            streams[0] = new FileInputStream(photoFile);
-            streams[1] = new FileInputStream(photoFile);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        if (photo == null) {
+            return;
         }
+
+        InputStream[] streams = new InputStream[] {getPhotoStream(), getPhotoStream()};
         if (streams[0] == null || streams[1] == null) {
             return;
         }

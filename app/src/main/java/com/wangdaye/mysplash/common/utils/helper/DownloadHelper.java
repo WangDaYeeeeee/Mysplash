@@ -8,8 +8,10 @@ import android.net.Uri;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 
+import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
@@ -20,6 +22,7 @@ import com.wangdaye.mysplash.common.utils.FileUtils;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -75,17 +78,17 @@ public class DownloadHelper {
 
     public void addMission(Context c, Photo p, int type) {
         if (FileUtils.createDownloadPath(c)) {
-            addMission(c, new DownloadMissionEntity(c, p, type));
+            addMission(c, new DownloadMissionEntity(c, p, type), true);
         }
     }
 
     public void addMission(Context c, Collection collection) {
         if (FileUtils.createDownloadPath(c)) {
-            addMission(c, new DownloadMissionEntity(collection));
+            addMission(c, new DownloadMissionEntity(collection), true);
         }
     }
 
-    private long addMission(Context c, DownloadMissionEntity entity) {
+    private long addMission(Context c, DownloadMissionEntity entity, boolean showSnackbar) {
         FileUtils.deleteFile(entity);
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
@@ -100,9 +103,11 @@ public class DownloadHelper {
         entity.result = DownloadHelper.RESULT_DOWNLOADING;
         DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
 
-        NotificationHelper.showSnackbar(
-                c.getString(R.string.feedback_download_start),
-                Snackbar.LENGTH_SHORT);
+        if (showSnackbar) {
+            NotificationHelper.showSnackbar(
+                    c.getString(R.string.feedback_download_start),
+                    Snackbar.LENGTH_SHORT);
+        }
 
         return entity.missionId;
     }
@@ -117,7 +122,7 @@ public class DownloadHelper {
             DatabaseHelper.getInstance(c).deleteDownloadEntity(missionId);
 
             DownloadMission mission = new DownloadMission(entity);
-            mission.entity.missionId = addMission(c, mission.entity);
+            mission.entity.missionId = addMission(c, mission.entity, true);
             mission.entity.result = RESULT_DOWNLOADING;
             mission.process = 0;
             return mission;
@@ -287,31 +292,61 @@ public class DownloadHelper {
     }
 
     private static void shareDownloadSuccess(Context c, DownloadMissionEntity entity) {
-        // Uri file = Uri.parse("file://" + entity.getFilePath());
-        Uri file = FileUtils.filePathToUri(c, entity.getFilePath());
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, file);
-        intent.setType("image/*");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        c.startActivity(
-                        Intent.createChooser(
-                                intent,
-                                Mysplash.getInstance()
-                                        .getString(R.string.feedback_choose_share_app)));
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setDataAndType(FileUtils.filePathToUri(c, entity.getFilePath()), "image/*");
+            // intent.putExtra(Intent.EXTRA_STREAM, file);
+            // intent.setType("image/*");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            Mysplash.getInstance()
+                                    .getString(R.string.feedback_choose_share_app)));
+        } catch (Exception e) {
+            Uri uri = FileProvider.getUriForFile(
+                    c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setDataAndType(uri, "image/*");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            Mysplash.getInstance()
+                                    .getString(R.string.feedback_choose_share_app)));
+        }
     }
 
     private static void wallpaperDownloadSuccess(Context c, DownloadMissionEntity entity) {
-        // Uri file = Uri.parse("file://" + entity.getFilePath());
-        Uri file = FileUtils.filePathToUri(c, entity.getFilePath());
-        Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-        intent.setDataAndType(file, "image/jpg");
-        intent.putExtra("mimeType", "image/jpg");
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        c.startActivity(
-                        Intent.createChooser(
-                                intent,
-                                Mysplash.getInstance()
-                                        .getString(R.string.feedback_choose_wallpaper_app)));
+        try {
+            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+            intent.setDataAndType(FileUtils.filePathToUri(c, entity.getFilePath()), "image/jpg");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            Mysplash.getInstance()
+                                    .getString(R.string.feedback_choose_wallpaper_app)));
+        } catch (Exception e) {
+            Uri uri = FileProvider.getUriForFile(
+                    c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
+            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+            intent.setDataAndType(uri, "image/jpg");
+            intent.addCategory(Intent.CATEGORY_DEFAULT);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(
+                    Intent.createChooser(
+                            intent,
+                            Mysplash.getInstance()
+                                    .getString(R.string.feedback_choose_wallpaper_app)));
+        }
     }
 
     private static void downloadCollectionSuccess(Context c, DownloadMissionEntity entity) {

@@ -118,7 +118,7 @@ public class DatabaseHelper {
 
 class MysplashOpenHelper extends DaoMaster.DevOpenHelper {
 
-    private static final int VERSION_ADD_WALLPAPER_SOURCE = 13;
+    private static final int VERSION_ADD_WALLPAPER_SOURCE = 17;
 
     MysplashOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory) {
         super(context, name, factory);
@@ -127,10 +127,10 @@ class MysplashOpenHelper extends DaoMaster.DevOpenHelper {
     @Override
     public void onUpgrade(Database db, int oldVersion, int newVersion) {
         Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-        if (newVersion >= VERSION_ADD_WALLPAPER_SOURCE
-                && oldVersion < VERSION_ADD_WALLPAPER_SOURCE) {
-            // just create WallpaperSource table.
-            WallpaperSourceDao.createTable(db, false);
+        if (newVersion >= VERSION_ADD_WALLPAPER_SOURCE) {
+            if (oldVersion < VERSION_ADD_WALLPAPER_SOURCE) {
+                WallpaperSourceDao.createTable(db, true);
+            }
         } else {
             super.onUpgrade(db, oldVersion, newVersion);
         }

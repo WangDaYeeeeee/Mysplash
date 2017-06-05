@@ -168,7 +168,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         // interface.
 
         @OnClick(R.id.item_photo) void clickItem() {
-            if (a instanceof MysplashActivity) {
+            if (a instanceof MysplashActivity && getAdapterPosition() < itemList.size()) {
                 IntentHelper.startPhotoActivity(
                         (MysplashActivity) a,
                         image,

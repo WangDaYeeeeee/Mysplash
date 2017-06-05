@@ -438,14 +438,18 @@ public class SearchFragment extends MysplashFragment
 
     @Override
     public void showKeyboard() {
-        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.showSoftInput(editText, 0);
+        if (getActivity() != null) {
+            ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .showSoftInput(editText, 0);
+        }
     }
 
     @Override
     public void hideKeyboard() {
-        InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        if (getActivity() != null) {
+            ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                    .hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        }
     }
 
     @Override

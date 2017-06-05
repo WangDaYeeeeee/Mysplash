@@ -143,24 +143,31 @@ public class WallpaperSource {
     public long getCollectionId() {
         return this.collectionId;
     }
+
     public void setCollectionId(long collectionId) {
         this.collectionId = collectionId;
     }
+
     public String getTitle() {
         return this.title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
+
     public boolean getCurated() {
         return this.curated;
     }
+
     public void setCurated(boolean curated) {
         this.curated = curated;
     }
+
     public String getCoverUrl() {
         return this.coverUrl;
     }
+
     public void setCoverUrl(String coverUrl) {
         this.coverUrl = coverUrl;
     }

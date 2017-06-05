@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
@@ -380,8 +379,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     @OnClick(R.id.container_following_avatar_avatar) void clickAvatar() {
-        int adapterPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
+        int adapterPosition = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPositions(null)[0];
         IntentHelper.startUserActivity(
                 Mysplash.getInstance().getTopActivity(),
                 avatar,

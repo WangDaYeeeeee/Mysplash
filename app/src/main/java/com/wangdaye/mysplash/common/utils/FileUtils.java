@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.common.utils;
 
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -8,6 +7,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -103,30 +103,20 @@ public class FileUtils {
         return f.exists() && f.delete();
     }
 
+    @Nullable
     public static String uriToFilePath(Context context, @NonNull Uri uri) {
-        String scheme = uri.getScheme();
-        String data = null;
-        if (scheme == null) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
-            data = uri.getPath();
-        } else if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
-            Cursor cursor = context.getContentResolver()
-                    .query(
-                            uri,
-                            new String[] {MediaStore.Images.ImageColumns.DATA},
-                            null, null, null );
-            if (cursor != null) {
-                if (cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-                    if (index > -1) {
-                        data = cursor.getString(index);
-                    }
-                }
-                cursor.close();
+        String path = null;
+        Cursor cursor = context.getContentResolver()
+                .query(uri, new String[]{MediaStore.MediaColumns.DATA}, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            if (index > -1) {
+                path = cursor.getString(index);
             }
+            cursor.close();
         }
-        return data;
+        return path;
     }
 
     public static Uri filePathToUri(Context context, @NonNull String filePath) {
