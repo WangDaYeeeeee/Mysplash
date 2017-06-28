@@ -2,8 +2,10 @@ package com.wangdaye.mysplash.photo.presenter;
 
 import android.content.Context;
 
+import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotoInfoModel;
 import com.wangdaye.mysplash.common.i.presenter.PhotoInfoPresenter;
 import com.wangdaye.mysplash.common.i.view.PhotoInfoView;
@@ -21,7 +23,8 @@ public class PhotoInfoImplementor
 
     private PhotoInfoModel model;
     private PhotoInfoView view;
-    private OnRequestPhotoDetailsListener listener;
+
+    private OnRequestPhotoDetailsListener requestPhotoListener;
 
     public PhotoInfoImplementor(PhotoInfoModel model, PhotoInfoView view) {
         this.model = model;
@@ -30,15 +33,26 @@ public class PhotoInfoImplementor
 
     @Override
     public void requestPhoto(Context context) {
-        listener = new OnRequestPhotoDetailsListener();
-        // model.getPhotoInfoService().requestAPhoto(model.getPhoto().id, listener);
-        model.getPhotoService().requestAPhoto(model.getPhoto().id, listener);
+        requestPhotoListener = new OnRequestPhotoDetailsListener();
+        // model.getPhotoInfoService().requestAPhoto(model.getPhoto().id, requestPhotoListener);
+        model.getPhotoService().requestAPhoto(model.getPhoto().id, requestPhotoListener);
+    }
+
+    @Override
+    public void setLikeForAPhoto(Context context) {
+        Photo photo = model.getPhoto();
+        photo.settingLike = true;
+        model.setPhoto(photo);
+        model.getPhotoService().setLikeForAPhoto(
+                model.getPhoto().id,
+                !model.getPhoto().liked_by_user,
+                new OnSetLikeForAPhotoListener());
     }
 
     @Override
     public void cancelRequest() {
-        if (listener != null) {
-            listener.cancel();
+        if (requestPhotoListener != null) {
+            requestPhotoListener.cancel();
         }
         // model.getPhotoInfoService().cancel();
         model.getPhotoService().cancel();
@@ -55,6 +69,11 @@ public class PhotoInfoImplementor
     }
 
     @Override
+    public void setPhoto(Photo photo) {
+        model.setPhoto(photo);
+    }
+
+    @Override
     public PhotoInfoAdapter getAdapter() {
         return model.getAdapter();
     }
@@ -64,12 +83,9 @@ public class PhotoInfoImplementor
         return model.isFailed();
     }
 
-    @Override
-    public void setFailed(boolean b) {
-        model.setFailed(b);
-    }
-
     // interface.
+
+    // on request single photo requestPhotoListener.
 
     private class OnRequestPhotoDetailsListener
             implements PhotoInfoService.OnRequestSinglePhotoListener {
@@ -96,6 +112,7 @@ public class PhotoInfoImplementor
                 model.setFailed(false);
                 view.requestPhotoSuccess(photo);
             } else {
+                model.setFailed(true);
                 view.requestPhotoFailed();
             }
         }
@@ -105,7 +122,48 @@ public class PhotoInfoImplementor
             if (canceled) {
                 return;
             }
+            model.setFailed(true);
             view.requestPhotoFailed();
+        }
+    }
+
+    // on set like requestPhotoListener.
+
+    private class OnSetLikeForAPhotoListener implements PhotoService.OnSetLikeListener {
+
+        private boolean canceled;
+
+        OnSetLikeForAPhotoListener() {
+            this.canceled = false;
+        }
+
+        public void cancel() {
+            this.canceled = true;
+        }
+
+        @Override
+        public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
+            if (canceled) {
+                return;
+            }
+            Photo photo = model.getPhoto();
+            photo.settingLike = false;
+            if (response.isSuccessful() && response.body() != null) {
+                photo.liked_by_user = response.body().photo.liked_by_user;
+            }
+            model.setPhoto(photo);
+            view.setLikeForAPhotoCompleted();
+        }
+
+        @Override
+        public void onSetLikeFailed(Call<LikePhotoResult> call, Throwable t) {
+            if (canceled) {
+                return;
+            }
+            Photo photo = model.getPhoto();
+            photo.settingLike = false;
+            model.setPhoto(photo);
+            view.setLikeForAPhotoCompleted();
         }
     }
 }

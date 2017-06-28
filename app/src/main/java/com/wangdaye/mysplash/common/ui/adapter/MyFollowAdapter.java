@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -229,9 +228,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         @Override
         public void onFollowFailed(Call<ResponseBody> call, Throwable t) {
             if (Mysplash.getInstance() != null && Mysplash.getInstance().getTopActivity() != null) {
-                NotificationHelper.showSnackbar(
-                        a.getString(R.string.feedback_follow_failed),
-                        Snackbar.LENGTH_SHORT);
+                NotificationHelper.showSnackbar(a.getString(R.string.feedback_follow_failed));
                 for (int i = 0; i < itemList.size(); i ++) {
                     if (itemList.get(i).user.username.equals(username)) {
                         User user = itemList.get(i).user;
@@ -247,9 +244,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         @Override
         public void onCancelFollowFailed(Call<ResponseBody> call, Throwable t) {
             if (Mysplash.getInstance() != null && Mysplash.getInstance().getTopActivity() != null) {
-                NotificationHelper.showSnackbar(
-                        a.getString(R.string.feedback_cancel_follow_failed),
-                        Snackbar.LENGTH_SHORT);
+                NotificationHelper.showSnackbar(a.getString(R.string.feedback_cancel_follow_failed));
                 for (int i = 0; i < itemList.size(); i ++) {
                     if (itemList.get(i).user.username.equals(username)) {
                         User user = itemList.get(i).user;

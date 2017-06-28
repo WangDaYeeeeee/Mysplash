@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -300,7 +299,7 @@ public class CollectionActivity extends ReadWriteActivity
                 description.setText(c.description);
             }
 
-            if (browsablePresenter.isBrowsable()) {
+            if (Mysplash.getInstance().getActivityCount() == 1) {
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
             } else {
@@ -350,9 +349,7 @@ public class CollectionActivity extends ReadWriteActivity
         if (DatabaseHelper.getInstance(this)
                 .readDownloadingEntityCount(
                         String.valueOf(((Collection) downloadPresenter.getDownloadKey()).id)) > 0) {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_download_repeat),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isCollectionExists(
                 this,
                 String.valueOf(((Collection) downloadPresenter.getDownloadKey()).id))) {
@@ -394,7 +391,7 @@ public class CollectionActivity extends ReadWriteActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (browsablePresenter.isBrowsable()) {
+                if (Mysplash.getInstance().getActivityCount() == 1) {
                     browsablePresenter.visitPreviousPage();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
@@ -534,13 +531,9 @@ public class CollectionActivity extends ReadWriteActivity
                 if (source == null) {
                     source = new WallpaperSource(getCollection());
                     DatabaseHelper.getInstance(this).writeWallpaperSource(source);
-                    NotificationHelper.showSnackbar(
-                            getString(R.string.feedback_set_as_source_succeed),
-                            Snackbar.LENGTH_SHORT);
+                    NotificationHelper.showSnackbar(getString(R.string.feedback_set_as_source_succeed));
                 } else {
-                    NotificationHelper.showSnackbar(
-                            getString(R.string.feedback_set_as_source_failed),
-                            Snackbar.LENGTH_SHORT);
+                    NotificationHelper.showSnackbar(getString(R.string.feedback_set_as_source_failed));
                 }
                 break;
         }

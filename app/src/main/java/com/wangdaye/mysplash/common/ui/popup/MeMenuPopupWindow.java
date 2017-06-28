@@ -64,15 +64,15 @@ public class MeMenuPopupWindow extends MysplashPopupWindow
         TextView shareTxt = ButterKnife.findById(v, R.id.popup_me_menu_shareTxt);
         DisplayUtils.setTypeface(v.getContext(), shareTxt);
 
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_me_menu_submitIcon)).setImageResource(R.drawable.ic_plus_light);
-            ((ImageView) v.findViewById(R.id.popup_me_menu_portfolioIcon)).setImageResource(R.drawable.ic_earth_light);
-            ((ImageView) v.findViewById(R.id.popup_me_menu_shareIcon)).setImageResource(R.drawable.ic_share_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_me_menu_submitIcon)).setImageResource(R.drawable.ic_plus_dark);
-            ((ImageView) v.findViewById(R.id.popup_me_menu_portfolioIcon)).setImageResource(R.drawable.ic_earth_dark);
-            ((ImageView) v.findViewById(R.id.popup_me_menu_shareIcon)).setImageResource(R.drawable.ic_share_dark);
-        }
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_me_menu_submitIcon),
+                R.drawable.ic_plus_light, R.drawable.ic_plus_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_me_menu_portfolioIcon),
+                R.drawable.ic_earth_light, R.drawable.ic_earth_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_me_menu_shareIcon),
+                R.drawable.ic_share_light, R.drawable.ic_share_dark);
     }
 
     // interface.

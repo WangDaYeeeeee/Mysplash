@@ -126,9 +126,9 @@
     <string name="feedback_search_photos_tv">BUSCAR FOTOS</string>
     <string name="feedback_search_users_bar">Palabra clave de usuarios</string>
     <string name="feedback_search_users_tv">BUSCAR USUARIOS</string>
-    <string name="feedback_share_collection_extra">&quot;Creado por # el #&quot;</string>
+    <string name="feedback_share_collection_extra">&quot;Creado por # el $&quot;</string>
     <string name="feedback_share_collection_title">Una colección desde Unplash.com</string>
-    <string name="feedback_share_photo_extra">&quot;Tomado por # el #&quot;</string>
+    <string name="feedback_share_photo_extra">&quot;Tomado por # el $&quot;</string>
     <string name="feedback_share_photo_title">Una foto desde Unplash.com</string>
     <string name="feedback_share_user_extra">&quot;\#&quot;</string>
     <string name="feedback_share_user_title">Un perfil de usuario desde Unsplash.com</string>

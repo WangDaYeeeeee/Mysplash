@@ -91,7 +91,7 @@ public class IntentHelper {
         }
     }
 
-    public static void startPhotoActivity(MysplashActivity a, String photoId) {
+    public static void startPhotoActivity(Activity a, String photoId) {
         Intent intent = new Intent(a, PhotoActivity.class);
         intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photoId);
         a.startActivity(intent);
@@ -145,7 +145,7 @@ public class IntentHelper {
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startCollectionActivity(MysplashActivity a, String collectionId) {
+    public static void startCollectionActivity(Activity a, String collectionId) {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_ID, collectionId);
         a.startActivity(intent);
@@ -175,6 +175,13 @@ public class IntentHelper {
                         a, intent, Mysplash.USER_ACTIVITY, options.toBundle());
             }
         }
+    }
+
+    public static void startUserActivity(Activity a, String username) {
+        Intent intent = new Intent(a, UserActivity.class);
+        intent.putExtra(UserActivity.KEY_USER_ACTIVITY_USERNAME, username);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startLoginActivity(MysplashActivity a) {

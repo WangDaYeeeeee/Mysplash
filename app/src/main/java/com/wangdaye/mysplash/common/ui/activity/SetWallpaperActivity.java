@@ -201,6 +201,20 @@ public class SetWallpaperActivity extends ReadWriteActivity
         return container;
     }
 
+    // permission.
+
+    @Override
+    protected void requestReadWritePermissionSucceed(int requestCode) {
+        initData();
+        initWidget();
+    }
+
+    @Override
+    protected void requestReadWritePermissionFailed(int requestCode) {
+        super.requestReadWritePermissionFailed(requestCode);
+        finishActivity(0);
+    }
+
     // init.
 
     private void initData() {
@@ -359,7 +373,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                     file = new File(path);
                     try {
                         return new FileInputStream(file);
-                    } catch (FileNotFoundException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
@@ -373,7 +387,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                         return new FileInputStream(fileDescriptor);
                     }
                 }
-            } catch (FileNotFoundException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
@@ -533,14 +547,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    // permission.
-
-    @Override
-    protected void requestReadWritePermissionSucceed(int requestCode) {
-        initData();
-        initWidget();
     }
 
     // interface.

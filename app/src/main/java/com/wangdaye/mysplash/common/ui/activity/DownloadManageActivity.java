@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
@@ -174,10 +175,8 @@ public class DownloadManageActivity extends ReadWriteActivity
                 this, R.id.activity_download_manage_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        boolean openByNotification = getIntent().getBooleanExtra(EXTRA_NOTIFICATION, false);
-
         Toolbar toolbar = ButterKnife.findById(this, R.id.activity_download_manage_toolbar);
-        if (openByNotification) {
+        if (Mysplash.getInstance().getActivityCount() == 1) {
             ThemeManager.setNavigationIcon(
                     toolbar,
                     R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
@@ -311,7 +310,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (getIntent().getBooleanExtra(EXTRA_NOTIFICATION, false)) {
+                if (Mysplash.getInstance().getActivityCount() == 1) {
                     IntentHelper.startMainActivity(this);
                 }
                 finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);

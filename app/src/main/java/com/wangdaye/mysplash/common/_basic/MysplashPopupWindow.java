@@ -11,7 +11,6 @@ import android.widget.PopupWindow;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * Mysplash popup window.
@@ -52,17 +51,17 @@ public class MysplashPopupWindow extends PopupWindow {
     protected void show(View anchor, int offsetX, int offsetY) {
         int[] locations = new int[2];
         anchor.getLocationOnScreen(locations);
-        locations[0] += offsetX;
-        locations[1] += offsetY;
+        locations[0] += offsetX + getContentView().getMeasuredWidth();
+        locations[1] += offsetY + getContentView().getMeasuredHeight();
 
         int[] screenSizes = new int[] {
                 anchor.getContext().getResources().getDisplayMetrics().widthPixels,
                 anchor.getContext().getResources().getDisplayMetrics().heightPixels};
         int[] triggers = new int[] {
-                (int) (0.5 * screenSizes[0]),
-                screenSizes[1] - getContentView().getMeasuredHeight()
-                        - DisplayUtils.getNavigationBarHeight(anchor.getResources())
-                        - 3 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin)};
+                screenSizes[1]
+                        - 6 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin),
+                screenSizes[1]
+                        - 6 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin)};
 
         if (locations[0] <= triggers[0]) {
             if (locations[1] <= triggers[1]) {

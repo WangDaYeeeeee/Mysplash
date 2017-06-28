@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.annotation.IntDef;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
@@ -146,9 +145,7 @@ public class UpdateMeActivity extends MysplashActivity
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else if (state == INPUT_STATE) {
             backPressed = true;
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_click_again_to_exit),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
 
             new Timer().schedule(new TimerTask() {
                 @Override
@@ -304,9 +301,7 @@ public class UpdateMeActivity extends MysplashActivity
                     this);
             setState(UPDATE_STATE);
         } else {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_name_is_required),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_name_is_required));
         }
     }
 
@@ -376,18 +371,14 @@ public class UpdateMeActivity extends MysplashActivity
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else {
             setState(INPUT_STATE);
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_update_profile_failed),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));
         }
     }
 
     @Override
     public void onRequestMeProfileFailed(Call<Me> call, Throwable t) {
         setState(INPUT_STATE);
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_update_profile_failed),
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));
     }
 
     // handler.

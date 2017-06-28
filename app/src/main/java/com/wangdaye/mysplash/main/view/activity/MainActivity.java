@@ -28,7 +28,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common._basic.MysplashFragment;
-import com.wangdaye.mysplash.common.ui.activity.RestartActivity;
+import com.wangdaye.mysplash.common.ui.activity.invisible.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;

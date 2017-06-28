@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -152,9 +151,7 @@ public class IntroduceActivity extends MysplashActivity
             finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         } else {
             backPressed = true;
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_click_again_to_exit),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
 
             new Timer().schedule(new TimerTask() {
                 @Override

@@ -7,6 +7,55 @@
     android:background="?attr/root_color">
 
     <RelativeLayout
+        android:id="@+id/popup_photo_menu_like"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
+            android:id="@+id/popup_photo_menu_likeIcon"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_margin="@dimen/little_margin"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/popup_photo_menu_likeTxt"
+            android:text="@string/action_like"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_photo_menu_likeIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_menu_collect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <ImageView
+            android:id="@+id/popup_photo_menu_collectIcon"
+            style="@style/material_icon"
+            tools:src="@drawable/ic_collect_light"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_menu_collectTxt"
+            android:text="@string/action_collect"
+            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/popup_photo_menu_collectIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/popup_photo_menu_stats"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

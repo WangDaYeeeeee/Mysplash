@@ -10,9 +10,12 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.MysplashPopupWindow;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -26,34 +29,51 @@ import butterknife.ButterKnife;
 public class PhotoMenuPopupWindow extends MysplashPopupWindow
         implements View.OnClickListener {
 
+    @BindView(R.id.popup_photo_menu_likeIcon)
+    CircularProgressIcon likeIcon;
+
+    @BindView(R.id.popup_photo_menu_collectIcon)
+    ImageView collectIcon;
+
     private OnSelectItemListener listener;
 
-    public static final int ITEM_STATS = 1;
-    public static final int ITEM_DOWNLOAD_PAGE = 2;
-    public static final int ITEM_STORY_PAGE = 3;
-    @IntDef({ITEM_STATS, ITEM_DOWNLOAD_PAGE, ITEM_STORY_PAGE})
+    public static final int ITEM_LIKE = 1;
+    public static final int ITEM_COLLECT = 2;
+    public static final int ITEM_STATS = 3;
+    public static final int ITEM_DOWNLOAD_PAGE = 4;
+    public static final int ITEM_STORY_PAGE = 5;
+    @IntDef({ITEM_LIKE, ITEM_COLLECT, ITEM_STATS, ITEM_DOWNLOAD_PAGE, ITEM_STORY_PAGE})
     private @interface MenuItemRule {}
 
-    public PhotoMenuPopupWindow(Context c, View anchor) {
+    public PhotoMenuPopupWindow(Context c, View anchor, Photo photo) {
         super(c);
-        this.initialize(c, anchor);
+        this.initialize(c, anchor, photo);
     }
 
     @SuppressLint("InflateParams")
-    private void initialize(Context c, View anchor) {
+    private void initialize(Context c, View anchor, Photo photo) {
         View v = LayoutInflater.from(c).inflate(R.layout.popup_photo_menu, null);
         setContentView(v);
 
-        initWidget();
+        ButterKnife.bind(this, v);
+        initWidget(photo);
         show(anchor, anchor.getMeasuredWidth(), 0);
     }
 
-    private void initWidget() {
+    private void initWidget(Photo photo) {
         View v = getContentView();
 
+        v.findViewById(R.id.popup_photo_menu_like).setOnClickListener(this);
+        v.findViewById(R.id.popup_photo_menu_collect).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_stats).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_downloadPage).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_storyPage).setOnClickListener(this);
+
+        TextView likeTxt = ButterKnife.findById(v, R.id.popup_photo_menu_likeTxt);
+        DisplayUtils.setTypeface(v.getContext(), likeTxt);
+
+        TextView collectTxt = ButterKnife.findById(v, R.id.popup_photo_menu_collectTxt);
+        DisplayUtils.setTypeface(v.getContext(), collectTxt);
 
         TextView statsTxt = ButterKnife.findById(v, R.id.popup_photo_menu_statsTxt);
         DisplayUtils.setTypeface(v.getContext(), statsTxt);
@@ -64,14 +84,43 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
         TextView storyPageTxt = ButterKnife.findById(v, R.id.popup_photo_menu_storyPageTxt);
         DisplayUtils.setTypeface(v.getContext(), storyPageTxt);
 
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_light);
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_light);
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon)).setImageResource(R.drawable.ic_book_light);
+        likeIcon.setProgressColor(ThemeManager.getTitleColor(v.getContext()));
+        if (photo.settingLike) {
+            likeIcon.forceSetProgressState();
+        } else if (photo.liked_by_user) {
+            likeIcon.forceSetResultState(R.drawable.ic_item_heart_red);
+        } else if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
+            likeIcon.forceSetResultState(R.drawable.ic_heart_outline_light);
         } else {
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon)).setImageResource(R.drawable.ic_stats_dark);
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon)).setImageResource(R.drawable.ic_image_dark);
-            ((ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon)).setImageResource(R.drawable.ic_book_dark);
+            likeIcon.forceSetResultState(R.drawable.ic_heart_outline_dark);
+        }
+        if (photo.current_user_collections.size() == 0) {
+            ThemeManager.setImageResource(
+                    collectIcon,
+                    R.drawable.ic_collect_light, R.drawable.ic_collect_dark);
+        } else {
+            ThemeManager.setImageResource(
+                    collectIcon,
+                    R.drawable.ic_collected_light, R.drawable.ic_collected_dark);
+        }
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon),
+                R.drawable.ic_stats_light, R.drawable.ic_stats_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon),
+                R.drawable.ic_image_light, R.drawable.ic_image_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon),
+                R.drawable.ic_book_light, R.drawable.ic_book_dark);
+    }
+
+    public void setLikeResult(Context context, Photo photo) {
+        if (photo.liked_by_user) {
+            likeIcon.setResultState(R.drawable.ic_item_heart_red);
+        } else if (ThemeManager.getInstance(context).isLightTheme()) {
+            likeIcon.setResultState(R.drawable.ic_heart_outline_light);
+        } else {
+            likeIcon.setResultState(R.drawable.ic_heart_outline_dark);
         }
     }
 
@@ -92,6 +141,18 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.popup_photo_menu_like:
+                if (likeIcon.isUsable() && listener != null) {
+                    listener.onSelectItem(ITEM_LIKE);
+                }
+                break;
+
+            case R.id.popup_photo_menu_collect:
+                if (listener != null) {
+                    listener.onSelectItem(ITEM_COLLECT);
+                }
+                break;
+
             case R.id.popup_photo_menu_stats:
                 if (listener != null) {
                     listener.onSelectItem(ITEM_STATS);

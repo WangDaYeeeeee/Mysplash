@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common.ui.activity;
+package com.wangdaye.mysplash.common.ui.activity.invisible;
 
 import android.app.Activity;
 import android.os.Bundle;

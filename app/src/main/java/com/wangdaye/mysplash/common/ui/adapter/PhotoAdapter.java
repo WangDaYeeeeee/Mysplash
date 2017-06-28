@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.content.Context;
 import android.os.Build;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -217,9 +216,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         @OnClick(R.id.item_photo_downloadButton) void downloadPhoto() {
             Photo p = itemList.get(getAdapterPosition());
             if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(p.id) > 0) {
-                NotificationHelper.showSnackbar(
-                        a.getString(R.string.feedback_download_repeat),
-                        Snackbar.LENGTH_SHORT);
+                NotificationHelper.showSnackbar(a.getString(R.string.feedback_download_repeat));
             } else if (FileUtils.isPhotoExists(a, p.id)) {
                 MysplashActivity activity = Mysplash.getInstance().getTopActivity();
                 if (activity != null) {
@@ -428,8 +425,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         itemList.get(position).liked_by_user ?
                                 a.getString(R.string.feedback_unlike_failed)
                                 :
-                                a.getString(R.string.feedback_like_failed),
-                        Snackbar.LENGTH_SHORT);
+                                a.getString(R.string.feedback_like_failed));
             }
         }
 

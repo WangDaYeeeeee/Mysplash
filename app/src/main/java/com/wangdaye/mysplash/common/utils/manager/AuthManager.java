@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.IntDef;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -134,9 +133,7 @@ public class AuthManager
             editor.putString(KEY_AVATAR_PATH, null);
             editor.apply();
 
-            NotificationHelper.showSnackbar(
-                    Mysplash.getInstance().getString(R.string.feedback_please_login),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(Mysplash.getInstance().getString(R.string.feedback_please_login));
         }
     }
 

@@ -10,7 +10,6 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,14 +17,18 @@ import android.text.TextUtils;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -51,6 +54,7 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.common._basic.FlagRunnable;
@@ -68,6 +72,8 @@ import com.wangdaye.mysplash.photo.view.holder.BaseLandscapeHolder;
 import com.wangdaye.mysplash.photo.view.holder.MoreHolder;
 import com.wangdaye.mysplash.photo.view.holder.ProgressHolder;
 
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -81,7 +87,7 @@ import butterknife.ButterKnife;
 public class PhotoActivity extends ReadWriteActivity
         implements PhotoInfoView, PopupManageView, BrowsableView, MessageManageView,
         DownloadRepeatDialog.OnCheckOrDownloadListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        SafeHandler.HandlerContainer {
+        SelectCollectionDialog.OnCollectionsChangedListener, SafeHandler.HandlerContainer {
 
     @BindView(R.id.activity_photo_container)
     CoordinatorLayout container;
@@ -380,9 +386,7 @@ public class PhotoActivity extends ReadWriteActivity
     public void readyToDownload(int type) {
         if (DatabaseHelper.getInstance(this)
                 .readDownloadingEntityCount(photoInfoPresenter.getPhoto().id) > 0) {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_download_repeat),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isPhotoExists(this, photoInfoPresenter.getPhoto().id)) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();
             dialog.setDownloadKey(type);
@@ -558,6 +562,21 @@ public class PhotoActivity extends ReadWriteActivity
         finishActivity(dir);
     }
 
+    // on collections changed listener.
+
+    @Override
+    public void onAddCollection(Collection c) {
+        // do nothing.
+    }
+
+    @Override
+    public void onUpdateCollection(Collection c, User u, Photo p) {
+        Photo photo = getPhoto();
+        photo.current_user_collections.clear();
+        photo.current_user_collections.addAll(p.current_user_collections);
+        photoInfoPresenter.setPhoto(photo);
+    }
+
     // handler.
 
     @Override
@@ -572,12 +591,30 @@ public class PhotoActivity extends ReadWriteActivity
     @Override
     public void touchMenuItem(int itemId) {
         switch (itemId) {
-            case PhotoMenuPopupWindow.ITEM_STATS:
+            case PhotoMenuPopupWindow.ITEM_LIKE:
+                if (AuthManager.getInstance().isAuthorized()) {
+                    photoInfoPresenter.setLikeForAPhoto(this);
+                } else {
+                    IntentHelper.startLoginActivity(this);
+                }
+                break;
+
+            case PhotoMenuPopupWindow.ITEM_COLLECT: {
+                if (!AuthManager.getInstance().isAuthorized()) {
+                    IntentHelper.startLoginActivity(this);
+                } else {
+                    SelectCollectionDialog dialog = new SelectCollectionDialog();
+                    dialog.setPhotoAndListener(getPhoto(), this);
+                    dialog.show((this).getFragmentManager(), null);
+                }
+                break;
+            }
+            case PhotoMenuPopupWindow.ITEM_STATS: {
                 StatsDialog dialog = new StatsDialog();
                 dialog.setPhoto(photoInfoPresenter.getPhoto());
                 dialog.show(getFragmentManager(), null);
                 break;
-
+            }
             case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
                 IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().links.download);
                 break;
@@ -588,9 +625,7 @@ public class PhotoActivity extends ReadWriteActivity
                         && !TextUtils.isEmpty(photoInfoPresenter.getPhoto().story.image_url)) {
                     IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().story.image_url);
                 } else {
-                    NotificationHelper.showSnackbar(
-                            getString(R.string.feedback_story_is_null),
-                            Snackbar.LENGTH_SHORT);
+                    NotificationHelper.showSnackbar(getString(R.string.feedback_story_is_null));
                 }
                 break;
         }
@@ -615,6 +650,17 @@ public class PhotoActivity extends ReadWriteActivity
                 .findLastVisibleItemPosition() == 2) {
             ProgressHolder holder = (ProgressHolder) recyclerView.findViewHolderForAdapterPosition(2);
             holder.setFailedState();
+        }
+    }
+
+    @Override
+    public void setLikeForAPhotoCompleted() {
+        List<MysplashPopupWindow> popupList = getPopupList();
+        for (int i = 0; i < popupList.size(); i ++) {
+            if (popupList.get(i) instanceof PhotoMenuPopupWindow) {
+                ((PhotoMenuPopupWindow) popupList.get(i)).setLikeResult(this, getPhoto());
+                return;
+            }
         }
     }
 

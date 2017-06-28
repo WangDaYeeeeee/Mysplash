@@ -164,9 +164,9 @@
     <string name="feedback_click_again_to_exit">Appuyez une autre fois pour sortir.</string>
 
     <string name="feedback_share_photo_title">Une photo de Unsplash.com</string>
-    <string name="feedback_share_photo_extra">Prise par # le #\n</string>
+    <string name="feedback_share_photo_extra">Prise par # le $\n</string>
     <string name="feedback_share_collection_title">Une collection de Unsplash.com</string>
-    <string name="feedback_share_collection_extra">Crée par # le #\n</string>
+    <string name="feedback_share_collection_extra">Crée par # le $\n</string>
     <string name="feedback_share_user_title">Un profil utilisateur de Unsplash.com</string>
 
     <string name="feedback_like_failed">Impossible d\'aimer la photo.</string>

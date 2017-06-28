@@ -15,13 +15,15 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 public interface PhotoInfoPresenter {
 
     void requestPhoto(Context context);
+    void setLikeForAPhoto(Context context);
     void cancelRequest();
 
     void touchMenuItem(int itemId);
 
     Photo getPhoto();
+    void setPhoto(Photo photo);
+
     PhotoInfoAdapter getAdapter();
 
     boolean isFailed();
-    void setFailed(boolean b);
 }

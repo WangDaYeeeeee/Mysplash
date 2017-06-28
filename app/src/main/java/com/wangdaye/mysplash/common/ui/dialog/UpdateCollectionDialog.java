@@ -15,7 +15,6 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
@@ -137,10 +136,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
     private void updateCollection() {
         String title = nameTxt.getText().toString();
         if (TextUtils.isEmpty(title)) {
-            Toast.makeText(
-                    getActivity(),
-                    getString(R.string.feedback_name_is_required),
-                    Toast.LENGTH_SHORT).show();
+            NotificationHelper.showSnackbar(getString(R.string.feedback_name_is_required));
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
@@ -160,15 +156,11 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
     }
 
     private void notifyUpdateFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_update_collection_failed),
-                Toast.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_update_collection_failed));
     }
 
     private void notifyDeleteFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_delete_collection_failed),
-                Toast.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_delete_collection_failed));
     }
 
     private void setState(@StateRule int newState) {

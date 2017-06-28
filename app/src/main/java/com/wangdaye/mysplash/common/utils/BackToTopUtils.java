@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -134,7 +133,6 @@ public class BackToTopUtils {
                 NotificationHelper.showActionSnackbar(
                         c.getString(R.string.feedback_notify_set_back_to_top),
                         c.getString(R.string.set),
-                        Snackbar.LENGTH_LONG,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

@@ -5,7 +5,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -249,18 +248,14 @@ public class LoginActivity extends MysplashActivity
             IntentHelper.startMainActivity(this);
             finish();
         } else {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_request_token_failed),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
             setState(NORMAL_STATE);
         }
     }
 
     @Override
     public void onRequestAccessTokenFailed(Call<AccessToken> call, Throwable t) {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_request_token_failed),
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
         setState(NORMAL_STATE);
     }
 }

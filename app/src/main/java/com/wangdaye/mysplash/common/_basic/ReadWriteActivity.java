@@ -5,7 +5,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
-import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
@@ -34,9 +33,7 @@ public abstract class ReadWriteActivity extends MysplashActivity {
     }
 
     protected void requestReadWritePermissionFailed(int requestCode) {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_need_permission),
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_need_permission));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

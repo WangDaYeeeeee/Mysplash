@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
@@ -435,8 +434,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     } else {
                         NotificationHelper.showSnackbar(
                                 photo.liked_by_user ?
-                                        a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed),
-                                Snackbar.LENGTH_SHORT);
+                                        a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed));
                     }
 
                     resultList.get(typeList.get(position).resultPosition)
@@ -459,8 +457,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
                     NotificationHelper.showSnackbar(
                             photo.liked_by_user ?
-                                    a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed),
-                            Snackbar.LENGTH_SHORT);
+                                    a.getString(R.string.feedback_unlike_failed) : a.getString(R.string.feedback_like_failed));
 
                     resultList.get(typeList.get(position).resultPosition)
                             .objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
@@ -820,9 +817,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) == 0) {
                 DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
             } else {
-                NotificationHelper.showSnackbar(
-                        a.getString(R.string.feedback_download_repeat),
-                        Snackbar.LENGTH_SHORT);
+                NotificationHelper.showSnackbar(a.getString(R.string.feedback_download_repeat));
             }
         }
     }

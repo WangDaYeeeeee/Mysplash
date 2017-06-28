@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 
@@ -104,9 +103,7 @@ public class DownloadHelper {
         DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
 
         if (showSnackbar) {
-            NotificationHelper.showSnackbar(
-                    c.getString(R.string.feedback_download_start),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(c.getString(R.string.feedback_download_start));
         }
 
         return entity.missionId;
@@ -287,7 +284,6 @@ public class DownloadHelper {
         NotificationHelper.showActionSnackbar(
                 c.getString(R.string.feedback_download_photo_success),
                 c.getString(R.string.check),
-                Snackbar.LENGTH_LONG,
                 new OnCheckPhotoListener(Mysplash.getInstance().getTopActivity(), entity.title));
     }
 
@@ -355,7 +351,6 @@ public class DownloadHelper {
             NotificationHelper.showActionSnackbar(
                     c.getString(R.string.feedback_download_collection_success),
                     c.getString(R.string.check),
-                    Snackbar.LENGTH_LONG,
                     new OnCheckCollectionListener(c, entity.title));
         } else {
             NotificationHelper.sendDownloadCollectionSuccessNotification(c, entity);
@@ -368,7 +363,6 @@ public class DownloadHelper {
             NotificationHelper.showActionSnackbar(
                     c.getString(R.string.feedback_download_photo_failed),
                     c.getString(R.string.check),
-                    Snackbar.LENGTH_LONG,
                     onStartManageActivityListener);
         } else {
             NotificationHelper.sendDownloadPhotoFailedNotification(c, entity);
@@ -381,7 +375,6 @@ public class DownloadHelper {
             NotificationHelper.showActionSnackbar(
                     c.getString(R.string.feedback_download_collection_failed),
                     c.getString(R.string.check),
-                    Snackbar.LENGTH_LONG,
                     onStartManageActivityListener);
         } else {
             NotificationHelper.sendDownloadCollectionFailedNotification(c, entity);

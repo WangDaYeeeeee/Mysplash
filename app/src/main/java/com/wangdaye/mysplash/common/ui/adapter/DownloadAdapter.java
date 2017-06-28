@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -143,17 +142,13 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                         return;
                     }
                 }
-                NotificationHelper.showSnackbar(
-                        c.getString(R.string.feedback_file_does_not_exist),
-                        Snackbar.LENGTH_SHORT);
+                NotificationHelper.showSnackbar(c.getString(R.string.feedback_file_does_not_exist));
             } else {
                 // If there is another mission that is downloading the same thing, we cannot restart
                 // this mission.
                 int limitCount = entity.result == DownloadHelper.RESULT_DOWNLOADING ? 1 : 0;
                 if (DatabaseHelper.getInstance(c).readDownloadingEntityCount(entity.title) > limitCount) {
-                    NotificationHelper.showSnackbar(
-                            c.getString(R.string.feedback_download_repeat),
-                            Snackbar.LENGTH_SHORT);
+                    NotificationHelper.showSnackbar(c.getString(R.string.feedback_download_repeat));
                 } else if (FileUtils.isPhotoExists(c, entity.title)
                         || FileUtils.isCollectionExists(c, entity.title)) {
                     MysplashActivity activity = Mysplash.getInstance().getTopActivity();

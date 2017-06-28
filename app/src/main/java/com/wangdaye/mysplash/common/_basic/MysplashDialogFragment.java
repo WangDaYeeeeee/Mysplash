@@ -17,6 +17,12 @@ import com.wangdaye.mysplash.Mysplash;
 public abstract class MysplashDialogFragment extends DialogFragment {
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MysplashActivity activity = Mysplash.getInstance().getTopActivity();
         if (activity != null) {

@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -247,8 +246,8 @@ public class PhotosImplementor
                 view.setLoading(false);
             }
             NotificationHelper.showSnackbar(
-                    c.getString(R.string.feedback_load_failed_toast) + " (" + t.getMessage() + ")",
-                    Snackbar.LENGTH_SHORT);
+                    c.getString(R.string.feedback_load_failed_toast)
+                            + " (" + t.getMessage() + ")");
             view.requestPhotosFailed(c.getString(R.string.feedback_load_failed_tv));
         }
     }

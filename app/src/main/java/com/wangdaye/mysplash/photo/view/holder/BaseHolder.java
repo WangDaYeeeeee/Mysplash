@@ -71,7 +71,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         this.activity = a;
 
         toolbar.setTitle("");
-        if (activity.isBrowsable()) {
+        if (Mysplash.getInstance().getActivityCount() == 1) {
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
         } else {
@@ -130,7 +130,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (activity.isBrowsable()) {
+                if (Mysplash.getInstance().getActivityCount() == 1) {
                     activity.visitParentActivity();
                 }
                 activity.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);

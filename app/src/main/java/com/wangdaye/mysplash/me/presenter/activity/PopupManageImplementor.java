@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
 import android.content.Context;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -49,9 +48,7 @@ public class PopupManageImplementor
                 }
             });
         } else {
-            NotificationHelper.showSnackbar(
-                    c.getString(R.string.feedback_no_filter),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(c.getString(R.string.feedback_no_filter));
         }
     }
 
@@ -77,9 +74,7 @@ public class PopupManageImplementor
                     if (!TextUtils.isEmpty(url)) {
                         IntentHelper.startWebActivity(a, url);
                     } else {
-                        NotificationHelper.showSnackbar(
-                                a.getString(R.string.feedback_portfolio_is_null),
-                                Snackbar.LENGTH_SHORT);
+                        NotificationHelper.showSnackbar(a.getString(R.string.feedback_portfolio_is_null));
                     }
                 }
                 break;

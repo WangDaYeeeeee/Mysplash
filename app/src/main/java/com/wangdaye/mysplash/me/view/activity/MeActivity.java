@@ -270,7 +270,7 @@ public class MeActivity extends ReadWriteActivity
     public void finishActivity(int dir) {
         setResult(RESULT_OK);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        if (Mysplash.getInstance().getActivityCount() > 1
+        if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
@@ -322,7 +322,7 @@ public class MeActivity extends ReadWriteActivity
                 this, R.id.activity_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)) {
+        if (Mysplash.getInstance().getActivityCount() == 1) {
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
         } else {
@@ -459,7 +459,7 @@ public class MeActivity extends ReadWriteActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)) {
+                if (Mysplash.getInstance().getActivityCount() == 1) {
                     IntentHelper.startMainActivity(this);
                 }
                 toolbarPresenter.touchNavigatorIcon(this);

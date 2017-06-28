@@ -144,9 +144,9 @@
     <string name="feedback_search_photos_tv">ПОИСК ФОТОГРАФИЙ</string>
     <string name="feedback_search_users_bar">Ключевое слово пользователей</string>
     <string name="feedback_search_users_tv">ПОИСК ПОЛЬЗОВАТЕЛЕЙ</string>
-    <string name="feedback_share_collection_extra">Создано # #</string>
+    <string name="feedback_share_collection_extra">Создано # $</string>
     <string name="feedback_share_collection_title">Коллекция от Unsplash.com</string>
-    <string name="feedback_share_photo_extra">Снял # #</string>
+    <string name="feedback_share_photo_extra">Снял # $</string>
     <string name="feedback_share_photo_title">Фото от Unsplash.com</string>
     <string name="feedback_share_user_extra">#</string>
     <string name="feedback_share_user_title">Профиль пользователя с Unsplash.com</string>

@@ -14,7 +14,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
@@ -109,7 +108,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
             ImageHelper.loadCollectionCover(
                     a,
                     covers[i],
-                    photo.related_collections.results.get(0),
+                    photo.related_collections.results.get(i),
                     model.hasFadedIn[i] ? null : listener);
 
             titles[i] = ButterKnife.findById(view, R.id.item_photo_more_page_vertical_title);

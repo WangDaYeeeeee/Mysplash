@@ -206,8 +206,9 @@ public class DownloadMissionEntity {
                 .newSession()
                 .getDownloadMissionEntityDao()
                 .queryBuilder()
-                .where(DownloadMissionEntityDao.Properties.Title.eq(title))
-                .where(DownloadMissionEntityDao.Properties.Result.eq(DownloadHelper.RESULT_DOWNLOADING))
+                .where(
+                        DownloadMissionEntityDao.Properties.Title.eq(title),
+                        DownloadMissionEntityDao.Properties.Result.eq(DownloadHelper.RESULT_DOWNLOADING))
                 .list();
         if (entityList != null && entityList.size() > 0) {
             return entityList.get(0);
@@ -221,8 +222,9 @@ public class DownloadMissionEntity {
                 .newSession()
                 .getDownloadMissionEntityDao()
                 .queryBuilder()
-                .where(DownloadMissionEntityDao.Properties.Title.eq(photoId))
-                .where(DownloadMissionEntityDao.Properties.Result.eq(DownloadHelper.RESULT_DOWNLOADING))
+                .where(
+                        DownloadMissionEntityDao.Properties.Title.eq(photoId),
+                        DownloadMissionEntityDao.Properties.Result.eq(DownloadHelper.RESULT_DOWNLOADING))
                 .list()
                 .size();
     }

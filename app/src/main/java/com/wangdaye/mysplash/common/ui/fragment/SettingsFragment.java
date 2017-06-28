@@ -9,7 +9,6 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
@@ -149,7 +148,6 @@ public class SettingsFragment extends PreferenceFragment
         NotificationHelper.showActionSnackbar(
                 getString(R.string.feedback_notify_restart),
                 getString(R.string.restart),
-                Snackbar.LENGTH_SHORT,
                 rebootListener);
     }
 

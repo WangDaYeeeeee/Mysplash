@@ -12,10 +12,10 @@
         android:theme="@style/MysplashTheme_light"
         android:supportsRtl="true"
         android:largeHeap="true"
+        android:taskAffinity="com.wangdaye.mysplash"
         android:allowTaskReparenting="true"
-        android:taskAffinity=".mysplash"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource"
-        tools:targetApi="25">
+        tools:targetApi="26">
 
         <activity
             android:name=".main.view.activity.MainActivity"
@@ -25,15 +25,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            <intent-filter>
-                <data
-                    android:scheme="https"
-                    android:host="unsplash.com"
-                    android:path="/" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.wangdaye.mysplash.Search" />
@@ -48,18 +39,7 @@
         <activity
             android:name=".photo.view.activity.PhotoActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Photo"
-            android:launchMode="singleTask"
-            android:label="@string/app_name">
-            <intent-filter>
-                <data
-                    android:scheme="https"
-                    android:host="unsplash.com"
-                    android:pathPrefix="/photos/" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name" />
 
         <activity
             android:name=".common.ui.activity.PreviewActivity"
@@ -69,34 +49,12 @@
         <activity
             android:name=".collection.view.activity.CollectionActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
-            android:launchMode="singleTask"
-            android:label="@string/app_name">
-            <intent-filter>
-                <data
-                    android:scheme="https"
-                    android:host="unsplash.com"
-                    android:pathPrefix="/collections/" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name" />
 
         <activity
             android:name=".user.view.activity.UserActivity"
             android:theme="@style/MysplashTheme_light.Translucent.User"
-            android:launchMode="singleTask"
-            android:label="@string/app_name">
-            <intent-filter>
-                <data
-                    android:scheme="https"
-                    android:host="unsplash.com"
-                    android:pathPattern=".*/@.*" />
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-            </intent-filter>
-        </activity>
+            android:label="@string/app_name" />
 
         <activity android:name=".common.ui.activity.LoginActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
@@ -115,7 +73,6 @@
         <activity
             android:name=".me.view.activity.MeActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Me"
-            android:launchMode="singleTask"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="com.wangdaye.mysplash.Me" />
@@ -168,7 +125,7 @@
 
         <activity android:name=".common.ui.activity.SetWallpaperActivity"
             android:theme="@style/MysplashTheme_dark.SetWallpaper"
-            android:launchMode="singleTask"
+            android:launchMode="singleInstance"
             android:label="@string/app_name">
             <intent-filter>
                 <data android:mimeType="image/*" />
@@ -179,16 +136,60 @@
         </activity>
 
         <activity
-            android:name=".common.ui.activity.RestartActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Common" />
-
-        <activity
             android:name=".common.ui.activity.MuzeiConfigurationActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/action_muzei_settings"
             android:launchMode="singleTask"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".common.ui.activity.invisible.RestartActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Common" />
+
+        <activity
+            android:name=".common.ui.activity.invisible.DispatchBrowserActionActivity"
+            android:theme="@style/MysplashTheme_dark.Translucent.Common"
+            android:launchMode="singleTask">
+
+            <intent-filter>
+                <data
+                    android:scheme="https"
+                    android:host="unsplash.com"
+                    android:path="/" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <data
+                    android:scheme="https"
+                    android:host="unsplash.com"
+                    android:pathPrefix="/photos/" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <data
+                    android:scheme="https"
+                    android:host="unsplash.com"
+                    android:pathPrefix="/collections/" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+            <intent-filter>
+                <data
+                    android:scheme="https"
+                    android:host="unsplash.com"
+                    android:pathPattern=".*/@.*" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+
+        </activity>
 
         <!-- receiver. -->
 

@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.BindView;
@@ -28,8 +30,6 @@ public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
 
     @BindView(R.id.dialog_confirm_exit_without_save_container)
     CoordinatorLayout container;
-
-    private OnSaveOrExitListener listener;
 
     @SuppressLint("InflateParams")
     @Override
@@ -56,30 +56,16 @@ public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
 
     // interface.
 
-    // on check or download listener.
-
-    public interface OnSaveOrExitListener {
-        void onSave();
-        void onExit();
-    }
-
-    public void setOnSaveOrExitListener(OnSaveOrExitListener l) {
-        this.listener = l;
-    }
-
     // on click listener.
 
     @OnClick(R.id.dialog_confirm_exit_without_save_saveBtn) void save() {
-        if (listener != null) {
-            listener.onSave();
-        }
+        ((MuzeiConfigurationActivity) getActivity()).saveConfiguration();
         dismiss();
     }
 
     @OnClick(R.id.dialog_confirm_exit_without_save_exitBtn) void exit() {
-        if (listener != null) {
-            listener.onExit();
-        }
+        ((MuzeiConfigurationActivity) getActivity())
+                .finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         dismiss();
     }
 }

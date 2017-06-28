@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -125,9 +124,7 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
     }
 
     private void notifyFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_delete_photo_failed),
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_delete_photo_failed));
     }
 
     // interface.

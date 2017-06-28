@@ -137,9 +137,9 @@
     <string name="feedback_click_again_to_exit">もう一度クリックすると終了します。</string>
 
     <string name="feedback_share_photo_title">Unsplash.com からの写真</string>
-    <string name="feedback_share_photo_extra">撮影者 # 日時 #\n</string>
+    <string name="feedback_share_photo_extra">撮影者 # 日時 $\n</string>
     <string name="feedback_share_collection_title">Unsplash.com からのコレクション</string>
-    <string name="feedback_share_collection_extra">作成者 # 日時 #\n</string>
+    <string name="feedback_share_collection_extra">作成者 # 日時 $\n</string>
     <string name="feedback_share_user_title">Unsplash.com からのユーザープロフィール</string>
     <string name="feedback_share_user_extra">#\n</string>
 

@@ -5,7 +5,8 @@
     android:id="@+id/dialog_select_collection_container"
     android:background="?attr/root_color"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:layout_height="320dp">
 
     <LinearLayout
         android:orientation="horizontal"
@@ -17,6 +18,7 @@
             android:layout_width="256dp"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
+            tools:layout_width="100dp"
             tools:ignore="ContentDescription" />
 
         <RelativeLayout

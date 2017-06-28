@@ -17,6 +17,7 @@ public class PhotoInfoObject
     private Photo photo;
     private boolean failed;
     private PhotoInfoAdapter adapter;
+
     private PhotoInfoService photoInfoService;
     private PhotoService photoService;
 

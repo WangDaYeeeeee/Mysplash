@@ -204,6 +204,8 @@
 
     <string name="action_clear_text">清空内容</string>
 
+    <string name="action_like">喜欢</string>
+    <string name="action_collect">收藏</string>
     <string name="action_open_download_link">访问下载页</string>
     <string name="action_open_story_link">访问故事页</string>
     <string name="action_share">分享</string>

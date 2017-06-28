@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.photo.view.holder;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -134,9 +133,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
     }
 
     private void showExifDescription(String title, String content) {
-        NotificationHelper.showSnackbar(
-                title + " : " + content,
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(title + " : " + content);
     }
 
     // interface.

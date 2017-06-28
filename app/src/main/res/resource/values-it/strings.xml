@@ -111,7 +111,7 @@
     <string name="feedback_edit_bio">Biografia</string>
     <string name="feedback_update_profile_failed">Impossibile modificare il profilo.</string>
 
-    <string name="feedback_add_to_collection">Aggiungi context raccolta</string>
+    <string name="feedback_add_to_collection">Aggiungi activity raccolta</string>
     <string name="feedback_delete_from_collection">Elimina da raccolta</string>
     <string name="feedback_create_collection">Crea nuova raccolta</string>
     <string name="feedback_edit_collection">Modifica raccolta</string>
@@ -141,9 +141,9 @@
     <string name="feedback_click_again_to_exit">Tocca ancora per uscire.</string>
 
     <string name="feedback_share_photo_title">Fotografia da Unsplash.com</string>
-    <string name="feedback_share_photo_extra">Scattata da # il #\n</string>
+    <string name="feedback_share_photo_extra">Scattata da # il $\n</string>
     <string name="feedback_share_collection_title">Raccolta da Unsplash.com</string>
-    <string name="feedback_share_collection_extra">Creata da # il #\n</string>
+    <string name="feedback_share_collection_extra">Creata da # il $\n</string>
     <string name="feedback_share_user_title">Un utente di Unsplash.com</string>
     <string name="feedback_share_user_extra">#\n</string>
 

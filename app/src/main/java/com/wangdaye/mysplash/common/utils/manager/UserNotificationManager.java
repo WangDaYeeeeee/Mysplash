@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.common.utils.manager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.design.widget.Snackbar;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
@@ -329,8 +328,8 @@ public class UserNotificationManager {
                 listenerList.get(j).onRequestNotificationFailed();
             }
             NotificationHelper.showSnackbar(
-                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed) + "(" + msg + ")",
-                    Snackbar.LENGTH_SHORT);
+                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed)
+                            + "(" + msg + ")");
         }
     }
 
@@ -393,8 +392,8 @@ public class UserNotificationManager {
                 listenerList.get(j).onRequestNotificationFailed();
             }
             NotificationHelper.showSnackbar(
-                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed) + "(" + msg + ")",
-                    Snackbar.LENGTH_SHORT);
+                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed)
+                            + "(" + msg + ")");
         }
     }
 }

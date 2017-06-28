@@ -73,15 +73,15 @@ public class CollectionTypePopupWindow extends MysplashPopupWindow
         featuredTxt.setText(names[2]);
         featuredTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
 
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_collection_type_allIcon)).setImageResource(R.drawable.ic_mountain_light);
-            ((ImageView) v.findViewById(R.id.popup_collection_type_curatedIcon)).setImageResource(R.drawable.ic_star_outline_light);
-            ((ImageView) v.findViewById(R.id.popup_collection_type_featuredIcon)).setImageResource(R.drawable.ic_feature_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_collection_type_allIcon)).setImageResource(R.drawable.ic_mountain_dark);
-            ((ImageView) v.findViewById(R.id.popup_collection_type_curatedIcon)).setImageResource(R.drawable.ic_star_outline_dark);
-            ((ImageView) v.findViewById(R.id.popup_collection_type_featuredIcon)).setImageResource(R.drawable.ic_feature_dark);
-        }
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_collection_type_allIcon),
+                R.drawable.ic_mountain_light, R.drawable.ic_mountain_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_collection_type_curatedIcon),
+                R.drawable.ic_star_outline_light, R.drawable.ic_star_outline_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_collection_type_featuredIcon),
+                R.drawable.ic_feature_light, R.drawable.ic_feature_dark);
     }
 
     // interface.

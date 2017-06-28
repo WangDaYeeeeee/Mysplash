@@ -258,6 +258,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
             list = new ArrayList<>();
         }
         photosPresenter.getAdapter().setPhotoData(list);
+        photosPresenter.setPage(list.size() / Mysplash.DEFAULT_PER_PAGE + 1);
         if (list.size() == 0) {
             initRefresh();
         } else {

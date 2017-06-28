@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.user.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.transition.TransitionManager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -264,13 +263,9 @@ public class UserProfileView extends FrameLayout
     public void followRequestFailed(boolean follow) {
         rippleButton.setSwitchResult(false);
         if (follow) {
-            NotificationHelper.showSnackbar(
-                    getContext().getString(R.string.feedback_follow_failed),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getContext().getString(R.string.feedback_follow_failed));
         } else {
-            NotificationHelper.showSnackbar(
-                    getContext().getString(R.string.feedback_cancel_follow_failed),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getContext().getString(R.string.feedback_cancel_follow_failed));
         }
     }
 

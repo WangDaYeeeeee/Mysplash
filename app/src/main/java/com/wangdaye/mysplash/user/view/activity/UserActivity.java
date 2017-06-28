@@ -127,6 +127,7 @@ public class UserActivity extends ReadWriteActivity
     private DownloadPresenter downloadPresenter;
 
     public static final String KEY_USER_ACTIVITY_USER = "user_activity_user";
+    public static final String KEY_USER_ACTIVITY_USERNAME = "user_activity_username";
     public static final String KEY_USER_ACTIVITY_PAGE_POSITION = "user_activity_page_position";
 
     public static final int PAGE_PHOTO = 0;
@@ -261,7 +262,10 @@ public class UserActivity extends ReadWriteActivity
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
-           finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            if (Mysplash.getInstance().getActivityCount() == 1) {
+                IntentHelper.startMainActivity(this);
+            }
+            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
         }
     }
 
@@ -329,7 +333,7 @@ public class UserActivity extends ReadWriteActivity
                     = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_user_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
-            if (browsablePresenter.isBrowsable()) {
+            if (Mysplash.getInstance().getActivityCount() == 1) {
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
             } else {
@@ -447,7 +451,7 @@ public class UserActivity extends ReadWriteActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (browsablePresenter.isBrowsable()) {
+                if (Mysplash.getInstance().getActivityCount() == 1) {
                     browsablePresenter.visitPreviousPage();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);

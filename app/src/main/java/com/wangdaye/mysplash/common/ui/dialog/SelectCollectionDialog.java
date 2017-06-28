@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -114,6 +113,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private boolean usable; // if set false, it means the dialog has been destroyed.
 
+    private int processingCount;
+
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -138,15 +139,13 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         super.onStart();
         Window window = getDialog().getWindow();
         if (window != null) {
-            int height = getResources().getDimensionPixelSize(R.dimen.select_collection_dialog_height);
-            if (DisplayUtils.isTabletDevice(getActivity())) {
-                if (getResources().getDisplayMetrics().heightPixels > 2 * height) {
-                    height = 2 * height;
-                }
-                window.setLayout(window.getAttributes().width, height);
+            int height;
+            if (DisplayUtils.isLandscape(getActivity())) {
+                height = (int) (getResources().getDisplayMetrics().heightPixels * 0.8);
             } else {
-                window.setLayout(window.getAttributes().width, height);
+                height = (int) (getResources().getDisplayMetrics().heightPixels * 0.6);
             }
+            window.setLayout(window.getAttributes().width, height);
         }
     }
 
@@ -178,6 +177,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         adapter.setOnCollectionResponseListener(this);
 
         this.usable = true;
+        this.processingCount = 0;
     }
 
     private void initWidget(View v) {
@@ -256,9 +256,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private void createCollection() {
         String title = nameTxt.getText().toString();
         if (TextUtils.isEmpty(title)) {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_name_is_required),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_name_is_required));
         } else {
             String description = TextUtils.isEmpty(descriptionTxt.getText().toString()) ?
                     null : descriptionTxt.getText().toString();
@@ -329,6 +327,10 @@ public class SelectCollectionDialog extends MysplashDialogFragment
      * @param succeed      if set true, it means HTTP request successful, otherwise failed.
      * */
     private void notifySelectCollectionResult(int collectionId, boolean add, boolean succeed) {
+        if (-- processingCount == 0) {
+            setCancelable(true);
+        }
+
         for (int i = 0;
              i < AuthManager.getInstance().getCollectionsManager().getCollectionList().size();
              i ++) {
@@ -353,26 +355,20 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     } else {
                         if (add) {
                             holder.setResultState(android.R.color.transparent);
-                            NotificationHelper.showSnackbar(
-                                    getString(R.string.feedback_add_photo_failed),
-                                    Snackbar.LENGTH_SHORT);
+                            NotificationHelper.showSnackbar(getString(R.string.feedback_add_photo_failed));
                         } else {
                             holder.setResultState(R.drawable.ic_item_state_succeed);
-                            NotificationHelper.showSnackbar(
-                                    getString(R.string.feedback_delete_photo_failed),
-                                    Snackbar.LENGTH_SHORT);
+                            NotificationHelper.showSnackbar(getString(R.string.feedback_delete_photo_failed));
                         }
                     }
-                    return;
                 }
+                return;
             }
         }
     }
 
     private void notifyCreateFailed() {
-        NotificationHelper.showSnackbar(
-                getString(R.string.feedback_create_collection_failed),
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar(getString(R.string.feedback_create_collection_failed));
     }
 
     // interface.
@@ -413,10 +409,12 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private class ElevationScrollListener extends RecyclerView.OnScrollListener {
 
+        private int scrollY = 0;
+
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy){
-            selectorTitleBar.setElevation(
-                    Math.min(5, selectorTitleBar.getElevation() + dy));
+            scrollY += dy;
+            selectorTitleBar.setElevation(Math.min(5, scrollY));
         }
     }
 
@@ -465,6 +463,9 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     @Override
     public void onClickCollectionItem(int collectionId, int adapterPosition) {
+        processingCount ++;
+        setCancelable(false);
+
         CollectionMiniAdapter.ViewHolder holder
                 = (CollectionMiniAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(adapterPosition);
         holder.setProgressState();

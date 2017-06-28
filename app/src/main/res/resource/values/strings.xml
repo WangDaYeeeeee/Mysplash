@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.1.4</string>
+    <string name="version_code">3.1.5</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -79,7 +79,7 @@
     <string name="page_indicator">InkPageIndicator</string>
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
-    <string name="about_greendao_db">greenDAO is context light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="about_greendao_db">greenDAO is activity light and fast ORM solution for Android that maps objects to SQLite databases.</string>
     <string name="butter_knife">Butter Knife</string>
     <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
 
@@ -175,9 +175,9 @@
     <string name="feedback_click_again_to_exit">Click again to exit.</string>
 
     <string name="feedback_share_photo_title">A photo from Unsplash.com</string>
-    <string name="feedback_share_photo_extra">Taken by # on #\n</string>
+    <string name="feedback_share_photo_extra">Taken by # on $\n</string>
     <string name="feedback_share_collection_title">A Collection from Unsplash.com</string>
-    <string name="feedback_share_collection_extra">Created by # on #\n</string>
+    <string name="feedback_share_collection_extra">Created by # on $\n</string>
     <string name="feedback_share_user_title">A user profile from Unsplash.com</string>
     <string name="feedback_share_user_extra">#\n</string>
 
@@ -230,6 +230,8 @@
 
     <string name="action_clear_text">Clear text</string>
 
+    <string name="action_like">Like</string>
+    <string name="action_collect">Collect</string>
     <string name="action_open_download_link">Open Download Web Page</string>
     <string name="action_open_story_link">Open Story Image Page</string>
     <string name="action_share">Share</string>

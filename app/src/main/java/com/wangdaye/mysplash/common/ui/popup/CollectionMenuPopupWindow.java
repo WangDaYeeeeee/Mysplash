@@ -78,15 +78,15 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
         TextView setAsSourceTxt = ButterKnife.findById(v, R.id.popup_collection_menu_setAsSourceTxt);
         DisplayUtils.setTypeface(v.getContext(), setAsSourceTxt);
 
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_collection_menu_editIcon)).setImageResource(R.drawable.ic_pencil_light);
-            ((ImageView) v.findViewById(R.id.popup_collection_menu_downloadIcon)).setImageResource(R.drawable.ic_download_light);
-            ((ImageView) v.findViewById(R.id.popup_collection_menu_setAsSourceIcon)).setImageResource(R.drawable.ic_plus_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_collection_menu_editIcon)).setImageResource(R.drawable.ic_pencil_dark);
-            ((ImageView) v.findViewById(R.id.popup_collection_menu_downloadIcon)).setImageResource(R.drawable.ic_download_dark);
-            ((ImageView) v.findViewById(R.id.popup_collection_menu_setAsSourceIcon)).setImageResource(R.drawable.ic_plus_dark);
-        }
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_collection_menu_editIcon),
+                R.drawable.ic_pencil_light, R.drawable.ic_pencil_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_collection_menu_downloadIcon),
+                R.drawable.ic_download_light, R.drawable.ic_download_dark);
+        ThemeManager.setImageResource(
+                (ImageView) v.findViewById(R.id.popup_collection_menu_setAsSourceIcon),
+                R.drawable.ic_plus_light, R.drawable.ic_plus_dark);
     }
 
     public static boolean isUsable(Context c, Collection collection) {

@@ -147,13 +147,13 @@ public class NotificationHelper {
 
     // snack bar.
 
-    public static void showSnackbar(String content, int duration) {
+    public static void showSnackbar(String content) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             View container = a.provideSnackbarContainer();
             if (container != null) {
                 Snackbar snackbar = Snackbar
-                        .make(container, content, duration);
+                        .make(container, content, Snackbar.LENGTH_SHORT);
 
                 Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
                 snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
@@ -168,13 +168,13 @@ public class NotificationHelper {
     }
 
     public static void showActionSnackbar(String content, String action,
-                                          int duration, View.OnClickListener l) {
+                                           View.OnClickListener l) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             View container = a.provideSnackbarContainer();
             if (container != null) {
                 Snackbar snackbar = Snackbar
-                        .make(container, content, duration)
+                        .make(container, content, Snackbar.LENGTH_LONG)
                         .setAction(action, l);
 
                 Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();

@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.common.ui.activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -44,8 +43,7 @@ import butterknife.OnClick;
  * */
 
 public class MuzeiConfigurationActivity extends MysplashActivity
-        implements SwipeBackCoordinatorLayout.OnSwipeListener,
-        ConfirmExitWithoutSaveDialog.OnSaveOrExitListener {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R.id.activity_muzei_configuration_container)
     CoordinatorLayout container;
@@ -115,7 +113,6 @@ public class MuzeiConfigurationActivity extends MysplashActivity
             manager.hideSoftInputFromWindow(intervalEditText.getWindowToken(), 0);
         } else {
             ConfirmExitWithoutSaveDialog dialog = new ConfirmExitWithoutSaveDialog();
-            dialog.setOnSaveOrExitListener(this);
             dialog.show(getFragmentManager(), null);
         }
     }
@@ -193,6 +190,11 @@ public class MuzeiConfigurationActivity extends MysplashActivity
         adapter.notifyDataSetChanged();
     }
 
+    public void saveConfiguration() {
+        submit();
+        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+    }
+
     // interface.
 
     // on click listener.
@@ -212,9 +214,7 @@ public class MuzeiConfigurationActivity extends MysplashActivity
 
         int interval = Integer.parseInt(intervalText);
         if (interval < 1 || interval > 24) {
-            NotificationHelper.showSnackbar(
-                    getString(R.string.feedback_interval_bounds),
-                    Snackbar.LENGTH_SHORT);
+            NotificationHelper.showSnackbar(getString(R.string.feedback_interval_bounds));
             return;
         }
 
@@ -240,18 +240,5 @@ public class MuzeiConfigurationActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishActivity(dir);
-    }
-
-    // on save or exit listener.
-
-    @Override
-    public void onSave() {
-        submit();
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
-    }
-
-    @Override
-    public void onExit() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
     }
 }

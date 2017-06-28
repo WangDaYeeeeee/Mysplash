@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.presenter.activity;
 
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
@@ -50,9 +49,7 @@ public class MeManageImplementor
 
     @Override
     public void responseWriteAccessToken() {
-        NotificationHelper.showSnackbar(
-                "Welcome back.",
-                Snackbar.LENGTH_SHORT);
+        NotificationHelper.showSnackbar("Welcome back.");
         view.drawMeAvatar();
         view.drawMeTitle();
         view.drawMeSubtitle();

@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.common.ui.widget;
 
 import android.content.Context;
+import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
@@ -139,6 +140,10 @@ public class CircularProgressIcon extends FrameLayout {
      * */
     public boolean isUsable() {
         return getState() == STATE_RESULT && !isAnimating();
+    }
+
+    public void setProgressColor(@ColorInt int color) {
+        progress.setColor(color);
     }
 
     @StateRule
