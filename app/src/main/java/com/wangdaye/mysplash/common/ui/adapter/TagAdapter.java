@@ -52,7 +52,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         void onBindView(int position) {
             text.setText(itemList.get(position).getTitle());
             layoutText.setText(itemList.get(position).getTitle());
-            ImageHelper.loadPhoto(context, image, itemList.get(position).getUrl(), true, null);
+            ImageHelper.loadImageFromUrl(context, image, itemList.get(position).getThumbnailUrl(), true, null);
         }
 
         void onRecycled() {
@@ -62,7 +62,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
         // interface.
 
         @OnClick(R.id.item_tag_card) void clickItem() {
-            IntentHelper.startTagActivity(
+            IntentHelper.startSearchActivity(
                     Mysplash.getInstance().getTopActivity(),
                     itemList.get(getAdapterPosition()).getTitle());
         }

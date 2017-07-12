@@ -143,10 +143,6 @@ public class MainActivity extends ReadWriteActivity
         private List<Photo> homeFeaturedList;
         private List<Collection> homeCollectionList;
 
-        private List<Photo> searchPhotoList;
-        private List<Collection> searchCollectionList;
-        private List<User> searchUserList;
-
         private List<FollowingResult> followingFeedList;
 
         private List<Photo> multiFilterList;
@@ -177,30 +173,6 @@ public class MainActivity extends ReadWriteActivity
 
         public void setHomeCollectionList(List<Collection> homeCollectionList) {
             this.homeCollectionList = homeCollectionList;
-        }
-
-        public List<User> getSearchUserList() {
-            return searchUserList;
-        }
-
-        public void setSearchUserList(List<User> searchUserList) {
-            this.searchUserList = searchUserList;
-        }
-
-        public List<Photo> getSearchPhotoList() {
-            return searchPhotoList;
-        }
-
-        public void setSearchPhotoList(List<Photo> searchPhotoList) {
-            this.searchPhotoList = searchPhotoList;
-        }
-
-        public List<Collection> getSearchCollectionList() {
-            return searchCollectionList;
-        }
-
-        public void setSearchCollectionList(List<Collection> searchCollectionList) {
-            this.searchCollectionList = searchCollectionList;
         }
 
         public List<FollowingResult> getFollowingFeedList() {
@@ -400,7 +372,7 @@ public class MainActivity extends ReadWriteActivity
         this.navAvatar = ButterKnife.findById(header, R.id.container_nav_header_avatar);
 
         this.appIcon = ButterKnife.findById(header, R.id.container_nav_header_appIcon);
-        ImageHelper.loadIcon(this, appIcon, R.drawable.ic_launcher);
+        ImageHelper.loadResourceImage(this, appIcon, R.drawable.ic_launcher);
 
         this.navTitle = ButterKnife.findById(header, R.id.container_nav_header_title);
         DisplayUtils.setTypeface(this, navTitle);
@@ -569,10 +541,6 @@ public class MainActivity extends ReadWriteActivity
     @Override
     public void responseMessage(int what, Object o) {
         switch (what) {
-            case R.id.action_checkable:
-                // do nothing.
-                break;
-
             case R.id.action_change_theme:
                 changeTheme();
                 break;
@@ -665,12 +633,10 @@ public class MainActivity extends ReadWriteActivity
 
     @Override
     public void setCheckedItem(int id) {
-        if (id != R.id.action_home
-                && id != R.id.action_following
-                && id != R.id.action_multi_filter
-                && id != R.id.action_category) {
-            nav.setCheckedItem(R.id.action_checkable);
-        } else {
+        if (id == R.id.action_home
+                || id == R.id.action_following
+                || id == R.id.action_multi_filter
+                || id == R.id.action_category) {
             nav.setCheckedItem(id);
         }
     }

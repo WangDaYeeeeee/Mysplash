@@ -1,12 +1,14 @@
 package com.wangdaye.mysplash.common.ui.widget.nestedScrollView;
 
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.NestedScrollingParent;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
 
 /**
@@ -42,6 +44,10 @@ public class NestedScrollPhotoView extends PhotoView {
     }
 
     private void initialize() {
+        enable();
+        enableRotate();
+        setScaleType(ScaleType.CENTER_INSIDE);
+
         this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
@@ -51,7 +57,7 @@ public class NestedScrollPhotoView extends PhotoView {
             parent = (NestedScrollingParent) getParent();
         }
 
-        switch (ev.getAction()) {
+        switch (MotionEventCompat.getActionMasked(ev)) {
             case MotionEvent.ACTION_DOWN:
                 if (getInfo().getScale() == 1) {
                     isBeingDragged = false;
@@ -77,6 +83,18 @@ public class NestedScrollPhotoView extends PhotoView {
                     parent.onNestedScroll(this, consumed[0], consumed[1], total[0], total[1]);
                 }
                 oldY = ev.getY();
+                break;
+
+            case MotionEvent.ACTION_POINTER_DOWN:
+                isBeingDragged = false;
+                if (isNestedScrolling) {
+                    isNestedScrolling = false;
+                    if (parent instanceof SwipeBackCoordinatorLayout) {
+                        ((SwipeBackCoordinatorLayout) parent).reset();
+                    } else {
+                        parent.onStopNestedScroll(this);
+                    }
+                }
                 break;
 
             case MotionEvent.ACTION_UP:

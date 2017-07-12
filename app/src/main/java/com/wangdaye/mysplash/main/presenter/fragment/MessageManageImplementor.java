@@ -6,10 +6,6 @@ import com.wangdaye.mysplash.common.i.view.MessageManageView;
 /**
  * Message manage implementor.
  *
- * A {@link MessageManagePresenter} for
- * {@link com.wangdaye.mysplash.main.view.fragment.SearchFragment},
- * {@link com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment}.
- *
  * */
 
 public class MessageManageImplementor

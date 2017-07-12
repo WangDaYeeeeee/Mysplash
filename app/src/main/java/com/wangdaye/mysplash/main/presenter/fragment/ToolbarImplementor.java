@@ -7,6 +7,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
@@ -40,7 +41,7 @@ public class ToolbarImplementor
         MainActivity activity = (MainActivity) a;
         switch (itemId) {
             case R.id.action_search:
-                activity.changeFragment(itemId);
+                IntentHelper.startSearchActivity(a, null);
                 break;
 
             case R.id.action_filter:

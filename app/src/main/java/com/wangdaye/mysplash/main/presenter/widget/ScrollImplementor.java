@@ -7,9 +7,6 @@ import com.wangdaye.mysplash.common.i.view.ScrollView;
 /**
  * Scroll implementor.
  *
- * A {@link ScrollPresenter} for {@link ScrollView}
- * in {@link com.wangdaye.mysplash.main.view.widget}.
- *
  * */
 
 public class ScrollImplementor

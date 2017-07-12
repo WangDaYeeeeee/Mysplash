@@ -4,6 +4,7 @@ import com.wangdaye.mysplash.common.i.model.DrawerModel;
 
 /**
  * Drawer object.
+ *
  * */
 
 public class DrawerObject

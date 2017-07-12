@@ -24,8 +24,6 @@ import retrofit2.Response;
 /**
  * Photos implementor.
  *
- * A {@link PhotosPresenter} for {@link com.wangdaye.mysplash.main.view.widget.HomePhotosView}.
- *
  * */
 
 public class PhotosImplementor

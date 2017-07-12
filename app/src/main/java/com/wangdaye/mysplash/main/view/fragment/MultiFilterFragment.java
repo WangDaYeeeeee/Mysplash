@@ -379,6 +379,12 @@ public class MultiFilterFragment extends MysplashFragment
 
     @Override
     public void onNestedScrolling() {
+        if (((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .isActive(editTexts[0])
+                || ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                .isActive(editTexts[1])) {
+            multiFilterBarPresenter.hideKeyboard();
+        }
         if (needSetOnlyWhiteStatusBarText()) {
             if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();

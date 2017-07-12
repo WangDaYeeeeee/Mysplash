@@ -22,9 +22,6 @@ import retrofit2.Response;
 /**
  * Multi-filter implementor.
  *
- * A {@link MultiFilterPresenter} for
- * {@link com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView}.
- *
  * */
 
 public class MultiFilterImplementor

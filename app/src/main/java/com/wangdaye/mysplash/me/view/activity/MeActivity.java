@@ -16,7 +16,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
@@ -190,8 +189,7 @@ public class MeActivity extends ReadWriteActivity
                 break;
 
             case Mysplash.COLLECTION_ACTIVITY:
-                Collection collection = data.getParcelableExtra(
-                        CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
+                Collection collection = data.getParcelableExtra(KEY_ME_ACTIVITY_COLLECTION);
                 if (collection != null) {
                     if (data.getBooleanExtra(KEY_ME_ACTIVITY_DELETE_COLLECTION, false)) {
                         // the collection was deleted.

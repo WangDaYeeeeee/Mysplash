@@ -92,6 +92,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @BindView(R.id.container_following_avatar_verbIcon)
     ImageView verbIcon;
 
+    private AvatarScrollListener avatarScrollListener;
+
     private FollowingModel followingModel;
     private FollowingPresenter followingPresenter;
 
@@ -256,7 +258,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
         ImageView feedbackImg = ButterKnife.findById(
                 this, R.id.container_loading_in_following_view_large_feedbackImg);
-        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
+        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
     // save state.
@@ -421,7 +423,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     /**
      * This listener is used to control the avatar's position.
      * */
-    private AvatarScrollListener avatarScrollListener;
     private class AvatarScrollListener extends RecyclerView.OnScrollListener {
         // widget
         private StaggeredGridLayoutManager manager;
@@ -454,14 +455,21 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         // not yet reached the trigger position.
                         // --> the avatar needs to move with footer item.
                         avatarContainer.setTranslationY(footerBottom - AVATAR_SIZE - STATUS_BAR_HEIGHT);
-                        setAvatarImage(firstVisibleItemPosition);
+                        User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
+                        if (lastActor == null || !lastActor.username.equals(user.username)) {
+                            setAvatarImage(firstVisibleItemPosition);
+                        }
                         setAvatarVerb(firstVisibleItemPosition);
                     } else {
                         // the footer item is moving out of the screen, and the header item has
                         // already reached the trigger position.
                         // --> the avatar needs to move with header item.
                         avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
-                        setAvatarImage(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
+                        User user = followingPresenter.getAdapter()
+                                .getActor(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
+                        if (lastActor == null || !lastActor.username.equals(user.username)) {
+                            setAvatarImage(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
+                        }
                         setAvatarVerb(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
                     }
                 }
@@ -469,20 +477,17 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 // the first item is not a footer item.
                 // --> avatar needs to stay on the trigger position.
                 avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
-                if (lastActor == null) {
+                User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
+                if (lastActor == null || !lastActor.username.equals(user.username)) {
                     setAvatarImage(firstVisibleItemPosition);
-                    setAvatarVerb(firstVisibleItemPosition);
                 }
+                setAvatarVerb(firstVisibleItemPosition);
             }
         }
 
         private void setAvatarImage(int position) {
-            User user = followingPresenter.getAdapter().getActor(position);
-            if (lastActor == null || !lastActor.username.equals(user.username)) {
-                // actor changed.
-                lastActor = user;
-                ImageHelper.loadAvatar(getContext(), avatar, user, null);
-            }
+            lastActor = followingPresenter.getAdapter().getActor(position);
+            ImageHelper.loadAvatar(getContext(), avatar, lastActor, null);
         }
 
         private void setAvatarVerb(int position) {

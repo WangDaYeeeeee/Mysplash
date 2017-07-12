@@ -5,6 +5,7 @@ import com.wangdaye.mysplash.common.i.model.CategoryManageModel;
 
 /**
  * Category manage object.
+ *
  * */
 
 public class CategoryManageObject

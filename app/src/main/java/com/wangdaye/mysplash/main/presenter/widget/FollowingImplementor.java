@@ -18,8 +18,6 @@ import retrofit2.Call;
 /**
  * Following implementor.
  *
- * A {@link FollowingPresenter} for {@link com.wangdaye.mysplash.main.view.widget.FollowingFeedView}.
- *
  * */
 
 public class FollowingImplementor implements FollowingPresenter {

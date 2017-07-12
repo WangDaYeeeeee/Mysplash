@@ -21,9 +21,6 @@ import retrofit2.Response;
 /**
  * Collections implementor.
  *
- * A {@link CollectionsPresenter} for
- * {@link com.wangdaye.mysplash.main.view.widget.HomeCollectionsView}.
- *
  * */
 
 public class CollectionsImplementor

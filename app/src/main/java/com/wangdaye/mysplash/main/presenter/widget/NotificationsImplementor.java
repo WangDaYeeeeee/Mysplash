@@ -16,6 +16,7 @@ import java.util.List;
 
 /**
  * Notifications implementor.
+ *
  * */
 
 public class NotificationsImplementor

@@ -10,8 +10,6 @@ import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 /**
  * Multi-filter bar implementor.
  *
- * A {@link MultiFilterBarPresenter} for {@link MultiFilterFragment}.
- *
  * */
 
 public class MultiFilterBarImplementor

@@ -14,7 +14,6 @@ import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
-import com.wangdaye.mysplash.main.view.fragment.SearchFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -158,9 +157,6 @@ public class FragmentManageImplementor
 
     private MysplashFragment buildFragmentByCode(int code) {
         switch (code) {
-            case R.id.action_search:
-                return new SearchFragment();
-
             case R.id.action_following:
                 return new FollowingFragment();
 
@@ -178,8 +174,6 @@ public class FragmentManageImplementor
     private int getFragmentCode(MysplashFragment f) {
         if (f instanceof HomeFragment) {
             return R.id.action_home;
-        } else if (f instanceof SearchFragment) {
-            return R.id.action_search;
         } else if (f instanceof FollowingFragment) {
             return R.id.action_following;
         } else if (f instanceof MultiFilterFragment) {

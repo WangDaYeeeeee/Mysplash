@@ -11,8 +11,6 @@ import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 /**
  * Popup manage implementor.
  *
- * A {@link PopupManagePresenter} for {@link com.wangdaye.mysplash.main.view.fragment.HomeFragment}.
- *
  * */
 
 public class HomeFragmentPopupManageImplementor

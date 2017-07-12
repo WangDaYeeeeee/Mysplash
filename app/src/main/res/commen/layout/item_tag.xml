@@ -12,7 +12,7 @@
     android:stateListAnimator="@animator/touch_rise_tag"
     app:cardBackgroundColor="@color/colorPrimary_dark"
     app:cardCornerRadius="4dp"
-    app:cardPreventCornerOverlap="true"
+    app:cardPreventCornerOverlap="false"
     app:cardElevation="0dp"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 

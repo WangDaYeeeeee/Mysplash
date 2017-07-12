@@ -8,8 +8,6 @@ import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 /**
  * Following object.
  *
- * A {@link FollowingModel} for {@link com.wangdaye.mysplash.main.view.widget.FollowingFeedView}.
- *
  * */
 
 public class FollowingObject implements FollowingModel {

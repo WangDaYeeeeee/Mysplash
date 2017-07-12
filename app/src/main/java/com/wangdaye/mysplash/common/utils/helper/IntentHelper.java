@@ -7,6 +7,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.FileProvider;
@@ -25,7 +26,7 @@ import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
 import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.main.view.activity.NotificationActivity;
-import com.wangdaye.mysplash.tag.view.activity.TagActivity;
+import com.wangdaye.mysplash.search.view.activity.SearchActivity;
 import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash.common.ui.activity.LoginActivity;
@@ -62,6 +63,15 @@ public class IntentHelper {
 
     public static void startNotificationActivity(MysplashActivity a) {
         Intent intent = new Intent(a, NotificationActivity.class);
+        a.startActivity(intent);
+        a.overridePendingTransition(R.anim.activity_in, 0);
+    }
+
+    public static void startSearchActivity(MysplashActivity a, @Nullable String query) {
+        Intent intent = new Intent(a, SearchActivity.class);
+        if (!TextUtils.isEmpty(query)) {
+            intent.putExtra(SearchActivity.KEY_SEARCH_ACTIVITY_QUERY, query);
+        }
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
@@ -338,13 +348,6 @@ public class IntentHelper {
         } else {
             c.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         }
-    }
-
-    public static void startTagActivity(MysplashActivity a, String tag) {
-        Intent intent = new Intent(a, TagActivity.class);
-        intent.putExtra(TagActivity.KEY_TAG_ACTIVITY_TAG, tag);
-        a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startCustomApiActivity(SettingsActivity a) {

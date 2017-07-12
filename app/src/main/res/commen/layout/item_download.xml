@@ -13,7 +13,7 @@
     app:cardElevation="@dimen/low_elevation"
     app:cardBackgroundColor="@color/colorPrimary_dark"
     app:cardCornerRadius="2dp"
-    app:cardPreventCornerOverlap="true"
+    app:cardPreventCornerOverlap="false"
     tools:ignore="UnusedAttribute">
 
     <ImageView

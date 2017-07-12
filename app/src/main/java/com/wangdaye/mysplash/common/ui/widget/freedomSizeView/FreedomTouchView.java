@@ -48,7 +48,6 @@ public class FreedomTouchView extends View {
         this.showShadow = false;
     }
 
-    @SuppressLint("DrawAllocation")
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int[] sizes = FreedomImageView.getMeasureSize(

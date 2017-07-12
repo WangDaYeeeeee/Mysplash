@@ -94,11 +94,6 @@ public class ImageHelper {
         loadImage(context, view, url, 0, 0, false, false, thumbnailRequest, null, null, l);
     }
 
-    public static void loadPhoto(Context context, ImageView view, String url, boolean lowPriority,
-                                 @Nullable OnLoadImageListener l) {
-        loadImage(context, view, url, 0, 0, false, lowPriority, null, null, null, l);
-    }
-
     // collection cover.
 
     public static void loadCollectionCover(Context context, ImageView view, Collection collection,
@@ -137,10 +132,62 @@ public class ImageHelper {
                 l);
     }
 
-    // icon.
+    // resource.
 
-    public static void loadIcon(Context context, ImageView view, int resId) {
-        loadImage(context, view, resId, 0, 0, true, null, null);
+    public static void loadResourceImage(Context context, ImageView view, int resId) {
+        loadResourceImage(context, view, resId, null);
+    }
+
+    public static void loadResourceImage(Context context, ImageView view, int resId,
+                                         @Nullable BitmapTransformation transformation) {
+        loadImage(context, view, resId, 0, 0, true, transformation, null);
+    }
+
+    // bitmap.
+
+    public static void loadBitmap(Context context, Target<Bitmap> target, Bitmap bitmap) {
+        Glide.with(context)
+                .load(bitmapToBytes(bitmap))
+                .asBitmap()
+                .into(target);
+    }
+
+    public static void loadBitmap(Context context, ImageView view, Bitmap bitmap) {
+        Glide.with(context)
+                .load(bitmapToBytes(bitmap))
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(view);
+    }
+
+    private static byte[] bitmapToBytes(Bitmap bitmap){
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
+    }
+
+    // url.
+
+    public static void loadImageFromUrl(Context context, ImageView view, String url, boolean lowPriority,
+                                        @Nullable OnLoadImageListener l) {
+        loadImage(context, view, url, 0, 0, false, lowPriority, null, null, null, l);
+    }
+
+    public static void loadImageFromUrl(Context context,
+                                         Target<Bitmap> target, String url, boolean clipWithCircle) {
+        if (clipWithCircle) {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .transform(new CircleTransformation(context))
+                    .into(target);
+        } else {
+            Glide.with(context)
+                    .load(url)
+                    .asBitmap()
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .into(target);
+        }
     }
 
     // builder.
@@ -236,44 +283,6 @@ public class ImageHelper {
         builder.into(view);
     }
 
-    public static void loadBitmap(Context context,
-                                  Target<Bitmap> target, String url, boolean clipWithCircle) {
-        if (clipWithCircle) {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .transform(new CircleTransformation(context))
-                    .into(target);
-        } else {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(target);
-        }
-    }
-
-    public static void loadBitmap(Context context, Target<Bitmap> target, Bitmap bitmap) {
-        Glide.with(context)
-                .load(bitmapToBytes(bitmap))
-                .asBitmap()
-                .into(target);
-    }
-
-    public static void loadImage(Context context, ImageView view, Bitmap bitmap) {
-        Glide.with(context)
-                .load(bitmapToBytes(bitmap))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(view);
-    }
-
-    private static byte[] bitmapToBytes(Bitmap bitmap){
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
-    }
-
     // animation.
 
     /**
@@ -309,7 +318,7 @@ public class ImageHelper {
         }
     }
 
-    /** <br> data. */
+    // data.
 
     /**
      * Compute the background color for item view in photo list or collection list.

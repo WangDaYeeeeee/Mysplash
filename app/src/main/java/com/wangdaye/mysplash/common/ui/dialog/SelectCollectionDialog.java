@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ChangeCollectionPhotoResult;
@@ -66,8 +65,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     @BindView(R.id.dialog_select_collection_container)
     CoordinatorLayout container;
 
-    @BindView(R.id.dialog_select_collection_progressView)
-    CircularProgressView progressView;
+    @BindView(R.id.dialog_select_collection_progressContainer)
+    RelativeLayout progressContainer;
 
     @BindView(R.id.dialog_select_collection_selectorContainer)
     LinearLayout selectorContainer;
@@ -190,7 +189,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
             cover.setVisibility(View.GONE);
         }
 
-        progressView.setVisibility(View.GONE);
+        progressContainer.setVisibility(View.GONE);
         selectorContainer.setVisibility(View.VISIBLE);
 
         ImageButton refreshBtn = ButterKnife.findById(v, R.id.dialog_select_collection_selectorRefreshBtn);
@@ -278,7 +277,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 setCancelable(true);
                 if (state == CREATE_COLLECTION_STATE) {
                     AnimUtils.animShow(selectorContainer);
-                    AnimUtils.animHide(progressView);
+                    AnimUtils.animHide(progressContainer);
                 } else if (state == INPUT_COLLECTION_STATE) {
                     AnimUtils.animShow(selectorContainer);
                     AnimUtils.animHide(creatorContainer);
@@ -292,14 +291,14 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     AnimUtils.animHide(selectorContainer);
                 } else if (state == CREATE_COLLECTION_STATE) {
                     AnimUtils.animShow(creatorContainer);
-                    AnimUtils.animHide(progressView);
+                    AnimUtils.animHide(progressContainer);
                 }
                 break;
 
             case CREATE_COLLECTION_STATE:
                 setCancelable(false);
                 if (state == INPUT_COLLECTION_STATE) {
-                    AnimUtils.animShow(progressView);
+                    AnimUtils.animShow(progressContainer);
                     AnimUtils.animHide(creatorContainer);
                 }
                 break;

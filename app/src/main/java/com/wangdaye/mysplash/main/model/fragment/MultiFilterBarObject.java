@@ -4,6 +4,7 @@ import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 
 /**
  * Multi-filter object.
+ *
  * */
 
 public class MultiFilterBarObject

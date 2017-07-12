@@ -15,8 +15,6 @@ import com.wangdaye.mysplash.user.view.activity.UserActivity;
 /**
  * Me manage implementor.
  *
- * A {@link MeManagePresenter} for {@link com.wangdaye.mysplash.main.view.activity.MainActivity}.
- *
  * */
 
 public class MeManageImplementor

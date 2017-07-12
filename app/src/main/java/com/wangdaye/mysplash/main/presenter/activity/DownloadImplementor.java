@@ -10,8 +10,6 @@ import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 /**
  * Download implementor.
  *
- * A {@link DownloadPresenter} for {@link com.wangdaye.mysplash.main.view.activity.MainActivity}.
- *
  * */
 
 public class DownloadImplementor implements DownloadPresenter {

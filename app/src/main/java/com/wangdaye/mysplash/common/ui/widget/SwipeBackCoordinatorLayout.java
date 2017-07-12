@@ -24,6 +24,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     private OnSwipeListener swipeListener;
 
     private int swipeDistance = 0;
+    private boolean isVerticalDragged;
     private static float SWIPE_TRIGGER = 100;
     private static final float SWIPE_RADIO = 2.5F;
 
@@ -113,15 +114,16 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     @Override
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        return super.onStartNestedScroll(child, target, nestedScrollAxes)
-                || ((nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0);
+        super.onStartNestedScroll(child, target, nestedScrollAxes);
+        isVerticalDragged = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+        return true;
     }
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
         int dyConsumed = 0;
-        if (swipeDistance != 0) {
-            dyConsumed = onPreScroll(dy);
+        if (isVerticalDragged && swipeDistance != 0) {
+            dyConsumed = onVerticalPreScroll(dy);
         }
 
         int[] newConsumed = new int[] {0, 0};
@@ -136,10 +138,10 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
                                int dxUnconsumed, int dyUnconsumed) {
         int newDyConsumed = dyConsumed;
         int newDyUnconsumed = dyUnconsumed;
-        if (swipeDistance == 0) {
+        if (isVerticalDragged && swipeDistance == 0) {
             int dir = dyUnconsumed < 0 ? DOWN_DIR : UP_DIR;
             if (swipeListener != null && swipeListener.canSwipeBack(dir)) {
-                onScroll(dyUnconsumed);
+                onVerticalScroll(dyUnconsumed);
                 newDyConsumed = dyConsumed + dyUnconsumed;
                 newDyUnconsumed = 0;
             }
@@ -151,14 +153,16 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     @Override
     public void onStopNestedScroll(View child) {
         super.onStopNestedScroll(child);
-        if (Math.abs(swipeDistance) >= SWIPE_TRIGGER) {
-            swipeBack();
-        } else {
-            reset();
+        if (isVerticalDragged) {
+            if (Math.abs(swipeDistance) >= SWIPE_TRIGGER) {
+                swipeBack();
+            } else {
+                reset();
+            }
         }
     }
 
-    private int onPreScroll(int dy) {
+    private int onVerticalPreScroll(int dy) {
         int consumed;
         if (swipeDistance * (swipeDistance - dy) < 0) {
             swipeDir = NULL_DIR;
@@ -174,7 +178,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         return consumed;
     }
 
-    private void onScroll(int dy) {
+    private void onVerticalScroll(int dy) {
         swipeDistance = -dy;
         swipeDir = swipeDistance > 0 ? DOWN_DIR : UP_DIR;
 
@@ -187,7 +191,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         }
     }
 
-    private void reset() {
+    public void reset() {
         swipeDir = NULL_DIR;
         if (swipeDistance != 0) {
             ResetAnimation a = new ResetAnimation(swipeDistance);

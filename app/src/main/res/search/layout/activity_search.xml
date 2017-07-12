@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_search_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_search_swipeBackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+            android:id="@+id/activity_search_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true" />
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_search_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/MysplashPopupMenuTheme">
+
+                    <EditText
+                        android:id="@+id/activity_search_editText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:hint="@string/feedback_search_bar"
+                        android:textColorHint="?attr/subtitle_color"
+                        android:textColorHighlight="?attr/subtitle_color"
+                        android:textSize="@dimen/content_text_size"
+                        android:textColor="?attr/content_color"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        tools:ignore="RtlHardcoded" />
+
+                </android.support.v7.widget.Toolbar>
+
+                <android.support.design.widget.TabLayout
+                    android:id="@+id/activity_search_tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_layout_height"
+                    style="@style/MysplashTabLayoutTheme" />
+
+            </LinearLayout>
+
+        </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/activity_search_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/root_color"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator
+            android:id="@+id/activity_search_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_behavior=".common.ui.behavior.InkPageIndicatorBehavior"
+            app:animationDuration="300"
+            app:pageIndicatorColor="?attr/subtitle_color"
+            app:currentPageIndicatorColor="?attr/title_color"
+            app:dotDiameter="@dimen/little_margin"
+            app:dotGap="@dimen/little_margin" />
+
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/activity_search_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true" />
+
+</android.support.design.widget.CoordinatorLayout>

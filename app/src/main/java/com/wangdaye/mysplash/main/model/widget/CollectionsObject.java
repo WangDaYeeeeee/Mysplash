@@ -11,9 +11,6 @@ import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 /**
  * Collections object.
  *
- * A {@link CollectionsModel} for
- * {@link com.wangdaye.mysplash.main.view.widget.HomeCollectionsView}.
- *
  * */
 
 public class CollectionsObject

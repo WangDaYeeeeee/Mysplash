@@ -5,9 +5,6 @@ import com.wangdaye.mysplash.common.i.model.ScrollModel;
 /**
  * Scroll object.
  *
- * A {@link ScrollModel} for {@link com.wangdaye.mysplash.common.i.view.ScrollView} in
- * {@link com.wangdaye.mysplash.main.view.widget}.
- *
  * */
 
 public class ScrollObject

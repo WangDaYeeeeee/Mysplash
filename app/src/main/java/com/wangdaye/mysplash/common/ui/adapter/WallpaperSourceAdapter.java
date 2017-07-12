@@ -47,9 +47,9 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
 
         void onBindView(WallpaperSource source) {
             if (TextUtils.isEmpty(source.coverUrl)) {
-                cover.setImageResource(R.color.colorTextContent_light);
+                ImageHelper.loadResourceImage(c, cover, R.drawable.default_collection_cover);
             } else {
-                ImageHelper.loadPhoto(c, cover, source.coverUrl, false, null);
+                ImageHelper.loadImageFromUrl(c, cover, source.coverUrl, false, null);
             }
             title.setText(source.title.toUpperCase());
         }

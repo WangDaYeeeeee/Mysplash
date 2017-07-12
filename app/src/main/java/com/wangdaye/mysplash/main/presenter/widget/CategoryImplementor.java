@@ -23,8 +23,6 @@ import retrofit2.Response;
 /**
  * Category implementor.
  *
- * A {@link CategoryPresenter} for {@link com.wangdaye.mysplash.main.view.widget.CategoryPhotosView}.
- *
  * */
 
 public class CategoryImplementor

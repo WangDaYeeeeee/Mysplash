@@ -10,9 +10,6 @@ import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 /**
  * Category fragment popup manage implementor.
  *
- * A {@link PopupManagePresenter} for
- * {@link com.wangdaye.mysplash.main.view.fragment.CategoryFragment}.
- *
  * */
 
 public class CategoryFragmentPopupManageImplementor

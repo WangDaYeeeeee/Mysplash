@@ -234,7 +234,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
         ImageView feedbackImg = ButterKnife.findById(
                 this, R.id.container_filtering_view_large_feedbackImg);
-        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_search);
+        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_search);
 
         feedbackText.setText(R.string.feedback_search_photos_tv);
         feedbackText.setVisibility(GONE);

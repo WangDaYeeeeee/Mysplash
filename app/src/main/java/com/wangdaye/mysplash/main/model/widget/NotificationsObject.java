@@ -8,6 +8,7 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 /**
  * Notification object.
+ *
  * */
 
 public class NotificationsObject implements NotificationsModel {

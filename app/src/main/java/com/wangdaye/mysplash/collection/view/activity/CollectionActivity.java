@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -284,6 +285,9 @@ public class CollectionActivity extends ReadWriteActivity
 
             appBar.setOnNestedScrollingListener(this);
 
+            ImageView coverImage = ButterKnife.findById(this, R.id.activity_collection_coverImage);
+            ImageHelper.loadCollectionCover(this, coverImage, c, null);
+
             TextView title = ButterKnife.findById(this, R.id.activity_collection_title);
             title.setText(c.title);
 
@@ -502,7 +506,7 @@ public class CollectionActivity extends ReadWriteActivity
     public boolean checkCanSwipeBack(int dir) {
         if (dir == SwipeBackCoordinatorLayout.UP_DIR) {
             return photosView.canSwipeBack(dir)
-                    && appBar.getY() <= -appBar.getMeasuredHeight() + creatorBar.getMeasuredHeight();
+                    && appBar.getY() <= -appBar.getMeasuredHeight();
         } else {
             return photosView.canSwipeBack(dir)
                     && appBar.getY() >= 0;

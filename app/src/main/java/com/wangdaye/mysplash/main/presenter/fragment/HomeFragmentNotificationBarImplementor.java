@@ -13,6 +13,7 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
  * Home fragment notification bar implementor.
+ *
  * */
 
 public class HomeFragmentNotificationBarImplementor

@@ -6,6 +6,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -23,7 +24,7 @@ import android.widget.Scroller;
  * Photo view.
  * */
 
-public class PhotoView extends ImageView {
+public class PhotoView extends AppCompatImageView {
 
     private final static int MIN_ROTATE = 35;
     private final static int ANIMA_DURING = 340;
@@ -156,6 +157,13 @@ public class PhotoView extends ImageView {
     }
 
     /**
+     * 设置偏移
+     * */
+    public void setTranslate(int dx, int dy) {
+        mGestureListener.onScroll(null, null, dx, dy);
+    }
+
+    /**
      * 设置动画的插入器
      */
     public void setInterpolator(Interpolator interpolator) {
@@ -229,7 +237,8 @@ public class PhotoView extends ImageView {
         Drawable drawable = null;
         try {
             drawable = getResources().getDrawable(resId);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
+
         }
 
         setImageDrawable(drawable);
@@ -255,12 +264,9 @@ public class PhotoView extends ImageView {
     }
 
     private boolean hasSize(Drawable d) {
-        if ((d.getIntrinsicHeight() <= 0 || d.getIntrinsicWidth() <= 0)
+        return !((d.getIntrinsicHeight() <= 0 || d.getIntrinsicWidth() <= 0)
                 && (d.getMinimumWidth() <= 0 || d.getMinimumHeight() <= 0)
-                && (d.getBounds().width() <= 0 || d.getBounds().height() <= 0)) {
-            return false;
-        }
-        return true;
+                && (d.getBounds().width() <= 0 || d.getBounds().height() <= 0));
     }
 
     private static int getDrawableWidth(Drawable d) {
@@ -494,8 +500,8 @@ public class PhotoView extends ImageView {
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        int width = 0;
-        int height = 0;
+        int width;
+        int height;
 
         ViewGroup.LayoutParams p = getLayoutParams();
 
@@ -725,13 +731,11 @@ public class PhotoView extends ImageView {
     };
 
     private float resistanceScrollByX(float overScroll, float detalX) {
-        float s = detalX * (Math.abs(Math.abs(overScroll) - MAX_OVER_RESISTANCE) / (float) MAX_OVER_RESISTANCE);
-        return s;
+        return detalX * (Math.abs(Math.abs(overScroll) - MAX_OVER_RESISTANCE) / (float) MAX_OVER_RESISTANCE);
     }
 
     private float resistanceScrollByY(float overScroll, float detalY) {
-        float s = detalY * (Math.abs(Math.abs(overScroll) - MAX_OVER_RESISTANCE) / (float) MAX_OVER_RESISTANCE);
-        return s;
+        return detalY * (Math.abs(Math.abs(overScroll) - MAX_OVER_RESISTANCE) / (float) MAX_OVER_RESISTANCE);
     }
 
     /**
@@ -898,8 +902,8 @@ public class PhotoView extends ImageView {
 
             mTranslate.stop();
 
-            float from = 1;
-            float to = 1;
+            float from;
+            float to;
 
             float imgcx = mImgRect.left + mImgRect.width() / 2;
             float imgcy = mImgRect.top + mImgRect.height() / 2;
@@ -938,33 +942,25 @@ public class PhotoView extends ImageView {
     };
 
     public boolean canScrollHorizontallySelf(float direction) {
-        if (mImgRect.width() <= mWidgetRect.width()) return false;
-        if (direction < 0 && Math.round(mImgRect.left) - direction >= mWidgetRect.left)
-            return false;
-        if (direction > 0 && Math.round(mImgRect.right) - direction <= mWidgetRect.right)
-            return false;
-        return true;
+        return mImgRect.width() > mWidgetRect.width()
+                && !(direction < 0 && Math.round(mImgRect.left) - direction >= mWidgetRect.left)
+                && !(direction > 0 && Math.round(mImgRect.right) - direction <= mWidgetRect.right);
     }
 
     public boolean canScrollVerticallySelf(float direction) {
-        if (mImgRect.height() <= mWidgetRect.height()) return false;
-        if (direction < 0 && Math.round(mImgRect.top) - direction >= mWidgetRect.top)
-            return false;
-        if (direction > 0 && Math.round(mImgRect.bottom) - direction <= mWidgetRect.bottom)
-            return false;
-        return true;
+        return mImgRect.height() > mWidgetRect.height()
+                && !(direction < 0 && Math.round(mImgRect.top) - direction >= mWidgetRect.top)
+                && !(direction > 0 && Math.round(mImgRect.bottom) - direction <= mWidgetRect.bottom);
     }
 
     @Override
     public boolean canScrollHorizontally(int direction) {
-        if (hasMultiTouch) return true;
-        return canScrollHorizontallySelf(direction);
+        return hasMultiTouch || canScrollHorizontallySelf(direction);
     }
 
     @Override
     public boolean canScrollVertically(int direction) {
-        if (hasMultiTouch) return true;
-        return canScrollVerticallySelf(direction);
+        return hasMultiTouch || canScrollVerticallySelf(direction);
     }
 
     private class InterpolatorProxy implements Interpolator {
@@ -975,7 +971,7 @@ public class PhotoView extends ImageView {
             mTarget = new DecelerateInterpolator();
         }
 
-        public void setTargetInterpolator(Interpolator interpolator) {
+        void setTargetInterpolator(Interpolator interpolator) {
             mTarget = interpolator;
         }
 

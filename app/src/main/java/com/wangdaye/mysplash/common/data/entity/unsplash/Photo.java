@@ -178,7 +178,7 @@ public class Photo
         return urls.raw + "?q=50&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
     }
 
-    /** <br> parcel. */
+    // parcel.
 
     @Override
     public int describeContents() {
@@ -255,7 +255,7 @@ public class Photo
         }
     };
 
-    /** <br> interface. */
+    // interface.
 
     @Override
     public String getRegularUrl() {

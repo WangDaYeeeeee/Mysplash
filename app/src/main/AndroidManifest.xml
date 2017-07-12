@@ -32,7 +32,13 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".main.view.activity.NotificationActivity"
+        <activity android:name=".search.view.activity.SearchActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".main.view.activity.NotificationActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:label="@string/app_name" />
 
@@ -113,10 +119,6 @@
         <activity
             android:name=".common.ui.activity.IntroduceActivity"
             android:theme="@style/MysplashTheme_light.Translucent.Common"
-            android:label="@string/app_name" />
-
-        <activity android:name=".tag.view.activity.TagActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation"
             android:label="@string/app_name" />
 
         <activity android:name=".common.ui.activity.CustomApiActivity"

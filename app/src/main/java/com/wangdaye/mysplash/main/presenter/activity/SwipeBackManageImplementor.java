@@ -6,6 +6,7 @@ import com.wangdaye.mysplash.common.i.view.SwipeBackManageView;
 
 /**
  * Swipe back manage implementor.
+ *
  * */
 
 public class SwipeBackManageImplementor

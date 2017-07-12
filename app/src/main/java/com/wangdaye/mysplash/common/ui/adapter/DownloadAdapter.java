@@ -65,7 +65,8 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         }
 
         void onBindView(int position) {
-            ImageHelper.loadPhoto(c, image, itemList.get(position).entity.getPhotoUri(), false, null);
+            ImageHelper.loadImageFromUrl(
+                    c, image, itemList.get(position).entity.getPhotoUri(), false, null);
 
             switch (itemList.get(position).entity.result) {
                 case DownloadHelper.RESULT_DOWNLOADING:

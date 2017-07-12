@@ -28,6 +28,8 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
     private NestedScrollingChildHelper nestedScrollingChildHelper;
     private NestedScrollingParentHelper nestedScrollingParentHelper;
 
+    private boolean forceScrolling;
+
     private boolean isBeingDragged;
     @DirectionRule
     private int swipeDir;
@@ -67,23 +69,60 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
         this.nestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         setNestedScrollingEnabled(true);
 
+        setForceScrolling(false);
+
         this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+    }
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (forceScrolling) {
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    isBeingDragged = false;
+                    swipeDir = DIR_NULL;
+                    oldY = ev.getY();
+                    lastOffsetY = 0;
+                    startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+                    return false;
+
+                case MotionEvent.ACTION_MOVE:
+                    int deltaY = (int) (oldY - ev.getY() + lastOffsetY);
+                    if (!isBeingDragged) {
+                        if (Math.abs(deltaY) > touchSlop) {
+                            isBeingDragged = true;
+                        } else {
+                            swipeDir = DIR_NULL;
+                            oldY = ev.getY();
+                            lastOffsetY = 0;
+                        }
+                    }
+                    return isBeingDragged;
+            }
+        } else {
+            super.onInterceptTouchEvent(ev);
+        }
+        return false;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                isBeingDragged = false;
-                swipeDir = DIR_NULL;
-                oldY = ev.getY();
-                lastOffsetY = 0;
-                startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
-                break;
+                if (forceScrolling) {
+                    return false;
+                } else {
+                    isBeingDragged = false;
+                    swipeDir = DIR_NULL;
+                    oldY = ev.getY();
+                    lastOffsetY = 0;
+                    startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+                    break;
+                }
 
             case MotionEvent.ACTION_MOVE:
                 int deltaY = (int) (oldY - ev.getY() + lastOffsetY);
-                if (!isBeingDragged) {
+                if (!isBeingDragged && !forceScrolling) {
                     if (Math.abs(deltaY) > touchSlop) {
                         isBeingDragged = true;
                     } else {
@@ -108,6 +147,9 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
                         lastOffsetY = (int) (y - (isParentOffset () ? ((View) getParent()).getY() : getY()));
                     }
                 }
+                if (forceScrolling) {
+                    return isBeingDragged;
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
@@ -123,6 +165,10 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
      * If return true, the view will eliminate the error by compute the offset of it's parent view.
      * */
     public abstract boolean isParentOffset();
+
+    public void setForceScrolling(boolean forceScrolling) {
+        this.forceScrolling = forceScrolling;
+    }
 
     // interface.
 

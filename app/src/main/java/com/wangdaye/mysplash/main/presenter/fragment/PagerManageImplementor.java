@@ -8,10 +8,6 @@ import com.wangdaye.mysplash.common.i.view.PagerView;
 /**
  * Pager manage implementor.
  *
- * A {@link PagerManagePresenter} for
- * {@link com.wangdaye.mysplash.main.view.fragment.HomeFragment},
- * {@link com.wangdaye.mysplash.main.view.fragment.SearchFragment}.
- *
  * */
 
 public class PagerManageImplementor

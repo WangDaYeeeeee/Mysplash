@@ -7,9 +7,6 @@ import com.wangdaye.mysplash.common.i.view.CategoryManageView;
 /**
  * Category manage implementor.
  *
- * A {@link CategoryManagePresenter} for
- * {@link com.wangdaye.mysplash.main.view.fragment.CategoryFragment}.
- *
  * */
 
 public class CategoryManageImplementor

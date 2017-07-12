@@ -177,7 +177,7 @@ public class CircularProgressIcon extends FrameLayout {
         cancelAllAnimation();
         setState(STATE_RESULT);
         setAnimating(false);
-        ImageHelper.loadIcon(getContext(), image, imageId);
+        ImageHelper.loadResourceImage(getContext(), image, imageId);
 
         image.setAlpha(1f);
         image.setScaleX(1f);
@@ -207,7 +207,7 @@ public class CircularProgressIcon extends FrameLayout {
         if (getState() == STATE_PROGRESS) {
             setState(STATE_RESULT);
             cancelAllAnimation();
-            ImageHelper.loadIcon(getContext(), image, imageId);
+            ImageHelper.loadResourceImage(getContext(), image, imageId);
             showAnimation = new ShowAnimation(image);
             image.startAnimation(showAnimation);
             hideAnimation = new HideAnimation(progress);

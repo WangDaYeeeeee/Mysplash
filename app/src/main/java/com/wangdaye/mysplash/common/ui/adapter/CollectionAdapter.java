@@ -78,7 +78,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
                 params.setMargins(0, 0, margin, margin);
                 card.setLayoutParams(params);
-                card.setRadius(a.getResources().getDimensionPixelSize(R.dimen.nano_margin));
+                card.setRadius(new DisplayUtils(a).dpToPx(2));
             } else {
                 params.setMargins(0, 0, 0, 0);
                 card.setLayoutParams(params);
@@ -99,7 +99,8 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             image.setShowShadow(false);
 
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(a, image, collection,
+                ImageHelper.loadCollectionCover(
+                        a, image, collection,
                         new ImageHelper.OnLoadImageListener() {
                             @Override
                             public void onLoadSucceed() {
@@ -125,12 +126,12 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                                 image.setShowShadow(true);
                             }
                         });
-                card.setBackgroundColor(
+                card.setCardBackgroundColor(
                         ImageHelper.computeCardBackgroundColor(
                                 a,
                                 collection.cover_photo.color));
             } else {
-                image.setImageResource(R.color.colorTextContent_light);
+                ImageHelper.loadResourceImage(a, image, R.drawable.default_collection_cover);
             }
 
             ImageHelper.loadAvatar(a, avatar, collection.user, null);

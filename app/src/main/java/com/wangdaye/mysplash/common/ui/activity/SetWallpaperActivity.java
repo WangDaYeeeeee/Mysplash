@@ -38,7 +38,6 @@ import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 import java.io.File;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -250,7 +249,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
         photoView.enable();
         photoView.setMaxScale(2.5f);
         photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ImageHelper.loadImage(this, photoView, photo);
+        ImageHelper.loadBitmap(this, photoView, photo);
         ImageHelper.loadBitmap(
                 this,
                 new SimpleTarget<Bitmap>(100, 100) {

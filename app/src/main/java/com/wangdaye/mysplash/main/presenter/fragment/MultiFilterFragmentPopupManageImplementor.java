@@ -12,9 +12,6 @@ import com.wangdaye.mysplash.common.ui.popup.SearchOrientationPopupWindow;
 /**
  * Multi-filter fragment popup manage implementor.
  *
- * A {@link PopupManagePresenter} for
- * {@link com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment}.
- *
  * */
 
 public class MultiFilterFragmentPopupManageImplementor

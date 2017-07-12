@@ -8,9 +8,6 @@ import com.wangdaye.mysplash.main.model.widget.LoadObject;
 /**
  * Load implementor.
  *
- * A {@link LoadPresenter} for {@link com.wangdaye.mysplash.common.i.view.LoadView}
- * in {@link com.wangdaye.mysplash.main.view.widget}.
- *
  * */
 
 public class LoadImplementor

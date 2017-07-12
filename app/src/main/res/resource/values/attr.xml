@@ -54,5 +54,10 @@
         <attr name="initElevation" format="dimension" />
         <attr name="finalElevation" format="dimension" />
     </declare-styleable>
+    
+    <!-- CoverMaskLayout -->
+    <declare-styleable name="CoverMaskLayout">
+        <attr name="cml_gradient_angle" format="float" />
+    </declare-styleable>
 
 </resources>

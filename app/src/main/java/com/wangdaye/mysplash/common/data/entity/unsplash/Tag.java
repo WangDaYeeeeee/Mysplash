@@ -50,7 +50,7 @@ public class Tag implements com.wangdaye.mysplash.common._basic.Tag, Parcelable 
         }
     };
 
-    /** <br> interface. */
+    // interface.
 
     @Override
     public String getTitle() {
@@ -58,8 +58,13 @@ public class Tag implements com.wangdaye.mysplash.common._basic.Tag, Parcelable 
     }
 
     @Override
-    public String getUrl() {
-        return url;
+    public String getRegularUrl() {
+        return url + "?fm=jpg&w=720&fit=max";
+    }
+
+    @Override
+    public String getThumbnailUrl() {
+        return url + "?fm=jpg&w=360&fit=max";
     }
 
 }

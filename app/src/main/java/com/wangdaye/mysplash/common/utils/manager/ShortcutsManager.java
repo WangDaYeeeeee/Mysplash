@@ -46,7 +46,7 @@ public class ShortcutsManager {
     public static void refreshShortcuts(final Context context) {
         if (needRefresh(context)) {
             if (!TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
-                ImageHelper.loadBitmap(
+                ImageHelper.loadImageFromUrl(
                         context,
                         new SimpleTarget<Bitmap>(128, 128) {
                             @Override

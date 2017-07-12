@@ -7,8 +7,6 @@ import com.wangdaye.mysplash.common.i.view.DrawerView;
 /**
  * Drawer implementor.
  *
- * A {@link DrawerPresenter} for {@link com.wangdaye.mysplash.main.view.activity.MainActivity}.
- *
  * */
 
 public class DrawerImplementor

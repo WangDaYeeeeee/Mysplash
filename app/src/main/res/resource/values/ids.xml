@@ -11,6 +11,11 @@
     <item name="fragment_search_page_collection" type="id" />
     <item name="fragment_search_page_user" type="id" />
 
+    <!-- activity search. -->
+    <item name="activity_search_page_photo" type="id" />
+    <item name="activity_search_page_collection" type="id" />
+    <item name="activity_search_page_user" type="id" />
+
     <!-- activity user. -->
     <item name="activity_user_page_photo" type="id" />
     <item name="activity_user_page_collection" type="id" />

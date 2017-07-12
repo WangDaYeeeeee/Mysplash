@@ -7,8 +7,6 @@ import com.wangdaye.mysplash.main.view.activity.MainActivity;
 /**
  * Message manage implementor.
  *
- * A {@link MessageManagePresenter} for {@link MainActivity}.
- *
  * */
 
 public class MessageManageImplementor

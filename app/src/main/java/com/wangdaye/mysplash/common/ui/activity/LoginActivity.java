@@ -156,7 +156,7 @@ public class LoginActivity extends MysplashActivity
         ThemeManager.setImageResource(closeBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
 
         ImageView icon = ButterKnife.findById(this, R.id.activity_login_icon);
-        ImageHelper.loadIcon(this, icon, R.drawable.ic_launcher);
+        ImageHelper.loadResourceImage(this, icon, R.drawable.ic_launcher);
 
         DisplayUtils.setTypeface(this, ((TextView) ButterKnife.findById(this, R.id.activity_login_content)));
 

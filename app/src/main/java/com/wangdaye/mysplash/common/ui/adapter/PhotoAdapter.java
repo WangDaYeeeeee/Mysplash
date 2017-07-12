@@ -100,7 +100,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
                 params.setMargins(0, 0, margin, margin);
                 card.setLayoutParams(params);
-                card.setRadius(a.getResources().getDimensionPixelSize(R.dimen.nano_margin));
+                card.setRadius(new DisplayUtils(a).dpToPx(2));
             } else {
                 params.setMargins(0, 0, 0, 0);
                 card.setLayoutParams(params);
@@ -112,7 +112,9 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             title.setText("");
             image.setShowShadow(false);
 
-            ImageHelper.loadRegularPhoto(a, image, itemList.get(position), new ImageHelper.OnLoadImageListener() {
+            ImageHelper.loadRegularPhoto(
+                    a, image, itemList.get(position),
+                    new ImageHelper.OnLoadImageListener() {
                 @Override
                 public void onLoadSucceed() {
                     itemList.get(position).loadPhotoSuccess = true;
@@ -148,7 +150,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
             }
 
-            card.setBackgroundColor(
+            card.setCardBackgroundColor(
                     ImageHelper.computeCardBackgroundColor(
                             a,
                             itemList.get(position).color));

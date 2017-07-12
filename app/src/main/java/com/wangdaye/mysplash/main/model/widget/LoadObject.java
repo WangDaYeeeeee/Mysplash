@@ -7,9 +7,6 @@ import com.wangdaye.mysplash.common.i.model.LoadModel;
 /**
  * Load object.
  *
- * A {@link LoadModel} for {@link com.wangdaye.mysplash.common.i.view.LoadView}
- * in {@link com.wangdaye.mysplash.main.view.widget}.
- *
  * */
 
 public class LoadObject implements LoadModel {

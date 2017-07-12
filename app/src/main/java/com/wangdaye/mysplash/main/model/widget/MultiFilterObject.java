@@ -7,9 +7,6 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 /**
  * Multi-filter object.
  *
- * A {@link MultiFilterModel} for
- * {@link com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView}.
- *
  * */
 
 public class MultiFilterObject

@@ -14,8 +14,6 @@ import java.util.List;
 /**
  * Photos object.
  *
- * A {@link PhotosModel} for {@link com.wangdaye.mysplash.main.view.widget.HomePhotosView}.
- *
  * */
 
 public class PhotosObject

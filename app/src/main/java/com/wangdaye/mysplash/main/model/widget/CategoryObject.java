@@ -16,8 +16,6 @@ import java.util.List;
 /**
  * Category object.
  *
- * A {@link CategoryModel} for {@link com.wangdaye.mysplash.main.view.widget.CategoryPhotosView}.
- *
  * */
 
 public class CategoryObject

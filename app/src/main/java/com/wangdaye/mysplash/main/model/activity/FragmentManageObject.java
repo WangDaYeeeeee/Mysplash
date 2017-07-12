@@ -8,6 +8,7 @@ import com.wangdaye.mysplash.common.i.model.FragmentManageModel;
 
 /**
  * Fragment mange object.
+ *
  * */
 
 public class FragmentManageObject

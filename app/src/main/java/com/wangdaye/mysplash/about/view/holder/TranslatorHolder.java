@@ -55,7 +55,7 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder {
         TranslatorObject object = (TranslatorObject) model;
 
         ImageHelper.loadAvatar(a, avatar, object.avatarUrl, null);
-        ImageHelper.loadIcon(a, flag, object.flagId);
+        ImageHelper.loadResourceImage(a, flag, object.flagId);
 
         title.setText(object.title);
         subtitle.setText(object.subtitle);

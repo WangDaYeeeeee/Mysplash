@@ -5,6 +5,7 @@ import com.wangdaye.mysplash.common.i.model.DownloadModel;
 
 /**
  * Download object.
+ *
  * */
 
 public class DownloadObject implements DownloadModel {

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
@@ -125,20 +124,17 @@ public class PreviewActivity extends MysplashActivity
         swipeBackView.setOnSwipeListener(this);
 
         final NestedScrollPhotoView photoView = ButterKnife.findById(this, R.id.activity_preview_photoView);
-        photoView.enable();
-        photoView.enableRotate();
-        photoView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-        photoView.setMaxScale(calcMaxiScale());
+        photoView.setMaxScale(getMaxiScale(false));
         ImageHelper.loadFullPhoto(
                 this,
                 photoView,
-                previewable instanceof Photo
-                        ? ((Photo) previewable).getWallpaperSizeUrl(this) : previewable.getFullUrl(),
+                previewable instanceof Photo ?
+                        ((Photo) previewable).getWallpaperSizeUrl(this) : previewable.getFullUrl(),
                 previewable.getRegularUrl(),
                 new ImageHelper.OnLoadImageListener() {
             @Override
             public void onLoadSucceed() {
-                photoView.setMaxScale(2 * calcMaxiScale());
+                photoView.setMaxScale(getMaxiScale(true));
             }
 
             @Override
@@ -194,11 +190,47 @@ public class PreviewActivity extends MysplashActivity
         widgetContainer.startAnimation(hide);
     }
 
-    private float calcMaxiScale() {
-        if (previewable.getWidth() == 128) {
-            return 0.5F;
+    private float getMaxiScale(boolean fullSize) {
+        if (previewable instanceof Photo) {
+            if (fullSize) {
+                double scaleRatio = 0.7
+                        * Math.max(
+                        getResources().getDisplayMetrics().widthPixels,
+                        getResources().getDisplayMetrics().heightPixels)
+                        / Math.min(previewable.getWidth(), previewable.getHeight());
+                return getMaxiScale(
+                        (int) (scaleRatio * previewable.getWidth()),
+                        (int) (scaleRatio * previewable.getHeight()));
+            } else {
+                return getMaxiScale(
+                        1080,
+                        (int) (1080.0 * previewable.getHeight() / previewable.getWidth()));
+            }
         } else {
-            return 5;
+            return getMaxiScale(previewable.getWidth(), previewable.getHeight());
+        }
+    }
+
+    private float getMaxiScale(int w, int h) {
+        int maxWidth;
+        int normalWidth;
+        int screenWidth = getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = getResources().getDisplayMetrics().heightPixels;
+        if (previewable instanceof Photo) {
+            if (1.0 * w / h >= 1.0 * screenWidth / screenHeight) {
+                maxWidth = (int) (2.0 * screenHeight * w / h);
+            } else {
+                maxWidth = (int) (2.0 * screenWidth);
+            }
+            normalWidth = Math.min(getResources().getDisplayMetrics().widthPixels, w);
+        } else {
+            maxWidth = (int) (0.5 * Math.min(screenWidth, screenHeight));
+            normalWidth = w;
+        }
+        if (maxWidth > normalWidth) {
+            return (float) (1.0 * maxWidth / normalWidth);
+        } else {
+            return 1;
         }
     }
 

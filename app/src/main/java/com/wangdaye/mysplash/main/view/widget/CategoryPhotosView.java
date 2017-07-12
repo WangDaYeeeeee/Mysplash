@@ -248,7 +248,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
 
         ImageView feedbackImg = ButterKnife.findById(
                 this, R.id.container_loading_in_category_view_large_feedbackImg);
-        ImageHelper.loadIcon(getContext(), feedbackImg, R.drawable.feedback_no_photos);
+        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
     // save instance.

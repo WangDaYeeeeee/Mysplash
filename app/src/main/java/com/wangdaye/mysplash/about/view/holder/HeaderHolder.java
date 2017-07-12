@@ -54,7 +54,7 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
 
     @Override
     protected void onBindView(MysplashActivity a, AboutModel model) {
-        ImageHelper.loadIcon(a, appIcon, R.drawable.ic_launcher);
+        ImageHelper.loadResourceImage(a, appIcon, R.drawable.ic_launcher);
     }
 
     @Override

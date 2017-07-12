@@ -60,7 +60,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         void onBindView(int position) {
             if (position == 0) {
-                image.setImageResource(R.color.colorTextSubtitle_light);
+                ImageHelper.loadResourceImage(c, image, R.drawable.default_collection_creator);
                 title.setText(c.getString(R.string.feedback_create_collection).toUpperCase());
                 subtitle.setVisibility(View.GONE);
                 lockIcon.setVisibility(View.GONE);
@@ -120,7 +120,9 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         public void reloadCoverImage(final Collection collection) {
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(c, image, collection, new ImageHelper.OnLoadImageListener() {
+                ImageHelper.loadCollectionCover(
+                        c, image, collection,
+                        new ImageHelper.OnLoadImageListener() {
                     @Override
                     public void onLoadSucceed() {
                         if (!collection.cover_photo.hasFadedIn) {
@@ -134,11 +136,11 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
                     @Override
                     public void onLoadFailed() {
-                        image.setImageResource(R.color.colorTextContent_light);
+                        ImageHelper.loadResourceImage(c, image, R.drawable.default_collection_cover);
                     }
                 });
             } else {
-                image.setImageResource(R.color.colorTextContent_light);
+                ImageHelper.loadResourceImage(c, image, R.drawable.default_collection_cover);
             }
         }
 

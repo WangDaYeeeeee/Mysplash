@@ -4,6 +4,7 @@ import com.wangdaye.mysplash.common.i.model.PagerManageModel;
 
 /**
  * Pager manage object.
+ *
  * */
 
 public class PagerManageObject
