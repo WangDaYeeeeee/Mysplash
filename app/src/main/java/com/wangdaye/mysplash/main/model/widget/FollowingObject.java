@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.model.widget;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 
@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 public class FollowingObject implements FollowingModel {
 
     private FollowingAdapter adapter;
-    private FollowingService service;
+    private FeedService service;
 
     private String nextPage;
 
@@ -23,7 +23,7 @@ public class FollowingObject implements FollowingModel {
 
     public FollowingObject(FollowingAdapter adapter) {
         this.adapter = adapter;
-        this.service = FollowingService.getService();
+        this.service = FeedService.getService();
 
         this.nextPage = getFirstPage();
 
@@ -38,7 +38,7 @@ public class FollowingObject implements FollowingModel {
     }
 
     @Override
-    public FollowingService getService() {
+    public FeedService getService() {
         return service;
     }
 

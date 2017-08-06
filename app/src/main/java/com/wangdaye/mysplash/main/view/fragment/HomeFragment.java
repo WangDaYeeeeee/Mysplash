@@ -19,8 +19,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.PagerManageModel;
 import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
@@ -33,6 +31,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.i.view.PagerManageView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
@@ -41,8 +40,8 @@ import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.main.view.widget.HomeCollectionsView;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
+import com.wangdaye.mysplash.main.view.widget.HomeTrendingView;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.ArrayList;
@@ -159,32 +158,32 @@ public class HomeFragment extends MysplashFragment
     @Override
     public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
         if (pagers[0] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeNewList(
-                    ((HomePhotosView) pagers[0]).getPhotos());
+            ((MainActivity.SavedStateFragment) outState).setHomeTrendingList(
+                    ((HomeTrendingView) pagers[0]).getPhotos());
         }
         if (pagers[1] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeFeaturedList(
+            ((MainActivity.SavedStateFragment) outState).setHomeNewList(
                     ((HomePhotosView) pagers[1]).getPhotos());
         }
         if (pagers[2] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeCollectionList(
-                    ((HomeCollectionsView) pagers[2]).getCollections());
+            ((MainActivity.SavedStateFragment) outState).setHomeFeaturedList(
+                    ((HomePhotosView) pagers[2]).getPhotos());
         }
     }
 
     @Override
     public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
         if (pagers[0] != null) {
-            ((HomePhotosView) pagers[0]).setPhotos(
-                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
+            ((HomeTrendingView) pagers[0]).setPhotos(
+                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeTrendingList());
         }
         if (pagers[1] != null) {
             ((HomePhotosView) pagers[1]).setPhotos(
-                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
+                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
         }
         if (pagers[2] != null) {
-            ((HomeCollectionsView) pagers[2]).setCollections(
-                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeCollectionList());
+            ((HomePhotosView) pagers[2]).setPhotos(
+                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
         }
     }
 
@@ -207,16 +206,12 @@ public class HomeFragment extends MysplashFragment
             case Mysplash.PHOTO_ACTIVITY:
                 Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
                 if (photo != null) {
-                    ((HomePhotosView) pagers[0]).updatePhoto(photo);
-                    ((HomePhotosView) pagers[1]).updatePhoto(photo);
-                }
-                break;
-
-            case Mysplash.COLLECTION_ACTIVITY:
-                Collection collection = data.getParcelableExtra(
-                        CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
-                if (collection != null) {
-                    ((HomeCollectionsView) pagers[2]).updateCollection(collection);
+                    int page = pagerManagePresenter.getPagerPosition();
+                    if (page == 0) {
+                        ((HomeTrendingView) pagers[0]).updatePhoto(photo);
+                    } else {
+                        ((HomePhotosView) pagers[page]).updatePhoto(photo);
+                    }
                 }
                 break;
         }
@@ -275,6 +270,10 @@ public class HomeFragment extends MysplashFragment
     private void initPages(View v, Bundle savedInstanceState) {
         List<View> pageList = new ArrayList<>();
         pageList.add(
+                new HomeTrendingView(
+                        (MainActivity) getActivity(),
+                        R.id.fragment_home_page_trending));
+        pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         Mysplash.CATEGORY_TOTAL_NEW,
@@ -284,10 +283,6 @@ public class HomeFragment extends MysplashFragment
                         (MainActivity) getActivity(),
                         Mysplash.CATEGORY_TOTAL_FEATURED,
                         R.id.fragment_home_page_featured));
-        pageList.add(
-                new HomeCollectionsView(
-                        (MysplashActivity) getActivity(),
-                        R.id.fragment_home_page_collection));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -332,11 +327,15 @@ public class HomeFragment extends MysplashFragment
 
     public void showPopup() {
         int page = pagerManagePresenter.getPagerPosition();
-        popupManageImplementor.showPopup(
-                getActivity(),
-                toolbar,
-                pagerManagePresenter.getPagerKey(page),
-                page);
+        if (page == 0) {
+            NotificationHelper.showSnackbar(getString(R.string.feedback_no_filter));
+        } else {
+            popupManageImplementor.showPopup(
+                    getActivity(),
+                    toolbar,
+                    pagerManagePresenter.getPagerKey(page),
+                    page);
+        }
     }
 
     // interface.

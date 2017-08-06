@@ -3,9 +3,16 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
+        <item>TRENDING</item>
         <item>YENİ</item>
         <item>ÖNE ÇIKANLAR</item>
-        <item>KOLEKSİYONLAR</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>ÖNE ÇIKANLAR</item>
+        <item>TÜMÜ</item>
+        <item>TASARIM</item>
     </string-array>
 
     <!-- search tab. -->
@@ -35,13 +42,6 @@
         <item>Eskiler</item>
         <item>Popüler</item>
         <item>Rastgele</item>
-    </string-array>
-
-    <!-- collection type. -->
-    <string-array name="collection_types">
-        <item>Tümü</item>
-        <item>Tasarım</item>
-        <item>Öne Çıkanlar</item>
     </string-array>
 
     <!-- download type. -->

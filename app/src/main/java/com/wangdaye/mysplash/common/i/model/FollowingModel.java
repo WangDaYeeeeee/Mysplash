@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.model;
 
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 
 /**
@@ -13,11 +13,11 @@ import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 public interface FollowingModel {
 
     FollowingAdapter getAdapter();
-    FollowingService getService();
+    FeedService getService();
 
     // manage HTTP request parameters.
 
-    /** {@link com.wangdaye.mysplash.common.data.api.FollowingApi#getFollowingFeed(String)} */
+    /** {@link com.wangdaye.mysplash.common.data.api.FeedApi#getFollowingFeed(String)} */
     String getFirstPage();
     String getNextPage();
     void setNextPage(String nextPage);

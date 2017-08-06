@@ -195,8 +195,8 @@ public class UserActivity extends ReadWriteActivity
             case Mysplash.PHOTO_ACTIVITY:
                 Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
                 if (photo != null) {
-                    ((UserPhotosView) pagers[0]).updatePhoto(photo, false);
-                    ((UserPhotosView) pagers[1]).updatePhoto(photo, false);
+                    ((UserPhotosView) pagers[pagerManagePresenter.getPagerPosition()])
+                            .updatePhoto(photo, false);
                 }
                 break;
 

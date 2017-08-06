@@ -4,9 +4,21 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
+        <item>TRENDING</item>
         <item>NEW</item>
         <item>FEATURED</item>
-        <item>COLLECTIONS</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>FEATURED</item>
+        <item>ALL</item>
+        <item>CURATED</item>
+    </string-array>
+    <string-array name="collection_type_values">
+        <item>featured</item>
+        <item>all</item>
+        <item>curated</item>
     </string-array>
 
     <!-- search tab. -->
@@ -48,18 +60,6 @@
         <item>oldest</item>
         <item>popular</item>
         <item>random</item>
-    </string-array>
-
-    <!-- collection type. -->
-    <string-array name="collection_types">
-        <item>All</item>
-        <item>Curated</item>
-        <item>Featured</item>
-    </string-array>
-    <string-array name="collection_type_values">
-        <item>all</item>
-        <item>curated</item>
-        <item>featured</item>
     </string-array>
 
     <!-- download type. -->

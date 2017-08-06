@@ -34,7 +34,6 @@
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
-    <string name="about_unsplash">Ücretsiz yüksek çözünürlükte fotoğraflar.</string>
     <string name="retrofit">Retrofit 2.0</string>
     <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
     <string name="glide">Glide</string>
@@ -153,6 +152,7 @@
 
     <!-- menu. -->
     <string name="action_home">Home</string>
+    <string name="action_collection">KOLEKSİYONLAR</string>
     <string name="action_multi_filter">Çoklu-Filtre</string>
     <string name="action_category">Kategori</string>
     <string name="action_change_theme">Tema Değiştir</string>

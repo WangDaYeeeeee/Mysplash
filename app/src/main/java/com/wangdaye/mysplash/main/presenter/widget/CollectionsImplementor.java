@@ -44,15 +44,18 @@ public class CollectionsImplementor
             } else {
                 model.setLoading(true);
             }
-            final String[] types = c
-                    .getResources()
-                    .getStringArray(R.array.collection_type_values);
-            if (model.getCollectionsType().equals(types[0])) {
-                requestAllCollections(c, page, refresh);
-            } else if (model.getCollectionsType().equals(types[1])) {
-                requestCuratedCollections(c, page, refresh);
-            } else {
-                requestFeaturedCollections(c, page, refresh);
+            switch (model.getCollectionsType()) {
+                case Mysplash.COLLECTION_TYPE_FEATURED:
+                    requestFeaturedCollections(c, page, refresh);
+                    break;
+
+                case Mysplash.COLLECTION_TYPE_ALL:
+                    requestAllCollections(c, page, refresh);
+                    break;
+
+                case Mysplash.COLLECTION_TYPE_CURATED:
+                    requestCuratedCollections(c, page, refresh);
+                    break;
             }
         }
     }
@@ -116,12 +119,12 @@ public class CollectionsImplementor
     }
 
     @Override
-    public void setType(String key) {
+    public void setType(int key) {
         model.setCollectionsType(key);
     }
 
     @Override
-    public String getType() {
+    public int getType() {
         return model.getCollectionsType();
     }
 

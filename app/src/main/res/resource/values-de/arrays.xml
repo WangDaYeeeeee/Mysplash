@@ -3,9 +3,16 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
+        <item>TRENDING</item>
         <item>NEU</item>
         <item>VORGESCHLAGEN</item>
-        <item>KOLLEKTIONEN</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>AUSGEZEICHNET</item>
+        <item>ALLES</item>
+        <item>CURATED</item>
     </string-array>
 
     <!-- search tab. -->
@@ -41,13 +48,6 @@
         <item>A</item>
         <item>Populär</item>
         <item>Zufällig</item>
-    </string-array>
-
-    <!-- collection type. -->
-    <string-array name="collection_types">
-        <item>Alles</item>
-        <item>Curated</item>
-        <item>Ausgezeichnet</item>
     </string-array>
 
     <!-- download type. -->

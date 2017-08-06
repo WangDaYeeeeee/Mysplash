@@ -11,6 +11,7 @@ import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common._basic.MysplashFragment;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
+import com.wangdaye.mysplash.main.view.fragment.CollectionFragment;
 import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
@@ -160,6 +161,9 @@ public class FragmentManageImplementor
             case R.id.action_following:
                 return new FollowingFragment();
 
+            case R.id.action_collection:
+                return new CollectionFragment();
+
             case R.id.action_multi_filter:
                 return new MultiFilterFragment();
 
@@ -176,6 +180,8 @@ public class FragmentManageImplementor
             return R.id.action_home;
         } else if (f instanceof FollowingFragment) {
             return R.id.action_following;
+        } else if (f instanceof CollectionFragment) {
+            return R.id.action_collection;
         } else if (f instanceof MultiFilterFragment) {
             return R.id.action_multi_filter;
         } else { // CategoryFragment.

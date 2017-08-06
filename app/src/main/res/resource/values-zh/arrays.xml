@@ -3,9 +3,16 @@
 
     <!-- 主页标签 -->
     <string-array name="home_tabs">
+        <item>推荐</item>
         <item>新作</item>
         <item>精选</item>
-        <item>收藏</item>
+    </string-array>
+
+    <!-- 收藏集标签 -->
+    <string-array name="collection_tabs">
+        <item>精选</item>
+        <item>所有</item>
+        <item>画展</item>
     </string-array>
 
     <!-- 搜索标签 -->
@@ -41,13 +48,6 @@
         <item>最久远的</item>
         <item>最受欢迎的</item>
         <item>随机</item>
-    </string-array>
-
-    <!-- 收藏集类型 -->
-    <string-array name="collection_types">
-        <item>所有</item>
-        <item>画展</item>
-        <item>精选</item>
     </string-array>
 
     <!-- 下载类型 -->

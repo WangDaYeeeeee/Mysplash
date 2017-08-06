@@ -39,8 +39,8 @@ public interface CollectionsPresenter {
     Object getRequestKey();
     void setRequestKey(Object k);
 
-    void setType(String key);
-    String getType();
+    void setType(int key);
+    int getType();
 
     void setPage(@Mysplash.PageRule int page);
     void setOver(boolean over);

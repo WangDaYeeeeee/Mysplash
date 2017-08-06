@@ -485,7 +485,7 @@ public class MultiFilterFragment extends MysplashFragment
             case 2:
                 multiFilterBarPresenter.setFeatured(Boolean.parseBoolean(value));
                 if (Boolean.parseBoolean(value)) {
-                    menuTexts[2].setText(getResources().getStringArray(R.array.collection_types)[2]);
+                    menuTexts[2].setText(R.string.curated);
                 } else {
                     menuTexts[2].setText(R.string.all);
                 }

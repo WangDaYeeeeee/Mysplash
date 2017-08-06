@@ -34,7 +34,7 @@ public interface PhotoApi {
     Call<List<Photo>> getCuratedPhotos(@Query("page") int page,
                                        @Query("per_page") int per_page,
                                        @Query("order_by") String order_by);
-
+    
     @GET("photos/{id}/stats")
     Call<PhotoStats> getPhotoStats(@Path("id") String id);
 

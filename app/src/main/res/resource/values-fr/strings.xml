@@ -62,7 +62,6 @@
     <string name="follow_system">Système</string>
 
     <!-- about. -->
-    <string name="about_unsplash">Photos haute résolution libres (faites-en ce que vous voulez).</string>
     <string name="about_retrofit">Client HTTP prévenant les erreurs de type pour Android et Java par Square, Inc.</string>
     <string name="about_glide">Une bibliothèque de chargement et de mise en cache d\'images pour Android, mettant l\'accent sur le défilement doux.</string>
     <string name="about_circular_progress_view">Une barre de progression de type Material pour Android.</string>
@@ -196,6 +195,7 @@
     <!-- menu. -->
     <string name="action_home">Accueil</string>
     <string name="action_following">Abonnements</string>
+    <string name="action_collection">Collection</string>
     <string name="action_category">Catégories</string>
     <string name="action_multi_filter">Filtre multiple</string>
     <string name="action_change_theme">Changer le thème</string>

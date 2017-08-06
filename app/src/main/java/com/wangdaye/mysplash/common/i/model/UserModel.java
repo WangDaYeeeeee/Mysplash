@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.i.model;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.data.service.UserService;
 
 /**
@@ -14,7 +14,7 @@ import com.wangdaye.mysplash.common.data.service.UserService;
 public interface UserModel {
 
     UserService getUserService();
-    FollowingService getFollowingService();
+    FeedService getFeedService();
 
     User getUser();
     void setUser(User user);

@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.1.6</string>
+    <string name="version_code">3.1.7</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -65,7 +65,7 @@
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
-    <string name="about_unsplash">Free (do whatever you want) high-resolution photos.</string>
+    <string name="about_unsplash">Beautiful, free photos.\nGifted by the world\'s most generous community of photographers.</string>
     <string name="retrofit">Retrofit 2.0</string>
     <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
     <string name="glide">Glide</string>
@@ -208,6 +208,7 @@
     <!-- menu. -->
     <string name="action_home">Home</string>
     <string name="action_following">Following</string>
+    <string name="action_collection">Collection</string>
     <string name="action_category">Category</string>
     <string name="action_multi_filter">Multi-Filter</string>
     <string name="action_change_theme">Change Theme</string>
@@ -297,7 +298,6 @@
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
     <string name="key_default_photo_order">default_photo_order</string>
-    <string name="key_default_collection_type">default_collection_type</string>
     <string name="key_download_scale">download_scale</string>
     <string name="key_saturation_animation_duration">saturation_animation_duration</string>
     <string name="key_grid_list_in_port">grid_list_in_port</string>

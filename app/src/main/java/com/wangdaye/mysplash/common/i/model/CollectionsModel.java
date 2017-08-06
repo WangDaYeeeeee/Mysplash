@@ -21,8 +21,9 @@ public interface CollectionsModel {
     Object getRequestKey();
     void setRequestKey(Object key);
 
-    String getCollectionsType();
-    void setCollectionsType(String type);
+    @Mysplash.CollectionTypeRule
+    int getCollectionsType();
+    void setCollectionsType(int type);
 
     @Mysplash.PageRule
     int getCollectionsPage();

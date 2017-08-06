@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.item.MyFollowUser;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
@@ -44,7 +44,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
     private List<MyFollowUser> itemList;
     private OnFollowStateChangedListener listener;
 
-    private FollowingService service;
+    private FeedService service;
 
     public class ViewHolder extends RecyclerView.ViewHolder
             implements RippleButton.OnSwitchListener {
@@ -123,7 +123,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         this.a = a;
         this.itemList = list;
         this.listener = l;
-        this.service = FollowingService.getService();
+        this.service = FeedService.getService();
     }
 
     @Override
@@ -179,7 +179,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
 
     // on set follow listener.
 
-    private class OnSetFollowListener implements FollowingService.OnFollowListener {
+    private class OnSetFollowListener implements FeedService.OnFollowListener {
         // data
         private String username;
         private boolean switchTo;

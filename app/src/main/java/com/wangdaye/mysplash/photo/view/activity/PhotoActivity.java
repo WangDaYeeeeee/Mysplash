@@ -681,8 +681,10 @@ public class PhotoActivity extends ReadWriteActivity
 
     @Override
     public void dismissRequestDialog() {
-        requestDialog.dismiss();
-        requestDialog = null;
+        if (requestDialog != null) {
+            requestDialog.dismiss();
+            requestDialog = null;
+        }
     }
 
     @Override

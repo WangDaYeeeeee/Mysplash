@@ -4,9 +4,16 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
+        <item>TRENDING</item>
         <item>НОВЫЕ</item>
         <item>FEATURED</item>
-        <item>КОЛЛЕКЦИИ</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>FEATURED</item>
+        <item>ALL</item>
+        <item>CURATED</item>
     </string-array>
 
     <!-- search tab. -->
@@ -42,13 +49,6 @@
         <item>Старые</item>
         <item>Популярные</item>
         <item>Случайные</item>
-    </string-array>
-
-    <!-- collection type. -->
-    <string-array name="collection_types">
-        <item>All</item>
-        <item>Curated</item>
-        <item>Featured</item>
     </string-array>
 
     <!-- download type. -->

@@ -2,14 +2,14 @@
 <resources>
 
     <!-- fragment home. -->
+    <item name="fragment_home_page_trending" type="id" />
     <item name="fragment_home_page_new" type="id" />
     <item name="fragment_home_page_featured" type="id" />
-    <item name="fragment_home_page_collection" type="id" />
 
-    <!-- fragment search. -->
-    <item name="fragment_search_page_photo" type="id" />
-    <item name="fragment_search_page_collection" type="id" />
-    <item name="fragment_search_page_user" type="id" />
+    <!-- fragment collection. -->
+    <item name="fragment_collection_page_featured" type="id" />
+    <item name="fragment_collection_page_all" type="id" />
+    <item name="fragment_collection_page_curated" type="id" />
 
     <!-- activity search. -->
     <item name="activity_search_page_photo" type="id" />

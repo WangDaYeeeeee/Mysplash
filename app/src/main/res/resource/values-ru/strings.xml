@@ -3,7 +3,6 @@
 
     <!-- application. -->
     <string name="app_name">Mysplash</string>
-    <string name="about_unsplash">Бесплатные (для любого использования) фотографии высокого разрешения.</string>
 
     <!-- key words. -->
     <string name="about_app">О приложении</string>
@@ -53,6 +52,7 @@
     <string name="action_category_objects">Предметы</string>
     <string name="action_category_people">Люди</string>
     <string name="action_category_technology">Технологии</string>
+    <string name="action_collection">КОЛЛЕКЦИИ</string>
     <string name="action_change_theme">Сменить тему</string>
     <string name="action_clear_text">Очистить текст</string>
     <string name="action_download">Загрузить</string>

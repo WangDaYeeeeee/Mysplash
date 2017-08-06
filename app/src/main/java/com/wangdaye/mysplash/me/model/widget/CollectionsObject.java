@@ -57,12 +57,12 @@ public class CollectionsObject
     }
 
     @Override
-    public String getCollectionsType() {
-        return null;
+    public int getCollectionsType() {
+        return Mysplash.COLLECTION_TYPE_ALL;
     }
 
     @Override
-    public void setCollectionsType(String order) {
+    public void setCollectionsType(int order) {
         // do nothing.
     }
 

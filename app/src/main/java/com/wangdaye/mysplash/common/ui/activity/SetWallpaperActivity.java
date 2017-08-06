@@ -77,9 +77,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     private SafeHandler<SetWallpaperActivity> handler;
 
-    @Nullable
-    private Bitmap photo = null;
-
     private boolean light;
 
     @ClipRule
@@ -104,40 +101,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
     public static final int WHERE_WALL_LOCK = 3;
     @IntDef({WHERE_WALLPAPER, WHERE_LOCKSCREEN, WHERE_WALL_LOCK})
     public  @interface WallpaperWhereRule {}
-
-    /**
-     * A Runnable class to set picture as wallpaper.
-     * */
-    public Runnable setWallpaper = new Runnable() {
-        @Override
-        public void run() {
-            setWallpaper(true);
-            handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
-        }
-    };
-
-    /**
-     * A Runnable class to set picture as background in lock screen.
-     * */
-    public Runnable setLockScreen = new Runnable() {
-        @Override
-        public void run() {
-            setWallpaper(false);
-            handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
-        }
-    };
-
-    /**
-     * A Runnable class to set picture as wallpaper and background in lock screen.
-     * */
-    public Runnable setWallAndLock = new Runnable() {
-        @Override
-        public void run() {
-            setWallpaper(true);
-            setWallpaper(false);
-            handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -217,26 +180,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
     // init.
 
     private void initData() {
-        InputStream[] streams = new InputStream[] {getPhotoStream(), getPhotoStream()};
-        if (streams[0] != null && streams[1] != null) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(streams[0], new Rect(0, 0, 0, 0), options);
-
-            options.inSampleSize = calculateInSampleSize(
-                    options,
-                    getResources().getDisplayMetrics().widthPixels,
-                    getResources().getDisplayMetrics().heightPixels);
-            options.inJustDecodeBounds = false;
-            photo = BitmapFactory.decodeStream(streams[1], new Rect(0, 0, 0, 0), options);
-
-            try {
-                streams[0].close();
-                streams[1].close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
         light = false;
     }
 
@@ -249,7 +192,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
         photoView.enable();
         photoView.setMaxScale(2.5f);
         photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        ImageHelper.loadBitmap(this, photoView, photo);
+        ImageHelper.loadBitmap(this, photoView, getIntent().getData());
         ImageHelper.loadBitmap(
                 this,
                 new SimpleTarget<Bitmap>(100, 100) {
@@ -262,7 +205,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                         setStyle();
                     }
                 },
-                photo);
+                getIntent().getData());
     }
 
     // control.
@@ -366,7 +309,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
         Uri uri = getIntent().getData();
         if (uri.getScheme().equals("file")) {
             File file = new File(uri.getSchemeSpecificPart());
-            if (!file.exists()) {
+            if (file.exists()) {
                 String path = FileUtils.uriToFilePath(this, uri);
                 if (path != null) {
                     file = new File(path);
@@ -379,7 +322,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
             }
         } else if (uri.getScheme().equals("content")) {
             try {
-                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "rw");
+                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
                 if (parcelFileDescriptor != null) {
                     FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
                     if (fileDescriptor != null) {
@@ -393,29 +336,44 @@ public class SetWallpaperActivity extends ReadWriteActivity
         return null;
     }
 
-    private int calculateInSampleSize(BitmapFactory.Options options,
-                                      int requestWidth, int requestHeight) {
-        if (requestWidth == 0 || requestHeight == 0) {
-            return 1;
+    private void loadSourceBitmap(final OnLoadSourceListener l) {
+        InputStream stream = getPhotoStream();
+        if (stream == null) {
+            return;
         }
 
-        int width = options.outWidth;
-        int height = options.outHeight;
-        int inSampleSize = 1;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(stream, new Rect(0, 0, 0, 0), options);
 
-        if (width > requestWidth || height > requestHeight) {
-            int halfHeight = height / 2;
-            int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and
-            // keeps both
-            // height and width larger than the requested height and width.
-            while ((halfWidth / inSampleSize) >= requestWidth
-                    && (halfHeight / inSampleSize) >= requestHeight) {
-                inSampleSize *= 2;
-            }
+        try {
+            stream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        return inSampleSize;
+
+        WallpaperManager manager = WallpaperManager.getInstance(this);
+        int width;
+        int height;
+        if (1.0 * options.outWidth / options.outHeight
+                > 1.0 * manager.getDesiredMinimumWidth() / manager.getDesiredMinimumHeight()) {
+            width = (int) (1.0 * options.outWidth / options.outHeight * manager.getDesiredMinimumHeight());
+            height = manager.getDesiredMinimumHeight();
+        } else {
+            width = manager.getDesiredMinimumWidth();
+            height = (int) (1.0 * options.outHeight / options.outWidth * manager.getDesiredMinimumWidth());
+        }
+        ImageHelper.loadBitmap(
+                this,
+                new SimpleTarget<Bitmap>(width, height) {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        if (l != null) {
+                            l.onLoadSourceBitmap(resource);
+                        }
+                    }
+                },
+                getIntent().getData());
     }
 
     /**
@@ -424,16 +382,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
      * @param wallpaper if set true, it means this picture needs to be set as a wallpaper,
      *                  otherwise, this picture needs to be set as a background in lock screen.
      * */
-    private void setWallpaper(boolean wallpaper) {
-        if (photo == null) {
-            return;
-        }
-
-        InputStream[] streams = new InputStream[] {getPhotoStream(), getPhotoStream()};
-        if (streams[0] == null || streams[1] == null) {
-            return;
-        }
-
+    private void setWallpaper(Bitmap source, boolean wallpaper) {
         int screenWidth = getResources().getDisplayMetrics().widthPixels;
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
 
@@ -511,33 +460,29 @@ public class SetWallpaperActivity extends ReadWriteActivity
         float topPercent = (-imageBound.top) / imageBound.height();
         float bottomPercent = (imageBound.bottom - imageBound.top) / imageBound.height();
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(streams[0], new Rect(0, 0, 0, 0), options);
-
         Rect wallpaperCorp = new Rect(
-                (int) (options.outWidth * leftPercent),
-                (int) (options.outHeight * topPercent),
-                (int) (options.outWidth * rightPercent),
-                (int) (options.outHeight * bottomPercent));
+                (int) (source.getWidth() * leftPercent),
+                (int) (source.getHeight() * topPercent),
+                (int) (source.getWidth() * rightPercent),
+                (int) (source.getHeight() * bottomPercent));
 
-        WallpaperManager manager = WallpaperManager.getInstance(this);
         Rect outPadding = new Rect(
                 Math.max(0, wallpaperCorp.left),
                 Math.max(0, wallpaperCorp.top),
-                Math.max(0, options.outWidth - wallpaperCorp.right),
-                Math.max(0, options.outHeight - wallpaperCorp.bottom));
-        options.inJustDecodeBounds = false;
-        options.inSampleSize = wallpaperCorp.width() / manager.getDesiredMinimumWidth();
-        Bitmap bitmap = BitmapFactory.decodeStream(streams[1], outPadding, options);
+                Math.max(0, source.getWidth() - wallpaperCorp.right),
+                Math.max(0, source.getHeight() - wallpaperCorp.bottom));
 
+        Bitmap bitmap = Bitmap.createBitmap(
+                source,
+                outPadding.left,
+                outPadding.top,
+                source.getWidth() - outPadding.right - outPadding.left,
+                source.getHeight() - outPadding.bottom - outPadding.top);
         try {
-            streams[0].close();
-            streams[1].close();
             if (wallpaper) {
-                manager.setBitmap(bitmap);
+                WallpaperManager.getInstance(this).setBitmap(bitmap);
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                manager.setBitmap(
+                WallpaperManager.getInstance(this).setBitmap(
                         bitmap,
                         new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight()),
                         true,
@@ -550,6 +495,10 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     // interface.
 
+    private interface OnLoadSourceListener {
+        void onLoadSourceBitmap(Bitmap source);
+    }
+
     // on click listener.
 
     @OnClick(R.id.activity_set_wallpaper_closeBtn) void close() {
@@ -561,12 +510,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
         popup.setOnClipTypeChangedListener(this);
     }
 
-    @OnClick(R.id.activity_set_wallpaper_closeBtn) void showAlignPopup() {
+    @OnClick(R.id.activity_set_wallpaper_alignBtn) void showAlignPopup() {
         WallpaperAlignPopupWindow popup = new WallpaperAlignPopupWindow(this, alignBtn, alignType);
         popup.setAlignTypeChangedListener(this);
     }
 
-    @OnClick(R.id.activity_set_wallpaper_closeBtn) void set() {
+    @OnClick(R.id.activity_set_wallpaper_setBtn) void set() {
         WallpaperWhereDialog dialog = new WallpaperWhereDialog();
         dialog.setOnWhereSelectedListener(this);
         dialog.show(getFragmentManager(), null);
@@ -594,15 +543,49 @@ public class SetWallpaperActivity extends ReadWriteActivity
     public void onWhereSelected(int where) {
         switch (where) {
             case WHERE_WALLPAPER:
-                ThreadManager.getInstance().execute(setWallpaper);
+                loadSourceBitmap(new OnLoadSourceListener() {
+                    @Override
+                    public void onLoadSourceBitmap(final Bitmap source) {
+                        ThreadManager.getInstance().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                setWallpaper(source, true);
+                                handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
+                            }
+                        });
+                    }
+                });
                 break;
 
             case WHERE_LOCKSCREEN:
-                ThreadManager.getInstance().execute(setLockScreen);
+                loadSourceBitmap(new OnLoadSourceListener() {
+                    @Override
+                    public void onLoadSourceBitmap(final Bitmap source) {
+                        ThreadManager.getInstance().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                setWallpaper(source, false);
+                                handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
+                            }
+                        });
+                    }
+                });
                 break;
 
             case WHERE_WALL_LOCK:
-                ThreadManager.getInstance().execute(setWallAndLock);
+                loadSourceBitmap(new OnLoadSourceListener() {
+                    @Override
+                    public void onLoadSourceBitmap(final Bitmap source) {
+                        ThreadManager.getInstance().execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                setWallpaper(source, true);
+                                setWallpaper(source, false);
+                                handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
+                            }
+                        });
+                    }
+                });
                 break;
         }
     }

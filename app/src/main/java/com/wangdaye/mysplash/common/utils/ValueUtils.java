@@ -38,22 +38,6 @@ public class ValueUtils {
         }
     }
 
-    public static String getCollectionName(Context c, String key) {
-        switch (key) {
-            case "all":
-                return c.getResources().getStringArray(R.array.collection_types)[0];
-
-            case "curated":
-                return c.getResources().getStringArray(R.array.collection_types)[1];
-
-            case "featured":
-                return c.getResources().getStringArray(R.array.collection_types)[2];
-
-            default:
-                return null;
-        }
-    }
-
     public static String getScaleName(Context c, String key) {
         switch (key) {
             case "tiny":

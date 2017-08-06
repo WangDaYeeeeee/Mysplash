@@ -1,12 +1,9 @@
 package com.wangdaye.mysplash.main.model.widget;
 
-import android.content.Context;
-
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.service.CollectionService;
 import com.wangdaye.mysplash.common.i.model.CollectionsModel;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
-import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 /**
  * Collections object.
@@ -19,7 +16,7 @@ public class CollectionsObject
     private CollectionAdapter adapter;
     private CollectionService service;
 
-    private String collectionsType;
+    private int collectionsType;
 
     private int collectionsPage;
 
@@ -27,11 +24,11 @@ public class CollectionsObject
     private boolean loading;
     private boolean over;
 
-    public CollectionsObject(Context context, CollectionAdapter adapter) {
+    public CollectionsObject(CollectionAdapter adapter, @Mysplash.CategoryIdRule int type) {
         this.adapter = adapter;
         this.service = CollectionService.getService();
 
-        this.collectionsType = SettingsOptionManager.getInstance(context).getDefaultCollectionType();
+        this.collectionsType = type;
 
         this.collectionsPage = adapter.getItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
@@ -61,13 +58,13 @@ public class CollectionsObject
     }
 
     @Override
-    public String getCollectionsType() {
+    public int getCollectionsType() {
         return collectionsType;
     }
 
     @Override
-    public void setCollectionsType(String order) {
-        collectionsType = order;
+    public void setCollectionsType(int type) {
+        collectionsType = type;
     }
 
     @Override

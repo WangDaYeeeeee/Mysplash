@@ -105,13 +105,6 @@ public class SettingsFragment extends PreferenceFragment
         String orderName = ValueUtils.getOrderName(getActivity(), orderValue);
         defaultOrder.setSummary(getString(R.string.now) + " : " + orderName);
         defaultOrder.setOnPreferenceChangeListener(this);
-
-        // collection type.
-        MysplashListPreference collectionType = (MysplashListPreference) findPreference(getString(R.string.key_default_collection_type));
-        String typeValue = sharedPreferences.getString(getString(R.string.key_default_collection_type), "featured");
-        String valueName = ValueUtils.getCollectionName(getActivity(), typeValue);
-        collectionType.setSummary(getString(R.string.now) + " : " + valueName);
-        collectionType.setOnPreferenceChangeListener(this);
     }
 
     private void initDownloadPart(SharedPreferences sharedPreferences) {
@@ -192,12 +185,6 @@ public class SettingsFragment extends PreferenceFragment
             SettingsOptionManager.getInstance(getActivity()).setDefaultPhotoOrder((String) o);
             String order = ValueUtils.getOrderName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + order);
-            showRebootSnackbar();
-        } else if (preference.getKey().equals(getString(R.string.key_default_collection_type))) {
-            // collection type.
-            SettingsOptionManager.getInstance(getActivity()).setDefaultCollectionType((String) o);
-            String type = ValueUtils.getCollectionName(getActivity(), (String) o);
-            preference.setSummary(getString(R.string.now) + " : " + type);
             showRebootSnackbar();
         } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {
             // download scale.

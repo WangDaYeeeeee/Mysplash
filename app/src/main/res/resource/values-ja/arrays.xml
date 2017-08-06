@@ -3,9 +3,16 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
+        <item>TRENDING</item>
         <item>新規</item>
         <item>注目</item>
-        <item>コレクション</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>注目</item>
+        <item>すべて</item>
+        <item>収集済</item>
     </string-array>
 
     <!-- search tab. -->
@@ -41,13 +48,6 @@
         <item>古いものから</item>
         <item>人気</item>
         <item>ランダム</item>
-    </string-array>
-
-    <!-- collection type. -->
-    <string-array name="collection_types">
-        <item>すべて</item>
-        <item>収集済</item>
-        <item>注目</item>
     </string-array>
 
     <!-- download type. -->

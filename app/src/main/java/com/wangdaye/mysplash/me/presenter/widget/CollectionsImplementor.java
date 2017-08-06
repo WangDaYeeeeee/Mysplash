@@ -115,12 +115,12 @@ public class CollectionsImplementor
     }
 
     @Override
-    public void setType(String key) {
+    public void setType(int key) {
         // do nothing.
     }
 
     @Override
-    public String getType() {
+    public int getType() {
         return model.getCollectionsType();
     }
 

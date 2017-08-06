@@ -3,9 +3,16 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
+        <item>TRENDING</item>
         <item>NUOVI</item>
         <item>SELEZIONATI</item>
-        <item>RACCOLTE</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>SELEZIONATE</item>
+        <item>TUTTE</item>
+        <item>CURATE</item>
     </string-array>
 
     <!-- search tab. -->
@@ -35,13 +42,6 @@
         <item>Datato</item>
         <item>Popolare</item>
         <item>Casuale</item>
-    </string-array>
-
-    <!-- collection type. -->
-    <string-array name="collection_types">
-        <item>Tutte</item>
-        <item>Curate</item>
-        <item>Selezionate</item>
     </string-array>
 
     <!-- download type. -->

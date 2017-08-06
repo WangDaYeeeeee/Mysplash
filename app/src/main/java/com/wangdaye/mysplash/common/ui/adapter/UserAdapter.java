@@ -65,6 +65,9 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         }
 
         void onBindView(final int position) {
+            if (itemList.size() <= position || itemList.get(position) == null) {
+                return;
+            }
             title.setText(itemList.get(position).name);
             if (TextUtils.isEmpty(itemList.get(position).bio)) {
                 subtitle.setText(

@@ -158,6 +158,7 @@
     <!-- menu. -->
     <string name="action_home">ホーム</string>
     <string name="action_following">フォロー中</string>
+    <string name="action_collection">コレクション</string>
     <string name="action_category">カテゴリー</string>
     <string name="action_multi_filter">マルチフィルター</string>
     <string name="action_change_theme">テーマを変更</string>

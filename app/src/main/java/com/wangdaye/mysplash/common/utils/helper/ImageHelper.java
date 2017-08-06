@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,6 @@ import com.wangdaye.mysplash.common.utils.widget.glide.FadeAnimator;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
-import java.io.ByteArrayOutputStream;
 import java.util.regex.Pattern;
 
 /**
@@ -145,24 +145,18 @@ public class ImageHelper {
 
     // bitmap.
 
-    public static void loadBitmap(Context context, Target<Bitmap> target, Bitmap bitmap) {
+    public static void loadBitmap(Context context, Target<Bitmap> target, Uri uri) {
         Glide.with(context)
-                .load(bitmapToBytes(bitmap))
+                .load(uri)
                 .asBitmap()
                 .into(target);
     }
 
-    public static void loadBitmap(Context context, ImageView view, Bitmap bitmap) {
+    public static void loadBitmap(Context context, ImageView view, Uri uri) {
         Glide.with(context)
-                .load(bitmapToBytes(bitmap))
+                .load(uri)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(view);
-    }
-
-    private static byte[] bitmapToBytes(Bitmap bitmap){
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-        return stream.toByteArray();
     }
 
     // url.

@@ -39,6 +39,7 @@ public class Mysplash extends Application {
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
+    public static final String UNSPLASH_TREND_FEEDING_URL = "napi/feeds/home";
     public static final String UNSPLASH_FOLLOWING_FEED_URL = "napi/feeds/following";
     public static final String UNSPLASH_NOTIFICATION_URL = "napi/feeds/enrich";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
@@ -78,6 +79,12 @@ public class Mysplash extends Application {
             CATEGORY_PEOPLE_ID,
             CATEGORY_TECHNOLOGY_ID})
     public @interface CategoryIdRule {}
+
+    public static final int COLLECTION_TYPE_FEATURED = 0;
+    public static final int COLLECTION_TYPE_ALL = 1;
+    public static final int COLLECTION_TYPE_CURATED = 2;
+    @IntDef({COLLECTION_TYPE_FEATURED, COLLECTION_TYPE_ALL, COLLECTION_TYPE_CURATED})
+    public @interface CollectionTypeRule {}
 
     public static int TOTAL_NEW_PHOTOS_COUNT = 17444;
     public static int TOTAL_FEATURED_PHOTOS_COUNT = 1192;

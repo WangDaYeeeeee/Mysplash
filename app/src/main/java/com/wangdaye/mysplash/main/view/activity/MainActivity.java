@@ -139,17 +139,29 @@ public class MainActivity extends ReadWriteActivity
 
     public static class SavedStateFragment extends BaseSavedStateFragment {
         // data
+        private List<Photo> homeTrendingList;
         private List<Photo> homeNewList;
         private List<Photo> homeFeaturedList;
-        private List<Collection> homeCollectionList;
 
         private List<FollowingResult> followingFeedList;
+
+        private List<Collection> featuredCollectionList;
+        private List<Collection> allCollectionList;
+        private List<Collection> curatedCollectionList;
 
         private List<Photo> multiFilterList;
 
         private List<Photo> categoryList;
 
         // data.
+
+        public List<Photo> getHomeTrendingList() {
+            return homeTrendingList;
+        }
+
+        public void setHomeTrendingList(List<Photo> homeTrendingList) {
+            this.homeTrendingList = homeTrendingList;
+        }
 
         public List<Photo> getHomeNewList() {
             return homeNewList;
@@ -167,12 +179,28 @@ public class MainActivity extends ReadWriteActivity
             this.homeFeaturedList = homeFeaturedList;
         }
 
-        public List<Collection> getHomeCollectionList() {
-            return homeCollectionList;
+        public List<Collection> getFeaturedCollectionList() {
+            return featuredCollectionList;
         }
 
-        public void setHomeCollectionList(List<Collection> homeCollectionList) {
-            this.homeCollectionList = homeCollectionList;
+        public void setFeaturedCollectionList(List<Collection> featuredCollectionList) {
+            this.featuredCollectionList = featuredCollectionList;
+        }
+
+        public List<Collection> getAllCollectionList() {
+            return allCollectionList;
+        }
+
+        public void setAllCollectionList(List<Collection> allCollectionList) {
+            this.allCollectionList = allCollectionList;
+        }
+
+        public List<Collection> getCuratedCollectionList() {
+            return curatedCollectionList;
+        }
+
+        public void setCuratedCollectionList(List<Collection> curatedCollectionList) {
+            this.curatedCollectionList = curatedCollectionList;
         }
 
         public List<FollowingResult> getFollowingFeedList() {

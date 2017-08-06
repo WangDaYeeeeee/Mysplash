@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.me.model.activity;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.data.service.UserService;
 import com.wangdaye.mysplash.common.i.model.UserModel;
 
@@ -24,7 +24,7 @@ public class UserObject
         return userService;
     }
 
-    public FollowingService getFollowingService() {
+    public FeedService getFeedService() {
         return null;
     }
 

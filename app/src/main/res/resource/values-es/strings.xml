@@ -11,7 +11,6 @@
     <string name="about_page_indicator">InkPageIndicator creado por @nickbutcher para Plaid https://github.com/nickbutcher/plaid y corregido por David Pacioianu para API 14 (4.0+).</string>
     <string name="about_photo_view">Ejecución de ImageView para Android compatible con acercamiento de imagen mediante varios gestos táctiles.</string>
     <string name="about_retrofit">HTTP Client con seguridad de tipos para Android y Java por Square, Inc.</string>
-    <string name="about_unsplash">Fotos gratuitas (haz todas las que quieras) de alta resolución.</string>
     <string name="action_about">Información</string>
     <string name="action_cancel_all">Cancelar todo</string>
     <string name="action_category">Categoría</string>

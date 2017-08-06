@@ -32,7 +32,6 @@ public class SettingsOptionManager {
     private boolean notifiedSetBackToTop;
     private String language;
     private String defaultPhotoOrder;
-    private String defaultCollectionType;
     private String downloadScale;
     private int saturationAnimationDuration;
     private boolean showGridInPort;
@@ -52,9 +51,6 @@ public class SettingsOptionManager {
         this.defaultPhotoOrder = sharedPreferences.getString(
                 context.getString(R.string.key_default_photo_order),
                 "latest");
-        this.defaultCollectionType = sharedPreferences.getString(
-                context.getString(R.string.key_default_collection_type),
-                "featured");
         this.downloadScale = sharedPreferences.getString(
                 context.getString(R.string.key_download_scale),
                 "compact");
@@ -110,14 +106,6 @@ public class SettingsOptionManager {
 
     public void setDefaultPhotoOrder(String defaultPhotoOrder) {
         this.defaultPhotoOrder = defaultPhotoOrder;
-    }
-
-    public String getDefaultCollectionType() {
-        return defaultCollectionType;
-    }
-
-    public void setDefaultCollectionType(String defaultCollectionType) {
-        this.defaultCollectionType = defaultCollectionType;
     }
 
     public String getDownloadScale() {

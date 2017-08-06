@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.user.presenter.widget;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.data.service.UserService;
 import com.wangdaye.mysplash.common.i.model.UserModel;
 import com.wangdaye.mysplash.common.i.presenter.UserPresenter;
@@ -39,13 +39,13 @@ public class UserImplementor
     @Override
     public void followUser() {
         followListener = new OnFollowListener();
-        model.getFollowingService().setFollowUser(model.getUser().username, true, followListener);
+        model.getFeedService().setFollowUser(model.getUser().username, true, followListener);
     }
 
     @Override
     public void cancelFollowUser() {
         followListener = new OnFollowListener();
-        model.getFollowingService().setFollowUser(model.getUser().username, true, followListener);
+        model.getFeedService().setFollowUser(model.getUser().username, true, followListener);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class UserImplementor
             followListener.cancel();
         }
         model.getUserService().cancel();
-        // model.getFollowingService().cancel();
+        // model.getFeedService().cancel();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class UserImplementor
 
     // on follow swipeListener.
 
-    private class OnFollowListener implements FollowingService.OnFollowListener {
+    private class OnFollowListener implements FeedService.OnFollowListener {
 
         private boolean canceled;
 

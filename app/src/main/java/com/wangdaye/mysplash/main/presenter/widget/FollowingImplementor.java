@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
-import com.wangdaye.mysplash.common.data.service.FollowingService;
+import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.i.presenter.FollowingPresenter;
 import com.wangdaye.mysplash.common.i.view.FollowingView;
@@ -50,7 +50,6 @@ public class FollowingImplementor implements FollowingPresenter {
             listener.cancel();
         }
         model.getService().cancel();
-        model.getAdapter().cancelService();
         model.setRefreshing(false);
         model.setLoading(false);
     }
@@ -134,7 +133,7 @@ public class FollowingImplementor implements FollowingPresenter {
 
     // interface.
 
-    private class OnRequestFollowingFeedListener implements FollowingService.OnRequestFollowingFeedListener {
+    private class OnRequestFollowingFeedListener implements FeedService.OnRequestFollowingFeedListener {
 
         private Context c;
         private boolean refresh;

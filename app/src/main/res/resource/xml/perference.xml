@@ -42,13 +42,6 @@
             android:entryValues="@array/photo_order_values"
             android:defaultValue="latest" />
 
-        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
-            android:title="@string/settings_title_default_collection_type"
-            android:key="@string/key_default_collection_type"
-            android:entries="@array/collection_types"
-            android:entryValues="@array/collection_type_values"
-            android:defaultValue="featured" />
-
     </PreferenceCategory>
 
     <PreferenceCategory

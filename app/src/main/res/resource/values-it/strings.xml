@@ -34,7 +34,6 @@
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
-    <string name="about_unsplash">Fotografie ad alta risoluzione, gratis.</string>
     <string name="retrofit">Retrofit 2.0</string>
     <string name="about_retrofit">Client sicuro HTTP per Android e Java di Square, Inc.</string>
     <string name="glide">Glide</string>
@@ -153,6 +152,7 @@
 
     <!-- menu. -->
     <string name="action_home">Home</string>
+    <string name="action_collection">Raccolte</string>
     <string name="action_multi_filter">Multi-filtro</string>
     <string name="action_category">Categoria</string>
     <string name="action_change_theme">Cambia tema</string>

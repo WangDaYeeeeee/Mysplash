@@ -233,12 +233,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void cancelService() {/*
-        if (photoService != null) {
-            photoService.cancel();
-        }*/
-    }
-
     public boolean isFooterView(int position) {
         return typeList.size() <= position + 1
                 || typeList.get(position + 1).type == TitleHolder.VIEW_TYPE_TITLE;

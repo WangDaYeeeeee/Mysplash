@@ -17,6 +17,13 @@
         android:checkable="true" />
 
     <item
+        android:id="@+id/action_collection"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_collected_dark"
+        android:title="@string/action_collection"
+        android:checkable="true" />
+
+    <item
         android:id="@+id/action_multi_filter"
         android:orderInCategory="100"
         android:icon="@drawable/ic_filter_outline_dark"
