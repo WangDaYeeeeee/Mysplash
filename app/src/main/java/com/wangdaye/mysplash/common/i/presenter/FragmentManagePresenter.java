@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.fragment.MysplashFragment;
 
 import java.util.List;
 

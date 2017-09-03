@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common._basic;
+package com.wangdaye.mysplash.common._basic.fragment;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 
 /**
  * Mysplash dialog fragment.

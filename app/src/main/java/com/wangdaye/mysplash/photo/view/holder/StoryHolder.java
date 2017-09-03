@@ -9,12 +9,12 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import butterknife.BindView;
@@ -51,7 +51,7 @@ public class StoryHolder extends PhotoInfoAdapter.ViewHolder {
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindView(MysplashActivity a, Photo photo) {
+    protected void onBindView(PhotoActivity a, Photo photo) {
         if (TextUtils.isEmpty(photo.story.description)) {
             content.setVisibility(View.GONE);
         } else {

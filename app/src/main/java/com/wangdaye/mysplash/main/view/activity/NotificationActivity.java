@@ -8,7 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.presenter.SwipeBackManagePresenter;
 import com.wangdaye.mysplash.common.i.view.SwipeBackManageView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;

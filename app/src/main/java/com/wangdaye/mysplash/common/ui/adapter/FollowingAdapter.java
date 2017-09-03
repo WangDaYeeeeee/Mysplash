@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ActionObject;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
@@ -26,7 +28,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
@@ -58,7 +60,8 @@ import retrofit2.Response;
  * */
 
 public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
-        implements SelectCollectionDialog.OnCollectionsChangedListener {
+        implements PhotoHolder.OnClickPhotoItemListener,
+        SelectCollectionDialog.OnCollectionsChangedListener {
 
     private Context a;
     private RecyclerView recyclerView;
@@ -72,6 +75,8 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     private static final int MAXI_PHOTO_COUNT_LIST = 7;
     private static final int MAXI_PHOTO_COUNT_GIRD = 11;
+
+    private static final String KEY_FOLLOWING_ADAPTER_RESULT_POSITION = "following_adapter_result_position";
 
     /**
      * This class is used to save the view holder's information.
@@ -360,8 +365,26 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         position ++;
                     }
                     if (resultList.get(i).objects.get(j).id.equals(p.id)) {
+                        Photo old = getPhoto(position);
+                        boolean refreshView = old == null;
+                        try {
+                            if (!refreshView) {
+                                if ((old.current_user_collections != null && p.current_user_collections != null
+                                        && old.current_user_collections.size() != p.current_user_collections.size())
+                                        || (old.current_user_collections == null && p.current_user_collections != null)
+                                        || (old.current_user_collections != null && p.current_user_collections == null)) {
+                                    refreshView = true;
+                                }
+                            }
+                            if (!refreshView && old.liked_by_user != p.liked_by_user) {
+                                refreshView = true;
+                            }
+                        } catch (Exception ignored) {
+
+                        }
+
                         resultList.get(i).objects.set(j, new ActionObject(p));
-                        if (j < getMaxiPhotoCount()) {
+                        if (refreshView && j < getMaxiPhotoCount()) {
                             notifyItemChanged(position);
                         }
                         if (!probablyRepeat) {
@@ -380,6 +403,32 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         FollowingResult result = resultList.get(typeList.get(position).resultPosition);
         result.objects.set(typeList.get(position).objectPosition, new ActionObject(photo));
         resultList.set(typeList.get(position).resultPosition, result);
+    }
+
+    public List<Photo> getPhotoListFromAnIndex(Bundle bundle, int fromIndex) {
+        int position = bundle.getInt(KEY_FOLLOWING_ADAPTER_RESULT_POSITION, -1);
+        return getPhotoList(
+                position,
+                fromIndex,
+                resultList.get(position).objects.size() - 1);
+    }
+
+    public List<Photo> getPhotoListToAnIndex(Bundle bundle, int toIndex) {
+        return getPhotoList(bundle.getInt(KEY_FOLLOWING_ADAPTER_RESULT_POSITION, -1), 0, toIndex);
+    }
+
+    private List<Photo> getPhotoList(int resultPosition, int fromIndex, int toIndex) {
+        List<Photo> list = new ArrayList<>();
+        if (-1 < resultPosition && resultPosition < resultList.size()
+                && !resultList.get(resultPosition).verb.equals(FollowingResult.VERB_FOLLOWED)
+                && fromIndex <= toIndex
+                && fromIndex > -1
+                && toIndex < resultList.get(resultPosition).objects.size()) {
+            for (int i = fromIndex; i <= toIndex; i ++) {
+                list.add(resultList.get(resultPosition).objects.get(i).castToPhoto());
+            }
+        }
+        return list;
     }
 
     // feeds.
@@ -473,6 +522,39 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                             to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
                 }
             }
+        }
+    }
+
+    // on click photo item listener.
+
+    @Override
+    public void onClick(View image, View background, int position) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        if (a != null) {
+            ViewType viewType = typeList.get(position);
+            ArrayList<Photo> list = new ArrayList<>();
+            int headIndex = viewType.objectPosition - 2;
+            int size = 5;
+            if (headIndex < 0) {
+                headIndex = 0;
+            }
+            if (headIndex + size - 1 > resultList.get(viewType.resultPosition).objects.size() - 1) {
+                size = resultList.get(viewType.resultPosition).objects.size() - headIndex;
+            }
+            for (int i = 0; i < size; i ++) {
+                list.add(resultList.get(viewType.resultPosition).objects.get(headIndex + i).castToPhoto());
+            }
+
+            Bundle bundle = new Bundle();
+            if (a instanceof LoadableActivity) {
+                bundle = ((LoadableActivity) a).getBundleOfList();
+                bundle.putInt(KEY_FOLLOWING_ADAPTER_RESULT_POSITION, viewType.resultPosition);
+            }
+
+            IntentHelper.startPhotoActivity(
+                    a, image, background,
+                    list, viewType.objectPosition, headIndex,
+                    bundle);
         }
     }
 
@@ -692,11 +774,14 @@ class PhotoHolder extends RecyclerView.ViewHolder {
     private int position;
     static final int VIEW_TYPE_PHOTO = 1;
 
+    private OnClickPhotoItemListener listener;
+
     PhotoHolder(View itemView, FollowingAdapter adapter) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.adapter = adapter;
         DisplayUtils.setTypeface(itemView.getContext(), title);
+        this.listener = adapter;
     }
 
     void onBindView(final Context a,
@@ -767,14 +852,13 @@ class PhotoHolder extends RecyclerView.ViewHolder {
 
     // interface.
 
+    interface OnClickPhotoItemListener {
+        void onClick(View image, View background, int position);
+    }
+
     @OnClick(R.id.item_following_photo_background) void clickItem() {
-        MysplashActivity a = Mysplash.getInstance().getTopActivity();
-        if (a != null) {
-            IntentHelper.startPhotoActivity(
-                    a,
-                    image,
-                    background,
-                    photo);
+        if (listener != null) {
+            listener.onClick(image, background, position);
         }
     }
 

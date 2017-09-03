@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common._basic;
+package com.wangdaye.mysplash.common._basic.activity;
 
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.fragment.MysplashDialogFragment;
+import com.wangdaye.mysplash.common._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.LanguageUtils;
 

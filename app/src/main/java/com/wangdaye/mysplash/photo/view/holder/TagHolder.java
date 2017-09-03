@@ -7,9 +7,11 @@ import android.view.View;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.Tag;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.TagAdapter;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +26,7 @@ import butterknife.ButterKnife;
 public class TagHolder extends PhotoInfoAdapter.ViewHolder {
 
     @BindView(R.id.item_photo_tag)
-    RecyclerView recyclerView;
+    SwipeSwitchLayout.RecyclerView recyclerView;
 
     public static final int TYPE_TAG = 6;
 
@@ -40,7 +42,7 @@ public class TagHolder extends PhotoInfoAdapter.ViewHolder {
     }
 
     @Override
-    protected void onBindView(MysplashActivity a, Photo photo) {
+    protected void onBindView(PhotoActivity a, Photo photo) {
         List<Tag> tagList = new ArrayList<>();
         if (photo.categories != null) {
             for (int i = 0; i < photo.categories.size(); i ++) {

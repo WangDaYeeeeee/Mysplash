@@ -4,7 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.TrendingFeed;
 import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.i.model.TrendingModel;

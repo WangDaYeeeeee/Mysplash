@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.photo.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -15,21 +14,26 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common._basic.activity.RequestLoadActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.i.model.PhotoListManageModel;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
+import com.wangdaye.mysplash.common.i.presenter.PhotoListManagePresenter;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.FileUtils;
@@ -62,16 +66,19 @@ import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.photo.model.BorwsableObject;
 import com.wangdaye.mysplash.photo.model.DownloadObject;
 import com.wangdaye.mysplash.photo.model.PhotoInfoObject;
+import com.wangdaye.mysplash.photo.model.PhotoListManageObject;
 import com.wangdaye.mysplash.photo.presenter.BrowsableImplementor;
 import com.wangdaye.mysplash.photo.presenter.DownloadImplementor;
 import com.wangdaye.mysplash.photo.presenter.MessageManageImplementor;
 import com.wangdaye.mysplash.photo.presenter.PhotoActivityPopupManageImplementor;
 import com.wangdaye.mysplash.photo.presenter.PhotoInfoImplementor;
+import com.wangdaye.mysplash.photo.presenter.PhotoListManageImplementor;
 import com.wangdaye.mysplash.photo.view.holder.BaseHolder;
 import com.wangdaye.mysplash.photo.view.holder.BaseLandscapeHolder;
 import com.wangdaye.mysplash.photo.view.holder.MoreHolder;
 import com.wangdaye.mysplash.photo.view.holder.ProgressHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -84,13 +91,19 @@ import butterknife.ButterKnife;
  *
  * */
 
-public class PhotoActivity extends ReadWriteActivity
+public class PhotoActivity extends RequestLoadActivity<Photo>
         implements PhotoInfoView, PopupManageView, BrowsableView, MessageManageView,
         DownloadRepeatDialog.OnCheckOrDownloadListener, SwipeBackCoordinatorLayout.OnSwipeListener,
         SelectCollectionDialog.OnCollectionsChangedListener, SafeHandler.HandlerContainer {
 
     @BindView(R.id.activity_photo_container)
     CoordinatorLayout container;
+
+    @BindView(R.id.activity_photo_swipeSwitchView)
+    SwipeSwitchLayout swipeSwitchView;
+
+    @BindView(R.id.activity_photo_switchBackground)
+    ImageView switchBackground;
 
     @BindView(R.id.activity_photo_image)
     FreedomImageView photoImage;
@@ -107,6 +120,9 @@ public class PhotoActivity extends ReadWriteActivity
     private RequestBrowsableDataDialog requestDialog;
     private SafeHandler<PhotoActivity> handler;
 
+    private PhotoListManageModel photoListManageModel;
+    private PhotoListManagePresenter photoListManagePresenter;
+
     private PhotoInfoModel photoInfoModel;
     private PhotoInfoPresenter photoInfoPresenter;
 
@@ -120,7 +136,10 @@ public class PhotoActivity extends ReadWriteActivity
 
     private MessageManagePresenter messageManagePresenter;
 
-    public static final String KEY_PHOTO_ACTIVITY_PHOTO = "photo_activity_photo";
+    public static final String KEY_PHOTO_ACTIVITY_PHOTO_LIST = "photo_activity_photo_list";
+    public static final String KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX = "photo_activity_photo_current_index";
+    public static final String KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX = "photo_activity_photo_head_index";
+    public static final String KEY_PHOTO_ACTIVITY_PHOTO_BUNDLE = "photo_activity_photo_bundle";
     public static final String KEY_PHOTO_ACTIVITY_ID = "photo_activity_id";
 
     /**
@@ -207,15 +226,10 @@ public class PhotoActivity extends ReadWriteActivity
 
     @Override
     public void finishActivity(int dir) {
-        Intent result = new Intent();
-        result.putExtra(
-                KEY_PHOTO_ACTIVITY_PHOTO,
-                getIntent().getParcelableExtra(KEY_PHOTO_ACTIVITY_PHOTO));
-        setResult(RESULT_OK, result);
-
         recyclerView.setAlpha(0f);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         if (!browsablePresenter.isBrowsable()
+                && photoListManagePresenter.getCurrentIndex() == getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, -1)
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
@@ -237,16 +251,42 @@ public class PhotoActivity extends ReadWriteActivity
         return container;
     }
 
+    @Override
+    public void updateData(Photo photo) {
+        for (int i = 0; i < photoListManagePresenter.getPhotoList().size(); i ++) {
+            if (photoListManagePresenter.getPhotoList().get(i).id.equals(photo.id)) {
+                photoListManagePresenter.getPhotoList().set(i, photo);
+                if (i == photoListManagePresenter.getCurrentIndex() - photoListManagePresenter.getHeadIndex()) {
+                    photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto());
+                    List<MysplashPopupWindow> popupList = getPopupList();
+                    for (int j = 0; j < popupList.size(); j ++) {
+                        if (popupList.get(j) instanceof PhotoMenuPopupWindow) {
+                            ((PhotoMenuPopupWindow) popupList.get(j)).forceSetLikeResult(this, getPhoto());
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // init.
 
     private void initModel() {
-        this.photoInfoModel = new PhotoInfoObject(
-                this, (Photo) getIntent().getParcelableExtra(KEY_PHOTO_ACTIVITY_PHOTO));
+        List<Photo> photoList = getIntent().getParcelableArrayListExtra(KEY_PHOTO_ACTIVITY_PHOTO_LIST);
+        if (photoList == null) {
+            photoList = new ArrayList<>();
+        }
+        int currentIndex = getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, -1);
+        int headIndex = getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX, -1);
+        this.photoListManageModel = new PhotoListManageObject(photoList, currentIndex, headIndex);
+        this.photoInfoModel = new PhotoInfoObject(this, photoListManageModel.getPhoto());
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
         this.browsableModel = new BorwsableObject(getIntent());
     }
 
     private void initPresenter() {
+        this.photoListManagePresenter = new PhotoListManageImplementor(photoListManageModel);
         this.photoInfoPresenter = new PhotoInfoImplementor(photoInfoModel, this);
         this.downloadPresenter = new DownloadImplementor(downloadModel);
         this.popupManagePresenter = new PhotoActivityPopupManageImplementor(this);
@@ -264,25 +304,11 @@ public class PhotoActivity extends ReadWriteActivity
                     this, R.id.activity_photo_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
-            photoImage.setSize(
-                    photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
-            ImageHelper.loadRegularPhoto(
-                    this, photoImage, photoInfoPresenter.getPhoto(),
-                    new ImageHelper.OnLoadImageListener() {
-                @Override
-                public void onLoadSucceed() {
-                    photoInfoPresenter.getPhoto().loadPhotoSuccess = true;
-                    if (!photoInfoPresenter.getPhoto().hasFadedIn) {
-                        photoInfoPresenter.getPhoto().hasFadedIn = true;
-                        ImageHelper.startSaturationAnimation(PhotoActivity.this, photoImage);
-                    }
-                }
+            if (photoListManagePresenter.getCurrentIndex() > -1) {
+                swipeSwitchView.setOnSwitchListener(new OnSwitchListener(photoListManagePresenter.getCurrentIndex()));
+            }
 
-                @Override
-                public void onLoadFailed() {
-                    // do nothing.
-                }
-            });
+            resetPhotoImage();
 
             recyclerView.setAdapter(photoInfoPresenter.getAdapter());
             int columnCount;
@@ -336,6 +362,29 @@ public class PhotoActivity extends ReadWriteActivity
 
     // UI.
 
+    private void resetPhotoImage() {
+        photoImage.setSize(
+                photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
+        photoImage.setTranslationY(0);
+        ImageHelper.loadRegularPhoto(
+                this, photoImage, photoInfoPresenter.getPhoto(),
+                new ImageHelper.OnLoadImageListener() {
+                    @Override
+                    public void onLoadSucceed() {
+                        photoInfoPresenter.getPhoto().loadPhotoSuccess = true;
+                        if (!photoInfoPresenter.getPhoto().hasFadedIn) {
+                            photoInfoPresenter.getPhoto().hasFadedIn = true;
+                            ImageHelper.startSaturationAnimation(PhotoActivity.this, photoImage);
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed() {
+                        // do nothing.
+                    }
+                });
+    }
+
     @Nullable
     private PhotoDownloadView getPhotoDownloadView() {
         GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
@@ -379,6 +428,10 @@ public class PhotoActivity extends ReadWriteActivity
 
     public void showPopup(Context c, View anchor, String value, int position) {
         popupManagePresenter.showPopup(c, anchor, value, position);
+    }
+
+    public SwipeSwitchLayout getSwipeSwitchView() {
+        return swipeSwitchView;
     }
 
     // download.
@@ -562,6 +615,108 @@ public class PhotoActivity extends ReadWriteActivity
         finishActivity(dir);
     }
 
+    // on switch listener (swipe switch layout).
+
+    private class OnSwitchListener implements SwipeSwitchLayout.OnSwitchListener {
+
+        private int currentIndex;
+        private int targetIndex;
+
+        OnSwitchListener(int index) {
+            this.currentIndex = index;
+            this.targetIndex = index;
+        }
+
+        @Override
+        public void onSwipe(int direction, float progress) {
+            if (targetIndex != currentIndex + direction) {
+                targetIndex = currentIndex + direction;
+                if (canSwitch(direction)) {
+                    ImageHelper.loadBackgroundPhoto(
+                            PhotoActivity.this,
+                            switchBackground,
+                            photoListManagePresenter
+                                    .getPhotoList()
+                                    .get(targetIndex - photoListManagePresenter.getHeadIndex()));
+                    switchBackground.setBackgroundColor(
+                            ImageHelper.computeCardBackgroundColor(
+                                    PhotoActivity.this,
+                                    photoListManagePresenter
+                                            .getPhotoList()
+                                            .get(targetIndex - photoListManagePresenter.getHeadIndex())
+                                            .color));
+                } else {
+                    ImageHelper.releaseImageView(switchBackground);
+                    switchBackground.setBackgroundColor(ThemeManager.getRootColor(PhotoActivity.this));
+                }
+            }
+            switchBackground.setAlpha((float) (progress * 0.5));
+        }
+
+        @Override
+        public boolean canSwitch(int direction) {
+            int newIndex = photoListManagePresenter.getCurrentIndex() - photoListManagePresenter.getHeadIndex() + direction;
+            return 0 <= newIndex && newIndex < photoListManagePresenter.getPhotoList().size();
+        }
+
+        @Override
+        public void onSwitch(int direction) {
+            this.currentIndex += direction;
+            this.targetIndex = currentIndex;
+
+            photoListManagePresenter.setCurrentIndex(currentIndex);
+            photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto());
+
+            DisplayUtils.setStatusBarStyle(PhotoActivity.this, true);
+            translucentStatusBar.animToInitAlpha();
+            statusBar.setAlpha(0);
+
+            resetPhotoImage();
+
+            photoInfoPresenter.getAdapter().reset(photoInfoPresenter.getPhoto());
+            recyclerView.setAdapter(photoInfoPresenter.getAdapter());
+            recyclerView.clearOnScrollListeners();
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                recyclerView.addOnScrollListener(new OnScrollListener((photoInfoPresenter.getPhoto())));
+            } else {
+                recyclerView.addOnScrollListener(new MScrollListener((photoInfoPresenter.getPhoto())));
+            }
+
+            photoInfoPresenter.cancelRequest();
+            if (!photoInfoPresenter.getPhoto().complete) {
+                initRefresh();
+            }
+
+
+            if ((direction == SwipeSwitchLayout.DIRECTION_LEFT
+                    && currentIndex - photoListManagePresenter.getHeadIndex() <= 10)) {
+                int oldSize = photoListManagePresenter.getPhotoList().size();
+                photoListManagePresenter.getPhotoList().addAll(
+                        0,
+                        Mysplash.getInstance()
+                                .loadMorePhotos(
+                                        PhotoActivity.this,
+                                        photoListManagePresenter.getPhotoList(),
+                                        photoListManagePresenter.getHeadIndex(),
+                                        true,
+                                        getIntent().getBundleExtra(KEY_PHOTO_ACTIVITY_PHOTO_BUNDLE)));
+                photoListManagePresenter.setHeadIndex(
+                        photoListManagePresenter.getHeadIndex()
+                                - (photoListManagePresenter.getPhotoList().size() - oldSize));
+            } else if (direction == SwipeSwitchLayout.DIRECTION_RIGHT
+                    && photoListManagePresenter.getTailIndex() - currentIndex <= 10) {
+                photoListManagePresenter.getPhotoList().addAll(
+                        Mysplash.getInstance()
+                                .loadMorePhotos(
+                                        PhotoActivity.this,
+                                        photoListManagePresenter.getPhotoList(),
+                                        photoListManagePresenter.getHeadIndex(),
+                                        false,
+                                        getIntent().getBundleExtra(KEY_PHOTO_ACTIVITY_PHOTO_BUNDLE)));
+            }
+        }
+    }
+
     // on collections changed listener.
 
     @Override
@@ -575,6 +730,7 @@ public class PhotoActivity extends ReadWriteActivity
         photo.current_user_collections.clear();
         photo.current_user_collections.addAll(p.current_user_collections);
         photoInfoPresenter.setPhoto(photo);
+        Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
     }
 
     // handler.
@@ -633,15 +789,17 @@ public class PhotoActivity extends ReadWriteActivity
 
     @Override
     public void requestPhotoSuccess(Photo photo) {
-        getIntent().putExtra(KEY_PHOTO_ACTIVITY_PHOTO, photo);
+        if (photo.id.equals(photoInfoPresenter.getPhoto().id)) {
+            int oldCount = photoInfoPresenter.getAdapter().getItemCount() - 1;
 
-        int oldCount = photoInfoPresenter.getAdapter().getItemCount() - 1;
+            photoInfoPresenter.getAdapter().notifyItemRemoved(oldCount);
 
-        photoInfoPresenter.getAdapter().notifyItemRemoved(oldCount);
+            photoInfoPresenter.getAdapter().updatePhoto(photo);
+            photoInfoPresenter.getAdapter().notifyItemRangeInserted(
+                    oldCount, photoInfoPresenter.getAdapter().getItemCount());
 
-        photoInfoPresenter.getAdapter().updatePhoto(photo);
-        photoInfoPresenter.getAdapter().notifyItemRangeInserted(
-                oldCount, photoInfoPresenter.getAdapter().getItemCount());
+            Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
+        }
     }
 
     @Override
@@ -654,13 +812,16 @@ public class PhotoActivity extends ReadWriteActivity
     }
 
     @Override
-    public void setLikeForAPhotoCompleted() {
+    public void setLikeForAPhotoCompleted(Photo photo, boolean succeed) {
         List<MysplashPopupWindow> popupList = getPopupList();
         for (int i = 0; i < popupList.size(); i ++) {
             if (popupList.get(i) instanceof PhotoMenuPopupWindow) {
                 ((PhotoMenuPopupWindow) popupList.get(i)).setLikeResult(this, getPhoto());
                 return;
             }
+        }
+        if (succeed) {
+            Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
         }
     }
 
@@ -689,7 +850,6 @@ public class PhotoActivity extends ReadWriteActivity
 
     @Override
     public void drawBrowsableView(Object result) {
-        getIntent().putExtra(KEY_PHOTO_ACTIVITY_PHOTO, (Photo) result);
         initModel();
         initPresenter();
         initView(false);

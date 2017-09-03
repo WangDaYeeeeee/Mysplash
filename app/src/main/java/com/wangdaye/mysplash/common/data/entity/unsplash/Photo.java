@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common._basic.Previewable;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 import java.util.List;
@@ -176,6 +177,13 @@ public class Photo
         int w = (int) (scaleRatio * width);
         int h = (int) (scaleRatio * height);
         return urls.raw + "?q=50&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
+    }
+
+    public String getRegularSizeUrl(Context context) {
+        return urls.raw
+                + "?q=75&fm=jpg&w="
+                + (DisplayUtils.isTabletDevice(context) ? 1080 : 864)
+                + "&fit=max";
     }
 
     // parcel.

@@ -11,11 +11,11 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +57,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
     }
 
     @Override
-    protected void onBindView(MysplashActivity a, Photo photo) {
+    protected void onBindView(PhotoActivity a, Photo photo) {
         // do nothing.
     }
 

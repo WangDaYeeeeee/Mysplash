@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
@@ -197,9 +197,34 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void updateUser(User u, boolean probablyRepeat, boolean refreshView) {
+    public void updateUser(User u, boolean probablyRepeat) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id.equals(u.id)) {
+                boolean refreshView = false;
+                try {
+                    if ((itemList.get(i).profile_image != null && u.portfolio_url != null
+                            && !itemList.get(i).profile_image.large.equals(u.profile_image.large))
+                            || (itemList.get(i).profile_image == null && u.portfolio_url != null)
+                            || (itemList.get(i).profile_image != null && u.portfolio_url == null)) {
+                        refreshView = true;
+                    }
+                    if (!refreshView && !itemList.get(i).name.equals(u.name)) {
+                        refreshView = true;
+                    }
+                    if (!refreshView
+                            && !(itemList.get(i).bio == null && u.bio == null)
+                            && !TextUtils.equals(itemList.get(i).bio, u.bio)) {
+                        refreshView = true;
+                    }
+                    if (!refreshView
+                            && !(itemList.get(i).portfolio_url == null && u.portfolio_url == null)
+                            && !TextUtils.equals(itemList.get(i).portfolio_url, u.portfolio_url)) {
+                        refreshView = true;
+                    }
+                } catch (Exception ignore) {
+
+                }
+
                 u.hasFadedIn = itemList.get(i).hasFadedIn;
 
                 itemList.set(i, u);

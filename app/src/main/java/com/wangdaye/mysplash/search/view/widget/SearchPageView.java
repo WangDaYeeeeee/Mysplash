@@ -330,11 +330,47 @@ public class SearchPageView extends NestedScrollFrameLayout
         return this;
     }
 
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
+        if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
+            PhotoAdapter a = (PhotoAdapter) searchPresenter.getAdapter();
+            if ((headDirection && a.getRealItemCount() < headIndex)
+                    || (!headDirection && a.getRealItemCount() < headIndex + list.size())) {
+                return new ArrayList<>();
+            }
+
+            if (!headDirection && searchPresenter.canLoadMore()) {
+                searchPresenter.loadMore(getContext(), false);
+            }
+            if (!ViewCompat.canScrollVertically(recyclerView, 1) && searchPresenter.isLoading()) {
+                refreshLayout.setLoading(true);
+            }
+
+            if (headDirection) {
+                if (headIndex == 0) {
+                    return new ArrayList<>();
+                } else {
+                    return a.getPhotoData().subList(0, headIndex - 1);
+                }
+            } else {
+                if (a.getRealItemCount() == headIndex + list.size()) {
+                    return new ArrayList<>();
+                } else {
+                    return a.getPhotoData().subList(headIndex + list.size(), a.getRealItemCount() - 1);
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public String getQuery() {
+        return searchPresenter.getQuery();
+    }
+
     // photo.
 
     public void updatePhoto(Photo photo) {
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
-            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(photo, true, false);
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(photo, true);
         }
     }
 
@@ -368,7 +404,7 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     public void updateCollection(Collection collection) {
         if (searchPresenter.getAdapter() instanceof CollectionAdapter) {
-            ((CollectionAdapter) searchPresenter.getAdapter()).updateCollection(collection, true, false);
+            ((CollectionAdapter) searchPresenter.getAdapter()).updateCollection(collection, true);
         }
     }
 
@@ -402,7 +438,7 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     public void updateUser(User user) {
         if (searchPresenter.getAdapter() instanceof UserAdapter) {
-            ((UserAdapter) searchPresenter.getAdapter()).updateUser(user, true, false);
+            ((UserAdapter) searchPresenter.getAdapter()).updateUser(user, true);
         }
     }
 
@@ -483,7 +519,7 @@ public class SearchPageView extends NestedScrollFrameLayout
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
-            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true, true);
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true);
         }
     }
 
@@ -517,12 +553,12 @@ public class SearchPageView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void requestPhotosSuccess() {
+    public void searchSuccess() {
         loadPresenter.setNormalState();
     }
 
     @Override
-    public void requestPhotosFailed(String feedback) {
+    public void searchFailed(String feedback) {
         feedbackText.setText(feedback);
         loadPresenter.setFailedState();
     }
@@ -621,6 +657,7 @@ public class SearchPageView extends NestedScrollFrameLayout
         setForceScrolling(true);
         animShow(progressView);
         animHide(feedbackContainer);
+        animHide(refreshLayout);
     }
 
     @Override
@@ -629,24 +666,15 @@ public class SearchPageView extends NestedScrollFrameLayout
         feedbackButton.setVisibility(VISIBLE);
         animShow(feedbackContainer);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         setForceScrolling(false);
         animShow(refreshLayout);
-        if (progressView.getVisibility() == VISIBLE) {
-            animHide(progressView);
-        } else {
-            animHide(feedbackContainer);
-        }
-    }
-
-    @Override
-    public void resetLoadingState() {
-        setForceScrolling(true);
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(progressView);
+        animHide(feedbackContainer);
     }
 
     // scroll view.

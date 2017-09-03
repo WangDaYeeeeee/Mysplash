@@ -19,7 +19,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.ScrollModel;
 import com.wangdaye.mysplash.common.i.presenter.SwipeBackPresenter;
 import com.wangdaye.mysplash.common.i.view.SwipeBackView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -212,6 +212,38 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         photosPresenter.initRefresh(getContext());
     }
 
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
+        if ((headDirection && photosPresenter.getAdapter().getRealItemCount() < headIndex)
+                || (!headDirection && photosPresenter.getAdapter().getRealItemCount() < headIndex + list.size())) {
+            return new ArrayList<>();
+        }
+
+        if (!headDirection && photosPresenter.canLoadMore()) {
+            photosPresenter.loadMore(getContext(), false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && photosPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+
+        if (headDirection) {
+            if (headIndex == 0) {
+                return new ArrayList<>();
+            } else {
+                return photosPresenter.getAdapter().getPhotoData().subList(0, headIndex - 1);
+            }
+        } else {
+            if (photosPresenter.getAdapter().getRealItemCount() == headIndex + list.size()) {
+                return new ArrayList<>();
+            } else {
+                return photosPresenter.getAdapter()
+                        .getPhotoData()
+                        .subList(
+                                headIndex + list.size(),
+                                photosPresenter.getAdapter().getRealItemCount() - 1);
+            }
+        }
+    }
+
     public void cancelRequest() {
         photosPresenter.cancelRequest();
     }
@@ -236,7 +268,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     }
 
     public void updatePhoto(Photo photo) {
-        photosPresenter.getAdapter().updatePhoto(photo, false, false);
+        photosPresenter.getAdapter().updatePhoto(photo, false);
     }
 
     /**
@@ -262,7 +294,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         if (list.size() == 0) {
             initRefresh();
         } else {
-            setNormalState();
+            loadPresenter.setNormalState();
         }
     }
 
@@ -310,7 +342,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        photosPresenter.getAdapter().updatePhoto(p, false, true);
+        photosPresenter.getAdapter().updatePhoto(p, false);
         if (((Collection) photosPresenter.getRequestKey()).id == c.id) {
             for (int i = 0; i < p.current_user_collections.size(); i ++) {
                 if (p.current_user_collections.get(i).id == c.id) {
@@ -377,24 +409,21 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(retryButton);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setFailedState() {
         animShow(retryButton);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(retryButton);
     }
 
     // scroll view.

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.photo.view.holder.BaseHolder;
@@ -52,7 +52,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
             super(itemView);
         }
 
-        protected abstract void onBindView(MysplashActivity a, Photo photo);
+        protected abstract void onBindView(PhotoActivity a, Photo photo);
 
         protected abstract void onRecycled();
     }
@@ -83,7 +83,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         this.moreListener = new OnScrollListener();
         this.photo = photo;
         this.complete = photo != null && photo.complete;
-        this.needShowInitAnim = true;
+        resetNeedShowInitAnimFlag();
         this.moreHolderModel = null;
         buildTypeList();
     }
@@ -217,10 +217,25 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
         }
     }
 
+    public void reset(Photo photo) {
+        updatePhoto(photo);
+        resetNeedShowInitAnimFlag();
+        this.moreHolderModel = null;
+    }
+
     public void updatePhoto(Photo photo) {
         this.photo = photo;
-        this.complete = photo != null;
+        this.complete = photo.exif != null;
         buildTypeList();
+    }
+
+    private void resetNeedShowInitAnimFlag() {
+        this.needShowInitAnim = FreedomImageView.getMeasureSize(
+                a,
+                a.getResources().getDisplayMetrics().widthPixels,
+                photo.width,
+                photo.height,
+                true)[1] < a.getResources().getDisplayMetrics().heightPixels;
     }
 
     public boolean isComplete() {

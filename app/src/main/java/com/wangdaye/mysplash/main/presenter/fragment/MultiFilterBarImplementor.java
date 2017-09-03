@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.main.presenter.fragment;
 import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash.common.i.presenter.MultiFilterBarPresenter;
 import com.wangdaye.mysplash.common.i.view.MultiFilterBarView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 

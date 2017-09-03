@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.presenter.activity.PopupManageImplementor;
-import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
@@ -61,7 +61,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.List;
@@ -77,7 +76,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class CollectionActivity extends ReadWriteActivity
+public class CollectionActivity extends LoadableActivity<Photo>
         implements SwipeBackManageView, PopupManageView, EditResultView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, PhotoAdapter.OnDownloadPhotoListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener,
@@ -153,17 +152,6 @@ public class CollectionActivity extends ReadWriteActivity
             setStarted();
             ButterKnife.bind(this);
             initView(true);
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Mysplash.PHOTO_ACTIVITY && data != null) {
-            Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
-            if (photo != null) {
-                photosView.updatePhoto(photo);
-            }
         }
     }
 
@@ -247,6 +235,21 @@ public class CollectionActivity extends ReadWriteActivity
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
+    }
+
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        return photosView.loadMore(list, headIndex, headDirection);
+    }
+
+    @Override
+    public Bundle getBundleOfList() {
+        return new Bundle();
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        photosView.updatePhoto(photo);
     }
 
     // init.

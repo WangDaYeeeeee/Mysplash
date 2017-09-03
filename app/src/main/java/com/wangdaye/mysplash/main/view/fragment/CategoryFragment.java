@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
@@ -13,14 +12,14 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash.common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common.i.view.CategoryManageView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.popup.SearchCategoryPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
@@ -34,7 +33,9 @@ import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.CategoryPhotosView;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +48,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class CategoryFragment extends MysplashFragment
+public class CategoryFragment extends LoadableFragment<Photo>
         implements CategoryManageView, PopupManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener,
@@ -138,18 +139,29 @@ public class CategoryFragment extends MysplashFragment
     }
 
     @Override
-    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Mysplash.PHOTO_ACTIVITY) {
-            Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
-            if (photo != null) {
-                photosView.updatePhoto(photo);
-            }
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
+
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        int id = categoryManagePresenter.getCategoryId();
+        if (bundle.getInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, -1) == id) {
+            return photosView.loadMore(list, headIndex, headDirection);
+        } else {
+            return new ArrayList<>();
         }
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
+    public Bundle getBundleOfList(Bundle bundle) {
+        bundle.putInt(KEY_CATEGORY_FRAGMENT_CATEGORY_ID, categoryManagePresenter.getCategoryId());
+        return bundle;
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        photosView.updatePhoto(photo);
     }
 
     // init.

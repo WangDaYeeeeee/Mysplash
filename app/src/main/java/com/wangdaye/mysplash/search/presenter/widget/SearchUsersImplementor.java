@@ -182,9 +182,9 @@ public class SearchUsersImplementor
                 if (response.body().results.size() < Mysplash.DEFAULT_PER_PAGE) {
                     setOver(true);
                 }
-                view.requestPhotosSuccess();
+                view.searchSuccess();
             } else {
-                view.requestPhotosFailed(c.getString(R.string.feedback_search_nothing_tv));
+                view.searchFailed(c.getString(R.string.feedback_search_nothing_tv));
             }
         }
 
@@ -204,7 +204,7 @@ public class SearchUsersImplementor
                     c,
                     c.getString(R.string.feedback_search_failed_toast) + "\n" + t.getMessage(),
                     Toast.LENGTH_SHORT).show();
-            view.requestPhotosFailed(c.getString(R.string.feedback_search_failed_tv));
+            view.searchFailed(c.getString(R.string.feedback_search_failed_tv));
         }
     }
 }

@@ -116,11 +116,12 @@ public class AnimUtils {
             v.setVisibility(View.VISIBLE);
         }
         v.clearAnimation();
-        ObjectAnimator
-                .ofFloat(v, "alpha", from, to)
-                .setDuration(duration)
-                .start();
-
+        if (from != to) {
+            ObjectAnimator
+                    .ofFloat(v, "alpha", from, to)
+                    .setDuration(duration)
+                    .start();
+        }
     }
 
     public static void animHide(final View v) {
@@ -129,19 +130,21 @@ public class AnimUtils {
 
     public static void animHide(final View v, int duration, float from, float to, final boolean gone) {
         v.clearAnimation();
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", from, to)
-                .setDuration(duration);
-        anim.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                super.onAnimationEnd(animation);
-                if (gone) {
-                    v.setVisibility(View.GONE);
+        if (from != to) {
+            ObjectAnimator anim = ObjectAnimator
+                    .ofFloat(v, "alpha", from, to)
+                    .setDuration(duration);
+            anim.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    super.onAnimationEnd(animation);
+                    if (gone) {
+                        v.setVisibility(View.GONE);
+                    }
                 }
-            }
-        });
-        anim.start();
+            });
+            anim.start();
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

@@ -9,7 +9,7 @@ import com.wangdaye.mysplash.common.data.service.CollectionService;
 import com.wangdaye.mysplash.common.i.model.CollectionsModel;
 import com.wangdaye.mysplash.common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash.common.i.view.CollectionsView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 

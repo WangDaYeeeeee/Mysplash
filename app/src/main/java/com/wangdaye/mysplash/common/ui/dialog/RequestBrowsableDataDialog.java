@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash.common._basic.fragment.MysplashDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

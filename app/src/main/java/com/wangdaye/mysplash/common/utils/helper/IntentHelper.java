@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -21,7 +22,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
 import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
@@ -43,6 +44,7 @@ import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,11 +78,16 @@ public class IntentHelper {
         a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
-    public static void startPhotoActivity(MysplashActivity a, View image, View background, Photo p) {
-        Mysplash.getInstance().setPhoto(p);
+    public static void startPhotoActivity(MysplashActivity a, View image, View background,
+                                          ArrayList<Photo> photoList, int currentIndex, int headIndex,
+                                          Bundle bundle) {
+        Mysplash.getInstance().setPhoto(photoList.get(currentIndex - headIndex));
 
         Intent intent = new Intent(a, PhotoActivity.class);
-        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO, p);
+        intent.putParcelableArrayListExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_LIST, photoList);
+        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, currentIndex);
+        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX, headIndex);
+        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_BUNDLE, bundle);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat
@@ -88,16 +95,14 @@ public class IntentHelper {
                             background,
                             (int) background.getX(), (int) background.getY(),
                             background.getMeasuredWidth(), background.getMeasuredHeight());
-            ActivityCompat.startActivityForResult(
-                    a, intent, Mysplash.PHOTO_ACTIVITY, options.toBundle());
+            ActivityCompat.startActivity(a, intent, options.toBundle());
         } else {
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(
                             a,
                             Pair.create(image, a.getString(R.string.transition_photo_image)),
                             Pair.create(background, a.getString(R.string.transition_photo_background)));
-            ActivityCompat.startActivityForResult(
-                    a, intent, Mysplash.PHOTO_ACTIVITY, options.toBundle());
+            ActivityCompat.startActivity(a, intent, options.toBundle());
         }
     }
 

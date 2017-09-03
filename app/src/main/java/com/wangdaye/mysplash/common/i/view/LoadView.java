@@ -17,5 +17,4 @@ public interface LoadView {
     void setLoadingState();
     void setFailedState();
     void setNormalState();
-    void resetLoadingState();
 }

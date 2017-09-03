@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -19,12 +18,12 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.PagerManageModel;
 import com.wangdaye.mysplash.common.i.presenter.PagerManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
@@ -42,7 +41,6 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
 import com.wangdaye.mysplash.main.view.widget.HomeTrendingView;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,7 +57,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class HomeFragment extends MysplashFragment
+public class HomeFragment extends LoadableFragment<Photo>
         implements PopupManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener/*,
@@ -101,6 +99,7 @@ public class HomeFragment extends MysplashFragment
     // private NotificationBarPresenter notificationBarPresenter;
 
     private final String KEY_HOME_FRAGMENT_PAGE_POSITION = "home_fragment_page_position";
+    private final String KEY_HOME_FRAGMENT_PAGE_ORDER = "home_fragment_page_order";
 /*
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -201,25 +200,47 @@ public class HomeFragment extends MysplashFragment
     }
 
     @Override
-    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case Mysplash.PHOTO_ACTIVITY:
-                Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
-                if (photo != null) {
-                    int page = pagerManagePresenter.getPagerPosition();
-                    if (page == 0) {
-                        ((HomeTrendingView) pagers[0]).updatePhoto(photo);
-                    } else {
-                        ((HomePhotosView) pagers[page]).updatePhoto(photo);
-                    }
-                }
-                break;
-        }
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        int pagerIndex = bundle.getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, -1);
+        switch (pagerIndex) {
+            case 0:
+                return ((HomeTrendingView) pagers[0]).loadMore(list, headIndex, headDirection);
+
+            case 1:
+            case 2:
+                if (((HomePhotosView) pagers[pagerIndex])
+                        .getOrder()
+                        .equals(bundle.getString(KEY_HOME_FRAGMENT_PAGE_ORDER, ""))) {
+                    return ((HomePhotosView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
+                }
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Bundle getBundleOfList(Bundle bundle) {
+        int pagerIndex = pagerManagePresenter.getPagerPosition();
+        bundle.putInt(KEY_HOME_FRAGMENT_PAGE_POSITION, pagerIndex);
+        if (pagerManagePresenter.getPagerPosition() == 1
+                || pagerManagePresenter.getPagerPosition() == 2) {
+            bundle.putString(KEY_HOME_FRAGMENT_PAGE_ORDER, ((HomePhotosView) pagers[pagerIndex]).getOrder());
+        }
+        return bundle;
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        int page = pagerManagePresenter.getPagerPosition();
+        if (page == 0) {
+            ((HomeTrendingView) pagers[0]).updatePhoto(photo);
+        } else {
+            ((HomePhotosView) pagers[page]).updatePhoto(photo);
+        }
     }
 
     // init.

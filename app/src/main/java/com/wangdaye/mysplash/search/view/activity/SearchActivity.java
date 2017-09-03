@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
-import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
@@ -46,7 +46,6 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.search.model.activity.DownloadObject;
 import com.wangdaye.mysplash.search.model.activity.PagerManageObject;
 import com.wangdaye.mysplash.search.presenter.activity.DownloadImplementor;
@@ -73,7 +72,7 @@ import butterknife.ButterKnife;
  * 
  * */
 
-public class SearchActivity extends ReadWriteActivity 
+public class SearchActivity extends LoadableActivity<Photo>
         implements SwipeBackManageView, SearchBarView, MessageManageView, PagerManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, EditText.OnEditorActionListener,
         ViewPager.OnPageChangeListener, NestedScrollAppBarLayout.OnNestedScrollingListener,
@@ -171,13 +170,6 @@ public class SearchActivity extends ReadWriteActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (data != null) {
             switch (requestCode) {
-                case Mysplash.PHOTO_ACTIVITY:
-                    Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
-                    if (photo != null) {
-                        ((SearchPageView) pagers[0]).updatePhoto(photo);
-                    }
-                    break;
-
                 case Mysplash.COLLECTION_ACTIVITY:
                     Collection collection = data.getParcelableExtra(
                             CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
@@ -278,6 +270,35 @@ public class SearchActivity extends ReadWriteActivity
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
+    }
+
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        int pagerIndex = bundle.getInt(KEY_SEARCH_ACTIVITY_PAGE_POSITION, -1);
+        switch (pagerIndex) {
+            case 0:
+                if (((SearchPageView) pagers[pagerIndex])
+                        .getQuery()
+                        .equals(bundle.getString(KEY_SEARCH_ACTIVITY_PAGE_POSITION, ""))) {
+                    return ((SearchPageView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
+                }
+
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Bundle getBundleOfList() {
+        Bundle bundle = new Bundle();
+        int pagerIndex = pagerManagePresenter.getPagerPosition();
+        bundle.putString(KEY_SEARCH_ACTIVITY_QUERY, ((SearchPageView) pagers[pagerIndex]).getQuery());
+        bundle.putInt(KEY_SEARCH_ACTIVITY_PAGE_POSITION, pagerIndex);
+        return bundle;
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        ((SearchPageView) pagers[0]).updatePhoto(photo);
     }
 
     // init.

@@ -287,10 +287,42 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         return false;
     }
 
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
+        if ((headDirection && categoryPresenter.getAdapter().getRealItemCount() < headIndex)
+                || (!headDirection && categoryPresenter.getAdapter().getRealItemCount() < headIndex + list.size())) {
+            return new ArrayList<>();
+        }
+
+        if (!headDirection && categoryPresenter.canLoadMore()) {
+            categoryPresenter.loadMore(getContext(), false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && categoryPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+
+        if (headDirection) {
+            if (headIndex == 0) {
+                return new ArrayList<>();
+            } else {
+                return categoryPresenter.getAdapter().getPhotoData().subList(0, headIndex - 1);
+            }
+        } else {
+            if (categoryPresenter.getAdapter().getRealItemCount() == headIndex + list.size()) {
+                return new ArrayList<>();
+            } else {
+                return categoryPresenter.getAdapter()
+                        .getPhotoData()
+                        .subList(
+                                headIndex + list.size(),
+                                categoryPresenter.getAdapter().getRealItemCount() - 1);
+            }
+        }
+    }
+
     // photo.
 
     public void updatePhoto(Photo photo) {
-        categoryPresenter.getAdapter().updatePhoto(photo, false, false);
+        categoryPresenter.getAdapter().updatePhoto(photo, false);
     }
 
     /**
@@ -315,7 +347,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
         if (list.size() == 0) {
             initRefresh();
         } else {
-            setNormalState();
+            loadPresenter.setNormalState();
         }
     }
 
@@ -393,7 +425,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        categoryPresenter.getAdapter().updatePhoto(p, false, true);
+        categoryPresenter.getAdapter().updatePhoto(p, false);
     }
 
     // view.
@@ -452,24 +484,21 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(feedbackContainer);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setFailedState() {
         animShow(feedbackContainer);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(feedbackContainer);
     }
 
     // scroll view.

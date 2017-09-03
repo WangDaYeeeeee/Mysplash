@@ -5,10 +5,10 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomTouchView;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +23,7 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
     @BindView(R.id.item_photo_touch)
     FreedomTouchView touchView;
 
-    private Photo photo;
+    private PhotoActivity activity;
 
     public static final int TYPE_TOUCH = 1;
 
@@ -33,11 +33,10 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
     }
 
     @Override
-    protected void onBindView(MysplashActivity a, Photo photo) {
-        this.photo = photo;
-
+    protected void onBindView(PhotoActivity a, Photo photo) {
         touchView.setSize(photo.width, photo.height);
         touchView.setShowShadow(false);
+        this.activity = a;
     }
 
     @Override
@@ -45,8 +44,9 @@ public class TouchHolder extends PhotoInfoAdapter.ViewHolder {
         // do nothing.
     }
 
-    @OnClick(R.id.item_photo_touch) void clickItem() {
+    @OnClick(R.id.item_photo_touch)
+    void clickTouchView() {
         IntentHelper.startPreviewActivity(
-                Mysplash.getInstance().getTopActivity(), photo, true);
+                Mysplash.getInstance().getTopActivity(), activity.getPhoto(), true);
     }
 }

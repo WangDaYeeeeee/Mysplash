@@ -15,28 +15,50 @@
         android:transitionName="@string/transition_photo_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
-            android:id="@+id/activity_photo_image"
+        <com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout
+            android:id="@+id/activity_photo_swipeSwitchView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-            android:transitionName="@string/transition_photo_image"
-            android:foreground="?attr/selectableItemBackground"
-            app:fiv_cover_mode="true"
-            tools:ignore="UnusedAttribute" />
+            android:layout_height="match_parent"
+            android:background="@android:color/black">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_photo_recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:scrollbars="vertical"
-            android:scrollbarStyle="outsideOverlay" />
+            <ImageView
+                android:id="@+id/activity_photo_switchBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription" />
 
-        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
-            android:id="@+id/activity_photo_statusBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/root_color">
+
+                <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
+                    android:id="@+id/activity_photo_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/transition_photo_image"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:fiv_cover_mode="true"
+                    tools:ignore="UnusedAttribute" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/activity_photo_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:scrollbarStyle="outsideOverlay" />
+
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                    android:id="@+id/activity_photo_statusBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </FrameLayout>
+
+        </com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout>
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 

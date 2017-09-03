@@ -20,14 +20,15 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
+import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.ui.activity.invisible.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
@@ -59,8 +60,12 @@ import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
+import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
+import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -72,7 +77,7 @@ import butterknife.ButterKnife;
  * Main activity.
  * */
 
-public class MainActivity extends ReadWriteActivity
+public class MainActivity extends LoadableActivity<Photo>
         implements MessageManageView, MeManageView, DrawerView,
         View.OnClickListener, NavigationView.OnNavigationItemSelectedListener,
         PhotoAdapter.OnDownloadPhotoListener, AuthManager.OnAuthDataChangedListener,
@@ -351,6 +356,60 @@ public class MainActivity extends ReadWriteActivity
         }
     }
 
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        MysplashFragment fragment = getTopFragment();
+        if (fragment != null) {
+            int id = bundle.getInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, 0);
+            switch (id) {
+                case R.id.action_home:
+                    if (fragment instanceof HomeFragment) {
+                        return ((HomeFragment) fragment).loadMoreData(list, headIndex, headDirection, bundle);
+                    }
+                    break;
+
+                case R.id.action_following:
+                    if (fragment instanceof FollowingFragment) {
+                        return ((FollowingFragment) fragment).loadMoreData(list, headIndex, headDirection, bundle);
+                    }
+                    break;
+
+                case R.id.action_multi_filter:
+                    if (fragment instanceof MultiFilterFragment) {
+                        return ((MultiFilterFragment) fragment).loadMoreData(list, headIndex, headDirection, bundle);
+                    }
+                    break;
+
+                case R.id.action_category:
+                    if (fragment instanceof CategoryFragment) {
+                        return ((CategoryFragment) fragment).loadMoreData(list, headIndex, headDirection, bundle);
+                    }
+                    break;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Bundle getBundleOfList() {
+        Bundle bundle = new Bundle();
+        MysplashFragment fragment = getTopFragment();
+        if (fragment != null && fragment instanceof LoadableFragment) {
+            bundle.putInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentManagePresenter.getId());
+            return ((LoadableFragment) fragment).getBundleOfList(bundle);
+        } else {
+            return bundle;
+        }
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        MysplashFragment fragment = getTopFragment();
+        if (fragment != null && fragment instanceof LoadableFragment) {
+            ((LoadableFragment) fragment).updateData(photo);
+        }
+    }
+
     // init.
 
     private void initModel(@Nullable Bundle savedInstanceState) {
@@ -420,8 +479,7 @@ public class MainActivity extends ReadWriteActivity
                 fragmentList.get(i).readLargeData(f);
             }
         } else {
-            int id = fragmentManagePresenter.getId();
-            changeFragment(id);
+            changeFragment(fragmentManagePresenter.getId());
         }
     }
 

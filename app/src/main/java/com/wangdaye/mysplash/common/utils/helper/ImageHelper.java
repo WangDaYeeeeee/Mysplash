@@ -79,7 +79,7 @@ public class ImageHelper {
             }
             loadImage(
                     context, view,
-                    photo.urls.regular, photo.getRegularWidth(), photo.getRegularHeight(), false, false,
+                    photo.getRegularSizeUrl(context), photo.getRegularWidth(), photo.getRegularHeight(), false, false,
                     l == null ? null : thumbnailRequest, null, l == null ? null : new FadeAnimator(),
                     l);
         }
@@ -92,6 +92,31 @@ public class ImageHelper {
                 .load(thumbnail)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE);
         loadImage(context, view, url, 0, 0, false, false, thumbnailRequest, null, null, l);
+    }
+
+
+
+    public static void loadBackgroundPhoto(Context context, final ImageView view, Photo photo) {
+        DrawableRequestBuilder<String> thumbnailRequest = Glide
+                .with(context)
+                .load(photo.urls.thumb)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .listener(new RequestListener<String, GlideDrawable>() {
+                    @Override
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                               boolean isFirstResource) {
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                                   boolean isFromMemoryCache, boolean isFirstResource) {
+                        view.setEnabled(true);
+                        return false;
+                    }
+                });
+        view.setEnabled(false);
+        loadImage(context, view, photo.getRegularSizeUrl(context), 0, 0, false, false, thumbnailRequest, null, new FadeAnimator(), null);
     }
 
     // collection cover.

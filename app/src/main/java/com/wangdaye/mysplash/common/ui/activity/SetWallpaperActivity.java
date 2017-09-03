@@ -23,7 +23,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common._basic.activity.ReadWriteActivity;
 import com.wangdaye.mysplash.common.ui.dialog.WallpaperWhereDialog;
 import com.wangdaye.mysplash.common.ui.popup.WallpaperAlignPopupWindow;
 import com.wangdaye.mysplash.common.ui.popup.WallpaperClipPopupWindow;

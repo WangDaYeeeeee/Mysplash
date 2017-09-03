@@ -24,7 +24,7 @@ import com.wangdaye.mysplash.common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash.common.i.presenter.PagerPresenter;
 import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -220,7 +220,7 @@ public class CollectionsView extends NestedScrollFrameLayout
     // collection.
 
     public void updateCollection(Collection collection) {
-        collectionsPresenter.getAdapter().updateCollection(collection, false, false);
+        collectionsPresenter.getAdapter().updateCollection(collection, false);
     }
 
     /**
@@ -245,7 +245,7 @@ public class CollectionsView extends NestedScrollFrameLayout
         if (list.size() == 0) {
             refreshPager();
         } else {
-            setNormalState();
+            loadPresenter.setNormalState();
         }
     }
 
@@ -411,24 +411,21 @@ public class CollectionsView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(feedbackContainer);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setFailedState() {
         animShow(feedbackContainer);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(feedbackContainer);
     }
 
     // scroll view.

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.model.AboutModel;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.about.presenter.CreateAboutModelImplementor;
 import com.wangdaye.mysplash.about.view.holder.AppHolder;
 import com.wangdaye.mysplash.about.view.holder.CategoryHolder;

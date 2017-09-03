@@ -5,8 +5,8 @@ import android.support.v4.widget.DrawerLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;

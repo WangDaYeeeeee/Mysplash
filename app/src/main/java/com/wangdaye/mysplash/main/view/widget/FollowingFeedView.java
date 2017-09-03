@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.view.ViewCompat;
@@ -20,6 +21,7 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
@@ -30,7 +32,7 @@ import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash.common.i.view.FollowingView;
 import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
@@ -294,6 +296,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         return false;
     }
 
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        if (headDirection) {
+            return followingPresenter.getAdapter().getPhotoListToAnIndex(bundle, headIndex - 1);
+        } else {
+            return followingPresenter.getAdapter().getPhotoListFromAnIndex(bundle, headIndex + list.size());
+        }
+    }
+
     // following feed.
 
     /**
@@ -318,8 +328,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         if (list.size() == 0) {
             initRefresh();
         } else {
-            setNormalState();
+            loadPresenter.setNormalState();
         }
+    }
+
+    public void updatePhoto(Photo p) {
+        followingPresenter.getAdapter().updatePhoto(p, true);
     }
 
     // HTTP request.
@@ -581,24 +595,21 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(feedbackContainer);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setFailedState() {
         animShow(feedbackContainer);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(feedbackContainer);
     }
 
     // scroll view.

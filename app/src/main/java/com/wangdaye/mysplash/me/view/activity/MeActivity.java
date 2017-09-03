@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.ReadWriteActivity;
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -58,7 +58,6 @@ import com.wangdaye.mysplash.me.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.me.view.widget.MeCollectionsView;
 import com.wangdaye.mysplash.me.view.widget.MePhotosView;
 import com.wangdaye.mysplash.me.view.widget.MeProfileView;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +74,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class MeActivity extends ReadWriteActivity
+public class MeActivity extends LoadableActivity<Photo>
         implements PagerManageView, PopupManageView, SwipeBackManageView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, PhotoAdapter.OnDownloadPhotoListener,
         ViewPager.OnPageChangeListener, SwipeBackCoordinatorLayout.OnSwipeListener,
@@ -123,6 +122,7 @@ public class MeActivity extends ReadWriteActivity
     public static final String KEY_ME_ACTIVITY_DELETE_COLLECTION = "me_activity_delete_collection";
     public static final String KEY_ME_ACTIVITY_COLLECTION = "me_activity_collection";
     public static final String KEY_ME_ACTIVITY_PAGE_POSITION = "me_activity_page_position";
+    public static final String KEY_ME_ACTIVITY_PAGE_ORDER = "me_activity_page_order";
 
     public static class SavedStateFragment extends BaseSavedStateFragment {
 
@@ -180,14 +180,6 @@ public class MeActivity extends ReadWriteActivity
             return;
         }
         switch (requestCode) {
-            case Mysplash.PHOTO_ACTIVITY:
-                Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
-                if (photo != null) {
-                    ((MePhotosView) pagers[pagerManagePresenter.getPagerPosition()])
-                            .updatePhoto(photo, false);
-                }
-                break;
-
             case Mysplash.COLLECTION_ACTIVITY:
                 Collection collection = data.getParcelableExtra(KEY_ME_ACTIVITY_COLLECTION);
                 if (collection != null) {
@@ -199,7 +191,7 @@ public class MeActivity extends ReadWriteActivity
                         }
                         ((MeCollectionsView) pagers[2]).removeCollection(collection);
                     } else {
-                        ((MeCollectionsView) pagers[2]).updateCollection(collection, false);
+                        ((MeCollectionsView) pagers[2]).updateCollection(collection);
                     }
                 }
                 break;
@@ -288,6 +280,40 @@ public class MeActivity extends ReadWriteActivity
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
+    }
+
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        int pagerIndex = bundle.getInt(KEY_ME_ACTIVITY_PAGE_POSITION, -1);
+        switch (pagerIndex) {
+            case 0:
+            case 1:
+                if (((MePhotosView) pagers[pagerIndex])
+                        .getOrder()
+                        .equals(bundle.getString(KEY_ME_ACTIVITY_PAGE_ORDER, ""))) {
+                    return ((MePhotosView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
+                }
+
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Bundle getBundleOfList() {
+        Bundle bundle = new Bundle();
+        bundle.putInt(KEY_ME_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
+        if (pagerManagePresenter.getPagerPosition() < 2) {
+            bundle.putString(
+                    KEY_ME_ACTIVITY_PAGE_ORDER,
+                    ((MePhotosView) pagers[pagerManagePresenter.getPagerPosition()]).getOrder());
+        }
+        return bundle;
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        ((MePhotosView) pagers[pagerManagePresenter.getPagerPosition()])
+                .updatePhoto(photo);
     }
 
     // init.
@@ -557,9 +583,9 @@ public class MeActivity extends ReadWriteActivity
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        ((MePhotosView) pagers[0]).updatePhoto(p, true);
-        ((MePhotosView) pagers[1]).updatePhoto(p, true);
-        ((MeCollectionsView) pagers[2]).updateCollection(c, true);
+        ((MePhotosView) pagers[0]).updatePhoto(p);
+        ((MePhotosView) pagers[1]).updatePhoto(p);
+        ((MeCollectionsView) pagers[2]).updateCollection(c);
     }
 
     // on author data changed listener.

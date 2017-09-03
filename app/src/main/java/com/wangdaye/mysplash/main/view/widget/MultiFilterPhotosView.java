@@ -284,10 +284,42 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         findViewById(R.id.container_filtering_view_large).setOnClickListener(l);
     }
 
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
+        if ((headDirection && multiFilterPresenter.getAdapter().getRealItemCount() < headIndex)
+                || (!headDirection && multiFilterPresenter.getAdapter().getRealItemCount() < headIndex + list.size())) {
+            return new ArrayList<>();
+        }
+
+        if (!headDirection && multiFilterPresenter.canLoadMore()) {
+            multiFilterPresenter.loadMore(getContext(), false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && multiFilterPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+
+        if (headDirection) {
+            if (headIndex == 0) {
+                return new ArrayList<>();
+            } else {
+                return multiFilterPresenter.getAdapter().getPhotoData().subList(0, headIndex - 1);
+            }
+        } else {
+            if (multiFilterPresenter.getAdapter().getRealItemCount() == headIndex + list.size()) {
+                return new ArrayList<>();
+            } else {
+                return multiFilterPresenter.getAdapter()
+                        .getPhotoData()
+                        .subList(
+                                headIndex + list.size(),
+                                multiFilterPresenter.getAdapter().getRealItemCount() - 1);
+            }
+        }
+    }
+
     // photo.
 
     public void updatePhoto(Photo photo) {
-        multiFilterPresenter.getAdapter().updatePhoto(photo, true, false);
+        multiFilterPresenter.getAdapter().updatePhoto(photo, true);
     }
 
     /**
@@ -310,9 +342,30 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         }
         multiFilterPresenter.getAdapter().setPhotoData(list);
         if (list.size() != 0) {
-            animShow(refreshLayout);
-            animHide(feedbackContainer);
+            loadPresenter.setNormalState();
         }
+    }
+
+    // query.
+
+    public String getQuery() {
+        return multiFilterPresenter.getQuery();
+    }
+
+    public String getUsername() {
+        return multiFilterPresenter.getUsername();
+    }
+
+    public int getCategory() {
+        return multiFilterPresenter.getCategory();
+    }
+
+    public String getOrientation() {
+        return multiFilterPresenter.getOrientation();
+    }
+
+    public boolean isFeatured() {
+        return multiFilterPresenter.isFeatured();
     }
 
     // HTTP request.
@@ -403,7 +456,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        multiFilterPresenter.getAdapter().updatePhoto(p, true, true);
+        multiFilterPresenter.getAdapter().updatePhoto(p, true);
     }
 
     // view.
@@ -462,6 +515,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(feedbackContainer);
+        animHide(refreshLayout);
     }
 
     @Override
@@ -470,18 +524,14 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         feedbackButton.setText(getContext().getText(R.string.feedback_click_retry));
         animShow(feedbackContainer);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(feedbackContainer);
     }
 
     // scroll view.

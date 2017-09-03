@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.i.presenter;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.MyFollowModel;
 import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
 

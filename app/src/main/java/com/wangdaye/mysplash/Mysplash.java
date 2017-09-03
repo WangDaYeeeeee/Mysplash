@@ -1,8 +1,10 @@
 package com.wangdaye.mysplash;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
@@ -10,11 +12,15 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.text.TextUtils;
 
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
+import com.wangdaye.mysplash.common._basic.activity.RequestLoadActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +60,7 @@ public class Mysplash extends Application {
     @StringDef({DOWNLOAD_PHOTO_FORMAT, DOWNLOAD_COLLECTION_FORMAT})
     public @interface DownloadFormatRule {}
 
-    public static final int DEFAULT_PER_PAGE = 15;
+    public static final int DEFAULT_PER_PAGE = 10;
     @IntRange(from = 1, to = 30)
     public @interface PerPageRule {}
 
@@ -95,11 +101,10 @@ public class Mysplash extends Application {
     public static int PEOPLE_PHOTOS_COUNT = 3410;
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
-    public static final int PHOTO_ACTIVITY = 1;
-    public static final int COLLECTION_ACTIVITY = 2;
-    public static final int USER_ACTIVITY = 3;
-    public static final int ME_ACTIVITY = 4;
-    public static final int CUSTOM_API_ACTIVITY = 5;
+    public static final int COLLECTION_ACTIVITY = 1;
+    public static final int USER_ACTIVITY = 2;
+    public static final int ME_ACTIVITY = 3;
+    public static final int CUSTOM_API_ACTIVITY = 4;
 
     @Override
     public void onCreate() {
@@ -211,5 +216,65 @@ public class Mysplash extends Application {
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
+    }
+
+    public List<Photo> loadMorePhotos(PhotoActivity activity,
+                                      List<Photo> list, int headIndex, boolean headDirection,
+                                      Bundle bundle) {
+        int index = activityList.indexOf(activity) - 1;
+        if (index > -1) {
+            Activity a = activityList.get(index);
+            if (a instanceof LoadableActivity) {
+                if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                        .getActualTypeArguments()[0]
+                        .toString()
+                        .equals(Photo.class.toString())) {
+                    try {
+                        return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection, bundle);
+                    } catch (Exception ignore) {
+
+                    }
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public void dispatchPhotoUpdate(PhotoActivity activity, Photo p) {
+        int index = activityList.indexOf(activity) - 1;
+        if (index > -1) {
+            Activity a = activityList.get(index);
+            if (a instanceof LoadableActivity) {
+                if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                        .getActualTypeArguments()[0]
+                        .toString()
+                        .equals(Photo.class.toString())) {
+                    try {
+                        ((LoadableActivity) a).updateData(p);
+                    } catch (Exception ignore) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    public void dispatchPhotoUpdate(LoadableActivity<Photo> activity, Photo p) {
+        int index = activityList.indexOf(activity) + 1;
+        if (index < activityList.size()) {
+            Activity a = activityList.get(index);
+            if (a instanceof RequestLoadActivity) {
+                if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                        .getActualTypeArguments()[0]
+                        .toString()
+                        .equals(Photo.class.toString())) {
+                    try {
+                        ((RequestLoadActivity) a).updateData(p);
+                    } catch (Exception ignore) {
+
+                    }
+                }
+            }
+        }
     }
 }

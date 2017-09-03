@@ -23,10 +23,11 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     private OnSwipeListener swipeListener;
 
-    private int swipeDistance = 0;
+    private int swipeDistance;
+    private float swipeTrigger;
+    private static final float SWIPE_RADIO = 0.33F;
+
     private boolean isVerticalDragged;
-    private static float SWIPE_TRIGGER = 100;
-    private static final float SWIPE_RADIO = 2.5F;
 
     @DirectionRule
     private int swipeDir = NULL_DIR;
@@ -107,7 +108,8 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     private void initialize() {
-        SWIPE_TRIGGER = (float) (getResources().getDisplayMetrics().heightPixels / 5.0);
+        this.swipeDistance = 0;
+        this.swipeTrigger = (float) (getResources().getDisplayMetrics().heightPixels / 4.0);
     }
 
     // nested scroll.
@@ -154,7 +156,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     public void onStopNestedScroll(View child) {
         super.onStopNestedScroll(child);
         if (isVerticalDragged) {
-            if (Math.abs(swipeDistance) >= SWIPE_TRIGGER) {
+            if (Math.abs(swipeDistance) >= swipeTrigger) {
                 swipeBack();
             } else {
                 reset();
@@ -195,7 +197,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         swipeDir = NULL_DIR;
         if (swipeDistance != 0) {
             ResetAnimation a = new ResetAnimation(swipeDistance);
-            a.setDuration((long) (100.0 + 200.0 * Math.abs(swipeDistance) / SWIPE_TRIGGER));
+            a.setDuration((long) (200.0 + 100.0 * Math.abs(swipeDistance) / swipeTrigger));
             a.setInterpolator(new AccelerateDecelerateInterpolator());
             a.setAnimationListener(resetAnimListener);
             startAnimation(a);
@@ -203,12 +205,15 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     private void setSwipeTranslation() {
-        setTranslationY((float) (1.0 * swipeDistance / SWIPE_RADIO));
+        int dir = swipeDistance > 0 ? UP_DIR : DOWN_DIR;
+        setTranslationY(
+                (float) (dir * SWIPE_RADIO * swipeTrigger
+                        * Math.log10(1 + 9.0 * Math.abs(swipeDistance) / swipeTrigger)));
         if (swipeListener != null) {
             swipeListener.onSwipeProcess(
                     (float) Math.min(
                             1,
-                            Math.abs(1.0 * swipeDistance / SWIPE_TRIGGER)));
+                            Math.abs(1.0 * swipeDistance / swipeTrigger)));
         }
     }
 
@@ -231,7 +236,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
      * */
     @ColorInt
     public static int getBackgroundColor(float percent) {
-        return Color.argb((int) (255 * 0.5 * (2 - percent)), 0, 0, 0);
+        return Color.argb((int) (255 * (0.9 - percent * (0.9 - 0.5))), 0, 0, 0);
     }
 
     /**

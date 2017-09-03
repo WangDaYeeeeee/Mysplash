@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.Previewable;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollPhotoView;

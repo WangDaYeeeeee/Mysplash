@@ -188,7 +188,8 @@ public class MeProfileView  extends FrameLayout
 
     @Override
     public void setLoadingState() {
-        // do nothing.
+        animShow(progressView);
+        animHide(profileContainer);
     }
 
     @Override
@@ -200,10 +201,5 @@ public class MeProfileView  extends FrameLayout
     public void setNormalState() {
         animShow(profileContainer);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        // do nothing.
     }
 }

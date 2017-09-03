@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.common.data.entity.unsplash;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 

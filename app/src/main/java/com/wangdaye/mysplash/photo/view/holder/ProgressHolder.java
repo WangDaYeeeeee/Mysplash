@@ -7,7 +7,7 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
@@ -40,10 +40,8 @@ public class ProgressHolder extends PhotoInfoAdapter.ViewHolder {
     }
 
     @Override
-    protected void onBindView(MysplashActivity a, Photo photo) {
-        if (a instanceof PhotoActivity) {
-            failed = ((PhotoActivity) a).isLoadFailed();
-        }
+    protected void onBindView(PhotoActivity a, Photo photo) {
+        failed = a.isLoadFailed();
         if (failed) {
             progress.setAlpha(0f);
             button.setAlpha(1f);

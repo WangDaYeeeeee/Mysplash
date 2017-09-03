@@ -11,11 +11,12 @@ import android.widget.TextView;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
         implements ViewPager.OnPageChangeListener {
 
     @BindView(R.id.item_photo_more_viewPager)
-    ViewPager viewPager;
+    SwipeSwitchLayout.ViewPager viewPager;
 
     @BindView(R.id.item_photo_more_indicator)
     InkPageIndicator indicator;
@@ -75,7 +76,7 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
 
     @SuppressLint("InflateParams")
     @Override
-    protected void onBindView(final MysplashActivity a, final Photo photo) {
+    protected void onBindView(final PhotoActivity a, final Photo photo) {
         int size = photo.related_collections.results.size();
         List<View> viewList = new ArrayList<>(size);
         List<String> titleList = new ArrayList<>(size);

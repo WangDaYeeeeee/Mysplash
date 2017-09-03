@@ -9,7 +9,7 @@
     tools:background="?attr/title_color"
     tools:ignore="RtlHardcoded">
 
-    <android.support.v4.view.ViewPager
+    <view class="com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout$ViewPager"
         android:id="@+id/item_photo_more_viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

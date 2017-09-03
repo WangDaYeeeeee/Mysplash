@@ -201,8 +201,8 @@ public class UserCollectionsView extends NestedScrollFrameLayout
 
     // collection.
 
-    public void updateCollection(Collection c, boolean refreshView) {
-        collectionsPresenter.getAdapter().updateCollection(c, false, refreshView);
+    public void updateCollection(Collection c) {
+        collectionsPresenter.getAdapter().updateCollection(c, false);
     }
 
     /**
@@ -227,7 +227,7 @@ public class UserCollectionsView extends NestedScrollFrameLayout
         if (list.size() == 0) {
             refreshPager();
         } else {
-            setNormalState();
+            loadPresenter.setNormalState();
         }
     }
 
@@ -391,24 +391,21 @@ public class UserCollectionsView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(retryButton);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setFailedState() {
         animShow(retryButton);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(retryButton);
     }
 
     // scroll view.

@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
@@ -18,8 +17,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
@@ -28,8 +27,7 @@ import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
@@ -43,8 +41,9 @@ import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterBarImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterFragmentPopupManageImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,7 +59,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class MultiFilterFragment extends MysplashFragment
+public class MultiFilterFragment extends LoadableFragment<Photo>
         implements MultiFilterBarView, PopupManageView, MessageManageView,
         View.OnClickListener, EditText.OnEditorActionListener,
         NestedScrollAppBarLayout.OnNestedScrollingListener, SafeHandler.HandlerContainer,
@@ -179,18 +178,36 @@ public class MultiFilterFragment extends MysplashFragment
     }
 
     @Override
-    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Mysplash.PHOTO_ACTIVITY) {
-            Photo photo = data.getParcelableExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO);
-            if (photo != null) {
-                photosView.updatePhoto(photo);
-            }
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
+    }
+
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        if (TextUtils.equals(bundle.getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""), photosView.getQuery())
+                && TextUtils.equals(bundle.getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""), photosView.getUsername())
+                && bundle.getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, -1) == photosView.getCategory()
+                && TextUtils.equals(bundle.getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""), photosView.getOrientation())
+                && bundle.getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false) == photosView.isFeatured()) {
+            return photosView.loadMore(list, headIndex, headDirection);
+        } else {
+            return new ArrayList<>();
         }
     }
 
     @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
+    public Bundle getBundleOfList(Bundle bundle) {
+        bundle.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, photosView.getQuery());
+        bundle.putString(KEY_MULTI_FILTER_FRAGMENT_USER, photosView.getUsername());
+        bundle.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, photosView.getCategory());
+        bundle.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, photosView.getOrientation());
+        bundle.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, photosView.isFeatured());
+        return bundle;
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        photosView.updatePhoto(photo);
     }
 
     // init.

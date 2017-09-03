@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -15,7 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ActionObject;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -28,6 +29,7 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -73,7 +75,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @BindView(R.id.item_notification_time)
         TextView time;
 
-        public ViewHolder(View itemView, int position) {
+        public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
@@ -302,11 +304,18 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         @OnClick(R.id.item_notification_imageContainer) void clickImage() {
             if (a instanceof MysplashActivity) {
+                ArrayList<Photo> photoList = new ArrayList<>();
+                for (int i = 0; i < getNotification(getAdapterPosition()).objects.size(); i ++) {
+                    photoList.add(getNotification(getAdapterPosition()).objects.get(i).castToPhoto());
+                }
                 IntentHelper.startPhotoActivity(
                         (MysplashActivity) a,
                         image,
                         imageContainer,
-                        getNotification(getAdapterPosition()).objects.get(0).castToPhoto());
+                        photoList,
+                        0,
+                        0,
+                        new Bundle());
             }
         }
 
@@ -323,7 +332,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_notification, parent, false);
-        return new ViewHolder(v, viewType);
+        return new ViewHolder(v);
     }
 
     @Override

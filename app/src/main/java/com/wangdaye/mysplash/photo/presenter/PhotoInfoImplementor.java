@@ -152,7 +152,7 @@ public class PhotoInfoImplementor
                 photo.liked_by_user = response.body().photo.liked_by_user;
             }
             model.setPhoto(photo);
-            view.setLikeForAPhotoCompleted();
+            view.setLikeForAPhotoCompleted(photo, true);
         }
 
         @Override
@@ -163,7 +163,7 @@ public class PhotoInfoImplementor
             Photo photo = model.getPhoto();
             photo.settingLike = false;
             model.setPhoto(photo);
-            view.setLikeForAPhotoCompleted();
+            view.setLikeForAPhotoCompleted(photo, false);
         }
     }
 }

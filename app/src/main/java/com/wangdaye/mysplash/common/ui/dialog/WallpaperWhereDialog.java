@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashDialogFragment;
+import com.wangdaye.mysplash.common._basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.activity.SetWallpaperActivity;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 

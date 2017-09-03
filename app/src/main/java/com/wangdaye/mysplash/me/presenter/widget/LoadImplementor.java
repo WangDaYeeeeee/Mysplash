@@ -21,22 +21,15 @@ public class LoadImplementor implements LoadPresenter {
 
     @Override
     public void setLoadingState() {
-        switch (model.getState()) {
-            case LoadObject.FAILED_STATE:
-                model.setState(LoadObject.LOADING_STATE);
-                view.setLoadingState();
-                break;
-
-            case LoadObject.NORMAL_STATE:
-                model.setState(LoadObject.LOADING_STATE);
-                view.resetLoadingState();
-                break;
+        if (model.getState() != LoadObject.LOADING_STATE) {
+            model.setState(LoadObject.LOADING_STATE);
+            view.setLoadingState();
         }
     }
 
     @Override
     public void setFailedState() {
-        if (model.getState() == LoadObject.LOADING_STATE) {
+        if (model.getState() != LoadObject.FAILED_STATE) {
             model.setState(LoadObject.FAILED_STATE);
             view.setFailedState();
         }
@@ -44,7 +37,7 @@ public class LoadImplementor implements LoadPresenter {
 
     @Override
     public void setNormalState() {
-        if (model.getState() == LoadObject.LOADING_STATE) {
+        if (model.getState() != LoadObject.NORMAL_STATE) {
             model.setState(LoadObject.NORMAL_STATE);
             view.setNormalState();
         }

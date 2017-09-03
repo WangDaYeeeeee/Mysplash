@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
@@ -58,7 +57,7 @@ public class TouchLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
     }
 
     @Override
-    protected void onBindView(MysplashActivity a, Photo photo) {
+    protected void onBindView(PhotoActivity a, Photo photo) {
         this.photo = photo;
 
         touchView.setSize(photo.width, photo.height);
@@ -78,9 +77,10 @@ public class TouchLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
         ImageHelper.releaseImageView(avatar);
     }
 
-    @OnClick(R.id.item_photo_touch_landscape_touch) void clickItem() {
+    @OnClick(R.id.item_photo_touch)
+    void clickTouchView() {
         IntentHelper.startPreviewActivity(
-                Mysplash.getInstance().getTopActivity(), photo, true);
+                Mysplash.getInstance().getTopActivity(), activity.getPhoto(), true);
     }
 
     @OnClick(R.id.item_photo_touch_landscape_avatar) void clickAvatar() {

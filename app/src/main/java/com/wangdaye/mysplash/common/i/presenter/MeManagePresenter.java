@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 
 /**
  * Auth response presenter.

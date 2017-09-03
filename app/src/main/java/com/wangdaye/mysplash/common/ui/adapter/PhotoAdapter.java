@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -14,11 +15,12 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
+import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -170,11 +172,24 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         @OnClick(R.id.item_photo) void clickItem() {
             if (a instanceof MysplashActivity && getAdapterPosition() < itemList.size()) {
+
+                ArrayList<Photo> list = new ArrayList<>();
+                int headIndex = getAdapterPosition() - 2;
+                int size = 5;
+                if (headIndex < 0) {
+                    headIndex = 0;
+                }
+                if (headIndex + size - 1 > itemList.size() - 1) {
+                    size = itemList.size() - headIndex;
+                }
+                for (int i = 0; i < size; i ++) {
+                    list.add(itemList.get(headIndex + i));
+                }
+
                 IntentHelper.startPhotoActivity(
-                        (MysplashActivity) a,
-                        image,
-                        card,
-                        itemList.get(getAdapterPosition()));
+                        (MysplashActivity) a, image, card,
+                        list, getAdapterPosition(), headIndex,
+                        a instanceof LoadableActivity ? ((LoadableActivity) a).getBundleOfList() : new Bundle());
             }
         }
 
@@ -346,9 +361,24 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         this.inMyCollection = in;
     }
 
-    public void updatePhoto(Photo p, boolean probablyRepeat, boolean refreshView) {
+    public void updatePhoto(Photo p, boolean probablyRepeat) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id.equals(p.id)) {
+                boolean refreshView = false;
+                try {
+                    if ((itemList.get(i).current_user_collections != null && p.current_user_collections != null
+                            && itemList.get(i).current_user_collections.size() != p.current_user_collections.size())
+                            || (itemList.get(i).current_user_collections == null && p.current_user_collections != null)
+                            || (itemList.get(i).current_user_collections != null && p.current_user_collections == null)) {
+                        refreshView = true;
+                    }
+                    if (!refreshView && itemList.get(i).liked_by_user != p.liked_by_user) {
+                        refreshView = true;
+                    }
+                } catch (Exception ignored) {
+
+                }
+
                 p.loadPhotoSuccess = itemList.get(i).loadPhotoSuccess;
                 p.hasFadedIn = itemList.get(i).hasFadedIn;
                 p.settingLike = itemList.get(i).settingLike;
@@ -374,6 +404,14 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         List<Photo> list = new ArrayList<>();
         list.addAll(itemList);
         return list;
+    }
+
+    private void dispatchUpdate(int position) {
+        if (a instanceof LoadableActivity) {
+            Mysplash.getInstance().dispatchPhotoUpdate(
+                    (LoadableActivity<Photo>) a,
+                    itemList.get(position));
+        }
     }
 
     // interface.
@@ -404,8 +442,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         @Override
         public void onSetLikeSuccess(Call<LikePhotoResult> call, Response<LikePhotoResult> response) {
-            if (itemList.size() > position
-                    && itemList.get(position).id.equals(id)) {
+            if (itemList.size() > position && itemList.get(position).id.equals(id)) {
                 itemList.get(position).settingLike = false;
 
                 if (response.isSuccessful() && response.body() != null) {
@@ -414,6 +451,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 }
 
                 updateView(itemList.get(position).liked_by_user);
+                dispatchUpdate(position);
             }
         }
 

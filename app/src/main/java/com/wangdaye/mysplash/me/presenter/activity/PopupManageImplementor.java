@@ -8,7 +8,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.popup.MeMenuPopupWindow;
 import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;

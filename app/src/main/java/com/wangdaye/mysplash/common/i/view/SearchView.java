@@ -17,6 +17,6 @@ public interface SearchView {
     void setPermitLoading(boolean permit);
 
     void initRefreshStart();
-    void requestPhotosSuccess();
-    void requestPhotosFailed(String feedback);
+    void searchSuccess();
+    void searchFailed(String feedback);
 }

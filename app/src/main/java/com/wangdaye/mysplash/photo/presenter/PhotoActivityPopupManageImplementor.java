@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;

@@ -18,5 +18,5 @@ public interface PhotoInfoView {
 
     void requestPhotoSuccess(Photo photo);
     void requestPhotoFailed();
-    void setLikeForAPhotoCompleted();
+    void setLikeForAPhotoCompleted(Photo photo, boolean succeed);
 }

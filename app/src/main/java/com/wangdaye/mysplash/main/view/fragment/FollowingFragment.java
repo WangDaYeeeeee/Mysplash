@@ -10,15 +10,18 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash.common._basic.MysplashActivity;
-import com.wangdaye.mysplash.common._basic.MysplashFragment;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.FollowingFeedView;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +34,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class FollowingFragment extends MysplashFragment
+public class FollowingFragment extends LoadableFragment<Photo>
         implements View.OnClickListener, NestedScrollAppBarLayout.OnNestedScrollingListener {
 
     @BindView(R.id.fragment_following_statusBar)
@@ -151,6 +154,21 @@ public class FollowingFragment extends MysplashFragment
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
+    }
+
+    @Override
+    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+        return feedView.loadMore(list, headIndex, headDirection, bundle);
+    }
+
+    @Override
+    public Bundle getBundleOfList(Bundle bundle) {
+        return bundle;
+    }
+
+    @Override
+    public void updateData(Photo photo) {
+        feedView.updatePhoto(photo);
     }
 
     // init.

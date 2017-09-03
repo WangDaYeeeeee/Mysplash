@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common._basic;
+package com.wangdaye.mysplash.common._basic.activity;
 
 import android.Manifest;
 import android.content.pm.PackageManager;

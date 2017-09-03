@@ -244,10 +244,42 @@ public class HomePhotosView extends NestedScrollFrameLayout
         return true;
     }
 
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
+        if ((headDirection && photosPresenter.getAdapter().getRealItemCount() < headIndex)
+                || (!headDirection && photosPresenter.getAdapter().getRealItemCount() < headIndex + list.size())) {
+            return new ArrayList<>();
+        }
+
+        if (!headDirection && photosPresenter.canLoadMore()) {
+            photosPresenter.loadMore(getContext(), false);
+        }
+        if (!ViewCompat.canScrollVertically(recyclerView, 1) && photosPresenter.isLoading()) {
+            refreshLayout.setLoading(true);
+        }
+
+        if (headDirection) {
+            if (headIndex == 0) {
+                return new ArrayList<>();
+            } else {
+                return photosPresenter.getAdapter().getPhotoData().subList(0, headIndex - 1);
+            }
+        } else {
+            if (photosPresenter.getAdapter().getRealItemCount() == headIndex + list.size()) {
+                return new ArrayList<>();
+            } else {
+                return photosPresenter.getAdapter()
+                        .getPhotoData()
+                        .subList(
+                                headIndex + list.size(),
+                                photosPresenter.getAdapter().getRealItemCount() - 1);
+            }
+        }
+    }
+
     // photo.
 
     public void updatePhoto(Photo photo) {
-        photosPresenter.getAdapter().updatePhoto(photo, false, false);
+        photosPresenter.getAdapter().updatePhoto(photo, false);
     }
 
     /**
@@ -272,8 +304,12 @@ public class HomePhotosView extends NestedScrollFrameLayout
         if (list.size() == 0) {
             refreshPager();
         } else {
-            setNormalState();
+            loadPresenter.setNormalState();
         }
+    }
+
+    public String getOrder() {
+        return photosPresenter.getOrder();
     }
 
     // interface.
@@ -315,7 +351,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        photosPresenter.getAdapter().updatePhoto(p, false, true);
+        photosPresenter.getAdapter().updatePhoto(p, false);
     }
 
     // view.
@@ -451,24 +487,21 @@ public class HomePhotosView extends NestedScrollFrameLayout
     public void setLoadingState() {
         animShow(progressView);
         animHide(feedbackContainer);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setFailedState() {
         animShow(feedbackContainer);
         animHide(progressView);
+        animHide(refreshLayout);
     }
 
     @Override
     public void setNormalState() {
         animShow(refreshLayout);
         animHide(progressView);
-    }
-
-    @Override
-    public void resetLoadingState() {
-        animShow(progressView);
-        animHide(refreshLayout);
+        animHide(feedbackContainer);
     }
 
     // scroll view.

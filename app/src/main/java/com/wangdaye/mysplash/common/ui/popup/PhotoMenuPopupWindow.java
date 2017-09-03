@@ -94,15 +94,9 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
         } else {
             likeIcon.forceSetResultState(R.drawable.ic_heart_outline_dark);
         }
-        if (photo.current_user_collections.size() == 0) {
-            ThemeManager.setImageResource(
-                    collectIcon,
-                    R.drawable.ic_collect_light, R.drawable.ic_collect_dark);
-        } else {
-            ThemeManager.setImageResource(
-                    collectIcon,
-                    R.drawable.ic_collected_light, R.drawable.ic_collected_dark);
-        }
+
+        setCollectIcon(photo);
+
         ThemeManager.setImageResource(
                 (ImageView) v.findViewById(R.id.popup_photo_menu_statsIcon),
                 R.drawable.ic_stats_light, R.drawable.ic_stats_dark);
@@ -121,6 +115,30 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
             likeIcon.setResultState(R.drawable.ic_heart_outline_light);
         } else {
             likeIcon.setResultState(R.drawable.ic_heart_outline_dark);
+        }
+    }
+
+    public void forceSetLikeResult(Context context, Photo photo) {
+        if (likeIcon.getState() != CircularProgressIcon.STATE_PROGRESS) {
+            if (photo.liked_by_user) {
+                likeIcon.forceSetResultState(R.drawable.ic_item_heart_red);
+            } else if (ThemeManager.getInstance(context).isLightTheme()) {
+                likeIcon.forceSetResultState(R.drawable.ic_heart_outline_light);
+            } else {
+                likeIcon.forceSetResultState(R.drawable.ic_heart_outline_dark);
+            }
+        }
+    }
+
+    public void setCollectIcon(Photo photo) {
+        if (photo.current_user_collections.size() == 0) {
+            ThemeManager.setImageResource(
+                    collectIcon,
+                    R.drawable.ic_collect_light, R.drawable.ic_collect_dark);
+        } else {
+            ThemeManager.setImageResource(
+                    collectIcon,
+                    R.drawable.ic_collected_light, R.drawable.ic_collected_dark);
         }
     }
 

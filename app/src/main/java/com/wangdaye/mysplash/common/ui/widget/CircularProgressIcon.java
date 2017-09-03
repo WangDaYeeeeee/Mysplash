@@ -43,8 +43,8 @@ public class CircularProgressIcon extends FrameLayout {
     @StateRule
     private int state;
 
-    private static final int STATE_PROGRESS = -1;
-    private static final int STATE_RESULT = 1;
+    public static final int STATE_PROGRESS = -1;
+    public static final int STATE_RESULT = 1;
     @IntDef({STATE_PROGRESS, STATE_RESULT})
     private @interface StateRule {}
 

@@ -11,6 +11,7 @@ import android.widget.PopupWindow;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 
 /**
  * Mysplash popup window.

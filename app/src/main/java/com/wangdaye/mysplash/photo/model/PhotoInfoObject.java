@@ -22,7 +22,7 @@ public class PhotoInfoObject
     private PhotoService photoService;
 
     public PhotoInfoObject(PhotoActivity a, Photo p) {
-        this.photo = p;
+        setPhoto(p);
         this.failed = false;
         this.adapter = new PhotoInfoAdapter(a, p);
         this.photoInfoService = PhotoInfoService.getService();
@@ -51,6 +51,7 @@ public class PhotoInfoObject
 
     @Override
     public void setPhoto(Photo p) {
+        p.settingLike = false;
         this.photo = p;
     }
 
