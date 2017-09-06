@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.1.8</string>
+    <string name="version_code">3.1.9</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -12,6 +12,7 @@
     <string name="gitHub">GITHUB</string>
     <string name="email">EMAIL</string>
     <string name="source_code">SOURCE CODE</string>
+    <string name="donate">DONATE (ALIPAY)</string>
     <string name="translators">TRANSLATORS</string>
     <string name="libraries">LIBRARIES</string>
     <string name="enter">ENTER</string>

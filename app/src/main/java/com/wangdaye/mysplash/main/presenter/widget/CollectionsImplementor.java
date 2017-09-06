@@ -207,8 +207,6 @@ public class CollectionsImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                model.getAdapter().clearItem();
-                setOver(false);
                 view.setRefreshing(false);
             } else {
                 view.setLoading(false);
@@ -216,6 +214,10 @@ public class CollectionsImplementor
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
                 model.setCollectionsPage(page);
+                if (refresh) {
+                    model.getAdapter().clearItem();
+                    setOver(false);
+                }
                 for (int i = 0; i < response.body().size(); i ++) {
                     model.getAdapter().insertItem(response.body().get(i), model.getAdapter().getRealItemCount());
                 }

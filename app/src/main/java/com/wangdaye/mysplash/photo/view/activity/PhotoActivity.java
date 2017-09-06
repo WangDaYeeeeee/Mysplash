@@ -430,10 +430,6 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         popupManagePresenter.showPopup(c, anchor, value, position);
     }
 
-    public SwipeSwitchLayout getSwipeSwitchView() {
-        return swipeSwitchView;
-    }
-
     // download.
 
     public void readyToDownload(int type) {

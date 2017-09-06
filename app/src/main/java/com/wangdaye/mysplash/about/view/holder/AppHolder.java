@@ -10,6 +10,7 @@ import com.wangdaye.mysplash.common.i.model.AboutModel;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
+import com.wangdaye.mysplash.common.utils.helper.DonateHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.AppObject;
 
@@ -69,6 +70,10 @@ public class AppHolder extends AboutAdapter.ViewHolder {
 
             case 4:
                 IntentHelper.startWebActivity(itemView.getContext(), "https://github.com/WangDaYeeeeee/MySplash");
+                break;
+
+            case 5:
+                DonateHelper.donateByAlipay(Mysplash.getInstance().getTopActivity());
                 break;
         }
     }

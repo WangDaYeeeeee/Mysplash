@@ -559,8 +559,13 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     @Override
     public void searchFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (searchPresenter.getAdapter() instanceof FooterAdapter
+                && ((FooterAdapter) searchPresenter.getAdapter()).getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // pager view.

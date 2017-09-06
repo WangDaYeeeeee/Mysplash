@@ -167,13 +167,17 @@ public class FollowingImplementor implements FollowingPresenter {
 
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().results.size() > 0) {
+                model.setNextPage(response.body().next_page);
+                if (refresh) {
+                    model.getAdapter().clearItem();
+                    setOver(false);
+                }
                 for (int i = 0; i < response.body().results.size(); i ++) {
                     model.getAdapter().insertItem(response.body().results.get(i));
                 }
                 if (TextUtils.isEmpty(response.body().next_page)) {
                     setOver(true);
                 }
-                model.setNextPage(response.body().next_page);
                 view.requestFollowingFeedSuccess();
             } else {
                 view.requestFollowingFeedFailed(c.getString(R.string.feedback_load_nothing_tv));

@@ -464,8 +464,12 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void requestPhotosFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (categoryPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // load view.

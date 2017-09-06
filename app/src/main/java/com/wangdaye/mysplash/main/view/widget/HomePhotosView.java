@@ -390,8 +390,12 @@ public class HomePhotosView extends NestedScrollFrameLayout
 
     @Override
     public void requestPhotosFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (photosPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // pager view.

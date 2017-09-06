@@ -157,8 +157,6 @@ public class TrendingImplementor implements TrendingPresenter {
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                model.getAdapter().clearItem();
-                setOver(false);
                 view.setRefreshing(false);
             } else {
                 view.setLoading(false);
@@ -166,6 +164,10 @@ public class TrendingImplementor implements TrendingPresenter {
 
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().photos.size() > 0) {
+                if (refresh) {
+                    model.getAdapter().clearItem();
+                    setOver(false);
+                }
                 for (int i = 0; i < response.body().photos.size(); i ++) {
                     model.getAdapter().insertItem(response.body().photos.get(i));
                 }

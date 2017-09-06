@@ -252,8 +252,6 @@ public class PhotosImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                model.getAdapter().clearItem();
-                setOver(false);
                 view.setRefreshing(false);
             } else {
                 view.setLoading(false);
@@ -264,6 +262,10 @@ public class PhotosImplementor
                     model.setPhotosPage(page + 1);
                 } else {
                     model.setPhotosPage(page);
+                }
+                if (refresh) {
+                    model.getAdapter().clearItem();
+                    setOver(false);
                 }
                 for (int i = 0; i < response.body().size(); i ++) {
                     model.getAdapter().insertItem(response.body().get(i));

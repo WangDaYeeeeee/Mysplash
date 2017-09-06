@@ -298,7 +298,11 @@ public class UserCollectionsView extends NestedScrollFrameLayout
 
     @Override
     public void requestCollectionsFailed(String feedback) {
-        loadPresenter.setFailedState();
+        if (collectionsPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            loadPresenter.setFailedState();
+        }
     }
 
     // pager view.

@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(23);
+        List<AboutModel> modelList = new ArrayList<>(24);
         boolean light = ThemeManager.getInstance(c).isLightTheme();
 
         // header.
@@ -49,6 +49,10 @@ public class CreateAboutModelImplementor {
                 4,
                 light ? R.drawable.ic_android_studio_light : R.drawable.ic_android_studio_dark,
                 c.getString(R.string.source_code)));
+        modelList.add(new AppObject(
+                5,
+                light ? R.drawable.ic_gift_light : R.drawable.ic_gift_dark,
+                c.getString(R.string.donate)));
 
         // translator.
         modelList.add(new CategoryObject(c.getString(R.string.translators)));

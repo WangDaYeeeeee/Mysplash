@@ -360,8 +360,12 @@ public class HomeTrendingView extends NestedScrollFrameLayout
 
     @Override
     public void requestTrendingFeedFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (trendingPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // pager view.

@@ -163,8 +163,6 @@ public class SearchUsersImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                adapter.clearItem();
-                setOver(false);
                 view.setRefreshing(false);
             } else {
                 view.setLoading(false);
@@ -174,6 +172,10 @@ public class SearchUsersImplementor
                     && response.body().results != null
                     && adapter.getRealItemCount() + response.body().results.size() > 0) {
                 model.setPhotosPage(page);
+                if (refresh) {
+                    adapter.clearItem();
+                    setOver(false);
+                }
                 for (int i = 0; i < response.body().results.size(); i ++) {
                     adapter.insertItem(
                             response.body().results.get(i),

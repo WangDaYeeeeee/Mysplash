@@ -575,8 +575,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @Override
     public void requestFollowingFeedFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (followingPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // load view.

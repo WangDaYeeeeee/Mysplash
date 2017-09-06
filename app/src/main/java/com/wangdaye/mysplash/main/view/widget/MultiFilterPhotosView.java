@@ -495,8 +495,12 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void requestPhotosFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (multiFilterPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // load view.

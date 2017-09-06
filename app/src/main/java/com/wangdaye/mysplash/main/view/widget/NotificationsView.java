@@ -279,8 +279,12 @@ public class NotificationsView extends NestedScrollFrameLayout
 
     @Override
     public void requestNotificationsFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (notificationsPresenter.getAdapter().getItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // load view.

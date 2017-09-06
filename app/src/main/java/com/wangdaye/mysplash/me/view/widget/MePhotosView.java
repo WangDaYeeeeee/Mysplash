@@ -345,7 +345,11 @@ public class MePhotosView extends NestedScrollFrameLayout
 
     @Override
     public void requestPhotosFailed(String feedback) {
-        loadPresenter.setFailedState();
+        if (photosPresenter.getAdapter().getRealItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            loadPresenter.setFailedState();
+        }
     }
 
     // pager view.

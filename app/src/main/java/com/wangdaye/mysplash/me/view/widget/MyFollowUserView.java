@@ -262,8 +262,12 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     @Override
     public void requestMyFollowFailed(String feedback) {
-        feedbackText.setText(feedback);
-        loadPresenter.setFailedState();
+        if (myFollowPresenter.getAdapter().getItemCount() > 0) {
+            loadPresenter.setNormalState();
+        } else {
+            feedbackText.setText(feedback);
+            loadPresenter.setFailedState();
+        }
     }
 
     // pager view.
