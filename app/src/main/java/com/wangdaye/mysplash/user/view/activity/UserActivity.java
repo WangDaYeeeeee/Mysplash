@@ -196,7 +196,7 @@ public class UserActivity extends LoadableActivity<Photo>
                 Collection collection = data.getParcelableExtra(
                         CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
                 if (collection != null) {
-                    ((UserCollectionsView) pagers[2]).updateCollection(collection);
+                    ((UserCollectionsView) pagers[2]).updateCollection(collection, false);
                 }
                 break;
         }
@@ -323,7 +323,7 @@ public class UserActivity extends LoadableActivity<Photo>
     @Override
     public void updateData(Photo photo) {
         ((UserPhotosView) pagers[pagerManagePresenter.getPagerPosition()])
-                .updatePhoto(photo);
+                .updatePhoto(photo, true);
     }
 
     // init.
@@ -585,7 +585,7 @@ public class UserActivity extends LoadableActivity<Photo>
     public void onUpdateCollection(Collection c, User u, Photo p) {
         for (PagerView pager : pagers) {
             if (pager instanceof UserPhotosView) {
-                ((UserPhotosView) pager).updatePhoto(p);
+                ((UserPhotosView) pager).updatePhoto(p, true);
             }
         }
     }

@@ -219,14 +219,14 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         }
     }
 
-    public void updateCollection(Collection c) {
+    public void updateCollection(Collection c, boolean refreshView) {
         switch (loadPresenter.getLoadState()) {
             case LoadObject.LOADING_STATE:
                 collectionsPresenter.initRefresh(getContext());
                 break;
 
             case LoadObject.NORMAL_STATE:
-                collectionsPresenter.getAdapter().updateCollection(c, false);
+                collectionsPresenter.getAdapter().updateCollection(c, refreshView, false);
                 break;
         }
     }

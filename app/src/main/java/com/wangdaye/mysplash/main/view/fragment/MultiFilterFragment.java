@@ -207,7 +207,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @Override
     public void updateData(Photo photo) {
-        photosView.updatePhoto(photo);
+        photosView.updatePhoto(photo, true);
     }
 
     // init.

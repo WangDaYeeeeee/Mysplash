@@ -21,7 +21,7 @@ public interface PhotoInfoPresenter {
     void touchMenuItem(int itemId);
 
     Photo getPhoto();
-    void setPhoto(Photo photo);
+    void setPhoto(Photo photo, boolean init);
 
     PhotoInfoAdapter getAdapter();
 

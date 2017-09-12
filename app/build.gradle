@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
-        targetSdkVersion 25
-        versionCode 319
-        versionName "3.1.9"
+        targetSdkVersion 26
+        versionCode 320
+        versionName "3.2.0"
     }
     sourceSets {
         main {
@@ -54,6 +54,8 @@ android {
             it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
             it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
 
+            it.buildConfigField 'String', 'FEED_TOKEN', FEED_TOKEN
+
             it.buildConfigField 'String', 'APP_ID_RELEASE_UNAUTH', APP_ID_RELEASE_UNAUTH
             it.buildConfigField 'String', 'GET_STREAM_KEY', GET_STREAM_KEY
             it.buildConfigField 'String', 'GET_STREAM_AUTH_CODE', GET_STREAM_AUTH_CODE
@@ -88,7 +90,13 @@ apply plugin: 'com.neenbedankt.android-apt'
 
 allprojects {
     repositories {
-        maven { url "https://jitpack.io" }
+        jcenter()
+        maven {
+            url "https://jitpack.io"
+        }
+        maven {
+            url "https://maven.google.com"
+        }
     }
 }
 
@@ -96,11 +104,11 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:customtabs:25.3.1'
+    compile 'com.android.support:appcompat-v7:26.0.1'
+    compile 'com.android.support:cardview-v7:26.0.1'
+    compile 'com.android.support:design:26.0.1'
+    compile 'com.android.support:support-v4:26.0.1'
+    compile 'com.android.support:customtabs:26.0.1'
 
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'

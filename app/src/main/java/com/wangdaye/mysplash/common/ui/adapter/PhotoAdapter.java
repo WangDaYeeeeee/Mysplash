@@ -361,28 +361,12 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         this.inMyCollection = in;
     }
 
-    public void updatePhoto(Photo p, boolean probablyRepeat) {
+    public void updatePhoto(Photo p, boolean refreshView, boolean probablyRepeat) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id.equals(p.id)) {
-                boolean refreshView = false;
-                try {
-                    if ((itemList.get(i).current_user_collections != null && p.current_user_collections != null
-                            && itemList.get(i).current_user_collections.size() != p.current_user_collections.size())
-                            || (itemList.get(i).current_user_collections == null && p.current_user_collections != null)
-                            || (itemList.get(i).current_user_collections != null && p.current_user_collections == null)) {
-                        refreshView = true;
-                    }
-                    if (!refreshView && itemList.get(i).liked_by_user != p.liked_by_user) {
-                        refreshView = true;
-                    }
-                } catch (Exception ignored) {
-
-                }
-
                 p.loadPhotoSuccess = itemList.get(i).loadPhotoSuccess;
                 p.hasFadedIn = itemList.get(i).hasFadedIn;
                 p.settingLike = itemList.get(i).settingLike;
-
                 itemList.set(i, p);
                 if (refreshView) {
                     notifyItemChanged(i);

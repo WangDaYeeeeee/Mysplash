@@ -253,45 +253,15 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         return itemList;
     }
 
-    public void updateCollection(Collection c, boolean probablyRepeat) {
+    public void updateCollection(Collection c, boolean refreshView, boolean probablyRepeat) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id == c.id) {
-                boolean refreshView = false;
-                try {
-                    if ((itemList.get(i).cover_photo != null && c.cover_photo != null
-                            && !itemList.get(i).cover_photo.id.equals(c.cover_photo.id))
-                            || (itemList.get(i).cover_photo == null && c.cover_photo != null)
-                            || (itemList.get(i).cover_photo != null && c.cover_photo == null)) {
-                        refreshView = true;
-                    }
-                    if (!refreshView && !itemList.get(i).title.equals(c.title)) {
-                        refreshView = true;
-                    }
-                    if (!refreshView && itemList.get(i).total_photos != c.total_photos) {
-                        refreshView = true;
-                    }
-                    if (!refreshView) {
-                        if ((itemList.get(i).user.profile_image != null && c.user.portfolio_url != null
-                                && !itemList.get(i).user.profile_image.large.equals(c.user.profile_image.large))
-                                || (itemList.get(i).user.profile_image == null && c.user.portfolio_url != null)
-                                || (itemList.get(i).user.profile_image != null && c.user.portfolio_url == null)) {
-                            refreshView = true;
-                        }
-                    }
-                    if (!refreshView && !itemList.get(i).user.name.equals(c.user.name)) {
-                        refreshView = true;
-                    }
-                } catch (Exception ignored) {
-
-                }
-
                 c.editing = itemList.get(i).editing;
                 if (c.cover_photo != null && itemList.get(i).cover_photo != null) {
                     c.cover_photo.loadPhotoSuccess = itemList.get(i).cover_photo.loadPhotoSuccess;
                     c.cover_photo.hasFadedIn = itemList.get(i).cover_photo.hasFadedIn;
                     c.cover_photo.settingLike = itemList.get(i).cover_photo.settingLike;
                 }
-
                 itemList.set(i, c);
                 if (refreshView) {
                     notifyItemChanged(i);

@@ -237,9 +237,9 @@ public class HomeFragment extends LoadableFragment<Photo>
     public void updateData(Photo photo) {
         int page = pagerManagePresenter.getPagerPosition();
         if (page == 0) {
-            ((HomeTrendingView) pagers[0]).updatePhoto(photo);
+            ((HomeTrendingView) pagers[0]).updatePhoto(photo, true);
         } else {
-            ((HomePhotosView) pagers[page]).updatePhoto(photo);
+            ((HomePhotosView) pagers[page]).updatePhoto(photo, true);
         }
     }
 

@@ -168,7 +168,7 @@ public class FollowingFragment extends LoadableFragment<Photo>
 
     @Override
     public void updateData(Photo photo) {
-        feedView.updatePhoto(photo);
+        feedView.updatePhoto(photo, true);
     }
 
     // init.

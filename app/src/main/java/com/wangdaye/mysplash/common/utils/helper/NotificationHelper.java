@@ -1,12 +1,12 @@
 package com.wangdaye.mysplash.common.utils.helper;
 
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -21,7 +21,7 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 /**
  * NotificationFeed helper.
  *
- * A helper class that makes the operations of {@link NotificationManagerCompat} and
+ * A helper class that makes the operations of {@link NotificationManager} and
  * {@link Snackbar} easier.
  *
  * */
@@ -37,51 +37,51 @@ public class NotificationHelper {
     // feedback.
 
     public static void sendDownloadPhotoSuccessNotification(Context c, DownloadMissionEntity entity) {
-        NotificationManagerCompat.from(c)
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(c, "Photo", entity.getNotificationTitle(), true, true));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationManagerCompat.from(c)
+            ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                     .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, true, true));
         }
     }
 
     public static void sendDownloadCollectionSuccessNotification(Context c, DownloadMissionEntity entity) {
-        NotificationManagerCompat.from(c)
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(
                                 c, "Collection", entity.getNotificationTitle(), false, true));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationManagerCompat.from(c)
+            ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                     .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, false, true));
         }
     }
 
     public static void sendDownloadPhotoFailedNotification(Context c, DownloadMissionEntity entity) {
-        NotificationManagerCompat.from(c)
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(c, "Photo", entity.getNotificationTitle(), true, false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationManagerCompat.from(c)
+            ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                     .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, true, false));
         }
     }
 
     public static void sendDownloadCollectionFailedNotification(Context c, DownloadMissionEntity entity) {
-        NotificationManagerCompat.from(c)
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                 .notify(
                         getNotificationId(c),
                         buildSingleNotification(
                                 c, "Collection", entity.getNotificationTitle(), false, false));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            NotificationManagerCompat.from(c)
+            ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE))
                     .notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, false, false));
         }
     }
@@ -158,7 +158,7 @@ public class NotificationHelper {
                 Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
                 snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
 
-                TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
+                TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
                 DisplayUtils.setTypeface(a, contentTxt);
                 contentTxt.setTextColor(ThemeManager.getContentColor(a));
 
@@ -180,11 +180,11 @@ public class NotificationHelper {
                 Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
                 snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
 
-                TextView contentTxt = (TextView) snackbarLayout.findViewById(R.id.snackbar_text);
+                TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
                 DisplayUtils.setTypeface(a, contentTxt);
                 contentTxt.setTextColor(ThemeManager.getContentColor(a));
 
-                Button actionBtn = (Button) snackbarLayout.findViewById(R.id.snackbar_action);
+                Button actionBtn = snackbarLayout.findViewById(R.id.snackbar_action);
                 actionBtn.setTextColor(ThemeManager.getTitleColor(a));
 
                 snackbar.show();

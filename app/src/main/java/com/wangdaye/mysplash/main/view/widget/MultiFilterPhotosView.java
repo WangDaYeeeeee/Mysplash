@@ -318,8 +318,8 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     // photo.
 
-    public void updatePhoto(Photo photo) {
-        multiFilterPresenter.getAdapter().updatePhoto(photo, true);
+    public void updatePhoto(Photo photo, boolean refreshView) {
+        multiFilterPresenter.getAdapter().updatePhoto(photo, refreshView, true);
     }
 
     /**
@@ -456,7 +456,7 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        multiFilterPresenter.getAdapter().updatePhoto(p, true);
+        multiFilterPresenter.getAdapter().updatePhoto(p, true, true);
     }
 
     // view.

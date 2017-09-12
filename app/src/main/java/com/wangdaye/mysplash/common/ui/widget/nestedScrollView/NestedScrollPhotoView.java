@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.ui.widget.nestedScrollView;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.NestedScrollingParent;
+import android.support.v4.view.NestedScrollingParent2;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -20,7 +20,7 @@ import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
 
 public class NestedScrollPhotoView extends PhotoView {
 
-    private NestedScrollingParent parent;
+    private NestedScrollingParent2 parent;
 
     private boolean isBeingDragged;
     private boolean isNestedScrolling;
@@ -54,7 +54,7 @@ public class NestedScrollPhotoView extends PhotoView {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (parent == null) {
-            parent = (NestedScrollingParent) getParent();
+            parent = (NestedScrollingParent2) getParent();
         }
 
         switch (MotionEventCompat.getActionMasked(ev)) {
@@ -62,7 +62,7 @@ public class NestedScrollPhotoView extends PhotoView {
                 if (getInfo().getScale() == 1) {
                     isBeingDragged = false;
                     oldY = ev.getY();
-                    parent.onStartNestedScroll(this, this, ViewCompat.SCROLL_AXIS_VERTICAL);
+                    parent.onStartNestedScroll(this, this, ViewCompat.SCROLL_AXIS_VERTICAL, 0);
                     isNestedScrolling = true;
                 }
                 break;
@@ -77,10 +77,10 @@ public class NestedScrollPhotoView extends PhotoView {
                 if (isBeingDragged) {
                     int[] total = new int[] {0, deltaY};
                     int[] consumed = new int[] {0, 0};
-                    parent.onNestedPreScroll(this, total[0], total[1], consumed);
+                    parent.onNestedPreScroll(this, total[0], total[1], consumed, 0);
                     total[0] -= consumed[0];
                     total[1] -= consumed[1];
-                    parent.onNestedScroll(this, consumed[0], consumed[1], total[0], total[1]);
+                    parent.onNestedScroll(this, consumed[0], consumed[1], total[0], total[1], 0);
                 }
                 oldY = ev.getY();
                 break;
@@ -92,7 +92,7 @@ public class NestedScrollPhotoView extends PhotoView {
                     if (parent instanceof SwipeBackCoordinatorLayout) {
                         ((SwipeBackCoordinatorLayout) parent).reset();
                     } else {
-                        parent.onStopNestedScroll(this);
+                        parent.onStopNestedScroll(this, 0);
                     }
                 }
                 break;
@@ -102,7 +102,7 @@ public class NestedScrollPhotoView extends PhotoView {
                 isBeingDragged = false;
                 if (isNestedScrolling) {
                     isNestedScrolling = false;
-                    parent.onStopNestedScroll(this);
+                    parent.onStopNestedScroll(this, 0);
                 }
                 break;
         }

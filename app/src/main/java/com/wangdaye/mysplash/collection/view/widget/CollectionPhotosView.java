@@ -267,8 +267,8 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         return (Collection) photosPresenter.getRequestKey();
     }
 
-    public void updatePhoto(Photo photo) {
-        photosPresenter.getAdapter().updatePhoto(photo, false);
+    public void updatePhoto(Photo photo, boolean refreshView) {
+        photosPresenter.getAdapter().updatePhoto(photo, refreshView, false);
     }
 
     /**
@@ -342,7 +342,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        photosPresenter.getAdapter().updatePhoto(p, false);
+        photosPresenter.getAdapter().updatePhoto(p, true, false);
         if (((Collection) photosPresenter.getRequestKey()).id == c.id) {
             for (int i = 0; i < p.current_user_collections.size(); i ++) {
                 if (p.current_user_collections.get(i).id == c.id) {

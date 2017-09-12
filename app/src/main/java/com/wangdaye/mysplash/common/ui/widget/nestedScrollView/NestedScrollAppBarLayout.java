@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 
 /**
@@ -102,8 +101,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
         @Override
         public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child,
-                                           View directTargetChild, View target, int nestedScrollAxes) {
-            if (super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes)) {
+                                           View directTargetChild, View target, int nestedScrollAxes, int type) {
+            if (super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type) && type == 0) {
                 bindAppBar(child);
                 if (appBarLayout.nestedScrollingListener != null) {
                     appBarLayout.nestedScrollingListener.onStartNestedScroll();
@@ -118,8 +117,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
         @Override
         public void onNestedPreScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child,
-                                      View target, int dx, int dy, int[] consumed) {
-            super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed);
+                                      View target, int dx, int dy, int[] consumed, int type) {
+            super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type);
             bindAppBar(child);
             if (appBarLayout.nestedScrollingListener != null) {
                 appBarLayout.nestedScrollingListener.onNestedScrolling();
@@ -129,10 +128,10 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         @Override
         public void onNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child,
                                    View target, int dxConsumed, int dyConsumed,
-                                   int dxUnconsumed, int dyUnconsumed) {
+                                   int dxUnconsumed, int dyUnconsumed, int type) {
             super.onNestedScroll(
                     coordinatorLayout, child, target,
-                    dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
+                    dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
             bindAppBar(child);
             if (appBarLayout.nestedScrollingListener != null) {
                 appBarLayout.nestedScrollingListener.onNestedScrolling();
@@ -141,8 +140,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
         @Override
         public void onStopNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child,
-                                       View target) {
-            super.onStopNestedScroll(coordinatorLayout, child, target);
+                                       View target, int type) {
+            super.onStopNestedScroll(coordinatorLayout, child, target, type);
             bindAppBar(child);
             if (appBarLayout.nestedScrollingListener != null) {
                 appBarLayout.nestedScrollingListener.onStopNestedScroll();
@@ -157,12 +156,12 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                 if (appBarLayout.getStartY() == top) {
                     return;
                 } if (appBarLayout.getStartY() > top) {  // drag up.
-                    appBarLayout.hideTopBar();
+                    appBarLayout.hideTopBar(this);
                 } else if (appBarLayout.getStartY() < top) { // drag down.
                     if (bottom > appBarLayout.enterAlwaysHeight + appBarLayout.staticHeight) {
-                        appBarLayout.showTopBar();
+                        appBarLayout.showTopBar(this);
                     } else if (bottom > appBarLayout.staticHeight) {
-                        appBarLayout.showEnterAlwaysBar();
+                        appBarLayout.showEnterAlwaysBar(this);
                     }
                 }
             }
@@ -171,15 +170,9 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
     private class AutomaticScrollAnimator extends ValueAnimator {
 
-        private CoordinatorLayout.Behavior behavior = null;
         private int lastY;
 
-        AutomaticScrollAnimator(final int toY) {
-            final ViewGroup.LayoutParams params = getLayoutParams();
-            if (params instanceof CoordinatorLayout.LayoutParams) {
-                behavior = ((CoordinatorLayout.LayoutParams) params).getBehavior();
-            }
-
+        AutomaticScrollAnimator(final AppBarLayout.Behavior behavior, final int toY) {
             final int fromY = (int) getY();
             this.lastY = fromY;
 
@@ -194,11 +187,11 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                         int[] total = new int[] {0, lastY - newY};
                         int[] consumed = new int[] {0, 0};
                         behavior.onNestedPreScroll(
-                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this, null,
-                                total[0], total[1], consumed);
+                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this, NestedScrollAppBarLayout.this,
+                                total[0], total[1], consumed, 0);
                         behavior.onNestedScroll(
-                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this, null,
-                                consumed[0], consumed[1], total[0] - consumed[0], total[1] - consumed[1]);
+                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this, NestedScrollAppBarLayout.this,
+                                consumed[0], consumed[1], total[0] - consumed[0], total[1] - consumed[1], 0);
                         lastY = newY;
                     }
                 }
@@ -226,30 +219,30 @@ public class NestedScrollAppBarLayout extends AppBarLayout
     /**
      * Do animation to expand the whole AppBarLayout.
      * */
-    public void showTopBar() {
+    public void showTopBar(AppBarLayout.Behavior behavior) {
         stopScrollAnimator();
-        doScrollAnimation(0);
+        doScrollAnimation(behavior, 0);
     }
 
     /**
      * Do animation to expand the part of AppBarLayout which has "enterAlways" flag.
      * */
-    public void showEnterAlwaysBar() {
+    public void showEnterAlwaysBar(AppBarLayout.Behavior behavior) {
         stopScrollAnimator();
-        doScrollAnimation(-scrollHeight);
+        doScrollAnimation(behavior, -scrollHeight);
     }
 
     /**
      * Do animation to hide the part of AppBarLayout which has "scroll" flag.
      * */
-    public void hideTopBar() {
+    public void hideTopBar(AppBarLayout.Behavior behavior) {
         stopScrollAnimator();
-        doScrollAnimation(staticHeight - getMeasuredHeight());
+        doScrollAnimation(behavior, staticHeight - getMeasuredHeight());
     }
 
-    private void doScrollAnimation(int toY) {
+    private void doScrollAnimation(AppBarLayout.Behavior behavior, int toY) {
         if (getY() != toY) {
-            this.animator = new AutomaticScrollAnimator(toY);
+            this.animator = new AutomaticScrollAnimator(behavior, toY);
             animator.start();
         }
     }

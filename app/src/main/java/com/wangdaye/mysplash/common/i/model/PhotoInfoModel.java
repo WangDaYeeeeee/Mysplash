@@ -19,7 +19,7 @@ public interface PhotoInfoModel {
     PhotoInfoAdapter getAdapter();
 
     Photo getPhoto();
-    void setPhoto(Photo p);
+    void setPhoto(Photo p, boolean init);
 
     /** The flag to mark if loading photo details failed. */
     boolean isFailed();

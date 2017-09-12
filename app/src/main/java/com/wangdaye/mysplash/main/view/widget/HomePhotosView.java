@@ -278,8 +278,8 @@ public class HomePhotosView extends NestedScrollFrameLayout
 
     // photo.
 
-    public void updatePhoto(Photo photo) {
-        photosPresenter.getAdapter().updatePhoto(photo, false);
+    public void updatePhoto(Photo photo, boolean refreshView) {
+        photosPresenter.getAdapter().updatePhoto(photo, refreshView, false);
     }
 
     /**
@@ -351,7 +351,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        photosPresenter.getAdapter().updatePhoto(p, false);
+        photosPresenter.getAdapter().updatePhoto(p, true, false);
     }
 
     // view.

@@ -115,21 +115,21 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     // nested scroll.
 
     @Override
-    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes) {
-        super.onStartNestedScroll(child, target, nestedScrollAxes);
+    public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes, int type) {
+        super.onStartNestedScroll(child, target, nestedScrollAxes, type);
         isVerticalDragged = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
-        return true;
+        return type == 0;
     }
 
     @Override
-    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed) {
+    public void onNestedPreScroll(View target, int dx, int dy, int[] consumed, int type) {
         int dyConsumed = 0;
         if (isVerticalDragged && swipeDistance != 0) {
             dyConsumed = onVerticalPreScroll(dy);
         }
 
         int[] newConsumed = new int[] {0, 0};
-        super.onNestedPreScroll(target, dx, dy - dyConsumed, newConsumed);
+        super.onNestedPreScroll(target, dx, dy - dyConsumed, newConsumed, type);
 
         consumed[0] = newConsumed[0];
         consumed[1] = newConsumed[1] + dyConsumed;
@@ -137,7 +137,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     @Override
     public void onNestedScroll(View target, int dxConsumed, int dyConsumed,
-                               int dxUnconsumed, int dyUnconsumed) {
+                               int dxUnconsumed, int dyUnconsumed, int type) {
         int newDyConsumed = dyConsumed;
         int newDyUnconsumed = dyUnconsumed;
         if (isVerticalDragged && swipeDistance == 0) {
@@ -149,12 +149,12 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
             }
         }
 
-        super.onNestedScroll(target, dxConsumed, newDyConsumed, dxUnconsumed, newDyUnconsumed);
+        super.onNestedScroll(target, dxConsumed, newDyConsumed, dxUnconsumed, newDyUnconsumed, type);
     }
 
     @Override
-    public void onStopNestedScroll(View child) {
-        super.onStopNestedScroll(child);
+    public void onStopNestedScroll(View child, int type) {
+        super.onStopNestedScroll(child, type);
         if (isVerticalDragged) {
             if (Math.abs(swipeDistance) >= swipeTrigger) {
                 swipeBack();
@@ -224,7 +224,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
      * @param dir drag direction.
      * */
     public static boolean canSwipeBack(View v, int dir) {
-        return !ViewCompat.canScrollVertically(v, dir);
+        return !v.canScrollVertically(dir);
     }
 
     /**

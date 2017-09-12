@@ -257,7 +257,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             if (photoListManagePresenter.getPhotoList().get(i).id.equals(photo.id)) {
                 photoListManagePresenter.getPhotoList().set(i, photo);
                 if (i == photoListManagePresenter.getCurrentIndex() - photoListManagePresenter.getHeadIndex()) {
-                    photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto());
+                    photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto(), false);
                     List<MysplashPopupWindow> popupList = getPopupList();
                     for (int j = 0; j < popupList.size(); j ++) {
                         if (popupList.get(j) instanceof PhotoMenuPopupWindow) {
@@ -661,7 +661,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             this.targetIndex = currentIndex;
 
             photoListManagePresenter.setCurrentIndex(currentIndex);
-            photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto());
+            photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto(), true);
 
             DisplayUtils.setStatusBarStyle(PhotoActivity.this, true);
             translucentStatusBar.animToInitAlpha();
@@ -725,7 +725,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         Photo photo = getPhoto();
         photo.current_user_collections.clear();
         photo.current_user_collections.addAll(p.current_user_collections);
-        photoInfoPresenter.setPhoto(photo);
+        photoInfoPresenter.setPhoto(photo, false);
         Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
     }
 

@@ -320,7 +320,7 @@ public class MainActivity extends LoadableActivity<Photo>
 
     @Override
     public void handleBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.activity_main_drawerLayout);
+        DrawerLayout drawer = findViewById(R.id.activity_main_drawerLayout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {

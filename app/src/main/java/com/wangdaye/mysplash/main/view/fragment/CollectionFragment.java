@@ -167,7 +167,7 @@ public class CollectionFragment extends MysplashFragment
                         CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
                 if (collection != null) {
                     ((CollectionsView) pagers[pagerManagePresenter.getPagerPosition()])
-                            .updateCollection(collection);
+                            .updateCollection(collection, false);
                 }
                 break;
         }

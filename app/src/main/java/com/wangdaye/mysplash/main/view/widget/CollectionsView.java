@@ -219,8 +219,8 @@ public class CollectionsView extends NestedScrollFrameLayout
 
     // collection.
 
-    public void updateCollection(Collection collection) {
-        collectionsPresenter.getAdapter().updateCollection(collection, false);
+    public void updateCollection(Collection collection, boolean refreshView) {
+        collectionsPresenter.getAdapter().updateCollection(collection, refreshView, false);
     }
 
     /**

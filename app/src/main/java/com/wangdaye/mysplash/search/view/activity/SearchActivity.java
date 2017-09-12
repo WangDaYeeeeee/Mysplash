@@ -174,7 +174,7 @@ public class SearchActivity extends LoadableActivity<Photo>
                     Collection collection = data.getParcelableExtra(
                             CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION);
                     if (collection != null) {
-                        ((SearchPageView) pagers[1]).updateCollection(collection);
+                        ((SearchPageView) pagers[1]).updateCollection(collection, false);
                     }
                     break;
 
@@ -182,14 +182,14 @@ public class SearchActivity extends LoadableActivity<Photo>
                     User user = data.getParcelableExtra(
                             UserActivity.KEY_USER_ACTIVITY_USER);
                     if (user != null) {
-                        ((SearchPageView) pagers[2]).updateUser(user);
+                        ((SearchPageView) pagers[2]).updateUser(user, false);
                     }
                     break;
 
                 case Mysplash.ME_ACTIVITY:
                     User me = AuthManager.getInstance().getUser();
                     if (me != null) {
-                        ((SearchPageView) pagers[2]).updateUser(me);
+                        ((SearchPageView) pagers[2]).updateUser(me, false);
                     }
                     break;
             }
@@ -298,7 +298,7 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     public void updateData(Photo photo) {
-        ((SearchPageView) pagers[0]).updatePhoto(photo);
+        ((SearchPageView) pagers[0]).updatePhoto(photo, true);
     }
 
     // init.

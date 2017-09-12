@@ -352,7 +352,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void updatePhoto(Photo p, boolean probablyRepeat) {
+    public void updatePhoto(Photo p, boolean refreshView, boolean probablyRepeat) {
         int position = -1;
         for (int i = 0; i < resultList.size(); i ++) {
             position ++;
@@ -365,24 +365,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         position ++;
                     }
                     if (resultList.get(i).objects.get(j).id.equals(p.id)) {
-                        Photo old = getPhoto(position);
-                        boolean refreshView = old == null;
-                        try {
-                            if (!refreshView) {
-                                if ((old.current_user_collections != null && p.current_user_collections != null
-                                        && old.current_user_collections.size() != p.current_user_collections.size())
-                                        || (old.current_user_collections == null && p.current_user_collections != null)
-                                        || (old.current_user_collections != null && p.current_user_collections == null)) {
-                                    refreshView = true;
-                                }
-                            }
-                            if (!refreshView && old.liked_by_user != p.liked_by_user) {
-                                refreshView = true;
-                            }
-                        } catch (Exception ignored) {
-
-                        }
-
                         resultList.get(i).objects.set(j, new ActionObject(p));
                         if (refreshView && j < getMaxiPhotoCount()) {
                             notifyItemChanged(position);
@@ -567,7 +549,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        updatePhoto(p, true);
+        updatePhoto(p, true, true);
     }
 }
 

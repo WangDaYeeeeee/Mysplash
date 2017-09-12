@@ -191,7 +191,7 @@ public class MeActivity extends LoadableActivity<Photo>
                         }
                         ((MeCollectionsView) pagers[2]).removeCollection(collection);
                     } else {
-                        ((MeCollectionsView) pagers[2]).updateCollection(collection);
+                        ((MeCollectionsView) pagers[2]).updateCollection(collection, false);
                     }
                 }
                 break;
@@ -313,7 +313,7 @@ public class MeActivity extends LoadableActivity<Photo>
     @Override
     public void updateData(Photo photo) {
         ((MePhotosView) pagers[pagerManagePresenter.getPagerPosition()])
-                .updatePhoto(photo);
+                .updatePhoto(photo, true);
     }
 
     // init.
@@ -583,9 +583,9 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        ((MePhotosView) pagers[0]).updatePhoto(p);
-        ((MePhotosView) pagers[1]).updatePhoto(p);
-        ((MeCollectionsView) pagers[2]).updateCollection(c);
+        ((MePhotosView) pagers[0]).updatePhoto(p, true);
+        ((MePhotosView) pagers[1]).updatePhoto(p, true);
+        ((MeCollectionsView) pagers[2]).updateCollection(c, true);
     }
 
     // on author data changed listener.

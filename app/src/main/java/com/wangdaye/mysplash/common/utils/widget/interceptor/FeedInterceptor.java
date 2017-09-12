@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.utils.widget.interceptor;
 
-import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
@@ -28,7 +28,7 @@ public class FeedInterceptor implements Interceptor {
                     .newBuilder()
                     .addHeader("x-unsplash-client", "web")
                     .addHeader("accept-version", "v1")
-                    .addHeader("Authorization", "Bearer " + AuthManager.getInstance().getAccessToken())
+                    .addHeader("Authorization", "Bearer " + BuildConfig.FEED_TOKEN)
                     .addHeader("Accept", "*/*")
                     .addHeader("Referer", "https://unsplash.com/following?onboarding=true")
                     .build();
@@ -37,7 +37,8 @@ public class FeedInterceptor implements Interceptor {
                     .newBuilder()
                     .addHeader("x-unsplash-client", "web")
                     .addHeader("accept-version", "v1")
-                    .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance(), false))
+                    .addHeader("Authorization", "Bearer " + BuildConfig.FEED_TOKEN)/*
+                    .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance(), false))*/
                     .addHeader("Accept", "*/*")
                     .addHeader("Referer", "https://unsplash.com/following?onboarding=true")
                     .build();
