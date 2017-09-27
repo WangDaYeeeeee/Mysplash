@@ -77,7 +77,7 @@ public class TouchLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
         ImageHelper.releaseImageView(avatar);
     }
 
-    @OnClick(R.id.item_photo_touch)
+    @OnClick(R.id.item_photo_touch_landscape_touch)
     void clickTouchView() {
         IntentHelper.startPreviewActivity(
                 Mysplash.getInstance().getTopActivity(), activity.getPhoto(), true);
