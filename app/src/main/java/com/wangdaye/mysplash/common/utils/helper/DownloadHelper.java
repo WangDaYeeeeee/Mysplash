@@ -46,6 +46,7 @@ public class DownloadHelper {
         return instance;
     }
 
+    @Nullable
     private DownloadManager downloadManager;
 
     public static final int DOWNLOAD_TYPE = 1;
@@ -88,6 +89,11 @@ public class DownloadHelper {
     }
 
     private long addMission(Context c, DownloadMissionEntity entity, boolean showSnackbar) {
+        if (downloadManager == null) {
+            NotificationHelper.showSnackbar("Cannot get DownloadManager.");
+            return -1;
+        }
+
         FileUtils.deleteFile(entity);
 
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
@@ -111,6 +117,11 @@ public class DownloadHelper {
 
     @Nullable
     public DownloadMission restartMission(Context c, long missionId) {
+        if (downloadManager == null) {
+            NotificationHelper.showSnackbar("Cannot get DownloadManager.");
+            return null;
+        }
+
         DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(missionId);
         if (entity == null) {
             return null;
@@ -129,6 +140,11 @@ public class DownloadHelper {
     // delete.
 
     public void removeMission(Context c, long id) {
+        if (downloadManager == null) {
+            NotificationHelper.showSnackbar("Cannot get DownloadManager.");
+            return;
+        }
+
         DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(id);
         if (entity != null && entity.result != RESULT_SUCCEED) {
             downloadManager.remove(id);
@@ -137,6 +153,11 @@ public class DownloadHelper {
     }
 
     public void clearMission(Context c, List<DownloadMissionEntity> entityList) {
+        if (downloadManager == null) {
+            NotificationHelper.showSnackbar("Cannot get DownloadManager.");
+            return;
+        }
+
         for (int i = 0; i < entityList.size(); i ++) {
             if (entityList.get(i).result != RESULT_SUCCEED) {
                 downloadManager.remove(entityList.get(i).missionId);
@@ -177,6 +198,11 @@ public class DownloadHelper {
 
     @Nullable
     private Cursor getMissionCursor(long id) {
+        if (downloadManager == null) {
+            NotificationHelper.showSnackbar("Cannot get DownloadManager.");
+            return null;
+        }
+
         Cursor cursor = downloadManager.query(new DownloadManager.Query().setFilterById(id));
         if (cursor == null) {
             return null;

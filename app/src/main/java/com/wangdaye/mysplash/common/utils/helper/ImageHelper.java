@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
 import android.os.Build;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -36,6 +37,7 @@ import com.wangdaye.mysplash.common.utils.widget.glide.FadeAnimator;
 
 import org.greenrobot.greendao.annotation.NotNull;
 
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 /**
@@ -182,6 +184,16 @@ public class ImageHelper {
                 .load(uri)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(view);
+    }
+
+    public static Bitmap loadBitmap(Context context, @DrawableRes int id, int width, int height)
+            throws ExecutionException, InterruptedException {
+        return Glide.with(context)
+                .load(id)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(width, height)
+                .get();
     }
 
     // url.

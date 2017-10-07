@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
@@ -201,7 +203,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
                         new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE),
                         this,
                         null));
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
     }
 
@@ -280,6 +282,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
     public void setActivity(MainActivity a) {
         categoryPresenter.setActivityForAdapter(a);
         categoryPresenter.getAdapter().setOnDownloadPhotoListener(a);
+        loadPresenter.bindActivity(a);
     }
 
     @Override
@@ -317,6 +320,10 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
                                 categoryPresenter.getAdapter().getRealItemCount() - 1);
             }
         }
+    }
+
+    public boolean isNormalState() {
+        return loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // photo.
@@ -485,21 +492,29 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void setLoadingState() {
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, false, activity.hasTranslucentNavigationBar());
+        }
         animShow(progressView);
         animHide(feedbackContainer);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setFailedState() {
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
         animShow(feedbackContainer);
         animHide(progressView);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setNormalState() {
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, true, activity.hasTranslucentNavigationBar());
+        }
         animShow(refreshLayout);
         animHide(progressView);
         animHide(feedbackContainer);

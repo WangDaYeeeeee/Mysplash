@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- activity & fragment themes. -->
+
+    <style name="MysplashTheme_light" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary_light</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_light</item>
+        <item name="colorAccent">@color/colorAccent_light</item>
+        <item name="root_color">@color/colorRoot_light</item>
+        <item name="line_color">@color/colorLine_light</item>
+        <item name="title_color">@color/colorTextTitle_light</item>
+        <item name="subtitle_color">@color/colorTextSubtitle_light</item>
+        <item name="content_color">@color/colorTextContent_light</item>
+        <item name="android:windowBackground">@color/colorPrimary_light</item>
+        <item name="android:textColorPrimary">?attr/content_color</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+    </style>
+
+    <style name="MysplashTheme_dark" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary_dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
+        <item name="colorAccent">@color/colorAccent_dark</item>
+        <item name="root_color">@color/colorRoot_dark</item>
+        <item name="line_color">@color/colorLine_dark</item>
+        <item name="title_color">@color/colorTextTitle_dark</item>
+        <item name="subtitle_color">@color/colorTextSubtitle_dark</item>
+        <item name="content_color">@color/colorTextContent_dark</item>
+        <item name="android:windowBackground">@color/colorPrimary_dark</item>
+        <item name="android:textColorPrimary">?attr/content_color</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+    </style>
+
+    <style name="MysplashTheme_light.Translucent" parent="MysplashTheme_light">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent" parent="MysplashTheme_dark">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style
+        name="MysplashTheme_light.Translucent.TranslucentNavigation"
+        parent="MysplashTheme_light.Translucent">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <style
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation"
+        parent="MysplashTheme_dark.Translucent">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <!-- main activity. -->
+
+    <style name="MysplashTheme_light.Main" parent="MysplashTheme_light">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Main" parent="MysplashTheme_dark">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+    </style>
+
+    <!-- photo activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Photo" parent="MysplashTheme_light.Translucent">
+        <item name="android:windowEnterTransition">@transition/photo_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/photo_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/photo_activity_shared_return</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.Photo" parent="MysplashTheme_dark.Translucent">
+        <item name="android:windowEnterTransition">@transition/photo_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/photo_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/photo_activity_shared_return</item>
+    </style>
+
+    <!-- preview activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Preview" parent="MysplashTheme_light.Translucent">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.Preview" parent="MysplashTheme_dark.Translucent">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- user activity. -->
+
+    <style
+        name="MysplashTheme_light.Translucent.User"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/user_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/user_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/user_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/user_activity_shared_return</item>
+    </style>
+
+    <style
+        name="MysplashTheme_dark.Translucent.User"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/user_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/user_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/user_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/user_activity_shared_return</item>
+    </style>
+
+    <!-- me activity. -->
+
+    <style
+        name="MysplashTheme_light.Translucent.Me"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/me_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/me_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/me_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/me_activity_shared_return</item>
+    </style>
+
+    <style
+        name="MysplashTheme_dark.Translucent.Me"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/me_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/me_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/me_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/me_activity_shared_return</item>
+    </style>
+
+    <!-- collection activity. -->
+
+    <style
+        name="MysplashTheme_light.Translucent.Collection"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/collection_activity_shared_return</item>
+    </style>
+
+    <style
+        name="MysplashTheme_dark.Translucent.Collection"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/collection_activity_shared_return</item>
+    </style>
+
+    <!-- settings activity. -->
+
+    <style name="MysplashTheme_light.Translucent.Settings" parent="MysplashTheme_light.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme_light</item>
+    </style>
+
+    <style name="MysplashTheme_dark.Translucent.Settings" parent="MysplashTheme_dark.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme_dark</item>
+    </style>
+
+    <!-- common activity theme. -->
+
+    <style name="MysplashTheme_light.Translucent.Common" parent="MysplashTheme_light.Translucent" />
+
+    <style name="MysplashTheme_dark.Translucent.Common" parent="MysplashTheme_dark.Translucent" />
+
+    <!-- set wallpaper activity. -->
+
+    <style name="MysplashTheme_dark.SetWallpaper" parent="MysplashTheme_dark">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- popup. -->
+
+    <style name="material_popup_menu"
+        parent="@android:style/Widget.Material.Light.PopupMenu.Overflow">
+        <item name="android:popupBackground">?attr/root_color</item>
+    </style>
+
+    <!-- dialog. -->
+    <style name="MysplashDialogTheme_light" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorRoot_light</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColorPrimary">@color/colorTextSubtitle_light</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextTitle_light</item>
+        <item name="android:textColorSecondary">@color/colorTextTitle_light</item>
+        <item name="colorAccent">@color/colorTextTitle_light</item>
+    </style>
+
+    <style name="MysplashDialogTheme_dark" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:background">@color/colorRoot_dark</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColorPrimary">@color/colorTextSubtitle_dark</item>
+        <item name="android:textColorAlertDialogListItem">@color/colorTextTitle_dark</item>
+        <item name="android:textColorSecondary">@color/colorTextTitle_dark</item>
+        <item name="colorAccent">@color/colorTextTitle_dark</item>
+    </style>
+
+</resources>

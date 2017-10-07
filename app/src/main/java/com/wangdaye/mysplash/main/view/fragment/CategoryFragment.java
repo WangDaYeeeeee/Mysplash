@@ -25,6 +25,7 @@ import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBa
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.CategoryManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.CategoryFragmentPopupManageImplementor;
@@ -107,6 +108,21 @@ public class CategoryFragment extends LoadableFragment<Photo>
     }
 
     @Override
+    public void initStatusBarStyle() {
+        DisplayUtils.setStatusBarStyle(getActivity(), needSetDarkStatusBar());
+    }
+
+    @Override
+    public void initNavigationBarStyle() {
+        DisplayUtils.setNavigationBarStyle(getActivity(), photosView.isNormalState(), false);
+    }
+
+    @Override
+    public boolean needSetDarkStatusBar() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
+    }
+
+    @Override
     public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
         if (photosView != null) {
             ((MainActivity.SavedStateFragment) outState).setCategoryList(photosView.getPhotos());
@@ -121,11 +137,6 @@ public class CategoryFragment extends LoadableFragment<Photo>
     }
 
     @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
-
-    @Override
     public boolean needBackToTop() {
         return photosView.needPagerBackToTop();
     }
@@ -133,7 +144,7 @@ public class CategoryFragment extends LoadableFragment<Photo>
     @Override
     public void backToTop() {
         statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
+        DisplayUtils.setStatusBarStyle(getActivity(), false);
         BackToTopUtils.showTopBar(appBar, photosView);
         photosView.pagerScrollToTop();
     }
@@ -257,15 +268,15 @@ public class CategoryFragment extends LoadableFragment<Photo>
 
     @Override
     public void onNestedScrolling() {
-        if (needSetOnlyWhiteStatusBarText()) {
+        if (needSetDarkStatusBar()) {
             if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
-                setStatusBarStyle(true);
+                DisplayUtils.setStatusBarStyle(getActivity(), true);
             }
         } else {
             if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
-                setStatusBarStyle(false);
+                DisplayUtils.setStatusBarStyle(getActivity(), false);
             }
         }
     }

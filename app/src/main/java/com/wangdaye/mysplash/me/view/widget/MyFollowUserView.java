@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.item.MyFollowUser;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 import com.wangdaye.mysplash.common.i.model.MyFollowModel;
+import com.wangdaye.mysplash.common.i.model.PagerModel;
 import com.wangdaye.mysplash.common.i.model.ScrollModel;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash.common.i.presenter.MyFollowPresenter;
@@ -42,6 +44,7 @@ import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
+import com.wangdaye.mysplash.me.model.widget.PagerObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.MyFollowImplementor;
@@ -86,6 +89,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     private MyFollowModel myFollowModel;
     private MyFollowPresenter myFollowPresenter;
 
+    private PagerModel pagerModel;
     private PagerPresenter pagerPresenter;
 
     private LoadModel loadModel;
@@ -96,15 +100,17 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     private SwipeBackPresenter swipeBackPresenter;
 
-    public MyFollowUserView(MysplashActivity a, int photosType) {
+    public MyFollowUserView(MysplashActivity a, int followType,
+                            int index, boolean selected) {
         super(a);
-        this.initialize(a, photosType);
+        this.initialize(a, followType, index, selected);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void initialize(MysplashActivity a, int followType) {
+    private void initialize(MysplashActivity a, int followType,
+                            int index, boolean selected) {
         View loadingView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
@@ -114,24 +120,26 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         addView(contentView);
 
         ButterKnife.bind(this, this);
-        initModel(a, followType);
+        initModel(a, followType, index, selected);
         initPresenter();
         initView();
     }
 
     // init.
 
-    private void initModel(MysplashActivity a, int followType) {
+    private void initModel(MysplashActivity a, int followType,
+                           int index, boolean selected) {
         this.myFollowModel = new MyFollowObject(
                 new MyFollowAdapter(a, new ArrayList<MyFollowUser>(Mysplash.DEFAULT_PER_PAGE), this),
                 followType);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.pagerModel = new PagerObject(index, selected);
+        this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }
 
     private void initPresenter() {
         this.myFollowPresenter = new MyFollowImplementor(myFollowModel, this);
-        this.pagerPresenter = new PagerImplementor(this);
+        this.pagerPresenter = new PagerImplementor(pagerModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
@@ -291,8 +299,8 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return loadPresenter.getLoadState() == LoadObject.FAILED_STATE
-                || (loadPresenter.getLoadState() == LoadObject.LOADING_STATE
+        return loadPresenter.getLoadState() == LoadModel.FAILED_STATE
+                || (loadPresenter.getLoadState() == LoadModel.LOADING_STATE
                 && !myFollowPresenter.isRefreshing() && !myFollowPresenter.isLoading());
     }
 
@@ -304,6 +312,11 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     @Override
     public void refreshPager() {
         myFollowPresenter.initRefresh(getContext());
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        pagerPresenter.setSelected(selected);
     }
 
     @Override
@@ -327,17 +340,22 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     }
 
     @Override
+    public int getItemCount() {
+        if (loadPresenter.getLoadState() != LoadModel.NORMAL_STATE) {
+            return 0;
+        } else {
+            return myFollowPresenter.getAdapter().getItemCount();
+        }
+    }
+
+    @Override
     public boolean canSwipeBack(int dir) {
         return swipeBackPresenter.checkCanSwipeBack(dir);
     }
 
     @Override
-    public int getItemCount() {
-        if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
-            return 0;
-        } else {
-            return myFollowPresenter.getAdapter().getItemCount();
-        }
+    public boolean isNormalState() {
+        return loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // load view.
@@ -353,21 +371,21 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void setLoadingState() {
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
         animShow(progressView);
         animHide(feedbackContainer);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setFailedState() {
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
         animShow(feedbackContainer);
         animHide(progressView);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setNormalState() {
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
         animShow(refreshLayout);
         animHide(progressView);
         animHide(feedbackContainer);
@@ -402,7 +420,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     @Override
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
-                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+                && loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // swipe back view.
@@ -410,7 +428,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
-            case LoadObject.NORMAL_STATE:
+            case LoadModel.NORMAL_STATE:
                 return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || myFollowPresenter.getAdapter().getItemCount() <= 0;
 

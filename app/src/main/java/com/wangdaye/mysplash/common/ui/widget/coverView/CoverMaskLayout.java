@@ -99,8 +99,8 @@ public class CoverMaskLayout extends RelativeLayout {
                     Shader.TileMode.CLAMP));
         } else {
             paint.setShader(new LinearGradient(
-                    (float) (cX + deltaX), (float) (cY + deltaY),
-                    (float) (cX - deltaX), (float) (cY - deltaY),
+                    (float) (cX + deltaX), (float) (cY - deltaY),
+                    (float) (cX - deltaX), (float) (cY + deltaY),
                     new int[]{
                             Color.argb((int) (255 * 0.78), 33, 33, 33),
                             Color.argb((int) (255 * 0.875), 33, 33, 33),

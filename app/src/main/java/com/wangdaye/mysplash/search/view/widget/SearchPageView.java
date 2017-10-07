@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,10 +22,12 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.PagerModel;
 import com.wangdaye.mysplash.common.i.model.ScrollModel;
 import com.wangdaye.mysplash.common.i.model.SearchModel;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
@@ -50,6 +53,7 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.search.model.widget.LoadObject;
+import com.wangdaye.mysplash.search.model.widget.PagerObject;
 import com.wangdaye.mysplash.search.model.widget.ScrollObject;
 import com.wangdaye.mysplash.search.model.widget.SearchCollectionsObject;
 import com.wangdaye.mysplash.search.model.widget.SearchPhotosObject;
@@ -102,6 +106,7 @@ public class SearchPageView extends NestedScrollFrameLayout
     private SearchModel searchModel;
     private SearchPresenter searchPresenter;
 
+    private PagerModel pagerModel;
     private PagerPresenter pagerPresenter;
 
     private LoadModel loadModel;
@@ -160,16 +165,18 @@ public class SearchPageView extends NestedScrollFrameLayout
         };
     }
 
-    public SearchPageView(SearchActivity a, @TypeRule int type, int id) {
+    public SearchPageView(SearchActivity a, @TypeRule int type, int id,
+                          int index, boolean selected) {
         super(a);
         this.setId(id);
-        this.initialize(a, type);
+        this.initialize(a, type, index, selected);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void initialize(SearchActivity a, @TypeRule int type) {
+    private void initialize(SearchActivity a, @TypeRule int type,
+                            int index, boolean selected) {
         View searchingView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_searching_view_large, this, false);
         addView(searchingView);
@@ -179,18 +186,20 @@ public class SearchPageView extends NestedScrollFrameLayout
         addView(contentView);
 
         ButterKnife.bind(this, this);
-        initModel(a, type);
-        initPresenter(type);
+        initModel(a, type, index, selected);
+        initPresenter(a, type);
         initView(type);
 
-        if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
+        if (loadPresenter.getLoadState() == LoadModel.LOADING_STATE) {
             searchPresenter.initRefresh(getContext());
         }
     }
 
-    private void initModel(SearchActivity a, @TypeRule int type) {
+    private void initModel(SearchActivity a, @TypeRule int type,
+                           int index, boolean selected) {
         this.scrollModel = new ScrollObject(true);
-        this.loadModel = new LoadObject(LoadObject.FAILED_STATE);
+        this.pagerModel = new PagerObject(index, selected);
+        this.loadModel = new LoadObject(LoadModel.FAILED_STATE);
         switch (type) {
             case SEARCH_PHOTOS_TYPE:
                 this.searchModel = new SearchPhotosObject(
@@ -213,7 +222,7 @@ public class SearchPageView extends NestedScrollFrameLayout
         }
     }
 
-    private void initPresenter(@TypeRule int type) {
+    private void initPresenter(MysplashActivity a, @TypeRule int type) {
         switch (type) {
             case SEARCH_PHOTOS_TYPE:
                 this.searchPresenter = new SearchPhotosImplementor(searchModel, this);
@@ -227,10 +236,12 @@ public class SearchPageView extends NestedScrollFrameLayout
                 this.searchPresenter = new SearchUsersImplementor(searchModel, this);
                 break;
         }
-        this.pagerPresenter = new PagerImplementor(this);
+        this.pagerPresenter = new PagerImplementor(pagerModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
+
+        loadPresenter.bindActivity(a);
     }
 
     private void initView(int type) {
@@ -274,13 +285,13 @@ public class SearchPageView extends NestedScrollFrameLayout
     private void initSearchingView(@TypeRule int type) {
         setForceScrolling(true);
 
-        if (loadPresenter.getLoadState() == LoadObject.FAILED_STATE) {
+        if (loadPresenter.getLoadState() == LoadModel.FAILED_STATE) {
             progressView.setVisibility(GONE);
         } else {
             progressView.setVisibility(VISIBLE);
         }
 
-        if (loadPresenter.getLoadState() == LoadObject.FAILED_STATE) {
+        if (loadPresenter.getLoadState() == LoadModel.FAILED_STATE) {
             feedbackContainer.setVisibility(VISIBLE);
         } else {
             feedbackContainer.setVisibility(GONE);
@@ -612,6 +623,11 @@ public class SearchPageView extends NestedScrollFrameLayout
     }
 
     @Override
+    public void setSelected(boolean selected) {
+        pagerPresenter.setSelected(selected);
+    }
+
+    @Override
     public void scrollToPageTop() { // interface.
         scrollPresenter.scrollToTop();
     }
@@ -632,17 +648,22 @@ public class SearchPageView extends NestedScrollFrameLayout
     }
 
     @Override
+    public int getItemCount() {
+        if (loadPresenter.getLoadState() != LoadModel.NORMAL_STATE) {
+            return 0;
+        } else {
+            return searchPresenter.getAdapterItemCount();
+        }
+    }
+
+    @Override
     public boolean canSwipeBack(int dir) {
         return swipeBackPresenter.checkCanSwipeBack(dir);
     }
 
     @Override
-    public int getItemCount() {
-        if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
-            return 0;
-        } else {
-            return searchPresenter.getAdapterItemCount();
-        }
+    public boolean isNormalState() {
+        return loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // load view.
@@ -658,25 +679,33 @@ public class SearchPageView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void setLoadingState() {
-        setForceScrolling(true);
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && old == LoadModel.NORMAL_STATE && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, false, activity.hasTranslucentNavigationBar());
+        }
         animShow(progressView);
         animHide(feedbackContainer);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setFailedState() {
-        setForceScrolling(true);
-        feedbackButton.setVisibility(VISIBLE);
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && old == LoadModel.NORMAL_STATE && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, false, activity.hasTranslucentNavigationBar());
+        }
         animShow(feedbackContainer);
         animHide(progressView);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setNormalState() {
-        setForceScrolling(false);
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && old == LoadModel.LOADING_STATE && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, true, activity.hasTranslucentNavigationBar());
+        }
         animShow(refreshLayout);
         animHide(progressView);
         animHide(feedbackContainer);
@@ -721,7 +750,7 @@ public class SearchPageView extends NestedScrollFrameLayout
     @Override
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
-                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+                && loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // swipe back view.
@@ -729,7 +758,7 @@ public class SearchPageView extends NestedScrollFrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
-            case LoadObject.NORMAL_STATE:
+            case LoadModel.NORMAL_STATE:
                 return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || ((FooterAdapter) searchPresenter.getAdapter()).getRealItemCount() <= 0;
 

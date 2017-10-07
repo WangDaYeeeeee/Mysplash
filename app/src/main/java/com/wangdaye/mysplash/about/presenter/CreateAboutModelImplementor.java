@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(24);
+        List<AboutModel> modelList = new ArrayList<>(25);
         boolean light = ThemeManager.getInstance(c).isLightTheme();
 
         // header.
@@ -96,6 +96,11 @@ public class CreateAboutModelImplementor {
                 "mueller-ma",
                 R.drawable.flag_de,
                 "https://github.com/mueller-ma"));
+        modelList.add(new TranslatorObject(
+                "https://lh3.googleusercontent.com/-G62rc78uq2Q/AAAAAAAAAAI/AAAAAAAAB14/IDC70nBA63U/s128-p-k-rw-no/photo.jpg",
+                "Saksham Barsaiyan",
+                R.drawable.flag_hi,
+                "https://plus.google.com/+SakshamBarsaiyan"));
 
         // library.
         modelList.add(new CategoryObject(c.getString(R.string.libraries)));

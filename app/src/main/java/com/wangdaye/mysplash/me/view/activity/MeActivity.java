@@ -221,6 +221,11 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     @Override
+    public boolean hasTranslucentNavigationBar() {
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // write large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -366,9 +371,23 @@ public class MeActivity extends LoadableActivity<Photo>
 
     private void initPages() {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_PHOTOS, R.id.activity_me_page_photo));
-        pageList.add(new MePhotosView(this, PhotosObject.PHOTOS_TYPE_LIKES, R.id.activity_me_page_like));
-        pageList.add(new MeCollectionsView(this, R.id.activity_me_page_collection));
+        pageList.add(
+                new MePhotosView(
+                        this,
+                        PhotosObject.PHOTOS_TYPE_PHOTOS,
+                        R.id.activity_me_page_photo,
+                        0, pagerManagePresenter.getPagerPosition() == 0));
+        pageList.add(
+                new MePhotosView(
+                        this,
+                        PhotosObject.PHOTOS_TYPE_LIKES,
+                        R.id.activity_me_page_like,
+                        1, pagerManagePresenter.getPagerPosition() == 1));
+        pageList.add(
+                new MeCollectionsView(
+                        this,
+                        R.id.activity_me_page_collection,
+                        2, pagerManagePresenter.getPagerPosition() == 2));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -427,7 +446,7 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @SuppressLint("SetTextI18n")
     private void drawProfile() {
-        MeProfileView meProfileView = (MeProfileView) findViewById(R.id.activity_me_profileView);
+        MeProfileView meProfileView = findViewById(R.id.activity_me_profileView);
         if (AuthManager.getInstance().getMe() != null) {
             Me me = AuthManager.getInstance().getMe();
             title.setText(me.first_name + " " + me.last_name);
@@ -541,10 +560,17 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     public void onPageSelected(int position) {
+        for (int i = 0; i < pagers.length; i ++) {
+            pagers[i].setSelected(i == position);
+        }
         pagerManagePresenter.setPagerPosition(position);
         if (AuthManager.getInstance().getState() != AuthManager.LOADING_ME_STATE) {
             pagerManagePresenter.checkToRefresh(position);
         }
+        DisplayUtils.setNavigationBarStyle(
+                this,
+                pagers[position].isNormalState(),
+                true);
     }
 
     @Override

@@ -85,7 +85,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
         if (!operateStatusBarBySelf()) {
-            DisplayUtils.initStatusBarStyle(this);
+            DisplayUtils.setStatusBarStyle(this, false);
+        }
+        if (hasTranslucentNavigationBar()) {
+            DisplayUtils.setNavigationBarStyle(this, false, hasTranslucentNavigationBar());
         }
 
         this.bundle = savedInstanceState;
@@ -108,6 +111,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
      * Otherwise, MysplashActivity class will deal with it.
      * */
     protected boolean operateStatusBarBySelf() {
+        return false;
+    }
+
+    public boolean hasTranslucentNavigationBar() {
         return false;
     }
 

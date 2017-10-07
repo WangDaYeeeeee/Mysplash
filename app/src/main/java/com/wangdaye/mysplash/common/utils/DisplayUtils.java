@@ -7,9 +7,11 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -91,27 +93,47 @@ public class DisplayUtils {
         }
     }
 
-    public static void initStatusBarStyle(Activity activity) {
-        setStatusBarStyle(activity, false);
-    }
-
-    public static void setStatusBarStyle(Activity activity, boolean onlyWhiteText) {
-        if (!onlyWhiteText && isNeedSetStatusBarTextDark(activity)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                activity.getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-            }
-        } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                activity.getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    public static void setStatusBarStyle(@NonNull Activity activity, boolean onlyDarkStatusBar) {
+        int flags = activity.getWindow().getDecorView().getSystemUiVisibility()
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            if (onlyDarkStatusBar || !ThemeManager.getInstance(activity).isLightTheme()) {
+                flags ^= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             }
         }
+        activity.getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
-    private static boolean isNeedSetStatusBarTextDark(Context c) {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && ThemeManager.getInstance(c).isLightTheme();
+    public static void setNavigationBarStyle(@NonNull Activity activity,
+                                             boolean onlyDarkNavigationBar, boolean translucent) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isLandscape(activity)) {
+            int flags = activity.getWindow().getDecorView().getSystemUiVisibility()
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+            if (translucent) {
+                flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+            }
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            if (!onlyDarkNavigationBar && ThemeManager.getInstance(activity).isLightTheme()) {
+                if (translucent) {
+                    activity.getWindow().setNavigationBarColor(
+                            Color.argb((int) (0.2 * 255), 250, 250, 250));
+                } else {
+                    activity.getWindow().setNavigationBarColor(Color.rgb(241, 241, 241));
+                }
+            } else {
+                flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+                if (translucent) {
+                    activity.getWindow().setNavigationBarColor(
+                            Color.argb((int) (0.2 * 255), 21, 21, 21));
+                } else {
+                    activity.getWindow().setNavigationBarColor(Color.rgb(26, 26, 26));
+                }
+            }
+            activity.getWindow().getDecorView().setSystemUiVisibility(flags);
+        }
     }
 
     public static void cancelTranslucentNavigation(Activity a) {

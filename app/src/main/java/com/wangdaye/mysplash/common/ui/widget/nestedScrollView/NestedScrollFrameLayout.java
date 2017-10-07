@@ -204,6 +204,16 @@ public abstract class NestedScrollFrameLayout extends FrameLayout
     }
 
     @Override
+    public boolean onNestedFling(@NonNull View target, float velocityX, float velocityY, boolean consumed) {
+        return false;
+    }
+
+    @Override
+    public boolean onNestedPreFling(@NonNull View target, float velocityX, float velocityY) {
+        return false;
+    }
+
+    @Override
     public int getNestedScrollAxes() {
         return nestedScrollingParentHelper.getNestedScrollAxes();
     }

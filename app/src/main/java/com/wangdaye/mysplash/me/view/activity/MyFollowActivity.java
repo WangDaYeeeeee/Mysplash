@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.me.view.activity;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -131,6 +132,7 @@ public class MyFollowActivity extends MysplashActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(Bundle outState) {
         outState.putInt(KEY_MY_FOLLOW_ACTIVITY_PAGE_POSITION, pagerManagePresenter.getPagerPosition());
@@ -215,8 +217,16 @@ public class MyFollowActivity extends MysplashActivity
 
     private void initPages() {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new MyFollowUserView(this, MyFollowObject.FOLLOW_TYPE_FOLLOWERS));
-        pageList.add(new MyFollowUserView(this, MyFollowObject.FOLLOW_TYPE_FOLLOWING));
+        pageList.add(
+                new MyFollowUserView(
+                        this,
+                        MyFollowObject.FOLLOW_TYPE_FOLLOWERS,
+                        0, pagerManagePresenter.getPagerPosition() == 0));
+        pageList.add(
+                new MyFollowUserView(
+                        this,
+                        MyFollowObject.FOLLOW_TYPE_FOLLOWING,
+                        1, pagerManagePresenter.getPagerPosition() == 1));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -258,6 +268,9 @@ public class MyFollowActivity extends MysplashActivity
 
     @Override
     public void onPageSelected(int position) {
+        for (int i = 0; i < pagers.length; i ++) {
+            pagers[i].setSelected(i == position);
+        }
         pagerManagePresenter.setPagerPosition(position);
         if (AuthManager.getInstance().getState() != AuthManager.LOADING_ME_STATE) {
             pagerManagePresenter.checkToRefresh(position);

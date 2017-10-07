@@ -229,6 +229,11 @@ public class UserActivity extends LoadableActivity<Photo>
     }
 
     @Override
+    public boolean hasTranslucentNavigationBar() {
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // write large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -355,8 +360,7 @@ public class UserActivity extends LoadableActivity<Photo>
         if (init && browsablePresenter.isBrowsable() && u == null) {
             browsablePresenter.requestBrowsableData();
         } else {
-            SwipeBackCoordinatorLayout swipeBackView
-                    = (SwipeBackCoordinatorLayout) findViewById(R.id.activity_user_swipeBackView);
+            SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_user_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
             if (Mysplash.getInstance().getActivityCount() == 1) {
@@ -397,9 +401,26 @@ public class UserActivity extends LoadableActivity<Photo>
 
     private void initPages(User u) {
         List<View> pageList = new ArrayList<>();
-        pageList.add(new UserPhotosView(this, u, PhotosObject.PHOTOS_TYPE_PHOTOS, R.id.activity_user_page_photo));
-        pageList.add(new UserPhotosView(this, u, PhotosObject.PHOTOS_TYPE_LIKES, R.id.activity_user_page_like));
-        pageList.add(new UserCollectionsView(this, u, R.id.activity_user_page_collection));
+        pageList.add(
+                new UserPhotosView(
+                        this,
+                        u,
+                        PhotosObject.PHOTOS_TYPE_PHOTOS,
+                        R.id.activity_user_page_photo,
+                        0, pagerManagePresenter.getPagerPosition() == 0));
+        pageList.add(
+                new UserPhotosView(
+                        this,
+                        u,
+                        PhotosObject.PHOTOS_TYPE_LIKES,
+                        R.id.activity_user_page_like,
+                        1, pagerManagePresenter.getPagerPosition() == 1));
+        pageList.add(
+                new UserCollectionsView(
+                        this,
+                        u,
+                        R.id.activity_user_page_collection,
+                        2, pagerManagePresenter.getPagerPosition() == 2));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -547,8 +568,15 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     public void onPageSelected(int position) {
+        for (int i = 0; i < pagers.length; i ++) {
+            pagers[i].setSelected(i == position);
+        }
         pagerManagePresenter.setPagerPosition(position);
         pagerManagePresenter.checkToRefresh(position);
+        DisplayUtils.setNavigationBarStyle(
+                this,
+                pagers[position].isNormalState(),
+                true);
     }
 
     @Override

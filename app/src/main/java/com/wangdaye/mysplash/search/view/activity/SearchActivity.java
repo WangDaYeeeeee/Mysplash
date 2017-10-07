@@ -221,6 +221,11 @@ public class SearchActivity extends LoadableActivity<Photo>
     }
 
     @Override
+    public boolean hasTranslucentNavigationBar() {
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -363,19 +368,22 @@ public class SearchActivity extends LoadableActivity<Photo>
                 new SearchPageView(
                         this,
                         SearchPageView.SEARCH_PHOTOS_TYPE,
-                        R.id.activity_search_page_photo)
+                        R.id.activity_search_page_photo,
+                        0, pagerManagePresenter.getPagerPosition() == 0)
                         .setOnClickListenerForFeedbackView(hideKeyboardListener));
         pageList.add(
                 new SearchPageView(
                         this,
                         SearchPageView.SEARCH_COLLECTIONS_TYPE,
-                        R.id.activity_search_page_collection)
+                        R.id.activity_search_page_collection,
+                        1, pagerManagePresenter.getPagerPosition() == 1)
                         .setOnClickListenerForFeedbackView(hideKeyboardListener));
         pageList.add(
                 new SearchPageView(
                         this,
                         SearchPageView.SEARCH_USERS_TYPE,
-                        R.id.activity_search_page_user)
+                        R.id.activity_search_page_user,
+                        2, pagerManagePresenter.getPagerPosition() == 2)
                         .setOnClickListenerForFeedbackView(hideKeyboardListener));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
@@ -483,8 +491,15 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     public void onPageSelected(int position) {
+        for (int i = 0; i < pagers.length; i ++) {
+            pagers[i].setSelected(i == position);
+        }
         pagerManagePresenter.setPagerPosition(position);
         pagerManagePresenter.checkToRefresh(position);
+        DisplayUtils.setNavigationBarStyle(
+                this,
+                pagers[position].isNormalState(),
+                true);
     }
 
     @Override
@@ -511,7 +526,8 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     public void onNestedScrolling() {
-        if (((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE)).isActive(editText)) {
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (manager != null && manager.isActive(editText)) {
             searchBarPresenter.hideKeyboard();
         }
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
@@ -592,14 +608,18 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     public void showKeyboard() {
-        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                .showSoftInput(editText, 0);
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (manager != null) {
+            manager.showSoftInput(editText, 0);
+        }
     }
 
     @Override
     public void hideKeyboard() {
-        ((InputMethodManager) getSystemService(INPUT_METHOD_SERVICE))
-                .hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+        }
     }
 
     @Override

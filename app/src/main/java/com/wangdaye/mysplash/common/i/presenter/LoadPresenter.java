@@ -1,5 +1,9 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
+import android.support.annotation.NonNull;
+
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+
 /**
  * Load presenter.
  *
@@ -8,6 +12,8 @@ package com.wangdaye.mysplash.common.i.presenter;
  * */
 
 public interface LoadPresenter {
+
+    void bindActivity(@NonNull MysplashActivity activity);
 
     int getLoadState();
 

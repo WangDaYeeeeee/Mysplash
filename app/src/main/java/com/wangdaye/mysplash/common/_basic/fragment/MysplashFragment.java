@@ -5,7 +5,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * Mysplash fragment.
@@ -18,16 +17,16 @@ public abstract class MysplashFragment extends Fragment {
 
     // style.
 
-    public void setStatusBarStyle(boolean onlyWhite) {
-        DisplayUtils.setStatusBarStyle(getActivity(), onlyWhite);
-    }
+    public abstract void initStatusBarStyle();
+
+    public abstract void initNavigationBarStyle();
 
     /**
-     * This method can tell you if we need set status bar style only white.
+     * This method can tell you if we need set dark status bar style.
      *
      * @return If we need to set status bar style only white.
      * */
-    public abstract boolean needSetOnlyWhiteStatusBarText();
+    public abstract boolean needSetDarkStatusBar();
 
     // save instance.
 

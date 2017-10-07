@@ -30,6 +30,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.i.view.PagerManageView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
@@ -132,11 +133,6 @@ public class HomeFragment extends LoadableFragment<Photo>
             }
         }
     }
-
-    @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
 /*
     @Override
     public void onHiddenChanged(boolean hidden) {
@@ -152,6 +148,24 @@ public class HomeFragment extends LoadableFragment<Photo>
         for (PagerView p : pagers) {
             p.onSaveInstanceState(outState);
         }
+    }
+
+    @Override
+    public void initStatusBarStyle() {
+        DisplayUtils.setStatusBarStyle(getActivity(), needSetDarkStatusBar());
+    }
+
+    @Override
+    public void initNavigationBarStyle() {
+        DisplayUtils.setNavigationBarStyle(
+                getActivity(),
+                pagers[pagerManagePresenter.getPagerPosition()].isNormalState(),
+                false);
+    }
+
+    @Override
+    public boolean needSetDarkStatusBar() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
     @Override
@@ -194,7 +208,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     @Override
     public void backToTop() {
         statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
+        DisplayUtils.setStatusBarStyle(getActivity(), false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
     }
@@ -293,17 +307,20 @@ public class HomeFragment extends LoadableFragment<Photo>
         pageList.add(
                 new HomeTrendingView(
                         (MainActivity) getActivity(),
-                        R.id.fragment_home_page_trending));
+                        R.id.fragment_home_page_trending,
+                        0, pagerManagePresenter.getPagerPosition() == 0));
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         Mysplash.CATEGORY_TOTAL_NEW,
-                        R.id.fragment_home_page_new));
+                        R.id.fragment_home_page_new,
+                        1, pagerManagePresenter.getPagerPosition() == 1));
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         Mysplash.CATEGORY_TOTAL_FEATURED,
-                        R.id.fragment_home_page_featured));
+                        R.id.fragment_home_page_featured,
+                        2, pagerManagePresenter.getPagerPosition() == 2));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -396,8 +413,15 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void onPageSelected(int position) {
+        for (int i = 0; i < pagers.length; i ++) {
+            pagers[i].setSelected(i == position);
+        }
         pagerManagePresenter.setPagerPosition(position);
         pagerManagePresenter.checkToRefresh(position);
+        DisplayUtils.setNavigationBarStyle(
+                getActivity(),
+                pagers[position].isNormalState(),
+                true);
     }
 
     @Override
@@ -424,15 +448,15 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void onNestedScrolling() {
-        if (needSetOnlyWhiteStatusBarText()) {
+        if (needSetDarkStatusBar()) {
             if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
-                setStatusBarStyle(true);
+                DisplayUtils.setStatusBarStyle(getActivity(), true);
             }
         } else {
             if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
-                setStatusBarStyle(false);
+                DisplayUtils.setStatusBarStyle(getActivity(), false);
             }
         }
     }

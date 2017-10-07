@@ -1,7 +1,8 @@
 package com.wangdaye.mysplash.user.model.widget;
 
-import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 
 /**
@@ -10,17 +11,23 @@ import com.wangdaye.mysplash.common.i.model.LoadModel;
 
 public class LoadObject implements LoadModel {
 
+    private MysplashActivity activity;
+
     @StateRule
     private int state;
 
-    public static final int LOADING_STATE = 0;
-    public static final int FAILED_STATE = -1;
-    public static final int NORMAL_STATE = 1;
-    @IntDef({LOADING_STATE, FAILED_STATE, NORMAL_STATE})
-    private @interface StateRule {}
-
     public LoadObject(@StateRule int state) {
         this.state = state;
+    }
+
+    @Override
+    public MysplashActivity getActivity() {
+        return activity;
+    }
+
+    @Override
+    public void setActivity(@NonNull MysplashActivity activity) {
+        this.activity = activity;
     }
 
     @Override

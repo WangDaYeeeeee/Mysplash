@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.collection.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 
 import android.support.v7.widget.RecyclerView;
@@ -159,6 +160,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         initPresenter();
         recyclerView.setAdapter(photosPresenter.getAdapter());
         photosPresenter.getAdapter().setRecyclerView(recyclerView);
+        loadPresenter.bindActivity(a);
     }
 
     private void initModel(CollectionActivity a, Collection c) {
@@ -172,7 +174,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
                 adapter,
                 c,
                 c.curated ? PhotosObject.PHOTOS_TYPE_CURATED : PhotosObject.PHOTOS_TYPE_NORMAL);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }
 
@@ -410,21 +412,29 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void setLoadingState() {
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, false, activity.hasTranslucentNavigationBar());
+        }
         animShow(progressView);
         animHide(retryButton);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setFailedState() {
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
         animShow(retryButton);
         animHide(progressView);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setNormalState() {
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, true, activity.hasTranslucentNavigationBar());
+        }
         animShow(refreshLayout);
         animHide(progressView);
         animHide(retryButton);
@@ -461,7 +471,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     @Override
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
-                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+                && loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // swipe back view.
@@ -469,7 +479,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
-            case LoadObject.NORMAL_STATE:
+            case LoadModel.NORMAL_STATE:
                 return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || photosPresenter.getAdapter().getRealItemCount() <= 0;
 

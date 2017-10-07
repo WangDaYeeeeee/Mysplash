@@ -112,7 +112,7 @@ public class FragmentManageImplementor
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .addToBackStack(null)
                 .commit();
-        DisplayUtils.initStatusBarStyle(a);
+        DisplayUtils.initStatusBarAndNotificationBarStyle(a);
     }
 
     @Override
@@ -121,7 +121,7 @@ public class FragmentManageImplementor
             MysplashFragment f = getFragmentList(a, false).get(model.getFragmentCount() - 1);
             model.popFragmentFromList();
             a.getSupportFragmentManager().popBackStack();
-            f.setStatusBarStyle(f.needSetOnlyWhiteStatusBarText());
+            f.setStatusBarStyle(f.needSetDarkStatusBar());
         }
     }
 */
@@ -132,7 +132,7 @@ public class FragmentManageImplementor
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.activity_main_fragment, f)
                 .commit();
-        DisplayUtils.initStatusBarStyle(a);
+        DisplayUtils.setStatusBarStyle(a, false);
     }
 
     private void showAndHideFragment(MysplashActivity a, MysplashFragment newF, MysplashFragment oldF) {
@@ -142,7 +142,8 @@ public class FragmentManageImplementor
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .show(newF)
                 .commit();
-        newF.setStatusBarStyle(newF.needSetOnlyWhiteStatusBarText());
+        newF.initStatusBarStyle();
+        newF.initNavigationBarStyle();
     }
 
     private void showAndHideNewFragment(MysplashActivity a, MysplashFragment newF, MysplashFragment oldF) {
@@ -153,7 +154,8 @@ public class FragmentManageImplementor
                 .add(R.id.activity_main_fragment, newF)
                 .show(newF)
                 .commit();
-        DisplayUtils.initStatusBarStyle(a);
+        DisplayUtils.setStatusBarStyle(a, false);
+        DisplayUtils.setNavigationBarStyle(a, false, true);
     }
 
     private MysplashFragment buildFragmentByCode(int code) {

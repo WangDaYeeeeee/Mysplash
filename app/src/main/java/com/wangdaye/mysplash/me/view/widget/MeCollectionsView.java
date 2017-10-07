@@ -1,10 +1,10 @@
 package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -14,9 +14,11 @@ import android.widget.Button;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.i.model.CollectionsModel;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.PagerModel;
 import com.wangdaye.mysplash.common.i.model.ScrollModel;
 import com.wangdaye.mysplash.common.i.presenter.CollectionsPresenter;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
@@ -37,12 +39,14 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.CollectionsObject;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
+import com.wangdaye.mysplash.me.model.widget.PagerObject;
 import com.wangdaye.mysplash.me.model.widget.ScrollObject;
 import com.wangdaye.mysplash.me.presenter.widget.CollectionsImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.PagerImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.ScrollImplementor;
 import com.wangdaye.mysplash.me.presenter.widget.SwipeBackImplementor;
+import com.wangdaye.mysplash.me.view.activity.MeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,6 +82,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     private CollectionsModel collectionsModel;
     private CollectionsPresenter collectionsPresenter;
 
+    private PagerModel pagerModel;
     private PagerPresenter pagerPresenter;
 
     private LoadModel loadModel;
@@ -126,16 +131,18 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         };
     }
 
-    public MeCollectionsView(Activity a, int id) {
+    public MeCollectionsView(MeActivity a, int id,
+                             int index, boolean selected) {
         super(a);
         this.setId(id);
-        this.initialize(a);
+        this.initialize(a, index, selected);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void initialize(Activity a) {
+    private void initialize(MeActivity a,
+                            int index, boolean selected) {
         View loadingView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_loading_view_mini, this, false);
         addView(loadingView);
@@ -144,23 +151,27 @@ public class MeCollectionsView extends NestedScrollFrameLayout
         addView(contentView);
 
         ButterKnife.bind(this, this);
-        initModel(a);
-        initPresenter();
+        initModel(a, index, selected);
+        initPresenter(a);
         initView();
     }
 
-    private void initModel(Activity a) {
+    private void initModel(MeActivity a,
+                           int index, boolean selected) {
         this.collectionsModel = new CollectionsObject(a);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.pagerModel = new PagerObject(index, selected);
+        this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject();
     }
 
-    private void initPresenter() {
+    private void initPresenter(MysplashActivity a) {
         this.collectionsPresenter = new CollectionsImplementor(collectionsModel, this);
-        this.pagerPresenter = new PagerImplementor(this);
+        this.pagerPresenter = new PagerImplementor(pagerModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
         this.swipeBackPresenter = new SwipeBackImplementor(this);
+
+        loadPresenter.bindActivity(a);
     }
 
     private void initView() {
@@ -200,7 +211,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     // collection.
 
     public void addCollection(Collection c) {
-        if (loadPresenter.getLoadState() == LoadObject.LOADING_STATE) {
+        if (loadPresenter.getLoadState() == LoadModel.LOADING_STATE) {
             collectionsPresenter.initRefresh(getContext());
         } else {
             collectionsPresenter.getAdapter().insertItem(c, 0);
@@ -209,11 +220,11 @@ public class MeCollectionsView extends NestedScrollFrameLayout
 
     public void removeCollection(Collection c) {
         switch (loadPresenter.getLoadState()) {
-            case LoadObject.LOADING_STATE:
+            case LoadModel.LOADING_STATE:
                 collectionsPresenter.initRefresh(getContext());
                 break;
 
-            case LoadObject.NORMAL_STATE:
+            case LoadModel.NORMAL_STATE:
                 collectionsPresenter.getAdapter().removeItem(c);
                 break;
         }
@@ -221,11 +232,11 @@ public class MeCollectionsView extends NestedScrollFrameLayout
 
     public void updateCollection(Collection c, boolean refreshView) {
         switch (loadPresenter.getLoadState()) {
-            case LoadObject.LOADING_STATE:
+            case LoadModel.LOADING_STATE:
                 collectionsPresenter.initRefresh(getContext());
                 break;
 
-            case LoadObject.NORMAL_STATE:
+            case LoadModel.NORMAL_STATE:
                 collectionsPresenter.getAdapter().updateCollection(c, refreshView, false);
                 break;
         }
@@ -356,8 +367,8 @@ public class MeCollectionsView extends NestedScrollFrameLayout
 
     @Override
     public boolean checkNeedRefresh() {
-        return loadPresenter.getLoadState() == LoadObject.FAILED_STATE
-                || (loadPresenter.getLoadState() == LoadObject.LOADING_STATE
+        return loadPresenter.getLoadState() == LoadModel.FAILED_STATE
+                || (loadPresenter.getLoadState() == LoadModel.LOADING_STATE
                 && !collectionsPresenter.isRefreshing() && !collectionsPresenter.isLoading());
     }
 
@@ -369,6 +380,11 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     @Override
     public void refreshPager() {
         collectionsPresenter.initRefresh(getContext());
+    }
+
+    @Override
+    public void setSelected(boolean selected) {
+        pagerPresenter.setSelected(selected);
     }
 
     @Override
@@ -392,17 +408,22 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     }
 
     @Override
+    public int getItemCount() {
+        if (loadPresenter.getLoadState() != LoadModel.NORMAL_STATE) {
+            return 0;
+        } else {
+            return collectionsPresenter.getAdapter().getRealItemCount();
+        }
+    }
+
+    @Override
     public boolean canSwipeBack(int dir) {
         return swipeBackPresenter.checkCanSwipeBack(dir);
     }
 
     @Override
-    public int getItemCount() {
-        if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
-            return 0;
-        } else {
-            return collectionsPresenter.getAdapter().getRealItemCount();
-        }
+    public boolean isNormalState() {
+        return loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // load view.
@@ -418,21 +439,29 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void setLoadingState() {
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, false, activity.hasTranslucentNavigationBar());
+        }
         animShow(progressView);
         animHide(retryButton);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setFailedState() {
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
         animShow(retryButton);
         animHide(progressView);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setNormalState() {
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, true, activity.hasTranslucentNavigationBar());
+        }
         animShow(refreshLayout);
         animHide(progressView);
         animHide(retryButton);
@@ -469,7 +498,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     @Override
     public boolean needBackToTop() {
         return !scrollPresenter.isToTop()
-                && loadPresenter.getLoadState() == LoadObject.NORMAL_STATE;
+                && loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // swipe back view.
@@ -477,7 +506,7 @@ public class MeCollectionsView extends NestedScrollFrameLayout
     @Override
     public boolean checkCanSwipeBack(int dir) {
         switch (loadPresenter.getLoadState()) {
-            case LoadObject.NORMAL_STATE:
+            case LoadModel.NORMAL_STATE:
                 return SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
                         || collectionsPresenter.getAdapter().getRealItemCount() <= 0;
 

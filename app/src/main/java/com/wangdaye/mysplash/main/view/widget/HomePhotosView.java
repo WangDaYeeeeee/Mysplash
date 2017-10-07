@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -16,10 +17,12 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
+import com.wangdaye.mysplash.common.i.model.PagerModel;
 import com.wangdaye.mysplash.common.i.model.PhotosModel;
 import com.wangdaye.mysplash.common.i.model.ScrollModel;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
@@ -40,6 +43,7 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
+import com.wangdaye.mysplash.main.model.widget.PagerObject;
 import com.wangdaye.mysplash.main.model.widget.PhotosObject;
 import com.wangdaye.mysplash.main.model.widget.ScrollObject;
 import com.wangdaye.mysplash.main.presenter.widget.LoadImplementor;
@@ -87,6 +91,7 @@ public class HomePhotosView extends NestedScrollFrameLayout
     private PhotosModel photosModel;
     private PhotosPresenter photosPresenter;
 
+    private PagerModel pagerModel;
     private PagerPresenter pagerPresenter;
 
     private LoadModel loadModel;
@@ -157,16 +162,18 @@ public class HomePhotosView extends NestedScrollFrameLayout
         };
     }
 
-    public HomePhotosView(MainActivity a, @Mysplash.PhotosTypeRule int photosType, int id) {
+    public HomePhotosView(MainActivity a, @Mysplash.PhotosTypeRule int photosType, int id,
+                           int index, boolean selected) {
         super(a);
         this.setId(id);
-        this.initialize(a, photosType);
+        this.initialize(a, photosType, index, selected);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void initialize(MainActivity a, @Mysplash.PhotosTypeRule int photosType) {
+    private void initialize(MainActivity a, @Mysplash.PhotosTypeRule int photosType,
+                            int index, boolean selected) {
         View loadingView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_loading_view_large, this, false);
         addView(loadingView);
@@ -176,25 +183,29 @@ public class HomePhotosView extends NestedScrollFrameLayout
         addView(contentView);
 
         ButterKnife.bind(this, this);
-        initModel(a, photosType);
-        initPresenter();
+        initModel(a, photosType, index, selected);
+        initPresenter(a);
         initView();
     }
 
-    private void initModel(MainActivity a, @Mysplash.PhotosTypeRule int photosType) {
+    private void initModel(MainActivity a, @Mysplash.PhotosTypeRule int photosType,
+                           int index, boolean selected) {
         this.photosModel = new PhotosObject(
                 a,
                 new PhotoAdapter(a, new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE), this, a),
                 photosType);
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.pagerModel = new PagerObject(index, selected);
+        this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
     }
 
-    private void initPresenter() {
+    private void initPresenter(MysplashActivity a) {
         this.photosPresenter = new PhotosImplementor(photosModel, this);
-        this.pagerPresenter = new PagerImplementor(this);
+        this.pagerPresenter = new PagerImplementor(pagerModel, this);
         this.loadPresenter = new LoadImplementor(loadModel, this);
         this.scrollPresenter = new ScrollImplementor(scrollModel, this);
+
+        loadPresenter.bindActivity(a);
     }
 
     private void initView() {
@@ -442,6 +453,11 @@ public class HomePhotosView extends NestedScrollFrameLayout
     }
 
     @Override
+    public void setSelected(boolean selected) {
+        pagerPresenter.setSelected(selected);
+    }
+
+    @Override
     public void scrollToPageTop() { // interface.
         scrollPresenter.scrollToTop();
     }
@@ -462,17 +478,22 @@ public class HomePhotosView extends NestedScrollFrameLayout
     }
 
     @Override
-    public boolean canSwipeBack(int dir) {
-        return false;
-    }
-
-    @Override
     public int getItemCount() {
         if (loadPresenter.getLoadState() != LoadObject.NORMAL_STATE) {
             return 0;
         } else {
             return photosPresenter.getAdapter().getRealItemCount();
         }
+    }
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return false;
+    }
+
+    @Override
+    public boolean isNormalState() {
+        return loadPresenter.getLoadState() == LoadModel.NORMAL_STATE;
     }
 
     // load view.
@@ -488,21 +509,29 @@ public class HomePhotosView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void setLoadingState() {
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, false, activity.hasTranslucentNavigationBar());
+        }
         animShow(progressView);
         animHide(feedbackContainer);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setFailedState() {
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
         animShow(feedbackContainer);
         animHide(progressView);
         animHide(refreshLayout);
     }
 
     @Override
-    public void setNormalState() {
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
+        if (activity != null && pagerPresenter.isSelected()) {
+            DisplayUtils.setNavigationBarStyle(
+                    activity, true, activity.hasTranslucentNavigationBar());
+        }
         animShow(refreshLayout);
         animHide(progressView);
         animHide(feedbackContainer);

@@ -299,6 +299,11 @@ public class MainActivity extends LoadableActivity<Photo>
     }
 
     @Override
+    public boolean hasTranslucentNavigationBar() {
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();

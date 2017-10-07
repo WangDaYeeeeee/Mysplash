@@ -209,6 +209,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         return true;
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     public void onSaveInstanceState(Bundle outState) {
         // do nothing.

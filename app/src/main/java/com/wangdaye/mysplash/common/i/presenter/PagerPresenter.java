@@ -17,4 +17,9 @@ public interface PagerPresenter {
      * */
     boolean checkNeedRefresh();
     void refreshPager();
+
+    int getIndex();
+
+    boolean isSelected();
+    void setSelected(boolean selected);
 }

@@ -1,9 +1,11 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
+import android.support.annotation.NonNull;
+
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash.common.i.view.LoadView;
-import com.wangdaye.mysplash.main.model.widget.LoadObject;
 
 /**
  * Load implementor.
@@ -22,31 +24,39 @@ public class LoadImplementor
     }
 
     @Override
-    public void setLoadingState() {
-        if (model.getState() != LoadObject.LOADING_STATE) {
-            model.setState(LoadObject.LOADING_STATE);
-            view.setLoadingState();
-        }
-    }
-
-    @Override
-    public void setFailedState() {
-        if (model.getState() != LoadObject.FAILED_STATE) {
-            model.setState(LoadObject.FAILED_STATE);
-            view.setFailedState();
-        }
-    }
-
-    @Override
-    public void setNormalState() {
-        if (model.getState() != LoadObject.NORMAL_STATE) {
-            model.setState(LoadObject.NORMAL_STATE);
-            view.setNormalState();
-        }
+    public void bindActivity(@NonNull MysplashActivity activity) {
+        model.setActivity(activity);
     }
 
     @Override
     public int getLoadState() {
         return model.getState();
+    }
+
+    @Override
+    public void setLoadingState() {
+        int old = model.getState();
+        if (model.getState() != LoadModel.LOADING_STATE) {
+            model.setState(LoadModel.LOADING_STATE);
+            view.setLoadingState(model.getActivity(), old);
+        }
+    }
+
+    @Override
+    public void setFailedState() {
+        int old = model.getState();
+        if (model.getState() != LoadModel.FAILED_STATE) {
+            model.setState(LoadModel.FAILED_STATE);
+            view.setFailedState(model.getActivity(), old);
+        }
+    }
+
+    @Override
+    public void setNormalState() {
+        int old = model.getState();
+        if (model.getState() != LoadModel.NORMAL_STATE) {
+            model.setState(LoadModel.NORMAL_STATE);
+            view.setNormalState(model.getActivity(), old);
+        }
     }
 }

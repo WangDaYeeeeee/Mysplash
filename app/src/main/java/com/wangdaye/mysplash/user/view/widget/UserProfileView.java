@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 import com.wangdaye.mysplash.common.i.model.UserModel;
@@ -111,7 +112,7 @@ public class UserProfileView extends FrameLayout
 
     private void initModel() {
         this.userModel = new UserObject();
-        this.loadModel = new LoadObject(LoadObject.LOADING_STATE);
+        this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
     }
 
     private void initPresenter() {
@@ -282,18 +283,18 @@ public class UserProfileView extends FrameLayout
     }
 
     @Override
-    public void setLoadingState() {
+    public void setLoadingState(@Nullable MysplashActivity activity, int old) {
         animShow(progressView);
         animHide(profileContainer);
     }
 
     @Override
-    public void setFailedState() {
+    public void setFailedState(@Nullable MysplashActivity activity, int old) {
         // do nothing.
     }
 
     @Override
-    public void setNormalState() {
+    public void setNormalState(@Nullable MysplashActivity activity, int old) {
         animShow(profileContainer);
         animHide(progressView);
     }

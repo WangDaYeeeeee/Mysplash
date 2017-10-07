@@ -127,11 +127,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     }
 
     @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
-        return appBar.getY() <= -appBar.getMeasuredHeight();
-    }
-
-    @Override
     public void onHiddenChanged(boolean hidden) {
         if (hidden) {
             hideKeyboard();
@@ -148,6 +143,21 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         outState.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, multiFilterBarPresenter.getCategory());
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, multiFilterBarPresenter.getOrientation());
         outState.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, multiFilterBarPresenter.isFeatured());
+    }
+
+    @Override
+    public void initStatusBarStyle() {
+        DisplayUtils.setStatusBarStyle(getActivity(), needSetDarkStatusBar());
+    }
+
+    @Override
+    public void initNavigationBarStyle() {
+        DisplayUtils.setNavigationBarStyle(getActivity(), photosView.isNormalState(), false);
+    }
+
+    @Override
+    public boolean needSetDarkStatusBar() {
+        return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
     @Override
@@ -172,7 +182,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     @Override
     public void backToTop() {
         statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
+        DisplayUtils.setStatusBarStyle(getActivity(), false);
         BackToTopUtils.showTopBar(appBar, photosView);
         photosView.pagerScrollToTop();
     }
@@ -396,21 +406,21 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @Override
     public void onNestedScrolling() {
-        if (((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-                .isActive(editTexts[0])
-                || ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
-                .isActive(editTexts[1])) {
+        InputMethodManager manager
+                = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (manager != null
+                && (manager.isActive(editTexts[0]) || manager.isActive(editTexts[1]))) {
             multiFilterBarPresenter.hideKeyboard();
         }
-        if (needSetOnlyWhiteStatusBarText()) {
+        if (needSetDarkStatusBar()) {
             if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
-                setStatusBarStyle(true);
+                DisplayUtils.setStatusBarStyle(getActivity(), true);
             }
         } else {
             if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
-                setStatusBarStyle(false);
+                DisplayUtils.setStatusBarStyle(getActivity(), false);
             }
         }
     }
@@ -433,7 +443,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @Override
     public void touchNavigationIcon() {
-        DrawerLayout drawer = (DrawerLayout) getActivity().findViewById(R.id.activity_main_drawerLayout);
+        DrawerLayout drawer = getActivity().findViewById(R.id.activity_main_drawerLayout);
         drawer.openDrawer(GravityCompat.START);
     }
 
@@ -452,14 +462,18 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     @Override
     public void showKeyboard() {
         InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.showSoftInput(editTexts[0], 0);
+        if (manager != null) {
+            manager.showSoftInput(editTexts[0], 0);
+        }
     }
 
     @Override
     public void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(editTexts[0].getWindowToken(), 0);
-        manager.hideSoftInputFromWindow(editTexts[1].getWindowToken(), 0);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(editTexts[0].getWindowToken(), 0);
+            manager.hideSoftInputFromWindow(editTexts[1].getWindowToken(), 0);
+        }
     }
 
     @Override

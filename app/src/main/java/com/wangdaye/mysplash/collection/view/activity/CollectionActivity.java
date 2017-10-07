@@ -177,6 +177,11 @@ public class CollectionActivity extends LoadableActivity<Photo>
     }
 
     @Override
+    public boolean hasTranslucentNavigationBar() {
+        return true;
+    }
+
+    @Override
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
@@ -557,10 +562,10 @@ public class CollectionActivity extends LoadableActivity<Photo>
     public void drawUpdateResult(Object newKey) {
         Collection c = (Collection) newKey;
 
-        TextView title = (TextView) findViewById(R.id.activity_collection_title);
+        TextView title = findViewById(R.id.activity_collection_title);
         title.setText(c.title);
 
-        TextView description = (TextView) findViewById(R.id.activity_collection_description);
+        TextView description = findViewById(R.id.activity_collection_description);
         if (TextUtils.isEmpty(c.description)) {
             description.setVisibility(View.GONE);
         } else {

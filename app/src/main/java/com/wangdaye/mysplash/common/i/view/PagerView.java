@@ -19,6 +19,8 @@ public interface PagerView {
     boolean checkNeedBackToTop();
     void refreshPager();
 
+    void setSelected(boolean selected);
+
     void scrollToPageTop();
     void cancelRequest();
 
@@ -27,4 +29,6 @@ public interface PagerView {
 
     int getItemCount();
     boolean canSwipeBack(int dir);
+
+    boolean isNormalState();
 }

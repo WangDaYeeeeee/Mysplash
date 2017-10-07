@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 320
-        versionName "3.2.0"
+        versionCode 321
+        versionName "3.2.1"
     }
     sourceSets {
         main {
@@ -86,8 +86,6 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.0'
 }
 
-apply plugin: 'com.neenbedankt.android-apt'
-
 allprojects {
     repositories {
         jcenter()
@@ -104,11 +102,11 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:appcompat-v7:26.0.1'
-    compile 'com.android.support:cardview-v7:26.0.1'
-    compile 'com.android.support:design:26.0.1'
-    compile 'com.android.support:support-v4:26.0.1'
-    compile 'com.android.support:customtabs:26.0.1'
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:cardview-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
+    compile 'com.android.support:customtabs:26.1.0'
 
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
@@ -117,7 +115,7 @@ dependencies {
     compile 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
 
     compile 'com.jakewharton:butterknife:8.5.1'
-    apt 'com.jakewharton:butterknife-compiler:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 
     compile 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     compile 'com.pacioianu.david:ink-page-indicator:1.2.0'

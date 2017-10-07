@@ -6,7 +6,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
         classpath 'org.greenrobot:greendao-gradle-plugin:3.2.0'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -17,6 +17,9 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 }
 

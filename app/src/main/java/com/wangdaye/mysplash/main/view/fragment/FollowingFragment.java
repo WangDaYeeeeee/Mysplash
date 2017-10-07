@@ -16,6 +16,7 @@ import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.presenter.fragment.ToolbarImplementor;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
@@ -134,7 +135,17 @@ public class FollowingFragment extends LoadableFragment<Photo>
     }
 
     @Override
-    public boolean needSetOnlyWhiteStatusBarText() {
+    public void initStatusBarStyle() {
+        DisplayUtils.setStatusBarStyle(getActivity(), needSetDarkStatusBar());
+    }
+
+    @Override
+    public void initNavigationBarStyle() {
+        DisplayUtils.setNavigationBarStyle(getActivity(), feedView.isNormalState(), false);
+    }
+
+    @Override
+    public boolean needSetDarkStatusBar() {
         return appBar.getY() <= -appBar.getMeasuredHeight();
     }
 
@@ -146,7 +157,7 @@ public class FollowingFragment extends LoadableFragment<Photo>
     @Override
     public void backToTop() {
         statusBar.animToInitAlpha();
-        setStatusBarStyle(false);
+        DisplayUtils.setStatusBarStyle(getActivity(), false);
         animShowTopBar();
         feedView.pagerScrollToTop();
     }
@@ -238,15 +249,15 @@ public class FollowingFragment extends LoadableFragment<Photo>
     @Override
     public void onNestedScrolling() {
         feedView.setOffsetY(-appBar.getY());
-        if (needSetOnlyWhiteStatusBarText()) {
+        if (needSetDarkStatusBar()) {
             if (statusBar.isInitState()) {
                 statusBar.animToDarkerAlpha();
-                setStatusBarStyle(true);
+                DisplayUtils.setStatusBarStyle(getActivity(), true);
             }
         } else {
             if (!statusBar.isInitState()) {
                 statusBar.animToInitAlpha();
-                setStatusBarStyle(false);
+                DisplayUtils.setStatusBarStyle(getActivity(), false);
             }
         }
     }
