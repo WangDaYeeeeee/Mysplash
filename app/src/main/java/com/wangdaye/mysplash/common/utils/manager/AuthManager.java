@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.support.annotation.IntDef;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -268,6 +269,8 @@ public class AuthManager
 
         access_token = token.access_token;
         authorized = true;
+
+        Log.d("AUTH MANAGER", access_token);
 
         for (int i = 0; i < listenerList.size(); i ++) {
             listenerList.get(i).onWriteAccessToken();

@@ -10,7 +10,6 @@
     <string name="backstage">ФОН</string>
     <string name="cancel">Отмена</string>
     <string name="check">Проверить</string>
-    <string name="collected">Собранный</string>
     <string name="copy">КОПИЯ</string>
     <string name="create">СОЗДАТЬ</string>
     <string name="delete">УДАЛИТЬ</string>
@@ -37,9 +36,14 @@
     <string name="next">Далее</string>
     <string name="my_follow">Мои подписки</string>
     <string name="more">БОЛЬШЕ</string>
-    <string name="liked">Понравившиеся</string>
     <string name="libraries">БИБЛИОТЕКИ</string>
     <string name="users">пользователи</string>
+
+    <string name="like">Правиться</string>
+    <string name="liked">Понравившиеся</string>
+    <string name="collect">Cобирать</string>
+    <string name="collected">Собранный</string>
+    <string name="download">Загрузить</string>
 
     <string name="follow_system">Система слежения</string>
 
@@ -122,7 +126,6 @@
     <string name="feedback_load_nothing_tv">ЗАГРУЖАТЬ НЕЧЕГО</string>
     <string name="feedback_location">Местоположение</string>
     <string name="feedback_login_text">Войдите в ваш Unsplash-аккаунт.</string>
-    <string name="feedback_model">Модель</string>
     <string name="feedback_name">Имя</string>
     <string name="feedback_name_is_required">Необходимо указать имя.</string>
     <string name="feedback_need_permission">Не удалось получить разрешение.</string>

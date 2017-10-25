@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion "26.0.2"
 
     defaultConfig {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 321
-        versionName "3.2.1"
+        versionCode 322
+        versionName "3.2.2"
     }
     sourceSets {
         main {

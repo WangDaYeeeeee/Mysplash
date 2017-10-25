@@ -119,7 +119,7 @@ public class DisplayUtils {
             if (!onlyDarkNavigationBar && ThemeManager.getInstance(activity).isLightTheme()) {
                 if (translucent) {
                     activity.getWindow().setNavigationBarColor(
-                            Color.argb((int) (0.2 * 255), 250, 250, 250));
+                            Color.argb((int) (0.03 * 255), 0, 0, 0));
                 } else {
                     activity.getWindow().setNavigationBarColor(Color.rgb(241, 241, 241));
                 }
@@ -127,7 +127,7 @@ public class DisplayUtils {
                 flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                 if (translucent) {
                     activity.getWindow().setNavigationBarColor(
-                            Color.argb((int) (0.2 * 255), 21, 21, 21));
+                            Color.argb((int) (0.2 * 255), 0, 0, 0));
                 } else {
                     activity.getWindow().setNavigationBarColor(Color.rgb(26, 26, 26));
                 }

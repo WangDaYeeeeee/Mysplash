@@ -160,7 +160,7 @@ public class HomeFragment extends LoadableFragment<Photo>
         DisplayUtils.setNavigationBarStyle(
                 getActivity(),
                 pagers[pagerManagePresenter.getPagerPosition()].isNormalState(),
-                false);
+                true);
     }
 
     @Override

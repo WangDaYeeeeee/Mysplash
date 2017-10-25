@@ -46,6 +46,7 @@ public class Photo
     public int width;
     public int height;
     public String color;
+    public int views;
     public int downloads;
     public int likes;
     public boolean liked_by_user;
@@ -182,7 +183,7 @@ public class Photo
     public String getRegularSizeUrl(Context context) {
         return urls.raw
                 + "?q=75&fm=jpg&w="
-                + (DisplayUtils.isTabletDevice(context) ? 1080 : 864)
+                + ((DisplayUtils.isTabletDevice(context) || DisplayUtils.isLandscape(context)) ? 1080 : 960)
                 + "&fit=max";
     }
 
@@ -204,6 +205,7 @@ public class Photo
         dest.writeInt(this.width);
         dest.writeInt(this.height);
         dest.writeString(this.color);
+        dest.writeInt(this.views);
         dest.writeInt(this.downloads);
         dest.writeInt(this.likes);
         dest.writeByte(this.liked_by_user ? (byte) 1 : (byte) 0);
@@ -234,6 +236,7 @@ public class Photo
         this.width = in.readInt();
         this.height = in.readInt();
         this.color = in.readString();
+        this.views = in.readInt();
         this.downloads = in.readInt();
         this.likes = in.readInt();
         this.liked_by_user = in.readByte() != 0;

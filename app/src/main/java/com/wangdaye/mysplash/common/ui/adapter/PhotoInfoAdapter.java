@@ -201,7 +201,7 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
                     && !TextUtils.isEmpty(photo.story.description)) {
                 typeList.add(StoryHolder.TYPE_STORY);
             }
-            for (int i = 0; i < 4; i ++) {
+            for (int i = 0; i < 12; i ++) {
                 typeList.add(ExifHolder.TYPE_EXIF + i);
             }
             typeList.add(TagHolder.TYPE_TAG);

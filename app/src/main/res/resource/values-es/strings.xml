@@ -45,7 +45,6 @@
     <string name="check">COMPROBAR</string>
     <string name="circle_image_view">CircleImageView</string>
     <string name="circular_progress_view">CircularProgressView</string>
-    <string name="collected">Coleccionado</string>
     <string name="copy">COPIAR</string>
     <string name="create">CREAR</string>
     <string name="curated">Organizado</string>
@@ -102,7 +101,6 @@
     <string name="feedback_load_nothing_tv">NO CARGAR</string>
     <string name="feedback_location">Ubicación</string>
     <string name="feedback_login_text">Iniciar sesión en tu cuenta de Unsplash</string>
-    <string name="feedback_model">Modelo</string>
     <string name="feedback_name">Nombre</string>
     <string name="feedback_name_is_required">Se necesita nombre.</string>
     <string name="feedback_need_permission">Se ha producido un error al obtener permiso.</string>
@@ -147,7 +145,6 @@
     <string name="introduce_description_back_top">Cuando hagas clic en la barra superior o en el botón Atrás, la vista de la lista de fotos se desplazará atrás hacia la parte de arriba.</string>
     <string name="introduce_title_back_top">Desplazar hacia arriba</string>
     <string name="libraries">BIBLIOTECAS</string>
-    <string name="liked">le gusta</string>
     <string name="more">MÁS</string>
     <string name="my_follow">Mi seguimiento</string>
     <string name="next">SIGUIENTE</string>
@@ -190,4 +187,11 @@
     <string name="action_lockscreen">Pantalla de bloqueo</string>
     <string name="action_wallpaper">Fondo de pantalla</string>
     <string name="action_wallpaper_lockscreen">Fondo de pantalla y pantalla de bloqueo</string>
+
+    <string name="like">Gustar</string>
+    <string name="liked">Le gusta</string>
+    <string name="collect">Coleccionar</string>
+    <string name="collected">Coleccionado</string>
+    <string name="download">Download</string>
+
 </resources>

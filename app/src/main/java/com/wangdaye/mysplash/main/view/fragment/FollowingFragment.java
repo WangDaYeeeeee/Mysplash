@@ -141,7 +141,7 @@ public class FollowingFragment extends LoadableFragment<Photo>
 
     @Override
     public void initNavigationBarStyle() {
-        DisplayUtils.setNavigationBarStyle(getActivity(), feedView.isNormalState(), false);
+        DisplayUtils.setNavigationBarStyle(getActivity(), feedView.isNormalState(), true);
     }
 
     @Override

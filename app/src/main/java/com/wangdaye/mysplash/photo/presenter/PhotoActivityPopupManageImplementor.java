@@ -31,7 +31,7 @@ public class PhotoActivityPopupManageImplementor
         if (activity != null && activity instanceof PhotoActivity) {
             Photo photo = ((PhotoActivity) activity).getPhoto();
             if (photo != null) {
-                PhotoMenuPopupWindow popup = new PhotoMenuPopupWindow(c, anchor, photo);
+                PhotoMenuPopupWindow popup = new PhotoMenuPopupWindow(c, anchor);
                 popup.setOnSelectItemListener(this);
             }
         }

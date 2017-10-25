@@ -33,8 +33,11 @@
     <string name="on">An</string>
     <string name="now">Jetzt</string>
 
+    <string name="like">Favorit</string>
     <string name="liked">Favoriten</string>
+    <string name="collect">Sammeln</string>
     <string name="collected">Gesammelt</string>
+    <string name="download">Herunterkaden</string>
     <string name="followed">Gefolgt</string>
     <string name="released">Veröffentlicht</string>
     <string name="published">Publiziert</string>
@@ -109,7 +112,6 @@
     <string name="feedback_size">Größe</string>
     <string name="feedback_color">Farbe</string>
     <string name="feedback_location">Ort</string>
-    <string name="feedback_model">Modell</string>
     <string name="feedback_exposure">Belichtungszeit</string>
     <string name="feedback_aperture">Blende</string>
     <string name="feedback_focal">Brennweite</string>

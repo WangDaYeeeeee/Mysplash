@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.photo.view.holder;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -12,7 +13,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
+import com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -21,6 +22,7 @@ import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
@@ -37,7 +39,8 @@ import butterknife.OnClick;
  * */
 
 public class BaseHolder extends PhotoInfoAdapter.ViewHolder
-        implements View.OnClickListener, Toolbar.OnMenuItemClickListener {
+        implements View.OnClickListener, Toolbar.OnMenuItemClickListener,
+        PhotoButtonBar.OnClickButtonListener {
 
     private PhotoActivity activity;
 
@@ -57,7 +60,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
     CircleImageView avatar;
 
     @BindView(R.id.item_photo_base_btnBar)
-    PhotoDownloadView downloadView;
+    PhotoButtonBar buttonBar;
 
     private Photo photo;
 
@@ -85,6 +88,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         DisplayUtils.setTypeface(activity, subtitle);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onBindView(PhotoActivity a, Photo photo) {
         title.setText(a.getString(R.string.by) + " " + photo.user.name);
@@ -95,12 +99,11 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
             avatar.setTransitionName(photo.user.username + "-1");
         }
 
+        buttonBar.setState(photo);
         if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) > 0) {
-            downloadView.setProgressState();
             a.startCheckDownloadProgressThread();
-        } else {
-            downloadView.setButtonState();
         }
+        buttonBar.setOnClickButtonListener(this);
 
         this.photo = photo;
     }
@@ -112,13 +115,13 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
 
     public void showInitAnim() {
         displayContainer.setVisibility(View.GONE);
-        downloadView.setVisibility(View.GONE);
+        buttonBar.setVisibility(View.GONE);
         AnimUtils.animInitShow(displayContainer, 200);
-        AnimUtils.animInitShow(downloadView, 350);
+        AnimUtils.animInitShow(buttonBar, 350);
     }
 
-    public PhotoDownloadView getDownloadView() {
-        return downloadView;
+    public PhotoButtonBar getButtonBar() {
+        return buttonBar;
     }
 
     // interface.
@@ -145,18 +148,6 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
                 UserActivity.PAGE_PHOTO);
     }
 
-    @OnClick(R.id.container_download_downloadBtn) void download() {
-        activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE);
-    }
-
-    @OnClick(R.id.container_download_shareBtn) void share() {
-        activity.readyToDownload(DownloadHelper.SHARE_TYPE);
-    }
-
-    @OnClick(R.id.container_download_wallBtn) void setWallpaper() {
-        activity.readyToDownload(DownloadHelper.WALLPAPER_TYPE);
-    }
-
     // on menu item click listener.
 
     @Override
@@ -171,5 +162,35 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
                 break;
         }
         return true;
+    }
+
+    // on click button listener.
+
+    @Override
+    public void onLikeButtonClicked() {
+        if (AuthManager.getInstance().isAuthorized()) {
+            activity.likePhoto();
+        } else {
+            IntentHelper.startLoginActivity(activity);
+        }
+    }
+
+    @Override
+    public void onCollectButtonClicked() {
+        if (AuthManager.getInstance().isAuthorized()) {
+            activity.collectPhoto();
+        } else {
+            IntentHelper.startLoginActivity(activity);
+        }
+    }
+
+    @Override
+    public void onDownloadButtonClicked() {
+        activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE, true);
+    }
+
+    @Override
+    public void onDownloadButtonLongClicked() {
+        activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE);
     }
 }

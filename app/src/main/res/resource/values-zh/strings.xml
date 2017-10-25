@@ -32,12 +32,15 @@
     <string name="on">拍摄于</string>
     <string name="now">现在</string>
 
-    <string name="liked">喜欢了</string>
-    <string name="collected">添加了</string>
-    <string name="followed">关注了</string>
-    <string name="released">发布了</string>
-    <string name="published">提交了</string>
-    <string name="curated">展览了</string>
+    <string name="like">喜欢</string>
+    <string name="liked">已喜欢</string>
+    <string name="collect">收藏</string>
+    <string name="collected">已收藏</string>
+    <string name="download">下载</string>
+    <string name="followed">已关注</string>
+    <string name="released">已发布</string>
+    <string name="published">已提交</string>
+    <string name="curated">已展览</string>
     <string name="photos">张照片</string>
     <string name="users">位用户</string>
     <string name="to">至</string>
@@ -94,10 +97,14 @@
     <string name="feedback_download_repeat">下载任务重复</string>
     <string name="feedback_file_does_not_exist">文件不存在</string>
 
+    <string name="feedback_views">累计阅览</string>
+    <string name="feedback_downloads">累计下载</string>
+    <string name="feedback_likes">累计喜欢</string>
     <string name="feedback_size">尺寸</string>
     <string name="feedback_color">颜色</string>
     <string name="feedback_location">位置</string>
-    <string name="feedback_model">器材</string>
+    <string name="feedback_camera_make">设备制造商</string>
+    <string name="feedback_camera_model">设备型号</string>
     <string name="feedback_exposure">快门时间</string>
     <string name="feedback_aperture">光圈</string>
     <string name="feedback_focal">焦距</string>

@@ -28,7 +28,7 @@ public class MeManageImplementor
 
     @Override
     public void touchMeAvatar(MysplashActivity a) {
-        NavigationView nav = (NavigationView) a.findViewById(R.id.activity_main_navView);
+        NavigationView nav = a.findViewById(R.id.activity_main_navView);
         View header = nav.getHeaderView(0);
         IntentHelper.startMeActivity(
                 a,

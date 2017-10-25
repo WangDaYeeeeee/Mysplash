@@ -87,7 +87,6 @@
     <string name="feedback_size">Boyut</string>
     <string name="feedback_color">Renk</string>
     <string name="feedback_location">Konum</string>
-    <string name="feedback_model">Model</string>
     <string name="feedback_exposure">Pozlama</string>
     <string name="feedback_aperture">Açıklık</string>
     <string name="feedback_focal">Odak Uzaklığı</string>

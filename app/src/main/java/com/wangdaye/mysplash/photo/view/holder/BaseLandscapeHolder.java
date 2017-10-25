@@ -5,14 +5,15 @@ import android.view.View;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
+import com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Base landscape holder.
@@ -22,12 +23,13 @@ import butterknife.OnClick;
  *
  * */
 
-public class BaseLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
+public class BaseLandscapeHolder extends PhotoInfoAdapter.ViewHolder
+        implements PhotoButtonBar.OnClickButtonListener {
 
     private PhotoActivity activity;
 
     @BindView(R.id.item_photo_base_landscape_btnBar)
-    PhotoDownloadView downloadView;
+    PhotoButtonBar buttonBar;
 
     public static final int TYPE_BASE_LANDSCAPE = 9;
 
@@ -39,12 +41,11 @@ public class BaseLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
 
     @Override
     protected void onBindView(PhotoActivity a, Photo photo) {
+        buttonBar.setState(photo);
         if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) > 0) {
-            downloadView.setProgressState();
-            activity.startCheckDownloadProgressThread();
-        } else {
-            downloadView.setButtonState();
+            a.startCheckDownloadProgressThread();
         }
+        buttonBar.setOnClickButtonListener(this);
     }
 
     @Override
@@ -52,21 +53,39 @@ public class BaseLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
         // do nothing.
     }
 
-    public PhotoDownloadView getDownloadView() {
-        return downloadView;
+    public PhotoButtonBar getButtonBar() {
+        return buttonBar;
     }
 
     // interface.
 
-    @OnClick(R.id.container_download_downloadBtn) void download() {
+    // on click button listener.
+
+    @Override
+    public void onLikeButtonClicked() {
+        if (AuthManager.getInstance().isAuthorized()) {
+            activity.likePhoto();
+        } else {
+            IntentHelper.startLoginActivity(activity);
+        }
+    }
+
+    @Override
+    public void onCollectButtonClicked() {
+        if (AuthManager.getInstance().isAuthorized()) {
+            activity.collectPhoto();
+        } else {
+            IntentHelper.startLoginActivity(activity);
+        }
+    }
+
+    @Override
+    public void onDownloadButtonClicked() {
+        activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE, true);
+    }
+
+    @Override
+    public void onDownloadButtonLongClicked() {
         activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE);
-    }
-
-    @OnClick(R.id.container_download_shareBtn) void share() {
-        activity.readyToDownload(DownloadHelper.SHARE_TYPE);
-    }
-
-    @OnClick(R.id.container_download_wallBtn) void setWallpaper() {
-        activity.readyToDownload(DownloadHelper.WALLPAPER_TYPE);
     }
 }

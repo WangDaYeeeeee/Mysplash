@@ -152,7 +152,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @Override
     public void initNavigationBarStyle() {
-        DisplayUtils.setNavigationBarStyle(getActivity(), photosView.isNormalState(), false);
+        DisplayUtils.setNavigationBarStyle(getActivity(), photosView.isNormalState(), true);
     }
 
     @Override

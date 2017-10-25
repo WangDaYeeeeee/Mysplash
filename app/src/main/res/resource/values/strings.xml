@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.2.1</string>
+    <string name="version_code">3.2.2</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -38,8 +38,11 @@
     <string name="on">On</string>
     <string name="now">Now</string>
 
+    <string name="like">Like</string>
     <string name="liked">Liked</string>
+    <string name="collect">Collect</string>
     <string name="collected">Collected</string>
+    <string name="download">Download</string>
     <string name="followed">Followed</string>
     <string name="released">Released</string>
     <string name="published">Published</string>
@@ -120,10 +123,14 @@
     <string name="feedback_download_repeat">Download repeat.</string>
     <string name="feedback_file_does_not_exist">File does not exist.</string>
 
+    <string name="feedback_views">Views</string>
+    <string name="feedback_downloads">Downloads</string>
+    <string name="feedback_likes">Likes</string>
     <string name="feedback_size">Size</string>
     <string name="feedback_color">Color</string>
     <string name="feedback_location">Location</string>
-    <string name="feedback_model">Model</string>
+    <string name="feedback_camera_make">Camera make</string>
+    <string name="feedback_camera_model">Camera model</string>
     <string name="feedback_exposure">Exposure time</string>
     <string name="feedback_aperture">Aperture</string>
     <string name="feedback_focal">Focal length</string>

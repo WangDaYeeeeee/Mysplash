@@ -30,8 +30,11 @@
     <string name="on">日時</string>
     <string name="now">今</string>
 
+    <string name="like">好きな</string>
     <string name="liked">いいね</string>
+    <string name="collect">集める</string>
     <string name="collected">コレクション</string>
+    <string name="download">ダウンロード</string>
     <string name="followed">フォロー</string>
     <string name="released">リリース</string>
     <string name="published">公開</string>
@@ -84,7 +87,6 @@
     <string name="feedback_size">サイズ</string>
     <string name="feedback_color">色</string>
     <string name="feedback_location">場所</string>
-    <string name="feedback_model">モデル</string>
     <string name="feedback_exposure">露出時間</string>
     <string name="feedback_aperture">絞り</string>
     <string name="feedback_focal">焦点距離</string>

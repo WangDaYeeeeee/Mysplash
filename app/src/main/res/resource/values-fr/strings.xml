@@ -35,8 +35,11 @@
     <string name="on">Le</string>
     <string name="now">Maintenant</string>
 
+    <string name="like">Aimer</string>
     <string name="liked">A aimé</string>
+    <string name="collect">Collecte</string>
     <string name="collected">A collecté</string>
+    <string name="download">Télécharger</string>
     <string name="followed">A suivi</string>
     <string name="released">A sorti</string>
     <string name="published">A publié</string>
@@ -110,7 +113,6 @@
     <string name="feedback_size">Taille</string>
     <string name="feedback_color">Couleur</string>
     <string name="feedback_location">Localisation</string>
-    <string name="feedback_model">Modèle</string>
     <string name="feedback_exposure">Temps d\'exposition</string>
     <string name="feedback_aperture">Ouverture</string>
     <string name="feedback_focal">Distance focale</string>

@@ -680,6 +680,7 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     @Override
     public void setLoadingState(@Nullable MysplashActivity activity, int old) {
+        setForceScrolling(true);
         if (activity != null && old == LoadModel.NORMAL_STATE && pagerPresenter.isSelected()) {
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
@@ -691,6 +692,7 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     @Override
     public void setFailedState(@Nullable MysplashActivity activity, int old) {
+        setForceScrolling(true);
         if (activity != null && old == LoadModel.NORMAL_STATE && pagerPresenter.isSelected()) {
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
@@ -702,6 +704,7 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     @Override
     public void setNormalState(@Nullable MysplashActivity activity, int old) {
+        setForceScrolling(false);
         if (activity != null && old == LoadModel.LOADING_STATE && pagerPresenter.isSelected()) {
             DisplayUtils.setNavigationBarStyle(
                     activity, true, activity.hasTranslucentNavigationBar());

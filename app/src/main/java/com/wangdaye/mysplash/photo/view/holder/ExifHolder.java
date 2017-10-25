@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.photo.view.holder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -30,17 +31,11 @@ import butterknife.OnClick;
 
 public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
 
-    @BindView(R.id.item_photo_exif_leftText)
-    TextView leftText;
+    @BindView(R.id.item_photo_exif_icon)
+    ImageView icon;
 
-    @BindView(R.id.item_photo_exif_rightText)
-    TextView rightText;
-
-    @BindView(R.id.item_photo_exif_leftImage)
-    ImageView leftImage;
-
-    @BindView(R.id.item_photo_exif_rightImage)
-    ImageView rightImage;
+    @BindView(R.id.item_photo_exif_text)
+    TextView text;
 
     @BindView(R.id.item_photo_exif_colorSample)
     FrameLayout colorSample;
@@ -52,8 +47,7 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), leftText);
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), rightText);
+        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), text);
     }
 
     @Override
@@ -66,68 +60,130 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
         // do nothing.
     }
 
+    @SuppressLint("SetTextI18n")
     public void drawExif(Context context, int viewType, Photo photo) {
         position = viewType - TYPE_EXIF;
+        if (position == 11) {
+            colorSample.setVisibility(View.VISIBLE);
+            colorSample.setBackground(new ColorDrawable(Color.parseColor(photo.color)));
+        } else {
+            colorSample.setVisibility(View.GONE);
+        }
         switch (position) {
             case 0:
                 if (ThemeManager.getInstance(context).isLightTheme()) {
-                    leftImage.setImageResource(R.drawable.ic_size_light);
-                    rightImage.setImageResource(R.drawable.ic_exposure_light);
+                    icon.setImageResource(R.drawable.ic_eye_light);
                 } else {
-                    leftImage.setImageResource(R.drawable.ic_size_dark);
-                    rightImage.setImageResource(R.drawable.ic_exposure_dark);
+                    icon.setImageResource(R.drawable.ic_eye_dark);
                 }
-                leftText.setText(photo.width + " × " + photo.height);
-                rightText.setText(photo.exif.exposure_time == null ? "Unknown" : photo.exif.exposure_time);
-                colorSample.setVisibility(View.GONE);
+                text.setText(String.valueOf(photo.views));
                 break;
 
             case 1:
                 if (ThemeManager.getInstance(context).isLightTheme()) {
-                    leftImage.setImageResource(R.drawable.ic_color_light);
-                    rightImage.setImageResource(R.drawable.ic_aperture_light);
+                    icon.setImageResource(R.drawable.ic_download_light);
                 } else {
-                    leftImage.setImageResource(R.drawable.ic_color_dark);
-                    rightImage.setImageResource(R.drawable.ic_aperture_dark);
+                    icon.setImageResource(R.drawable.ic_download_dark);
                 }
-                leftText.setText(photo.color);
-                rightText.setText(photo.exif.aperture == null ? "Unknown" : photo.exif.aperture);
-                colorSample.setVisibility(View.VISIBLE);
-                colorSample.setBackground(new ColorDrawable(Color.parseColor(photo.color)));
+                text.setText(String.valueOf(photo.downloads));
                 break;
 
             case 2:
                 if (ThemeManager.getInstance(context).isLightTheme()) {
-                    leftImage.setImageResource(R.drawable.ic_location_light);
-                    rightImage.setImageResource(R.drawable.ic_focal_light);
+                    icon.setImageResource(R.drawable.ic_heart_light);
                 } else {
-                    leftImage.setImageResource(R.drawable.ic_location_dark);
-                    rightImage.setImageResource(R.drawable.ic_focal_dark);
+                    icon.setImageResource(R.drawable.ic_heart_dark);
                 }
-                String text;
-                if (photo.location == null
-                        || (photo.location.city == null && photo.location.country == null)) {
-                    text = "Unknown";
-                } else {
-                    text = photo.location.city == null ? "" : photo.location.city + ", ";
-                    text = text + (photo.location.country == null ? "" : photo.location.country);
-                }
-                leftText.setText(text);
-                rightText.setText(photo.exif.focal_length == null ? "Unknown" : photo.exif.focal_length);
-                colorSample.setVisibility(View.GONE);
+                text.setText(String.valueOf(photo.likes));
                 break;
 
             case 3:
                 if (ThemeManager.getInstance(context).isLightTheme()) {
-                    leftImage.setImageResource(R.drawable.ic_camera_light);
-                    rightImage.setImageResource(R.drawable.ic_iso_light);
+                    icon.setImageResource(R.drawable.ic_location_light);
                 } else {
-                    leftImage.setImageResource(R.drawable.ic_camera_dark);
-                    rightImage.setImageResource(R.drawable.ic_iso_dark);
+                    icon.setImageResource(R.drawable.ic_location_dark);
                 }
-                leftText.setText(photo.exif.model == null ? "Unknown" : photo.exif.model);
-                rightText.setText(photo.exif.iso == 0 ? "Unknown" : String.valueOf(photo.exif.iso));
-                colorSample.setVisibility(View.GONE);
+                String locationText;
+                if (photo.location == null
+                        || (photo.location.city == null && photo.location.country == null)) {
+                    locationText = "Unknown";
+                } else {
+                    locationText = photo.location.city == null ? "" : photo.location.city + ", ";
+                    locationText = locationText + (photo.location.country == null ? "" : photo.location.country);
+                }
+                text.setText(locationText);
+                break;
+
+            case 4:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_camera_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_camera_dark);
+                }
+                text.setText(photo.exif.make == null ? "Unknown" : photo.exif.make);
+                break;
+
+            case 5:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_film_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_film_dark);
+                }
+                text.setText(photo.exif.model == null ? "Unknown" : photo.exif.model);
+                break;
+
+            case 6:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_size_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_size_dark);
+                }
+                text.setText(photo.width + " × " + photo.height);
+                break;
+
+            case 7:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_focal_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_focal_dark);
+                }
+                text.setText(photo.exif.focal_length == null ? "Unknown" : photo.exif.focal_length);
+                break;
+
+            case 8:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_aperture_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_aperture_dark);
+                }
+                text.setText(photo.exif.aperture == null ? "Unknown" : photo.exif.aperture);
+                break;
+
+            case 9:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_exposure_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_exposure_dark);
+                }
+                text.setText(photo.exif.exposure_time == null ? "Unknown" : photo.exif.exposure_time);
+                break;
+
+            case 10:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_iso_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_iso_dark);
+                }
+                text.setText(photo.exif.iso == 0 ? "Unknown" : String.valueOf(photo.exif.iso));
+                break;
+
+            case 11:
+                if (ThemeManager.getInstance(context).isLightTheme()) {
+                    icon.setImageResource(R.drawable.ic_color_light);
+                } else {
+                    icon.setImageResource(R.drawable.ic_color_dark);
+                }
+                text.setText(photo.color);
                 break;
         }
     }
@@ -138,58 +194,78 @@ public class ExifHolder extends PhotoInfoAdapter.ViewHolder {
 
     // interface.
 
-    @OnClick(R.id.item_photo_exif_leftContainer) void clickLeft() {
+    @OnClick(R.id.item_photo_exif) void checkExif() {
         switch (position) {
             case 0:
                 showExifDescription(
-                        itemView.getContext().getString(R.string.feedback_size),
-                        leftText.getText().toString());
+                        itemView.getContext().getString(R.string.feedback_views),
+                        text.getText().toString());
                 break;
 
             case 1:
                 showExifDescription(
-                        itemView.getContext().getString(R.string.feedback_color),
-                        leftText.getText().toString());
+                        itemView.getContext().getString(R.string.feedback_downloads),
+                        text.getText().toString());
                 break;
 
             case 2:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_likes),
+                        text.getText().toString());
+                break;
+
+            case 3:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_location),
-                        leftText.getText().toString());
+                        text.getText().toString());
                 break;
 
-            case 3:
+            case 4:
                 showExifDescription(
-                        itemView.getContext().getString(R.string.feedback_model),
-                        leftText.getText().toString());
+                        itemView.getContext().getString(R.string.feedback_camera_make),
+                        text.getText().toString());
                 break;
-        }
-    }
 
-    @OnClick(R.id.item_photo_exif_rightContainer) void clickRight() {
-        switch (position) {
-            case 0:
+            case 5:
                 showExifDescription(
-                        itemView.getContext().getString(R.string.feedback_exposure),
-                        rightText.getText().toString());
+                        itemView.getContext().getString(R.string.feedback_camera_model),
+                        text.getText().toString());
                 break;
 
-            case 1:
+            case 6:
                 showExifDescription(
-                        itemView.getContext().getString(R.string.feedback_aperture),
-                        rightText.getText().toString());
+                        itemView.getContext().getString(R.string.feedback_size),
+                        text.getText().toString());
                 break;
 
-            case 2:
+            case 7:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_focal),
-                        rightText.getText().toString());
+                        text.getText().toString());
                 break;
 
-            case 3:
+            case 8:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_aperture),
+                        text.getText().toString());
+                break;
+
+            case 9:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_exposure),
+                        text.getText().toString());
+                break;
+
+            case 10:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_iso),
-                        rightText.getText().toString());
+                        text.getText().toString());
+                break;
+
+            case 11:
+                showExifDescription(
+                        itemView.getContext().getString(R.string.feedback_color),
+                        text.getText().toString());
                 break;
         }
     }

@@ -120,7 +120,7 @@ public class CollectionFragment extends MysplashFragment
         DisplayUtils.setNavigationBarStyle(
                 getActivity(),
                 pagers[pagerManagePresenter.getPagerPosition()].isNormalState(),
-                false);
+                true);
     }
 
     @Override

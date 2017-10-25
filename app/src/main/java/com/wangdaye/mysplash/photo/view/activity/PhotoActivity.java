@@ -18,7 +18,6 @@ import android.widget.ImageView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common._basic.activity.RequestLoadActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
@@ -31,8 +30,9 @@ import com.wangdaye.mysplash.common.i.presenter.PhotoListManagePresenter;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView;
+import com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -51,14 +51,11 @@ import com.wangdaye.mysplash.common.i.view.BrowsableView;
 import com.wangdaye.mysplash.common.i.view.PhotoInfoView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
 import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
-import com.wangdaye.mysplash.common.ui.dialog.StatsDialog;
 import com.wangdaye.mysplash.common.ui.popup.PhotoMenuPopupWindow;
-import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.common._basic.FlagRunnable;
@@ -93,8 +90,9 @@ import butterknife.ButterKnife;
 
 public class PhotoActivity extends RequestLoadActivity<Photo>
         implements PhotoInfoView, PopupManageView, BrowsableView, MessageManageView,
-        DownloadRepeatDialog.OnCheckOrDownloadListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        SelectCollectionDialog.OnCollectionsChangedListener, SafeHandler.HandlerContainer {
+        DownloadRepeatDialog.OnCheckOrDownloadListener, DownloadTypeDialog.OnSelectTypeListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener,
+        SafeHandler.HandlerContainer {
 
     @BindView(R.id.activity_photo_container)
     CoordinatorLayout container;
@@ -110,9 +108,6 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @BindView(R.id.activity_photo_recyclerView)
     RecyclerView recyclerView;
-
-    @BindView(R.id.activity_photo_translucentStatusBar)
-    StatusBarView translucentStatusBar;
 
     @BindView(R.id.activity_photo_statusBar)
     StatusBarView statusBar;
@@ -259,12 +254,9 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
                 photoListManagePresenter.getPhotoList().set(i, photo);
                 if (i == photoListManagePresenter.getCurrentIndex() - photoListManagePresenter.getHeadIndex()) {
                     photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto(), false);
-                    List<MysplashPopupWindow> popupList = getPopupList();
-                    for (int j = 0; j < popupList.size(); j ++) {
-                        if (popupList.get(j) instanceof PhotoMenuPopupWindow) {
-                            ((PhotoMenuPopupWindow) popupList.get(j)).forceSetLikeResult(this, getPhoto());
-                            return;
-                        }
+                    PhotoButtonBar buttonBar = getPhotoButtonBar();
+                    if (buttonBar != null) {
+                        buttonBar.setState(photo);
                     }
                 }
             }
@@ -301,6 +293,10 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         if (init && browsablePresenter.isBrowsable() && photoInfoPresenter.getPhoto() == null) {
             browsablePresenter.requestBrowsableData();
         } else {
+            if (ThemeManager.getInstance(this).isLightTheme()) {
+                statusBar.setDarkerAlpha(StatusBarView.LIGHT_INIT_MASK_ALPHA);
+            }
+
             SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                     this, R.id.activity_photo_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
@@ -314,9 +310,9 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             recyclerView.setAdapter(photoInfoPresenter.getAdapter());
             int columnCount;
             if (DisplayUtils.isLandscape(this)) {
-                columnCount = 2;
+                columnCount = 4;
             } else {
-                columnCount = 1;
+                columnCount = 2;
             }
             GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
             layoutManager.setSpanSizeLookup(
@@ -328,8 +324,6 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             } else {
                 recyclerView.addOnScrollListener(new MScrollListener((photoInfoPresenter.getPhoto())));
             }
-
-            statusBar.setAlpha(0f);
 
             if (!photoInfoPresenter.getPhoto().complete) {
                 initRefresh();
@@ -349,6 +343,20 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     public Photo getPhoto() {
         return photoInfoPresenter.getPhoto();
+    }
+
+    public void likePhoto() {
+        photoInfoPresenter.setLikeForAPhoto(this);
+        PhotoButtonBar buttonBar = getPhotoButtonBar();
+        if (buttonBar != null) {
+            buttonBar.setLikeState(photoInfoPresenter.getPhoto());
+        }
+    }
+
+    public void collectPhoto() {
+        SelectCollectionDialog dialog = new SelectCollectionDialog();
+        dialog.setPhotoAndListener(getPhoto(), this);
+        dialog.show((this).getFragmentManager(), null);
     }
 
     // HTTP request.
@@ -387,7 +395,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
     }
 
     @Nullable
-    private PhotoDownloadView getPhotoDownloadView() {
+    private PhotoButtonBar getPhotoButtonBar() {
         GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
         int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
         int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
@@ -395,9 +403,9 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             PhotoInfoAdapter.ViewHolder holder
                     = (PhotoInfoAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(1);
             if (holder instanceof BaseHolder) {
-                return ((BaseHolder) holder).getDownloadView();
+                return ((BaseHolder) holder).getButtonBar();
             } else if (holder instanceof BaseLandscapeHolder) {
-                return ((BaseLandscapeHolder) holder).getDownloadView();
+                return ((BaseLandscapeHolder) holder).getButtonBar();
             } else {
                 return null;
             }
@@ -434,7 +442,15 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
     // download.
 
     public void readyToDownload(int type) {
-        if (DatabaseHelper.getInstance(this)
+        readyToDownload(type, false);
+    }
+
+    public void readyToDownload(int type, boolean showTypeDialog) {
+        if (showTypeDialog) {
+            DownloadTypeDialog dialog = new DownloadTypeDialog();
+            dialog.setOnSelectTypeListener(this);
+            dialog.show(getFragmentManager(), null);
+        } else if (DatabaseHelper.getInstance(this)
                 .readDownloadingEntityCount(photoInfoPresenter.getPhoto().id) > 0) {
             NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isPhotoExists(this, photoInfoPresenter.getPhoto().id)) {
@@ -465,9 +481,9 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
                 downloadPresenter.setWallpaper(this);
                 break;
         }
-        PhotoDownloadView downloadView = getPhotoDownloadView();
-        if (downloadView != null) {
-            downloadView.setProgressState();
+        PhotoButtonBar buttonBar = getPhotoButtonBar();
+        if (buttonBar != null) {
+            buttonBar.setDownloadState(true, -1);
         }
         startCheckDownloadProgressThread();
     }
@@ -504,6 +520,13 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         } else {
             requestReadWritePermission((Integer) obj);
         }
+    }
+
+    // on select type listener.
+
+    @Override
+    public void onSelectType(int type) {
+        readyToDownload(type);
     }
 
     // on scroll changed listener.
@@ -550,17 +573,15 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             scrollY += dy;
 
             // image.
-            if (scrollY + statusBarHeight < photoImage.getMeasuredHeight()) {
+            if (scrollY < photoImage.getMeasuredHeight()) {
                 photoImage.setTranslationY((float) (-scrollY * 0.5));
             }
 
             // status bar & toolbar.
             if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
-                translucentStatusBar.animToDarkerAlpha();
-                AnimUtils.animShow(statusBar, 150, statusBar.getAlpha(), 1);
+                statusBar.animToDarkerAlpha();
             } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
-                translucentStatusBar.animToInitAlpha();
-                AnimUtils.animHide(statusBar, 150, statusBar.getAlpha(), 0, false);
+                statusBar.animToInitAlpha();
             }
 
             // more.
@@ -665,8 +686,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             photoInfoPresenter.setPhoto(photoListManagePresenter.getPhoto(), true);
 
             DisplayUtils.setStatusBarStyle(PhotoActivity.this, true);
-            translucentStatusBar.animToInitAlpha();
-            statusBar.setAlpha(0);
+            statusBar.animToInitAlpha();
 
             resetPhotoImage();
 
@@ -727,6 +747,12 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         photo.current_user_collections.clear();
         photo.current_user_collections.addAll(p.current_user_collections);
         photoInfoPresenter.setPhoto(photo, false);
+
+        PhotoButtonBar buttonBar = getPhotoButtonBar();
+        if (buttonBar != null) {
+            buttonBar.setCollectState(photo);
+        }
+
         Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
     }
 
@@ -744,30 +770,6 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
     @Override
     public void touchMenuItem(int itemId) {
         switch (itemId) {
-            case PhotoMenuPopupWindow.ITEM_LIKE:
-                if (AuthManager.getInstance().isAuthorized()) {
-                    photoInfoPresenter.setLikeForAPhoto(this);
-                } else {
-                    IntentHelper.startLoginActivity(this);
-                }
-                break;
-
-            case PhotoMenuPopupWindow.ITEM_COLLECT: {
-                if (!AuthManager.getInstance().isAuthorized()) {
-                    IntentHelper.startLoginActivity(this);
-                } else {
-                    SelectCollectionDialog dialog = new SelectCollectionDialog();
-                    dialog.setPhotoAndListener(getPhoto(), this);
-                    dialog.show((this).getFragmentManager(), null);
-                }
-                break;
-            }
-            case PhotoMenuPopupWindow.ITEM_STATS: {
-                StatsDialog dialog = new StatsDialog();
-                dialog.setPhoto(photoInfoPresenter.getPhoto());
-                dialog.show(getFragmentManager(), null);
-                break;
-            }
             case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
                 IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().links.download);
                 break;
@@ -810,12 +812,18 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @Override
     public void setLikeForAPhotoCompleted(Photo photo, boolean succeed) {
+        /*
         List<MysplashPopupWindow> popupList = getPopupList();
         for (int i = 0; i < popupList.size(); i ++) {
             if (popupList.get(i) instanceof PhotoMenuPopupWindow) {
                 ((PhotoMenuPopupWindow) popupList.get(i)).setLikeResult(this, getPhoto());
                 return;
             }
+        }
+        */
+        PhotoButtonBar buttonBar = getPhotoButtonBar();
+        if (buttonBar != null) {
+            buttonBar.setLikeState(photo);
         }
         if (succeed) {
             Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
@@ -866,13 +874,13 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @Override
     public void responseMessage(int what, Object o) {
-        PhotoDownloadView downloadView = getPhotoDownloadView();
-        if (downloadView != null) {
+        PhotoButtonBar buttonBar = getPhotoButtonBar();
+        if (buttonBar != null) {
             if (0 <= what && what <= 100) {
-                downloadView.setProcess(what);
+                buttonBar.setDownloadState(true, what);
             } else {
                 progressRunnable.setRunning(false);
-                downloadView.setButtonState();
+                buttonBar.setDownloadState(false, -1);
             }
         }
     }

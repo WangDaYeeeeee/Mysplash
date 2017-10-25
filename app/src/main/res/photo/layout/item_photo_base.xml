@@ -23,6 +23,7 @@
             android:id="@+id/item_photo_base_title"
             android:textColor="?attr/title_color"
             android:textStyle="bold"
+            android:singleLine="true"
             android:layout_marginTop="?attr/actionBarSize"
             android:layout_marginLeft="@dimen/normal_icon_size"
             android:layout_marginRight="@dimen/normal_icon_size"
@@ -57,7 +58,7 @@
 
     </RelativeLayout>
 
-    <com.wangdaye.mysplash.common.ui.widget.PhotoDownloadView
+    <com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar
         android:id="@+id/item_photo_base_btnBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

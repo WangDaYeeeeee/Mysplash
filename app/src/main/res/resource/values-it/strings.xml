@@ -87,7 +87,6 @@
     <string name="feedback_size">Dimensioni</string>
     <string name="feedback_color">Colore</string>
     <string name="feedback_location">Luogo</string>
-    <string name="feedback_model">Modello</string>
     <string name="feedback_exposure">Tempo di esposizione</string>
     <string name="feedback_aperture">Apertura</string>
     <string name="feedback_focal">Lunghezza focale</string>

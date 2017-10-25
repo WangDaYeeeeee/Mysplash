@@ -42,7 +42,7 @@ public class ShortcutsManager {
     private static final String KEY_AVATAR_URL = "avatar_url";
     private static final String KEY_USERNAME = "username";
 
-    private static final int VERSION_CODE = 1;
+    private static final int VERSION_CODE = 2;
 
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
     @UiThread
@@ -123,7 +123,7 @@ public class ShortcutsManager {
                                 getShortcutsIcon(
                                         context,
                                         R.drawable.ic_shortcut_search,
-                                        R.drawable.ic_shortcut_download_foreground))
+                                        R.drawable.ic_shortcut_search_foreground))
                         .setShortLabel(context.getString(R.string.action_search))
                         .setLongLabel(context.getString(R.string.action_search))
                         .setIntent(new Intent(MainActivity.ACTION_SEARCH))

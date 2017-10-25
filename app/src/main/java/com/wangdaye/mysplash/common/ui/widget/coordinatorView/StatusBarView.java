@@ -191,4 +191,8 @@ public class StatusBarView extends View {
     public void setInitState(boolean initState) {
         this.initState = initState;
     }
+
+    public void setDarkerAlpha(float alpha) {
+        darkerAlpha = alpha;
+    }
 }
