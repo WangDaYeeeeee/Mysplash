@@ -15,6 +15,7 @@
         <item>ALL</item>
         <item>CURATED</item>
     </string-array>
+
     <string-array name="collection_type_values">
         <item>featured</item>
         <item>all</item>
@@ -55,6 +56,7 @@
         <item>Popular</item>
         <item>Random</item>
     </string-array>
+
     <string-array name="photo_order_values">
         <item>latest</item>
         <item>oldest</item>
@@ -68,6 +70,7 @@
         <item>Compact</item>
         <item>Raw</item>
     </string-array>
+
     <string-array name="download_type_values">
         <item>tiny</item>
         <item>compact</item>
@@ -80,6 +83,7 @@
         <item>Only Home</item>
         <item>None</item>
     </string-array>
+
     <string-array name="back_to_top_type_values">
         <item>all</item>
         <item>home</item>
@@ -92,6 +96,7 @@
         <item>Middle (1000 ms)</item>
         <item>Normal (2000 ms)</item>
     </string-array>
+
     <string-array name="saturation_animation_duration_values">
         <item>300</item>
         <item>1000</item>
@@ -113,6 +118,7 @@
         <item>日本語</item>
         <item>Français</item>
     </string-array>
+
     <string-array name="language_values">
         <item>follow_system</item>
         <item>english_usa</item>
@@ -134,6 +140,7 @@
         <item>Portrait</item>
         <item>Square</item>
     </string-array>
+
     <string-array name="search_orientation_values">
         <item>landscape</item>
         <item>portrait</item>
