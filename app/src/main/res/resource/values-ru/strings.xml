@@ -1,178 +1,316 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
 
     <!-- application. -->
     <string name="app_name">Mysplash</string>
+    <string name="powered">Работает с Unsplash.com</string>
 
     <!-- key words. -->
     <string name="about_app">О приложении</string>
-    <string name="all">Все</string>
-    <string name="backstage">ФОН</string>
-    <string name="cancel">Отмена</string>
-    <string name="check">Проверить</string>
-    <string name="copy">КОПИЯ</string>
-    <string name="create">СОЗДАТЬ</string>
-    <string name="delete">УДАЛИТЬ</string>
-    <string name="details">ПОДРОБНЕЕ</string>
-    <string name="email">EMAIL</string>
-    <string name="enter">ВОЙТИ</string>
-    <string name="follow">ПОДПИСАТЬСЯ</string>
-    <string name="followed">Подписка оформлена</string>
-    <string name="following">Подписка оформлена</string>
+    <string name="introduce">Введение</string>
+    <string name="gitHub">GitHub</string>
+    <string name="email">Почта</string>
+    <string name="source_code">Исходный код</string>
+    <string name="donate">Пожертвования (Alipay)</string>
     <string name="translators">ПЕРЕВОДЧИКИ</string>
-    <string name="stats">Сатистика</string>
-    <string name="source_code">ИСХОДНЫЙ КОД</string>
-    <string name="set">НАБОР</string>
-    <string name="search">ПОИСК</string>
-    <string name="save">СОХРАНИТЬ</string>
+    <string name="libraries">БИБЛИОТЕКИ</string>
+    <string name="enter">Войти</string>
+    <string name="exit">Выйти</string>
+    <string name="copy">Копировать</string>
+    <string name="next">Далее</string>
+    <string name="cancel" tools:ignore="ButtonCase">Отмена</string>
+    <string name="backstage">Фон</string>
+    <string name="details">Подробнее</string>
+    <string name="restart">Перезапустить</string>
+    <string name="create">Создать</string>
+    <string name="delete">Удалить</string>
+    <string name="save">Сохранить</string>
+    <string name="check">Проверить</string>
+    <string name="set">Настроить</string>
+    <string name="search">Поиск</string>
+    <string name="follow">Подписаться</string>
+    <string name="following">Подписан</string>
+    <string name="my_follow">Мои подписки</string>
+    <string name="all">ВСЕ</string>
+    <string name="stats">Статистика</string>
+    <string name="by">Автор:</string>
+    <string name="on">Вкл.</string>
+    <string name="now">Сейчас</string>
+
+    <string name="like">Нравится</string>
+    <string name="liked">Понравившиеся</string>
+    <string name="collect">Добавить</string>
+    <string name="collected">Добавлены</string>
+    <string name="download">Загрузить</string>
+    <string name="followed">Подписаны на вас</string>
     <string name="released">Реализовано</string>
+    <string name="published">Опубликовано</string>
+    <string name="curated">ОТОБРАННЫЕ</string>
+    <string name="photos">Фотографии</string>
+    <string name="users">Пользователи</string>
+    <string name="to">для</string>
+    <string name="your">ваш</string>
+    <string name="you">вы</string>
+    <string name="photo">Фотография</string>
+    <string name="more">ЕЩЁ</string>
+
+    <string name="year_ago">лет назад</string>
+    <string name="month_ago">месяцев назад</string>
+    <string name="day_ago">дней назад</string>
+    <string name="hour_ago">часов назад</string>
+    <string name="minute_ago">минут назад</string>
+    <string name="second_ago">секунд назад</string>
+
     <string name="relative_photo">Похожие фотографии</string>
     <string name="relative_collection">Похожие коллекции</string>
-    <string name="published">Опубликованно</string>
-    <string name="powered">Работает на Unsplash.com</string>
-    <string name="photos">фотографии</string>
-    <string name="on">Вкл</string>
-    <string name="from">Из</string>
-    <string name="now">Сейчас</string>
-    <string name="next">Далее</string>
-    <string name="my_follow">Мои подписки</string>
-    <string name="more">БОЛЬШЕ</string>
-    <string name="libraries">БИБЛИОТЕКИ</string>
-    <string name="users">пользователи</string>
 
-    <string name="like">Правиться</string>
-    <string name="liked">Понравившиеся</string>
-    <string name="collect">Cобирать</string>
-    <string name="collected">Собранный</string>
-    <string name="download">Загрузить</string>
+    <string name="follow_system">Использовать системный</string>
 
-    <string name="follow_system">Система слежения</string>
-    <string name="date_format">d MMM yyyyг</string>
+    <!-- about. -->
+    <string name="unsplash">Unsplash.com</string>
+    <string name="about_unsplash">Отличные (и бесплатные) снимки хорошего качества.\n Ими поделились лучшие на свете фотографы.</string>
+    <string name="retrofit">Retrofit 2.0</string>
+    <string name="about_retrofit">HTTP клиент с надёжной системой типов для Android и Java (разработка Square, Inc).</string>
+    <string name="glide">Glide</string>
+    <string name="about_glide">Библиотека для загрузки и кэширования изображений для Android. Основное отличие — плавная прокрутка.</string>
+    <string name="circular_progress_view">CircularProgressView</string>
+    <string name="about_circular_progress_view">Сделанный в реалистичном (material) стиле круглый индикатор выполнения процесса для Android.</string>
+    <string name="circle_image_view">CircleImageView</string>
+    <string name="about_circle_image_view">Круглая иконка для представления изображений для Android.</string>
+    <string name="photo_view">PhotoView</string>
+    <string name="about_photo_view">Реализация ImageView для Android, поддерживающая масштабирование с помощью жестов.</string>
+    <string name="page_indicator">InkPageIndicator</string>
+    <string name="about_page_indicator">@nickbutcher написал InkPageIndicator для Plaid (https://github.com.nickbutcher/plaid). David Pacioianu портировал его для API 14+ (4.0+).</string>
+    <string name="greendao_db">greenDAO</string>
+    <string name="about_greendao_db">greenDAO это световой индикатор активности для Android, который отображает объекты в базах данных SQLite.</string>
+    <string name="butter_knife">Butter Knife</string>
+    <string name="about_butter_knife">Привязывает представление данных и объекты на Android к полям и методам. Генерирует шаблоны кода.</string>
+
+    <!-- feedback. -->
+    <string name="feedback_click_retry">Нажмите, чтобы попробовать ещё раз</string>
+
+    <string name="feedback_load_failed_tv">Загрузить не удалось.</string>
+    <string name="feedback_load_failed_toast">Загрузить не удалось.</string>
+    <string name="feedback_load_nothing_tv">Загружать нечего.</string>
+    <string name="feedback_load_nothing_toast">Загружать нечего.</string>
+
+    <string name="feedback_search_failed_tv">Найти не получилось.</string>
+    <string name="feedback_search_failed_toast">Ничего не нашлось.</string>
+    <string name="feedback_search_nothing_tv">Искать нечего.</string>
+    <string name="feedback_search_nothing_toast">Искать нечего.</string>
+    <string name="feedback_search_bar">Найти снимки, коллекции или пользователей</string>
+    <string name="feedback_search_photos_bar">Ключевое слово для поиска снимков</string>
+    <string name="feedback_search_users_bar">Ключевое слово для поиска пользователей</string>
+    <string name="feedback_search_photos_tv">Найти снимок</string>
+    <string name="feedback_search_collections_tv">Найти коллекцию</string>
+    <string name="feedback_search_users_tv">Найти пользователя</string>
+
+    <string name="feedback_notify_restart">Перепустите приложение, прежде чем продолжить с ним работать.</string>
+
+    <string name="feedback_download_success">Загрузка выполнена.</string>
+    <string name="feedback_download_photo_success">Снимок загружен.</string>
+    <string name="feedback_download_photo_failed">Загрузить снимок не получилось.</string>
+    <string name="feedback_download_collection_success">Коллекция загружена.</string>
+    <string name="feedback_download_collection_failed">Загрузить коллекцию не получилось.</string>
+    <string name="feedback_downloading">Загружается</string>
+    <string name="feedback_download_start">Загрузка начата.</string>
+    <string name="feedback_no_sd_card">Обнаружить SD карту не получилось.</string>
+    <string name="feedback_create_file_failed">Создать файл не получилось.</string>
+    <string name="feedback_need_permission">Нет необходимых прав доступа.</string>
+    <string name="feedback_choose_share_app">Поделиться снимком</string>
+    <string name="feedback_choose_wallpaper_app">Установить снимок как фоновое изображение</string>
+    <string name="feedback_download_repeat">Загрузить повторно.</string>
+    <string name="feedback_file_does_not_exist">Файла с таким именем нет.</string>
+
+    <string name="feedback_views">Просмотры</string>
+    <string name="feedback_downloads">Загрузки</string>
+    <string name="feedback_likes">Понравилось</string>
+    <string name="feedback_size">Размер</string>
+    <string name="feedback_color">Цвет</string>
+    <string name="feedback_location">Местоположение</string>
+    <string name="feedback_camera_make">Производитель фотоаппарата</string>
+    <string name="feedback_camera_model">Модель фотоаппарата</string>
+    <string name="feedback_exposure">Экпозиция</string>
+    <string name="feedback_aperture">Диаметр объектива</string>
+    <string name="feedback_focal">Фокусное расстояние</string>
+    <string name="feedback_iso">Светочувствительность</string>
+
+    <string name="feedback_portfolio_is_null">В портфолио ничего нет.</string>
+    <string name="feedback_no_filter">Фильтр не настроен.</string>
+
+    <string name="feedback_request_token_failed">Request access token failed.</string>
+    <string name="feedback_login_text">Войдите в аккаунт Unsplash.</string>
+    <string name="feedback_please_login">Войти в аккаунт Unsplash.</string>
+
+    <string name="feedback_edit_my_profile">Редактировать личные данные</string>
+    <string name="feedback_edit_username">Имя пользователя (буквы, цифры, символы подчёркивания)</string>
+    <string name="feedback_edit_first_name">Имя</string>
+    <string name="feedback_edit_last_name">Фамилия</string>
+    <string name="feedback_edit_email">Почта</string>
+    <string name="feedback_edit_portfolio">Личная страница или портфолио</string>
+    <string name="feedback_edit_location">Местоположение</string>
+    <string name="feedback_edit_bio">Коротко о себе</string>
+    <string name="feedback_update_profile_failed">Изменить личные данные не получилось.</string>
+
+    <string name="feedback_add_to_collection">Добавить в коллекцию</string>
+    <string name="feedback_delete_from_collection">Удалить из коллекции</string>
+    <string name="feedback_create_collection">Создать новую коллекцию</string>
+    <string name="feedback_edit_collection">Изменить коллекцию</string>
+    <string name="feedback_name">Название</string>
+    <string name="feedback_description">Описание (необязательно)</string>
+    <string name="feedback_collection_private">Отметить коллекцию как личную</string>
+
+    <string name="feedback_name_is_required">Необходимо указать название.</string>
+    <string name="feedback_sure">Точно?</string>
+
+    <string name="feedback_notify_set_back_to_top">Что делает кнопка назад.</string>
+
+    <string name="feedback_add_photo_failed">Добавить снимок не получилось.</string>
+    <string name="feedback_delete_photo_failed">Удалить снимок не получилось.</string>
+    <string name="feedback_create_collection_failed">Создать коллекцию не получилось.</string>
+    <string name="feedback_update_collection_failed">Не удалось сохранить изменения в коллекции.</string>
+    <string name="feedback_delete_collection_failed">Удалить коллекцию не получилось.</string>
+
+    <string name="feedback_overload">Сервер перегружен</string>
+    <string name="feedback_exceed_rate_limit">Превышено число обращений в час к Unsplash API. Сейчас ничего загрузить не получится.\n\nПопробуйте ещё раз чуть позже.</string>
+
+    <string name="feedback_confirm_change_theme">Подтвердить смену темы</string>
+    <string name="feedback_change_theme_warning">Если сейчас поменять тему, это отменит все текущие загрузки.</string>
+    <string name="feedback_confirm_restart">Подтвердить перезапуск</string>
+    <string name="feedback_restart_warning">Если сейчас перезапустить приложение, это отменит все текущие загрузки.</string>
+
+    <string name="feedback_click_again_to_exit">Чтобы выйти, нажмите ещё раз.</string>
+
+    <string name="feedback_share_photo_title">Снимок с Unsplash.com</string>
+    <string name="feedback_share_photo_extra">Автор: # , снято $\n</string>
+    <string name="feedback_share_collection_title">Коллекция с Unsplash.com</string>
+    <string name="feedback_share_collection_extra">Создано # , $\n</string>
+    <string name="feedback_share_user_title">Личные данные пользователя Unsplash.com</string>
+    <string name="feedback_share_user_extra">#\n</string>
+
+    <string name="feedback_like_failed">Не получилось отметить снимок как понравившийся.</string>
+    <string name="feedback_unlike_failed">Удалить из понравившегося не получилось.</string>
+
+    <string name="feedback_follow_failed">Не получилось подписаться.</string>
+    <string name="feedback_cancel_follow_failed">Отменить подписку не получилось.</string>
+
+    <string name="feedback_story_is_null">История изменений отсутствует или не загрузилась.</string>
+
+    <string name="feedback_get_notification_failed">Загрузить уведомления не получилось.</string>
+
+    <string name="feedback_pick_update_interval">Частота обновления (в часах)</string>
+    <string name="feedback_interval_bounds">Можно выбрать в пределах от 1 до 24 часов.</string>
+    <string name="feedback_update_only_in_wifi">Обновлять только если устройство подключено к Wi-Fi.</string>
+    <string name="feedback_source_collection">Указать источник для коллекции.</string>
+    <string name="feedback_set_as_source_succeed">Источник отмечен.</string>
+    <string name="feedback_set_as_source_failed">Источник с таким именем уже есть.</string>
+    <string name="feedback_confirm_exit_without_save">Выйти без сохранения настроек?</string>
+
+    <!-- introduce. -->
+    <string name="introduce_title_back_top">Прокрутить в начало</string>
+    <string name="introduce_description_back_top">Нажмите на верхнюю панель или на кнопку назад, чтобы попасть в начало просмотра.</string>
+
+    <string name="date_format">d MMMM yyyy г.</string>
+    <string name="muzei_description">Избранные фотографии с Unsplash</string>
 
     <!-- menu. -->
-    <string name="action_cancel_all">Отменить всё</string>
+    <string name="action_home">Домой</string>
+    <string name="action_following">Подписаться</string>
+    <string name="action_collection">Коллекции</string>
     <string name="action_category">Категории</string>
-    <string name="action_category_buildings">Постройки</string>
-    <string name="action_category_food_drink">Еда &amp; Напитки</string>
+    <string name="action_multi_filter">Множественный фильтр</string>
+    <string name="action_change_theme">Изменить тему</string>
+    <string name="action_download_manage">Загрузки</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_about">О приложении</string>
+
+    <string name="action_category_buildings">Здания</string>
+    <string name="action_category_food_drink">Еда и напитки</string>
     <string name="action_category_nature">Природа</string>
     <string name="action_category_objects">Предметы</string>
     <string name="action_category_people">Люди</string>
-    <string name="action_category_technology">Технологии</string>
-    <string name="action_collection">КОЛЛЕКЦИИ</string>
-    <string name="action_change_theme">Сменить тему</string>
-    <string name="action_clear_text">Очистить текст</string>
-    <string name="action_download">Загрузить</string>
-    <string name="action_download_manage">Загрузки</string>
-    <string name="action_edit">Редактировать</string>
-    <string name="action_filter">Фильтр</string>
-    <string name="action_following">Подписаться</string>
-    <string name="action_home">Домой</string>
-    <string name="action_menu">Меню</string>
-    <string name="action_multi_filter">Мультифильтр</string>
-    <string name="action_open_download_link">Страница загрузки</string>
-    <string name="action_open_portfolio">Портфолио</string>
-    <string name="action_path">Путь загрузки</string>
+    <string name="action_category_technology">Техника</string>
+
     <string name="action_search">Поиск</string>
-    <string name="action_settings">Настройки</string>
+    <string name="action_filter">Фильтр</string>
+    <string name="action_notification">Уведомления</string>
+
+    <string name="action_refresh">Обновить</string>
+
+    <string name="action_clear_text">Удалить текст</string>
+
+    <string name="action_like">Нравится</string>
+    <string name="action_collect">Сохранить</string>
+    <string name="action_open_download_link">Веб-страница загрузки</string>
+    <string name="action_open_story_link">Веб-страница с историей снимка</string>
     <string name="action_share">Поделиться</string>
-    <string name="action_submit">Подтвердить фото</string>
-    <string name="action_about">Информация</string>
+    <string name="action_menu">Меню</string>
 
-    <!-- feedback. -->
-    <string name="feedback_add_photo_failed">Не удалось добавить фото.</string>
-    <string name="feedback_add_to_collection">Добавить в коллекцию.</string>
-    <string name="feedback_aperture">Апертура</string>
-    <string name="feedback_cancel_follow_failed">Не удалось отменить подписку.</string>
-    <string name="feedback_change_theme_warning">Смена темы отменит текущие загрузки.</string>
-    <string name="feedback_choose_share_app">Поделиться фотографией</string>
-    <string name="feedback_choose_wallpaper_app">Установить как обои</string>
-    <string name="feedback_click_again_to_exit">Нажмите снова для выхода</string>
-    <string name="feedback_click_retry">НАЖМИТЕ ДЛЯ ПОВТОРА</string>
-    <string name="feedback_collection_private">Скрыть коллекцию</string>
-    <string name="feedback_color">Цвет</string>
-    <string name="feedback_confirm_change_theme">Подтвердить смену темы</string>
-    <string name="feedback_confirm_restart">Подтвердить перезапуск</string>
-    <string name="feedback_create_collection">Создать новую коллекцию</string>
-    <string name="feedback_create_collection_failed">Не удалось создать коллекцию.</string>
-    <string name="feedback_create_file_failed">Не удалось создать файл.</string>
-    <string name="feedback_delete_collection_failed">Не удалось удалить коллекцию.</string>
-    <string name="feedback_delete_from_collection">Удалить из коллекции</string>
-    <string name="feedback_delete_photo_failed">Не удалось удалить фото.</string>
-    <string name="feedback_description">Описание (необязательно)</string>
-    <string name="feedback_download_collection_failed">Не удалось скачать коллекцию.</string>
-    <string name="feedback_download_collection_success">Коллекция загружена.</string>
-    <string name="feedback_download_photo_failed">Не удалось загрузить фото.</string>
-    <string name="feedback_download_photo_success">Фото загружено.</string>
-    <string name="feedback_download_repeat">Повтор загрузки.</string>
-    <string name="feedback_download_start">Загрузка начата.</string>
-    <string name="feedback_download_success">Загрузка выполнена.</string>
-    <string name="feedback_downloading">ЗАГРУЗКА</string>
-    <string name="feedback_edit_bio">О себе</string>
-    <string name="feedback_edit_collection">Редактировать коллекцию</string>
-    <string name="feedback_edit_email">Email адресс</string>
-    <string name="feedback_edit_first_name">Имя</string>
-    <string name="feedback_edit_last_name">Фамилия</string>
-    <string name="feedback_edit_location">Местоположение</string>
-    <string name="feedback_edit_my_profile">Редактировать профиль</string>
-    <string name="feedback_edit_portfolio">Личный сайт/портфолио</string>
-    <string name="feedback_edit_username">Имя пользователя (буквы, цифры, символы подчеркивания)</string>
-    <string name="feedback_exceed_rate_limit">Превышено число обращений в час к Unsplash API. Мы ничего не можем сейчас загрузить. Попробуйте в следующем часу.</string>
-    <string name="feedback_exposure">Экспозиция</string>
-    <string name="feedback_focal">Фокусное расстояние</string>
-    <string name="feedback_follow_failed">Не удалось подписаться.</string>
-    <string name="feedback_iso">ISO</string>
-    <string name="feedback_like_failed">Лайкнуть не вышло.</string>
-    <string name="feedback_load_failed_toast">Не удалось загрузить.</string>
-    <string name="feedback_load_failed_tv">НЕ УДАЛОСЬ ЗАГРУЗИТЬ</string>
-    <string name="feedback_load_nothing_toast">Загружать нечего.</string>
-    <string name="feedback_load_nothing_tv">ЗАГРУЖАТЬ НЕЧЕГО</string>
-    <string name="feedback_location">Местоположение</string>
-    <string name="feedback_login_text">Войдите в ваш Unsplash-аккаунт.</string>
-    <string name="feedback_name">Имя</string>
-    <string name="feedback_name_is_required">Необходимо указать имя.</string>
-    <string name="feedback_need_permission">Не удалось получить разрешение.</string>
-    <string name="feedback_no_filter">Не выбран фильтр.</string>
-    <string name="feedback_no_sd_card">Не удаётся найти SD-карту.</string>
-    <string name="feedback_notify_restart">Перезапустите для работы.</string>
-    <string name="feedback_overload">Перегрузка</string>
-    <string name="feedback_please_login">Пожалуйста войдите в аккаунт.</string>
-    <string name="feedback_portfolio_is_null">Ссылка на портфолио не указана.</string>
-    <string name="feedback_request_token_failed">Не удаолсь запросить токен.</string>
-    <string name="feedback_restart_warning">Перезапуск приложения отменит загрузки.</string>
-    <string name="feedback_search_bar">Поис фоторграфий, коллекция или пользователей</string>
-    <string name="feedback_search_collections_tv">ПОИСК КОЛЛЕКЦИЙ</string>
-    <string name="feedback_search_failed_toast">Поиск не удался.</string>
-    <string name="feedback_search_failed_tv">ПОИСК НЕ УДАЛСЯ</string>
-    <string name="feedback_search_nothing_toast">Нечего искать</string>
-    <string name="feedback_search_nothing_tv">НЕЧЕГО ИСКАТЬ</string>
-    <string name="feedback_search_photos_bar">Ключевое слово фотографий</string>
-    <string name="feedback_search_photos_tv">ПОИСК ФОТОГРАФИЙ</string>
-    <string name="feedback_search_users_bar">Ключевое слово пользователей</string>
-    <string name="feedback_search_users_tv">ПОИСК ПОЛЬЗОВАТЕЛЕЙ</string>
-    <string name="feedback_share_collection_extra">Создано # $</string>
-    <string name="feedback_share_collection_title">Коллекция от Unsplash.com</string>
-    <string name="feedback_share_photo_extra">Снял # $</string>
-    <string name="feedback_share_photo_title">Фото от Unsplash.com</string>
-    <string name="feedback_share_user_extra">#</string>
-    <string name="feedback_share_user_title">Профиль пользователя с Unsplash.com</string>
-    <string name="feedback_size">Размер</string>
-    <string name="feedback_story_is_null">История не указана или не была загружена.</string>
-    <string name="feedback_sure">Вы уверены?</string>
-    <string name="feedback_unlike_failed">Не удалось убрать отметку.</string>
-    <string name="feedback_update_collection_failed">Не удалось обновить коллекцию.</string>
-    <string name="feedback_update_profile_failed">Не могу редактировать профиль.</string>
-    <string name="feedback_notify_set_back_to_top">Вы можете указать действие на нажатие кнопки назад.</string>
+    <string name="action_open_portfolio">Ссылка на портфолио</string>
+    <string name="action_submit">Загрузить свою фотографию</string>
 
+    <string name="action_edit">Редактировать</string>
+    <string name="action_download">Загрузить</string>
+    <string name="action_set_as_source">Отметить как источник для сборника лучших снимков</string>
+
+    <string name="action_path">Путь загрузки</string>
+    <string name="action_cancel_all">Отменить все</string>
+
+    <string name="action_clip_with_square">Обрезать изображение как квадрат</string>
+    <string name="action_clip_with_rectangle">Обрезать изображение как прямоугольник</string>
+
+    <string name="action_align_left">Выровнять по левому краю</string>
+    <string name="action_align_center">Выровнять по центру</string>
+    <string name="action_align_right">Выровнять по правому краю</string>
+
+    <string name="action_wallpaper">Фоновое изображение</string>
+    <string name="action_lockscreen">Экран блокировки</string>
+    <string name="action_wallpaper_lockscreen">Фоновое изображение и экран блокировки</string>
+
+    <string name="action_muzei_settings">Настройки для сборника лучших снимков</string>
+
+    <!-- transition name. -->
+    <string name="transition_activity_container">activity_container</string>
+
+    <string name="transition_photo_image">photo_image</string>
+    <string name="transition_photo_background">photo_background</string>
+
+    <string name="transition_user_avatar">user_avatar</string>
+
+    <string name="transition_me_avatar">me_avatar</string>
+
+    <string name="transition_collection_avatar">collection_avatar</string>
+    <string name="transition_collection_background">collection_background</string>
+
+    <!-- settings. -->
+    <string name="settings_category_basic">ОСНОВНЫЕ</string>
+    <string name="settings_title_back_to_top">Нажмите кнопку назад, чтобы попасть в начало</string>
+    <string name="settings_title_custom_api_key">Пользовательский API ключ</string>
+    <string name="settings_summary_custom_api_key">Настройте ваш собственный API ключ и секретный код.</string>
     <string name="settings_title_language">Язык</string>
-    <string name="settings_title_download_scale">Качество загрузки</string>
-    <string name="settings_title_default_collection_type">Коллекция</string>
-    <string name="settings_title_default_order">Сортировка</string>
-    <string name="settings_title_back_to_top">Нажмите кнопку назад для прокрутки наверх</string>
-    <string name="settings_category_filter">Фильтр</string>
-    <string name="settings_category_download">Загрузка</string>
-    <string name="settings_category_basic">Основные</string>
 
-    <string name="introduce_description_back_top">Нажмите на верхнюю панель или кнопку назад, чтобы прокрутить список фотографий обратно наверх.</string>
-    <string name="introduce_title_back_top">Прокрутить наверх</string>
+    <string name="settings_category_filter">ФИЛЬТР</string>
+    <string name="settings_title_default_order">Порядок по умолчанию</string>
+    <string name="settings_title_default_collection_type">Коллекция по умолчанию</string>
+
+    <string name="settings_category_download">ЗАГРУЗКИ</string>
+    <string name="settings_title_download_scale">Размер загружаемых изображений</string>
+
+    <string name="settings_category_display">ПРОСМОТР</string>
+    <string name="settings_title_saturation_animation_duration">Продолжительность цветового насыщения снимка</string>
+    <string name="settings_title_grid_list_in_port">Показывать сетку изображений в вертиальной ориентации</string>
+    <string name="settings_title_grid_list_in_land">Показывать сетку изображений в горизонтальной ориентации</string>
+
+    <!-- share preferences. -->
+    <string name="key_back_to_top">back_to_top</string>
+    <string name="key_custom_api_key">custom_api_key</string>
+    <string name="key_language">language</string>
+    <string name="key_default_photo_order">default_photo_order</string>
+    <string name="key_download_scale">download_scale</string>
+    <string name="key_saturation_animation_duration">saturation_animation_duration</string>
+    <string name="key_grid_list_in_port">grid_list_in_port</string>
+    <string name="key_grid_list_in_land">grid_list_in_land</string>
+
+    <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 
 </resources>

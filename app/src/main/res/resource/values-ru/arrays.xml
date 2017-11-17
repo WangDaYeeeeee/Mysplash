@@ -4,16 +4,22 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
-        <item>TRENDING</item>
+        <item>ПОПУЛЯРНЫЕ</item>
         <item>НОВЫЕ</item>
-        <item>FEATURED</item>
+        <item>ИЗБРАННЫЕ</item>
     </string-array>
 
     <!-- collection tab. -->
     <string-array name="collection_tabs">
-        <item>FEATURED</item>
-        <item>ALL</item>
-        <item>CURATED</item>
+        <item>ИЗБРАННЫЕ</item>
+        <item>ВСЕ</item>
+        <item>ВЫБРАННЫЕ ПРОФЕССИОНАЛАМИ</item>
+    </string-array>
+
+    <string-array name="collection_type_values">
+        <item>избранные</item>
+        <item>все</item>
+        <item>выбранные профессионалами</item>
     </string-array>
 
     <!-- search tab. -->
@@ -40,36 +46,129 @@
     <string-array name="download_options">
         <item>ЗАГРУЗИТЬ</item>
         <item>ПОДЕЛИТЬСЯ</item>
-        <item>ОБОИ</item>
+        <item>ФОНОВОЕ ИЗОБРАЖЕНИЕ</item>
     </string-array>
 
     <!-- requestKey order. -->
     <string-array name="photo_orders">
-        <item>Последние</item>
+        <item>Свежие</item>
         <item>Старые</item>
         <item>Популярные</item>
         <item>Случайные</item>
     </string-array>
 
+    <string-array name="photo_order_values">
+        <item>свежие</item>
+        <item>старые</item>
+        <item>популярные</item>
+        <item>случайные</item>
+    </string-array>
+
     <!-- download type. -->
     <string-array name="download_types">
-        <item>Tiny</item>
+        <item>Крошечный</item>
         <item>Сжатый</item>
         <item>Исходный</item>
     </string-array>
 
+    <string-array name="download_type_values">
+        <item>крошечный</item>
+        <item>сжатый</item>
+        <item>исходный</item>
+    </string-array>
+
     <!-- back to top. -->
     <string-array name="back_to_top_types">
-        <item>Все списки</item>
-        <item>Только на главную</item>
-        <item>Ничего</item>
+        <item>К спискам изображений</item>
+        <item>Домой</item>
+        <item>Действие не назначено</item>
+    </string-array>
+
+    <string-array name="back_to_top_type_values">
+        <item>к спискам изображений</item>
+        <item>домой</item>
+        <item>действие не назначено</item>
+    </string-array>
+
+        <!-- saturation animation duration. -->
+    <string-array name="saturation_animation_durations">
+        <item>Быстро (300 мс)</item>
+        <item>Средне (1000 мс)</item>
+        <item>Обычно (2000 мс)</item>
+    </string-array>
+
+    <string-array name="saturation_animation_duration_values">
+        <item>300</item>
+        <item>1000</item>
+        <item>2000</item>
     </string-array>
 
     <!-- search orientation. -->
     <string-array name="search_orientations">
-        <item>Ландшафтный</item>
-        <item>Портретный</item>
-        <item>Квадратный</item>
+        <item>Пейзаж</item>
+        <item>Портрет</item>
+        <item>Квадрат</item>
     </string-array>
+
+    <string-array name="search_orientation_values">
+        <item>пейзаж</item>
+        <item>портрет</item>
+        <item>квадрат</item>
+    </string-array>
+
+        <!-- explore. --><!--
+    <string-array name="explore_items">
+        <item>здания</item>
+        <item>природа</item>
+        <item>предметы</item>
+        <item>люди</item>
+        <item>техника</item>
+        <item>компьютеры</item>
+        <item>девушки</item>
+        <item>еда</item>
+        <item>работа</item>
+        <item>помещения</item>
+        <item>музыка</item>
+        <item>пейзажи</item>
+        <item>семья</item>
+        <item>пары</item>
+        <item>кофе</item>
+        <item>собачки</item>
+        <item>Канада</item>
+        <item>свадьбы</item>
+        <item>велосипед</item>
+        <item>ноутбуки</item>
+        <item>дождь</item>
+        <item>фитнес</item>
+        <item>Нью-Йорк</item>
+        <item>осень</item>
+        <item>стол</item>
+        <item>цветы</item>
+        <item>женщины</item>
+        <item>одежда</item>
+        <item>счастливы</item>
+        <item>часы</item>
+        <item>любовь</item>
+        <item>iPhone</item>
+        <item>в дороге</item>
+        <item>йога</item>
+        <item>мужчины</item>
+        <item>предприниматели</item>
+        <item>дом</item>
+        <item>деревья</item>
+        <item>горы</item>
+        <item>город</item>
+        <item>лето</item>
+        <item>NASA</item>
+        <item>ноги</item>
+        <item>друзья</item>
+        <item>Япония</item>
+        <item>покупки</item>
+        <item>пишущие машинки</item>
+        <item>дома</item>
+        <item>рестораны</item>
+        <item>небо</item>
+        <item>часы</item>
+    </string-array>-->
 
 </resources>
