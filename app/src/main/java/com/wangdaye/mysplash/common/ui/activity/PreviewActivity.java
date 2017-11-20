@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
@@ -125,23 +126,25 @@ public class PreviewActivity extends MysplashActivity
 
         final NestedScrollPhotoView photoView = ButterKnife.findById(this, R.id.activity_preview_photoView);
         photoView.setMaxScale(getMaxiScale(false));
-        ImageHelper.loadFullPhoto(
-                this,
-                photoView,
-                previewable instanceof Photo ?
-                        ((Photo) previewable).getWallpaperSizeUrl(this) : previewable.getFullUrl(),
-                previewable.getRegularUrl(),
-                new ImageHelper.OnLoadImageListener() {
-            @Override
-            public void onLoadSucceed() {
-                photoView.setMaxScale(getMaxiScale(true));
-            }
+        if (previewable instanceof Photo) {
+            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            ImageHelper.loadFullPhoto(
+                    this, photoView, ((Photo) previewable),
+                    new ImageHelper.OnLoadImageListener<Photo>() {
+                        @Override
+                        public void onLoadImageSucceed(Photo newT, int index) {
+                            photoView.setMaxScale(getMaxiScale(true));
+                        }
 
-            @Override
-            public void onLoadFailed() {
-                // do nothing.
-            }
-        });
+                        @Override
+                        public void onLoadImageFailed(Photo originalT, int index) {
+                            // do nothing.
+                        }
+                    });
+        } else {
+            ImageHelper.loadImageFromUrl(
+                    this, photoView, previewable.getFullUrl(), false, null);
+        }
     }
 
     // control.

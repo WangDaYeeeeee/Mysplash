@@ -51,7 +51,7 @@ public class PhotoInfoObject
 
     @Override
     public void setPhoto(Photo p, boolean init) {
-        if (init) {
+        if (init && p != null) {
             p.settingLike = false;
         }
         this.photo = p;

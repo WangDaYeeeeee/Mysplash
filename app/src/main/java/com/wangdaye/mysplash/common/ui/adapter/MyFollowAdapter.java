@@ -67,7 +67,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         }
 
         void onBindView(int position) {
-            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, null);
+            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, getAdapterPosition(), null);
 
             title.setText(itemList.get(position).user.name);
 

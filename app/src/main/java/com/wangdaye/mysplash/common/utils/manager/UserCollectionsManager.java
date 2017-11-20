@@ -31,9 +31,7 @@ public class UserCollectionsManager {
     }
 
     public void addCollections(List<Collection> list) {
-        for (int i = 0; i < list.size(); i ++) {
-            collectionList.add(list.get(i));
-        }
+        collectionList.addAll(list);
     }
 
     public void addCollectionToFirst(Collection c) {

@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.Previewable;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
@@ -181,10 +182,47 @@ public class Photo
     }
 
     public String getRegularSizeUrl(Context context) {
+        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
+        if (DisplayUtils.isLandscape(context)) {
+            return urls.raw
+                    + "?q=75&fm=jpg&w="
+                    + (int) (screenWidth * 0.6)
+                    + "&fit=max";
+        } else {
+            boolean landPhoto = 1.0 * height / width * screenWidth <= screenHeight
+                    - context.getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
+            if (DisplayUtils.isTabletDevice(context)) {
+                if (landPhoto) {
+                    return urls.raw
+                            + "?q=75&fm=jpg&w="
+                            + screenWidth
+                            + "&fit=max";
+                } else {
+                    return urls.raw
+                            + "?q=75&fm=jpg&w="
+                            + (int) (screenWidth * 0.6)
+                            + "&fit=max";
+                }
+            } else {
+                if (landPhoto) {
+                    return urls.raw
+                            + "?q=75&fm=jpg&w="
+                            + (int) (screenWidth * 0.9)
+                            + "&fit=max";
+                } else {
+                    return urls.raw
+                            + "?q=75&fm=jpg&w="
+                            + (int) (screenWidth * 0.6)
+                            + "&fit=max";
+                }
+            }
+        }
+        /*
         return urls.raw
                 + "?q=75&fm=jpg&w="
                 + ((DisplayUtils.isTabletDevice(context) || DisplayUtils.isLandscape(context)) ? 1080 : 960)
-                + "&fit=max";
+                + "&fit=max";*/
     }
 
     // parcel.
@@ -296,5 +334,20 @@ public class Photo
     @Override
     public int getHeight() {
         return height;
+    }
+
+    /**
+     * Update load information for photo.
+     *
+     * @return Return true when load information has been changed. Otherwise return false.
+     * */
+    public boolean updateLoadInformation(Photo photo) {
+        this.loadPhotoSuccess = photo.loadPhotoSuccess;
+        if (this.hasFadedIn != photo.hasFadedIn) {
+            this.hasFadedIn = photo.hasFadedIn;
+            return true;
+        } else {
+            return false;
+        }
     }
 }

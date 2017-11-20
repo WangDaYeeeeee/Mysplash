@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -20,6 +21,7 @@ import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ActionObject;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -75,6 +77,43 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         @BindView(R.id.item_notification_time)
         TextView time;
 
+        private Photo photo;
+        private User user;
+
+        private class OnLoadPhotoImageListener implements ImageHelper.OnLoadImageListener<Photo> {
+
+            @Override
+            public void onLoadImageSucceed(Photo newT, int index) {
+                if (photo != null && photo.updateLoadInformation(newT)) {
+                    Photo p = getNotification(index).objects.get(0).castToPhoto();
+                    p.updateLoadInformation(newT);
+                    updatePhoto(p, index);
+                }
+            }
+
+            @Override
+            public void onLoadImageFailed(Photo originalT, int index) {
+
+            }
+        }
+
+        private class OnLoadAvatarImageListener implements ImageHelper.OnLoadImageListener<User> {
+
+            @Override
+            public void onLoadImageSucceed(User newT, int index) {
+                if (user != null && user.updateLoadInformation(newT)) {
+                    User u = getNotification(index).actors.get(0);
+                    u.updateLoadInformation(newT);
+                    updateActor(u, index);
+                }
+            }
+
+            @Override
+            public void onLoadImageFailed(User originalT, int index) {
+                // do nothing.
+            }
+        }
+
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -115,47 +154,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             ImageHelper.releaseImageView(avatar);
         }
 
-        private void bindAvatar(final int position) {
-            ImageHelper.loadAvatar(a, avatar, getNotification(position).actors.get(0), new ImageHelper.OnLoadImageListener() {
-                @Override
-                public void onLoadSucceed() {
-                    if (!getNotification(position).actors.get(0).hasFadedIn) {
-                        getNotification(position).actors.get(0).hasFadedIn = true;
-                        ImageHelper.startSaturationAnimation(a, avatar);
-                    }
-                }
-
-                @Override
-                public void onLoadFailed() {
-                    // do nothing.
-                }
-            });
+        private void bindAvatar(int position) {
+            this.user = getNotification(position).actors.get(0);
+            ImageHelper.loadAvatar(
+                    a, avatar, user, position,
+                    new OnLoadAvatarImageListener());
         }
 
-        private void bindPhoto(final int position) {
+        private void bindPhoto(int position) {
             if (hasPhoto(position)) {
-                final Photo photo = getNotification(position).objects.get(0).castToPhoto();
+                this.photo = getNotification(position).objects.get(0).castToPhoto();
 
                 image.setSize(photo.width, photo.height);
 
                 imageContainer.setVisibility(View.VISIBLE);
 
-                ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
-                    @Override
-                    public void onLoadSucceed() {
-                        photo.loadPhotoSuccess = true;
-                        if (!photo.hasFadedIn) {
-                            photo.hasFadedIn = true;
-                            updatePhoto(photo, position);
-                            ImageHelper.startSaturationAnimation(a, image);
-                        }
-                    }
-
-                    @Override
-                    public void onLoadFailed() {
-                        // do nothing.
-                    }
-                });
+                // ImageHelper.loadFullPhoto(a, image, photo, position, new OnLoadPhotoImageListener());
+                ImageHelper.loadRegularPhoto(a, image, photo, position, new OnLoadPhotoImageListener());
                 imageContainer.setBackgroundColor(ImageHelper.computeCardBackgroundColor(a, photo.color));
             } else {
                 imageContainer.setVisibility(View.GONE);
@@ -180,6 +195,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             }
         }
 
+        @SuppressLint("SetTextI18n")
         private void bindVerb(int position) {
             switch (getNotification(position).verb) {
                 case NotificationResult.VERB_LIKED:
@@ -363,6 +379,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     private void updatePhoto(Photo photo, int position) {
         NotificationResult result = getNotification(position);
         result.objects.set(0, new ActionObject(photo));
+        AuthManager.getInstance()
+                .getNotificationManager()
+                .getNotificationList()
+                .set(position, result);
+    }
+
+    private void updateActor(User actor, int position) {
+        NotificationResult result = getNotification(position);
+        result.actors.set(0, actor);
         AuthManager.getInstance()
                 .getNotificationManager()
                 .getNotificationList()

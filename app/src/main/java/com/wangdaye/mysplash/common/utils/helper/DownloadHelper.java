@@ -316,10 +316,13 @@ public class DownloadHelper {
     private static void shareDownloadSuccess(Context c, DownloadMissionEntity entity) {
         try {
             Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_STREAM, FileUtils.filePathToUri(c, entity.getFilePath()));
+            intent.setType("image/*");
+            /*
             intent.setDataAndType(FileUtils.filePathToUri(c, entity.getFilePath()), "image/*");
             intent.putExtra("mimeType", "image/*");
             intent.putExtra(Intent.EXTRA_MIME_TYPES, "image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, "image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, "image/*");*/
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             c.startActivity(
@@ -331,10 +334,13 @@ public class DownloadHelper {
             Uri uri = FileProvider.getUriForFile(
                     c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
             Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setType("image/*");
+            /*
             intent.setDataAndType(uri, "image/*");
             intent.putExtra("mimeType", "image/*");
             intent.putExtra(Intent.EXTRA_MIME_TYPES, "image/*");
-            intent.putExtra(Intent.EXTRA_STREAM, "image/*");
+            intent.putExtra(Intent.EXTRA_STREAM, "image/*");*/
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -350,9 +356,12 @@ public class DownloadHelper {
     private static void wallpaperDownloadSuccess(Context c, DownloadMissionEntity entity) {
         try {
             Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+            intent.putExtra(Intent.EXTRA_STREAM, FileUtils.filePathToUri(c, entity.getFilePath()));
+            intent.setType("image/*");
+            /*
             intent.setDataAndType(FileUtils.filePathToUri(c, entity.getFilePath()), "image/jpg");
             intent.putExtra("mimeType", "image/jpg");
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, "image/jpg");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, "image/jpg");*/
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             c.startActivity(
@@ -364,9 +373,12 @@ public class DownloadHelper {
             Uri uri = FileProvider.getUriForFile(
                     c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
             Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+            intent.putExtra(Intent.EXTRA_STREAM, uri);
+            intent.setType("image/*");
+            /*
             intent.setDataAndType(uri, "image/jpg");
             intent.putExtra("mimeType", "image/jpg");
-            intent.putExtra(Intent.EXTRA_MIME_TYPES, "image/jpg");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, "image/jpg");*/
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);

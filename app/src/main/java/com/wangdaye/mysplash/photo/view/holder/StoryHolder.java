@@ -67,7 +67,7 @@ public class StoryHolder extends PhotoInfoAdapter.ViewHolder {
 
         subtitle.setText(a.getString(R.string.by) + " " + photo.user.name);
 
-        ImageHelper.loadAvatar(a, avatar, photo.user, null);
+        ImageHelper.loadAvatar(a, avatar, photo.user);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(photo.user.username + "-3");
         }

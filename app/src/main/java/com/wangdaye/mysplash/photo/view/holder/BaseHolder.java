@@ -94,7 +94,7 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
         title.setText(a.getString(R.string.by) + " " + photo.user.name);
         subtitle.setText(a.getString(R.string.on) + " " + photo.created_at.split("T")[0]);
 
-        ImageHelper.loadAvatar(a, avatar, photo.user, null);
+        ImageHelper.loadAvatar(a, avatar, photo.user);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(photo.user.username + "-1");
         }

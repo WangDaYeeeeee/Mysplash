@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
@@ -20,6 +21,7 @@ public interface PhotoInfoPresenter {
 
     void touchMenuItem(int itemId);
 
+    @Nullable
     Photo getPhoto();
     void setPhoto(Photo photo, boolean init);
 

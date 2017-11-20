@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -95,9 +94,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @BindView(R.id.activity_collection_toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.activity_collection_creatorBar)
-    RelativeLayout creatorBar;
-
     @BindView(R.id.activity_collection_avatar)
     CircleImageView avatarImage;
 
@@ -159,9 +155,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     protected void onDestroy() {
         super.onDestroy();
         browsablePresenter.cancelRequest();
-        if (photosView != null) {
-            photosView.cancelRequest();
-        }
+        photosView.cancelRequest();
     }
 
     @Override
@@ -185,9 +179,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     public void onSaveInstanceState(Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
-        if (photosView != null) {
-            f.setPhotoList(photosView.getPhotos());
-        }
+        f.setPhotoList(photosView.getPhotos());
         f.saveData(this);
 
         // save normal data.
@@ -294,7 +286,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
             appBar.setOnNestedScrollingListener(this);
 
             ImageView coverImage = ButterKnife.findById(this, R.id.activity_collection_coverImage);
-            ImageHelper.loadCollectionCover(this, coverImage, c, null);
+            ImageHelper.loadCollectionCover(this, coverImage, c);
 
             TextView title = ButterKnife.findById(this, R.id.activity_collection_title);
             title.setText(c.title);
@@ -330,7 +322,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 toolbar.getMenu().getItem(1).setVisible(false);
             }
 
-            ImageHelper.loadAvatar(this, avatarImage, c.user, null);
+            ImageHelper.loadAvatar(this, avatarImage, c.user);
 
             TextView subtitle = ButterKnife.findById(this, R.id.activity_collection_subtitle);
             DisplayUtils.setTypeface(this, subtitle);

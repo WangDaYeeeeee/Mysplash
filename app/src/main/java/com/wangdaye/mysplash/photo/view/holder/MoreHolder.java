@@ -81,8 +81,8 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
         List<View> viewList = new ArrayList<>(size);
         List<String> titleList = new ArrayList<>(size);
         for (int i = 0; i < size; i ++) {
-            final int finalI = i;
             View view = LayoutInflater.from(a).inflate(R.layout.item_photo_more_page_vertical, null);
+            final int finalI = i;
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -92,25 +92,25 @@ public class MoreHolder extends PhotoInfoAdapter.ViewHolder
             });
 
             covers[i] = ButterKnife.findById(view, R.id.item_photo_more_page_vertical_cover);
-            ImageHelper.OnLoadImageListener listener = new ImageHelper.OnLoadImageListener() {
-                @Override
-                public void onLoadSucceed() {
-                    if (!model.hasFadedIn[finalI]) {
-                        model.hasFadedIn[finalI] = true;
-                        ImageHelper.startSaturationAnimation(a, covers[finalI]);
-                    }
-                }
-
-                @Override
-                public void onLoadFailed() {
-                    // do nothing.
-                }
-            };
             ImageHelper.loadCollectionCover(
                     a,
                     covers[i],
                     photo.related_collections.results.get(i),
-                    model.hasFadedIn[i] ? null : listener);
+                    i,
+                    model.hasFadedIn[i] ? null : new ImageHelper.OnLoadImageListener<Photo>() {
+                        @Override
+                        public void onLoadImageSucceed(Photo newT, int index) {
+                            if (!model.hasFadedIn[index]) {
+                                model.hasFadedIn[index] = true;
+                                ImageHelper.startSaturationAnimation(a, covers[index]);
+                            }
+                        }
+
+                        @Override
+                        public void onLoadImageFailed(Photo originalT, int index) {
+                            // do nothing.
+                        }
+                    });
 
             titles[i] = ButterKnife.findById(view, R.id.item_photo_more_page_vertical_title);
             titles[i].setText(photo.related_collections.results.get(i).title.toUpperCase());

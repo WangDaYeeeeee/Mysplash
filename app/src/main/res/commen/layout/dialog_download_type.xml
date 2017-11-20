@@ -4,7 +4,7 @@
     android:id="@+id/dialog_download_type_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorRoot_light">
+    android:background="?attr/root_color">
 
     <LinearLayout
         android:orientation="vertical"

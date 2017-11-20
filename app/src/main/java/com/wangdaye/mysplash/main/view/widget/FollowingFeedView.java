@@ -507,7 +507,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
         private void setAvatarImage(int position) {
             lastActor = followingPresenter.getAdapter().getActor(position);
-            ImageHelper.loadAvatar(getContext(), avatar, lastActor, null);
+            ImageHelper.loadAvatar(getContext(), avatar, lastActor, 0, null);
         }
 
         private void setAvatarVerb(int position) {

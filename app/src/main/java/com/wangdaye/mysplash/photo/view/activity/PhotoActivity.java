@@ -131,6 +131,8 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     private MessageManagePresenter messageManagePresenter;
 
+    private final Object messageManagePresenterLock = new Object();
+
     public static final String KEY_PHOTO_ACTIVITY_PHOTO_LIST = "photo_activity_photo_list";
     public static final String KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX = "photo_activity_photo_current_index";
     public static final String KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX = "photo_activity_photo_head_index";
@@ -144,19 +146,24 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         @Override
         public void run() {
             while (isRunning()) {
-                DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity.this)
-                        .readDownloadingEntity(photoInfoPresenter.getPhoto().id);
-                if (entity != null && entity.missionId != -1
-                        && entity.result == DownloadHelper.RESULT_DOWNLOADING) {
-                    DownloadMission mission = DownloadHelper.getInstance(PhotoActivity.this)
-                            .getDownloadMission(PhotoActivity.this, entity.missionId);
-                    if (mission == null || mission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
-                        messageManagePresenter.sendMessage(-1, null);
-                    } else {
-                        messageManagePresenter.sendMessage((int) mission.process, null);
+                Photo photo = photoInfoPresenter.getPhoto();
+                if (photo != null) {
+                    DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity.this)
+                            .readDownloadingEntity(photo.id);
+                    synchronized (messageManagePresenterLock) {
+                        if (entity != null && entity.missionId != -1
+                                && entity.result == DownloadHelper.RESULT_DOWNLOADING) {
+                            DownloadMission mission = DownloadHelper.getInstance(PhotoActivity.this)
+                                    .getDownloadMission(PhotoActivity.this, entity.missionId);
+                            if (mission == null || mission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
+                                messageManagePresenter.sendMessage(-1, null);
+                            } else {
+                                messageManagePresenter.sendMessage((int) mission.process, null);
+                            }
+                        } else {
+                            messageManagePresenter.sendMessage(-1, null);
+                        }
                     }
-                } else {
-                    messageManagePresenter.sendMessage(-1, null);
                 }
                 SystemClock.sleep(200);
             }
@@ -168,7 +175,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         super.onCreate(savedInstanceState);
         DisplayUtils.setStatusBarStyle(this, true);
         setContentView(R.layout.activity_photo);
-        initModel();
+        initModel(null);
         initPresenter();
     }
 
@@ -225,7 +232,8 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         recyclerView.setAlpha(0f);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         if (!browsablePresenter.isBrowsable()
-                && photoListManagePresenter.getCurrentIndex() == getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, -1)
+                && photoListManagePresenter.getCurrentIndex()
+                    == getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, -1)
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
@@ -265,17 +273,29 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     // init.
 
-    private void initModel() {
+    private void initModel(@Nullable Photo photo) {
         List<Photo> photoList = getIntent().getParcelableArrayListExtra(KEY_PHOTO_ACTIVITY_PHOTO_LIST);
-        if (photoList == null) {
-            photoList = new ArrayList<>();
-        }
         int currentIndex = getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, -1);
         int headIndex = getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX, -1);
+        String id = null;
+        if (photoList == null) {
+            photoList = new ArrayList<>();
+            currentIndex = -1;
+            headIndex = -1;
+        } else {
+            id = getIntent().getStringExtra(KEY_PHOTO_ACTIVITY_ID);
+            if (!TextUtils.isEmpty(id)) {
+                getIntent().putExtra(KEY_PHOTO_ACTIVITY_ID, "");
+            }
+        }
         this.photoListManageModel = new PhotoListManageObject(photoList, currentIndex, headIndex);
-        this.photoInfoModel = new PhotoInfoObject(this, photoListManageModel.getPhoto());
+        this.photoInfoModel = new PhotoInfoObject(
+                this, photo == null ? photoListManageModel.getPhoto() : photo);
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
         this.browsableModel = new BorwsableObject(getIntent());
+        if (!TextUtils.isEmpty(id)) {
+            getIntent().putExtra(KEY_PHOTO_ACTIVITY_ID, id);
+        }
     }
 
     private void initPresenter() {
@@ -284,13 +304,15 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
         this.downloadPresenter = new DownloadImplementor(downloadModel);
         this.popupManagePresenter = new PhotoActivityPopupManageImplementor(this);
         this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
-        this.messageManagePresenter = new MessageManageImplementor(this);
+        synchronized (messageManagePresenterLock) {
+            this.messageManagePresenter = new MessageManageImplementor(this);
+        }
     }
 
     @SuppressLint({"SetTextI18n", "CutPasteId"})
     private void initView(boolean init) {
         this.handler = new SafeHandler<>(this);
-        if (init && browsablePresenter.isBrowsable() && photoInfoPresenter.getPhoto() == null) {
+        if (init && /*browsablePresenter.isBrowsable() &&*/ photoInfoPresenter.getPhoto() == null) {
             browsablePresenter.requestBrowsableData();
         } else {
             if (ThemeManager.getInstance(this).isLightTheme()) {
@@ -372,23 +394,22 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
     // UI.
 
     private void resetPhotoImage() {
-        photoImage.setSize(
-                photoInfoPresenter.getPhoto().width, photoInfoPresenter.getPhoto().height);
+        Photo photo = photoInfoPresenter.getPhoto();
+        if (photo != null) {
+            photoImage.setSize(photo.width, photo.height);
+        }
         photoImage.setTranslationY(0);
+        // ImageHelper.loadFullPhoto(
         ImageHelper.loadRegularPhoto(
-                this, photoImage, photoInfoPresenter.getPhoto(),
-                new ImageHelper.OnLoadImageListener() {
+                this, photoImage, photoInfoPresenter.getPhoto(), 0,
+                new ImageHelper.OnLoadImageListener<Photo>() {
                     @Override
-                    public void onLoadSucceed() {
-                        photoInfoPresenter.getPhoto().loadPhotoSuccess = true;
-                        if (!photoInfoPresenter.getPhoto().hasFadedIn) {
-                            photoInfoPresenter.getPhoto().hasFadedIn = true;
-                            ImageHelper.startSaturationAnimation(PhotoActivity.this, photoImage);
-                        }
+                    public void onLoadImageSucceed(Photo newT, int index) {
+                        photoInfoPresenter.getPhoto().updateLoadInformation(newT);
                     }
 
                     @Override
-                    public void onLoadFailed() {
+                    public void onLoadImageFailed(Photo originalT, int index) {
                         // do nothing.
                     }
                 });
@@ -446,23 +467,26 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
     }
 
     public void readyToDownload(int type, boolean showTypeDialog) {
-        if (showTypeDialog) {
-            DownloadTypeDialog dialog = new DownloadTypeDialog();
-            dialog.setOnSelectTypeListener(this);
-            dialog.show(getFragmentManager(), null);
-        } else if (DatabaseHelper.getInstance(this)
-                .readDownloadingEntityCount(photoInfoPresenter.getPhoto().id) > 0) {
-            NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
-        } else if (FileUtils.isPhotoExists(this, photoInfoPresenter.getPhoto().id)) {
-            DownloadRepeatDialog dialog = new DownloadRepeatDialog();
-            dialog.setDownloadKey(type);
-            dialog.setOnCheckOrDownloadListener(this);
-            dialog.show(getFragmentManager(), null);
-        } else {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                downloadByType(type);
+        Photo photo = photoInfoPresenter.getPhoto();
+        if (photo != null) {
+            if (showTypeDialog) {
+                DownloadTypeDialog dialog = new DownloadTypeDialog();
+                dialog.setOnSelectTypeListener(this);
+                dialog.show(getFragmentManager(), null);
+            } else if (DatabaseHelper.getInstance(this)
+                    .readDownloadingEntityCount(photo.id) > 0) {
+                NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
+            } else if (FileUtils.isPhotoExists(this, photo.id)) {
+                DownloadRepeatDialog dialog = new DownloadRepeatDialog();
+                dialog.setDownloadKey(type);
+                dialog.setOnCheckOrDownloadListener(this);
+                dialog.show(getFragmentManager(), null);
             } else {
-                requestReadWritePermission(type);
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    downloadByType(type);
+                } else {
+                    requestReadWritePermission(type);
+                }
             }
         }
     }
@@ -700,10 +724,11 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
             }
 
             photoInfoPresenter.cancelRequest();
-            if (!photoInfoPresenter.getPhoto().complete) {
+
+            Photo photo = photoInfoPresenter.getPhoto();
+            if (photo != null && !photo.complete) {
                 initRefresh();
             }
-
 
             if ((direction == SwipeSwitchLayout.DIRECTION_LEFT
                     && currentIndex - photoListManagePresenter.getHeadIndex() <= 10)) {
@@ -760,7 +785,9 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @Override
     public void handleMessage(Message message) {
-        messageManagePresenter.responseMessage(message.what, message.obj);
+        synchronized (messageManagePresenterLock) {
+            messageManagePresenter.responseMessage(message.what, message.obj);
+        }
     }
 
     // view.
@@ -771,7 +798,10 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
     public void touchMenuItem(int itemId) {
         switch (itemId) {
             case PhotoMenuPopupWindow.ITEM_DOWNLOAD_PAGE:
-                IntentHelper.startWebActivity(this, photoInfoPresenter.getPhoto().links.download);
+                Photo photo = photoInfoPresenter.getPhoto();
+                if (photo != null) {
+                    IntentHelper.startWebActivity(this, photo.links.download);
+                }
                 break;
 
             case PhotoMenuPopupWindow.ITEM_STORY_PAGE:
@@ -788,7 +818,9 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @Override
     public void requestPhotoSuccess(Photo photo) {
-        if (photo.id.equals(photoInfoPresenter.getPhoto().id)) {
+        Photo old = photoInfoPresenter.getPhoto();
+        if (old != null && photo != null
+                && photo.id.equals(old.id)) {
             int oldCount = photoInfoPresenter.getAdapter().getItemCount() - 1;
 
             photoInfoPresenter.getAdapter().notifyItemRemoved(oldCount);
@@ -855,7 +887,7 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @Override
     public void drawBrowsableView(Object result) {
-        initModel();
+        initModel((Photo) result);
         initPresenter();
         initView(false);
     }
@@ -874,13 +906,25 @@ public class PhotoActivity extends RequestLoadActivity<Photo>
 
     @Override
     public void responseMessage(int what, Object o) {
-        PhotoButtonBar buttonBar = getPhotoButtonBar();
+        final PhotoButtonBar buttonBar = getPhotoButtonBar();
+        final int progress = what;
         if (buttonBar != null) {
             if (0 <= what && what <= 100) {
-                buttonBar.setDownloadState(true, what);
+                buttonBar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        buttonBar.setDownloadState(true, progress);
+                    }
+                });
+
             } else {
                 progressRunnable.setRunning(false);
-                buttonBar.setDownloadState(false, -1);
+                buttonBar.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        buttonBar.setDownloadState(false, -1);
+                    }
+                });
             }
         }
     }

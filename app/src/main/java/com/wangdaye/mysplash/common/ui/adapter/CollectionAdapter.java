@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.CardView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.FooterAdapter;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
@@ -41,7 +43,8 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     private int columnCount;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder
+            implements ImageHelper.OnLoadImageListener<Photo> {
 
         @BindView(R.id.item_collection)
         CardView card;
@@ -70,6 +73,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             DisplayUtils.setTypeface(itemView.getContext(), name);
         }
 
+        @SuppressLint("SetTextI18n")
         public void onBindView(final Collection collection) {
             this.collection = collection;
 
@@ -99,33 +103,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             image.setShowShadow(false);
 
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(
-                        a, image, collection,
-                        new ImageHelper.OnLoadImageListener() {
-                            @Override
-                            public void onLoadSucceed() {
-                                if (!collection.cover_photo.hasFadedIn) {
-                                    collection.cover_photo.hasFadedIn = true;
-                                    ImageHelper.startSaturationAnimation(a, image);
-                                }
-                                title.setText(collection.title.toUpperCase());
-                                int photoNum = collection.total_photos;
-                                subtitle.setText(
-                                        photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
-                                name.setText(collection.user.name);
-                                image.setShowShadow(true);
-                            }
-
-                            @Override
-                            public void onLoadFailed() {
-                                title.setText(collection.title.toUpperCase());
-                                int photoNum = collection.total_photos;
-                                subtitle.setText(
-                                        photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
-                                name.setText(collection.user.name);
-                                image.setShowShadow(true);
-                            }
-                        });
+                ImageHelper.loadCollectionCover(a, image, collection, getAdapterPosition(), this);
                 card.setCardBackgroundColor(
                         ImageHelper.computeCardBackgroundColor(
                                 a,
@@ -134,7 +112,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 ImageHelper.loadResourceImage(a, image, R.drawable.default_collection_cover);
             }
 
-            ImageHelper.loadAvatar(a, avatar, collection.user, null);
+            ImageHelper.loadAvatar(a, avatar, collection.user, getAdapterPosition(), null);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 card.setTransitionName(collection.id + "-background");
@@ -167,6 +145,36 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                         collection.user,
                         UserActivity.PAGE_PHOTO);
             }
+        }
+
+        // on load image listener.
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onLoadImageSucceed(Photo newT, int index) {
+            if (collection.cover_photo.updateLoadInformation(newT)) {
+                Collection c = itemList.get(index);
+                c.cover_photo.updateLoadInformation(newT);
+                itemList.set(index, c);
+            }
+
+            title.setText(collection.title.toUpperCase());
+            int photoNum = collection.total_photos;
+            subtitle.setText(
+                    photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+            name.setText(collection.user.name);
+            image.setShowShadow(true);
+        }
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onLoadImageFailed(Photo originalT, int index) {
+            title.setText(collection.title.toUpperCase());
+            int photoNum = collection.total_photos;
+            subtitle.setText(
+                    photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+            name.setText(collection.user.name);
+            image.setShowShadow(true);
         }
     }
 

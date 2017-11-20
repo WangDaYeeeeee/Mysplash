@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
@@ -310,7 +311,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     // user.
 
-    private User getUser(int position) {
+    User getUser(int position) {
         ViewType viewType = typeList.get(position);
         switch (viewType.type) {
             case TitleHolder.VIEW_TYPE_TITLE:
@@ -336,7 +337,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     // photo.
 
     @Nullable
-    private Photo getPhoto(int position) {
+    Photo getPhoto(int position) {
         ViewType viewType = typeList.get(position);
         switch (viewType.type) {
             case PhotoHolder.VIEW_TYPE_PHOTO:
@@ -592,13 +593,14 @@ class TitleHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     void onBindView(Context a, FollowingResult result) {
         this.result = result;
 
         User user = result.actors.get(0);
 
         actor.setText(user.name);
-        ImageHelper.loadAvatar(a, avatar, user, null);
+        ImageHelper.loadAvatar(a, avatar, user, getAdapterPosition(), null);
 
         switch (result.verb) {
             case FollowingResult.VERB_LIKED:
@@ -734,7 +736,8 @@ class TitleHolder extends RecyclerView.ViewHolder {
  * ViewHolder class for {@link FollowingAdapter} to show photo data.
  *
  * */
-class PhotoHolder extends RecyclerView.ViewHolder {
+class PhotoHolder extends RecyclerView.ViewHolder
+        implements ImageHelper.OnLoadImageListener<Photo> {
 
     @BindView(R.id.item_following_photo_background)
     RelativeLayout background;
@@ -766,9 +769,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         this.listener = adapter;
     }
 
-    void onBindView(final Context a,
-                    final Photo photo,
-                    final int position, int columnCount) {
+    void onBindView(Context a, Photo photo, int position, int columnCount) {
         this.photo = photo;
         this.position = position;
 
@@ -788,24 +789,8 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         title.setText("");
         image.setShowShadow(false);
 
-        ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
-            @Override
-            public void onLoadSucceed() {
-                photo.loadPhotoSuccess = true;
-                if (!photo.hasFadedIn) {
-                    photo.hasFadedIn = true;
-                    adapter.updatePhoto(photo, position);
-                    ImageHelper.startSaturationAnimation(a, image);
-                }
-                title.setText(photo.user.name);
-                image.setShowShadow(true);
-            }
-
-            @Override
-            public void onLoadFailed() {
-                // do nothing.
-            }
-        });
+        // ImageHelper.loadFullPhoto(a, image, photo, position, this);
+        ImageHelper.loadRegularPhoto(a, image, photo, position, this);
 
         if (photo.current_user_collections.size() != 0) {
             collectionButton.setImageResource(R.drawable.ic_item_collected);
@@ -881,6 +866,26 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             }
         }
     }
+
+    // on load image listener.
+
+    @Override
+    public void onLoadImageSucceed(Photo newT, int index) {
+        if (photo.updateLoadInformation(newT)) {
+            Photo p = adapter.getPhoto(index);
+            if (p != null) {
+                p.updateLoadInformation(newT);
+                adapter.updatePhoto(p, index);
+            }
+        }
+        title.setText(newT.user.name);
+        image.setShowShadow(true);
+    }
+
+    @Override
+    public void onLoadImageFailed(Photo originalT, int index) {
+        // do nothing.
+    }
 }
 
 /**
@@ -889,7 +894,8 @@ class PhotoHolder extends RecyclerView.ViewHolder {
  * ViewHolder class for {@link FollowingAdapter} to show user information.
  *
  * */
-class UserHolder extends RecyclerView.ViewHolder {
+class UserHolder extends RecyclerView.ViewHolder
+        implements ImageHelper.OnLoadImageListener<User> {
 
     @BindView(R.id.item_following_user_background)
     RelativeLayout background;
@@ -921,7 +927,8 @@ class UserHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    void onBindView(final Context a, final User user, final int position) {
+    @SuppressLint("SetTextI18n")
+    void onBindView(Context a, User user, int position) {
         this.user = user;
 
         title.setText(user.name);
@@ -934,21 +941,7 @@ class UserHolder extends RecyclerView.ViewHolder {
             subtitle.setText(user.bio);
         }
 
-        ImageHelper.loadAvatar(a, avatar, user, new ImageHelper.OnLoadImageListener() {
-            @Override
-            public void onLoadSucceed() {
-                if (!user.hasFadedIn) {
-                    user.hasFadedIn = true;
-                    adapter.updateUser(user, position);
-                    ImageHelper.startSaturationAnimation(a, avatar);
-                }
-            }
-
-            @Override
-            public void onLoadFailed() {
-                // do nothing.
-            }
-        });
+        ImageHelper.loadAvatar(a, avatar, user, position, this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(user.username + "-" + position + "-avatar");
@@ -972,6 +965,22 @@ class UserHolder extends RecyclerView.ViewHolder {
                     UserActivity.PAGE_PHOTO);
         }
     }
+
+    // on load image listener.
+
+    @Override
+    public void onLoadImageSucceed(User newT, int index) {
+        if (user.updateLoadInformation(newT)) {
+            User u = adapter.getUser(index);
+            u.updateLoadInformation(newT);
+            adapter.updateUser(u, index);
+        }
+    }
+
+    @Override
+    public void onLoadImageFailed(User originalT, int index) {
+        // do nothing.
+    }
 }
 
 /**
@@ -980,7 +989,8 @@ class UserHolder extends RecyclerView.ViewHolder {
  * ViewHolder class for {@link FollowingAdapter} to show "more" information.
  *
  * */
-class MoreHolder extends RecyclerView.ViewHolder {
+class MoreHolder extends RecyclerView.ViewHolder
+        implements ImageHelper.OnLoadImageListener<Photo> {
 
     @BindView(R.id.item_following_more_background)
     RelativeLayout background;
@@ -996,6 +1006,7 @@ class MoreHolder extends RecyclerView.ViewHolder {
 
     private FollowingAdapter adapter;
     private FollowingResult result;
+    private Photo photo;
     static final int VIEW_TYPE_MORE = 3;
 
     MoreHolder(View itemView, FollowingAdapter adapter) {
@@ -1004,10 +1015,10 @@ class MoreHolder extends RecyclerView.ViewHolder {
         this.adapter = adapter;
     }
 
-    void onBindView(final Context a,
-                    FollowingResult result, final Photo photo,
-                    final int position, int columnCount) {
+    @SuppressLint("SetTextI18n")
+    void onBindView(Context a, FollowingResult result, Photo photo, int position, int columnCount) {
         this.result = result;
+        this.photo = photo;
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
         int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
@@ -1025,23 +1036,8 @@ class MoreHolder extends RecyclerView.ViewHolder {
         more.setText(
                 (result.objects.size() - adapter.getMaxiPhotoCount())
                         + " " + a.getString(R.string.more));
-        ImageHelper.loadRegularPhoto(a, image, photo, new ImageHelper.OnLoadImageListener() {
-            @Override
-            public void onLoadSucceed() {
-                photo.loadPhotoSuccess = true;
-                if (!photo.hasFadedIn) {
-                    photo.hasFadedIn = true;
-                    adapter.updatePhoto(photo, position);
-                    ImageHelper.startSaturationAnimation(a, image);
-                }
-            }
-
-            @Override
-            public void onLoadFailed() {
-                // do nothing.
-            }
-        });
-        ImageHelper.loadAvatar(a, avatar, result.actors.get(0), null);
+        ImageHelper.loadRegularPhoto(a, image, photo, position, this);
+        ImageHelper.loadAvatar(a, avatar, result.actors.get(0), getAdapterPosition(), null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(result.actors.get(0).username + "-" + position + "-avatar");
             background.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
@@ -1097,5 +1093,23 @@ class MoreHolder extends RecyclerView.ViewHolder {
                     result.actors.get(0),
                     UserActivity.PAGE_LIKE);
         }
+    }
+
+    // on load image listener.
+
+    @Override
+    public void onLoadImageSucceed(Photo newT, int index) {
+        if (photo.updateLoadInformation(newT)) {
+            Photo p = adapter.getPhoto(index);
+            if (p != null) {
+                p.updateLoadInformation(newT);
+                adapter.updatePhoto(p, index);
+            }
+        }
+    }
+
+    @Override
+    public void onLoadImageFailed(Photo originalT, int index) {
+        // do nothing.
     }
 }

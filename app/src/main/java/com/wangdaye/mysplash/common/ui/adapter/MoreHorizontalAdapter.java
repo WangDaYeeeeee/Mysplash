@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -37,7 +38,8 @@ public class MoreHorizontalAdapter extends RecyclerView.Adapter<MoreHorizontalAd
     private MysplashActivity a;
     private List<Collection> itemList;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder
+            implements ImageHelper.OnLoadImageListener<Photo> {
 
         @BindView(R.id.item_photo_more_page_horizontal)
         CardView card;
@@ -61,7 +63,7 @@ public class MoreHorizontalAdapter extends RecyclerView.Adapter<MoreHorizontalAd
             ButterKnife.bind(this, itemView);
         }
 
-        public void onBindView(final Collection collection) {
+        public void onBindView(Collection collection) {
             this.collection = collection;
 
             title.setText("");
@@ -71,27 +73,7 @@ public class MoreHorizontalAdapter extends RecyclerView.Adapter<MoreHorizontalAd
             DisplayUtils.setTypeface(a, subtitle);
 
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(
-                        a, image, collection,
-                        new ImageHelper.OnLoadImageListener() {
-                            @Override
-                            public void onLoadSucceed() {
-                                if (!collection.cover_photo.hasFadedIn) {
-                                    collection.cover_photo.hasFadedIn = true;
-                                    ImageHelper.startSaturationAnimation(a, image);
-                                }
-                                title.setText(collection.title.toUpperCase());
-                                subtitle.setText(collection.user.name);
-                                image.setShowShadow(true);
-                            }
-
-                            @Override
-                            public void onLoadFailed() {
-                                title.setText(collection.title.toUpperCase());
-                                subtitle.setText(collection.user.name);
-                                image.setShowShadow(true);
-                            }
-                        });
+                ImageHelper.loadCollectionCover(a, image, collection, getAdapterPosition(), this);
                 card.setCardBackgroundColor(
                         ImageHelper.computeCardBackgroundColor(
                                 a,
@@ -100,7 +82,7 @@ public class MoreHorizontalAdapter extends RecyclerView.Adapter<MoreHorizontalAd
                 image.setImageResource(R.color.colorTextContent_light);
             }
 
-            ImageHelper.loadAvatar(a, avatar, collection.user, null);
+            ImageHelper.loadAvatar(a, avatar, collection.user, getAdapterPosition(), null);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 card.setTransitionName(collection.id + "-background");
@@ -129,6 +111,28 @@ public class MoreHorizontalAdapter extends RecyclerView.Adapter<MoreHorizontalAd
                     avatar,
                     collection.user,
                     UserActivity.PAGE_PHOTO);
+        }
+
+        // on load image listener.
+
+        @Override
+        public void onLoadImageSucceed(Photo newT, int index) {
+            if (collection.cover_photo.updateLoadInformation(newT)) {
+                Collection c = itemList.get(index);
+                c.cover_photo.updateLoadInformation(newT);
+                itemList.set(index, c);
+            }
+
+            title.setText(collection.title.toUpperCase());
+            subtitle.setText(collection.user.name);
+            image.setShowShadow(true);
+        }
+
+        @Override
+        public void onLoadImageFailed(Photo originalT, int index) {
+            title.setText(collection.title.toUpperCase());
+            subtitle.setText(collection.user.name);
+            image.setShowShadow(true);
         }
     }
 

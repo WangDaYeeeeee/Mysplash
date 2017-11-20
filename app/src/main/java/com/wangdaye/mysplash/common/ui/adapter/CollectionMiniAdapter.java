@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.v7.widget.RecyclerView;
@@ -35,7 +36,8 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
     private Photo photo;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder
+            implements ImageHelper.OnLoadImageListener<Photo> {
 
         @BindView(R.id.item_collection_mini_image)
         ImageView image;
@@ -51,6 +53,8 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         @BindView(R.id.item_collection_icon)
         CircularProgressIcon stateIcon;
+
+        private Collection collection;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -68,7 +72,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                 return;
             }
 
-            final Collection collection = AuthManager.getInstance()
+            this.collection = AuthManager.getInstance()
                     .getCollectionsManager()
                     .getCollectionList()
                     .get(position - 1);
@@ -108,6 +112,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             stateIcon.setProgressState();
         }
 
+        @SuppressLint("SetTextI18n")
         public void setSubtitle(Collection collection) {
             subtitle.setText(
                     collection.total_photos
@@ -118,27 +123,9 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             stateIcon.setResultState(imageId);
         }
 
-        public void reloadCoverImage(final Collection collection) {
+        public void reloadCoverImage(Collection collection) {
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(
-                        c, image, collection,
-                        new ImageHelper.OnLoadImageListener() {
-                    @Override
-                    public void onLoadSucceed() {
-                        if (!collection.cover_photo.hasFadedIn) {
-                            collection.cover_photo.hasFadedIn = true;
-                            AuthManager.getInstance()
-                                    .getCollectionsManager()
-                                    .updateCollection(collection);
-                            ImageHelper.startSaturationAnimation(c, image);
-                        }
-                    }
-
-                    @Override
-                    public void onLoadFailed() {
-                        ImageHelper.loadResourceImage(c, image, R.drawable.default_collection_cover);
-                    }
-                });
+                ImageHelper.loadCollectionCover(c, image, collection, getAdapterPosition() - 1, this);
             } else {
                 ImageHelper.loadResourceImage(c, image, R.drawable.default_collection_cover);
             }
@@ -163,6 +150,27 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                                 .get(getAdapterPosition() - 1).id,
                         getAdapterPosition());
             }
+        }
+
+        // on load image listener.
+
+        @Override
+        public void onLoadImageSucceed(Photo newT, int index) {
+            if (collection.cover_photo.updateLoadInformation(newT)) {
+                Collection c = AuthManager.getInstance()
+                        .getCollectionsManager()
+                        .getCollectionList()
+                        .get(index);
+                c.cover_photo.updateLoadInformation(newT);
+                AuthManager.getInstance()
+                        .getCollectionsManager()
+                        .updateCollection(c);
+            }
+        }
+
+        @Override
+        public void onLoadImageFailed(Photo originalT, int index) {
+            ImageHelper.loadResourceImage(c, image, R.drawable.default_collection_cover);
         }
     }
 

@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.2.2</string>
+    <string name="version_code">3.2.3</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -285,6 +285,7 @@
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_back_to_top">Press back button to scroll to top</string>
+    <string name="settings_title_load_image_size">Select the resolution of images to load</string>
     <string name="settings_title_custom_api_key">Custom API key</string>
     <string name="settings_summary_custom_api_key">Set your own API key and Secret.</string>
     <string name="settings_title_language">Language</string>
@@ -303,6 +304,7 @@
 
     <!-- share preferences. -->
     <string name="key_back_to_top">back_to_top</string>
+    <string name="key_load_image_size">load_image_size</string>
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
     <string name="key_default_photo_order">default_photo_order</string>

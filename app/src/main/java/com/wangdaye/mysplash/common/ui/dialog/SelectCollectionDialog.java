@@ -184,7 +184,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         ImageView cover = ButterKnife.findById(v, R.id.dialog_select_collection_cover);
         if (DisplayUtils.isTabletDevice(getActivity())) {
-            ImageHelper.loadRegularPhoto(getActivity(), cover, photo, null);
+            ImageHelper.loadRegularPhoto(getActivity(), cover, photo, 0, null);
         } else {
             cover.setVisibility(View.GONE);
         }
@@ -310,8 +310,10 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(nameTxt.getWindowToken(), 0);
-        manager.hideSoftInputFromWindow(descriptionTxt.getWindowToken(), 0);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(nameTxt.getWindowToken(), 0);
+            manager.hideSoftInputFromWindow(descriptionTxt.getWindowToken(), 0);
+        }
     }
 
     // feedback.

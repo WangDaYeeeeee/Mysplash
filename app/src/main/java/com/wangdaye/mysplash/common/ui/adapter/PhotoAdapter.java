@@ -69,7 +69,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     // if set true, it means these photos is in a collection that was created by user.
     private boolean inMyCollection = false;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder
+            implements ImageHelper.OnLoadImageListener<Photo> {
 
         @BindView(R.id.item_photo)
         CardView card;
@@ -89,6 +90,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         @BindView(R.id.item_photo_likeButton)
         CircularProgressIcon likeButton;
 
+        private Photo photo;
+
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
@@ -96,6 +99,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
 
         void onBindView(final int position) {
+            this.photo = itemList.get(position);
 
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
             if (columnCount > 1) {
@@ -109,57 +113,37 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 card.setRadius(0);
             }
 
-            image.setSize(itemList.get(position).width, itemList.get(position).height);
+            image.setSize(photo.width, photo.height);
 
             title.setText("");
             image.setShowShadow(false);
 
-            ImageHelper.loadRegularPhoto(
-                    a, image, itemList.get(position),
-                    new ImageHelper.OnLoadImageListener() {
-                @Override
-                public void onLoadSucceed() {
-                    itemList.get(position).loadPhotoSuccess = true;
-                    if (!itemList.get(position).hasFadedIn) {
-                        itemList.get(position).hasFadedIn = true;
-                        ImageHelper.startSaturationAnimation(a, image);
-                    }
-                    title.setText(itemList.get(position).user.name);
-                    image.setShowShadow(true);
-                }
-
-                @Override
-                public void onLoadFailed() {
-                    // do nothing.
-                }
-            });
+            // ImageHelper.loadFullPhoto(a, image, photo, position, this);
+            ImageHelper.loadRegularPhoto(a, image, photo, position, this);
 
             if (inMyCollection) {
                 deleteButton.setVisibility(View.VISIBLE);
             } else {
                 deleteButton.setVisibility(View.GONE);
             }
-            if (itemList.get(position).current_user_collections.size() != 0) {
+            if (photo.current_user_collections.size() != 0) {
                 collectionButton.setImageResource(R.drawable.ic_item_collected);
             } else {
                 collectionButton.setImageResource(R.drawable.ic_item_collect);
             }
 
-            if (itemList.get(position).settingLike) {
+            if (photo.settingLike) {
                 likeButton.forceSetProgressState();
             } else {
-                likeButton.forceSetResultState(itemList.get(position).liked_by_user ?
+                likeButton.forceSetResultState(photo.liked_by_user ?
                         R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
             }
 
-            card.setCardBackgroundColor(
-                    ImageHelper.computeCardBackgroundColor(
-                            a,
-                            itemList.get(position).color));
+            card.setCardBackgroundColor(ImageHelper.computeCardBackgroundColor(a, photo.color));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                image.setTransitionName(itemList.get(position).id + "-cover");
-                card.setTransitionName(itemList.get(position).id + "-background");
+                image.setTransitionName(photo.id + "-cover");
+                card.setTransitionName(photo.id + "-background");
             }
         }
 
@@ -247,6 +231,23 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     downloadPhotoListener.onDownload(p);
                 }
             }
+        }
+
+        @Override
+        public void onLoadImageSucceed(Photo newT, int index) {
+            if (photo.updateLoadInformation(newT)) {
+                Photo p = itemList.get(index);
+                p.updateLoadInformation(newT);
+                itemList.set(index, p);
+            }
+
+            title.setText(newT.user.name);
+            image.setShowShadow(true);
+        }
+
+        @Override
+        public void onLoadImageFailed(Photo originalT, int index) {
+            // do nothing.
         }
     }
 

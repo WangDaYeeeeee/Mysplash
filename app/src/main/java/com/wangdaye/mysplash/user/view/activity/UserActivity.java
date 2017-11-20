@@ -206,9 +206,7 @@ public class UserActivity extends LoadableActivity<Photo>
     protected void onDestroy() {
         super.onDestroy();
         browsablePresenter.cancelRequest();
-        if (userProfileView != null) {
-            userProfileView.cancelRequest();
-        }
+        userProfileView.cancelRequest();
         for (PagerView p : pagers) {
             if (p != null) {
                 p.cancelRequest();
@@ -382,7 +380,7 @@ public class UserActivity extends LoadableActivity<Photo>
 
             CircleImageView avatar = ButterKnife.findById(this, R.id.activity_user_avatar);
             avatar.setOnClickListener(new OnClickAvatarListener(u));
-            ImageHelper.loadAvatar(this, avatar, u, null);
+            ImageHelper.loadAvatar(this, avatar, u);
 
             TextView title = ButterKnife.findById(this, R.id.activity_user_title);
             title.setText(u.name);

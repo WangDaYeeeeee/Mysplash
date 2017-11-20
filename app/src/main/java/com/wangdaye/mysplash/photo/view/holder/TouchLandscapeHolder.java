@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.photo.view.holder;
 
+import android.annotation.SuppressLint;
 import android.os.Build;
 import android.view.View;
 import android.widget.ImageButton;
@@ -56,6 +57,7 @@ public class TouchLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
         DisplayUtils.setTypeface(activity, subtitle);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     protected void onBindView(PhotoActivity a, Photo photo) {
         this.photo = photo;
@@ -63,7 +65,7 @@ public class TouchLandscapeHolder extends PhotoInfoAdapter.ViewHolder {
         touchView.setSize(photo.width, photo.height);
         touchView.setShowShadow(true);
 
-        ImageHelper.loadAvatar(a, avatar, photo.user, null);
+        ImageHelper.loadAvatar(a, avatar, photo.user);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(photo.user.username + "-2");
         }

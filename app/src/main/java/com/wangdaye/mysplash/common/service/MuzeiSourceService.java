@@ -148,7 +148,10 @@ public class MuzeiSourceService extends RemoteMuzeiArtSource {
 
     private boolean isWifi() {
         ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo info = manager.getActiveNetworkInfo();
-        return info != null && info.getType() == ConnectivityManager.TYPE_WIFI;
+        if (manager != null) {
+            NetworkInfo info = manager.getActiveNetworkInfo();
+            return info != null && info.getType() == ConnectivityManager.TYPE_WIFI;
+        }
+        return false;
     }
 }

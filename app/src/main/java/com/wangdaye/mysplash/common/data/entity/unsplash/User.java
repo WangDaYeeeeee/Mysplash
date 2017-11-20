@@ -171,4 +171,18 @@ public class User
     public int getHeight() {
         return 128;
     }
+
+    /**
+     * Update load information for user.
+     *
+     * @return Return true when load information has been changed. Otherwise return false.
+     * */
+    public boolean updateLoadInformation(User user) {
+        if (this.hasFadedIn != user.hasFadedIn) {
+            this.hasFadedIn = user.hasFadedIn;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

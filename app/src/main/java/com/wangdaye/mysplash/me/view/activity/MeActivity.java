@@ -460,11 +460,11 @@ public class MeActivity extends LoadableActivity<Photo>
         }
 
         if (AuthManager.getInstance().getUser() != null) {
-            ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getUser(), null);
+            ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getUser());
         } else if (!TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
-            ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getAvatarPath(), null);
+            ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getAvatarPath());
         } else {
-            ImageHelper.loadAvatar(this, avatar, new User(), null);
+            ImageHelper.loadAvatar(this, avatar, new User());
         }
     }
 

@@ -88,6 +88,7 @@ public class IntentHelper {
         intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, currentIndex);
         intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX, headIndex);
         intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_BUNDLE, bundle);
+        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photoList.get(currentIndex - headIndex).id);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat

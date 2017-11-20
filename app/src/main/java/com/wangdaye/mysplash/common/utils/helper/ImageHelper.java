@@ -23,7 +23,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.animation.ViewPropertyAnimation;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
@@ -49,114 +48,289 @@ import java.util.regex.Pattern;
 
 public class ImageHelper {
 
+    private static class PhotoSaturationListener
+            implements RequestListener<String, GlideDrawable> {
+
+        private Context context;
+        private ImageView view;
+        @Nullable
+        private Photo photo;
+        private int index;
+        @Nullable
+        private OnLoadImageListener<Photo> listener;
+
+        PhotoSaturationListener(Context context, ImageView view) {
+            this(context, view, null, 0, null);
+        }
+
+        PhotoSaturationListener(Context context, ImageView view, @Nullable Photo photo, int index,
+                                @Nullable OnLoadImageListener<Photo> l) {
+            this.context = context;
+            this.view = view;
+            this.photo = photo;
+            this.index = index;
+            this.listener = l;
+        }
+
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                   boolean isFirstResource) {
+            if (listener != null) {
+                listener.onLoadImageFailed(photo, index);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                       boolean isFromMemoryCache, boolean isFirstResource) {
+            if (photo != null) {
+                photo.loadPhotoSuccess = true;
+                if (!photo.hasFadedIn) {
+                    photo.hasFadedIn = true;
+                    ImageHelper.startSaturationAnimation(context, view);
+                }
+            }
+            if (listener != null) {
+                listener.onLoadImageSucceed(photo, index);
+            }
+            return false;
+        }
+    }
+
+    private static class UserSaturationListener
+            implements RequestListener<String, GlideDrawable> {
+
+        private Context context;
+        private ImageView view;
+        @Nullable
+        private User user;
+        private int index;
+        @Nullable
+        private OnLoadImageListener<User> listener;
+
+        UserSaturationListener(Context context, ImageView view, @Nullable User user, int index,
+                               @Nullable OnLoadImageListener<User> l) {
+            this.context = context;
+            this.view = view;
+            this.user = user;
+            this.index = index;
+            this.listener = l;
+        }
+
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                   boolean isFirstResource) {
+            if (listener != null) {
+                listener.onLoadImageFailed(user, index);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                       boolean isFromMemoryCache, boolean isFirstResource) {
+            if (user != null && !user.hasFadedIn) {
+                user.hasFadedIn = true;
+                ImageHelper.startSaturationAnimation(context, view);
+            }
+            if (listener != null) {
+                listener.onLoadImageSucceed(user, index);
+            }
+            return false;
+        }
+    }
+
+    private static class SetEnableListener
+            implements RequestListener<String, GlideDrawable> {
+
+        private ImageView view;
+
+        SetEnableListener(ImageView view) {
+            this.view = view;
+        }
+
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
+                                   boolean isFirstResource) {
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                       boolean isFromMemoryCache, boolean isFirstResource) {
+            view.setEnabled(true);
+            return false;
+        }
+    }
+
+    private static class BaseRequestListener<T, M, R>
+            implements RequestListener<M, R> {
+
+        private T t;
+        private int index;
+        private OnLoadImageListener<T> listener;
+
+        BaseRequestListener(T t, int index, OnLoadImageListener<T> l) {
+            this.t = t;
+            this.index = index;
+            this.listener = l;
+        }
+
+        @Override
+        public boolean onException(Exception e, M model, Target<R> target,
+                                   boolean isFirstResource) {
+            if (listener != null) {
+                listener.onLoadImageFailed(t, index);
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(R resource, M model, Target<R> target,
+                                       boolean isFromMemoryCache, boolean isFirstResource) {
+            if (listener != null) {
+                listener.onLoadImageSucceed(t, index);
+            }
+            return false;
+        }
+    }
+
     // photo.
 
-    public static void loadRegularPhoto(Context context, final ImageView view, Photo photo,
-                                        @Nullable OnLoadImageListener l) {
+    /**
+     * Load regular size photo image.
+     *
+     * The photo state:
+     * 1. Null     (enable false)
+     * 2. Thumb    (enable true)
+     * 3. Regular  (enable true)
+     * 4. Full     (enable true)
+     *
+     * The enable value is a flag for fade animation.
+     * */
+    public static void loadRegularPhoto(Context context, ImageView view, Photo photo, int index,
+                                        @Nullable OnLoadImageListener<Photo> l) {
+        loadRegularPhoto(context, view, photo, index, true, true, l);
+    }
+
+    private static DrawableRequestBuilder<String> loadRegularPhoto(Context context, ImageView view,
+                                                                  Photo photo, int index,
+                                                                  boolean saturation, boolean execute,
+                                                                  @Nullable OnLoadImageListener<Photo> l) {
         if (photo != null && photo.urls != null
                 && photo.width != 0 && photo.height != 0) {
+
             DrawableRequestBuilder<String> thumbnailRequest = Glide
                     .with(context)
                     .load(photo.urls.thumb)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target,
-                                                   boolean isFirstResource) {
-                            return false;
-                        }
+                    .listener(new SetEnableListener(view));
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                       boolean isFromMemoryCache, boolean isFirstResource) {
-                            view.setEnabled(true);
-                            return false;
-                        }
-                    });
-            if (l != null && !photo.hasFadedIn && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                    && !photo.hasFadedIn && saturation) {
                 AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                 matrix.setSaturation(0);
                 view.setColorFilter(new ColorMatrixColorFilter(matrix));
-                view.setEnabled(false);
             }
-            loadImage(
-                    context, view,
-                    photo.getRegularSizeUrl(context), photo.getRegularWidth(), photo.getRegularHeight(), false, false,
-                    l == null ? null : thumbnailRequest, null, l == null ? null : new FadeAnimator(),
-                    l);
+            view.setEnabled(false);
+
+            DrawableRequestBuilder<String> regularRequest = Glide
+                    .with(context)
+                    .load(photo.getRegularSizeUrl(context))
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .override(photo.getRegularWidth(), photo.getRegularHeight())
+                    .thumbnail(thumbnailRequest)
+                    .animate(new FadeAnimator());
+            if (l != null && saturation) {
+                regularRequest.listener(new PhotoSaturationListener(context, view, photo, index, l));
+            } else if (l != null) {
+                regularRequest.listener(new BaseRequestListener<Photo, String, GlideDrawable>(photo, 0, l));
+            }
+            if (execute) {
+                regularRequest.into(view);
+            }
+            return regularRequest;
         }
+        return null;
     }
 
-    public static void loadFullPhoto(Context context, ImageView view, String url, String thumbnail,
-                                     @Nullable OnLoadImageListener l) {
-        DrawableRequestBuilder<String> thumbnailRequest = Glide
-                .with(context)
-                .load(thumbnail)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE);
-        loadImage(context, view, url, 0, 0, false, false, thumbnailRequest, null, null, l);
+    /**
+     * Load full size photo image.
+     *
+     * Load full size image after getting the regular size image.
+     * */
+    public static void loadFullPhoto(Context context, ImageView view, Photo photo,
+                                     @Nullable OnLoadImageListener<Photo> l) {
+        Glide.with(context)
+                .load(photo.getWallpaperSizeUrl(context))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .thumbnail(loadRegularPhoto(context, view, photo, 0, true, false, l))
+                .listener(new PhotoSaturationListener(context, view))
+                .animate(new FadeAnimator())
+                .into(view);
     }
-
-
 
     public static void loadBackgroundPhoto(Context context, final ImageView view, Photo photo) {
-        DrawableRequestBuilder<String> thumbnailRequest = Glide
-                .with(context)
-                .load(photo.urls.thumb)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target,
-                                               boolean isFirstResource) {
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        view.setEnabled(true);
-                        return false;
-                    }
-                });
-        view.setEnabled(false);
-        loadImage(context, view, photo.getRegularSizeUrl(context), 0, 0, false, false, thumbnailRequest, null, new FadeAnimator(), null);
+        loadRegularPhoto(context, view, photo, 0, false, true, null);
     }
 
     // collection cover.
 
+    public static void loadCollectionCover(Context context, ImageView view, Collection collection) {
+        loadCollectionCover(context, view, collection, 0, null);
+    }
+
     public static void loadCollectionCover(Context context, ImageView view, Collection collection,
-                                           @Nullable OnLoadImageListener l) {
+                                           int index, @Nullable OnLoadImageListener<Photo> l) {
         if (collection != null) {
-            loadRegularPhoto(context, view, collection.cover_photo, l);
+            loadRegularPhoto(context, view, collection.cover_photo, index, l);
         }
     }
 
     // avatar.
 
-    public static void loadAvatar(Context context, ImageView view, User user,
-                                  @Nullable OnLoadImageListener l) {
+    public static void loadAvatar(Context context, ImageView view, User user) {
+        loadAvatar(context, view, user, 0, null);
+    }
+
+    public static void loadAvatar(Context context, ImageView view, User user, int index,
+                                  @Nullable OnLoadImageListener<User> l) {
         if (user != null && user.profile_image != null) {
-            loadAvatar(context, view, user.profile_image.large, l);
+            loadAvatar(context, view, user, user.profile_image.large, index, l);
         } else {
-            loadImage(
-                    context, view,
-                    R.drawable.default_avatar, 128, 128, false,
-                    new CircleTransformation(context),
-                    l);
+            Glide.with(context)
+                    .load(R.drawable.default_avatar)
+                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                    .override(128, 128)
+                    .transform(new CircleTransformation(context))
+                    .listener(new BaseRequestListener<User, Integer, GlideDrawable>(user, index, l))
+                    .into(view);
         }
     }
 
-    public static void loadAvatar(Context context, ImageView view, @NotNull String url,
-                                  @Nullable OnLoadImageListener l) {
+    public static void loadAvatar(Context context, ImageView view, @NotNull String url) {
+        loadAvatar(context, view, null, url, 0, null);
+    }
+
+    public static void loadAvatar(Context context, ImageView view,
+                                  @Nullable User user, @NotNull String url, int index,
+                                  @Nullable OnLoadImageListener<User> l) {
         DrawableRequestBuilder<Integer> thumbnailRequest = Glide.with(context)
                 .load(R.drawable.default_avatar)
                 .override(128, 128)
                 .transform(new CircleTransformation(context))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE);
-        loadImage(
-                context, view,
-                url, 128, 128, false, false,
-                thumbnailRequest, new CircleTransformation(context), null,
-                l);
+        DrawableRequestBuilder<String> request = Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .override(128, 128)
+                .transform(new CircleTransformation(context))
+                .thumbnail(thumbnailRequest);
+        if (l != null) {
+            request.listener(new UserSaturationListener(context, view, user, index, l));
+        }
+        request.into(view);
     }
 
     // resource.
@@ -167,7 +341,15 @@ public class ImageHelper {
 
     public static void loadResourceImage(Context context, ImageView view, int resId,
                                          @Nullable BitmapTransformation transformation) {
-        loadImage(context, view, resId, 0, 0, true, transformation, null);
+        DrawableRequestBuilder<Integer> request = Glide
+                .with(context)
+                .load(resId)
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+        if (transformation != null) {
+            request.transform(transformation);
+        }
+        request.into(view);
     }
 
     // bitmap.
@@ -199,8 +381,18 @@ public class ImageHelper {
     // url.
 
     public static void loadImageFromUrl(Context context, ImageView view, String url, boolean lowPriority,
-                                        @Nullable OnLoadImageListener l) {
-        loadImage(context, view, url, 0, 0, false, lowPriority, null, null, null, l);
+                                        @Nullable OnLoadImageListener<String> l) {
+        DrawableRequestBuilder<String> request = Glide
+                .with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE);
+        if (lowPriority) {
+            request.priority(Priority.LOW);
+        }
+        if (l != null) {
+            request.listener(new BaseRequestListener<String, String, GlideDrawable>(url, 0, l));
+        }
+        request.into(view);
     }
 
     public static void loadImageFromUrl(Context context,
@@ -219,99 +411,6 @@ public class ImageHelper {
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .into(target);
         }
-    }
-
-    // builder.
-
-    private static void loadImage(Context context, ImageView view,
-                                  String url, int width, int height, boolean dontAnimate, boolean lowPriority,
-                                  @Nullable DrawableRequestBuilder thumbnail,
-                                  @Nullable BitmapTransformation transformation,
-                                  @Nullable ViewPropertyAnimation.Animator animator,
-                                  @Nullable final OnLoadImageListener l) {
-        DrawableRequestBuilder<String> builder = Glide
-                .with(context)
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e,
-                                               String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        if (l != null) {
-                            l.onLoadFailed();
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        if (l != null) {
-                            l.onLoadSucceed();
-                        }
-                        return false;
-                    }
-                });
-        if (width != 0 && height != 0) {
-            builder.override(width, height);
-        }
-        if (dontAnimate) {
-            builder.dontAnimate();
-        }
-        if (lowPriority) {
-            builder.priority(Priority.LOW);
-        } else {
-            builder.priority(Priority.NORMAL);
-        }
-        if (thumbnail != null) {
-            builder.thumbnail(thumbnail);
-        }
-        if (transformation != null) {
-            builder.transform(transformation);
-        }
-        if (animator != null) {
-            builder.animate(animator);
-        }
-        builder.into(view);
-    }
-
-    private static void loadImage(Context context, ImageView view,
-                                  int resId, int width, int height, boolean dontAnimate,
-                                  @Nullable BitmapTransformation transformation,
-                                  @Nullable final OnLoadImageListener l) {
-        DrawableRequestBuilder<Integer> builder = Glide
-                .with(context)
-                .load(resId)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new RequestListener<Integer, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e,
-                                               Integer model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        if (l != null) {
-                            l.onLoadFailed();
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, Integer model, Target<GlideDrawable> target,
-                                                   boolean isFromMemoryCache, boolean isFirstResource) {
-                        if (l != null) {
-                            l.onLoadSucceed();
-                        }
-                        return false;
-                    }
-                });
-        if (width != 0 && height != 0) {
-            builder.override(width, height);
-        }
-        if (dontAnimate) {
-            builder.dontAnimate();
-        }
-        if (transformation != null) {
-            builder.transform(transformation);
-        }
-        builder.into(view);
     }
 
     // animation.
@@ -400,8 +499,8 @@ public class ImageHelper {
 
     // on load image listener.
 
-    public interface OnLoadImageListener {
-        void onLoadSucceed();
-        void onLoadFailed();
+    public interface OnLoadImageListener<T> {
+        void onLoadImageSucceed(T newT, int index);
+        void onLoadImageFailed(T originalT, int index);
     }
 }

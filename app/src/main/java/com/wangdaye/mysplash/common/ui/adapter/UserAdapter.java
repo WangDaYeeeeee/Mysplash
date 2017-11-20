@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
@@ -41,7 +42,8 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     private Context a;
     private List<User> itemList;
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder
+            implements ImageHelper.OnLoadImageListener<User> {
 
         @BindView(R.id.item_user_background)
         RelativeLayout background;
@@ -58,30 +60,35 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         @BindView(R.id.item_user_subtitle)
         TextView subtitle;
 
+        private User user;
+
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
             DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
-        void onBindView(final int position) {
+        @SuppressLint("SetTextI18n")
+        void onBindView(int position) {
+            this.user = itemList.get(position);
+
             if (itemList.size() <= position || itemList.get(position) == null) {
                 return;
             }
-            title.setText(itemList.get(position).name);
-            if (TextUtils.isEmpty(itemList.get(position).bio)) {
+            title.setText(user.name);
+            if (TextUtils.isEmpty(user.bio)) {
                 subtitle.setText(
-                        itemList.get(position).total_photos
+                        user.total_photos
                                 + " " + a.getResources().getStringArray(R.array.user_tabs)[0] + ", "
-                                + itemList.get(position).total_collections
+                                + user.total_collections
                                 + " " + a.getResources().getStringArray(R.array.user_tabs)[1] + ", "
-                                + itemList.get(position).total_likes
+                                + user.total_likes
                                 + " " + a.getResources().getStringArray(R.array.user_tabs)[2]);
             } else {
-                subtitle.setText(itemList.get(position).bio);
+                subtitle.setText(user.bio);
             }
 
-            if (TextUtils.isEmpty(itemList.get(position).portfolio_url)) {
+            if (TextUtils.isEmpty(user.portfolio_url)) {
                 portfolioBtn.setVisibility(View.GONE);
             } else {
                 portfolioBtn.setVisibility(View.VISIBLE);
@@ -90,24 +97,11 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             ThemeManager.setImageResource(
                     portfolioBtn, R.drawable.ic_item_earth_light, R.drawable.ic_item_earth_dark);
 
-            ImageHelper.loadAvatar(a, avatar, itemList.get(position), new ImageHelper.OnLoadImageListener() {
-                @Override
-                public void onLoadSucceed() {
-                    if (!itemList.get(position).hasFadedIn) {
-                        itemList.get(position).hasFadedIn = true;
-                        ImageHelper.startSaturationAnimation(a, avatar);
-                    }
-                }
-
-                @Override
-                public void onLoadFailed() {
-                    // do nothing.
-                }
-            });
+            ImageHelper.loadAvatar(a, avatar, user, position, this);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                avatar.setTransitionName(itemList.get(position).username + "-avatar");
-                background.setTransitionName(itemList.get(position).username + "-background");
+                avatar.setTransitionName(user.username + "-avatar");
+                background.setTransitionName(user.username + "-background");
             }
         }
 
@@ -131,6 +125,22 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             if (!TextUtils.isEmpty(itemList.get(getAdapterPosition()).portfolio_url)) {
                 IntentHelper.startWebActivity(a, itemList.get(getAdapterPosition()).portfolio_url);
             }
+        }
+
+        // on load image listener.
+
+        @Override
+        public void onLoadImageSucceed(User newT, int index) {
+            if (user.updateLoadInformation(newT)) {
+                User u = itemList.get(index);
+                u.hasFadedIn = newT.hasFadedIn;
+                itemList.set(index, u);
+            }
+        }
+
+        @Override
+        public void onLoadImageFailed(User originalT, int index) {
+            // do nothing.
         }
     }
 

@@ -230,12 +230,13 @@ public class PhotoInfoAdapter extends RecyclerView.Adapter<PhotoInfoAdapter.View
     }
 
     private void resetNeedShowInitAnimFlag() {
-        this.needShowInitAnim = FreedomImageView.getMeasureSize(
-                a,
-                a.getResources().getDisplayMetrics().widthPixels,
-                photo.width,
-                photo.height,
-                true)[1] < a.getResources().getDisplayMetrics().heightPixels;
+        this.needShowInitAnim = photo == null
+                || FreedomImageView.getMeasureSize(
+                        a,
+                        a.getResources().getDisplayMetrics().widthPixels,
+                        photo.width,
+                        photo.height,
+                        true)[1] < a.getResources().getDisplayMetrics().heightPixels;
     }
 
     public boolean isComplete() {

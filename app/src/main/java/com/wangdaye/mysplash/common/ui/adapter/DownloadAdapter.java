@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -64,6 +65,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             ButterKnife.bind(this, itemView);
         }
 
+        @SuppressLint("SetTextI18n")
         void onBindView(int position) {
             ImageHelper.loadImageFromUrl(
                     c, image, itemList.get(position).entity.getPhotoUri(), false, null);
@@ -97,6 +99,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             stateIcon.recycleImageView();
         }
 
+        @SuppressLint("SetTextI18n")
         public void drawProcessStatus(DownloadMission mission, boolean switchState) {
             if (switchState) {
                 stateIcon.setProgressState();

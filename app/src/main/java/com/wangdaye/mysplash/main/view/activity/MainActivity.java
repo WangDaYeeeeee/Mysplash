@@ -664,14 +664,15 @@ public class MainActivity extends LoadableActivity<Photo>
         } else if (TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
             navAvatar.setVisibility(View.VISIBLE);
             appIcon.setVisibility(View.GONE);
-            ImageHelper.loadAvatar(this, navAvatar, new User(), null);
+            ImageHelper.loadAvatar(this, navAvatar, new User());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 navAvatar.setTransitionName(AuthManager.getInstance().getAccessToken());
             }
         } else {
             navAvatar.setVisibility(View.VISIBLE);
             appIcon.setVisibility(View.GONE);
-            ImageHelper.loadAvatar(this, navAvatar, AuthManager.getInstance().getAvatarPath(), null);
+            ImageHelper.loadAvatar(
+                    this, navAvatar, AuthManager.getInstance().getAvatarPath());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 navAvatar.setTransitionName(AuthManager.getInstance().getAccessToken());
             }
