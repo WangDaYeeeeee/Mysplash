@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,8 +26,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * */
 
 public class PhotoService {
-    // widget
+
     private Call call;
+    private PhotoNodeService nodeService;
+
+    private PhotoService() {
+        call = null;
+        nodeService = PhotoNodeService.getService();
+    }
 
     public static PhotoService getService() {
         return new PhotoService();
@@ -161,23 +168,27 @@ public class PhotoService {
         call = setLikeForAPhoto;
     }
 
-    public void requestAPhoto(String id, final PhotoInfoService.OnRequestSinglePhotoListener l) {
-        Call<Photo> getAPhoto = buildApi(buildClient()).getAPhoto(id);
-        getAPhoto.enqueue(new Callback<Photo>() {
-            @Override
-            public void onResponse(Call<Photo> call, Response<Photo> response) {
-                if (l != null) {
-                    l.onRequestSinglePhotoSuccess(call, response);
+    public void requestAPhoto(String id, final OnRequestSinglePhotoListener l) {
+        if (nodeService == null) {
+            Call<Photo> getAPhoto = buildApi(buildClient()).getAPhoto(id);
+            getAPhoto.enqueue(new Callback<Photo>() {
+                @Override
+                public void onResponse(Call<Photo> call, Response<Photo> response) {
+                    if (l != null) {
+                        l.onRequestSinglePhotoSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Photo> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestSinglePhotoFailed(call, t);
+                @Override
+                public void onFailure(Call<Photo> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestSinglePhotoFailed(call, t);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            nodeService.requestAPhoto(id, l);
+        }
     }
 
     public void requestUserPhotos(String username,
@@ -337,6 +348,20 @@ public class PhotoService {
         call = getRandomPhotos;
     }
 
+    public void downloadPhoto(String url) {
+        buildApi(buildClient()).downloadPhoto(url).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                // do nothing.
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                // do nothing.
+            }
+        });
+    }
+
     public void cancel() {
         if (call != null) {
             call.cancel();
@@ -348,6 +373,11 @@ public class PhotoService {
     public interface OnRequestPhotosListener {
         void onRequestPhotosSuccess(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response);
         void onRequestPhotosFailed(Call<List<Photo>> call, Throwable t);
+    }
+
+    public interface OnRequestSinglePhotoListener {
+        void onRequestSinglePhotoSuccess(Call<Photo> call, retrofit2.Response<Photo> response);
+        void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t);
     }
 
     public interface OnRequestStatsListener {

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 
@@ -19,7 +19,7 @@ public class BorwsableObject
         implements BrowsableModel {
 
     private Uri intentUri;
-    private PhotoInfoService service;
+    private PhotoService service;
 
     public BorwsableObject(Intent intent) {
         if (intent.getDataString() == null) {
@@ -32,7 +32,7 @@ public class BorwsableObject
         } else {
             intentUri = Uri.parse(intent.getDataString());
         }
-        service = PhotoInfoService.getService();
+        service = PhotoService.getService();
     }
 
     @Override

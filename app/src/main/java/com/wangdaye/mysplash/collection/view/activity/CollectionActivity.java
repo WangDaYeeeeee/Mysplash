@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
@@ -22,6 +24,7 @@ import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
+import com.wangdaye.mysplash.common.ui.adapter.MiniTagAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.popup.CollectionMenuPopupWindow;
@@ -291,12 +294,17 @@ public class CollectionActivity extends LoadableActivity<Photo>
             TextView title = ButterKnife.findById(this, R.id.activity_collection_title);
             title.setText(c.title);
 
-            StatusBarView titleStatusBar = ButterKnife.findById(
-                    this, R.id.activity_collection_titleStatusBar);
+            RecyclerView tagList = ButterKnife.findById(this, R.id.activity_collection_tagList);
+            if (c.tags == null || c.tags.size() == 0) {
+                tagList.setVisibility(View.GONE);
+            } else {
+                tagList.setLayoutManager(
+                        new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                tagList.setAdapter(new MiniTagAdapter(c.tags));
+            }
 
             TextView description = ButterKnife.findById(this, R.id.activity_collection_description);
             if (TextUtils.isEmpty(c.description)) {
-                titleStatusBar.setVisibility(View.GONE);
                 description.setVisibility(View.GONE);
             } else {
                 DisplayUtils.setTypeface(this, description);

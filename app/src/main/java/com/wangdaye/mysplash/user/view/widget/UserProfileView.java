@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.transition.TransitionManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +28,7 @@ import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash.common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.UserView;
+import com.wangdaye.mysplash.common.ui.adapter.MiniTagAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
@@ -59,16 +63,22 @@ public class UserProfileView extends FrameLayout
     CircularProgressView progressView;
 
     @BindView(R.id.container_user_profile_profileContainer)
-    RelativeLayout profileContainer;
+    LinearLayout profileContainer;
 
-    @BindView(R.id.container_user_profile_followBtn)
-    RippleButton rippleButton;
+    @BindView(R.id.container_user_profile_tagList)
+    RecyclerView tagList;
+
+    @BindView(R.id.container_user_profile_bio)
+    TextView bioTxt;
+
+    @BindView(R.id.container_user_profile_locationContainer)
+    RelativeLayout locationContainer;
 
     @BindView(R.id.container_user_profile_locationTxt)
     TextView locationTxt;
 
-    @BindView(R.id.container_user_profile_bio)
-    TextView bioTxt;
+    @BindView(R.id.container_user_profile_followBtn)
+    RippleButton rippleButton;
 
     private MyPagerAdapter adapter;
 
@@ -122,14 +132,16 @@ public class UserProfileView extends FrameLayout
 
     private void initView() {
         progressView.setVisibility(VISIBLE);
+        profileContainer.setVisibility(GONE);
+
+        tagList.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         if (AuthManager.getInstance().isAuthorized()) {
             rippleButton.setOnSwitchListener(this);
         } else {
             rippleButton.setVisibility(GONE);
         }
-
-        profileContainer.setVisibility(GONE);
 
         DisplayUtils.setTypeface(getContext(), locationTxt);
         DisplayUtils.setTypeface(getContext(), bioTxt);
@@ -212,12 +224,10 @@ public class UserProfileView extends FrameLayout
             TransitionManager.beginDelayedTransition((ViewGroup) parent);
         }
 
-        rippleButton.forceSwitch(u.followed_by_user);
-
-        if (!TextUtils.isEmpty(u.location)) {
-            locationTxt.setText(u.location);
+        if (u.tags.custom == null || u.tags.custom.size() == 0) {
+            tagList.setVisibility(GONE);
         } else {
-            locationTxt.setText("Unknown");
+            tagList.setAdapter(new MiniTagAdapter(u.tags.custom));
         }
 
         if (!TextUtils.isEmpty(u.bio)) {
@@ -225,6 +235,14 @@ public class UserProfileView extends FrameLayout
         } else {
             bioTxt.setVisibility(GONE);
         }
+
+        if (TextUtils.isEmpty(u.location)) {
+            locationContainer.setVisibility(GONE);
+        } else {
+            locationTxt.setText(u.location);
+        }
+
+        rippleButton.forceSwitch(u.followed_by_user);
 
         List<String> titleList = new ArrayList<>();
         titleList.add(

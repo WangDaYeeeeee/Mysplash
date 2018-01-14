@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_tag_mini_card"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/little_margin"
+    android:layout_marginBottom="@dimen/little_margin"
+    android:layout_marginRight="@dimen/little_margin"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise_tag"
+    app:cardBackgroundColor="?attr/line_color"
+    app:cardCornerRadius="4dp"
+    app:cardPreventCornerOverlap="false"
+    app:cardElevation="0dp"
+    tools:ignore="RtlHardcoded,UnusedAttribute">
+
+    <TextView
+        android:id="@+id/item_tag_mini_text"
+        android:maxLines="1"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:paddingTop="@dimen/mini_margin"
+        android:paddingBottom="@dimen/mini_margin"
+        android:paddingLeft="@dimen/mini_margin"
+        android:paddingRight="@dimen/mini_margin"
+        android:foreground="?attr/selectableItemBackground"
+        android:layout_centerInParent="true"
+        style="@style/subtitle_text"
+        tools:text="Technology"
+        tools:ignore="SmallSp" />
+
+</android.support.v7.widget.CardView>

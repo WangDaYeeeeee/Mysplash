@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.transition.TransitionManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,7 +22,9 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Tag;
+import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.ui.adapter.MiniTagAdapter;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -32,6 +37,8 @@ import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,16 +58,24 @@ public class MeProfileView  extends FrameLayout
     CircularProgressView progressView;
 
     @BindView(R.id.container_user_profile_profileContainer)
-    RelativeLayout profileContainer;
+    LinearLayout profileContainer;
 
-    @BindView(R.id.container_user_profile_followBtn)
-    RippleButton rippleButton;
+    @BindView(R.id.container_user_profile_tagList)
+    RecyclerView tagList;
+
+    @BindView(R.id.container_user_profile_bio)
+    TextView bioTxt;
+
+    @BindView(R.id.container_user_profile_locationContainer)
+    RelativeLayout locationContainer;
 
     @BindView(R.id.container_user_profile_locationTxt)
     TextView locationTxt;
 
-    @BindView(R.id.container_user_profile_bio)
-    TextView bioTxt;
+    @BindView(R.id.container_user_profile_followBtn)
+    RippleButton rippleButton;
+
+    private List<Tag> tags;
 
     private LoadModel loadModel;
     private LoadPresenter loadPresenter;
@@ -105,11 +120,13 @@ public class MeProfileView  extends FrameLayout
 
     private void initView() {
         progressView.setVisibility(VISIBLE);
+        profileContainer.setVisibility(GONE);
+
+        tagList.setLayoutManager(
+                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         rippleButton.setDontAnimate(true);
         rippleButton.setOnSwitchListener(this);
-
-        profileContainer.setVisibility(GONE);
 
         DisplayUtils.setTypeface(getContext(), locationTxt);
         DisplayUtils.setTypeface(getContext(), bioTxt);
@@ -122,10 +139,31 @@ public class MeProfileView  extends FrameLayout
     // control.
 
     @SuppressLint("SetTextI18n")
-    public void drawMeProfile(Me me) {
+    public void drawMeProfile(User u) {
         ViewParent parent = getAppBarParent();
         if (parent != null && parent instanceof NestedScrollAppBarLayout) {
             TransitionManager.beginDelayedTransition((ViewGroup) parent);
+        }
+
+        if (tags == null || !isSameTags(u.tags.custom, tags)) {
+            if (u.tags.custom == null || u.tags.custom.size() == 0) {
+                tagList.setVisibility(GONE);
+            } else {
+                tags = u.tags.custom;
+                tagList.setAdapter(new MiniTagAdapter(u.tags.custom));
+            }
+        }
+
+        if (!TextUtils.isEmpty(u.bio)) {
+            bioTxt.setText(u.bio);
+        } else {
+            bioTxt.setVisibility(GONE);
+        }
+
+        if (TextUtils.isEmpty(u.location)) {
+            locationContainer.setVisibility(GONE);
+        } else {
+            locationTxt.setText(u.location);
         }
 
         rippleButton.forceSwitch(true);
@@ -133,18 +171,6 @@ public class MeProfileView  extends FrameLayout
                 new String[] {
                         getContext().getString(R.string.my_follow).toUpperCase(),
                         getContext().getString(R.string.my_follow).toUpperCase()});
-
-        if (!TextUtils.isEmpty(me.location)) {
-            locationTxt.setText(me.location);
-        } else {
-            locationTxt.setText("Unknown");
-        }
-
-        if (!TextUtils.isEmpty(me.bio)) {
-            bioTxt.setText(me.bio);
-        } else {
-            bioTxt.setVisibility(GONE);
-        }
 
         loadPresenter.setNormalState();
     }
@@ -160,6 +186,21 @@ public class MeProfileView  extends FrameLayout
 
     public void setLoading() {
         loadPresenter.setLoadingState();
+    }
+
+    private boolean isSameTags(List<Tag> a, List<Tag> b) {
+        if ((a == null || a.size() == 0) && (b == null || b.size() == 0)) {
+            return true;
+        } else if (a != null && a.size() != 0 && b != null && b.size() != 0 && a.size() == b.size()) {
+            for (int i = 0; i < a.size(); i ++) {
+                if (!TextUtils.equals(a.get(i).getTitle(), b.get(i).getTitle())) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 
     // interface.

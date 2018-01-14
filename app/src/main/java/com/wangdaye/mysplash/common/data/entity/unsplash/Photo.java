@@ -52,6 +52,7 @@ public class Photo
     public int likes;
     public boolean liked_by_user;
 
+    public String description;
     public Exif exif;
     public Location location;
     public PhotoUrls urls;
@@ -155,7 +156,7 @@ public class Photo
         };
     }
 
-    /** <br> data. */
+    // data.
 
     public int getRegularWidth() {
         try {
@@ -247,6 +248,7 @@ public class Photo
         dest.writeInt(this.downloads);
         dest.writeInt(this.likes);
         dest.writeByte(this.liked_by_user ? (byte) 1 : (byte) 0);
+        dest.writeString(this.description);
         dest.writeParcelable(this.exif, flags);
         dest.writeParcelable(this.location, flags);
         dest.writeParcelable(this.urls, flags);
@@ -278,6 +280,7 @@ public class Photo
         this.downloads = in.readInt();
         this.likes = in.readInt();
         this.liked_by_user = in.readByte() != 0;
+        this.description = in.readString();
         this.exif = in.readParcelable(Exif.class.getClassLoader());
         this.location = in.readParcelable(Location.class.getClassLoader());
         this.urls = in.readParcelable(PhotoUrls.class.getClassLoader());

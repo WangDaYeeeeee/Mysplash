@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.photo.model;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotoInfoModel;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
@@ -16,22 +15,15 @@ public class PhotoInfoObject
 
     private Photo photo;
     private boolean failed;
-    private PhotoInfoAdapter adapter;
 
-    private PhotoInfoService photoInfoService;
+    private PhotoInfoAdapter adapter;
     private PhotoService photoService;
 
     public PhotoInfoObject(PhotoActivity a, Photo p) {
         setPhoto(p, true);
         this.failed = false;
         this.adapter = new PhotoInfoAdapter(a, p);
-        this.photoInfoService = PhotoInfoService.getService();
         this.photoService = PhotoService.getService();
-    }
-
-    @Override
-    public PhotoInfoService getPhotoInfoService() {
-        return photoInfoService;
     }
 
     @Override

@@ -17,6 +17,7 @@ import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 
 import org.greenrobot.greendao.annotation.NotNull;
@@ -49,6 +50,8 @@ public class DownloadHelper {
     @Nullable
     private DownloadManager downloadManager;
 
+    private PhotoService photoService;
+
     public static final int DOWNLOAD_TYPE = 1;
     public static final int SHARE_TYPE = 2;
     public static final int WALLPAPER_TYPE = 3;
@@ -72,6 +75,7 @@ public class DownloadHelper {
 
     private DownloadHelper(Context context) {
         this.downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        this.photoService = PhotoService.getService();
     }
 
     // insert.
@@ -79,6 +83,7 @@ public class DownloadHelper {
     public void addMission(Context c, Photo p, int type) {
         if (FileUtils.createDownloadPath(c)) {
             addMission(c, new DownloadMissionEntity(c, p, type), true);
+            photoService.downloadPhoto(p.links.download_location);
         }
     }
 

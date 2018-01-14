@@ -35,7 +35,7 @@ public class StatusBarView extends View {
 
     private boolean initState = false;
 
-    // these 2 value only effective in translucent mode. for example:
+    // these 2 values only effective in translucent mode. for example:
     // initAlpha < 0  --> initAlpha = LIGHT_INIT_MASK_ALPHA / DARK_INIT_MASK_ALPHA.
     // initAlpha >= 0 --> initAlpha = custom value.
     @FloatRange(to = 1.0)

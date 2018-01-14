@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_photo_full_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_photo_full_swipeBackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        android:transitionName="@string/transition_photo_background"
+        tools:ignore="UnusedAttribute">
+
+        <com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout
+            android:id="@+id/activity_photo_full_swipeSwitchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black">
+
+            <ImageView
+                android:id="@+id/activity_photo_full_switchBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/root_color">
+
+                <ImageView
+                    android:id="@+id/activity_photo_full_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/transition_photo_image"
+                    android:foreground="?attr/selectableItemBackground"
+                    tools:ignore="ContentDescription,UnusedAttribute" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/activity_photo_full_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:scrollbarStyle="outsideOverlay" />
+
+            </FrameLayout>
+
+        </com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout>
+
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/activity_photo_full_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true"
+        app:sbv_init_alpha="0.1"
+        app:sbv_darker_alpha="0.2" />
+
+</android.support.design.widget.CoordinatorLayout>

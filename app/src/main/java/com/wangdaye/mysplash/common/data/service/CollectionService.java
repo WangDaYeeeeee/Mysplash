@@ -28,6 +28,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CollectionService {
 
     private Call call;
+    private CollectionNodeService nodeService;
+
+    private CollectionService() {
+        call = null;
+        nodeService = CollectionNodeService.getService();
+    }
 
     public static CollectionService getService() {
         return new CollectionService();
@@ -55,88 +61,104 @@ public class CollectionService {
     public void requestAllCollections(@Mysplash.PageRule int page,
                                       @Mysplash.PerPageRule int per_page,
                                       final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getAllCollections = buildApi(buildClient()).getAllCollections(page, per_page);
-        getAllCollections.enqueue(new Callback<List<Collection>>() {
-            @Override
-            public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
-                if (l != null) {
-                    l.onRequestCollectionsSuccess(call, response);
+        if (nodeService == null) {
+            Call<List<Collection>> getAllCollections = buildApi(buildClient()).getAllCollections(page, per_page);
+            getAllCollections.enqueue(new Callback<List<Collection>>() {
+                @Override
+                public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
+                    if (l != null) {
+                        l.onRequestCollectionsSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Collection>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestCollectionsFailed(call, t);
+                @Override
+                public void onFailure(Call<List<Collection>> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestCollectionsFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getAllCollections;
+            });
+            call = getAllCollections;
+        } else {
+            nodeService.requestAllCollections(page, per_page, l);
+        }
     }
 
     public void requestCuratedCollections(@Mysplash.PageRule int page,
                                           @Mysplash.PerPageRule int per_page,
                                           final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getCuratedCollections = buildApi(buildClient()).getCuratedCollections(page, per_page);
-        getCuratedCollections.enqueue(new Callback<List<Collection>>() {
-            @Override
-            public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
-                if (l != null) {
-                    l.onRequestCollectionsSuccess(call, response);
+        if (nodeService == null) {
+            Call<List<Collection>> getCuratedCollections = buildApi(buildClient()).getCuratedCollections(page, per_page);
+            getCuratedCollections.enqueue(new Callback<List<Collection>>() {
+                @Override
+                public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
+                    if (l != null) {
+                        l.onRequestCollectionsSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Collection>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestCollectionsFailed(call, t);
+                @Override
+                public void onFailure(Call<List<Collection>> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestCollectionsFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getCuratedCollections;
+            });
+            call = getCuratedCollections;
+        } else {
+            nodeService.requestCuratedCollections(page, per_page, l);
+        }
     }
 
     public void requestFeaturedCollections(@Mysplash.PageRule int page,
                                            @Mysplash.PerPageRule int per_page,
                                            final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getFeaturedCollections = buildApi(buildClient()).getFeaturedCollections(page, per_page);
-        getFeaturedCollections.enqueue(new Callback<List<Collection>>() {
-            @Override
-            public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
-                if (l != null) {
-                    l.onRequestCollectionsSuccess(call, response);
+        if (nodeService == null) {
+            Call<List<Collection>> getFeaturedCollections = buildApi(buildClient()).getFeaturedCollections(page, per_page);
+            getFeaturedCollections.enqueue(new Callback<List<Collection>>() {
+                @Override
+                public void onResponse(Call<List<Collection>> call, retrofit2.Response<List<Collection>> response) {
+                    if (l != null) {
+                        l.onRequestCollectionsSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Collection>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestCollectionsFailed(call, t);
+                @Override
+                public void onFailure(Call<List<Collection>> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestCollectionsFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getFeaturedCollections;
+            });
+            call = getFeaturedCollections;
+        } else {
+            nodeService.requestFeaturedCollections(page, per_page, l);
+        }
     }
 
     public void requestACollections(String id,
                                     final OnRequestSingleCollectionListener l) {
-        Call<Collection> getACollection = buildApi(buildClient()).getACollection(id);
-        getACollection.enqueue(new Callback<Collection>() {
-            @Override
-            public void onResponse(Call<Collection> call, retrofit2.Response<Collection> response) {
-                if (l != null) {
-                    l.onRequestSingleCollectionSuccess(call, response);
+        if (nodeService == null) {
+            Call<Collection> getACollection = buildApi(buildClient()).getACollection(id);
+            getACollection.enqueue(new Callback<Collection>() {
+                @Override
+                public void onResponse(Call<Collection> call, retrofit2.Response<Collection> response) {
+                    if (l != null) {
+                        l.onRequestSingleCollectionSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Collection> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestSingleCollectionFailed(call, t);
+                @Override
+                public void onFailure(Call<Collection> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestSingleCollectionFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getACollection;
+            });
+            call = getACollection;
+        } else {
+            nodeService.requestACollections(id, l);
+        }
     }
 
     @Nullable
@@ -155,23 +177,27 @@ public class CollectionService {
 
     public void requestACuratedCollections(String id,
                                            final OnRequestSingleCollectionListener l) {
-        Call<Collection> getACuratedCollection = buildApi(buildClient()).getACuratedCollection(id);
-        getACuratedCollection.enqueue(new Callback<Collection>() {
-            @Override
-            public void onResponse(Call<Collection> call, retrofit2.Response<Collection> response) {
-                if (l != null) {
-                    l.onRequestSingleCollectionSuccess(call, response);
+        if (nodeService == null) {
+            Call<Collection> getACuratedCollection = buildApi(buildClient()).getACuratedCollection(id);
+            getACuratedCollection.enqueue(new Callback<Collection>() {
+                @Override
+                public void onResponse(Call<Collection> call, retrofit2.Response<Collection> response) {
+                    if (l != null) {
+                        l.onRequestSingleCollectionSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<Collection> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestSingleCollectionFailed(call, t);
+                @Override
+                public void onFailure(Call<Collection> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestSingleCollectionFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getACuratedCollection;
+            });
+            call = getACuratedCollection;
+        } else {
+            nodeService.requestACuratedCollections(id, l);
+        }
     }
 
     @Nullable
@@ -192,26 +218,30 @@ public class CollectionService {
                                        @Mysplash.PageRule int page,
                                        @Mysplash.PerPageRule int per_page,
                                        final OnRequestCollectionsListener l) {
-        Call<List<Collection>> getUserCollections = buildApi(buildClient())
-                .getUserCollections(username, page, per_page);
-        getUserCollections.enqueue(new Callback<List<Collection>>() {
-            @Override
-            public void onResponse(
-                    Call<List<Collection>> call,
-                    retrofit2.Response<List<Collection>> response) {
-                if (l != null) {
-                    l.onRequestCollectionsSuccess(call, response);
+        if (nodeService == null) {
+            Call<List<Collection>> getUserCollections = buildApi(buildClient())
+                    .getUserCollections(username, page, per_page);
+            getUserCollections.enqueue(new Callback<List<Collection>>() {
+                @Override
+                public void onResponse(
+                        Call<List<Collection>> call,
+                        retrofit2.Response<List<Collection>> response) {
+                    if (l != null) {
+                        l.onRequestCollectionsSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<Collection>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestCollectionsFailed(call, t);
+                @Override
+                public void onFailure(Call<List<Collection>> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestCollectionsFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getUserCollections;
+            });
+            call = getUserCollections;
+        } else {
+            nodeService.requestUserCollections(username, page, per_page, l);
+        }
     }
 
     public void createCollection(String title, @Nullable String description, boolean privateX,

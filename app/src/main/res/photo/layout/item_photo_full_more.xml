@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_photo_full_more"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/item_photo_more_vertical_height"
+    android:background="?attr/root_color"
+    tools:background="?attr/title_color"
+    tools:ignore="RtlHardcoded">
+
+    <view class="com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout$ViewPager"
+        android:id="@+id/item_photo_full_more_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.pixelcan.inkpageindicator.InkPageIndicator
+        android:id="@+id/item_photo_full_more_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/normal_margin"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:animationDuration="300"
+        app:pageIndicatorColor="@color/colorTextGrey"
+        app:currentPageIndicatorColor="@color/colorRoot_light"
+        app:dotDiameter="@dimen/little_margin"
+        app:dotGap="@dimen/little_margin" />
+
+</RelativeLayout>

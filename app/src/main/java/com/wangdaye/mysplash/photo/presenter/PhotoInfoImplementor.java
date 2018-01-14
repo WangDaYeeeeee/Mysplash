@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotoInfoModel;
 import com.wangdaye.mysplash.common.i.presenter.PhotoInfoPresenter;
@@ -34,7 +33,6 @@ public class PhotoInfoImplementor
     @Override
     public void requestPhoto(Context context) {
         requestPhotoListener = new OnRequestPhotoDetailsListener();
-        // model.getPhotoInfoService().requestAPhoto(model.getPhoto().id, requestPhotoListener);
         model.getPhotoService().requestAPhoto(model.getPhoto().id, requestPhotoListener);
     }
 
@@ -54,7 +52,6 @@ public class PhotoInfoImplementor
         if (requestPhotoListener != null) {
             requestPhotoListener.cancel();
         }
-        // model.getPhotoInfoService().cancel();
         model.getPhotoService().cancel();
     }
 
@@ -88,7 +85,7 @@ public class PhotoInfoImplementor
     // on request single photo requestPhotoListener.
 
     private class OnRequestPhotoDetailsListener
-            implements PhotoInfoService.OnRequestSinglePhotoListener {
+            implements PhotoService.OnRequestSinglePhotoListener {
 
         private boolean canceled;
 

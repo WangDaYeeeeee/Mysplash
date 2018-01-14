@@ -15,38 +15,46 @@
         app:cpv_color="?attr/line_color"
         app:cpv_indeterminate="true" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/container_user_profile_profileContainer"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
 
-        <com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton
-            android:id="@+id/container_user_profile_followBtn"
-            android:layout_width="128dp"
-            android:layout_height="@dimen/little_icon_size"
-            android:layout_marginTop="@dimen/normal_margin"
-            android:layout_centerHorizontal="true"
-            android:foreground="?attr/selectableItemBackground"
-            android:stateListAnimator="@animator/touch_rise_follow_button"
-            app:rb_title_off="@string/follow"
-            app:rb_title_on="@string/following"
-            tools:ignore="UnusedAttribute" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/container_user_profile_tagList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/little_margin"
+            android:clipToPadding="false"
+            android:layout_marginBottom="@dimen/little_margin"
+            tools:layout_height="24dp"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/container_user_profile_bio"
+            android:layout_marginLeft="@dimen/mini_icon_size"
+            android:layout_marginRight="@dimen/mini_icon_size"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.3"
+            android:textIsSelectable="false"
+            style="@style/content_text"
+            tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
         <RelativeLayout
             android:id="@+id/container_user_profile_locationContainer"
-            android:layout_below="@id/container_user_profile_followBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/normal_icon_size"
-            android:layout_marginRight="@dimen/normal_icon_size"
-            android:layout_centerHorizontal="true">
+            android:layout_marginRight="@dimen/normal_icon_size">
 
             <ImageView
                 android:id="@+id/container_user_profile_locationIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin"
-                android:layout_marginBottom="@dimen/normal_margin"
+                android:layout_marginTop="@dimen/little_margin"
+                android:layout_marginBottom="@dimen/little_margin"
                 android:layout_marginLeft="@dimen/normal_margin"
                 android:src="@drawable/ic_location_light"
                 tools:ignore="ContentDescription,RtlHardcoded" />
@@ -64,19 +72,17 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/container_user_profile_bio"
-            android:layout_below="@id/container_user_profile_locationContainer"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="@dimen/mini_icon_size"
-            android:layout_marginRight="@dimen/mini_icon_size"
-            android:layout_width="wrap_content"
-            android:layout_centerInParent="true"
-            android:lineSpacingMultiplier="1.3"
-            android:textIsSelectable="false"
-            style="@style/content_text"
-            tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
+        <com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton
+            android:id="@+id/container_user_profile_followBtn"
+            android:layout_width="128dp"
+            android:layout_height="@dimen/little_icon_size"
+            android:layout_margin="@dimen/little_margin"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@animator/touch_rise_follow_button"
+            app:rb_title_off="@string/follow"
+            app:rb_title_on="@string/following"
+            tools:ignore="UnusedAttribute" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

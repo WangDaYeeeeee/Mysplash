@@ -38,7 +38,12 @@
                 <com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:cml_gradient_angle="90">
+                    android:orientation="vertical"
+                    android:gravity="center_horizontal"
+                    app:cml_gradient_angle="90"
+                    app:cml_from_alpha="1"
+                    app:cml_to_alpha="0.75"
+                    app:cml_mask_color="?attr/colorPrimary">
 
                     <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
                         android:id="@+id/activity_collection_appBarStatusBar"
@@ -50,7 +55,6 @@
                         android:id="@+id/activity_collection_toolbar"
                         android:layout_width="match_parent"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_below="@id/activity_collection_appBarStatusBar"
                         android:background="@android:color/transparent"
                         app:popupTheme="@style/MysplashPopupMenuTheme" />
 
@@ -58,25 +62,23 @@
                         android:id="@+id/activity_collection_title"
                         android:textStyle="bold"
                         android:textSize="@dimen/design_title_text_size"
-                        android:layout_centerHorizontal="true"
                         android:layout_marginLeft="@dimen/large_icon_size"
                         android:layout_marginRight="@dimen/large_icon_size"
-                        android:layout_below="@id/activity_collection_toolbar"
                         android:textIsSelectable="false"
                         style="@style/title_text"
                         tools:text="The Sample Collection Title" />
 
-                    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
-                        android:id="@+id/activity_collection_titleStatusBar"
-                        android:layout_width="match_parent"
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/activity_collection_tagList"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/activity_collection_title"
-                        app:sbv_fill_in_mode="true" />
+                        android:paddingLeft="@dimen/little_margin"
+                        android:clipToPadding="false"
+                        tools:layout_height="24dp"
+                        tools:ignore="RtlHardcoded,RtlSymmetry" />
 
                     <TextView
                         android:id="@+id/activity_collection_description"
-                        android:layout_below="@id/activity_collection_titleStatusBar"
-                        android:layout_centerHorizontal="true"
                         android:layout_marginLeft="@dimen/mini_icon_size"
                         android:layout_marginRight="@dimen/mini_icon_size"
                         android:layout_width="wrap_content"

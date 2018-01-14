@@ -8,11 +8,11 @@ import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
  * Cover mask layout.
@@ -21,10 +21,14 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
  *
  * */
 
-public class CoverMaskLayout extends RelativeLayout {
+public class CoverMaskLayout extends LinearLayout {
 
     private Paint paint;
+
     private float gradientAngle;
+    private float fromAlpha;
+    private float toAlpha;
+    private int maskColor;
 
     public CoverMaskLayout(Context context) {
         this(context, null);
@@ -41,6 +45,9 @@ public class CoverMaskLayout extends RelativeLayout {
         if (attrs != null) {
             TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.CoverMaskLayout, defStyleAttr, 0);
             setGradientAngle(a.getFloat(R.styleable.CoverMaskLayout_cml_gradient_angle, 90));
+            fromAlpha = computeRealAlpha(a.getFloat(R.styleable.CoverMaskLayout_cml_from_alpha, 1));
+            toAlpha = computeRealAlpha(a.getFloat(R.styleable.CoverMaskLayout_cml_to_alpha, 0));
+            maskColor = a.getColor(R.styleable.CoverMaskLayout_cml_mask_color, Color.BLACK);
             a.recycle();
         }
     }
@@ -61,6 +68,16 @@ public class CoverMaskLayout extends RelativeLayout {
         gradientAngle = (angle + 360) % 360;
         setPaintStyle();
         invalidate();
+    }
+
+    private float computeRealAlpha(float alpha) {
+        if (alpha < 0) {
+            return 0;
+        } else if (alpha > 1) {
+            return 1;
+        } else {
+            return alpha;
+        }
     }
 
     private void setPaintStyle() {
@@ -85,30 +102,13 @@ public class CoverMaskLayout extends RelativeLayout {
 
         double cX = getMeasuredWidth() * 0.5;
         double cY = getMeasuredHeight() * 0.5;
-        if (ThemeManager.getInstance(getContext()).isLightTheme()) {
-            paint.setShader(new LinearGradient(
-                    (float) (cX + deltaX), (float) (cY - deltaY),
-                    (float) (cX - deltaX), (float) (cY + deltaY),
-                    new int[]{
-                            Color.argb((int) (255 * 0.70), 250, 250, 250),
-                            Color.argb((int) (255 * 0.815), 250, 250, 250),
-                            Color.argb((int) (255 * 0.91), 250, 250, 250),
-                            Color.argb((int) (255 * 0.965), 250, 250, 250),
-                            Color.argb(255, 250, 250, 250)},
-                    null,
-                    Shader.TileMode.CLAMP));
-        } else {
-            paint.setShader(new LinearGradient(
-                    (float) (cX + deltaX), (float) (cY - deltaY),
-                    (float) (cX - deltaX), (float) (cY + deltaY),
-                    new int[]{
-                            Color.argb((int) (255 * 0.78), 33, 33, 33),
-                            Color.argb((int) (255 * 0.875), 33, 33, 33),
-                            Color.argb((int) (255 * 0.95), 33, 33, 33),
-                            Color.argb((int) (255 * 0.985), 33, 33, 33),
-                            Color.argb(255, 33, 33, 33)},
-                    null,
-                    Shader.TileMode.CLAMP));
-        }
+        paint.setShader(new LinearGradient(
+                (float) (cX + deltaX), (float) (cY - deltaY),
+                (float) (cX - deltaX), (float) (cY + deltaY),
+                new int[]{
+                        ColorUtils.setAlphaComponent(maskColor, (int) (255 * toAlpha)),
+                        ColorUtils.setAlphaComponent(maskColor, (int) (255 * fromAlpha))},
+                null,
+                Shader.TileMode.CLAMP));
     }
 }

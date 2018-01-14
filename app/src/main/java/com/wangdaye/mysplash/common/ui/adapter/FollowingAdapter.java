@@ -30,11 +30,13 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
@@ -737,7 +739,8 @@ class TitleHolder extends RecyclerView.ViewHolder {
  *
  * */
 class PhotoHolder extends RecyclerView.ViewHolder
-        implements ImageHelper.OnLoadImageListener<Photo> {
+        implements ImageHelper.OnLoadImageListener<Photo>,
+        DownloadRepeatDialog.OnCheckOrDownloadListener {
 
     @BindView(R.id.item_following_photo_background)
     RelativeLayout background;
@@ -859,10 +862,18 @@ class PhotoHolder extends RecyclerView.ViewHolder
     @OnClick(R.id.item_following_photo_downloadButton) void downloadPhoto() {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
-            if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) == 0) {
-                DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
-            } else {
+            if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) > 0) {
                 NotificationHelper.showSnackbar(a.getString(R.string.feedback_download_repeat));
+            } else if (FileUtils.isPhotoExists(a, photo.id)) {
+                MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+                if (activity != null) {
+                    DownloadRepeatDialog dialog = new DownloadRepeatDialog();
+                    dialog.setDownloadKey(photo);
+                    dialog.setOnCheckOrDownloadListener(this);
+                    dialog.show(activity.getFragmentManager(), null);
+                }
+            } else {
+                DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
             }
         }
     }
@@ -885,6 +896,24 @@ class PhotoHolder extends RecyclerView.ViewHolder
     @Override
     public void onLoadImageFailed(Photo originalT, int index) {
         // do nothing.
+    }
+
+    // on check or download listener. (download repeat dialog)
+
+    @Override
+    public void onCheck(Object obj) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        if (a != null) {
+            IntentHelper.startCheckPhotoActivity(a, ((Photo) obj).id);
+        }
+    }
+
+    @Override
+    public void onDownload(Object obj) {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        if (a != null) {
+            DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
+        }
     }
 }
 

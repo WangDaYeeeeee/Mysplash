@@ -8,7 +8,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -24,6 +23,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class UserService {
 
     private Call call;
+    private UserNodeService nodeService;
+
+    private UserService() {
+        call = null;
+        nodeService = null;
+    }
 
     public static UserService getService() {
         return new UserService();
@@ -32,8 +37,6 @@ public class UserService {
     private OkHttpClient buildClient() {
         return new OkHttpClient.Builder()
                 .addInterceptor(new AuthInterceptor())
-                .readTimeout(15, TimeUnit.SECONDS)
-                .writeTimeout(15, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -51,23 +54,27 @@ public class UserService {
     }
 
     public void requestUserProfile(String username, final OnRequestUserProfileListener l) {
-        Call<User> getUserProfile = buildApi(buildClient()).getUserProfile(username, 256, 256);
-        getUserProfile.enqueue(new Callback<User>() {
-            @Override
-            public void onResponse(Call<User> call, Response<User> response) {
-                if (l != null) {
-                    l.onRequestUserProfileSuccess(call, response);
+        if (nodeService == null) {
+            Call<User> getUserProfile = buildApi(buildClient()).getUserProfile(username, 256, 256);
+            getUserProfile.enqueue(new Callback<User>() {
+                @Override
+                public void onResponse(Call<User> call, Response<User> response) {
+                    if (l != null) {
+                        l.onRequestUserProfileSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<User> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestUserProfileFailed(call, t);
+                @Override
+                public void onFailure(Call<User> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestUserProfileFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = getUserProfile;
+            });
+            call = getUserProfile;
+        } else {
+            nodeService.requestUserProfile(username, l);
+        }
     }
 
     public void requestMeProfile(final OnRequestMeProfileListener l) {
@@ -115,43 +122,51 @@ public class UserService {
     }
 
     public void requestFollowers(String username, int page, int perPage, final OnRequestUsersListener l) {
-        Call<List<User>> requestFollowers = buildApi(buildClient()).getFollowers(username, page, perPage);
-        requestFollowers.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (l != null) {
-                    l.onRequestUsersSuccess(call, response);
+        if (nodeService == null) {
+            Call<List<User>> requestFollowers = buildApi(buildClient()).getFollowers(username, page, perPage);
+            requestFollowers.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    if (l != null) {
+                        l.onRequestUsersSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestUsersFailed(call, t);
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestUsersFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = requestFollowers;
+            });
+            call = requestFollowers;
+        } else {
+            nodeService.requestFollowers(username, page, perPage, l);
+        }
     }
 
     public void requestFollowing(String username, int page, int perPage, final OnRequestUsersListener l) {
-        Call<List<User>> requestFollowing = buildApi(buildClient()).getFolloweing(username, page, perPage);
-        requestFollowing.enqueue(new Callback<List<User>>() {
-            @Override
-            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                if (l != null) {
-                    l.onRequestUsersSuccess(call, response);
+        if (nodeService == null) {
+            Call<List<User>> requestFollowing = buildApi(buildClient()).getFolloweing(username, page, perPage);
+            requestFollowing.enqueue(new Callback<List<User>>() {
+                @Override
+                public void onResponse(Call<List<User>> call, Response<List<User>> response) {
+                    if (l != null) {
+                        l.onRequestUsersSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<List<User>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestUsersFailed(call, t);
+                @Override
+                public void onFailure(Call<List<User>> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestUsersFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = requestFollowing;
+            });
+            call = requestFollowing;
+        } else {
+            nodeService.requestFollowing(username, page, perPage, l);
+        }
     }
 
     public void cancel() {

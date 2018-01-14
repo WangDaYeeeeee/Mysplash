@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.photo.presenter;
 import android.net.Uri;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoInfoService;
+import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash.common.i.view.BrowsableView;
@@ -17,7 +17,7 @@ import retrofit2.Response;
 
 public class BrowsableImplementor
         implements BrowsablePresenter,
-        PhotoInfoService.OnRequestSinglePhotoListener {
+        PhotoService.OnRequestSinglePhotoListener {
 
     private BrowsableModel model;
     private BrowsableView view;
@@ -40,7 +40,7 @@ public class BrowsableImplementor
     @Override
     public void requestBrowsableData() {
         view.showRequestDialog();
-        ((PhotoInfoService) model.getService())
+        ((PhotoService) model.getService())
                 .requestAPhoto(model.getBrowsableDataKey().get(0), this);
     }
 
@@ -51,7 +51,7 @@ public class BrowsableImplementor
 
     @Override
     public void cancelRequest() {
-        ((PhotoInfoService) model.getService()).cancel();
+        ((PhotoService) model.getService()).cancel();
     }
 
     // interface.
@@ -64,14 +64,14 @@ public class BrowsableImplementor
             view.dismissRequestDialog();
             view.drawBrowsableView(photo);
         } else {
-            ((PhotoInfoService) model.getService())
+            ((PhotoService) model.getService())
                     .requestAPhoto(model.getBrowsableDataKey().get(0), this);
         }
     }
 
     @Override
     public void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t) {
-        ((PhotoInfoService) model.getService())
+        ((PhotoService) model.getService())
                 .requestAPhoto(model.getBrowsableDataKey().get(0), this);
     }
 }

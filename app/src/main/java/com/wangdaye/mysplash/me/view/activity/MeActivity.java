@@ -265,7 +265,7 @@ public class MeActivity extends LoadableActivity<Photo>
     public void finishActivity(int dir) {
         setResult(RESULT_OK);
         SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        if (getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)
+        if (!getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)
                 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             finishAfterTransition();
         } else {
@@ -446,11 +446,9 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @SuppressLint("SetTextI18n")
     private void drawProfile() {
-        MeProfileView meProfileView = findViewById(R.id.activity_me_profileView);
         if (AuthManager.getInstance().getMe() != null) {
             Me me = AuthManager.getInstance().getMe();
             title.setText(me.first_name + " " + me.last_name);
-            meProfileView.drawMeProfile(me);
             drawTabTitles(me);
         } else if (!TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
             title.setText(AuthManager.getInstance().getFirstName()
@@ -461,6 +459,8 @@ public class MeActivity extends LoadableActivity<Photo>
 
         if (AuthManager.getInstance().getUser() != null) {
             ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getUser());
+            MeProfileView meProfileView = findViewById(R.id.activity_me_profileView);
+            meProfileView.drawMeProfile(AuthManager.getInstance().getUser());
         } else if (!TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
             ImageHelper.loadAvatar(this, avatar, AuthManager.getInstance().getAvatarPath());
         } else {

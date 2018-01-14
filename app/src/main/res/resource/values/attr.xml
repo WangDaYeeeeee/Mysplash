@@ -58,6 +58,9 @@
     <!-- CoverMaskLayout -->
     <declare-styleable name="CoverMaskLayout">
         <attr name="cml_gradient_angle" format="float" />
+        <attr name="cml_from_alpha" format="float" />
+        <attr name="cml_to_alpha" format="float" />
+        <attr name="cml_mask_color" format="color" />
     </declare-styleable>
 
 </resources>

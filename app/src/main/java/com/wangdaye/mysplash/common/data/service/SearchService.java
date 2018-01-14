@@ -21,6 +21,12 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SearchService {
 
     private Call call;
+    private SearchNodeService nodeService;
+
+    private SearchService() {
+        call = null;
+        nodeService = SearchNodeService.getService();
+    }
 
     public static SearchService getService() {
         return new SearchService();
@@ -66,43 +72,51 @@ public class SearchService {
     }
 
     public void searchUsers(String query, int page, final OnRequestUsersListener l) {
-        Call<SearchUsersResult> searchUsers = buildApi(buildClient()).searchUsers(query, page, Mysplash.DEFAULT_PER_PAGE);
-        searchUsers.enqueue(new Callback<SearchUsersResult>() {
-            @Override
-            public void onResponse(Call<SearchUsersResult> call, retrofit2.Response<SearchUsersResult> response) {
-                if (l != null) {
-                    l.onRequestUsersSuccess(call, response);
+        if (nodeService == null) {
+            Call<SearchUsersResult> searchUsers = buildApi(buildClient()).searchUsers(query, page, Mysplash.DEFAULT_PER_PAGE);
+            searchUsers.enqueue(new Callback<SearchUsersResult>() {
+                @Override
+                public void onResponse(Call<SearchUsersResult> call, retrofit2.Response<SearchUsersResult> response) {
+                    if (l != null) {
+                        l.onRequestUsersSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<SearchUsersResult> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestUsersFailed(call, t);
+                @Override
+                public void onFailure(Call<SearchUsersResult> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestUsersFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = searchUsers;
+            });
+            call = searchUsers;
+        } else {
+            nodeService.searchUsers(query, page, l);
+        }
     }
 
     public void searchCollections(String query, int page, final OnRequestCollectionsListener l) {
-        Call<SearchCollectionsResult> searchCollections = buildApi(buildClient()).searchCollections(query, page, Mysplash.DEFAULT_PER_PAGE);
-        searchCollections.enqueue(new Callback<SearchCollectionsResult>() {
-            @Override
-            public void onResponse(Call<SearchCollectionsResult> call, retrofit2.Response<SearchCollectionsResult> response) {
-                if (l != null) {
-                    l.onRequestCollectionsSuccess(call, response);
+        if (nodeService == null) {
+            Call<SearchCollectionsResult> searchCollections = buildApi(buildClient()).searchCollections(query, page, Mysplash.DEFAULT_PER_PAGE);
+            searchCollections.enqueue(new Callback<SearchCollectionsResult>() {
+                @Override
+                public void onResponse(Call<SearchCollectionsResult> call, retrofit2.Response<SearchCollectionsResult> response) {
+                    if (l != null) {
+                        l.onRequestCollectionsSuccess(call, response);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Call<SearchCollectionsResult> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestCollectionsFailed(call, t);
+                @Override
+                public void onFailure(Call<SearchCollectionsResult> call, Throwable t) {
+                    if (l != null) {
+                        l.onRequestCollectionsFailed(call, t);
+                    }
                 }
-            }
-        });
-        call = searchCollections;
+            });
+            call = searchCollections;
+        } else {
+            nodeService.searchCollections(query, page, l);
+        }
     }
 
     public void cancel() {
