@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 326
-        versionName "3.2.6"
+        versionCode 327
+        versionName "3.2.7"
     }
     sourceSets {
         main {
@@ -38,9 +38,13 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            android.applicationVariants.all { variant ->
-                variant.outputs.all {
-                    outputFileName = "Mysplash ${defaultConfig.versionName}.apk"
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
+                        def fileName = "Mysplash ${defaultConfig.versionName}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
                 }
             }
         }
