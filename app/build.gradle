@@ -38,13 +38,9 @@ android {
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            applicationVariants.all { variant ->
-                variant.outputs.each { output ->
-                    def outputFile = output.outputFile
-                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                        def fileName = "Mysplash ${defaultConfig.versionName}.apk"
-                        output.outputFile = new File(outputFile.parent, fileName)
-                    }
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "Mysplash ${defaultConfig.versionName}.apk"
                 }
             }
         }

@@ -15,7 +15,8 @@
         android:taskAffinity="com.wangdaye.mysplash"
         android:allowTaskReparenting="true"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource"
-        tools:targetApi="26">
+        tools:targetApi="26"
+        tools:replace="android:icon,android:theme,android:label,android:name">
 
         <activity
             android:name=".main.view.activity.MainActivity"
