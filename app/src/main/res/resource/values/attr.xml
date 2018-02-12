@@ -38,6 +38,11 @@
         </attr>
     </declare-styleable>
 
+    <!-- FreedomTouchView -->
+    <declare-styleable name="FreedomTouchView">
+        <attr name="ftv_cover_mode" format="boolean" />
+    </declare-styleable>
+
     <!-- SwipeBackCoordinatorLayout -->
     <declare-styleable name="SwipeBackCoordinatorLayout">
         <attr name="sbl_force_back" format="boolean" />

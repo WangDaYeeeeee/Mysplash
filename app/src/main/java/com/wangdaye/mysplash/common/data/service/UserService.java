@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.UserApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
@@ -20,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * User service.
  * */
 
-public class UserService {
+public class UserService extends TLSCompactService {
 
     private Call call;
     private UserNodeService nodeService;
@@ -35,7 +36,7 @@ public class UserService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
     }

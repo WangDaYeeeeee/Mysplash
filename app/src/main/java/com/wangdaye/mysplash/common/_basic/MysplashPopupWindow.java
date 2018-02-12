@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -46,6 +47,8 @@ public class MysplashPopupWindow extends PopupWindow {
     public void setContentView(View contentView) {
         contentView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
         super.setContentView(contentView);
+        setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
     }
 
     @SuppressLint("RtlHardcoded")

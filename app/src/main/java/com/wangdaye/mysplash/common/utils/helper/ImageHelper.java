@@ -271,6 +271,20 @@ public class ImageHelper {
                 .into(view);
     }
 
+    /**
+     * Load full size photo image without thumbnail.
+     *
+     * Load full size image without regular request as the thumbnail.
+     * */
+    public static void loadFullPhotoWithoutThumbnail(Context context, ImageView view, Photo photo,
+                                     @Nullable OnLoadImageListener<Photo> l) {
+        Glide.with(context)
+                .load(photo.getFullSizeUrl(context))
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .listener(new BaseRequestListener<Photo, String, GlideDrawable>(photo, 0, l))
+                .into(view);
+    }
+
     public static void loadBackgroundPhoto(Context context, final ImageView view, Photo photo) {
         loadRegularPhoto(context, view, photo, 0, false, true, null);
     }

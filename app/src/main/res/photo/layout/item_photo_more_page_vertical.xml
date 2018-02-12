@@ -31,8 +31,8 @@
         android:shadowRadius="1"
         android:shadowColor="@color/colorTextDark2nd"
         android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginLeft="@dimen/normal_margin"
-        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginStart="@dimen/normal_margin"
+        android:layout_marginEnd="@dimen/normal_margin"
         android:layout_centerHorizontal="true"
         style="@style/title_text"
         tools:text="LET THE INSPIRATION BEGIN"/>

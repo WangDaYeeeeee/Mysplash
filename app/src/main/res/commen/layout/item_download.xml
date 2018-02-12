@@ -5,8 +5,8 @@
     android:id="@+id/item_download_card"
     android:layout_width="match_parent"
     android:layout_height="@dimen/design_icon_size"
-    android:layout_marginLeft="@dimen/little_margin"
-    android:layout_marginRight="@dimen/little_margin"
+    android:layout_marginStart="@dimen/little_margin"
+    android:layout_marginEnd="@dimen/little_margin"
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
@@ -34,11 +34,11 @@
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
-            android:layout_marginRight="@dimen/little_margin"
+            android:layout_marginEnd="@dimen/little_margin"
             android:layout_marginBottom="@dimen/little_margin"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <ImageButton
@@ -49,7 +49,7 @@
             android:layout_marginBottom="@dimen/little_margin"
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/item_download_closeBtn"
+            android:layout_toStartOf="@id/item_download_closeBtn"
             tools:src="@drawable/ic_item_check"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -71,10 +71,10 @@
             android:shadowDy="1"
             android:shadowRadius="1"
             android:shadowColor="@color/colorTextDark2nd"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/item_download_stateIcon"
-            android:layout_toLeftOf="@id/item_download_retry_check_btn"
+            android:layout_toEndOf="@id/item_download_stateIcon"
+            android:layout_toStartOf="@id/item_download_retry_check_btn"
             style="@style/title_text"
             tools:text="30adf9f8sla98fgs : 92%"
             tools:ignore="RtlHardcoded" />

@@ -27,9 +27,9 @@
             <TextView
                 android:id="@+id/popup_search_category_allTxt"
                 android:text="@string/all"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_allIcon"
+                android:layout_toEndOf="@id/popup_search_category_allIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />
@@ -51,9 +51,9 @@
             <TextView
                 android:id="@+id/popup_search_category_buildingsTxt"
                 android:text="@string/action_category_buildings"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_buildingsIcon"
+                android:layout_toEndOf="@id/popup_search_category_buildingsIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />
@@ -75,9 +75,9 @@
             <TextView
                 android:id="@+id/popup_search_category_food_drinkTxt"
                 android:text="@string/action_category_food_drink"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_food_drinkIcon"
+                android:layout_toEndOf="@id/popup_search_category_food_drinkIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />
@@ -99,9 +99,9 @@
             <TextView
                 android:id="@+id/popup_search_category_natureTxt"
                 android:text="@string/action_category_nature"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_natureIcon"
+                android:layout_toEndOf="@id/popup_search_category_natureIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />
@@ -122,9 +122,9 @@
             <TextView
                 android:id="@+id/popup_search_category_objectTxt"
                 android:text="@string/action_category_objects"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_objectIcon"
+                android:layout_toEndOf="@id/popup_search_category_objectIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />
@@ -146,9 +146,9 @@
             <TextView
                 android:id="@+id/popup_search_category_peopleTxt"
                 android:text="@string/action_category_people"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_peopleIcon"
+                android:layout_toEndOf="@id/popup_search_category_peopleIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />
@@ -170,9 +170,9 @@
             <TextView
                 android:id="@+id/popup_search_category_technologyTxt"
                 android:text="@string/action_category_technology"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/popup_search_category_technologyIcon"
+                android:layout_toEndOf="@id/popup_search_category_technologyIcon"
                 android:layout_width="wrap_content"
                 style="@style/content_text"
                 tools:ignore="HardcodedText,RtlHardcoded" />

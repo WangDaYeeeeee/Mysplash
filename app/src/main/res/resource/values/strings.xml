@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.2.7</string>
+    <string name="version_code">3.2.8</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -36,6 +36,7 @@
     <string name="stats">Stats</string>
     <string name="by">By</string>
     <string name="on">On</string>
+    <string name="from">From</string>
     <string name="now">Now</string>
 
     <string name="like">Like</string>
@@ -66,6 +67,7 @@
     <string name="relative_collection">related collections</string>
 
     <string name="follow_system">Follow System</string>
+    <string name="date_format">MMM d, yyyy</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
@@ -86,6 +88,8 @@
     <string name="about_greendao_db">greenDAO is activity light and fast ORM solution for Android that maps objects to SQLite databases.</string>
     <string name="butter_knife">Butter Knife</string>
     <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
+    <string name="number_anim_text_view">NumberAnimTextView</string>
+    <string name="about_number_anim_text_view">A TextView with animation when increase number.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>

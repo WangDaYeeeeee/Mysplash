@@ -7,59 +7,24 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/little_margin"
     android:layout_marginBottom="@dimen/little_margin"
-    android:layout_marginRight="@dimen/normal_margin"
+    android:layout_marginEnd="@dimen/normal_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_tag"
-    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardBackgroundColor="?attr/line_color"
     app:cardCornerRadius="4dp"
     app:cardPreventCornerOverlap="false"
     app:cardElevation="0dp"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/item_tag_layoutText"
-            android:textStyle="bold"
-            android:textColor="@color/colorPrimary_light"
-            android:textAllCaps="true"
-            android:maxLines="1"
-            android:paddingTop="@dimen/little_margin"
-            android:paddingBottom="@dimen/little_margin"
-            android:paddingLeft="@dimen/normal_margin"
-            android:paddingRight="@dimen/normal_margin"
-            android:foreground="?attr/selectableItemBackground"
-            android:layout_centerInParent="true"
-            style="@style/subtitle_text"
-            tools:text="Technology" />
-
-        <ImageView
-            android:id="@+id/item_tag_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignTop="@id/item_tag_layoutText"
-            android:layout_alignLeft="@id/item_tag_layoutText"
-            android:layout_alignRight="@id/item_tag_layoutText"
-            android:layout_alignBottom="@id/item_tag_layoutText"
-            android:scaleType="centerCrop"
-            android:alpha="0.5"
-            tools:ignore="ContentDescription,RtlHardcoded" />
-
-    </RelativeLayout>
-
     <TextView
         android:id="@+id/item_tag_text"
         android:textStyle="bold"
-        android:textColor="@color/colorPrimary_light"
         android:textAllCaps="true"
         android:maxLines="1"
         android:paddingTop="@dimen/little_margin"
         android:paddingBottom="@dimen/little_margin"
-        android:paddingLeft="@dimen/normal_margin"
-        android:paddingRight="@dimen/normal_margin"
-        android:foreground="?attr/selectableItemBackground"
+        android:paddingStart="@dimen/normal_margin"
+        android:paddingEnd="@dimen/normal_margin"
         android:layout_centerInParent="true"
         style="@style/subtitle_text"
         tools:text="Technology" />

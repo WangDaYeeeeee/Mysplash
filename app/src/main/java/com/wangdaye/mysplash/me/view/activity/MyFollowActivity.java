@@ -207,7 +207,7 @@ public class MyFollowActivity extends MysplashActivity
 
         initPages();
 
-        AnimUtils.animInitShow(
+        AnimUtils.translationYInitShow(
                 (View) pagers[pagerManagePresenter.getPagerPosition()],
                 400);
         for (PagerView p : pagers) {

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_photo_2_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_photo_2_swipeBackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        android:transitionName="@string/transition_photo_background"
+        tools:ignore="UnusedAttribute">
+
+        <com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout
+            android:id="@+id/activity_photo_2_swipeSwitchView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/black">
+
+            <ImageView
+                android:id="@+id/activity_photo_2_switchBackground"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:alpha="0"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="?attr/root_color">
+
+                <FrameLayout
+                    android:id="@+id/activity_photo_2_imageContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
+                        android:id="@+id/activity_photo_2_regularImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        android:transitionName="@string/transition_photo_image"
+                        tools:ignore="UnusedAttribute" />
+
+                    <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
+                        android:id="@+id/activity_photo_2_fullImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scaleType="centerCrop"
+                        tools:ignore="UnusedAttribute" />
+
+                </FrameLayout>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/activity_photo_2_recyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="vertical"
+                    android:scrollbarStyle="outsideOverlay" />
+
+                <LinearLayout
+                    android:id="@+id/activity_photo_2_appBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:sbv_translucent_mode="true"
+                        app:sbv_init_alpha="0.15"
+                        app:sbv_darker_alpha="0.15" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="?attr/actionBarSize">
+
+                        <com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            app:cml_gradient_angle="90"
+                            app:cml_from_alpha="0"
+                            app:cml_to_alpha="0.15"
+                            app:cml_mask_color="@android:color/black" />
+
+                        <android.support.v7.widget.Toolbar
+                            android:id="@+id/activity_photo_2_toolbar"
+                            android:layout_width="match_parent"
+                            android:layout_height="?attr/actionBarSize"
+                            android:background="@android:color/transparent"
+                            app:popupTheme="@style/MysplashPopupMenuTheme">
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent">
+
+                                <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
+                                    android:id="@+id/activity_photo_2_loadingFlag"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:padding="3dp"
+                                    android:background="?attr/selectableItemBackgroundBorderless"
+                                    android:layout_centerVertical="true"
+                                    android:layout_alignParentEnd="true" />
+
+                            </RelativeLayout>
+
+                        </android.support.v7.widget.Toolbar>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout>
+
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/activity_photo_2_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true" />
+
+</android.support.design.widget.CoordinatorLayout>

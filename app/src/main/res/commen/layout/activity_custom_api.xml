@@ -53,8 +53,8 @@
                             android:lineSpacingMultiplier="1.3"
                             android:layout_marginTop="@dimen/normal_margin"
                             android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_marginLeft="@dimen/mini_icon_size"
-                            android:layout_marginRight="@dimen/mini_icon_size"
+                            android:layout_marginStart="@dimen/mini_icon_size"
+                            android:layout_marginEnd="@dimen/mini_icon_size"
                             android:maxLines="1"
                             style="@style/content_text"
                             tools:ignore="HardcodedText" />
@@ -67,8 +67,8 @@
                             android:lineSpacingMultiplier="1.3"
                             android:layout_marginTop="@dimen/normal_margin"
                             android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_marginLeft="@dimen/mini_icon_size"
-                            android:layout_marginRight="@dimen/mini_icon_size"
+                            android:layout_marginStart="@dimen/mini_icon_size"
+                            android:layout_marginEnd="@dimen/mini_icon_size"
                             android:maxLines="1"
                             style="@style/content_text"
                             tools:ignore="HardcodedText" />
@@ -80,8 +80,8 @@
                             android:textIsSelectable="true"
                             android:layout_marginTop="@dimen/normal_margin"
                             android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_marginLeft="@dimen/mini_icon_size"
-                            android:layout_marginRight="@dimen/mini_icon_size"
+                            android:layout_marginStart="@dimen/mini_icon_size"
+                            android:layout_marginEnd="@dimen/mini_icon_size"
                             style="@style/content_text"
                             tools:ignore="HardcodedText" />
 
@@ -90,7 +90,7 @@
                     <Button
                         android:id="@+id/activity_custom_api_enterBtn"
                         android:text="@string/enter"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_below="@id/activity_custom_api_inputContainer"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
@@ -99,7 +99,7 @@
                         android:id="@+id/activity_custom_api_cancelBtn"
                         android:text="@string/cancel"
                         android:textColor="?attr/subtitle_color"
-                        android:layout_toLeftOf="@id/activity_custom_api_enterBtn"
+                        android:layout_toStartOf="@id/activity_custom_api_enterBtn"
                         android:layout_below="@id/activity_custom_api_inputContainer"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />

@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.StatusApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Total;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
@@ -16,7 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Status service.
  * */
 
-public class StatusService {
+public class StatusService extends TLSCompactService {
 
     private Call call;
 
@@ -25,7 +26,7 @@ public class StatusService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
     }

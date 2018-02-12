@@ -145,8 +145,9 @@ public class MeProfileView  extends FrameLayout
             TransitionManager.beginDelayedTransition((ViewGroup) parent);
         }
 
-        if (tags == null || !isSameTags(u.tags.custom, tags)) {
-            if (u.tags.custom == null || u.tags.custom.size() == 0) {
+        if (tags == null
+                || (u.tags != null && !isSameTags(u.tags.custom, tags))) {
+            if (u.tags == null || u.tags.custom == null || u.tags.custom.size() == 0) {
                 tagList.setVisibility(GONE);
             } else {
                 tags = u.tags.custom;

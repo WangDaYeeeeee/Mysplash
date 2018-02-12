@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Outline;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewOutlineProvider;
@@ -16,7 +17,7 @@ import android.widget.ImageView;
  *
  * */
 
-public class CircleImageView extends ImageView {
+public class CircleImageView extends AppCompatImageView {
 
     public CircleImageView(Context context) {
         super(context);
@@ -30,12 +31,6 @@ public class CircleImageView extends ImageView {
 
     public CircleImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.initialize();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public CircleImageView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
         this.initialize();
     }
 

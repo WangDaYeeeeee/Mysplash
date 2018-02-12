@@ -17,8 +17,8 @@
             android:lineSpacingMultiplier="1.3"
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_marginBottom="@dimen/normal_margin"
-            android:layout_marginLeft="@dimen/mini_icon_size"
-            android:layout_marginRight="@dimen/mini_icon_size"
+            android:layout_marginStart="@dimen/mini_icon_size"
+            android:layout_marginEnd="@dimen/mini_icon_size"
             android:textIsSelectable="true"
             style="@style/content_text"
             tools:ignore="HardcodedText" />
@@ -27,7 +27,7 @@
             android:id="@+id/dialog_confirm_exit_without_save_saveBtn"
             android:text="@string/save"
             android:textColor="@color/colorAccentRed"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@id/dialog_confirm_exit_without_save_text"
             style="@style/material_button"
             tools:ignore="RtlHardcoded" />
@@ -36,7 +36,7 @@
             android:id="@+id/dialog_confirm_exit_without_save_exitBtn"
             android:text="@string/exit"
             android:textColor="?attr/subtitle_color"
-            android:layout_toLeftOf="@id/dialog_confirm_exit_without_save_saveBtn"
+            android:layout_toStartOf="@id/dialog_confirm_exit_without_save_saveBtn"
             android:layout_below="@id/dialog_confirm_exit_without_save_text"
             style="@style/material_button"
             tools:ignore="RtlHardcoded" />

@@ -32,7 +32,7 @@
                 <TextView
                     android:id="@+id/dialog_stats_likeNum"
                     android:text="0 LIKES"
-                    android:layout_toRightOf="@id/dialog_stats_likeIcon"
+                    android:layout_toEndOf="@id/dialog_stats_likeIcon"
                     android:layout_centerVertical="true"
                     style="@style/content_text"
                     tools:ignore="HardcodedText,RtlHardcoded" />
@@ -53,7 +53,7 @@
                 <TextView
                     android:id="@+id/dialog_stats_viewNum"
                     android:text="0 VIEWS"
-                    android:layout_toRightOf="@id/dialog_stats_viewIcon"
+                    android:layout_toEndOf="@id/dialog_stats_viewIcon"
                     android:layout_centerVertical="true"
                     style="@style/content_text"
                     tools:ignore="HardcodedText,RtlHardcoded" />
@@ -74,7 +74,7 @@
                 <TextView
                     android:id="@+id/dialog_stats_downloadNum"
                     android:text="0 DOWNLOADS"
-                    android:layout_toRightOf="@id/dialog_stats_downloadIcon"
+                    android:layout_toEndOf="@id/dialog_stats_downloadIcon"
                     android:layout_centerVertical="true"
                     style="@style/content_text"
                     tools:ignore="HardcodedText,RtlHardcoded" />

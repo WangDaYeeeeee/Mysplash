@@ -45,16 +45,12 @@ public class TagHolder extends PhotoInfoAdapter.ViewHolder {
     protected void onBindView(PhotoActivity a, Photo photo) {
         List<Tag> tagList = new ArrayList<>();
         if (photo.categories != null) {
-            for (int i = 0; i < photo.categories.size(); i ++) {
-                tagList.add(photo.categories.get(i));
-            }
+            tagList.addAll(photo.categories);
         }
         if (photo.tags != null) {
-            for (int i = 0; i < photo.tags.size(); i ++) {
-                tagList.add(photo.tags.get(i));
-            }
+            tagList.addAll(photo.tags);
         }
-        recyclerView.setAdapter(new TagAdapter(a, tagList));
+        recyclerView.setAdapter(new TagAdapter(tagList));
     }
 
     @Override

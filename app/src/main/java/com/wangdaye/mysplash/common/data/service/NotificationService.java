@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.NotificationApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationFeed;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.NotificationInterceptor;
@@ -19,7 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * NotificationFeed service.
  * */
 
-public class NotificationService {
+public class NotificationService extends TLSCompactService {
 
     private Call call;
 
@@ -28,7 +29,7 @@ public class NotificationService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .addInterceptor(new NotificationInterceptor())
                 .build();
     }

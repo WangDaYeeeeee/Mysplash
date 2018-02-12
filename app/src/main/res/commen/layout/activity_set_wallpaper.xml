@@ -37,7 +37,7 @@
             android:textStyle="bold"
             android:textColor="@color/colorTextTitle_dark"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_margin="4dp"
             style="@style/material_button"
             tools:ignore="RtlHardcoded" />
@@ -46,7 +46,7 @@
             android:id="@+id/activity_set_wallpaper_alignBtn"
             android:src="@drawable/ic_align_center_dark"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
-            android:layout_toLeftOf="@id/activity_set_wallpaper_setBtn"
+            android:layout_toStartOf="@id/activity_set_wallpaper_setBtn"
             style="@style/material_image_button"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -54,7 +54,7 @@
             android:id="@+id/activity_set_wallpaper_typeBtn"
             android:src="@drawable/ic_orientation_squarish_dark"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
-            android:layout_toLeftOf="@id/activity_set_wallpaper_alignBtn"
+            android:layout_toStartOf="@id/activity_set_wallpaper_alignBtn"
             style="@style/material_image_button"
             tools:ignore="ContentDescription,RtlHardcoded" />
 

@@ -70,6 +70,16 @@
 
     <style name="MysplashTheme_dark.Translucent.Photo" parent="MysplashTheme_dark.Translucent" />
 
+    <!-- photo activity 2. -->
+
+    <style
+        name="MysplashTheme_light.Translucent.Photo2"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
+
+    <style
+        name="MysplashTheme_dark.Translucent.Photo2"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
+
     <!-- preview activity. -->
 
     <style name="MysplashTheme_light.Translucent.Preview" parent="MysplashTheme_light.Translucent">

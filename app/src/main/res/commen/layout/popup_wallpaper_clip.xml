@@ -21,9 +21,9 @@
         <TextView
             android:id="@+id/popup_wallpaper_clip_squareTxt"
             android:text="@string/action_clip_with_square"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_wallpaper_clip_squareIcon"
+            android:layout_toEndOf="@id/popup_wallpaper_clip_squareIcon"
             android:layout_width="wrap_content"
             android:textColor="@color/colorTextContent_light"
             style="@style/content_text"
@@ -46,9 +46,9 @@
         <TextView
             android:id="@+id/popup_wallpaper_clip_rectTxt"
             android:text="@string/action_clip_with_rectangle"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_wallpaper_clip_rectIcon"
+            android:layout_toEndOf="@id/popup_wallpaper_clip_rectIcon"
             android:layout_width="wrap_content"
             android:textColor="@color/colorTextContent_light"
             style="@style/content_text"

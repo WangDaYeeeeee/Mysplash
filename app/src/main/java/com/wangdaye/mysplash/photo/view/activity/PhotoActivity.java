@@ -32,7 +32,7 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar;
+import com.wangdaye.mysplash.photo.view.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;

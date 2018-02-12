@@ -30,6 +30,7 @@
     <string name="stats">统计</string>
     <string name="by">来自</string>
     <string name="on">拍摄于</string>
+    <string name="from">位于</string>
     <string name="now">现在</string>
 
     <string name="like">喜欢</string>
@@ -60,6 +61,7 @@
     <string name="relative_collection">张相关收藏集</string>
 
     <string name="follow_system">跟随系统</string>
+    <string name="date_format">yyyy年M月d日</string>
 
     <!-- 反馈. -->
     <string name="feedback_click_retry">点击重试</string>

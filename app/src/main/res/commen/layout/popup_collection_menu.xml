@@ -21,9 +21,9 @@
         <TextView
             android:id="@+id/popup_collection_menu_editTxt"
             android:text="@string/action_edit"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_collection_menu_editIcon"
+            android:layout_toEndOf="@id/popup_collection_menu_editIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -45,9 +45,9 @@
         <TextView
             android:id="@+id/popup_collection_menu_downloadTxt"
             android:text="@string/action_download"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_collection_menu_downloadIcon"
+            android:layout_toEndOf="@id/popup_collection_menu_downloadIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -69,9 +69,9 @@
         <TextView
             android:id="@+id/popup_collection_menu_setAsSourceTxt"
             android:text="@string/action_set_as_source"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_collection_menu_setAsSourceIcon"
+            android:layout_toEndOf="@id/popup_collection_menu_setAsSourceIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />

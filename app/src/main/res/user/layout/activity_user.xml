@@ -8,76 +8,84 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_user_swipeBackView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
-            android:id="@+id/activity_user_statusBar"
+        <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+            android:id="@+id/activity_user_appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
 
-        <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_user_swipeBackView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="?attr/root_color"
-            tools:ignore="UnusedAttribute">
-
-            <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
-                android:id="@+id/activity_user_appBar"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                app:theme="@style/MysplashToolbarTheme">
+                app:layout_scrollFlags="scroll">
 
-                <RelativeLayout
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                    android:id="@+id/activity_me_fakeStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll">
+                    app:sbv_fill_in_mode="true" />
 
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/activity_user_toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="@android:color/transparent"
-                        app:popupTheme="@style/MysplashPopupMenuTheme"/>
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/activity_user_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_below="@id/activity_me_fakeStatusBar"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"/>
 
-                    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
-                        android:id="@+id/activity_user_avatar"
-                        android:layout_width="@dimen/design_icon_size"
-                        android:layout_height="@dimen/design_icon_size"
-                        android:layout_below="@id/activity_user_toolbar"
-                        android:layout_centerHorizontal="true"
-                        android:scaleType="centerCrop"
-                        android:src="?attr/line_color"
-                        android:transitionName="@string/transition_user_avatar"
-                        android:foreground="?attr/selectableItemBackground"
-                        android:stateListAnimator="@animator/touch_rise_avatar"
-                        tools:ignore="ContentDescription,RtlHardcoded" />
+                <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+                    android:id="@+id/activity_user_avatar"
+                    android:layout_width="@dimen/design_icon_size"
+                    android:layout_height="@dimen/design_icon_size"
+                    android:layout_below="@id/activity_user_toolbar"
+                    android:layout_centerHorizontal="true"
+                    android:scaleType="centerCrop"
+                    android:src="?attr/line_color"
+                    android:transitionName="@string/transition_user_avatar"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:stateListAnimator="@animator/touch_rise_avatar"
+                    tools:ignore="ContentDescription,RtlHardcoded" />
 
-                    <TextView
-                        android:id="@+id/activity_user_title"
-                        android:textSize="@dimen/large_title_text_size"
-                        android:textStyle="bold"
-                        android:textColor="?attr/title_color"
-                        android:layout_below="@id/activity_user_avatar"
-                        android:layout_marginTop="@dimen/normal_margin"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_marginRight="@dimen/normal_margin"
-                        android:layout_centerHorizontal="true"
-                        style="@style/title_text"
-                        tools:text="Alfredo Wong"
-                        tools:ignore="RtlHardcoded" />
+                <TextView
+                    android:id="@+id/activity_user_title"
+                    android:textSize="@dimen/large_title_text_size"
+                    android:textStyle="bold"
+                    android:textColor="?attr/title_color"
+                    android:layout_below="@id/activity_user_avatar"
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:layout_marginStart="@dimen/normal_margin"
+                    android:layout_marginEnd="@dimen/normal_margin"
+                    android:layout_centerHorizontal="true"
+                    style="@style/title_text"
+                    tools:text="Alfredo Wong"
+                    tools:ignore="RtlHardcoded" />
 
-                    <com.wangdaye.mysplash.user.view.widget.UserProfileView
-                        android:id="@+id/activity_user_profileView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@id/activity_user_title" />
+                <com.wangdaye.mysplash.user.view.widget.UserProfileView
+                    android:id="@+id/activity_user_profileView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/activity_user_title" />
 
-                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true" />
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/activity_user_tabLayout"
@@ -85,16 +93,34 @@
                     android:layout_height="@dimen/tab_layout_height"
                     style="@style/MysplashTabLayoutTheme" />
 
-            </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+            </LinearLayout>
 
-            <android.support.v4.view.ViewPager
-                android:id="@+id/activity_user_viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
+        <android.support.v4.view.ViewPager
+            android:id="@+id/activity_user_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    </LinearLayout>
+        <com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator
+            android:id="@+id/activity_user_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_behavior=".common.ui.behavior.InkPageIndicatorBehavior"
+            app:animationDuration="300"
+            app:pageIndicatorColor="?attr/subtitle_color"
+            app:currentPageIndicatorColor="?attr/title_color"
+            app:dotDiameter="@dimen/little_margin"
+            app:dotGap="@dimen/little_margin" />
+
+    </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        android:id="@+id/activity_user_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true" />
 
 </android.support.design.widget.CoordinatorLayout>

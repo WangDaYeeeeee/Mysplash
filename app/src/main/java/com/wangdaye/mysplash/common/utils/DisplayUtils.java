@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
@@ -12,6 +13,8 @@ import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.annotation.Size;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +25,10 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Display utils.
@@ -64,6 +71,28 @@ public class DisplayUtils {
             result = r.getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    @Size(2)
+    public static int[] getScreenSize(Context context) {
+        if (DisplayUtils.isLandscape(context)) {
+            return new int[] {
+                    context.getResources().getDisplayMetrics().widthPixels,
+                    context.getResources().getDisplayMetrics().heightPixels};
+        } else {
+            WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+            if (manager == null) {
+                return new int[] {
+                        context.getResources().getDisplayMetrics().widthPixels,
+                        context.getResources().getDisplayMetrics().heightPixels
+                                + DisplayUtils.getNavigationBarHeight(context.getResources())};
+            } else {
+                Point size = new Point();
+                Display display = manager.getDefaultDisplay();
+                display.getRealSize(size);
+                return new int[] {size.x, size.y};
+            }
+        }
     }
 
     private static boolean isNavigationBarShow(){
@@ -192,5 +221,21 @@ public class DisplayUtils {
         return context.getResources()
                 .getConfiguration()
                 .orientation == Configuration.ORIENTATION_LANDSCAPE;
+    }
+
+    @SuppressLint("SimpleDateFormat")
+    @Nullable
+    public static String getDate(Context context, String text) {
+        Date date = null;
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(text);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        if (date != null) {
+            return new SimpleDateFormat(context.getString(R.string.date_format), LanguageUtils.getLocale(context)).format(date);
+        } else {
+            return null;
+        }
     }
 }

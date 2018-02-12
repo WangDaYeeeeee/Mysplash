@@ -18,7 +18,7 @@
 
     <FrameLayout
         android:id="@+id/item_about_translator_centerFlag"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_width="40dp"
         android:layout_height="40dp"
         tools:ignore="ContentDescription,RtlHardcoded" />
@@ -28,14 +28,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/item_about_translator_centerFlag"
-        android:layout_toRightOf="@id/item_about_translator_avatar"
+        android:layout_toEndOf="@id/item_about_translator_avatar"
         tools:ignore="RtlHardcoded">
 
         <TextView
             android:id="@+id/item_about_translator_title"
             android:maxLines="1"
             android:textStyle="bold"
-            android:layout_marginLeft="@dimen/nano_margin"
+            android:layout_marginStart="@dimen/nano_margin"
             android:layout_centerVertical="true"
             style="@style/title_text"
             tools:text="Wang Yueeeeee"
@@ -45,9 +45,9 @@
             android:id="@+id/item_about_translator_flag"
             android:layout_width="@dimen/nano_icon_size"
             android:layout_height="@dimen/nano_icon_size"
-            android:layout_marginLeft="@dimen/little_margin"
+            android:layout_marginStart="@dimen/little_margin"
             android:layout_marginBottom="@dimen/nano_margin"
-            android:layout_toRightOf="@id/item_about_translator_title"
+            android:layout_toEndOf="@id/item_about_translator_title"
             android:layout_centerVertical="true"
             tools:src="@drawable/flag_it"
             tools:ignore="ContentDescription,RtlHardcoded" />
@@ -57,10 +57,10 @@
     <TextView
         android:id="@+id/item_about_translator_subtitle"
         android:layout_below="@id/item_about_translator_titleContainer"
-        android:layout_toRightOf="@id/item_about_translator_avatar"
-        android:layout_marginLeft="@dimen/nano_margin"
+        android:layout_toEndOf="@id/item_about_translator_avatar"
+        android:layout_marginStart="@dimen/nano_margin"
         android:layout_marginTop="@dimen/nano_margin"
-        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginEnd="@dimen/normal_margin"
         android:layout_marginBottom="@dimen/normal_margin"
         style="@style/subtitle_text"
         tools:text="Wangdayeeeeee@gmail.com"

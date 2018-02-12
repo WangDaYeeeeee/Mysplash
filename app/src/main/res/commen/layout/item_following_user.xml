@@ -4,8 +4,8 @@
     android:id="@+id/item_following_user_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/large_icon_size"
-    android:layout_marginRight="@dimen/normal_margin"
+    android:layout_marginStart="@dimen/large_icon_size"
+    android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/normal_margin"
     android:background="?attr/root_color"
     android:foreground="?attr/selectableItemBackground"
@@ -21,7 +21,7 @@
 
     <FrameLayout
         android:id="@+id/item_following_user_centerFlag"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_width="40dp"
         android:layout_height="40dp"
         tools:ignore="ContentDescription,RtlHardcoded" />
@@ -30,9 +30,9 @@
         android:id="@+id/item_following_user_title"
         android:maxLines="1"
         android:textStyle="bold"
-        android:layout_marginLeft="@dimen/nano_margin"
+        android:layout_marginStart="@dimen/nano_margin"
         android:layout_alignBottom="@id/item_following_user_centerFlag"
-        android:layout_toRightOf="@id/item_following_user_avatar"
+        android:layout_toEndOf="@id/item_following_user_avatar"
         style="@style/title_text"
         tools:text="Wang Yueeeeee"
         tools:ignore="RtlHardcoded" />
@@ -40,8 +40,8 @@
     <TextView
         android:id="@+id/item_following_user_subtitle"
         android:layout_below="@id/item_following_user_title"
-        android:layout_toRightOf="@id/item_following_user_avatar"
-        android:layout_marginLeft="@dimen/nano_margin"
+        android:layout_toEndOf="@id/item_following_user_avatar"
+        android:layout_marginStart="@dimen/nano_margin"
         android:layout_marginTop="@dimen/nano_margin"
         android:layout_marginBottom="@dimen/normal_margin"
         style="@style/subtitle_text"

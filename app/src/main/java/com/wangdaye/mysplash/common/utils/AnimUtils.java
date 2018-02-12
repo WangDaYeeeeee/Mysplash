@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.utils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -88,11 +89,29 @@ public class AnimUtils {
 
     private AnimUtils() {}
 
-    public static void animInitShow(final View v, int delay) {
+    public static void translationYInitShow(final View v, int delay) {
         v.setVisibility(View.INVISIBLE);
         DisplayUtils utils = new DisplayUtils(v.getContext());
         ObjectAnimator anim = ObjectAnimator
                 .ofFloat(v, "translationY", utils.dpToPx(72), 0)
+                .setDuration(300);
+
+        anim.setInterpolator(new DecelerateInterpolator());
+        anim.setStartDelay(delay);
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                v.setVisibility(View.VISIBLE);
+            }
+        });
+        anim.start();
+    }
+
+    public static void alphaInitShow(final View v, int delay) {
+        v.setVisibility(View.INVISIBLE);
+        ObjectAnimator anim = ObjectAnimator
+                .ofFloat(v, "alpha", 0, 1)
                 .setDuration(300);
 
         anim.setInterpolator(new DecelerateInterpolator());
@@ -145,6 +164,30 @@ public class AnimUtils {
             });
             anim.start();
         }
+    }
+
+    public static void animScale(final View v, int duration, int delay, float to) {
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(v, "scaleX", v.getScaleX(), to);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(v, "scaleY", v.getScaleY(), to);
+
+        AnimatorSet set = new AnimatorSet();
+        set.setDuration(duration);
+        set.setInterpolator(new DecelerateInterpolator());
+        if (delay > 0) {
+            set.setStartDelay(delay);
+        }
+
+        set.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                super.onAnimationStart(animation);
+                if (v.getVisibility() != View.VISIBLE) {
+                    v.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        set.play(scaleX).with(scaleY);
+        set.start();
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

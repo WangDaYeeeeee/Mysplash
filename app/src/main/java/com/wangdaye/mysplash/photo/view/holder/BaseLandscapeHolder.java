@@ -5,7 +5,7 @@ import android.view.View;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
-import com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar;
+import com.wangdaye.mysplash.photo.view.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;

@@ -19,17 +19,17 @@
         android:layout_width="12dp"
         android:layout_height="12dp"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/item_photo_exif_icon"
-        android:layout_marginRight="@dimen/little_margin"
+        android:layout_toEndOf="@id/item_photo_exif_icon"
+        android:layout_marginEnd="@dimen/little_margin"
         tools:background="@color/colorAccentRed"
         tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/item_photo_exif_text"
         android:textColor="?attr/content_color"
-        android:layout_toRightOf="@id/item_photo_exif_colorSample"
+        android:layout_toEndOf="@id/item_photo_exif_colorSample"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/normal_margin"
+        android:layout_marginEnd="@dimen/normal_margin"
         android:maxLines="1"
         style="@style/content_text"
         tools:text="#F15151"

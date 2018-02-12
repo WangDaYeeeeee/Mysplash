@@ -30,7 +30,7 @@
                 android:text="@string/delete"
                 android:textColor="@color/colorAccentRed"
                 android:layout_below="@id/dialog_delete_collection_photo_title"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 style="@style/material_button"
                 tools:ignore="RtlHardcoded" />
 
@@ -39,7 +39,7 @@
                 android:text="@string/cancel"
                 android:textColor="?attr/content_color"
                 android:layout_below="@id/dialog_delete_collection_photo_title"
-                android:layout_toLeftOf="@id/dialog_delete_collection_photo_deleteBtn"
+                android:layout_toStartOf="@id/dialog_delete_collection_photo_deleteBtn"
                 style="@style/material_button"
                 tools:ignore="RtlHardcoded" />
 

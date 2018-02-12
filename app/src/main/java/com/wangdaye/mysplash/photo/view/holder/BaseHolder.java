@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar;
+import com.wangdaye.mysplash.photo.view.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -116,8 +116,8 @@ public class BaseHolder extends PhotoInfoAdapter.ViewHolder
     public void showInitAnim() {
         displayContainer.setVisibility(View.GONE);
         buttonBar.setVisibility(View.GONE);
-        AnimUtils.animInitShow(displayContainer, 200);
-        AnimUtils.animInitShow(buttonBar, 350);
+        AnimUtils.translationYInitShow(displayContainer, 200);
+        AnimUtils.translationYInitShow(buttonBar, 350);
     }
 
     public PhotoButtonBar getButtonBar() {

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <view class="com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout$RecyclerView"
+        android:id="@+id/item_photo_2_more_landscape_recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/normal_margin"
+        android:clipToPadding="false"
+        android:background="?attr/root_color"
+        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.NavigationBarView
+        android:id="@+id/item_photo_2_more_landscape_navigationBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -10,16 +10,20 @@ import android.os.Parcelable;
 public class Location implements Parcelable {
 
     /**
+     * title : Kitsuné Café, Montreal, Canada
+     * name : Kitsuné Café
      * city : Montreal
      * country : Canada
      * position : {"latitude":45.4732984,"longitude":-73.6384879}
      */
+    public String title;
+    public String name;
     public String city;
     public String country;
 
     public Position position;
 
-    /** <br> parcel. */
+    // parcel.
 
     @Override
     public int describeContents() {
@@ -28,6 +32,8 @@ public class Location implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.title);
+        dest.writeString(this.name);
         dest.writeString(this.city);
         dest.writeString(this.country);
         dest.writeParcelable(this.position, flags);
@@ -37,12 +43,14 @@ public class Location implements Parcelable {
     }
 
     protected Location(Parcel in) {
+        this.title = in.readString();
+        this.name = in.readString();
         this.city = in.readString();
         this.country = in.readString();
         this.position = in.readParcelable(Position.class.getClassLoader());
     }
 
-    public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
+    public static final Creator<Location> CREATOR = new Creator<Location>() {
         @Override
         public Location createFromParcel(Parcel source) {
             return new Location(source);

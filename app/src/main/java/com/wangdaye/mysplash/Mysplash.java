@@ -19,6 +19,7 @@ import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
+import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -240,7 +241,48 @@ public class Mysplash extends Application {
         return new ArrayList<>();
     }
 
+    public List<Photo> loadMorePhotos(PhotoActivity2 activity,
+                                      List<Photo> list, int headIndex, boolean headDirection,
+                                      Bundle bundle) {
+        int index = activityList.indexOf(activity) - 1;
+        if (index > -1) {
+            Activity a = activityList.get(index);
+            if (a instanceof LoadableActivity) {
+                if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                        .getActualTypeArguments()[0]
+                        .toString()
+                        .equals(Photo.class.toString())) {
+                    try {
+                        return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection, bundle);
+                    } catch (Exception ignore) {
+
+                    }
+                }
+            }
+        }
+        return new ArrayList<>();
+    }
+
     public void dispatchPhotoUpdate(PhotoActivity activity, Photo p) {
+        int index = activityList.indexOf(activity) - 1;
+        if (index > -1) {
+            Activity a = activityList.get(index);
+            if (a instanceof LoadableActivity) {
+                if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                        .getActualTypeArguments()[0]
+                        .toString()
+                        .equals(Photo.class.toString())) {
+                    try {
+                        ((LoadableActivity) a).updateData(p);
+                    } catch (Exception ignore) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    public void dispatchPhotoUpdate(PhotoActivity2 activity, Photo p) {
         int index = activityList.indexOf(activity) - 1;
         if (index > -1) {
             Activity a = activityList.get(index);

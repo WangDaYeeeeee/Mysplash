@@ -8,6 +8,7 @@
     <dimen name="photo_info_base_view_height">300dp</dimen>
     <dimen name="tablet_download_button_bar_width">386dp</dimen>
     <dimen name="item_photo_more_vertical_height">72dp</dimen>
+    <dimen name="item_photo_2_more_vertical_height">72dp</dimen>
     <dimen name="select_collection_dialog_height">320dp</dimen>
 
     <!-- text -->

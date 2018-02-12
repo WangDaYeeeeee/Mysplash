@@ -36,8 +36,8 @@
                     android:lineSpacingMultiplier="1.3"
                     android:layout_marginTop="@dimen/normal_margin"
                     android:layout_marginBottom="@dimen/normal_margin"
-                    android:layout_marginLeft="@dimen/mini_icon_size"
-                    android:layout_marginRight="@dimen/mini_icon_size"
+                    android:layout_marginStart="@dimen/mini_icon_size"
+                    android:layout_marginEnd="@dimen/mini_icon_size"
                     android:textIsSelectable="true"
                     style="@style/content_text"
                     tools:text="3 Likes\n565 Followers"
@@ -50,7 +50,7 @@
         <Button
             android:id="@+id/dialog_profile_enterBtn"
             android:text="@string/enter"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_below="@id/dialog_profile_contentContainer"
             style="@style/material_button"
             tools:ignore="RtlHardcoded" />

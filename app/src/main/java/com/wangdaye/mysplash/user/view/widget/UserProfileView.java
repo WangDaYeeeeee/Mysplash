@@ -224,7 +224,7 @@ public class UserProfileView extends FrameLayout
             TransitionManager.beginDelayedTransition((ViewGroup) parent);
         }
 
-        if (u.tags.custom == null || u.tags.custom.size() == 0) {
+        if (u.tags == null || u.tags.custom == null || u.tags.custom.size() == 0) {
             tagList.setVisibility(GONE);
         } else {
             tagList.setAdapter(new MiniTagAdapter(u.tags.custom));

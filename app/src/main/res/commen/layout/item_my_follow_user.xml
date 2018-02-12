@@ -20,7 +20,7 @@
 
     <FrameLayout
         android:id="@+id/item_my_follow_user_centerFlag"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_width="40dp"
         android:layout_height="40dp"
         tools:ignore="ContentDescription,RtlHardcoded" />
@@ -29,9 +29,9 @@
         android:id="@+id/item_my_follow_user_title"
         android:maxLines="1"
         android:textStyle="bold"
-        android:layout_marginLeft="@dimen/nano_margin"
+        android:layout_marginStart="@dimen/nano_margin"
         android:layout_alignBottom="@id/item_my_follow_user_centerFlag"
-        android:layout_toRightOf="@id/item_my_follow_user_avatar"
+        android:layout_toEndOf="@id/item_my_follow_user_avatar"
         style="@style/title_text"
         tools:text="Wang Yueeeeee"
         tools:ignore="RtlHardcoded" />
@@ -40,10 +40,10 @@
         android:id="@+id/item_my_follow_user_button"
         android:layout_width="128dp"
         android:layout_height="@dimen/little_icon_size"
-        android:layout_marginLeft="@dimen/nano_margin"
+        android:layout_marginStart="@dimen/nano_margin"
         android:layout_marginTop="@dimen/little_margin"
         android:layout_marginBottom="@dimen/normal_margin"
-        android:layout_toRightOf="@id/item_my_follow_user_avatar"
+        android:layout_toEndOf="@id/item_my_follow_user_avatar"
         android:layout_below="@id/item_my_follow_user_title"
         android:foreground="?attr/selectableItemBackground"
         android:stateListAnimator="@animator/touch_rise_follow_button"

@@ -21,9 +21,9 @@
         <TextView
             android:id="@+id/popup_me_menu_submitTxt"
             android:text="@string/action_submit"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_me_menu_submitIcon"
+            android:layout_toEndOf="@id/popup_me_menu_submitIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -45,9 +45,9 @@
         <TextView
             android:id="@+id/popup_me_menu_portfolioTxt"
             android:text="@string/action_open_portfolio"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_me_menu_portfolioIcon"
+            android:layout_toEndOf="@id/popup_me_menu_portfolioIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -69,9 +69,9 @@
         <TextView
             android:id="@+id/popup_me_menu_shareTxt"
             android:text="@string/action_share"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_me_menu_shareIcon"
+            android:layout_toEndOf="@id/popup_me_menu_shareIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />

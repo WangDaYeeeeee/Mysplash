@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.SearchApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.SearchCollectionsResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.SearchPhotosResult;
@@ -18,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Search service.
  * */
 
-public class SearchService {
+public class SearchService extends TLSCompactService {
 
     private Call call;
     private SearchNodeService nodeService;
@@ -33,7 +34,7 @@ public class SearchService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
     }

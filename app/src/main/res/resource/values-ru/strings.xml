@@ -32,6 +32,7 @@
     <string name="powered">Работает на Unsplash.com</string>
     <string name="photos">фотографии</string>
     <string name="on">Вкл</string>
+    <string name="from">Из</string>
     <string name="now">Сейчас</string>
     <string name="next">Далее</string>
     <string name="my_follow">Мои подписки</string>
@@ -46,6 +47,7 @@
     <string name="download">Загрузить</string>
 
     <string name="follow_system">Система слежения</string>
+    <string name="date_format">d MMM yyyyг</string>
 
     <!-- menu. -->
     <string name="action_cancel_all">Отменить всё</string>

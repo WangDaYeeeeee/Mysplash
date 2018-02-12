@@ -1,0 +1,6 @@
+<resources>
+
+    <!-- key words. -->
+    <string name="date_format">MMM d, yyyy</string>
+
+</resources>

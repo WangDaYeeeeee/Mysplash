@@ -47,12 +47,12 @@
 
                             <ImageButton
                                 android:id="@+id/fragment_multi_filter_searchBtn"
-                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
                                 android:layout_width="40dp"
                                 android:layout_height="40dp"
                                 android:padding="@dimen/little_margin"
-                                android:layout_marginRight="@dimen/little_margin"
+                                android:layout_marginEnd="@dimen/little_margin"
                                 android:background="?attr/selectableItemBackgroundBorderless"
                                 tools:src="@drawable/ic_toolbar_search_light"
                                 tools:ignore="ContentDescription,RtlHardcoded" />
@@ -62,7 +62,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_margin="@dimen/normal_margin"
-                                android:layout_toLeftOf="@id/fragment_multi_filter_searchBtn"
+                                android:layout_toStartOf="@id/fragment_multi_filter_searchBtn"
                                 android:background="@android:color/transparent"
                                 android:hint="@string/feedback_search_photos_bar"
                                 android:textColorHint="?attr/subtitle_color"
@@ -112,16 +112,16 @@
                         <ImageButton
                             android:id="@+id/fragment_multi_filter_categoryBtn"
                             android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             style="@style/material_image_button"
                             tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/fragment_multi_filter_categoryTxt"
-                            android:layout_toLeftOf="@id/fragment_multi_filter_categoryBtn"
+                            android:layout_toStartOf="@id/fragment_multi_filter_categoryBtn"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/normal_margin"
+                            android:layout_marginStart="@dimen/normal_margin"
                             android:maxLines="1"
                             style="@style/content_text"
                             tools:text="All" />
@@ -138,16 +138,16 @@
                         <ImageButton
                             android:id="@+id/fragment_multi_filter_orientationBtn"
                             android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             style="@style/material_image_button"
                             tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/fragment_multi_filter_orientationTxt"
-                            android:layout_toLeftOf="@id/fragment_multi_filter_orientationBtn"
+                            android:layout_toStartOf="@id/fragment_multi_filter_orientationBtn"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/normal_margin"
+                            android:layout_marginStart="@dimen/normal_margin"
                             android:maxLines="1"
                             style="@style/content_text"
                             tools:text="All" />
@@ -164,16 +164,16 @@
                         <ImageButton
                             android:id="@+id/fragment_multi_filter_featuredBtn"
                             android:layout_centerVertical="true"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             style="@style/material_image_button"
                             tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription" />
 
                         <TextView
                             android:id="@+id/fragment_multi_filter_featuredTxt"
-                            android:layout_toLeftOf="@id/fragment_multi_filter_featuredBtn"
+                            android:layout_toStartOf="@id/fragment_multi_filter_featuredBtn"
                             android:layout_centerVertical="true"
-                            android:layout_marginLeft="@dimen/normal_margin"
+                            android:layout_marginStart="@dimen/normal_margin"
                             android:maxLines="1"
                             style="@style/content_text"
                             tools:text="All" />

@@ -25,6 +25,7 @@ import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -84,13 +85,14 @@ public class UserActivity extends LoadableActivity<Photo>
         implements PagerManageView, PopupManageView, SwipeBackManageView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener, UserProfileView.OnRequestUserListener,
         PhotoAdapter.OnDownloadPhotoListener, ViewPager.OnPageChangeListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener {
-
-    @BindView(R.id.activity_user_container)
-    CoordinatorLayout container;
+        NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener,
+        SelectCollectionDialog.OnCollectionsChangedListener {
 
     @BindView(R.id.activity_user_statusBar)
     StatusBarView statusBar;
+
+    @BindView(R.id.activity_user_container)
+    CoordinatorLayout container;
 
     @BindView(R.id.activity_user_appBar)
     NestedScrollAppBarLayout appBar;
@@ -103,6 +105,9 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @BindView(R.id.activity_user_viewPager)
     ViewPager viewPager;
+
+    @BindView(R.id.activity_user_indicator)
+    AutoHideInkPageIndicator indicator;
 
     private MyPagerAdapter adapter;
 
@@ -266,6 +271,8 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
+        statusBar.animToInitAlpha();
+        DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagerManagePresenter.pagerScrollToTop();
     }
@@ -361,6 +368,8 @@ public class UserActivity extends LoadableActivity<Photo>
             SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_user_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
+            appBar.setOnNestedScrollingListener(this);
+
             if (Mysplash.getInstance().getActivityCount() == 1) {
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
@@ -437,6 +446,9 @@ public class UserActivity extends LoadableActivity<Photo>
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+        indicator.setViewPager(viewPager);
+        indicator.setAlpha(0f);
+
         BaseSavedStateFragment f = SavedStateFragment.getData(this);
         if (f != null && f instanceof SavedStateFragment) {
             ((UserPhotosView) pagers[0]).setPhotos(((SavedStateFragment) f).getPhotoList());
@@ -449,7 +461,7 @@ public class UserActivity extends LoadableActivity<Photo>
                 }
             }
         } else {
-            AnimUtils.animInitShow(
+            AnimUtils.translationYInitShow(
                     (View) pagers[pagerManagePresenter.getPagerPosition()],
                     400);
             for (PagerView pager : pagers) {
@@ -579,6 +591,43 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     public void onPageScrollStateChanged(int state) {
+        if (appBar.getY() <= -appBar.getMeasuredHeight()) {
+            switch (state) {
+                case ViewPager.SCROLL_STATE_DRAGGING:
+                    indicator.setDisplayState(true);
+                    break;
+
+                case ViewPager.SCROLL_STATE_IDLE:
+                    indicator.setDisplayState(false);
+                    break;
+            }
+        }
+    }
+
+    // on nested scrolling listener.
+
+    @Override
+    public void onStartNestedScroll() {
+        // do nothing.
+    }
+
+    @Override
+    public void onNestedScrolling() {
+        if (appBar.getY() > -appBar.getMeasuredHeight()) {
+            if (!statusBar.isInitState()) {
+                statusBar.animToInitAlpha();
+                DisplayUtils.setStatusBarStyle(this, false);
+            }
+        } else {
+            if (statusBar.isInitState()) {
+                statusBar.animToDarkerAlpha();
+                DisplayUtils.setStatusBarStyle(this, true);
+            }
+        }
+    }
+
+    @Override
+    public void onStopNestedScroll() {
         // do nothing.
     }
 
@@ -591,7 +640,6 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.GetStreamApi;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
@@ -16,7 +17,7 @@ import retrofit2.Retrofit;
  * Get stream service.
  * */
 
-public class GetStreamService {
+public class GetStreamService extends TLSCompactService {
     // widget
     private Call call;
 
@@ -25,7 +26,7 @@ public class GetStreamService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .build();
     }
 

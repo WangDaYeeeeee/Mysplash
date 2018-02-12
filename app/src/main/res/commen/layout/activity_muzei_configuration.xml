@@ -65,8 +65,8 @@
                         android:textColor="?attr/content_color"
                         android:textSize="@dimen/content_text_size"
                         android:maxLines="1"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_marginRight="@dimen/normal_margin"
+                        android:layout_marginStart="@dimen/normal_margin"
+                        android:layout_marginEnd="@dimen/normal_margin"
                         android:layout_marginBottom="@dimen/normal_margin"
                         tools:text="8"
                         tools:ignore="HardcodedText,LabelFor,RtlHardcoded" />
@@ -87,7 +87,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_margin="@dimen/normal_margin"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             android:layout_centerVertical="true"
                             android:checked="false"
                             tools:ignore="RtlHardcoded" />
@@ -95,10 +95,10 @@
                         <TextView
                             android:id="@+id/activity_muzei_configuration_wifiTitle"
                             android:text="@string/feedback_update_only_in_wifi"
-                            android:layout_marginLeft="@dimen/normal_margin"
+                            android:layout_marginStart="@dimen/normal_margin"
                             android:layout_marginTop="@dimen/normal_margin"
                             android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_toLeftOf="@id/activity_muzei_configuration_wifiSwitch"
+                            android:layout_toStartOf="@id/activity_muzei_configuration_wifiSwitch"
                             android:layout_centerVertical="true"
                             android:layout_width="match_parent"
                             android:lineSpacingMultiplier="1.1"
@@ -123,7 +123,7 @@
                         android:id="@+id/activity_muzei_configuration_collectionList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="@dimen/little_margin"
+                        android:paddingStart="@dimen/little_margin"
                         android:clipToPadding="false"
                         android:background="?attr/root_color"
                         tools:ignore="RtlHardcoded,RtlSymmetry" />
@@ -143,7 +143,7 @@
                             android:textColor="@color/colorAccentRed"
                             android:layout_centerVertical="true"
                             android:layout_margin="@dimen/little_margin"
-                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true"
                             style="@style/material_button"
                             tools:ignore="RtlHardcoded" />
 

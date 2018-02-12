@@ -21,9 +21,9 @@
         <TextView
             android:id="@+id/popup_search_orientation_allTxt"
             android:text="ALL"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_search_orientation_allIcon"
+            android:layout_toEndOf="@id/popup_search_orientation_allIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -45,9 +45,9 @@
         <TextView
             android:id="@+id/popup_search_orientation_landscapeTxt"
             android:text="LANDSCAPE"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_search_orientation_landscapeIcon"
+            android:layout_toEndOf="@id/popup_search_orientation_landscapeIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -69,9 +69,9 @@
         <TextView
             android:id="@+id/popup_search_orientation_portraitTxt"
             android:text="PORTRAIT"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_search_orientation_portraitIcon"
+            android:layout_toEndOf="@id/popup_search_orientation_portraitIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -93,9 +93,9 @@
         <TextView
             android:id="@+id/popup_search_orientation_squarishTxt"
             android:text="SQUARISH"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_search_orientation_squarishIcon"
+            android:layout_toEndOf="@id/popup_search_orientation_squarishIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />

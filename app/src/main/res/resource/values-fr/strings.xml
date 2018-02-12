@@ -33,6 +33,7 @@
     <string name="stats">Statistiques</string>
     <string name="by">Par</string>
     <string name="on">Le</string>
+    <string name="from">De</string>
     <string name="now">Maintenant</string>
 
     <string name="like">Aimer</string>
@@ -63,6 +64,7 @@
     <string name="relative_collection">collections similaires</string>
 
     <string name="follow_system">Système</string>
+    <string name="date_format">d MMM yyyy</string>
 
     <!-- about. -->
     <string name="about_retrofit">Client HTTP prévenant les erreurs de type pour Android et Java par Square, Inc.</string>

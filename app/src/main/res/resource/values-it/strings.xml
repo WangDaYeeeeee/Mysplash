@@ -28,9 +28,11 @@
     <string name="stats">Statistiche</string>
     <string name="by">Di</string>
     <string name="on">Da</string>
+    <string name="from">Da</string>
     <string name="now">Ora</string>
 
     <string name="follow_system">Lingua di sistema</string>
+    <string name="date_format">d MMM yyyy</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>

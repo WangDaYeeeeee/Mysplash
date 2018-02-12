@@ -1,5 +1,7 @@
 package com.wangdaye.mysplash.common._basic;
 
+import android.support.annotation.ColorInt;
+import android.support.annotation.FloatRange;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,14 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
         public static FooterHolder buildInstance(ViewGroup parent) {
             return new FooterHolder(
                     LayoutInflater.from(parent.getContext()).inflate(R.layout.item_footer, parent, false));
+        }
+
+        public void setColor(@ColorInt int color) {
+            itemView.setBackgroundColor(color);
+        }
+
+        public void setAlpha(@FloatRange(from=0.0, to=1.0) float alpha) {
+            itemView.setAlpha(alpha);
         }
     }
 

@@ -2,6 +2,7 @@
 <resources>
 
     <string name="follow_system">Sigue el sistema</string>
+    <string name="date_format">d de MMM de yyyy</string>
 
     <string name="about_app">INFORMACIÓN DE LA APLICACIÓN</string>
     <string name="about_circle_image_view">Una vista de imagen circular para Android.</string>
@@ -138,6 +139,7 @@
     <string name="follow">SEGUIR</string>
     <string name="followed">Seguido</string>
     <string name="following">Siguiendo</string>
+    <string name="from">De</string>
     <string name="gitHub">GITHUB</string>
     <string name="glide">Deslizar</string>
     <string name="greendao_db">greenDAO</string>

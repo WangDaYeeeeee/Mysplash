@@ -9,7 +9,7 @@
         android:layout_width="@dimen/feedback_icon_size"
         android:layout_height="@dimen/feedback_icon_size"
         android:layout_centerInParent="true"
-        tools:src="@drawable/illustration_start"
+        tools:src="@drawable/illustration_back_top"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -18,8 +18,8 @@
         android:textStyle="bold"
         android:layout_centerHorizontal="true"
         android:layout_above="@id/container_introduce_image"
-        android:layout_marginLeft="@dimen/large_icon_size"
-        android:layout_marginRight="@dimen/large_icon_size"
+        android:layout_marginStart="@dimen/large_icon_size"
+        android:layout_marginEnd="@dimen/large_icon_size"
         android:layout_marginBottom="@dimen/little_icon_size"
         style="@style/large_title_text"
         tools:text="@string/introduce_title_back_top" />
@@ -29,8 +29,8 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/container_introduce_image"
         android:layout_width="wrap_content"
-        android:layout_marginLeft="@dimen/large_icon_size"
-        android:layout_marginRight="@dimen/large_icon_size"
+        android:layout_marginStart="@dimen/large_icon_size"
+        android:layout_marginEnd="@dimen/large_icon_size"
         android:layout_marginTop="@dimen/normal_margin"
         style="@style/content_text"
         tools:text="@string/introduce_description_back_top" />

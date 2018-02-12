@@ -15,7 +15,7 @@
     <TextView
         android:id="@+id/item_about_app_title"
         android:textStyle="bold"
-        android:layout_toRightOf="@id/item_about_app_icon"
+        android:layout_toEndOf="@id/item_about_app_icon"
         android:layout_centerVertical="true"
         style="@style/subtitle_text"
         tools:text="@string/introduce"

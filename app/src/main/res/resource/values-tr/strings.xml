@@ -31,6 +31,7 @@
     <string name="now">Şimdi</string>
 
     <string name="follow_system">Sistem dili</string>
+    <string name="date_format">MMM d yyyy</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>

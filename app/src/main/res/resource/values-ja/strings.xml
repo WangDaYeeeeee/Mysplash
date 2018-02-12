@@ -28,6 +28,7 @@
     <string name="stats">統計情報</string>
     <string name="by">作成</string>
     <string name="on">日時</string>
+    <string name="from">から</string>
     <string name="now">今</string>
 
     <string name="like">好きな</string>
@@ -48,6 +49,7 @@
     <string name="relative_collection">関連するコレクション</string>
 
     <string name="follow_system">システムをフォロー</string>
+    <string name="date_format">yyyy年M月d日</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">クリックすると再試行</string>

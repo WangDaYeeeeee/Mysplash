@@ -52,8 +52,8 @@
                         <ImageButton
                             android:id="@+id/fragment_category_titleBtn"
                             android:layout_centerVertical="true"
-                            android:layout_toRightOf="@id/fragment_category_title"
-                            android:layout_marginRight="@dimen/normal_margin"
+                            android:layout_toEndOf="@id/fragment_category_title"
+                            android:layout_marginEnd="@dimen/normal_margin"
                             style="@style/material_image_button"
                             tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription,RtlHardcoded" />

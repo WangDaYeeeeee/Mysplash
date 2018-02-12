@@ -22,7 +22,7 @@
         android:padding="3dp"
         android:layout_margin="5dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -32,7 +32,7 @@
         android:layout_width="30dp"
         android:layout_height="38dp"
         android:paddingTop="22dp"
-        android:layout_alignLeft="@id/container_notification_bar_button"
+        android:layout_alignStart="@id/container_notification_bar_button"
         android:layout_alignTop="@id/container_notification_bar_button"
         android:scaleType="centerInside"
         tools:ignore="ContentDescription,RtlHardcoded" />

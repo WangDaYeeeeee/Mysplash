@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.data.service;
 import android.net.Uri;
 
 import com.google.gson.GsonBuilder;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.FeedApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
 import com.wangdaye.mysplash.common.data.entity.unsplash.TrendingFeed;
@@ -20,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Feed service.
  * */
 
-public class FeedService {
+public class FeedService extends TLSCompactService {
 
     private Call call;
 
@@ -29,7 +30,7 @@ public class FeedService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .addInterceptor(new FeedInterceptor())
                 .build();
     }

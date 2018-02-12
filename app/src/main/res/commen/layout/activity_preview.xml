@@ -46,8 +46,8 @@
                         android:src="@drawable/ic_preview_google"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_alignParentLeft="true"
+                        android:layout_marginStart="@dimen/normal_margin"
+                        android:layout_alignParentStart="true"
                         android:layout_centerVertical="true"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -55,8 +55,8 @@
                         android:src="@drawable/ic_preview_microphone"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
-                        android:layout_marginRight="@dimen/normal_margin"
-                        android:layout_alignParentRight="true"
+                        android:layout_marginEnd="@dimen/normal_margin"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 

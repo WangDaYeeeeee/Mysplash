@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/root_color">
 
-    <com.wangdaye.mysplash.common.ui.widget.PhotoButtonBar
+    <com.wangdaye.mysplash.photo.view.widget.PhotoButtonBar
         android:id="@+id/item_photo_base_landscape_btnBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

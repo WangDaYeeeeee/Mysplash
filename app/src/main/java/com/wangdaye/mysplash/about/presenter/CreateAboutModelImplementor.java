@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(25);
+        List<AboutModel> modelList = new ArrayList<>(26);
         boolean light = ThemeManager.getInstance(c).isLightTheme();
 
         // header.
@@ -136,6 +136,10 @@ public class CreateAboutModelImplementor {
                 c.getString(R.string.butter_knife),
                 c.getString(R.string.about_butter_knife),
                 "https://github.com/JakeWharton/butterknife"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.number_anim_text_view),
+                c.getString(R.string.about_number_anim_text_view),
+                "https://github.com/Bakumon/NumberAnimTextView"));
 
         return modelList;
     }

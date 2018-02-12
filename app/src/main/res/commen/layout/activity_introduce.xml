@@ -33,7 +33,7 @@
         <Button
             android:id="@+id/activity_introduce_button"
             android:text="@string/enter"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             style="@style/material_button"
             tools:ignore="RtlHardcoded" />

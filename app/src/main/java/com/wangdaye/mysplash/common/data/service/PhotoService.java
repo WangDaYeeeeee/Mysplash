@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -25,7 +26,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Photo service.
  * */
 
-public class PhotoService {
+public class PhotoService extends TLSCompactService {
 
     private Call call;
     private PhotoNodeService nodeService;
@@ -40,7 +41,7 @@ public class PhotoService {
     }
 
     private OkHttpClient buildClient() {
-        return new OkHttpClient.Builder()
+        return getClientBuilder()
                 .addInterceptor(new AuthInterceptor())
                 .build();
     }

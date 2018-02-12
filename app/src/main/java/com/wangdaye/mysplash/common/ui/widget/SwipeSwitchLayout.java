@@ -13,6 +13,9 @@ import android.view.animation.Transformation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
+
 /**
  * Swipe switch layout.
  * */
@@ -418,6 +421,25 @@ public class SwipeSwitchLayout extends FrameLayout {
                     }
                 }
             }
+        }
+    }
+
+    public static class ViewPager2 extends ViewPager {
+
+        public ViewPager2(Context context) {
+            super(context);
+        }
+
+        public ViewPager2(Context context, AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+            int height = getResources().getDimensionPixelSize(R.dimen.item_photo_2_more_vertical_height)
+                    + DisplayUtils.getNavigationBarHeight(getResources());
+            super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
+            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);
         }
     }
 }

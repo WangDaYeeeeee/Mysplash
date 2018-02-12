@@ -207,7 +207,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
      * Execute the initialize animation.
      * */
     public void initAnimShow() {
-        AnimUtils.animInitShow(progressView, 400);
+        AnimUtils.translationYInitShow(progressView, 400);
     }
 
     public void initRefresh() {

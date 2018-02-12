@@ -101,7 +101,9 @@
     <!-- language. -->
     <string-array name="languages">
         <item>@string/follow_system</item>
-        <item>English</item>
+        <item>English (USA)</item>
+        <item>English (UK)</item>
+        <item>English (AU)</item>
         <item>中文</item>
         <item>Italiano</item>
         <item>Türk</item>
@@ -113,7 +115,9 @@
     </string-array>
     <string-array name="language_values">
         <item>follow_system</item>
-        <item>english</item>
+        <item>english_usa</item>
+        <item>english_uk</item>
+        <item>english_au</item>
         <item>chinese</item>
         <item>italian</item>
         <item>turkish</item>

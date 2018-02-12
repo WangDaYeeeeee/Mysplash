@@ -9,7 +9,7 @@
         android:id="@+id/item_photo_more_landscape_recyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/normal_margin"
+        android:paddingStart="@dimen/normal_margin"
         android:clipToPadding="false"
         android:background="?attr/root_color"
         android:layout_centerInParent="true"

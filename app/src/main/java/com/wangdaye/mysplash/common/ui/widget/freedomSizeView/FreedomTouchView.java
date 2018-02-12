@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.ui.widget.freedomSizeView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
@@ -10,6 +11,7 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
+import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
@@ -26,32 +28,38 @@ public class FreedomTouchView extends View {
     private float width = 1;
     private float height = 0.666F;
 
+    private boolean coverMode = false;
     private boolean showShadow;
 
     public FreedomTouchView(Context context) {
         super(context);
-        this.initialize();
+        this.initialize(context, null, 0, 0);
     }
 
     public FreedomTouchView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.initialize();
+        this.initialize(context, attrs, 0, 0);
     }
 
     public FreedomTouchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.initialize();
+        this.initialize(context, attrs, defStyleAttr, 0);
     }
 
-    private void initialize() {
+    private void initialize(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         this.paint = new Paint();
+
+        TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.FreedomTouchView, defStyleAttr, defStyleRes);
+        this.coverMode = a.getBoolean(R.styleable.FreedomTouchView_ftv_cover_mode, false);
+        a.recycle();
+
         this.showShadow = false;
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int[] sizes = FreedomImageView.getMeasureSize(
-                getContext(), MeasureSpec.getSize(widthMeasureSpec), width, height, true);
+                getContext(), MeasureSpec.getSize(widthMeasureSpec), width, height, coverMode);
         setMeasuredDimension(sizes[0], sizes[1]);
     }
 

@@ -30,24 +30,24 @@
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
-            android:layout_marginRight="@dimen/little_margin"
+            android:layout_marginEnd="@dimen/little_margin"
             android:layout_marginTop="@dimen/little_margin"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:background="@android:color/transparent"
             android:layout_alignParentTop="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
             android:id="@+id/item_photo_likeButton"
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:layout_marginRight="@dimen/little_margin"
+            android:layout_marginEnd="@dimen/little_margin"
             android:layout_marginBottom="@dimen/little_margin"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:background="@android:color/transparent"
             android:layout_alignBottom="@id/item_photo_image"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <ImageButton
@@ -60,7 +60,7 @@
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:background="@android:color/transparent"
             android:layout_alignBottom="@id/item_photo_image"
-            android:layout_toLeftOf="@id/item_photo_likeButton"
+            android:layout_toStartOf="@id/item_photo_likeButton"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <ImageButton
@@ -73,7 +73,7 @@
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:background="@android:color/transparent"
             android:layout_alignBottom="@id/item_photo_image"
-            android:layout_toLeftOf="@id/item_photo_collectionButton"
+            android:layout_toStartOf="@id/item_photo_collectionButton"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <TextView
@@ -83,12 +83,12 @@
             android:shadowDy="1"
             android:shadowRadius="1"
             android:shadowColor="@color/colorTextDark2nd"
-            android:layout_marginLeft="@dimen/normal_margin"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginStart="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_marginBottom="@dimen/little_margin"
             android:layout_alignBottom="@id/item_photo_image"
-            android:layout_alignParentLeft="true"
-            android:layout_toLeftOf="@id/item_photo_downloadButton"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/item_photo_downloadButton"
             android:maxLines="1"
             style="@style/subtitle_text"
             tools:text="Alfredo Wong, 2016-7-21"

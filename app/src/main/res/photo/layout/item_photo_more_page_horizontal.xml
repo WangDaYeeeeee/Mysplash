@@ -6,7 +6,7 @@
     android:layout_width="172dp"
     android:layout_height="128dp"
     android:layout_marginTop="@dimen/normal_margin"
-    android:layout_marginRight="@dimen/normal_margin"
+    android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/normal_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
@@ -54,9 +54,9 @@
                 android:shadowRadius="1"
                 android:shadowColor="@color/colorTextDark2nd"
                 android:alpha="0.9"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/item_photo_more_page_horizontal_avatar"
+                android:layout_toEndOf="@id/item_photo_more_page_horizontal_avatar"
                 style="@style/subtitle_text"
                 tools:text="WangDaYeeeee"/>
 
@@ -75,8 +75,8 @@
             android:shadowRadius="1"
             android:shadowColor="@color/colorTextDark2nd"
             android:layout_marginTop="@dimen/normal_margin"
-            android:layout_marginLeft="@dimen/normal_margin"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginStart="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_above="@id/item_photo_more_page_horizontal_subtitleContainer"
             tools:text="LET THE INSPIRATION BEGIN"/>
 

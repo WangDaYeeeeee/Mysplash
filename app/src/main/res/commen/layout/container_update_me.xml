@@ -21,7 +21,7 @@
             android:textStyle="bold"
             android:textSize="@dimen/large_title_text_size"
             android:textColor="?attr/content_color"
-            android:layout_toRightOf="@id/container_update_me_closeBtn"
+            android:layout_toEndOf="@id/container_update_me_closeBtn"
             android:layout_margin="@dimen/normal_margin"
             android:layout_centerInParent="true"
             style="@style/title_text"
@@ -61,8 +61,8 @@
                 android:textColor="?attr/content_color"
                 android:background="@android:color/transparent"
                 android:maxLines="1"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <EditText
@@ -77,8 +77,8 @@
                 android:textColor="?attr/content_color"
                 android:background="@android:color/transparent"
                 android:maxLines="1"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <EditText
@@ -93,8 +93,8 @@
                 android:textColor="?attr/content_color"
                 android:background="@android:color/transparent"
                 android:maxLines="1"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <EditText
@@ -109,8 +109,8 @@
                 android:textColor="?attr/content_color"
                 android:maxLines="1"
                 android:background="@android:color/transparent"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <EditText
@@ -125,8 +125,8 @@
                 android:textColor="?attr/content_color"
                 android:background="@android:color/transparent"
                 android:maxLines="1"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <EditText
@@ -142,8 +142,8 @@
                 android:background="@android:color/transparent"
                 android:maxLines="1"
                 android:maxLength="30"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <EditText
@@ -158,8 +158,8 @@
                 android:textColor="?attr/content_color"
                 android:background="@android:color/transparent"
                 android:maxLength="250"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/normal_margin" />
 
             <Button

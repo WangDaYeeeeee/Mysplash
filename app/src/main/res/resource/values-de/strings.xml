@@ -31,6 +31,7 @@
     <string name="stats">Status</string>
     <string name="by">Von</string>
     <string name="on">An</string>
+    <string name="from">Aus</string>
     <string name="now">Jetzt</string>
 
     <string name="like">Favorit</string>
@@ -54,6 +55,7 @@
     <string name="relative_collection">Ähnliche Sammlungen</string>
 
     <string name="follow_system">System folgen</string>
+    <string name="date_format">d. MMM yyyy</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>

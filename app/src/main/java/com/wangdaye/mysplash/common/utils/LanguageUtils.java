@@ -24,44 +24,55 @@ public class LanguageUtils {
             Resources resources = c.getResources();
             Configuration configuration = resources.getConfiguration();
             DisplayMetrics metrics = resources.getDisplayMetrics();
-            switch (language) {
-                case "chinese":
-                    configuration.setLocale(new Locale("zh"));
-                    break;
-
-                case "italian":
-                    configuration.setLocale(new Locale("it"));
-                    break;
-
-                case "turkish":
-                    configuration.setLocale(new Locale("tr"));
-                    break;
-
-                case "german":
-                    configuration.setLocale(new Locale("de"));
-                    break;
-
-                case "russian":
-                    configuration.setLocale(new Locale("ru"));
-                    break;
-
-                case "spanish":
-                    configuration.setLocale(new Locale("es"));
-                    break;
-
-                case "japanese":
-                    configuration.setLocale(new Locale("ja"));
-                    break;
-
-                case "french":
-                    configuration.setLocale(new Locale("fr"));
-                    break;
-
-                default:
-                    configuration.setLocale(new Locale("en"));
-                    break;
-            }
+            configuration.setLocale(getLocale(c, language));
             resources.updateConfiguration(configuration, metrics);
+        }
+    }
+
+    public static Locale getLocale(Context c) {
+        return getLocale(c, SettingsOptionManager.getInstance(c).getLanguage());
+    }
+
+    private static Locale getLocale(Context c, String language) {
+        switch (language) {
+            case "follow_system":
+                return Locale.getDefault();
+
+            case "english_usa":
+                return new Locale("en", "US");
+
+            case "english_uk":
+                return new Locale("en", "GB");
+
+            case "english_au":
+                return new Locale("en", "AU");
+
+            case "chinese":
+                return new Locale("zh");
+
+            case "italian":
+                return new Locale("it");
+
+            case "turkish":
+                return new Locale("tr");
+
+            case "german":
+                return new Locale("de");
+
+            case "russian":
+                return new Locale("ru");
+
+            case "spanish":
+                return new Locale("es");
+
+            case "japanese":
+                return new Locale("ja");
+
+            case "french":
+                return new Locale("fr");
+
+            default:
+                return new Locale("en");
         }
     }
 }

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_photo_touch_landscape"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +11,8 @@
         android:id="@+id/item_photo_touch_landscape_touch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/selectableItemBackground" />
+        android:background="?attr/selectableItemBackground"
+        app:ftv_cover_mode="true" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,7 +40,7 @@
             android:layout_margin="5dp"
             android:src="@drawable/ic_menu_dark"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             style="@style/material_image_button"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -50,7 +52,7 @@
             android:layout_margin="5dp"
             android:src="@drawable/ic_share_dark"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/item_photo_touch_landscape_menuBtn"
+            android:layout_toStartOf="@id/item_photo_touch_landscape_menuBtn"
             style="@style/material_image_button"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
@@ -58,10 +60,10 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/item_photo_touch_landscape_shareBtn"
-            android:layout_toRightOf="@id/item_photo_touch_landscape_avatar"
+            android:layout_toStartOf="@id/item_photo_touch_landscape_shareBtn"
+            android:layout_toEndOf="@id/item_photo_touch_landscape_avatar"
             android:layout_alignTop="@id/item_photo_touch_landscape_avatar"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
             tools:ignore="RtlHardcoded">
 

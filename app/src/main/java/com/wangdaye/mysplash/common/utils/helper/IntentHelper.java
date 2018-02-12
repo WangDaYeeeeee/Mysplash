@@ -27,6 +27,7 @@ import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
 import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.main.view.activity.NotificationActivity;
+import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 import com.wangdaye.mysplash.search.view.activity.SearchActivity;
 import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
@@ -40,7 +41,6 @@ import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.me.view.activity.MyFollowActivity;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.io.File;
@@ -83,12 +83,12 @@ public class IntentHelper {
                                           Bundle bundle) {
         Mysplash.getInstance().setPhoto(photoList.get(currentIndex - headIndex));
 
-        Intent intent = new Intent(a, PhotoActivity.class);
-        intent.putParcelableArrayListExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_LIST, photoList);
-        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_CURRENT_INDEX, currentIndex);
-        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_HEAD_INDEX, headIndex);
-        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_PHOTO_BUNDLE, bundle);
-        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photoList.get(currentIndex - headIndex).id);
+        Intent intent = new Intent(a, PhotoActivity2.class);
+        intent.putParcelableArrayListExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_LIST, photoList);
+        intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_CURRENT_INDEX, currentIndex);
+        intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX, headIndex);
+        intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_BUNDLE, bundle);
+        intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_ID, photoList.get(currentIndex - headIndex).id);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat
@@ -108,8 +108,8 @@ public class IntentHelper {
     }
 
     public static void startPhotoActivity(Activity a, String photoId) {
-        Intent intent = new Intent(a, PhotoActivity.class);
-        intent.putExtra(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photoId);
+        Intent intent = new Intent(a, PhotoActivity2.class);
+        intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_ID, photoId);
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_in, 0);
     }

@@ -3,9 +3,11 @@ package com.wangdaye.mysplash.common.data.service;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common._basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.AuthorizeApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.AccessToken;
 
+import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -16,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Authorize service.
  * */
 
-public class AuthorizeService {
+public class AuthorizeService extends TLSCompactService {
 
     private Call call;
 
@@ -24,16 +26,21 @@ public class AuthorizeService {
         return new AuthorizeService();
     }
 
-    private AuthorizeApi buildApi() {
+    private OkHttpClient buildClient() {
+        return getClientBuilder().build();
+    }
+
+    private AuthorizeApi buildApi(OkHttpClient client) {
         return new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
+                .client(client)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create((AuthorizeApi.class));
     }
 
     public void requestAccessToken(Context c, String code, final OnRequestAccessTokenListener l) {
-        Call<AccessToken> getAccessToken = buildApi()
+        Call<AccessToken> getAccessToken = buildApi(buildClient())
                 .getAccessToken(
                         Mysplash.getAppId(c, true),
                         Mysplash.getSecret(c),

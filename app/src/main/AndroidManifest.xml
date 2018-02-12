@@ -14,9 +14,7 @@
         android:largeHeap="true"
         android:taskAffinity="com.wangdaye.mysplash"
         android:allowTaskReparenting="true"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource"
-        tools:targetApi="26"
-        tools:replace="android:icon,android:theme,android:label,android:name,android:allowBackup">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource">
 
         <activity
             android:name=".main.view.activity.MainActivity"
@@ -45,6 +43,11 @@
 
         <activity
             android:name=".photo.view.activity.PhotoActivity"
+            android:theme="@style/MysplashTheme_light.Translucent.Photo"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".photo2.view.activity.PhotoActivity2"
             android:theme="@style/MysplashTheme_light.Translucent.Photo"
             android:label="@string/app_name" />
 

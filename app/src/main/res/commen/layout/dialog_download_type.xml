@@ -25,9 +25,9 @@
 
             <TextView
                 android:id="@+id/dialog_download_type_downloadTxt"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/dialog_download_type_downloadIcon"
+                android:layout_toEndOf="@id/dialog_download_type_downloadIcon"
                 android:layout_width="wrap_content"
                 android:textStyle="bold"
                 style="@style/content_text"
@@ -50,9 +50,9 @@
 
             <TextView
                 android:id="@+id/dialog_download_type_shareTxt"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/dialog_download_type_shareIcon"
+                android:layout_toEndOf="@id/dialog_download_type_shareIcon"
                 android:layout_width="wrap_content"
                 android:textStyle="bold"
                 style="@style/content_text"
@@ -75,9 +75,9 @@
 
             <TextView
                 android:id="@+id/dialog_download_type_wallpaperTxt"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/dialog_download_type_wallpaperIcon"
+                android:layout_toEndOf="@id/dialog_download_type_wallpaperIcon"
                 android:layout_width="wrap_content"
                 android:textStyle="bold"
                 style="@style/content_text"

@@ -47,8 +47,8 @@
                 android:background="@android:color/transparent"
                 android:maxLength="30"
                 android:maxLines="1"
-                android:layout_marginLeft="@dimen/normal_margin"
-                android:layout_marginRight="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
                 android:layout_marginTop="@dimen/little_margin" />
 
             <EditText
@@ -86,7 +86,7 @@
                         android:id="@+id/dialog_update_collection_saveBtn"
                         android:text="@string/save"
                         android:textColor="?attr/content_color"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
 
@@ -94,7 +94,7 @@
                         android:id="@+id/dialog_update_collection_deleteBtn"
                         android:text="@string/delete"
                         android:textColor="@color/colorAccentRed"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
 
@@ -109,7 +109,7 @@
                         android:id="@+id/dialog_update_collection_doDeleteBtn"
                         android:text="@string/delete"
                         android:textColor="@color/colorAccentRed"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
 
@@ -117,7 +117,7 @@
                         android:id="@+id/dialog_update_collection_cancelBtn"
                         android:text="@string/cancel"
                         android:textColor="?attr/content_color"
-                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
 

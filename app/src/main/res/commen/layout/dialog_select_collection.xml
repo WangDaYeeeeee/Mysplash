@@ -67,7 +67,7 @@
                         android:layout_height="@dimen/mini_icon_size"
                         android:layout_margin="@dimen/normal_margin"
                         android:background="?attr/selectableItemBackgroundBorderless"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         tools:src="@drawable/ic_refresh_light"
                         tools:ignore="ContentDescription,RtlHardcoded" />
@@ -119,8 +119,8 @@
                         android:background="@android:color/transparent"
                         android:maxLines="1"
                         android:maxLength="30"
-                        android:layout_marginLeft="@dimen/normal_margin"
-                        android:layout_marginRight="@dimen/normal_margin"
+                        android:layout_marginStart="@dimen/normal_margin"
+                        android:layout_marginEnd="@dimen/normal_margin"
                         android:layout_marginTop="@dimen/little_margin" />
 
                     <EditText
@@ -156,7 +156,7 @@
                         android:id="@+id/dialog_select_collection_creatorCreateBtn"
                         android:text="@string/create"
                         android:textColor="?attr/content_color"
-                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
 
@@ -164,7 +164,7 @@
                         android:id="@+id/dialog_select_collection_creatorCancelBtn"
                         android:text="@string/cancel"
                         android:textColor="?attr/subtitle_color"
-                        android:layout_toLeftOf="@id/dialog_select_collection_creatorCreateBtn"
+                        android:layout_toStartOf="@id/dialog_select_collection_creatorCreateBtn"
                         style="@style/material_button"
                         tools:ignore="RtlHardcoded" />
 

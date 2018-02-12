@@ -61,8 +61,8 @@
                             android:layout_below="@id/activity_login_icon"
                             android:layout_marginTop="@dimen/normal_margin"
                             android:layout_marginBottom="@dimen/mini_margin"
-                            android:layout_marginLeft="@dimen/mini_icon_size"
-                            android:layout_marginRight="@dimen/mini_icon_size"
+                            android:layout_marginStart="@dimen/mini_icon_size"
+                            android:layout_marginEnd="@dimen/mini_icon_size"
                             style="@style/title_text"
                             tools:ignore="HardcodedText" />
 
@@ -91,8 +91,8 @@
                                 android:textStyle="bold"
                                 android:textColor="?attr/root_color"
                                 android:layout_marginTop="@dimen/design_icon_size"
-                                android:layout_marginLeft="@dimen/design_icon_size"
-                                android:layout_marginRight="@dimen/design_icon_size"
+                                android:layout_marginStart="@dimen/design_icon_size"
+                                android:layout_marginEnd="@dimen/design_icon_size"
                                 android:layout_marginBottom="@dimen/normal_margin"
                                 tools:ignore="HardcodedText" />
 
@@ -101,8 +101,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="@dimen/design_icon_size"
-                                android:layout_marginLeft="@dimen/design_icon_size"
-                                android:layout_marginRight="@dimen/design_icon_size"
+                                android:layout_marginStart="@dimen/design_icon_size"
+                                android:layout_marginEnd="@dimen/design_icon_size"
                                 android:text="JOIN"
                                 android:textStyle="bold"
                                 android:textColor="?attr/content_color"

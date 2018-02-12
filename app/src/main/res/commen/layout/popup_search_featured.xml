@@ -21,9 +21,9 @@
         <TextView
             android:id="@+id/popup_search_featured_allTxt"
             android:text="ALL"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_search_featured_allIcon"
+            android:layout_toEndOf="@id/popup_search_featured_allIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
@@ -45,9 +45,9 @@
         <TextView
             android:id="@+id/popup_search_featured_featuredTxt"
             android:text="FEATURED"
-            android:layout_marginRight="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/popup_search_featured_featuredIcon"
+            android:layout_toEndOf="@id/popup_search_featured_featuredIcon"
             android:layout_width="wrap_content"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />

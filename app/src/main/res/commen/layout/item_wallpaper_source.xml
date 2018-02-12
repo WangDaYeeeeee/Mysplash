@@ -6,7 +6,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/little_margin"
-    android:layout_marginRight="@dimen/little_margin"
+    android:layout_marginEnd="@dimen/little_margin"
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
@@ -37,7 +37,7 @@
             android:padding="@dimen/little_margin"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:background="@android:color/transparent"
-            android:layout_alignRight="@id/item_wallpaper_source_cover"
+            android:layout_alignEnd="@id/item_wallpaper_source_cover"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <TextView
@@ -54,8 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/normal_margin"
             android:layout_alignBottom="@id/item_wallpaper_source_cover"
-            android:layout_alignRight="@id/item_wallpaper_source_cover"
-            android:layout_alignLeft="@id/item_wallpaper_source_cover"
+            android:layout_alignEnd="@id/item_wallpaper_source_cover"
+            android:layout_alignStart="@id/item_wallpaper_source_cover"
             style="@style/title_text"
             tools:text="LET THE INSPIRATION BEGIN"/>
 

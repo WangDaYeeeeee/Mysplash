@@ -171,6 +171,13 @@ public class Photo
         return (int) (1.0 * height * getRegularWidth() / width);
     }
 
+    public String getFullSizeUrl(Context context) {
+        int[] size = DisplayUtils.getScreenSize(context);
+        int w = (int) (0.6 * size[0]);
+        int h = (int) (0.6 * size[1]);
+        return urls.raw + "?q=75&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
+    }
+
     public String getWallpaperSizeUrl(Context context) {
         double scaleRatio = 0.7
                 * Math.max(
