@@ -43,6 +43,7 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
 
     private boolean complete; // if true, means the photo object is completely. (has data like exif)
     private boolean needShowInitAnim; // need do the initialize animation when first bind basic view.
+    private boolean numberTextAnimEnable; // need to show animation when first bind info view.
 
     private MoreHolder.MoreHolderModel moreHolderModel;
 
@@ -84,7 +85,8 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
         this.moreListener = new OnScrollListener();
         this.photo = photo;
         this.complete = photo != null && photo.complete;
-        resetNeedShowInitAnimFlag();
+        this.needShowInitAnim = true;
+        this.numberTextAnimEnable = true;
         this.moreHolderModel = null;
         buildTypeList();
     }
@@ -156,6 +158,9 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
                 needShowInitAnim = false;
                 ((BaseHolder) holder).onScrolling(0);
                 ((BaseHolder) holder).showInitAnim();
+            } else if (numberTextAnimEnable && getItemViewType(position) == InfoHolder.TYPE_INFO) {
+                numberTextAnimEnable = false;
+                ((InfoHolder) holder).setEnableAnim(false);
             } else if (getItemViewType(position) >= ExifHolder.TYPE_EXIF) {
                 ((ExifHolder) holder).drawExif(a, getItemViewType(position), photo);
             } else if (getItemViewType(position) == TagHolder.TYPE_TAG) {
@@ -234,7 +239,8 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
 
     public void reset(Photo photo) {
         updatePhoto(photo);
-        resetNeedShowInitAnimFlag();
+        this.needShowInitAnim = true;
+        this.numberTextAnimEnable = true;
         this.moreHolderModel = null;
     }
 
@@ -242,10 +248,6 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
         this.photo = photo;
         this.complete = photo.exif != null;
         buildTypeList();
-    }
-
-    private void resetNeedShowInitAnimFlag() {
-        this.needShowInitAnim = true;
     }
 
     public boolean isComplete() {

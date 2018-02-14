@@ -52,6 +52,8 @@ public class NumberAnimTextView extends TextView {
     private boolean isInt;
     private ValueAnimator animator;
 
+    private long updateTimes;
+
     public NumberAnimTextView(Context context) {
         super(context);
     }
@@ -134,6 +136,7 @@ public class NumberAnimTextView extends TextView {
             setText(mPrefixString + format(new BigDecimal(mNumEnd)) + mPostfixString);
             return;
         }
+        updateTimes = 0;
         animator = ValueAnimator.ofObject(new BigDecimalEvaluator(), new BigDecimal(mNumStart), new BigDecimal(mNumEnd));
         animator.setDuration(mDuration);
         animator.setInterpolator(new AccelerateDecelerateInterpolator());

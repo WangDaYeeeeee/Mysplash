@@ -34,27 +34,20 @@
                 android:layout_height="match_parent"
                 android:background="?attr/root_color">
 
-                <FrameLayout
-                    android:id="@+id/activity_photo_2_imageContainer"
+                <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
+                    android:id="@+id/activity_photo_2_regularImage"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/transition_photo_image"
+                    tools:ignore="UnusedAttribute" />
 
-                    <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
-                        android:id="@+id/activity_photo_2_regularImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
-                        android:transitionName="@string/transition_photo_image"
-                        tools:ignore="UnusedAttribute" />
-
-                    <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
-                        android:id="@+id/activity_photo_2_fullImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scaleType="centerCrop"
-                        tools:ignore="UnusedAttribute" />
-
-                </FrameLayout>
+                <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
+                    android:id="@+id/activity_photo_2_fullImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
+                    tools:ignore="UnusedAttribute" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/activity_photo_2_recyclerView"

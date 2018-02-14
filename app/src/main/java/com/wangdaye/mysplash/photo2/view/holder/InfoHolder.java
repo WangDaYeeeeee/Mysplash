@@ -28,7 +28,7 @@ public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
     NumberAnimTextView likes;
 
     private PhotoActivity2 a;
-    private boolean init;
+    private boolean enableAnim;
 
     public static final int TYPE_INFO = 4;
 
@@ -45,20 +45,22 @@ public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
         likes.getPaint().setFakeBoldText(true);
 
         this.a = a;
-        this.init = false;
+        this.enableAnim = false;
     }
 
     @Override
     protected void onBindView(PhotoActivity2 a, Photo photo) {
-        views.setEnableAnim(!init);
-        downloads.setEnableAnim(!init);
-        likes.setEnableAnim(!init);
+        views.setEnableAnim(enableAnim);
+        downloads.setEnableAnim(enableAnim);
+        likes.setEnableAnim(enableAnim);
+
         views.setNumberString(String.valueOf(photo.views));
         downloads.setNumberString(String.valueOf(photo.downloads));
         likes.setNumberString(String.valueOf(photo.likes));
-        if (!init) {
-            init = true;
-        }
+    }
+
+    public void setEnableAnim(boolean enable) {
+        enableAnim = enable;
     }
 
     @Override

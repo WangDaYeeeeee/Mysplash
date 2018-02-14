@@ -7,17 +7,14 @@ import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -112,9 +109,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @BindView(R.id.activity_photo_2_switchBackground)
     ImageView switchBackground;
-
-    @BindView(R.id.activity_photo_2_imageContainer)
-    FrameLayout imageContainer;
 
     @BindView(R.id.activity_photo_2_regularImage)
     FullScreenImageView regularImage;
@@ -376,14 +370,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                     new PhotoInfoAdapter2.SpanSizeLookup(
                             photoInfoPresenter.getAdapter(), columnCount));
             recyclerView.setLayoutManager(layoutManager);
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                recyclerView.addOnScrollListener(new OnScrollListener());
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-                    || DisplayUtils.isLandscape(PhotoActivity2.this)) {
-                recyclerView.addOnScrollListener(new MScrollListener());
-            } else {
-                recyclerView.addOnScrollListener(new OScrollListener());
-            }
+            recyclerView.addOnScrollListener(new OnScrollListener());
 
             toolbar.setTitle("");
             if (Mysplash.getInstance().getActivityCount() == 1) {
@@ -444,8 +431,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     // UI.
 
     private void resetPhotoImage(boolean init) {
-        imageContainer.setTranslationY(0);
-
         ImageHelper.releaseImageView(regularImage);
         ImageHelper.releaseImageView(fullImage);
 
@@ -504,10 +489,9 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @Nullable
     private BaseHolder getBaseHolder() {
-        GridLayoutManager manager = (GridLayoutManager) recyclerView.getLayoutManager();
-        int firstVisibleItemPosition = manager.findFirstVisibleItemPosition();
-        int lastVisibleItemPosition = manager.findLastVisibleItemPosition();
-        if (firstVisibleItemPosition <= 0 && 0 <= lastVisibleItemPosition) {
+        int firstVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+        if (firstVisibleItemPosition == 0) {
             PhotoInfoAdapter2.ViewHolder holder
                     = (PhotoInfoAdapter2.ViewHolder) recyclerView.findViewHolderForAdapterPosition(0);
             if (holder instanceof BaseHolder) {
@@ -531,7 +515,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     }
 
     @Nullable
-    private ViewPager getMoreImageContainer() {
+    private MoreHolder getMoreHolder() {
         if (!photoInfoPresenter.getAdapter().isComplete()) {
             return null;
         } else {
@@ -541,7 +525,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                 RecyclerView.ViewHolder holder
                         = recyclerView.findViewHolderForAdapterPosition(lastVisibleItemPosition);
                 if (holder instanceof MoreHolder) {
-                    return ((MoreHolder) holder).getViewPager();
+                    return (MoreHolder) holder;
                 } else {
                     return null;
                 }
@@ -688,7 +672,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
      * */
     private class OnScrollListener extends RecyclerView.OnScrollListener {
 
-        BaseHolder baseHolder;
+        private BaseHolder baseHolder;
 
         int scrollY;
 
@@ -696,11 +680,21 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         float showFlowStatusBarTrigger;
         float toolbarTranslationTrigger;
 
+        boolean onlyDark;
+
         // life cycle.
 
         OnScrollListener() {
             verticalFooterHeight = getResources().getDimensionPixelSize(R.dimen.item_photo_2_more_vertical_height)
                     + DisplayUtils.getNavigationBarHeight(getResources());
+            showFlowStatusBarTrigger = DisplayUtils.getScreenSize(PhotoActivity2.this)[1]
+                    - DisplayUtils.getStatusBarHeight(getResources());
+            toolbarTranslationTrigger = DisplayUtils.getScreenSize(PhotoActivity2.this)[1]
+                    - DisplayUtils.getStatusBarHeight(getResources())
+                    - new DisplayUtils(PhotoActivity2.this).dpToPx(56)
+                    - getResources().getDimensionPixelSize(R.dimen.little_icon_size)
+                    - 2 * getResources().getDimensionPixelSize(R.dimen.normal_margin);
+            onlyDark = true;
         }
 
         // interface.
@@ -708,13 +702,8 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             scrollY += dy;
-
-            // image.
-            if (scrollY < imageContainer.getMeasuredHeight()) {
-                imageContainer.setTranslationY((float) (-scrollY * 0.5));
-            }
             
-            // holder.
+            // base holder.
             if (baseHolder == null) {
                 baseHolder = getBaseHolder();
             }
@@ -722,78 +711,43 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                 baseHolder.onScrolling(scrollY);
             }
 
-            // status bar
-            if (showFlowStatusBarTrigger <= 0) {
-                showFlowStatusBarTrigger = imageContainer.getMeasuredHeight()
-                        - DisplayUtils.getStatusBarHeight(getResources());
-            }
-            if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
-                statusBar.animToDarkerAlpha();
-            } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
-                statusBar.animToInitAlpha();
+            // more holder.
+            MoreHolder moreHolder = getMoreHolder();
+            if (moreHolder != null) {
+                moreHolder.getViewPager().setTranslationY(
+                        recyclerView.getBottom()
+                                - ((View) moreHolder.getViewPager().getParent()).getTop()
+                                - verticalFooterHeight);
             }
 
             // toolbar.
-            if (toolbarTranslationTrigger <= 0) {
-                toolbarTranslationTrigger = imageContainer.getMeasuredHeight()
-                        - DisplayUtils.getStatusBarHeight(getResources())
-                        - new DisplayUtils(PhotoActivity2.this).dpToPx(56)
-                        - getResources().getDimensionPixelSize(R.dimen.little_icon_size)
-                        - 2 * getResources().getDimensionPixelSize(R.dimen.normal_margin);
-            }
             if (scrollY > toolbarTranslationTrigger) {
                 appBar.setTranslationY(toolbarTranslationTrigger - scrollY);
             } else if (appBar.getTranslationY() != 0) {
                 appBar.setTranslationY(0);
             }
 
-            // more.
-            ViewPager moreContainer = getMoreImageContainer();
-            if (moreContainer != null) {
-                moreContainer.setTranslationY(
-                        (float) (0.5 * (recyclerView.getBottom()
-                                - ((View) moreContainer.getParent()).getTop()
-                                - verticalFooterHeight)));
-            }
-        }
-    }
-
-    /**
-     * This listener is used to control the text color for status bar. Only for Android M.
-     * */
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    private class MScrollListener extends OnScrollListener {
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
+            // status bar & navigation bar.
             if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
-                DisplayUtils.setStatusBarStyle(PhotoActivity2.this, false);
+                statusBar.animToDarkerAlpha();
             } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
-                DisplayUtils.setStatusBarStyle(PhotoActivity2.this, true);
+                statusBar.animToInitAlpha();
             }
-        }
-    }
-
-    /**
-     * This listener is used to control the button color for navigation bar. Only for Android O.
-     * */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private class OScrollListener extends MScrollListener {
-
-        boolean onlyDark = true;
-
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            if (!recyclerView.canScrollVertically(-1) || (getMoreImageContainer() != null)) {
-                if (!onlyDark) {
-                    onlyDark = true;
-                    DisplayUtils.setNavigationBarStyle(PhotoActivity2.this, true, true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (scrollY - dy < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
+                    DisplayUtils.setStatusBarStyle(PhotoActivity2.this, false);
+                } else if (scrollY - dy >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
+                    DisplayUtils.setStatusBarStyle(PhotoActivity2.this, true);
                 }
-            } else if (onlyDark) {
-                onlyDark = false;
-                DisplayUtils.setNavigationBarStyle(PhotoActivity2.this, false, true);
+                if (!recyclerView.canScrollVertically(-1) || (moreHolder != null)) {
+                    if (!onlyDark) {
+                        onlyDark = true;
+                        DisplayUtils.setNavigationBarStyle(PhotoActivity2.this, true, true);
+                    }
+                } else if (onlyDark) {
+                    onlyDark = false;
+                    DisplayUtils.setNavigationBarStyle(PhotoActivity2.this, false, true);
+                }
             }
         }
     }
@@ -873,19 +827,12 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
             resetPhotoImage(false);
 
+            photoInfoPresenter.cancelRequest();
+
+            recyclerView.clearOnScrollListeners();
             photoInfoPresenter.getAdapter().reset(photoInfoPresenter.getPhoto());
             recyclerView.setAdapter(photoInfoPresenter.getAdapter());
-            recyclerView.clearOnScrollListeners();
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                recyclerView.addOnScrollListener(new OnScrollListener());
-            } else if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O
-                    || DisplayUtils.isLandscape(PhotoActivity2.this)) {
-                recyclerView.addOnScrollListener(new MScrollListener());
-            } else {
-                recyclerView.addOnScrollListener(new OScrollListener());
-            }
-
-            photoInfoPresenter.cancelRequest();
+            recyclerView.addOnScrollListener(new OnScrollListener());
 
             Photo photo = photoInfoPresenter.getPhoto();
             if (photo != null && !photo.complete) {
@@ -992,6 +939,11 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             photoInfoPresenter.getAdapter().updatePhoto(photo);
             photoInfoPresenter.getAdapter().notifyItemRangeInserted(
                     oldCount, photoInfoPresenter.getAdapter().getItemCount());
+
+            PhotoButtonBar buttonBar = getPhotoButtonBar();
+            if (buttonBar != null) {
+                buttonBar.setState(photo);
+            }
 
             Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
         }

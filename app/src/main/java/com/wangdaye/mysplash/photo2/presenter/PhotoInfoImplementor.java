@@ -105,6 +105,7 @@ public class PhotoInfoImplementor
             if (response.isSuccessful() && response.body() != null) {
                 Photo photo = response.body();
                 photo.complete = true;
+                photo.settingLike = model.getPhoto().settingLike;
                 model.setPhoto(photo, false);
                 model.setFailed(false);
                 view.requestPhotoSuccess(photo);
