@@ -11,6 +11,7 @@
         tools:ignore="NewApi">
         <targets>
             <target android:targetId="@id/activity_me_avatar" />
+            <target android:targetId="@id/activity_me_swipeBackView" />
         </targets>
     </changeBounds>
 

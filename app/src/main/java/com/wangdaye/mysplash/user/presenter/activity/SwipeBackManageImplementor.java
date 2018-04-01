@@ -24,7 +24,7 @@ public class SwipeBackManageImplementor
 
     @Override
     public void swipeBackFinish(MysplashActivity a, int dir) {
-        a.finishActivity(dir);
+        a.finishSelf(false);
     }
 }
 

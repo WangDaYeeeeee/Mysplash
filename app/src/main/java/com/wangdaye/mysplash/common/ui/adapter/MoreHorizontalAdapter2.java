@@ -73,16 +73,16 @@ public class MoreHorizontalAdapter2 extends RecyclerView.Adapter<MoreHorizontalA
             DisplayUtils.setTypeface(a, subtitle);
 
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(a, image, collection, getAdapterPosition(), this);
+                ImageHelper.loadCollectionCover(image.getContext(), image, collection, getAdapterPosition(), this);
                 card.setCardBackgroundColor(
                         ImageHelper.computeCardBackgroundColor(
-                                a,
+                                card.getContext(),
                                 collection.cover_photo.color));
             } else {
                 image.setImageResource(R.color.colorTextContent_light);
             }
 
-            ImageHelper.loadAvatar(a, avatar, collection.user, getAdapterPosition(), null);
+            ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, getAdapterPosition(), null);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 card.setTransitionName(collection.id + "-background");
@@ -109,6 +109,7 @@ public class MoreHorizontalAdapter2 extends RecyclerView.Adapter<MoreHorizontalA
             IntentHelper.startUserActivity(
                     a,
                     avatar,
+                    card,
                     collection.user,
                     UserActivity.PAGE_PHOTO);
         }

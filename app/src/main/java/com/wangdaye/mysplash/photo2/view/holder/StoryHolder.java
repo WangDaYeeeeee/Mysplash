@@ -91,6 +91,7 @@ public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
         IntentHelper.startUserActivity(
                 Mysplash.getInstance().getTopActivity(),
                 avatar,
+                itemView,
                 photo.user,
                 UserActivity.PAGE_PHOTO);
     }

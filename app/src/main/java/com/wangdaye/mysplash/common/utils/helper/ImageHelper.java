@@ -255,6 +255,15 @@ public class ImageHelper {
         return null;
     }
 
+    public static void preloadRegularPhoto(Context context, Photo photo) {
+        if (photo != null && photo.urls != null
+                && photo.width != 0 && photo.height != 0) {
+            Glide.with(context)
+                    .load(photo.getRegularSizeUrl(context))
+                    .downloadOnly(photo.getRegularWidth(), photo.getRegularHeight());
+        }
+    }
+
     /**
      * Load full size photo image.
      *
@@ -292,7 +301,11 @@ public class ImageHelper {
     // collection cover.
 
     public static void loadCollectionCover(Context context, ImageView view, Collection collection) {
-        loadCollectionCover(context, view, collection, 0, null);
+        if (collection != null) {
+            loadRegularPhoto(
+                    context,
+                    view, collection.cover_photo, 0, false, true, null);
+        }
     }
 
     public static void loadCollectionCover(Context context, ImageView view, Collection collection,

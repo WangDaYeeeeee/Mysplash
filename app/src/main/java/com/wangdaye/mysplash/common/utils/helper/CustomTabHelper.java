@@ -23,8 +23,8 @@ class CustomTabHelper {
         CustomTabsIntent.Builder builder = new CustomTabsIntent.Builder();
         builder.setShowTitle(true);
         builder.setToolbarColor(ThemeManager.getPrimaryColor(context));
-        builder.setStartAnimations(context, R.anim.activity_in, R.anim.activity_slide_out_bottom);
-        builder.setExitAnimations(context, R.anim.activity_in, R.anim.activity_slide_out_bottom);
+        builder.setStartAnimations(context, R.anim.activity_slide_in, R.anim.activity_fade_out);
+        builder.setExitAnimations(context, R.anim.activity_slide_in, R.anim.activity_fade_out);
 
         CustomTabsIntent customTabsIntent = builder.build();
         customTabsIntent.launchUrl(context, Uri.parse(url));

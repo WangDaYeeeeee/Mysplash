@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.BindView;
@@ -65,7 +64,7 @@ public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
 
     @OnClick(R.id.dialog_confirm_exit_without_save_exitBtn) void exit() {
         ((MuzeiConfigurationActivity) getActivity())
-                .finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                .finishSelf(true);
         dismiss();
     }
 }

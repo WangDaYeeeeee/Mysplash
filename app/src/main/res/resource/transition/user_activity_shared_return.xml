@@ -10,6 +10,7 @@
         tools:ignore="NewApi">
         <targets>
             <target android:targetId="@id/activity_user_avatar" />
+            <target android:targetId="@id/activity_user_swipeBackView" />
         </targets>
     </changeBounds>
 

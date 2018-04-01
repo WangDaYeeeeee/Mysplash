@@ -53,6 +53,27 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         }
     }
 
+    private static class ResetAlphaAnimation extends Animation {
+
+        private View view;
+        private boolean showing;
+
+        ResetAlphaAnimation(View v, boolean showing) {
+            this.view = v;
+            this.showing = showing;
+        }
+
+        @Override
+        protected void applyTransformation(float interpolatedTime, Transformation t) {
+            super.applyTransformation(interpolatedTime, t);
+            if (showing) {
+                view.setAlpha((float) (0.5 * interpolatedTime));
+            } else {
+                view.setAlpha((float) (0.5 * (1 - interpolatedTime)));
+            }
+        }
+    }
+
     private static class RecolorAnimation extends Animation {
 
         private View view;
@@ -228,6 +249,17 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     /**
+     * Compute shadow background alpha by drag percent.
+     *
+     * @param percent drag percent.
+     *
+     * @return Color.
+     * */
+    public static float getBackgroundAlpha(float percent) {
+        return (float) (0.9 - percent * (0.9 - 0.5));
+    }
+
+    /**
      * Compute shadow background color by drag percent.
      *
      * @param percent drag percent.
@@ -236,15 +268,27 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
      * */
     @ColorInt
     public static int getBackgroundColor(float percent) {
-        return Color.argb((int) (255 * (0.9 - percent * (0.9 - 0.5))), 0, 0, 0);
+        return Color.argb((int) (255 * getBackgroundAlpha(percent)), 0, 0, 0);
     }
 
     /**
-     * Execute fade animation to hide shadow background.
+     * Execute alpha animation to hide background.
      *
      * @param background The view to show shadow background.
      * */
-    public static void hideBackgroundShadow(View background) {
+
+    public static void hideBackgroundWithAlphaAnim(View background) {
+        ResetAlphaAnimation a = new ResetAlphaAnimation(background, false);
+        a.setDuration(200);
+        background.startAnimation(a);
+    }
+
+    /**
+     * Execute color animation to hide background.
+     *
+     * @param background The view to show shadow background.
+     * */
+    public static void hideBackgroundWithColorAnim(View background) {
         RecolorAnimation a = new RecolorAnimation(background, false);
         a.setDuration(200);
         background.startAnimation(a);

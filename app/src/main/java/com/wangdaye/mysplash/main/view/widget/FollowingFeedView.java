@@ -89,6 +89,9 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @BindView(R.id.container_following_avatar_avatarContainer)
     RelativeLayout avatarContainer;
 
+    @BindView(R.id.container_following_avatar_background)
+    FrameLayout avatarBackground;
+
     @BindView(R.id.container_following_avatar_avatar)
     CircleImageView avatar;
 
@@ -339,7 +342,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     public void updatePhoto(Photo p, boolean refreshView) {
-        followingPresenter.getAdapter().updatePhoto(p, refreshView, true);
+        followingPresenter.getAdapter().updatePhoto(recyclerView, p, refreshView, true);
     }
 
     // HTTP request.
@@ -406,6 +409,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         IntentHelper.startUserActivity(
                 Mysplash.getInstance().getTopActivity(),
                 avatar,
+                avatarBackground,
                 followingPresenter.getAdapter().getActor(adapterPosition),
                 UserActivity.PAGE_PHOTO);
     }

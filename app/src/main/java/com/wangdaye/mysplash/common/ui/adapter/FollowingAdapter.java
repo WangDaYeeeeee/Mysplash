@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
@@ -355,22 +356,15 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         }
     }
 
-    public void updatePhoto(Photo p, boolean refreshView, boolean probablyRepeat) {
-        int position = -1;
+    public void updatePhoto(RecyclerView recyclerView, Photo p, boolean refreshView, boolean probablyRepeat) {
         for (int i = 0; i < resultList.size(); i ++) {
-            position ++;
-            int j = 0;
-            if (resultList.get(i).verb.equals(FollowingResult.VERB_FOLLOWED)) {
-                position += resultList.get(i).objects.size();
-            } else {
+            int j;
+            if (!resultList.get(i).verb.equals(FollowingResult.VERB_FOLLOWED)) {
                 for (j = 0; j < resultList.get(i).objects.size(); j ++) {
-                    if (j < getMaxiPhotoCount()) {
-                        position ++;
-                    }
                     if (resultList.get(i).objects.get(j).id.equals(p.id)) {
                         resultList.get(i).objects.set(j, new ActionObject(p));
                         if (refreshView && j < getMaxiPhotoCount()) {
-                            notifyItemChanged(position);
+                            updatePhotoItemView(recyclerView, p, i);
                         }
                         if (!probablyRepeat) {
                             return;
@@ -378,8 +372,22 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     }
                 }
             }
-            if (j > getMaxiPhotoCount()) {
-                position ++;
+        }
+    }
+
+    private void updatePhotoItemView(@Nullable RecyclerView recyclerView, Photo photo, int position) {
+        if (recyclerView == null) {
+            notifyItemChanged(position);
+        } else if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            int firstVisiblePosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findFirstVisibleItemPosition();
+            int lastVisiblePosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPosition();
+            if (firstVisiblePosition <= position && position <= lastVisiblePosition) {
+                // is a visible item.
+                ((PhotoHolder) recyclerView.findViewHolderForAdapterPosition(position)).update(photo);
+            } else {
+                notifyItemChanged(position);
             }
         }
     }
@@ -552,7 +560,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        updatePhoto(p, true, true);
+        updatePhoto(recyclerView, p, true, true);
     }
 }
 
@@ -602,7 +610,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
         User user = result.actors.get(0);
 
         actor.setText(user.name);
-        ImageHelper.loadAvatar(a, avatar, user, getAdapterPosition(), null);
+        ImageHelper.loadAvatar(avatar.getContext(), avatar, user, getAdapterPosition(), null);
 
         switch (result.verb) {
             case FollowingResult.VERB_LIKED:
@@ -695,6 +703,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
             IntentHelper.startUserActivity(
                     a,
                     avatar,
+                    background,
                     result.actors.get(0),
                     UserActivity.PAGE_PHOTO);
         }
@@ -717,6 +726,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
                     IntentHelper.startUserActivity(
                             a,
                             avatar,
+                            background,
                             result.actors.get(0),
                             UserActivity.PAGE_PHOTO);
                     break;
@@ -724,6 +734,7 @@ class TitleHolder extends RecyclerView.ViewHolder {
                     IntentHelper.startUserActivity(
                             a,
                             avatar,
+                            background,
                             result.actors.get(0),
                             UserActivity.PAGE_LIKE);
                     break;
@@ -792,8 +803,7 @@ class PhotoHolder extends RecyclerView.ViewHolder
         title.setText("");
         image.setShowShadow(false);
 
-        // ImageHelper.loadFullPhoto(a, image, photo, position, this);
-        ImageHelper.loadRegularPhoto(a, image, photo, position, this);
+        ImageHelper.loadRegularPhoto(image.getContext(), image, photo, position, this);
 
         if (photo.current_user_collections.size() != 0) {
             collectionButton.setImageResource(R.drawable.ic_item_collected);
@@ -808,7 +818,8 @@ class PhotoHolder extends RecyclerView.ViewHolder
                     R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
         }
 
-        background.setBackgroundColor(ImageHelper.computeCardBackgroundColor(a, photo.color));
+        background.setBackgroundColor(
+                ImageHelper.computeCardBackgroundColor(background.getContext(), photo.color));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image.setTransitionName(photo.id + "-" + position + "-cover");
@@ -818,6 +829,28 @@ class PhotoHolder extends RecyclerView.ViewHolder
 
     void onRecycled() {
         ImageHelper.releaseImageView(image);
+    }
+
+    void update(Photo photo) {
+        this.photo = photo;
+
+        ImageHelper.preloadRegularPhoto(image.getContext(), photo);
+
+        if (photo.current_user_collections.size() != 0) {
+            collectionButton.setImageResource(R.drawable.ic_item_collected);
+        } else {
+            collectionButton.setImageResource(R.drawable.ic_item_collect);
+        }
+
+        if (photo.settingLike) {
+            likeButton.setProgressState();
+        } else if (likeButton.getState() == CircularProgressIcon.STATE_PROGRESS) {
+            likeButton.setResultState(photo.liked_by_user ?
+                    R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+        } else {
+            likeButton.forceSetResultState(photo.liked_by_user ?
+                    R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+        }
     }
 
     // interface.
@@ -970,7 +1003,7 @@ class UserHolder extends RecyclerView.ViewHolder
             subtitle.setText(user.bio);
         }
 
-        ImageHelper.loadAvatar(a, avatar, user, position, this);
+        ImageHelper.loadAvatar(avatar.getContext(), avatar, user, position, this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(user.username + "-" + position + "-avatar");
@@ -990,6 +1023,7 @@ class UserHolder extends RecyclerView.ViewHolder
             IntentHelper.startUserActivity(
                     a,
                     avatar,
+                    background,
                     user,
                     UserActivity.PAGE_PHOTO);
         }
@@ -1065,8 +1099,8 @@ class MoreHolder extends RecyclerView.ViewHolder
         more.setText(
                 (result.objects.size() - adapter.getMaxiPhotoCount())
                         + " " + a.getString(R.string.more));
-        ImageHelper.loadRegularPhoto(a, image, photo, position, this);
-        ImageHelper.loadAvatar(a, avatar, result.actors.get(0), getAdapterPosition(), null);
+        ImageHelper.loadRegularPhoto(image.getContext(), image, photo, position, this);
+        ImageHelper.loadAvatar(avatar.getContext(), avatar, result.actors.get(0), getAdapterPosition(), null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(result.actors.get(0).username + "-" + position + "-avatar");
             background.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
@@ -1098,6 +1132,7 @@ class MoreHolder extends RecyclerView.ViewHolder
                     IntentHelper.startUserActivity(
                             a,
                             avatar,
+                            background,
                             result.actors.get(0),
                             UserActivity.PAGE_PHOTO);
                     break;
@@ -1106,6 +1141,7 @@ class MoreHolder extends RecyclerView.ViewHolder
                     IntentHelper.startUserActivity(
                             a,
                             avatar,
+                            background,
                             result.actors.get(0),
                             UserActivity.PAGE_LIKE);
                     break;
@@ -1119,6 +1155,7 @@ class MoreHolder extends RecyclerView.ViewHolder
             IntentHelper.startUserActivity(
                     a,
                     avatar,
+                    background,
                     result.actors.get(0),
                     UserActivity.PAGE_LIKE);
         }

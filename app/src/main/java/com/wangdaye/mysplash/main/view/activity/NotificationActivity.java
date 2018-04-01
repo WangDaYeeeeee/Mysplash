@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.activity;
 
 import android.annotation.SuppressLint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
@@ -35,11 +36,17 @@ public class NotificationActivity extends MysplashActivity
         View.OnClickListener, Toolbar.OnMenuItemClickListener,
         SwipeBackCoordinatorLayout.OnSwipeListener {
 
-    @BindView(R.id.activity_notification_statusBar)
-    StatusBarView statusBar;
-
     @BindView(R.id.activity_notification_container)
     CoordinatorLayout container;
+
+    @BindView(R.id.activity_notification_background)
+    View background;
+
+    @BindView(R.id.activity_notification_shadow)
+    View shadow;
+
+    @BindView(R.id.activity_notification_statusBar)
+    StatusBarView statusBar;
 
     @BindView(R.id.activity_notification_notificationsView)
     NotificationsView notificationsView;
@@ -74,17 +81,15 @@ public class NotificationActivity extends MysplashActivity
                 .getNotificationManager()
                 .removeOnUpdateNotificationListener(
                         notificationsView.getOnUpdateNotificationListener());
-        if (notificationsView != null) {
-            notificationsView.cancelRequest();
-        }
+        notificationsView.cancelRequest();
     }
 
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
+            setTheme(R.style.MysplashTheme_light_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+            setTheme(R.style.MysplashTheme_dark_Common);
         }
     }
 
@@ -94,7 +99,7 @@ public class NotificationActivity extends MysplashActivity
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         }
     }
 
@@ -104,21 +109,16 @@ public class NotificationActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         AuthManager.getInstance()
                 .getNotificationManager()
                 .setLatestSeenTime();
 
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -135,6 +135,10 @@ public class NotificationActivity extends MysplashActivity
 
     @SuppressLint("SetTextI18n")
     private void initView() {
+        if (getBackground() != null) {
+            background.setBackground(new BitmapDrawable(getResources(), getBackground()));
+        }
+
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_notification_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
@@ -159,7 +163,7 @@ public class NotificationActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
                 break;
         }
     }
@@ -193,7 +197,7 @@ public class NotificationActivity extends MysplashActivity
     @Override
     public void onSwipeProcess(float percent) {
         statusBar.setAlpha(1 - percent);
-        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+        shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
     @Override

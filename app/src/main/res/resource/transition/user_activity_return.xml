@@ -2,16 +2,25 @@
 <transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:interpolator="@android:interpolator/fast_out_slow_in"
-    android:duration="300"
     android:transitionOrdering="together"
     tools:ignore="NewApi">
 
-    <fade>
+    <fade
+        android:duration="300"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
         <targets>
             <target android:targetId="@android:id/navigationBarBackground" />
             <target android:targetId="@android:id/statusBarBackground" />
-            <target android:targetId="@id/activity_user_container" />
             <target android:targetId="@id/activity_user_statusBar" />
+            <target android:targetId="@id/activity_user_shadow" />
+        </targets>
+    </fade>
+
+    <fade
+        android:startDelay="200"
+        android:duration="150">
+        <targets>
+            <target android:targetId="@id/activity_user_background" />
         </targets>
     </fade>
 

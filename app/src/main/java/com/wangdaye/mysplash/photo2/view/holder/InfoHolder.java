@@ -40,6 +40,10 @@ public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
         DisplayUtils.setTypeface(a, downloads);
         DisplayUtils.setTypeface(a, likes);
 
+        views.setDuration(1000);
+        downloads.setDuration(1000);
+        likes.setDuration(1000);
+
         views.getPaint().setFakeBoldText(true);
         downloads.getPaint().setFakeBoldText(true);
         likes.getPaint().setFakeBoldText(true);

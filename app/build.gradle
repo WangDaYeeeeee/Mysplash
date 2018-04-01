@@ -8,8 +8,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 27
-        versionCode 328
-        versionName "3.2.8"
+        versionCode 330
+        versionName "3.3.0"
     }
     sourceSets {
         main {
@@ -19,7 +19,6 @@ android {
             assets.srcDirs = ['src/main/assets']
             res.srcDirs = [
                     'src/main/res/main',
-                    'src/main/res/photo',
                     'src/main/res/photo2',
                     'src/main/res/user',
                     'src/main/res/collection',

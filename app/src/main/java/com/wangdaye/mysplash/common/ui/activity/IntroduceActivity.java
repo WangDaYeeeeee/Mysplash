@@ -22,7 +22,6 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -148,7 +147,7 @@ public class IntroduceActivity extends MysplashActivity
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         } else {
             backPressed = true;
             NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
@@ -168,9 +167,13 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
-        overridePendingTransition(0, R.anim.activity_slide_out_bottom);
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
+        }
     }
 
     @Override
@@ -298,13 +301,13 @@ public class IntroduceActivity extends MysplashActivity
         switch (v.getId()) {
             case R.id.activity_introduce_backBtn:
                 // finish activity.
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
                 break;
 
             case R.id.activity_introduce_button:
                 if (viewPager.getCurrentItem() == introduceModelList.size() - 1) {
                     // last page --> finish activity.
-                    finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                    finishSelf(true);
                 } else {
                     // jump to next page.
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
@@ -316,7 +319,7 @@ public class IntroduceActivity extends MysplashActivity
                     case R.drawable.illustration_back_top:
                         Intent s = new Intent(this, SettingsActivity.class);
                         startActivity(s);
-                        overridePendingTransition(R.anim.activity_in, 0);
+                        overridePendingTransition(R.anim.activity_slide_in, 0);
                         break;
                 }
                 break;

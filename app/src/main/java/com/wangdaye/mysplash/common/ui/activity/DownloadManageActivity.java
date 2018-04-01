@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -48,6 +49,12 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @BindView(R.id.activity_download_manage_container)
     CoordinatorLayout container;
+
+    @BindView(R.id.activity_download_manage_background)
+    View background;
+
+    @BindView(R.id.activity_download_manage_shadow)
+    View shadow;
 
     @BindView(R.id.activity_download_manage_statusBar)
     StatusBarView statusBar;
@@ -127,15 +134,15 @@ public class DownloadManageActivity extends ReadWriteActivity
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
+            setTheme(R.style.MysplashTheme_light_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
+            setTheme(R.style.MysplashTheme_dark_Common);
         }
     }
 
     @Override
     public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @Override
@@ -144,16 +151,12 @@ public class DownloadManageActivity extends ReadWriteActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -170,6 +173,10 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
+
+        if (getBackground() != null) {
+            background.setBackground(new BitmapDrawable(getResources(), getBackground()));
+        }
 
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_download_manage_swipeBackView);
@@ -313,7 +320,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                 if (Mysplash.getInstance().getActivityCount() == 1) {
                     IntentHelper.startMainActivity(this);
                 }
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
                 break;
         }
     }
@@ -363,12 +370,12 @@ public class DownloadManageActivity extends ReadWriteActivity
     @Override
     public void onSwipeProcess(float percent) {
         statusBar.setAlpha(1 - percent);
-        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+        shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 
     // handler.

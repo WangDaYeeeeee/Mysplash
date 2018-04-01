@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.me.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -87,6 +88,12 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @BindView(R.id.activity_me_container)
     CoordinatorLayout container;
+
+    @BindView(R.id.activity_me_background)
+    View background;
+
+    @BindView(R.id.activity_me_shadow)
+    View shadow;
 
     @BindView(R.id.activity_me_appBar)
     NestedScrollAppBarLayout appBar;
@@ -216,9 +223,9 @@ public class MeActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Me);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Me);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Me);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Me);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -256,7 +263,7 @@ public class MeActivity extends LoadableActivity<Photo>
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         }
     }
 
@@ -269,23 +276,13 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         setResult(RESULT_OK);
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        if (!getIntent().getBooleanExtra(EXTRA_BROWSABLE, false)
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
+        finish();
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
         } else {
-            finish();
-            switch (dir) {
-                case SwipeBackCoordinatorLayout.UP_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_top);
-                    break;
-
-                case SwipeBackCoordinatorLayout.DOWN_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                    break;
-            }
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -354,13 +351,17 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     private void initView() {
+        if (getBackground() != null) {
+            background.setBackground(new BitmapDrawable(getResources(), getBackground()));
+        }
+
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         appBar.setOnNestedScrollingListener(this);
 
-        if (Mysplash.getInstance().getActivityCount() == 1) {
+        if (isTheLowestLevel()) {
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
         } else {
@@ -514,7 +515,7 @@ public class MeActivity extends LoadableActivity<Photo>
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (Mysplash.getInstance().getActivityCount() == 1) {
+                if (isTheLowestLevel()) {
                     IntentHelper.startMainActivity(this);
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
@@ -636,7 +637,7 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     public void onSwipeProcess(float percent) {
-        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+        shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
     @Override

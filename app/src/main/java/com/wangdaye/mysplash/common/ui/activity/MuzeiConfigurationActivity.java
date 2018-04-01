@@ -110,7 +110,9 @@ public class MuzeiConfigurationActivity extends MysplashActivity
         if (getWindow().getAttributes().softInputMode
                 == WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE) {
             InputMethodManager manager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            manager.hideSoftInputFromWindow(intervalEditText.getWindowToken(), 0);
+            if (manager != null) {
+                manager.hideSoftInputFromWindow(intervalEditText.getWindowToken(), 0);
+            }
         } else {
             ConfirmExitWithoutSaveDialog dialog = new ConfirmExitWithoutSaveDialog();
             dialog.show(getFragmentManager(), null);
@@ -123,16 +125,12 @@ public class MuzeiConfigurationActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -160,7 +158,7 @@ public class MuzeiConfigurationActivity extends MysplashActivity
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
             }
         });
 
@@ -192,7 +190,7 @@ public class MuzeiConfigurationActivity extends MysplashActivity
 
     public void saveConfiguration() {
         submit();
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     // interface.
@@ -221,7 +219,7 @@ public class MuzeiConfigurationActivity extends MysplashActivity
         MuzeiOptionManager.update(
                 this, null,
                 interval, wifiSwitch.isChecked(), adapter.itemList);
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     // on swipe listener.
@@ -239,6 +237,6 @@ public class MuzeiConfigurationActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 }

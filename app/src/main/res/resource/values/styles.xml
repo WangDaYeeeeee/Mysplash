@@ -31,13 +31,25 @@
     </style>
 
     <style name="MysplashTheme_light.Translucent" parent="MysplashTheme_light">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="MysplashTheme_dark.Translucent" parent="MysplashTheme_dark">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="MysplashTheme_light.TranslucentNavigation" parent="MysplashTheme_light">
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="MysplashTheme_dark.TranslucentNavigation" parent="MysplashTheme_dark">
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style
@@ -54,71 +66,63 @@
 
     <!-- main activity. -->
 
-    <style name="MysplashTheme_light.Main" parent="MysplashTheme_light">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
+    <style
+        name="MysplashTheme_light.TranslucentNavigation.Main"
+        parent="MysplashTheme_light.TranslucentNavigation" />
 
-    <style name="MysplashTheme_dark.Main" parent="MysplashTheme_dark">
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
-
-    <!-- photo activity. -->
-
-    <style name="MysplashTheme_light.Translucent.Photo" parent="MysplashTheme_light.Translucent" />
-
-    <style name="MysplashTheme_dark.Translucent.Photo" parent="MysplashTheme_dark.Translucent" />
+    <style
+        name="MysplashTheme_dark.TranslucentNavigation.Main"
+        parent="MysplashTheme_dark.TranslucentNavigation" />
 
     <!-- photo activity 2. -->
 
     <style
-        name="MysplashTheme_light.Translucent.Photo2"
-        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_light.TranslucentNavigation.Photo2"
+        parent="MysplashTheme_light.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.Translucent.Photo2"
-        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_dark.TranslucentNavigation.Photo2"
+        parent="MysplashTheme_dark.TranslucentNavigation" />
 
     <!-- preview activity. -->
 
-    <style name="MysplashTheme_light.Translucent.Preview" parent="MysplashTheme_light.Translucent">
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
+    <style
+        name="MysplashTheme_light.Translucent.TranslucentNavigation.Preview"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
 
-    <style name="MysplashTheme_dark.Translucent.Preview" parent="MysplashTheme_dark.Translucent">
-        <item name="android:windowTranslucentNavigation">true</item>
-    </style>
+    <style
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation.Preview"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
 
     <!-- user activity. -->
 
     <style
-        name="MysplashTheme_light.Translucent.User"
-        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_light.TranslucentNavigation.User"
+        parent="MysplashTheme_light.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.Translucent.User"
-        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_dark.TranslucentNavigation.User"
+        parent="MysplashTheme_dark.TranslucentNavigation" />
 
     <!-- me activity. -->
 
     <style
-        name="MysplashTheme_light.Translucent.Me"
-        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_light.TranslucentNavigation.Me"
+        parent="MysplashTheme_light.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.Translucent.Me"
-        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_dark.TranslucentNavigation.Me"
+        parent="MysplashTheme_dark.TranslucentNavigation" />
 
     <!-- collection activity. -->
 
     <style
-        name="MysplashTheme_light.Translucent.Collection"
-        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_light.TranslucentNavigation.Collection"
+        parent="MysplashTheme_light.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.Translucent.Collection"
-        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
+        name="MysplashTheme_dark.TranslucentNavigation.Collection"
+        parent="MysplashTheme_dark.TranslucentNavigation" />
 
     <!-- settings activity. -->
 
@@ -132,6 +136,10 @@
     
     <!-- common activity theme. -->
     
+    <style name="MysplashTheme_light.Common" parent="MysplashTheme_light" />
+
+    <style name="MysplashTheme_dark.Common" parent="MysplashTheme_dark" />
+
     <style name="MysplashTheme_light.Translucent.Common" parent="MysplashTheme_light.Translucent" />
 
     <style name="MysplashTheme_dark.Translucent.Common" parent="MysplashTheme_dark.Translucent" />
@@ -269,5 +277,8 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+
+    <!-- animation. -->
+
 
 </resources>

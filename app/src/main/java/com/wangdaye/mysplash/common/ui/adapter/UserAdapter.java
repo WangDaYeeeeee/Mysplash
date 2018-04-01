@@ -97,7 +97,7 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             ThemeManager.setImageResource(
                     portfolioBtn, R.drawable.ic_item_earth_light, R.drawable.ic_item_earth_dark);
 
-            ImageHelper.loadAvatar(a, avatar, user, position, this);
+            ImageHelper.loadAvatar(avatar.getContext(), avatar, user, position, this);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 avatar.setTransitionName(user.username + "-avatar");
@@ -116,6 +116,7 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 IntentHelper.startUserActivity(
                         (MysplashActivity) a,
                         avatar,
+                        background,
                         itemList.get(getAdapterPosition()),
                         UserActivity.PAGE_PHOTO);
             }

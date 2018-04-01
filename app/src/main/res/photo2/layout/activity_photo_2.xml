@@ -7,6 +7,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <View
+        android:id="@+id/activity_photo_2_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <View
+        android:id="@+id/activity_photo_2_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:alpha="0" />
+
     <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
         android:id="@+id/activity_photo_2_swipeBackView"
         android:layout_width="match_parent"

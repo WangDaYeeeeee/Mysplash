@@ -11,7 +11,6 @@ import com.wangdaye.mysplash.common.i.model.AboutModel;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.TotalDialog;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -40,14 +39,14 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
         ThemeManager.setImageResource(
                 backBtn, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
 
-        TextView version = (TextView) itemView.findViewById(R.id.item_about_header_versionCode);
+        TextView version = itemView.findViewById(R.id.item_about_header_versionCode);
         DisplayUtils.setTypeface(itemView.getContext(), version);
 
-        TextView unsplashTitle = (TextView) itemView.findViewById(R.id.item_about_header_unsplashTitle);
+        TextView unsplashTitle = itemView.findViewById(R.id.item_about_header_unsplashTitle);
         unsplashTitle.setText(itemView.getContext().getString(R.string.unsplash));
         DisplayUtils.setTypeface(itemView.getContext(), unsplashTitle);
 
-        TextView unsplashContent = (TextView) itemView.findViewById(R.id.item_about_header_unsplashContent);
+        TextView unsplashContent = itemView.findViewById(R.id.item_about_header_unsplashContent);
         unsplashContent.setText(itemView.getContext().getString(R.string.about_unsplash));
         DisplayUtils.setTypeface(itemView.getContext(), unsplashContent);
     }
@@ -66,7 +65,7 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
         MysplashActivity activity = Mysplash.getInstance()
                 .getTopActivity();
         if (activity != null) {
-            activity.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            activity.finishSelf(true);
         }
     }
 

@@ -86,7 +86,7 @@ public class CustomApiActivity extends MysplashActivity
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         } else {
             backPressed = true;
             NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
@@ -106,16 +106,12 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -144,7 +140,7 @@ public class CustomApiActivity extends MysplashActivity
             secret.setText(CustomApiManager.getInstance(this).getCustomApiSecret());
         }
 
-        TextView redirectUri = (TextView) findViewById(R.id.activity_custom_api_redirectUri);
+        TextView redirectUri = findViewById(R.id.activity_custom_api_redirectUri);
         DisplayUtils.setTypeface(this, redirectUri);
     }
 
@@ -155,7 +151,7 @@ public class CustomApiActivity extends MysplashActivity
     @OnClick({
             R.id.activity_custom_api_closeBtn,
             R.id.activity_custom_api_cancelBtn}) void cancel() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @OnClick(R.id.activity_custom_api_enterBtn) void enter() {
@@ -167,7 +163,7 @@ public class CustomApiActivity extends MysplashActivity
 
         Intent intent = new Intent();
         setResult(changed ? RESULT_OK : RESULT_CANCELED, intent);
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     // on swipe listener.
@@ -185,7 +181,7 @@ public class CustomApiActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 
     // handler.

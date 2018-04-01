@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
@@ -11,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.text.TextUtils;
+import android.view.View;
 
 import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common._basic.activity.RequestLoadActivity;
@@ -18,7 +21,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.photo.view.activity.PhotoActivity;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
 import java.lang.reflect.ParameterizedType;
@@ -43,6 +45,7 @@ public class Mysplash extends Application {
     private List<MysplashActivity> activityList;
 
     private Photo photo;
+    private Bitmap background;
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
@@ -219,26 +222,27 @@ public class Mysplash extends Application {
         this.photo = photo;
     }
 
-    public List<Photo> loadMorePhotos(PhotoActivity activity,
-                                      List<Photo> list, int headIndex, boolean headDirection,
-                                      Bundle bundle) {
-        int index = activityList.indexOf(activity) - 1;
-        if (index > -1) {
-            Activity a = activityList.get(index);
-            if (a instanceof LoadableActivity) {
-                if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0]
-                        .toString()
-                        .equals(Photo.class.toString())) {
-                    try {
-                        return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection, bundle);
-                    } catch (Exception ignore) {
+    @Nullable
+    public Bitmap getBackgroundBitmap() {
+        return background;
+    }
 
-                    }
-                }
+    public void setBackgroundBitmap(View view) {
+        if (view != null) {
+            if (background == null
+                    || view.getWidth() != background.getWidth()
+                    || view.getHeight() != background.getHeight()) {
+                background = Bitmap.createBitmap(
+                        (int) (0.3 * view.getWidth()),
+                        (int) (0.3 * view.getHeight()),
+                        Bitmap.Config.RGB_565);
             }
+
+            background.eraseColor(getResources().getColor(android.R.color.transparent));
+            Canvas canvas = new Canvas(background);
+            canvas.scale(0.3F, 0.3F);
+            view.draw(canvas);
         }
-        return new ArrayList<>();
     }
 
     public List<Photo> loadMorePhotos(PhotoActivity2 activity,
@@ -263,25 +267,6 @@ public class Mysplash extends Application {
         return new ArrayList<>();
     }
 
-    public void dispatchPhotoUpdate(PhotoActivity activity, Photo p) {
-        int index = activityList.indexOf(activity) - 1;
-        if (index > -1) {
-            Activity a = activityList.get(index);
-            if (a instanceof LoadableActivity) {
-                if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0]
-                        .toString()
-                        .equals(Photo.class.toString())) {
-                    try {
-                        ((LoadableActivity) a).updateData(p);
-                    } catch (Exception ignore) {
-
-                    }
-                }
-            }
-        }
-    }
-
     public void dispatchPhotoUpdate(PhotoActivity2 activity, Photo p) {
         int index = activityList.indexOf(activity) - 1;
         if (index > -1) {
@@ -292,7 +277,7 @@ public class Mysplash extends Application {
                         .toString()
                         .equals(Photo.class.toString())) {
                     try {
-                        ((LoadableActivity) a).updateData(p);
+                        ((LoadableActivity) a).receiveUpdate(p);
                     } catch (Exception ignore) {
 
                     }
@@ -311,7 +296,7 @@ public class Mysplash extends Application {
                         .toString()
                         .equals(Photo.class.toString())) {
                     try {
-                        ((RequestLoadActivity) a).updateData(p);
+                        ((RequestLoadActivity) a).receiveUpdate(p);
                     } catch (Exception ignore) {
 
                     }

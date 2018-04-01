@@ -1,7 +1,9 @@
 package com.wangdaye.mysplash.common._basic.activity;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -27,6 +29,9 @@ public abstract class MysplashActivity extends AppCompatActivity {
     private Bundle bundle; // saved instance state.
     private boolean started; // flag of onStart() method.
 
+    @Nullable
+    private Bitmap background; // background bitmap for swipe back.
+
     private List<MysplashDialogFragment> dialogList = new ArrayList<>();
     private List<MysplashPopupWindow> popupList = new ArrayList<>();
 
@@ -38,6 +43,9 @@ public abstract class MysplashActivity extends AppCompatActivity {
      * */
     public abstract static class BaseSavedStateFragment extends Fragment {
 
+        private boolean landscape;
+        private Bitmap background;
+
         private static final String FRAGMENT_TAG = "SavedStateFragment";
 
         @Override
@@ -48,6 +56,8 @@ public abstract class MysplashActivity extends AppCompatActivity {
         }
 
         public void saveData(MysplashActivity a) {
+            setLandscape(DisplayUtils.isLandscape(a));
+            setBackground(a.getBackground());
             Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
                 a.getSupportFragmentManager().beginTransaction().remove(f).commit();
@@ -58,14 +68,36 @@ public abstract class MysplashActivity extends AppCompatActivity {
                     .commitAllowingStateLoss();
         }
 
+        @Nullable
         public static BaseSavedStateFragment getData(MysplashActivity a) {
             Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
                 a.getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
-                return (BaseSavedStateFragment) f;
+
+                BaseSavedStateFragment sf = (BaseSavedStateFragment) f;
+                if (DisplayUtils.isLandscape(a) == sf.isLandscape()) {
+                    a.setBackground(sf.getBackground());
+                }
+                return sf;
             } else {
                 return null;
             }
+        }
+
+        public Bitmap getBackground() {
+            return background;
+        }
+
+        public void setBackground(Bitmap background) {
+            this.background = background;
+        }
+
+        public boolean isLandscape() {
+            return landscape;
+        }
+
+        public void setLandscape(boolean landscape) {
+            this.landscape = landscape;
         }
     }
 
@@ -93,6 +125,8 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
         this.bundle = savedInstanceState;
         this.started = false;
+
+        setBackground(Mysplash.getInstance().getBackgroundBitmap());
     }
 
     @CallSuper
@@ -144,7 +178,7 @@ public abstract class MysplashActivity extends AppCompatActivity {
      * */
     protected abstract void backToTop();
 
-    public abstract void finishActivity(int dir);
+    public abstract void finishSelf(boolean backPressed);
 
     @Override
     public void finish() {
@@ -202,5 +236,26 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     public List<MysplashPopupWindow> getPopupList() {
         return popupList;
+    }
+
+    // coordinate swipe back view.
+
+    public void sendBackground() {
+        Mysplash.getInstance().setBackgroundBitmap(getWindow().getDecorView());
+    }
+
+    @Nullable
+    protected Bitmap getBackground() {
+        return background;
+    }
+
+    protected void setBackground(@Nullable Bitmap bitmap) {
+        if (bitmap != null) {
+            background = Bitmap.createBitmap(bitmap);
+        }
+    }
+
+    protected boolean isTheLowestLevel() {
+        return Mysplash.getInstance().getActivityCount() == 1;
     }
 }

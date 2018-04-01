@@ -32,7 +32,6 @@ import com.wangdaye.mysplash.common._basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.ui.activity.invisible.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
@@ -289,9 +288,9 @@ public class MainActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Main);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Main);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Main);
+            setTheme(R.style.MysplashTheme_dark_TranslucentNavigation_Main);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -334,7 +333,7 @@ public class MainActivity extends LoadableActivity<Photo>
                     && f.needBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
                 f.backToTop();
             } else if (f instanceof HomeFragment) {
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
             } else {
                 changeFragment(R.id.action_home);
             }
@@ -347,7 +346,7 @@ public class MainActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
     }
 

@@ -157,7 +157,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         private void bindAvatar(int position) {
             this.user = getNotification(position).actors.get(0);
             ImageHelper.loadAvatar(
-                    a, avatar, user, position,
+                    avatar.getContext(), avatar, user, position,
                     new OnLoadAvatarImageListener());
         }
 
@@ -169,9 +169,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
                 imageContainer.setVisibility(View.VISIBLE);
 
-                // ImageHelper.loadFullPhoto(a, image, photo, position, new OnLoadPhotoImageListener());
-                ImageHelper.loadRegularPhoto(a, image, photo, position, new OnLoadPhotoImageListener());
-                imageContainer.setBackgroundColor(ImageHelper.computeCardBackgroundColor(a, photo.color));
+                ImageHelper.loadRegularPhoto(
+                        image.getContext(), image, photo, position, new OnLoadPhotoImageListener());
+                imageContainer.setBackgroundColor(
+                        ImageHelper.computeCardBackgroundColor(imageContainer.getContext(), photo.color));
             } else {
                 imageContainer.setVisibility(View.GONE);
             }
@@ -293,6 +294,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         IntentHelper.startUserActivity(
                                 (MysplashActivity) a,
                                 avatar,
+                                background,
                                 getNotification(getAdapterPosition()).actors.get(0),
                                 UserActivity.PAGE_PHOTO);
                         break;
@@ -301,6 +303,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                         IntentHelper.startUserActivity(
                                 (MysplashActivity) a,
                                 avatar,
+                                background,
                                 getNotification(getAdapterPosition()).actors.get(0),
                                 UserActivity.PAGE_LIKE);
                         break;
@@ -313,6 +316,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 IntentHelper.startUserActivity(
                         (MysplashActivity) a,
                         avatar,
+                        background,
                         getNotification(getAdapterPosition()).actors.get(0),
                         UserActivity.PAGE_PHOTO);
             }

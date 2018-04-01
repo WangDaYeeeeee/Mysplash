@@ -4,7 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,7 +76,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         }
 
         @SuppressLint("SetTextI18n")
-        public void onBindView(final Collection collection) {
+        void onBindView(final Collection collection) {
             this.collection = collection;
 
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
@@ -103,16 +105,16 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             image.setShowShadow(false);
 
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(a, image, collection, getAdapterPosition(), this);
+                ImageHelper.loadCollectionCover(image.getContext(), image, collection, getAdapterPosition(), this);
                 card.setCardBackgroundColor(
                         ImageHelper.computeCardBackgroundColor(
-                                a,
+                                image.getContext(),
                                 collection.cover_photo.color));
             } else {
-                ImageHelper.loadResourceImage(a, image, R.drawable.default_collection_cover);
+                ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
             }
 
-            ImageHelper.loadAvatar(a, avatar, collection.user, getAdapterPosition(), null);
+            ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, getAdapterPosition(), null);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 card.setTransitionName(collection.id + "-background");
@@ -120,9 +122,31 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             }
         }
 
-        public void onRecycled() {
+        void onRecycled() {
             ImageHelper.releaseImageView(image);
             ImageHelper.releaseImageView(avatar);
+        }
+
+        @SuppressLint("SetTextI18n")
+        void update(int position) {
+            Collection newItem = itemList.get(position);
+            if ((newItem.cover_photo != null && collection.cover_photo == null)
+                    || (newItem.cover_photo == null && collection.cover_photo != null)
+                    || (newItem.cover_photo != null && collection.cover_photo != null
+                    && !newItem.cover_photo.id.equals(collection.cover_photo.id))) {
+                notifyItemChanged(position);
+            } else {
+                collection = newItem;
+
+                ImageHelper.preloadRegularPhoto(image.getContext(), collection.cover_photo);
+                ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, getAdapterPosition(), null);
+
+                title.setText(collection.title.toUpperCase());
+                int photoNum = collection.total_photos;
+                subtitle.setText(
+                        photoNum + " " + a.getResources().getStringArray(R.array.user_tabs)[0]);
+                name.setText(collection.user.name);
+            }
         }
 
         // interface.
@@ -142,6 +166,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 IntentHelper.startUserActivity(
                         (MysplashActivity) a,
                         avatar,
+                        card,
                         collection.user,
                         UserActivity.PAGE_PHOTO);
             }
@@ -261,7 +286,8 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         return itemList;
     }
 
-    public void updateCollection(Collection c, boolean refreshView, boolean probablyRepeat) {
+    public void updateCollection(RecyclerView recyclerView,
+                                 Collection c, boolean refreshView, boolean probablyRepeat) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id == c.id) {
                 c.editing = itemList.get(i).editing;
@@ -272,11 +298,39 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 }
                 itemList.set(i, c);
                 if (refreshView) {
-                    notifyItemChanged(i);
+                    updateItemView(recyclerView, i);
                 }
                 if (!probablyRepeat) {
                     return;
                 }
+            }
+        }
+    }
+
+    private void updateItemView(RecyclerView recyclerView, int position) {
+        if (recyclerView == null) {
+            notifyItemChanged(position);
+        } else if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+            StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+            int[] firstVisiblePositions = manager.findFirstVisibleItemPositions(null);
+            int[] lastVisiblePositions = manager.findLastVisibleItemPositions(null);
+            if (firstVisiblePositions[0] <= position
+                    && position <= lastVisiblePositions[lastVisiblePositions.length - 1]) {
+                // is a visible item.
+                ((ViewHolder) recyclerView.findViewHolderForAdapterPosition(position)).update(position);
+            } else {
+                notifyItemChanged(position);
+            }
+        } else if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            int firstVisiblePosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findFirstVisibleItemPosition();
+            int lastVisiblePosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPosition();
+            if (firstVisiblePosition <= position && position <= lastVisiblePosition) {
+                // is a visible item.
+                ((ViewHolder) recyclerView.findViewHolderForAdapterPosition(position)).update(position);
+            } else {
+                notifyItemChanged(position);
             }
         }
     }

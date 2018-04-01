@@ -3,7 +3,9 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -118,8 +120,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             title.setText("");
             image.setShowShadow(false);
 
-            // ImageHelper.loadFullPhoto(a, image, photo, position, this);
-            ImageHelper.loadRegularPhoto(a, image, photo, position, this);
+            ImageHelper.loadRegularPhoto(image.getContext(), image, photo, position, this);
 
             if (inMyCollection) {
                 deleteButton.setVisibility(View.VISIBLE);
@@ -139,7 +140,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
             }
 
-            card.setCardBackgroundColor(ImageHelper.computeCardBackgroundColor(a, photo.color));
+            card.setCardBackgroundColor(
+                    ImageHelper.computeCardBackgroundColor(card.getContext(), photo.color));
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 image.setTransitionName(photo.id + "-cover");
@@ -150,6 +152,28 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         void onRecycled() {
             ImageHelper.releaseImageView(image);
             likeButton.recycleImageView();
+        }
+
+        void update(int position) {
+            this.photo = itemList.get(position);
+
+            ImageHelper.preloadRegularPhoto(image.getContext(), photo);
+
+            if (photo.current_user_collections.size() != 0) {
+                collectionButton.setImageResource(R.drawable.ic_item_collected);
+            } else {
+                collectionButton.setImageResource(R.drawable.ic_item_collect);
+            }
+
+            if (photo.settingLike) {
+                likeButton.setProgressState();
+            } else if (likeButton.getState() == CircularProgressIcon.STATE_PROGRESS) {
+                likeButton.setResultState(photo.liked_by_user ?
+                        R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+            } else {
+                likeButton.forceSetResultState(photo.liked_by_user ?
+                        R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+            }
         }
 
         // interface.
@@ -362,7 +386,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         this.inMyCollection = in;
     }
 
-    public void updatePhoto(Photo p, boolean refreshView, boolean probablyRepeat) {
+    public void updatePhoto(RecyclerView recyclerView, Photo p, boolean refreshView, boolean probablyRepeat) {
         for (int i = 0; i < getRealItemCount(); i ++) {
             if (itemList.get(i).id.equals(p.id)) {
                 p.loadPhotoSuccess = itemList.get(i).loadPhotoSuccess;
@@ -370,11 +394,39 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 p.settingLike = itemList.get(i).settingLike;
                 itemList.set(i, p);
                 if (refreshView) {
-                    notifyItemChanged(i);
+                    updateItemView(recyclerView, i);
                 }
                 if (!probablyRepeat) {
                     return;
                 }
+            }
+        }
+    }
+
+    private void updateItemView(@Nullable RecyclerView recyclerView, int position) {
+        if (recyclerView == null) {
+            notifyItemChanged(position);
+        } else if (recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+            StaggeredGridLayoutManager manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+            int[] firstVisiblePositions = manager.findFirstVisibleItemPositions(null);
+            int[] lastVisiblePositions = manager.findLastVisibleItemPositions(null);
+            if (firstVisiblePositions[0] <= position
+                    && position <= lastVisiblePositions[lastVisiblePositions.length - 1]) {
+                // is a visible item.
+                ((ViewHolder) recyclerView.findViewHolderForAdapterPosition(position)).update(position);
+            } else {
+                notifyItemChanged(position);
+            }
+        } else if (recyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+            int firstVisiblePosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findFirstVisibleItemPosition();
+            int lastVisiblePosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPosition();
+            if (firstVisiblePosition <= position && position <= lastVisiblePosition) {
+                // is a visible item.
+                ((ViewHolder) recyclerView.findViewHolderForAdapterPosition(position)).update(position);
+            } else {
+                notifyItemChanged(position);
             }
         }
     }
@@ -435,7 +487,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     itemList.get(position).likes = response.body().photo.likes;
                 }
 
-                updateView(itemList.get(position).liked_by_user);
+                updateItemView(recyclerView, position);
                 dispatchUpdate(position);
             }
         }
@@ -445,25 +497,12 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             if (itemList.size() > position
                     && itemList.get(position).id.equals(id)) {
                 itemList.get(position).settingLike = false;
-                updateView(itemList.get(position).liked_by_user);
+                updateItemView(recyclerView, position);
                 NotificationHelper.showSnackbar(
                         itemList.get(position).liked_by_user ?
                                 a.getString(R.string.feedback_unlike_failed)
                                 :
                                 a.getString(R.string.feedback_like_failed));
-            }
-        }
-
-        private void updateView(boolean to) {
-            if (recyclerView != null) {
-                StaggeredGridLayoutManager layoutManager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
-                int[] firstPositions = layoutManager.findFirstVisibleItemPositions(null);
-                int[] lastPositions = layoutManager.findLastVisibleItemPositions(null);
-                if (firstPositions[0] <= position && position <= lastPositions[lastPositions.length - 1]) {
-                    ViewHolder holder = (ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-                    holder.likeButton.setResultState(
-                            to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
-                }
             }
         }
     }

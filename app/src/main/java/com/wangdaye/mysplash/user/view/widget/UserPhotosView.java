@@ -250,7 +250,7 @@ public class UserPhotosView extends NestedScrollFrameLayout
     // photo.
 
     public void updatePhoto(Photo p, boolean refreshView) {
-        photosPresenter.getAdapter().updatePhoto(p, refreshView, false);
+        photosPresenter.getAdapter().updatePhoto(recyclerView, p, refreshView, false);
     }
 
     /**

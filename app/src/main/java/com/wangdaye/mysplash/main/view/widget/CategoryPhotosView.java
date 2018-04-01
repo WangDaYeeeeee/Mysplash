@@ -329,7 +329,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
     // photo.
 
     public void updatePhoto(Photo photo, boolean refreshView) {
-        categoryPresenter.getAdapter().updatePhoto(photo, refreshView, false);
+        categoryPresenter.getAdapter().updatePhoto(recyclerView, photo, refreshView, false);
     }
 
     /**
@@ -432,7 +432,7 @@ public class CategoryPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        categoryPresenter.getAdapter().updatePhoto(p, true, false);
+        categoryPresenter.getAdapter().updatePhoto(recyclerView, p, true, false);
     }
 
     // view.

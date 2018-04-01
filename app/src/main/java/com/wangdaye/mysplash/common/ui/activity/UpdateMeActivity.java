@@ -142,7 +142,7 @@ public class UpdateMeActivity extends MysplashActivity
     @Override
     public void handleBackPressed() {
         if (state == INPUT_STATE && backPressed) {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         } else if (state == INPUT_STATE) {
             backPressed = true;
             NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
@@ -162,16 +162,12 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -334,7 +330,7 @@ public class UpdateMeActivity extends MysplashActivity
     // on click listener.
 
     @OnClick(R.id.container_update_me_closeBtn) void close() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @OnClick(R.id.container_update_me_saveBtn) void save() {
@@ -356,7 +352,7 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 
     // on request me profile listener.
@@ -368,7 +364,7 @@ public class UpdateMeActivity extends MysplashActivity
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                 ShortcutsManager.refreshShortcuts(this);
             }
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         } else {
             setState(INPUT_STATE);
             NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));

@@ -22,7 +22,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference;
@@ -209,7 +208,7 @@ public class SettingsFragment extends PreferenceFragment
     private View.OnClickListener rebootListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((SettingsActivity) getActivity()).finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            ((SettingsActivity) getActivity()).finishSelf(true);
             MainActivity a = Mysplash.getInstance().getMainActivity();
             if (a != null) {
                 a.reboot();

@@ -68,7 +68,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         @SuppressLint("SetTextI18n")
         void onBindView(int position) {
             ImageHelper.loadImageFromUrl(
-                    c, image, itemList.get(position).entity.getPhotoUri(), false, null);
+                    image.getContext(), image, itemList.get(position).entity.getPhotoUri(), false, null);
 
             switch (itemList.get(position).entity.result) {
                 case DownloadHelper.RESULT_DOWNLOADING:

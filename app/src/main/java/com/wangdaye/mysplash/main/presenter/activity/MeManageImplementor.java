@@ -33,6 +33,7 @@ public class MeManageImplementor
         IntentHelper.startMeActivity(
                 a,
                 header.findViewById(R.id.container_nav_header_avatar),
+                header.findViewById(R.id.container_nav_header),
                 UserActivity.PAGE_PHOTO);
     }
 

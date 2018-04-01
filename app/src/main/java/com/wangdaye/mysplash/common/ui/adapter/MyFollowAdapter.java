@@ -67,7 +67,8 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
         }
 
         void onBindView(int position) {
-            ImageHelper.loadAvatar(a, avatar, itemList.get(position).user, getAdapterPosition(), null);
+            ImageHelper.loadAvatar(
+                    avatar.getContext(), avatar, itemList.get(position).user, getAdapterPosition(), null);
 
             title.setText(itemList.get(position).user.name);
 
@@ -99,6 +100,7 @@ public class MyFollowAdapter extends RecyclerView.Adapter<MyFollowAdapter.ViewHo
                 IntentHelper.startUserActivity(
                         (MysplashActivity) a,
                         avatar,
+                        background,
                         itemList.get(getAdapterPosition()).user,
                         UserActivity.PAGE_PHOTO);
             }

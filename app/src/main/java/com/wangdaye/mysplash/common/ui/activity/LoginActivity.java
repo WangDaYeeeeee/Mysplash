@@ -102,22 +102,18 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
+    public void finishSelf(boolean backPressed) {
+        finish();
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
+        }
     }
 
     @Override
-    public void finishActivity(int dir) {
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
+    protected boolean operateStatusBarBySelf() {
+        return false;
     }
 
     @Override
@@ -137,7 +133,7 @@ public class LoginActivity extends MysplashActivity
 
     @Override
     public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @Override
@@ -209,7 +205,7 @@ public class LoginActivity extends MysplashActivity
     // on click listener.
 
     @OnClick(R.id.activity_login_closeBtn) void close() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @OnClick(R.id.activity_login_loginBtn) void login() {
@@ -235,7 +231,7 @@ public class LoginActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 
     // on request access token listener.

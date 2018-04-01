@@ -65,8 +65,9 @@ public class IntentHelper {
 
     public static void startNotificationActivity(MysplashActivity a) {
         Intent intent = new Intent(a, NotificationActivity.class);
+        a.sendBackground();
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startSearchActivity(MysplashActivity a, @Nullable String query) {
@@ -74,8 +75,11 @@ public class IntentHelper {
         if (!TextUtils.isEmpty(query)) {
             intent.putExtra(SearchActivity.KEY_SEARCH_ACTIVITY_QUERY, query);
         }
+
+        a.sendBackground();
+
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startPhotoActivity(MysplashActivity a, View image, View background,
@@ -89,6 +93,8 @@ public class IntentHelper {
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX, headIndex);
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_BUNDLE, bundle);
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_ID, photoList.get(currentIndex - headIndex).id);
+
+        a.sendBackground();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat
@@ -111,7 +117,7 @@ public class IntentHelper {
         Intent intent = new Intent(a, PhotoActivity2.class);
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_ID, photoId);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startPreviewActivity(MysplashActivity a, Photo photo, boolean showIcon) {
@@ -119,7 +125,7 @@ public class IntentHelper {
         intent.putExtra(PreviewActivity.KEY_PREVIEW_ACTIVITY_PREVIEW, photo);
         intent.putExtra(PreviewActivity.KEY_PREVIEW_ACTIVITY_SHOW_ICON, showIcon);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startPreviewActivity(MysplashActivity a, User user, boolean showIcon) {
@@ -127,13 +133,15 @@ public class IntentHelper {
         intent.putExtra(PreviewActivity.KEY_PREVIEW_ACTIVITY_PREVIEW, user);
         intent.putExtra(PreviewActivity.KEY_PREVIEW_ACTIVITY_SHOW_ICON, showIcon);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startCollectionActivity(MysplashActivity a,
                                                View avatar, View background, Collection c) {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
+
+        a.sendBackground();
 
         ActivityOptionsCompat options;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -158,35 +166,39 @@ public class IntentHelper {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startCollectionActivity(Activity a, String collectionId) {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_ID, collectionId);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startUserActivity(MysplashActivity a,
-                                         View avatar, User u, @UserActivity.UserPageRule int page) {
+                                         View avatar, View background,
+                                         User u, @UserActivity.UserPageRule int page) {
         if (AuthManager.getInstance().isAuthorized()
                 && !TextUtils.isEmpty(AuthManager.getInstance().getUsername())
                 && u.username.equals(AuthManager.getInstance().getUsername())) {
-            startMeActivity(a, avatar, page);
+            startMeActivity(a, avatar, background, page);
         } else {
             Intent intent = new Intent(a, UserActivity.class);
             intent.putExtra(UserActivity.KEY_USER_ACTIVITY_USER, u);
             intent.putExtra(UserActivity.KEY_USER_ACTIVITY_PAGE_POSITION, page);
 
+            a.sendBackground();
+
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 a.startActivity(intent);
-                a.overridePendingTransition(R.anim.activity_in, 0);
+                a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
             } else {
                 ActivityOptionsCompat options = ActivityOptionsCompat
                         .makeSceneTransitionAnimation(
                                 a,
-                                Pair.create(avatar, a.getString(R.string.transition_user_avatar)));
+                                Pair.create(avatar, a.getString(R.string.transition_user_avatar)),
+                                Pair.create(background, a.getString(R.string.transition_user_background)));
                 ActivityCompat.startActivityForResult(
                         a, intent, Mysplash.USER_ACTIVITY, options.toBundle());
             }
@@ -197,33 +209,41 @@ public class IntentHelper {
         Intent intent = new Intent(a, UserActivity.class);
         intent.putExtra(UserActivity.KEY_USER_ACTIVITY_USERNAME, username);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startLoginActivity(MysplashActivity a) {
         Intent intent = new Intent(a, LoginActivity.class);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startMeActivity(MysplashActivity a,
-                                       View avatar, @UserActivity.UserPageRule int page) {
+                                       View avatar, View background,
+                                       @UserActivity.UserPageRule int page) {
         if (!AuthManager.getInstance().isAuthorized()) {
             startLoginActivity(a);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);
+
+            a.sendBackground();
+
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(
                             a,
-                            Pair.create(avatar, a.getString(R.string.transition_me_avatar)));
+                            Pair.create(avatar, a.getString(R.string.transition_me_avatar)),
+                            Pair.create(background, a.getString(R.string.transition_me_background)));
             ActivityCompat.startActivityForResult(
                     a, intent, Mysplash.ME_ACTIVITY, options.toBundle());
         } else {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);
+
+            a.sendBackground();
+
             a.startActivity(intent);
-            a.overridePendingTransition(R.anim.activity_in, 0);
+            a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
         }
     }
 
@@ -232,21 +252,23 @@ public class IntentHelper {
             startLoginActivity(a);
         } else {
             Intent intent = new Intent(a, MyFollowActivity.class);
+            a.sendBackground();
             a.startActivity(intent);
-            a.overridePendingTransition(R.anim.activity_in, 0);
+            a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
         }
     }
 
     public static void startUpdateMeActivity(MysplashActivity a) {
         Intent intent = new Intent(a, UpdateMeActivity.class);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startDownloadManageActivity(MysplashActivity a) {
         Intent intent = new Intent(a, DownloadManageActivity.class);
+        a.sendBackground();
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startDownloadManageActivityFromNotification(Context context) {
@@ -259,19 +281,19 @@ public class IntentHelper {
     public static void startSettingsActivity(MysplashActivity a) {
         Intent intent = new Intent(a, SettingsActivity.class);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startAboutActivity(MysplashActivity a) {
         Intent intent = new Intent(a, AboutActivity.class);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startIntroduceActivity(MysplashActivity a) {
         Intent intent = new Intent(a, IntroduceActivity.class);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
+        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
 
     public static void startCheckPhotoActivity(Context c, String title) {
@@ -367,13 +389,11 @@ public class IntentHelper {
     public static void startCustomApiActivity(SettingsActivity a) {
         Intent intent = new Intent(a, CustomApiActivity.class);
         a.startActivityForResult(intent, Mysplash.CUSTOM_API_ACTIVITY);
-        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void startMuzeiConfigrationActivity(MysplashActivity a) {
         Intent intent = new Intent(a, MuzeiConfigurationActivity.class);
         a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_in, 0);
     }
 
     public static void backToHome(MysplashActivity a) {

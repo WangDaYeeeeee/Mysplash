@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.photo2.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -103,6 +105,12 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @BindView(R.id.activity_photo_2_container)
     CoordinatorLayout container;
+
+    @BindView(R.id.activity_photo_2_background)
+    View background;
+
+    @BindView(R.id.activity_photo_2_shadow)
+    View shadow;
 
     @BindView(R.id.activity_photo_2_swipeSwitchView)
     SwipeSwitchLayout swipeSwitchView;
@@ -224,9 +232,9 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Photo2);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Photo2);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Photo2);
+            setTheme(R.style.MysplashTheme_dark_TranslucentNavigation_Photo2);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -247,7 +255,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @Override
     public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @Override
@@ -256,9 +264,8 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         recyclerView.setAlpha(0f);
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         if (!browsablePresenter.isBrowsable()
                 && photoListManagePresenter.getCurrentIndex()
                 == getIntent().getIntExtra(KEY_PHOTO_ACTIVITY_2_PHOTO_CURRENT_INDEX, -1)
@@ -266,14 +273,10 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             finishAfterTransition();
         } else {
             finish();
-            switch (dir) {
-                case SwipeBackCoordinatorLayout.UP_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_top);
-                    break;
-
-                case SwipeBackCoordinatorLayout.DOWN_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                    break;
+            if (backPressed) {
+                overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+            } else {
+                overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
             }
         }
     }
@@ -348,6 +351,10 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                 statusBar.setDarkerAlpha(StatusBarView.LIGHT_INIT_MASK_ALPHA);
             }
 
+            if (getBackground() != null) {
+                background.setBackground(new BitmapDrawable(getResources(), getBackground()));
+            }
+
             SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                     this, R.id.activity_photo_2_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
@@ -373,7 +380,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             recyclerView.addOnScrollListener(new OnScrollListener());
 
             toolbar.setTitle("");
-            if (Mysplash.getInstance().getActivityCount() == 1) {
+            if (isTheLowestLevel()) {
                 toolbar.setNavigationIcon(R.drawable.ic_toolbar_home_dark);
             } else {
                 toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
@@ -613,10 +620,10 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     public void onClick(View v) {
         switch (v.getId()) {
             case -1:
-                if (Mysplash.getInstance().getActivityCount() == 1) {
+                if (isTheLowestLevel()) {
                     visitParentActivity();
                 }
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
                 break;
         }
     }
@@ -761,12 +768,12 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @Override
     public void onSwipeProcess(float percent) {
-        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+        shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 
     // on switch listener (swipe switch layout).
@@ -801,7 +808,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                                             .color));
                 } else {
                     ImageHelper.releaseImageView(switchBackground);
-                    switchBackground.setBackgroundColor(ThemeManager.getRootColor(PhotoActivity2.this));
+                    switchBackground.setBackgroundColor(Color.BLACK);
                 }
             }
             switchBackground.setAlpha((float) (progress * 0.5));

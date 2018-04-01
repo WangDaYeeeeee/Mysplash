@@ -156,6 +156,7 @@ public class BaseHolder extends PhotoInfoAdapter2.ViewHolder
         IntentHelper.startUserActivity(
                 Mysplash.getInstance().getTopActivity(),
                 avatar,
+                controlBar,
                 photo.user,
                 UserActivity.PAGE_PHOTO);
     }

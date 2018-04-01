@@ -69,9 +69,9 @@ public class PreviewActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Preview);
+            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Preview);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Preview);
+            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_Preview);
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -84,27 +84,23 @@ public class PreviewActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
-        finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
-        }
-    }
-
-    @Override
     protected void backToTop() {
         // do nothing.
     }
 
     @Override
+    public void finishSelf(boolean backPressed) {
+        finish();
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
+        }
+    }
+
+    @Override
     public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @Override
@@ -279,6 +275,6 @@ public class PreviewActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 }

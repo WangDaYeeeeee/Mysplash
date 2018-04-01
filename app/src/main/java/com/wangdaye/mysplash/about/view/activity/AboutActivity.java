@@ -61,7 +61,7 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @Override
@@ -70,17 +70,12 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
+    public void finishSelf(boolean backPressed) {
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -99,9 +94,7 @@ public class AboutActivity extends MysplashActivity
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
     }
 
-    // ---------------------------------------------------------------------------------------------
     // interface.
-    // ---------------------------------------------------------------------------------------------
 
     // on swipe listener.
 
@@ -118,6 +111,6 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 }

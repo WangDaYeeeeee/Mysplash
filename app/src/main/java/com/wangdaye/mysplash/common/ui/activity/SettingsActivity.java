@@ -86,7 +86,7 @@ public class SettingsActivity extends MysplashActivity
 
     @Override
     public void handleBackPressed() {
-        finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        finishSelf(true);
     }
 
     @Override
@@ -95,17 +95,12 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
+    public void finishSelf(boolean backPressed) {
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -121,7 +116,7 @@ public class SettingsActivity extends MysplashActivity
                 this, R.id.activity_settings_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_settings_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_settings_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.setNavigationOnClickListener(this);
@@ -153,7 +148,7 @@ public class SettingsActivity extends MysplashActivity
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+                finishSelf(true);
                 break;
         }
     }
@@ -175,6 +170,6 @@ public class SettingsActivity extends MysplashActivity
 
     @Override
     public void onSwipeFinish(int dir) {
-        finishActivity(dir);
+        finishSelf(false);
     }
 }

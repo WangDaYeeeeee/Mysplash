@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.user.view.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -93,6 +94,12 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @BindView(R.id.activity_user_container)
     CoordinatorLayout container;
+
+    @BindView(R.id.activity_user_background)
+    View background;
+
+    @BindView(R.id.activity_user_shadow)
+    View shadow;
 
     @BindView(R.id.activity_user_appBar)
     NestedScrollAppBarLayout appBar;
@@ -222,9 +229,9 @@ public class UserActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_User);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_User);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_User);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_User);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -262,10 +269,10 @@ public class UserActivity extends LoadableActivity<Photo>
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
-            if (Mysplash.getInstance().getActivityCount() == 1) {
+            if (isTheLowestLevel()) {
                 IntentHelper.startMainActivity(this);
             }
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         }
     }
 
@@ -278,22 +285,12 @@ public class UserActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void finishActivity(int dir) {
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
-        if (!browsablePresenter.isBrowsable()
-                && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            finishAfterTransition();
+    public void finishSelf(boolean backPressed) {
+        finish();
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
         } else {
-            finish();
-            switch (dir) {
-                case SwipeBackCoordinatorLayout.UP_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_top);
-                    break;
-
-                case SwipeBackCoordinatorLayout.DOWN_DIR:
-                    overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                    break;
-            }
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -365,12 +362,16 @@ public class UserActivity extends LoadableActivity<Photo>
         if (init && browsablePresenter.isBrowsable() && u == null) {
             browsablePresenter.requestBrowsableData();
         } else {
+            if (getBackground() != null) {
+                background.setBackground(new BitmapDrawable(getResources(), getBackground()));
+            }
+            
             SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_user_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
             appBar.setOnNestedScrollingListener(this);
 
-            if (Mysplash.getInstance().getActivityCount() == 1) {
+            if (isTheLowestLevel()) {
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
             } else {
@@ -508,7 +509,7 @@ public class UserActivity extends LoadableActivity<Photo>
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (Mysplash.getInstance().getActivityCount() == 1) {
+                if (isTheLowestLevel()) {
                     browsablePresenter.visitPreviousPage();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
@@ -640,7 +641,7 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     public void onSwipeProcess(float percent) {
-        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+        shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.collection.presenter.activity;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common.utils.ShareUtils;
@@ -17,7 +16,7 @@ public class ToolbarImplementor
 
     @Override
     public void touchNavigatorIcon(MysplashActivity a) {
-        a.finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+        a.finishSelf(true);
     }
 
     @Override

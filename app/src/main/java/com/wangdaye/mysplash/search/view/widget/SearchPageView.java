@@ -381,7 +381,7 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     public void updatePhoto(Photo photo, boolean refreshView) {
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
-            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(photo, refreshView, true);
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(recyclerView, photo, refreshView, true);
         }
     }
 
@@ -415,7 +415,8 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     public void updateCollection(Collection collection, boolean refreshView) {
         if (searchPresenter.getAdapter() instanceof CollectionAdapter) {
-            ((CollectionAdapter) searchPresenter.getAdapter()).updateCollection(collection, refreshView, true);
+            ((CollectionAdapter) searchPresenter.getAdapter())
+                    .updateCollection(recyclerView, collection, refreshView, true);
         }
     }
 
@@ -530,7 +531,7 @@ public class SearchPageView extends NestedScrollFrameLayout
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
-            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(p, true, true);
+            ((PhotoAdapter) searchPresenter.getAdapter()).updatePhoto(recyclerView, p, true, true);
         }
     }
 

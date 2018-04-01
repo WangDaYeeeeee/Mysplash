@@ -237,7 +237,8 @@ public class MeCollectionsView extends NestedScrollFrameLayout
                 break;
 
             case LoadModel.NORMAL_STATE:
-                collectionsPresenter.getAdapter().updateCollection(c, refreshView, false);
+                collectionsPresenter.getAdapter()
+                        .updateCollection(recyclerView, c, refreshView, false);
                 break;
         }
     }

@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
+import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -133,6 +134,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         // do nothing.
@@ -145,7 +147,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @Override
     public void handleBackPressed() {
-        finishActivity(0);
+        finishSelf(true);
     }
 
     @Override
@@ -154,7 +156,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         finish();
     }
 
@@ -174,7 +176,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     @Override
     protected void requestReadWritePermissionFailed(int requestCode) {
         super.requestReadWritePermissionFailed(requestCode);
-        finishActivity(0);
+        finishSelf(true);
     }
 
     // init.
@@ -307,7 +309,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     @Nullable
     private InputStream getPhotoStream() {
         Uri uri = getIntent().getData();
-        if (uri.getScheme().equals("file")) {
+        if (uri != null && uri.getScheme().equals("file")) {
             File file = new File(uri.getSchemeSpecificPart());
             if (file.exists()) {
                 String path = FileUtils.uriToFilePath(this, uri);
@@ -320,7 +322,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                     }
                 }
             }
-        } else if (uri.getScheme().equals("content")) {
+        } else if (uri != null && uri.getScheme().equals("content")) {
             try {
                 ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
                 if (parcelFileDescriptor != null) {
@@ -502,7 +504,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     // on click listener.
 
     @OnClick(R.id.activity_set_wallpaper_closeBtn) void close() {
-        finishActivity(0);
+        finishSelf(true);
     }
 
     @OnClick(R.id.activity_set_wallpaper_typeBtn) void showTypePopup() {
@@ -599,7 +601,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
             case WHERE_LOCKSCREEN:
             case WHERE_WALL_LOCK:
                 IntentHelper.backToHome(this);
-                finishActivity(0);
+                finishSelf(true);
                 break;
         }
     }

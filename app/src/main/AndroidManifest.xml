@@ -18,7 +18,7 @@
 
         <activity
             android:name=".main.view.activity.MainActivity"
-            android:theme="@style/MysplashTheme_light.Main"
+            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Main"
             android:launchMode="singleTask"
             android:label="@string/app_name">
             <intent-filter>
@@ -32,23 +32,18 @@
         </activity>
 
         <activity android:name=".search.view.activity.SearchActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:theme="@style/MysplashTheme_light.Common"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".main.view.activity.NotificationActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Common"
-            android:label="@string/app_name" />
-
-        <activity
-            android:name=".photo.view.activity.PhotoActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Photo"
+            android:theme="@style/MysplashTheme_light.Common"
             android:label="@string/app_name" />
 
         <activity
             android:name=".photo2.view.activity.PhotoActivity2"
-            android:theme="@style/MysplashTheme_light.Translucent.Photo"
+            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Photo2"
             android:label="@string/app_name" />
 
         <activity
@@ -58,12 +53,12 @@
 
         <activity
             android:name=".collection.view.activity.CollectionActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Collection"
             android:label="@string/app_name" />
 
         <activity
             android:name=".user.view.activity.UserActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.User"
+            android:theme="@style/MysplashTheme_light.TranslucentNavigation.User"
             android:label="@string/app_name" />
 
         <activity android:name=".common.ui.activity.LoginActivity"
@@ -82,7 +77,7 @@
 
         <activity
             android:name=".me.view.activity.MeActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Me"
+            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Me"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="com.wangdaye.mysplash.Me" />
@@ -101,7 +96,7 @@
 
         <activity
             android:name=".common.ui.activity.DownloadManageActivity"
-            android:theme="@style/MysplashTheme_light.Translucent.Common"
+            android:theme="@style/MysplashTheme_light.Common"
             android:launchMode="singleTask"
             android:label="@string/app_name">
             <intent-filter>

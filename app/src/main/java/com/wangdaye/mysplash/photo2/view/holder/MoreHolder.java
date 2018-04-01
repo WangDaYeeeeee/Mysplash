@@ -94,24 +94,7 @@ public class MoreHolder extends PhotoInfoAdapter2.ViewHolder
 
             covers[i] = ButterKnife.findById(view, R.id.item_photo_2_more_page_vertical_cover);
             ImageHelper.loadCollectionCover(
-                    a,
-                    covers[i],
-                    photo.related_collections.results.get(i),
-                    i,
-                    model.hasFadedIn[i] ? null : new ImageHelper.OnLoadImageListener<Photo>() {
-                        @Override
-                        public void onLoadImageSucceed(Photo newT, int index) {
-                            if (!model.hasFadedIn[index]) {
-                                model.hasFadedIn[index] = true;
-                                ImageHelper.startSaturationAnimation(a, covers[index]);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadImageFailed(Photo originalT, int index) {
-                            // do nothing.
-                        }
-                    });
+                    a, covers[i], photo.related_collections.results.get(i));
 
             titles[i] = ButterKnife.findById(view, R.id.item_photo_2_more_page_vertical_title);
             titles[i].setText(photo.related_collections.results.get(i).title.toUpperCase());

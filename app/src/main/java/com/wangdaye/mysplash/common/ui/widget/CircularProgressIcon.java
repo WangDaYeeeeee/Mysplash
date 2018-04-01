@@ -35,9 +35,6 @@ public class CircularProgressIcon extends FrameLayout {
     @BindView(R.id.container_circular_progress_icon_progress)
     CircularProgressView progress;
 
-    @DrawableRes
-    private int imageId;
-
     private ShowAnimation showAnimation;
     private HideAnimation hideAnimation;
 
@@ -176,11 +173,6 @@ public class CircularProgressIcon extends FrameLayout {
         progress.setRotation(0);
     }
 
-    public void forceSetProgressState(@DrawableRes int imageId) {
-        this.imageId = imageId;
-        forceSetProgressState();
-    }
-
     public void forceSetResultState(@DrawableRes int imageId) {
         cancelAllAnimation();
         setState(STATE_RESULT);
@@ -209,11 +201,6 @@ public class CircularProgressIcon extends FrameLayout {
             hideAnimation = new HideAnimation(image);
             image.startAnimation(hideAnimation);
         }
-    }
-
-    public void setProgressState(@DrawableRes int imageId) {
-        this.imageId = imageId;
-        setProgressState();
     }
 
     public void setResultState(@DrawableRes int imageId) {

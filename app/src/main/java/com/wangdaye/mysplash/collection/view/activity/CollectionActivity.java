@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.collection.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -14,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.presenter.activity.PopupManageImplementor;
 import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
@@ -91,6 +91,12 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @BindView(R.id.activity_collection_container)
     CoordinatorLayout container;
 
+    @BindView(R.id.activity_collection_background)
+    View background;
+
+    @BindView(R.id.activity_collection_shadow)
+    View shadow;
+
     @BindView(R.id.activity_collection_appBar)
     NestedScrollAppBarLayout appBar;
 
@@ -164,10 +170,11 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Collection);
+            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Collection);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Collection);
+            setTheme(R.style.MysplashTheme_dark_TranslucentNavigation_Collection);
         }
+
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
         }
@@ -195,7 +202,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 && BackToTopUtils.isSetBackToTop(false)) {
             backToTop();
         } else {
-            finishActivity(SwipeBackCoordinatorLayout.DOWN_DIR);
+            finishSelf(true);
         }
     }
 
@@ -208,7 +215,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void finishActivity(int dir) {
+    public void finishSelf(boolean backPressed) {
         Intent result = new Intent();
         // told parent if this collection was deleted.
         result.putExtra(
@@ -219,16 +226,11 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 MeActivity.KEY_ME_ACTIVITY_COLLECTION,
                 getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         setResult(RESULT_OK, result);
-        SwipeBackCoordinatorLayout.hideBackgroundShadow(container);
         finish();
-        switch (dir) {
-            case SwipeBackCoordinatorLayout.UP_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_top);
-                break;
-
-            case SwipeBackCoordinatorLayout.DOWN_DIR:
-                overridePendingTransition(0, R.anim.activity_slide_out_bottom);
-                break;
+        if (backPressed) {
+            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+        } else {
+            overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
     }
 
@@ -282,6 +284,10 @@ public class CollectionActivity extends LoadableActivity<Photo>
         } else {
             Collection c = (Collection) editResultPresenter.getEditKey();
 
+            if (getBackground() != null) {
+                background.setBackground(new BitmapDrawable(getResources(), getBackground()));
+            }
+
             SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                     this, R.id.activity_collection_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
@@ -311,7 +317,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 description.setText(c.description);
             }
 
-            if (Mysplash.getInstance().getActivityCount() == 1) {
+            if (isTheLowestLevel()) {
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
             } else {
@@ -403,7 +409,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     public void onClick(View view) {
         switch (view.getId()) {
             case -1:
-                if (Mysplash.getInstance().getActivityCount() == 1) {
+                if (isTheLowestLevel()) {
                     browsablePresenter.visitPreviousPage();
                 }
                 toolbarPresenter.touchNavigatorIcon(this);
@@ -415,6 +421,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
         IntentHelper.startUserActivity(
                 this,
                 avatarImage,
+                appBar,
                 ((Collection) editResultPresenter.getEditKey()).user,
                 UserActivity.PAGE_PHOTO);
     }
@@ -472,7 +479,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
     @Override
     public void onSwipeProcess(float percent) {
-        container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
+        shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
     @Override
@@ -577,7 +584,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Override
     public void drawDeleteResult(Object oldKey) {
         editResultPresenter.setEditKey(null);
-        finishActivity(SwipeBackCoordinatorLayout.NULL_DIR);
+        finishSelf(true);
     }
 
     // browsable view.
