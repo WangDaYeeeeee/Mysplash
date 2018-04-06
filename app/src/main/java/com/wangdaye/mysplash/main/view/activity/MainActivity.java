@@ -450,12 +450,14 @@ public class MainActivity extends LoadableActivity<Photo>
         }
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
-
+/*
         if (AuthManager.getInstance().isAuthorized()) {
             nav.getMenu().getItem(1).setVisible(true);
         } else {
             nav.getMenu().getItem(1).setVisible(false);
         }
+*/
+        nav.getMenu().getItem(1).setVisible(false);
 
         View header = nav.getHeaderView(0);
         header.setOnClickListener(this);

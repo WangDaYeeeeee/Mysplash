@@ -42,7 +42,6 @@ import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
-import com.wangdaye.mysplash.main.view.widget.HomeTrendingView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -89,7 +88,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     @BindView(R.id.fragment_home_indicator)
     AutoHideInkPageIndicator indicator;
 
-    private PagerView[] pagers = new PagerView[3];
+    private PagerView[] pagers = new PagerView[2];
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -171,32 +170,36 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
+/*
         if (pagers[0] != null) {
             ((MainActivity.SavedStateFragment) outState).setHomeTrendingList(
                     ((HomeTrendingView) pagers[0]).getPhotos());
         }
-        if (pagers[1] != null) {
+*/
+        if (pagers[0] != null) {
             ((MainActivity.SavedStateFragment) outState).setHomeNewList(
-                    ((HomePhotosView) pagers[1]).getPhotos());
+                    ((HomePhotosView) pagers[0]).getPhotos());
         }
-        if (pagers[2] != null) {
+        if (pagers[1] != null) {
             ((MainActivity.SavedStateFragment) outState).setHomeFeaturedList(
-                    ((HomePhotosView) pagers[2]).getPhotos());
+                    ((HomePhotosView) pagers[1]).getPhotos());
         }
     }
 
     @Override
     public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
+/*
         if (pagers[0] != null) {
             ((HomeTrendingView) pagers[0]).setPhotos(
                     ((MainActivity.SavedStateFragment) savedInstanceState).getHomeTrendingList());
         }
-        if (pagers[1] != null) {
-            ((HomePhotosView) pagers[1]).setPhotos(
+*/
+        if (pagers[0] != null) {
+            ((HomePhotosView) pagers[0]).setPhotos(
                     ((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
         }
-        if (pagers[2] != null) {
-            ((HomePhotosView) pagers[2]).setPhotos(
+        if (pagers[1] != null) {
+            ((HomePhotosView) pagers[1]).setPhotos(
                     ((MainActivity.SavedStateFragment) savedInstanceState).getHomeFeaturedList());
         }
     }
@@ -223,11 +226,12 @@ public class HomeFragment extends LoadableFragment<Photo>
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
         int pagerIndex = bundle.getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, -1);
         switch (pagerIndex) {
+/*
             case 0:
                 return ((HomeTrendingView) pagers[0]).loadMore(list, headIndex, headDirection);
-
+*/
+            case 0:
             case 1:
-            case 2:
                 if (((HomePhotosView) pagers[pagerIndex])
                         .getOrder()
                         .equals(bundle.getString(KEY_HOME_FRAGMENT_PAGE_ORDER, ""))) {
@@ -241,8 +245,8 @@ public class HomeFragment extends LoadableFragment<Photo>
     public Bundle getBundleOfList(Bundle bundle) {
         int pagerIndex = pagerManagePresenter.getPagerPosition();
         bundle.putInt(KEY_HOME_FRAGMENT_PAGE_POSITION, pagerIndex);
-        if (pagerManagePresenter.getPagerPosition() == 1
-                || pagerManagePresenter.getPagerPosition() == 2) {
+        if (pagerManagePresenter.getPagerPosition() == 0
+                || pagerManagePresenter.getPagerPosition() == 1) {
             bundle.putString(KEY_HOME_FRAGMENT_PAGE_ORDER, ((HomePhotosView) pagers[pagerIndex]).getOrder());
         }
         return bundle;
@@ -251,11 +255,14 @@ public class HomeFragment extends LoadableFragment<Photo>
     @Override
     public void updateData(Photo photo) {
         int page = pagerManagePresenter.getPagerPosition();
+/*
         if (page == 0) {
             ((HomeTrendingView) pagers[0]).updatePhoto(photo, true);
         } else {
             ((HomePhotosView) pagers[page]).updatePhoto(photo, true);
         }
+*/
+        ((HomePhotosView) pagers[page]).updatePhoto(photo, true);
     }
 
     // init.
@@ -305,23 +312,24 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     private void initPages(View v, Bundle savedInstanceState) {
         List<View> pageList = new ArrayList<>();
+        /*
         pageList.add(
                 new HomeTrendingView(
                         (MainActivity) getActivity(),
                         R.id.fragment_home_page_trending,
-                        0, pagerManagePresenter.getPagerPosition() == 0));
+                        0, pagerManagePresenter.getPagerPosition() == 0));*/
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         Mysplash.CATEGORY_TOTAL_NEW,
                         R.id.fragment_home_page_new,
-                        1, pagerManagePresenter.getPagerPosition() == 1));
+                        0, pagerManagePresenter.getPagerPosition() == 0));
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         Mysplash.CATEGORY_TOTAL_FEATURED,
                         R.id.fragment_home_page_featured,
-                        2, pagerManagePresenter.getPagerPosition() == 2));
+                        1, pagerManagePresenter.getPagerPosition() == 1));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -330,6 +338,7 @@ public class HomeFragment extends LoadableFragment<Photo>
 
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, homeTabs);
+        tabList.remove(0);
 
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
