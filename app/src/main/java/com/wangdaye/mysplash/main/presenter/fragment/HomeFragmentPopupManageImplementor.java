@@ -23,7 +23,7 @@ public class HomeFragmentPopupManageImplementor
 
     @Override
     public void showPopup(Context c, View anchor, String value, final int position) {
-        if (position > 0) {
+        if (position >= 0) {
             PhotoOrderPopupWindow window = new PhotoOrderPopupWindow(
                     c,
                     anchor,

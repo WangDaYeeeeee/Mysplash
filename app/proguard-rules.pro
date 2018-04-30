@@ -16,6 +16,8 @@
 #   public *;
 #}
 
+-ignorewarnings
+
 -keep class com.wangdaye.mysplash.common.data.entity.** { *; }
 
 -dontskipnonpubliclibraryclassmembers

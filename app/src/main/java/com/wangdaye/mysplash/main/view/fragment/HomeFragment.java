@@ -375,6 +375,12 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     public void showPopup() {
         int page = pagerManagePresenter.getPagerPosition();
+        popupManageImplementor.showPopup(
+                getActivity(),
+                toolbar,
+                pagerManagePresenter.getPagerKey(page),
+                page);
+        /*
         if (page == 0) {
             NotificationHelper.showSnackbar(getString(R.string.feedback_no_filter));
         } else {
@@ -383,7 +389,7 @@ public class HomeFragment extends LoadableFragment<Photo>
                     toolbar,
                     pagerManagePresenter.getPagerKey(page),
                     page);
-        }
+        }*/
     }
 
     // interface.

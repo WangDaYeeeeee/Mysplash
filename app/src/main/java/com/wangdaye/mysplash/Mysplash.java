@@ -52,6 +52,7 @@ public class Mysplash extends Application {
     public static final String UNSPLASH_TREND_FEEDING_URL = "napi/feeds/home";
     public static final String UNSPLASH_FOLLOWING_FEED_URL = "napi/feeds/following";
     public static final String UNSPLASH_NODE_API_URL = "";
+    // public static final String UNSPLASH_NODE_API_URL = "napi/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";

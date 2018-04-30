@@ -40,7 +40,12 @@ public class TLSCompactService {
                 specs.add(ConnectionSpec.COMPATIBLE_TLS);
                 specs.add(ConnectionSpec.CLEARTEXT);
 
-                builder.connectionSpecs(specs);
+                builder
+                        .connectionSpecs(specs)
+                        .followRedirects(true)
+                        .followSslRedirects(true)
+                        .retryOnConnectionFailure(true)
+                        .cache(null);
             } catch (Exception exc) {
                 Log.e("OkHttpTLSCompat", "Error while setting TLS 1.2", exc);
             }
