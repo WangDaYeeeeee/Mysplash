@@ -567,7 +567,7 @@ public class MainActivity extends LoadableActivity<Photo>
     @SuppressLint("SetTextI18n")
     @Override
     public void onWriteAccessToken() {
-        nav.getMenu().getItem(1).setVisible(true);
+        // nav.getMenu().getItem(1).setVisible(true);
         meManagePresenter.responseWriteAccessToken();
     }
 
@@ -584,7 +584,7 @@ public class MainActivity extends LoadableActivity<Photo>
 
     @Override
     public void onLogout() {
-        nav.getMenu().getItem(1).setVisible(false);
+        // nav.getMenu().getItem(1).setVisible(false);
         meManagePresenter.responseLogout();
     }
 

@@ -136,12 +136,14 @@ public class UserProfileView extends FrameLayout
 
         tagList.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
+/*
         if (AuthManager.getInstance().isAuthorized()) {
             rippleButton.setOnSwitchListener(this);
         } else {
             rippleButton.setVisibility(GONE);
         }
+*/
+        rippleButton.setVisibility(GONE);
 
         DisplayUtils.setTypeface(getContext(), locationTxt);
         DisplayUtils.setTypeface(getContext(), bioTxt);

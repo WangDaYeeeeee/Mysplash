@@ -120,10 +120,8 @@ public class AuthManager
 
     private void updateVersion(SharedPreferences sharedPreferences) {
         int versionNow = sharedPreferences.getInt(KEY_VERSION, 0);
-        String token = sharedPreferences.getString(KEY_ACCESS_TOKEN, null);
 
-        if ((versionNow < VERSION_CODE) && !TextUtils.isEmpty(token)) {
-
+        if (versionNow < VERSION_CODE) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(KEY_VERSION, VERSION_CODE);
             editor.putString(KEY_ACCESS_TOKEN, null);
