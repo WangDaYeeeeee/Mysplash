@@ -7,8 +7,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 336
-        versionName "3.3.6"
+        versionCode 337
+        versionName "3.3.7"
     }
     sourceSets {
         main {

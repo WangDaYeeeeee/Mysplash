@@ -226,7 +226,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     @Override
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
         int pagerIndex = bundle.getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, -1);
-        if (Mysplash.hasNode() && pagerIndex == featuredPage()) {
+        if (Mysplash.hasNode() && pagerIndex == trendingPage()) {
             return ((HomeTrendingView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
         } else {
             if (((HomePhotosView) pagers[pagerIndex])

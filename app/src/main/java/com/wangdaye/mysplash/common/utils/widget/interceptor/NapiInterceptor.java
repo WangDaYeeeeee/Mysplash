@@ -4,8 +4,14 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 
 import okhttp3.Interceptor;
+import okhttp3.MediaType;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
+import okio.Buffer;
+import okio.BufferedSource;
+import okio.GzipSource;
 
 /**
  * Napi interceptor.
@@ -38,7 +44,5 @@ public class NapiInterceptor implements Interceptor {
 
     private Response buildResponse(Request request, Response response) throws IOException {
         return response;
-
-
     }
 }
