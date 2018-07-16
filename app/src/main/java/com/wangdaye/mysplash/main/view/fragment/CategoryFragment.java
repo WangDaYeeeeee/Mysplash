@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
+import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.CategoryManageModel;
 import com.wangdaye.mysplash.common.i.presenter.CategoryManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common.i.view.CategoryManageView;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.popup.SearchCategoryPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;

@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.ChangeCollectionPhotoRe
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.service.CollectionService;
-import com.wangdaye.mysplash.common._basic.fragment.MysplashDialogFragment;
+import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 

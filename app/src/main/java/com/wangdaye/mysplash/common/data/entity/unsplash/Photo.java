@@ -7,7 +7,7 @@ import android.os.Parcelable;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.Previewable;
+import com.wangdaye.mysplash.common.basic.Previewable;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 

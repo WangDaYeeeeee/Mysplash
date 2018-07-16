@@ -4,7 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.wangdaye.mysplash.common._basic.Previewable;
+import com.wangdaye.mysplash.common.basic.Previewable;
 
 import java.util.List;
 

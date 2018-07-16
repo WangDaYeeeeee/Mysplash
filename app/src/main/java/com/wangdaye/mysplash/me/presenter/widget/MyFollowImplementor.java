@@ -9,7 +9,7 @@ import com.wangdaye.mysplash.common.data.service.UserService;
 import com.wangdaye.mysplash.common.i.model.MyFollowModel;
 import com.wangdaye.mysplash.common.i.presenter.MyFollowPresenter;
 import com.wangdaye.mysplash.common.i.view.MyFollowView;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;

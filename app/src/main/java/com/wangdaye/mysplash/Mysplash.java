@@ -15,10 +15,10 @@ import android.support.annotation.StringDef;
 import android.text.TextUtils;
 import android.view.View;
 
-import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
-import com.wangdaye.mysplash.common._basic.activity.RequestLoadActivity;
+import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
+import com.wangdaye.mysplash.common.basic.activity.RequestLoadActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
@@ -49,10 +49,9 @@ public class Mysplash extends Application {
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
-    public static final String UNSPLASH_TREND_FEEDING_URL = "napi/feeds/home";
-    public static final String UNSPLASH_FOLLOWING_FEED_URL = "napi/feeds/following";
+    public static final String UNSPLASH_TREND_FEEDING_URL = "feeds/home";
+    public static final String UNSPLASH_FOLLOWING_FEED_URL = "feeds/following";
     public static final String UNSPLASH_NODE_API_URL = "";
-    // public static final String UNSPLASH_NODE_API_URL = "napi/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
@@ -153,6 +152,10 @@ public class Mysplash extends Application {
 
         }
         return false;
+    }
+
+    public static boolean hasNode() {
+        return !TextUtils.isEmpty(UNSPLASH_NODE_API_URL);
     }
 
     public static String getLoginUrl(Context c) {

@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.collection.model.widget;
 
 import android.support.annotation.NonNull;
 
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 
 /**

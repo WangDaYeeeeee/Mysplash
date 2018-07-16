@@ -18,7 +18,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
+import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.model.MultiFilterBarModel;
 import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
@@ -27,7 +27,7 @@ import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.i.view.MultiFilterBarView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;

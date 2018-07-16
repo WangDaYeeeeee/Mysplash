@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;

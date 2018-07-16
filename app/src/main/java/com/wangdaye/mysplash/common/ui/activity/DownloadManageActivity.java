@@ -14,7 +14,7 @@ import android.view.View;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.ReadWriteActivity;
+import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -27,7 +27,7 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.common._basic.FlagRunnable;
+import com.wangdaye.mysplash.common.basic.FlagRunnable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -4,11 +4,12 @@ import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.TLSCompactService;
+import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.SearchNodeApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.SearchCollectionsResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.SearchUsersResult;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
+import com.wangdaye.mysplash.common.utils.widget.interceptor.NapiInterceptor;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
@@ -31,6 +32,7 @@ public class SearchNodeService extends TLSCompactService {
     private OkHttpClient buildClient() {
         return getClientBuilder()
                 .addInterceptor(new AuthInterceptor())
+                .addInterceptor(new NapiInterceptor())
                 .build();
     }
 

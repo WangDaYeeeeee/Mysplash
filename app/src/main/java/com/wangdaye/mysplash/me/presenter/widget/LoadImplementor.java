@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.me.presenter.widget;
 
 import android.support.annotation.NonNull;
 
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash.common.i.view.LoadView;

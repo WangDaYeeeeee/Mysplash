@@ -10,10 +10,10 @@ import android.view.animation.Animation;
 import android.view.animation.Transformation;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
+import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;

@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.TLSCompactService;
+import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.StatusApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Total;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;

@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.common.utils.widget.interceptor;
 
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.common.data.service.FeedService;
-import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import java.io.IOException;
 
@@ -22,28 +21,10 @@ public class FeedInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Interceptor.Chain chain) throws IOException {
-        Request request;
-        if (AuthManager.getInstance().isAuthorized()) {
-            request = chain.request()
-                    .newBuilder()
-                    .addHeader("x-unsplash-client", "web")
-                    .addHeader("accept-version", "v1")
-                    .addHeader("Authorization", "Bearer " + BuildConfig.FEED_TOKEN)
-                    .addHeader("Accept", "*/*")
-                    .addHeader("Referer", "https://unsplash.com/following?onboarding=true")
-                    .build();
-        } else {
-            request = chain.request()
-                    .newBuilder()
-                    .addHeader("x-unsplash-client", "web")
-                    .addHeader("accept-version", "v1")
-                    .addHeader("Authorization", "Bearer " + BuildConfig.FEED_TOKEN)/*
-                    .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance(), false))*/
-                    .addHeader("Accept", "*/*")
-                    .addHeader("Referer", "https://unsplash.com/following?onboarding=true")
-                    .build();
-        }
-
+        Request request = chain.request()
+                .newBuilder()
+                .addHeader("Authorization", "Bearer " + BuildConfig.FEED_TOKEN)
+                .build();
         return chain.proceed(request);
     }
 }

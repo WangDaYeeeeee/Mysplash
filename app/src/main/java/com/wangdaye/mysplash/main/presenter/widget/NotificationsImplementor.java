@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.main.presenter.widget;
 import android.content.Context;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
 import com.wangdaye.mysplash.common.i.model.NotificationsModel;
 import com.wangdaye.mysplash.common.i.presenter.NotificationsPresenter;

@@ -16,7 +16,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
 import com.wangdaye.mysplash.common.ui.adapter.WallpaperSourceAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.ConfirmExitWithoutSaveDialog;

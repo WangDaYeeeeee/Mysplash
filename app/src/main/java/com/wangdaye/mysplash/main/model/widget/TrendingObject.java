@@ -43,7 +43,7 @@ public class TrendingObject implements TrendingModel {
 
     @Override
     public String getFirstPage() {
-        return Mysplash.UNSPLASH_URL + Mysplash.UNSPLASH_TREND_FEEDING_URL;
+        return Mysplash.UNSPLASH_URL + Mysplash.UNSPLASH_NODE_API_URL + Mysplash.UNSPLASH_TREND_FEEDING_URL;
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.MysplashPopupWindow;
+import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.ui.activity.SetWallpaperActivity;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 

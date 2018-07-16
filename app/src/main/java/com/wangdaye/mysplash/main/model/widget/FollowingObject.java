@@ -44,7 +44,7 @@ public class FollowingObject implements FollowingModel {
 
     @Override
     public String getFirstPage() {
-        return Mysplash.UNSPLASH_URL + Mysplash.UNSPLASH_FOLLOWING_FEED_URL;
+        return Mysplash.UNSPLASH_URL + Mysplash.UNSPLASH_NODE_API_URL + Mysplash.UNSPLASH_FOLLOWING_FEED_URL;
     }
 
     @Override

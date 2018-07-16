@@ -5,8 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
@@ -33,7 +33,7 @@ import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash.common.i.view.FollowingView;
 import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
@@ -438,7 +438,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -455,15 +455,22 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         private User lastActor;
         private String lastVerb;
 
+        private int avatarPosition;
+        private int lastAvatarPosition;
+
         // life cycle.
 
         AvatarScrollListener() {
             this.manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+
             this.lastActor = null;
             this.lastVerb = null;
+
+            this.avatarPosition = 0;
+            this.lastAvatarPosition = 0;
         }
 
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy){
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
             int firstVisibleItemPosition = manager.findFirstVisibleItemPositions(null)[0];
             if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)) {
                 // the first visible item is a footer item.
@@ -479,34 +486,38 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         // not yet reached the trigger position.
                         // --> the avatar needs to move with footer item.
                         avatarContainer.setTranslationY(footerBottom - AVATAR_SIZE - STATUS_BAR_HEIGHT);
-                        User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
-                        if (lastActor == null || !lastActor.username.equals(user.username)) {
-                            setAvatarImage(firstVisibleItemPosition);
-                        }
-                        setAvatarVerb(firstVisibleItemPosition);
+                        lastAvatarPosition = avatarPosition;
+                        avatarPosition = firstVisibleItemPosition;
+                        setAvatarAppearance(recyclerView);
                     } else {
                         // the footer item is moving out of the screen, and the header item has
                         // already reached the trigger position.
                         // --> the avatar needs to move with header item.
                         avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
-                        User user = followingPresenter.getAdapter()
-                                .getActor(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
-                        if (lastActor == null || !lastActor.username.equals(user.username)) {
-                            setAvatarImage(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
-                        }
-                        setAvatarVerb(firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0));
+                        lastAvatarPosition = avatarPosition;
+                        avatarPosition = firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0);
+                        setAvatarAppearance(recyclerView);
                     }
                 }
             } else {
                 // the first item is not a footer item.
                 // --> avatar needs to stay on the trigger position.
                 avatarContainer.setTranslationY(-STATUS_BAR_HEIGHT + getRealOffset());
-                User user = followingPresenter.getAdapter().getActor(firstVisibleItemPosition);
-                if (lastActor == null || !lastActor.username.equals(user.username)) {
-                    setAvatarImage(firstVisibleItemPosition);
-                }
-                setAvatarVerb(firstVisibleItemPosition);
+                lastAvatarPosition = avatarPosition;
+                avatarPosition = firstVisibleItemPosition;
+                setAvatarAppearance(recyclerView);
             }
+        }
+
+        private void setAvatarAppearance(RecyclerView recyclerView) {
+            User user = followingPresenter.getAdapter().getActor(avatarPosition);
+            if (lastActor == null || !lastActor.username.equals(user.username)) {
+                setAvatarImage(avatarPosition);
+            }
+            setAvatarVerb(avatarPosition);
+
+            followingPresenter.getAdapter()
+                    .setTitleAvatarVisibility(recyclerView, lastAvatarPosition, avatarPosition);
         }
 
         private void setAvatarImage(int position) {
@@ -654,12 +665,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 && dy > 0) {
             followingPresenter.loadMore(getContext(), false);
         }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
+        if (!recyclerView.canScrollVertically(-1)) {
             scrollPresenter.setToTop(true);
         } else {
             scrollPresenter.setToTop(false);
         }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && followingPresenter.isLoading()) {
+        if (!recyclerView.canScrollVertically(1) && followingPresenter.isLoading()) {
             refreshLayout.setLoading(true);
         }
     }

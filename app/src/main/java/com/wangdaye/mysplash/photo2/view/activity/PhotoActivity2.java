@@ -22,8 +22,8 @@ import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.FlagRunnable;
-import com.wangdaye.mysplash.common._basic.activity.RequestLoadActivity;
+import com.wangdaye.mysplash.common.basic.FlagRunnable;
+import com.wangdaye.mysplash.common.basic.activity.RequestLoadActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;

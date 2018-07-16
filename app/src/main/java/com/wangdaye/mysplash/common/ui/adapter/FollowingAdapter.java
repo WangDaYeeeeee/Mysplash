@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +22,8 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.FooterAdapter;
-import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
+import com.wangdaye.mysplash.common.basic.FooterAdapter;
+import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ActionObject;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
@@ -30,7 +31,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
@@ -119,8 +120,9 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         this.columnCount = columnCount;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
         if (isFooter(position)) {
             // footer.
             return FooterHolder.buildInstance(parent);
@@ -153,7 +155,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (!isFooter(position)) {
             if (holder instanceof TitleHolder) {
                 ((TitleHolder) holder).onBindView(
@@ -175,7 +177,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof TitleHolder) {
             ((TitleHolder) holder).onRecycled();
@@ -252,6 +254,18 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             return MAXI_PHOTO_COUNT_GIRD;
         } else {
             return MAXI_PHOTO_COUNT_LIST;
+        }
+    }
+
+    public void setTitleAvatarVisibility(RecyclerView recyclerView, int lastPosition, int newPosition) {
+        RecyclerView.ViewHolder lastHolder = recyclerView.findViewHolderForAdapterPosition(lastPosition);
+        if (lastHolder != null && lastHolder instanceof TitleHolder) {
+            ((TitleHolder) lastHolder).setAvatarVisibility(true);
+        }
+
+        RecyclerView.ViewHolder newHolder = recyclerView.findViewHolderForAdapterPosition(newPosition);
+        if (newHolder != null && newHolder instanceof TitleHolder) {
+            ((TitleHolder) newHolder).setAvatarVisibility(false);
         }
     }
 
@@ -385,7 +399,10 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     .findLastVisibleItemPosition();
             if (firstVisiblePosition <= position && position <= lastVisiblePosition) {
                 // is a visible item.
-                ((PhotoHolder) recyclerView.findViewHolderForAdapterPosition(position)).update(photo);
+                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                if (holder != null && holder instanceof PhotoHolder) {
+                    ((PhotoHolder) holder).update(photo);
+                }
             } else {
                 notifyItemChanged(position);
             }
@@ -427,9 +444,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     // feeds.
 
     public List<FollowingResult> getFeeds() {
-        List<FollowingResult> list = new ArrayList<>();
-        list.addAll(resultList);
-        return list;
+        return new ArrayList<>(resultList);
     }
 
     public void setFeeds(List<FollowingResult> list) {
@@ -506,13 +521,16 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             if (recyclerView != null) {
                 StaggeredGridLayoutManager layoutManager
                         = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
-                int[] firstPositions = layoutManager.findFirstVisibleItemPositions(null);
-                int[] lastPositions = layoutManager.findLastVisibleItemPositions(null);
-                if (firstPositions[0] <= position
-                        && position <= lastPositions[lastPositions.length - 1]) {
-                    PhotoHolder holder = (PhotoHolder) recyclerView.findViewHolderForAdapterPosition(position);
-                    holder.likeButton.setResultState(
-                            to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                if (layoutManager != null) {int[] firstPositions = layoutManager.findFirstVisibleItemPositions(null);
+                    int[] lastPositions = layoutManager.findLastVisibleItemPositions(null);
+                    if (firstPositions[0] <= position
+                            && position <= lastPositions[lastPositions.length - 1]) {
+                        PhotoHolder holder = (PhotoHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                        if (holder != null) {
+                            holder.likeButton.setResultState(
+                                    to ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                        }
+                    }
                 }
             }
         }
@@ -588,12 +606,16 @@ class TitleHolder extends RecyclerView.ViewHolder {
     TextView verb;
 
     private FollowingResult result;
+    private boolean avatarVisibility;
     static final int VIEW_TYPE_TITLE = 0;
 
     TitleHolder(View itemView, int columnCount) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         DisplayUtils.setTypeface(itemView.getContext(), verb);
+
+        avatarVisibility = false;
+        setAvatarVisibility(true);
 
         if (columnCount > 1) {
             StaggeredGridLayoutManager.LayoutParams params
@@ -691,6 +713,17 @@ class TitleHolder extends RecyclerView.ViewHolder {
 
     void onRecycled() {
         ImageHelper.releaseImageView(avatar);
+    }
+
+    public void setAvatarVisibility(boolean visibility) {
+        if (visibility != avatarVisibility) {
+            avatarVisibility = visibility;
+
+            float alpha = visibility ? 1F : 0F;
+            avatar.setAlpha(alpha);
+            verbIcon.setAlpha(alpha);
+            avatar.setEnabled(visibility);
+        }
     }
 
     // interface.

@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.i.view;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 
 /**

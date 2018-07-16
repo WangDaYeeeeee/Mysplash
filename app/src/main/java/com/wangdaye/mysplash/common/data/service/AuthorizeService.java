@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.data.service;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.TLSCompactService;
+import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.AuthorizeApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.AccessToken;
 

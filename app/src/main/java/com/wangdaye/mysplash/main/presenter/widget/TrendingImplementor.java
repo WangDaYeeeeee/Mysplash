@@ -2,9 +2,10 @@ package com.wangdaye.mysplash.main.presenter.widget;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.TrendingFeed;
 import com.wangdaye.mysplash.common.data.service.FeedService;
 import com.wangdaye.mysplash.common.i.model.TrendingModel;
@@ -193,6 +194,7 @@ public class TrendingImplementor implements TrendingPresenter {
             } else {
                 view.setLoading(false);
             }
+            Log.d("onFailed", t.getLocalizedMessage() +  "\n" +t.getMessage());
             NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast)
                             + " (" + t.getMessage() + ")");

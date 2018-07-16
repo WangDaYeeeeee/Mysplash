@@ -2,15 +2,19 @@ package com.wangdaye.mysplash.common.data.service;
 
 import android.net.Uri;
 
+
 import com.google.gson.GsonBuilder;
-import com.wangdaye.mysplash.common._basic.TLSCompactService;
+import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.FeedApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
 import com.wangdaye.mysplash.common.data.entity.unsplash.TrendingFeed;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.FeedInterceptor;
+import com.wangdaye.mysplash.common.utils.widget.interceptor.NapiInterceptor;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,12 +36,14 @@ public class FeedService extends TLSCompactService {
     private OkHttpClient buildClient() {
         return getClientBuilder()
                 .addInterceptor(new FeedInterceptor())
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .addInterceptor(new NapiInterceptor())
                 .build();
     }
 
     private FeedApi buildApi(OkHttpClient client) {
         return new Retrofit.Builder()
-                .baseUrl("https://unsplash.com/")
+                .baseUrl(Mysplash.UNSPLASH_URL)
                 .client(client)
                 .addConverterFactory(
                         GsonConverterFactory.create(

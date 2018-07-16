@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.FooterAdapter;
+import com.wangdaye.mysplash.common.basic.FooterAdapter;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;

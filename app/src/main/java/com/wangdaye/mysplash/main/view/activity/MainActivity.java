@@ -20,15 +20,15 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.LoadableActivity;
-import com.wangdaye.mysplash.common._basic.fragment.LoadableFragment;
+import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
+import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash.common._basic.fragment.MysplashFragment;
+import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.ui.activity.invisible.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
@@ -450,14 +450,12 @@ public class MainActivity extends LoadableActivity<Photo>
         }
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
-/*
-        if (AuthManager.getInstance().isAuthorized()) {
+
+        if (AuthManager.getInstance().isAuthorized() && Mysplash.hasNode()) {
             nav.getMenu().getItem(1).setVisible(true);
         } else {
             nav.getMenu().getItem(1).setVisible(false);
         }
-*/
-        nav.getMenu().getItem(1).setVisible(false);
 
         View header = nav.getHeaderView(0);
         header.setOnClickListener(this);
@@ -567,7 +565,9 @@ public class MainActivity extends LoadableActivity<Photo>
     @SuppressLint("SetTextI18n")
     @Override
     public void onWriteAccessToken() {
-        // nav.getMenu().getItem(1).setVisible(true);
+        if (Mysplash.hasNode()) {
+            nav.getMenu().getItem(1).setVisible(true);
+        }
         meManagePresenter.responseWriteAccessToken();
     }
 
@@ -584,7 +584,7 @@ public class MainActivity extends LoadableActivity<Photo>
 
     @Override
     public void onLogout() {
-        // nav.getMenu().getItem(1).setVisible(false);
+        nav.getMenu().getItem(1).setVisible(false);
         meManagePresenter.responseLogout();
     }
 

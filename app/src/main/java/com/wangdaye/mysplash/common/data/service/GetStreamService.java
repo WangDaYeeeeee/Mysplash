@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.data.service;
 
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.TLSCompactService;
+import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.GetStreamApi;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 

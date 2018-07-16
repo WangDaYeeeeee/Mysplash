@@ -4,7 +4,7 @@ import android.support.v7.widget.RecyclerView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.service.SearchService;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 
 /**
  * Search model.

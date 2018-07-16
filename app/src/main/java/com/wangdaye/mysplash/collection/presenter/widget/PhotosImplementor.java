@@ -10,7 +10,7 @@ import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotosModel;
 import com.wangdaye.mysplash.common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash.common.i.view.PhotosView;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.collection.model.widget.PhotosObject;
@@ -228,7 +228,7 @@ public class PhotosImplementor
             } else {
                 view.setLoading(false);
             }
-            if (response.isSuccessful()) {
+            if (response.isSuccessful() && response.body() != null) {
                 model.setPhotosPage(page);
                 if (refresh) {
                     model.getAdapter().clearItem();

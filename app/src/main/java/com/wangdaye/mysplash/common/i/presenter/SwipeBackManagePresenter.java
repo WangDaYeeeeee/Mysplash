@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 
 /**

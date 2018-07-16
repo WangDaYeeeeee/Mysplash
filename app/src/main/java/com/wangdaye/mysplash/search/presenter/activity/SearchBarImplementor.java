@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.search.presenter.activity;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.presenter.SearchBarPresenter;
 import com.wangdaye.mysplash.common.i.view.SearchBarView;
 

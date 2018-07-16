@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.collection.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
 
@@ -20,7 +21,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.ScrollModel;
 import com.wangdaye.mysplash.common.i.presenter.SwipeBackPresenter;
 import com.wangdaye.mysplash.common.i.view.SwipeBackView;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -223,7 +224,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
         if (!headDirection && photosPresenter.canLoadMore()) {
             photosPresenter.loadMore(getContext(), false);
         }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && photosPresenter.isLoading()) {
+        if (!recyclerView.canScrollVertically(1) && photosPresenter.isLoading()) {
             refreshLayout.setLoading(true);
         }
 
@@ -329,7 +330,7 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -458,12 +459,12 @@ public class CollectionPhotosView extends NestedScrollFrameLayout
                 && dy > 0) {
             photosPresenter.loadMore(getContext(), false);
         }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
+        if (!recyclerView.canScrollVertically(-1)) {
             scrollPresenter.setToTop(true);
         } else {
             scrollPresenter.setToTop(false);
         }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && photosPresenter.isLoading()) {
+        if (!recyclerView.canScrollVertically(1) && photosPresenter.isLoading()) {
             refreshLayout.setLoading(true);
         }
     }

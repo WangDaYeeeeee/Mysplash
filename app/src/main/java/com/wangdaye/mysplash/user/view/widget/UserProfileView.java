@@ -19,8 +19,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
 import com.wangdaye.mysplash.common.i.model.UserModel;
@@ -136,14 +137,12 @@ public class UserProfileView extends FrameLayout
 
         tagList.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-/*
-        if (AuthManager.getInstance().isAuthorized()) {
+
+        if (AuthManager.getInstance().isAuthorized() && Mysplash.hasNode()) {
             rippleButton.setOnSwitchListener(this);
         } else {
             rippleButton.setVisibility(GONE);
         }
-*/
-        rippleButton.setVisibility(GONE);
 
         DisplayUtils.setTypeface(getContext(), locationTxt);
         DisplayUtils.setTypeface(getContext(), bioTxt);

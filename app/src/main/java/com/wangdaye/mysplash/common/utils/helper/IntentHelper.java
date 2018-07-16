@@ -22,7 +22,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
 import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;

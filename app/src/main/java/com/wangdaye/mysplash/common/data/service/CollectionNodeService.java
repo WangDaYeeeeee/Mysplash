@@ -4,10 +4,11 @@ import android.text.TextUtils;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common._basic.TLSCompactService;
+import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.CollectionNodeApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
+import com.wangdaye.mysplash.common.utils.widget.interceptor.NapiInterceptor;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class CollectionNodeService extends TLSCompactService {
     private OkHttpClient buildClient() {
         return getClientBuilder()
                 .addInterceptor(new AuthInterceptor())
+                .addInterceptor(new NapiInterceptor())
                 .build();
     }
 

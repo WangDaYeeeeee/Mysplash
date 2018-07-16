@@ -9,7 +9,7 @@ import com.wangdaye.mysplash.Mysplash;
  * Category.
  * */
 
-public class Category implements com.wangdaye.mysplash.common._basic.Tag, Parcelable {
+public class Category implements com.wangdaye.mysplash.common.basic.Tag, Parcelable {
 
     /**
      * id : 2

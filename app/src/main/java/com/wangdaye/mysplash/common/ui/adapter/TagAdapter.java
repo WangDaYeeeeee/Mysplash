@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.Tag;
+import com.wangdaye.mysplash.common.basic.Tag;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 

@@ -171,11 +171,21 @@ public static java.lang.String TABLENAME;
 -dontwarn com.squareup.okhttp3.**
 -keep class com.squareup.okhttp3.** { *;}
 
-# Okio
+	# Okio
 -dontwarn com.squareup.**
 -dontwarn okio.**
+-dontwarn okhttp3.**
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.ParametersAreNonnullByDefault
+-dontwarn com.hitomi.**
 -keep public class org.codehaus.* { *; }
 -keep public class java.nio.* { *; }
+-keep class okio.** { *; }
+-keep interface okio.** { *; }
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-keep class com.hitomi.** { *; }
+-keep interface com.hitomi.** { *; }
 
 # Retrofit
 -dontwarn retrofit2.**

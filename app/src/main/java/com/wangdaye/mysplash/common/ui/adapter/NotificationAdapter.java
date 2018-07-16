@@ -17,7 +17,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common._basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ActionObject;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;

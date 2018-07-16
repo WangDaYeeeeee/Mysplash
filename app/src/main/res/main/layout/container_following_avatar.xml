@@ -8,7 +8,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:background="?attr/root_color" />
+        android:background="@android:color/transparent" />
 
     <FrameLayout
         android:id="@+id/container_following_avatar_background"
@@ -16,7 +16,7 @@
         android:layout_height="40dp"
         android:layout_margin="@dimen/little_margin"
         android:layout_alignParentBottom="true"
-        android:background="?attr/root_color" />
+        android:background="@android:color/transparent" />
 
     <com.wangdaye.mysplash.common.ui.widget.CircleImageView
         android:id="@+id/container_following_avatar_avatar"
