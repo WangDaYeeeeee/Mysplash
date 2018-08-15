@@ -19,14 +19,18 @@ import retrofit2.http.Query;
 public interface FeedApi {
 
     @GET(Mysplash.UNSPLASH_NODE_API_URL + Mysplash.UNSPLASH_TREND_FEEDING_URL)
-    Call<TrendingFeed> getTrendingFeed(@Query("after") String after);
+    Call<TrendingFeed> getTrendingFeed(@Query("after") String after,
+                                       @Query("Insurance") String Insurance);
 
     @GET(Mysplash.UNSPLASH_NODE_API_URL + Mysplash.UNSPLASH_FOLLOWING_FEED_URL)
-    Call<FollowingFeed> getFollowingFeed(@Query("after") String after);
+    Call<FollowingFeed> getFollowingFeed(@Query("after") String after,
+                                         @Query("Insurance") String Insurance);
 
     @POST(Mysplash.UNSPLASH_NODE_API_URL + "users/{username}/follow")
-    Call<ResponseBody> follow(@Path("username") String username);
+    Call<ResponseBody> follow(@Path("username") String username,
+                              @Query("Insurance") String Insurance);
 
     @DELETE(Mysplash.UNSPLASH_NODE_API_URL + "users/{username}/follow")
-    Call<ResponseBody> cancelFollow(@Path("username") String username);
+    Call<ResponseBody> cancelFollow(@Path("username") String username,
+                                    @Query("Insurance") String Insurance);
 }

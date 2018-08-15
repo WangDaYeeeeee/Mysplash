@@ -54,7 +54,7 @@ public class FeedService extends TLSCompactService {
 
     public void requestTrendingFeed(String url, final OnRequestTrendingFeedListener l) {
         String after = Uri.parse(url).getQueryParameter("after");
-        Call<TrendingFeed> getFeed = buildApi(buildClient()).getTrendingFeed(after);
+        Call<TrendingFeed> getFeed = buildApi(buildClient()).getTrendingFeed(after, "1");
         getFeed.enqueue(new Callback<TrendingFeed>() {
             @Override
             public void onResponse(Call<TrendingFeed> call, retrofit2.Response<TrendingFeed> response) {
@@ -75,7 +75,7 @@ public class FeedService extends TLSCompactService {
 
     public void requestFollowingFeed(String url, final OnRequestFollowingFeedListener l) {
         String after = Uri.parse(url).getQueryParameter("after");
-        Call<FollowingFeed> getFeed = buildApi(buildClient()).getFollowingFeed(after);
+        Call<FollowingFeed> getFeed = buildApi(buildClient()).getFollowingFeed(after, "1");
         getFeed.enqueue(new Callback<FollowingFeed>() {
             @Override
             public void onResponse(Call<FollowingFeed> call, retrofit2.Response<FollowingFeed> response) {
@@ -97,9 +97,9 @@ public class FeedService extends TLSCompactService {
     public void setFollowUser(String username, final boolean follow, final OnFollowListener l) {
         Call<ResponseBody> followRequest;
         if (follow) {
-            followRequest = buildApi(buildClient()).follow(username);
+            followRequest = buildApi(buildClient()).follow(username, "1");
         } else {
-            followRequest = buildApi(buildClient()).cancelFollow(username);
+            followRequest = buildApi(buildClient()).cancelFollow(username, "1");
         }
         followRequest.enqueue(new Callback<ResponseBody>() {
             @Override
