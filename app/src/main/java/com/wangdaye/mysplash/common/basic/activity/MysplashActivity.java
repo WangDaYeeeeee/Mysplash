@@ -60,7 +60,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
             setBackground(a.getBackground());
             Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
-                a.getSupportFragmentManager().beginTransaction().remove(f).commit();
+                a.getSupportFragmentManager()
+                        .beginTransaction()
+                        .remove(f)
+                        .commitAllowingStateLoss();
             }
             a.getSupportFragmentManager()
                     .beginTransaction()
@@ -72,7 +75,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
         public static BaseSavedStateFragment getData(MysplashActivity a) {
             Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
-                a.getSupportFragmentManager().beginTransaction().remove(f).commitAllowingStateLoss();
+                a.getSupportFragmentManager()
+                        .beginTransaction()
+                        .remove(f)
+                        .commitAllowingStateLoss();
 
                 BaseSavedStateFragment sf = (BaseSavedStateFragment) f;
                 if (DisplayUtils.isLandscape(a) == sf.isLandscape()) {

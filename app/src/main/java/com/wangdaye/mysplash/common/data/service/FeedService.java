@@ -14,7 +14,6 @@ import com.wangdaye.mysplash.common.utils.widget.interceptor.NapiInterceptor;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +35,7 @@ public class FeedService extends TLSCompactService {
     private OkHttpClient buildClient() {
         return getClientBuilder()
                 .addInterceptor(new FeedInterceptor())
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                // .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .addInterceptor(new NapiInterceptor())
                 .build();
     }
