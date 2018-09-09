@@ -72,10 +72,10 @@ public class CreateAboutModelImplementor {
                 R.drawable.flag_de,
                 "https://github.com/OffifialMITX"));
         modelList.add(new TranslatorObject(
-                "https://avatars0.githubusercontent.com/u/3891063?v=3&s=400",
-                "Alex",
+                "https://avatars0.githubusercontent.com/u/1187496?s=400&v=4",
+                "Mesnevi",
                 R.drawable.flag_ru,
-                "https://github.com/Ulop"));
+                "https://github.com/Mesnevi"));
         modelList.add(new TranslatorObject(
                 "https://ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/avatars/avatar_tile_s_80.png",
                 "Sergio Otón",
