@@ -19,7 +19,7 @@
     <item
         android:id="@+id/action_collection"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_collected_light"
+        android:icon="@drawable/ic_collect_light"
         android:title="@string/action_collection"
         android:checkable="true" />
 

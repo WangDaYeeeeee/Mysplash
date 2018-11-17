@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.user.view.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
@@ -94,9 +93,6 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @BindView(R.id.activity_user_container)
     CoordinatorLayout container;
-
-    @BindView(R.id.activity_user_background)
-    View background;
 
     @BindView(R.id.activity_user_shadow)
     View shadow;
@@ -229,9 +225,9 @@ public class UserActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_User);
+            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_User);
         } else {
-            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_User);
+            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_User);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -362,10 +358,6 @@ public class UserActivity extends LoadableActivity<Photo>
         if (init && browsablePresenter.isBrowsable() && u == null) {
             browsablePresenter.requestBrowsableData();
         } else {
-            if (getBackground() != null) {
-                background.setBackground(new BitmapDrawable(getResources(), getBackground()));
-            }
-            
             SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_user_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 

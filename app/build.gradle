@@ -118,4 +118,5 @@ dependencies {
     implementation 'com.pacioianu.david:ink-page-indicator:1.2.0'
     implementation 'org.greenrobot:greendao:3.2.0'
     implementation 'com.google.android.apps.muzei:muzei-api:2.0'
+    implementation 'org.jetbrains:annotations-java5:15.0'
 }

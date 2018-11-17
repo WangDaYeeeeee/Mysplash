@@ -92,7 +92,7 @@
 
             <ImageView
                 android:id="@+id/popup_search_category_natureIcon"
-                android:src="@drawable/ic_duck_light"
+                android:src="@drawable/ic_flower_light"
                 style="@style/material_icon"
                 tools:ignore="ContentDescription" />
 

@@ -112,7 +112,7 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
             ((ImageView) v.findViewById(R.id.popup_search_category_food_drinkIcon))
                     .setImageResource(R.drawable.ic_drink_light);
             ((ImageView) v.findViewById(R.id.popup_search_category_natureIcon))
-                    .setImageResource(R.drawable.ic_duck_light);
+                    .setImageResource(R.drawable.ic_flower_light);
             ((ImageView) v.findViewById(R.id.popup_search_category_objectIcon))
                     .setImageResource(R.drawable.ic_cube_light);
             ((ImageView) v.findViewById(R.id.popup_search_category_peopleIcon))
@@ -127,7 +127,7 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
             ((ImageView) v.findViewById(R.id.popup_search_category_food_drinkIcon))
                     .setImageResource(R.drawable.ic_drink_dark);
             ((ImageView) v.findViewById(R.id.popup_search_category_natureIcon))
-                    .setImageResource(R.drawable.ic_duck_dark);
+                    .setImageResource(R.drawable.ic_flower_dark);
             ((ImageView) v.findViewById(R.id.popup_search_category_objectIcon))
                     .setImageResource(R.drawable.ic_cube_dark);
             ((ImageView) v.findViewById(R.id.popup_search_category_peopleIcon))

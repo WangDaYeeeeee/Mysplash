@@ -65,7 +65,6 @@ public class IntentHelper {
 
     public static void startNotificationActivity(MysplashActivity a) {
         Intent intent = new Intent(a, NotificationActivity.class);
-        a.sendBackground();
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }
@@ -75,8 +74,6 @@ public class IntentHelper {
         if (!TextUtils.isEmpty(query)) {
             intent.putExtra(SearchActivity.KEY_SEARCH_ACTIVITY_QUERY, query);
         }
-
-        a.sendBackground();
 
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
@@ -93,8 +90,6 @@ public class IntentHelper {
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX, headIndex);
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_PHOTO_BUNDLE, bundle);
         intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_ID, photoList.get(currentIndex - headIndex).id);
-
-        a.sendBackground();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ActivityOptionsCompat options = ActivityOptionsCompat
@@ -141,8 +136,6 @@ public class IntentHelper {
         Intent intent = new Intent(a, CollectionActivity.class);
         intent.putExtra(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c);
 
-        a.sendBackground();
-
         ActivityOptionsCompat options;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             options = ActivityOptionsCompat
@@ -188,8 +181,6 @@ public class IntentHelper {
             intent.putExtra(UserActivity.KEY_USER_ACTIVITY_USER, u);
             intent.putExtra(UserActivity.KEY_USER_ACTIVITY_PAGE_POSITION, page);
 
-            a.sendBackground();
-
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
                 a.startActivity(intent);
                 a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
@@ -227,8 +218,6 @@ public class IntentHelper {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);
 
-            a.sendBackground();
-
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(
                             a,
@@ -240,8 +229,6 @@ public class IntentHelper {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);
 
-            a.sendBackground();
-
             a.startActivity(intent);
             a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
         }
@@ -252,7 +239,6 @@ public class IntentHelper {
             startLoginActivity(a);
         } else {
             Intent intent = new Intent(a, MyFollowActivity.class);
-            a.sendBackground();
             a.startActivity(intent);
             a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
         }
@@ -266,7 +252,6 @@ public class IntentHelper {
 
     public static void startDownloadManageActivity(MysplashActivity a) {
         Intent intent = new Intent(a, DownloadManageActivity.class);
-        a.sendBackground();
         a.startActivity(intent);
         a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
     }

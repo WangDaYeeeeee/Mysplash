@@ -16,12 +16,4 @@
         </targets>
     </fade>
 
-    <fade
-        android:startDelay="200"
-        android:duration="150">
-        <targets>
-            <target android:targetId="@id/activity_me_background" />
-        </targets>
-    </fade>
-
 </transitionSet>

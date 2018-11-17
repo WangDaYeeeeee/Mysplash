@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -49,9 +48,6 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @BindView(R.id.activity_download_manage_container)
     CoordinatorLayout container;
-
-    @BindView(R.id.activity_download_manage_background)
-    View background;
 
     @BindView(R.id.activity_download_manage_shadow)
     View shadow;
@@ -134,9 +130,9 @@ public class DownloadManageActivity extends ReadWriteActivity
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
     }
 
@@ -173,10 +169,6 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
-
-        if (getBackground() != null) {
-            background.setBackground(new BitmapDrawable(getResources(), getBackground()));
-        }
 
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_download_manage_swipeBackView);

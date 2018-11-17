@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.common.basic.activity;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -29,9 +28,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
     private Bundle bundle; // saved instance state.
     private boolean started; // flag of onStart() method.
 
-    @Nullable
-    private Bitmap background; // background bitmap for swipe back.
-
     private List<MysplashDialogFragment> dialogList = new ArrayList<>();
     private List<MysplashPopupWindow> popupList = new ArrayList<>();
 
@@ -44,7 +40,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
     public abstract static class BaseSavedStateFragment extends Fragment {
 
         private boolean landscape;
-        private Bitmap background;
 
         private static final String FRAGMENT_TAG = "SavedStateFragment";
 
@@ -57,7 +52,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
         public void saveData(MysplashActivity a) {
             setLandscape(DisplayUtils.isLandscape(a));
-            setBackground(a.getBackground());
             Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
             if (f != null) {
                 a.getSupportFragmentManager()
@@ -80,22 +74,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
                         .remove(f)
                         .commitAllowingStateLoss();
 
-                BaseSavedStateFragment sf = (BaseSavedStateFragment) f;
-                if (DisplayUtils.isLandscape(a) == sf.isLandscape()) {
-                    a.setBackground(sf.getBackground());
-                }
-                return sf;
+                return (BaseSavedStateFragment) f;
             } else {
                 return null;
             }
-        }
-
-        public Bitmap getBackground() {
-            return background;
-        }
-
-        public void setBackground(Bitmap background) {
-            this.background = background;
         }
 
         public boolean isLandscape() {
@@ -131,8 +113,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
         this.bundle = savedInstanceState;
         this.started = false;
-
-        setBackground(Mysplash.getInstance().getBackgroundBitmap());
     }
 
     @CallSuper
@@ -245,21 +225,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
     }
 
     // coordinate swipe back view.
-
-    public void sendBackground() {
-        Mysplash.getInstance().setBackgroundBitmap(getWindow().getDecorView());
-    }
-
-    @Nullable
-    protected Bitmap getBackground() {
-        return background;
-    }
-
-    protected void setBackground(@Nullable Bitmap bitmap) {
-        if (bitmap != null) {
-            background = Bitmap.createBitmap(bitmap);
-        }
-    }
 
     protected boolean isTheLowestLevel() {
         return Mysplash.getInstance().getActivityCount() == 1;

@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.IntRange;
@@ -13,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
 import android.text.TextUtils;
-import android.view.View;
 
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.basic.activity.RequestLoadActivity;
@@ -45,13 +42,12 @@ public class Mysplash extends Application {
     private List<MysplashActivity> activityList;
 
     private Photo photo;
-    private Bitmap background;
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
     public static final String UNSPLASH_TREND_FEEDING_URL = "feeds/home";
     public static final String UNSPLASH_FOLLOWING_FEED_URL = "feeds/following";
-    public static final String UNSPLASH_NODE_API_URL = "";
+    public static final String UNSPLASH_NODE_API_URL = "napi/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
@@ -224,29 +220,6 @@ public class Mysplash extends Application {
 
     public void setPhoto(Photo photo) {
         this.photo = photo;
-    }
-
-    @Nullable
-    public Bitmap getBackgroundBitmap() {
-        return background;
-    }
-
-    public void setBackgroundBitmap(View view) {
-        if (view != null) {
-            if (background == null
-                    || view.getWidth() != background.getWidth()
-                    || view.getHeight() != background.getHeight()) {
-                background = Bitmap.createBitmap(
-                        (int) (0.3 * view.getWidth()),
-                        (int) (0.3 * view.getHeight()),
-                        Bitmap.Config.RGB_565);
-            }
-
-            background.eraseColor(getResources().getColor(android.R.color.transparent));
-            Canvas canvas = new Canvas(background);
-            canvas.scale(0.3F, 0.3F);
-            view.draw(canvas);
-        }
     }
 
     public List<Photo> loadMorePhotos(PhotoActivity2 activity,

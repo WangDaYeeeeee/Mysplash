@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.search.view.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -85,9 +84,6 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @BindView(R.id.activity_search_container)
     CoordinatorLayout container;
-
-    @BindView(R.id.activity_search_background)
-    View background;
 
     @BindView(R.id.activity_search_shadow)
     View shadow;
@@ -218,9 +214,9 @@ public class SearchActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -339,10 +335,6 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     private void initView() {
         this.handler = new SafeHandler<>(this);
-
-        if (getBackground() != null) {
-            background.setBackground(new BitmapDrawable(getResources(), getBackground()));
-        }
 
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_search_swipeBackView);

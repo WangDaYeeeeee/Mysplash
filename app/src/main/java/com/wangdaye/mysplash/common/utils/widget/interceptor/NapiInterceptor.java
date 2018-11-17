@@ -29,11 +29,62 @@ public class NapiInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request()
                 .newBuilder()
+                .addHeader("authority", "unsplash.com")
+                .addHeader("method", "GET")
+                .addHeader("scheme", "https")
+                .addHeader("accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8")
+                .addHeader("accept-encoding", "gzip, deflate, br")
+                .addHeader("accept-language", "zh-CN,zh;q=0.9,en;q=0.8")
+                .addHeader("cache-control", "max-age=0")
+                .addHeader("upgrade-insecure-requests", "1")
+                .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
                 .build();
         return buildResponse(request, chain.proceed(request));
     }
 
     private Response buildResponse(Request request, Response response) throws IOException {
-        return response;
+        // return response;
+
+        ResponseBody body = response.body();
+        if (body == null) {
+            return response;
+        }
+
+        BufferedSource source = body.source();
+        source.request(Long.MAX_VALUE); // Buffer the entire body.
+        Buffer buffer = source.buffer();
+
+        if ("gzip".equalsIgnoreCase(response.headers().get("Content-Encoding"))) {
+            GzipSource gzippedResponseBody = null;
+            try {
+                gzippedResponseBody = new GzipSource(buffer.clone());
+                buffer = new Buffer();
+                buffer.writeAll(gzippedResponseBody);
+            } finally {
+                if (gzippedResponseBody != null) {
+                    gzippedResponseBody.close();
+                }
+            }
+        }
+
+        Charset charset = UTF8;
+        MediaType contentType = body.contentType();
+        if (contentType != null) {
+            charset = contentType.charset(UTF8);
+        }
+
+        String bodyString = "";
+        if (charset != null) {
+            bodyString = buffer.clone().readString(charset);
+        }
+
+        return new Response.Builder()
+                .addHeader("Content-Type", "application/json")
+                .code(response.code())
+                .body(ResponseBody.create(body.contentType(), bodyString))
+                .message(response.message())
+                .request(request)
+                .protocol(Protocol.HTTP_2)
+                .build();
     }
 }

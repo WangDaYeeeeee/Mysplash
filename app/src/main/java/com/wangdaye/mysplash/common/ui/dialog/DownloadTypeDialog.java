@@ -66,7 +66,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
 
         ImageView shareIcon = ButterKnife.findById(v, R.id.dialog_download_type_shareIcon);
         ThemeManager.setImageResource(
-                shareIcon, R.drawable.ic_send_light, R.drawable.ic_send_dark);
+                shareIcon, R.drawable.ic_share_light, R.drawable.ic_share_dark);
 
         ImageView wallpaperIcon = ButterKnife.findById(v, R.id.dialog_download_type_wallpaperIcon);
         ThemeManager.setImageResource(

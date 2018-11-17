@@ -8,11 +8,6 @@
     android:layout_height="match_parent">
 
     <View
-        android:id="@+id/activity_download_manage_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <View
         android:id="@+id/activity_download_manage_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

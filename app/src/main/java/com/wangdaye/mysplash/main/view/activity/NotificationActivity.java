@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.main.view.activity;
 
 import android.annotation.SuppressLint;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
@@ -38,9 +37,6 @@ public class NotificationActivity extends MysplashActivity
 
     @BindView(R.id.activity_notification_container)
     CoordinatorLayout container;
-
-    @BindView(R.id.activity_notification_background)
-    View background;
 
     @BindView(R.id.activity_notification_shadow)
     View shadow;
@@ -87,9 +83,9 @@ public class NotificationActivity extends MysplashActivity
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Common);
+            setTheme(R.style.MysplashTheme_light_Translucent_Common);
         } else {
-            setTheme(R.style.MysplashTheme_dark_Common);
+            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
         }
     }
 
@@ -135,10 +131,6 @@ public class NotificationActivity extends MysplashActivity
 
     @SuppressLint("SetTextI18n")
     private void initView() {
-        if (getBackground() != null) {
-            background.setBackground(new BitmapDrawable(getResources(), getBackground()));
-        }
-
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_notification_swipeBackView);
         swipeBackView.setOnSwipeListener(this);

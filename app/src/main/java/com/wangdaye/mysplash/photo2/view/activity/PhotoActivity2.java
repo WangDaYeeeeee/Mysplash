@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.photo2.view.activity;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -105,9 +104,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @BindView(R.id.activity_photo_2_container)
     CoordinatorLayout container;
-
-    @BindView(R.id.activity_photo_2_background)
-    View background;
 
     @BindView(R.id.activity_photo_2_shadow)
     View shadow;
@@ -232,9 +228,9 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Photo2);
+            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Photo2);
         } else {
-            setTheme(R.style.MysplashTheme_dark_TranslucentNavigation_Photo2);
+            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_Photo2);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
@@ -349,10 +345,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
                     && ThemeManager.getInstance(this).isLightTheme()) {
                 statusBar.setDarkerAlpha(StatusBarView.LIGHT_INIT_MASK_ALPHA);
-            }
-
-            if (getBackground() != null) {
-                background.setBackground(new BitmapDrawable(getResources(), getBackground()));
             }
 
             SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(

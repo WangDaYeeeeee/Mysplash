@@ -8,11 +8,6 @@
     android:background="@android:color/black">
 
     <View
-        android:id="@+id/activity_search_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <View
         android:id="@+id/activity_search_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

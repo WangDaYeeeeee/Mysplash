@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.collection.view.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
@@ -91,9 +90,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @BindView(R.id.activity_collection_container)
     CoordinatorLayout container;
 
-    @BindView(R.id.activity_collection_background)
-    View background;
-
     @BindView(R.id.activity_collection_shadow)
     View shadow;
 
@@ -170,9 +166,9 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Override
     protected void setTheme() {
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Collection);
+            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Collection);
         } else {
-            setTheme(R.style.MysplashTheme_dark_TranslucentNavigation_Collection);
+            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_Collection);
         }
 
         if (DisplayUtils.isLandscape(this)) {
@@ -283,10 +279,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
             browsablePresenter.requestBrowsableData();
         } else {
             Collection c = (Collection) editResultPresenter.getEditKey();
-
-            if (getBackground() != null) {
-                background.setBackground(new BitmapDrawable(getResources(), getBackground()));
-            }
 
             SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                     this, R.id.activity_collection_swipeBackView);

@@ -44,7 +44,7 @@
 
             <ImageView
                 android:id="@+id/dialog_download_type_shareIcon"
-                android:src="@drawable/ic_send_light"
+                android:src="@drawable/ic_share_light"
                 style="@style/material_icon"
                 tools:ignore="ContentDescription" />
 

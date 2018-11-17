@@ -32,7 +32,7 @@
         </activity>
 
         <activity android:name=".search.view.activity.SearchActivity"
-            android:theme="@style/MysplashTheme_light.Common"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:screenOrientation="user"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
@@ -45,7 +45,7 @@
 
         <activity
             android:name=".photo2.view.activity.PhotoActivity2"
-            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Photo2"
+            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation.Photo2"
             android:screenOrientation="user"
             android:label="@string/app_name" />
 
@@ -57,13 +57,13 @@
 
         <activity
             android:name=".collection.view.activity.CollectionActivity"
-            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Collection"
+            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation.Collection"
             android:screenOrientation="user"
             android:label="@string/app_name" />
 
         <activity
             android:name=".user.view.activity.UserActivity"
-            android:theme="@style/MysplashTheme_light.TranslucentNavigation.User"
+            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation.User"
             android:screenOrientation="user"
             android:label="@string/app_name" />
 
@@ -84,7 +84,7 @@
 
         <activity
             android:name=".me.view.activity.MeActivity"
-            android:theme="@style/MysplashTheme_light.TranslucentNavigation.Me"
+            android:theme="@style/MysplashTheme_light.Translucent.TranslucentNavigation.Me"
             android:screenOrientation="user"
             android:label="@string/app_name">
             <intent-filter>
@@ -106,7 +106,7 @@
 
         <activity
             android:name=".common.ui.activity.DownloadManageActivity"
-            android:theme="@style/MysplashTheme_light.Common"
+            android:theme="@style/MysplashTheme_light.Translucent.Common"
             android:screenOrientation="user"
             android:launchMode="singleTask"
             android:label="@string/app_name">

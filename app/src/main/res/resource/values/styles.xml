@@ -77,12 +77,12 @@
     <!-- photo activity 2. -->
 
     <style
-        name="MysplashTheme_light.TranslucentNavigation.Photo2"
-        parent="MysplashTheme_light.TranslucentNavigation" />
+        name="MysplashTheme_light.Translucent.TranslucentNavigation.Photo2"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.TranslucentNavigation.Photo2"
-        parent="MysplashTheme_dark.TranslucentNavigation" />
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation.Photo2"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
 
     <!-- preview activity. -->
 
@@ -97,32 +97,32 @@
     <!-- user activity. -->
 
     <style
-        name="MysplashTheme_light.TranslucentNavigation.User"
-        parent="MysplashTheme_light.TranslucentNavigation" />
+        name="MysplashTheme_light.Translucent.TranslucentNavigation.User"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.TranslucentNavigation.User"
-        parent="MysplashTheme_dark.TranslucentNavigation" />
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation.User"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
 
     <!-- me activity. -->
 
     <style
-        name="MysplashTheme_light.TranslucentNavigation.Me"
-        parent="MysplashTheme_light.TranslucentNavigation" />
+        name="MysplashTheme_light.Translucent.TranslucentNavigation.Me"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.TranslucentNavigation.Me"
-        parent="MysplashTheme_dark.TranslucentNavigation" />
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation.Me"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
 
     <!-- collection activity. -->
 
     <style
-        name="MysplashTheme_light.TranslucentNavigation.Collection"
-        parent="MysplashTheme_light.TranslucentNavigation" />
+        name="MysplashTheme_light.Translucent.TranslucentNavigation.Collection"
+        parent="MysplashTheme_light.Translucent.TranslucentNavigation" />
 
     <style
-        name="MysplashTheme_dark.TranslucentNavigation.Collection"
-        parent="MysplashTheme_dark.TranslucentNavigation" />
+        name="MysplashTheme_dark.Translucent.TranslucentNavigation.Collection"
+        parent="MysplashTheme_dark.Translucent.TranslucentNavigation" />
 
     <!-- settings activity. -->
 
@@ -277,8 +277,5 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
-
-    <!-- animation. -->
-
 
 </resources>
