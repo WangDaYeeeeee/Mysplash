@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.photo2.view.holder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.Tag;
@@ -25,13 +26,16 @@ import butterknife.ButterKnife;
 
 public class TagHolder extends PhotoInfoAdapter2.ViewHolder {
 
+    @BindView(R.id.item_photo_2_tag_container)
+    RelativeLayout container;
+
     @BindView(R.id.item_photo_2_tag)
     SwipeSwitchLayout.RecyclerView recyclerView;
 
     public static final int TYPE_TAG = 6;
 
-    public TagHolder(View itemView, MysplashActivity a) {
-        super(itemView);
+    public TagHolder(MysplashActivity a, View itemView, int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
         recyclerView.setLayoutManager(
@@ -39,6 +43,13 @@ public class TagHolder extends PhotoInfoAdapter2.ViewHolder {
                         a,
                         LinearLayoutManager.HORIZONTAL,
                         false));
+
+        if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+            params.setMarginStart(marginHorizontal);
+            params.setMarginEnd(marginHorizontal);
+            container.setLayoutParams(params);
+        }
     }
 
     @Override

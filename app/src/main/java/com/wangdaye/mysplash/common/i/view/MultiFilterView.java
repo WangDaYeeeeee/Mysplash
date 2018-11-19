@@ -10,8 +10,8 @@ package com.wangdaye.mysplash.common.i.view;
 
 public interface MultiFilterView {
 
-    void setRefreshing(boolean refreshing);
-    void setLoading(boolean loading);
+    void setRefreshingPhoto(boolean refreshing);
+    void setLoadingPhoto(boolean loading);
 
     void setPermitRefreshing(boolean permit);
     void setPermitLoading(boolean permit);

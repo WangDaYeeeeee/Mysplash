@@ -2,8 +2,10 @@ package com.wangdaye.mysplash.photo2.view.holder;
 
 import android.annotation.SuppressLint;
 import android.os.Build;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -25,6 +27,9 @@ import butterknife.OnClick;
 
 public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
 
+    @BindView(R.id.item_photo_2_story_container)
+    RelativeLayout container;
+
     @BindView(R.id.item_photo_2_story_title)
     TextView title;
 
@@ -41,12 +46,19 @@ public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
 
     public static final int TYPE_STORY = 2;
 
-    public StoryHolder(View itemView) {
-        super(itemView);
+    public StoryHolder(View itemView, int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), content);
+
+        if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+            params.setMarginStart(marginHorizontal);
+            params.setMarginEnd(marginHorizontal);
+            container.setLayoutParams(params);
+        }
     }
 
     @SuppressLint("SetTextI18n")

@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.photo2.view.holder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
@@ -26,6 +27,9 @@ import butterknife.ButterKnife;
 
 public class MoreLandscapeHolder extends PhotoInfoAdapter2.ViewHolder {
 
+    @BindView(R.id.item_photo_2_more_landscape_container)
+    LinearLayout container;
+
     @BindView(R.id.item_photo_2_more_landscape_recyclerView)
     SwipeSwitchLayout.RecyclerView recyclerView;
 
@@ -34,8 +38,8 @@ public class MoreLandscapeHolder extends PhotoInfoAdapter2.ViewHolder {
 
     public static final int TYPE_MORE_LANDSCAPE = 8;
 
-    public MoreLandscapeHolder(View itemView, PhotoActivity2 a) {
-        super(itemView);
+    public MoreLandscapeHolder(PhotoActivity2 a, View itemView, int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
         recyclerView.setLayoutManager(
@@ -43,6 +47,13 @@ public class MoreLandscapeHolder extends PhotoInfoAdapter2.ViewHolder {
                         a,
                         LinearLayoutManager.HORIZONTAL,
                         false));
+
+        if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+            params.setMarginStart(marginHorizontal);
+            params.setMarginEnd(marginHorizontal);
+            container.setLayoutParams(params);
+        }
     }
 
     @Override

@@ -16,9 +16,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
@@ -35,7 +33,10 @@ import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -69,22 +70,13 @@ import butterknife.OnClick;
 
 public class FollowingFeedView extends NestedScrollFrameLayout
         implements FollowingView, LoadView, ScrollView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, LargeErrorStateAdapter.OnRetryListener {
 
-    @BindView(R.id.container_loading_in_following_view_large_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_loading_in_following_view_large_feedbackContainer)
-    RelativeLayout feedbackContainer;
-
-    @BindView(R.id.container_loading_in_following_view_large_feedbackTxt)
-    TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout)
+    @BindView(R.id.container_following_list_swipeRefreshLayout)
     BothWaySwipeRefreshLayout refreshLayout;
 
-    @BindView(R.id.container_photo_list_recyclerView)
-    RecyclerView recyclerView;
+    @BindView(R.id.container_following_list_recyclerView)
+    MultipleStateRecyclerView recyclerView;
 
     @BindView(R.id.container_following_avatar_avatarContainer)
     RelativeLayout avatarContainer;
@@ -174,12 +166,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View searchingView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_loading_in_following_view_large, this, false);
-        addView(searchingView);
-
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_photo_list, null);
+                .inflate(R.layout.container_following_list_2, null);
         addView(contentView);
 
         View avatarView = LayoutInflater.from(getContext())
@@ -213,7 +201,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     private void initView() {
         this.initAvatarView();
         this.initContentView();
-        this.initLoadingView();
     }
 
     private void initAvatarView() {
@@ -234,7 +221,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setVisibility(GONE);
+        refreshLayout.setPermitRefresh(false);
+        refreshLayout.setPermitLoad(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         refreshLayout.setDragTriggerDistance(
@@ -251,20 +239,24 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
         recyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setAdapter(
+                new LargeLoadingStateAdapter(getContext(), 56),
+                MultipleStateRecyclerView.STATE_LOADING);
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 56,
+                        R.drawable.feedback_no_photos,
+                        getContext().getString(R.string.feedback_load_failed_tv),
+                        getContext().getString(R.string.feedback_click_retry),
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addOnScrollListener(scrollListener);
-        avatarScrollListener = new AvatarScrollListener();
+        avatarScrollListener = new AvatarScrollListener(columnCount);
         recyclerView.addOnScrollListener(avatarScrollListener);
 
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
+
         followingPresenter.getAdapter().setRecyclerView(recyclerView);
-    }
-
-    private void initLoadingView() {
-        progressView.setVisibility(VISIBLE);
-        feedbackContainer.setVisibility(GONE);
-
-        ImageView feedbackImg = ButterKnife.findById(
-                this, R.id.container_loading_in_following_view_large_feedbackImg);
-        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
     // save state.
@@ -404,18 +396,16 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     @OnClick(R.id.container_following_avatar_avatar) void clickAvatar() {
-        int adapterPosition = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPositions(null)[0];
-        IntentHelper.startUserActivity(
-                Mysplash.getInstance().getTopActivity(),
-                avatar,
-                avatarBackground,
-                followingPresenter.getAdapter().getActor(adapterPosition),
-                UserActivity.PAGE_PHOTO);
-    }
-
-    @OnClick(R.id.container_loading_in_following_view_large_feedbackBtn) void retryRefresh() {
-        followingPresenter.initRefresh(getContext());
+        if (recyclerView.getLayoutManager() != null) {
+            int adapterPosition = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
+                    .findFirstVisibleItemPositions(null)[0];
+            IntentHelper.startUserActivity(
+                    Mysplash.getInstance().getTopActivity(),
+                    avatar,
+                    avatarBackground,
+                    followingPresenter.getAdapter().getActor(adapterPosition),
+                    UserActivity.PAGE_PHOTO);
+        }
     }
 
     // on refresh an load listener.
@@ -428,6 +418,13 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @Override
     public void onLoad() {
         followingPresenter.loadMore(getContext(), false);
+    }
+
+    // on retry listener.
+
+    @Override
+    public void onRetry() {
+        followingPresenter.initRefresh(getContext());
     }
 
     // on scroll listener.
@@ -452,6 +449,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         private StaggeredGridLayoutManager manager;
 
         // data
+        private int column;
+
         private User lastActor;
         private String lastVerb;
 
@@ -460,8 +459,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
         // life cycle.
 
-        AvatarScrollListener() {
-            this.manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
+        AvatarScrollListener(int column) {
+            this.column = column;
 
             this.lastActor = null;
             this.lastVerb = null;
@@ -470,7 +469,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             this.lastAvatarPosition = 0;
         }
 
-        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            if (column != 1) {
+                return;
+            }
+
+            bindLayoutManager();
+
             int firstVisibleItemPosition = manager.findFirstVisibleItemPositions(null)[0];
             if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)) {
                 // the first visible item is a footer item.
@@ -506,6 +512,13 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 lastAvatarPosition = avatarPosition;
                 avatarPosition = firstVisibleItemPosition;
                 setAvatarAppearance(recyclerView);
+            }
+        }
+
+        private void bindLayoutManager() {
+            if (recyclerView.getLayoutManager() != null
+                    && recyclerView.getLayoutManager() instanceof StaggeredGridLayoutManager) {
+                this.manager = (StaggeredGridLayoutManager) recyclerView.getLayoutManager();
             }
         }
 
@@ -599,7 +612,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         if (followingPresenter.getAdapter().getRealItemCount() > 0) {
             loadPresenter.setNormalState();
         } else {
-            feedbackText.setText(feedback);
             loadPresenter.setFailedState();
         }
     }
@@ -622,16 +634,22 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(progressView);
-        animHide(feedbackContainer);
-        animHide(refreshLayout);
+        refreshLayout.setPermitRefresh(false);
+        refreshLayout.setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
+        if (DisplayUtils.getGirdColumnCount(getContext()) == 1) {
+            animHide(avatarContainer);
+        }
     }
 
     @Override
     public void setFailedState(@Nullable MysplashActivity activity, int old) {
-        animShow(feedbackContainer);
-        animHide(progressView);
-        animHide(refreshLayout);
+        refreshLayout.setPermitRefresh(false);
+        refreshLayout.setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
+        if (DisplayUtils.getGirdColumnCount(getContext()) == 1) {
+            animHide(avatarContainer);
+        }
     }
 
     @Override
@@ -640,9 +658,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, true, activity.hasTranslucentNavigationBar());
         }
-        animShow(refreshLayout);
-        animHide(progressView);
-        animHide(feedbackContainer);
+        refreshLayout.setPermitRefresh(true);
+        refreshLayout.setPermitLoad(true);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_NORMALLY);
+        if (DisplayUtils.getGirdColumnCount(getContext()) == 1) {
+            animShow(avatarContainer);
+        }
     }
 
     // scroll view.
@@ -656,22 +677,24 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
-                .findLastVisibleItemPositions(null);
-        int totalItemCount = followingPresenter.getAdapter().getRealItemCount();
-        if (followingPresenter.canLoadMore()
-                && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
-                && totalItemCount > 0
-                && dy > 0) {
-            followingPresenter.loadMore(getContext(), false);
-        }
-        if (!recyclerView.canScrollVertically(-1)) {
-            scrollPresenter.setToTop(true);
-        } else {
-            scrollPresenter.setToTop(false);
-        }
-        if (!recyclerView.canScrollVertically(1) && followingPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+        if (recyclerView.getLayoutManager() != null) {
+            int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPositions(null);
+            int totalItemCount = followingPresenter.getAdapter().getRealItemCount();
+            if (followingPresenter.canLoadMore()
+                    && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
+                    && totalItemCount > 0
+                    && dy > 0) {
+                followingPresenter.loadMore(getContext(), false);
+            }
+            if (!recyclerView.canScrollVertically(-1)) {
+                scrollPresenter.setToTop(true);
+            } else {
+                scrollPresenter.setToTop(false);
+            }
+            if (!recyclerView.canScrollVertically(1) && followingPresenter.isLoading()) {
+                refreshLayout.setLoading(true);
+            }
         }
     }
 

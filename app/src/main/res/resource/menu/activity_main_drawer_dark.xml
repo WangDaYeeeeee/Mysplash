@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_home"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_mountain_dark"
+        android:icon="@drawable/ic_image_dark"
         android:title="@string/action_home"
         android:checkable="true"
         android:checked="true" />

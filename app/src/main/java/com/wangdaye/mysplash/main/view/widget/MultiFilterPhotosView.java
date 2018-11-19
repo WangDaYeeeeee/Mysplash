@@ -4,19 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
@@ -33,13 +28,14 @@ import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.MultiFilterView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
+import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
 import com.wangdaye.mysplash.main.model.widget.MultiFilterObject;
@@ -54,7 +50,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Multi-filter photos view.
@@ -64,28 +59,15 @@ import butterknife.OnClick;
  *
  * */
 
-public class MultiFilterPhotosView extends NestedScrollFrameLayout
+public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
         implements MultiFilterView, LoadView, ScrollView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, LargeErrorStateAdapter.OnRetryListener,
         SelectCollectionDialog.OnCollectionsChangedListener {
 
-    @BindView(R.id.container_filtering_view_large_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_filtering_view_large_feedbackContainer)
-    RelativeLayout feedbackContainer;
-
-    @BindView(R.id.container_filtering_view_large_feedbackTxt)
-    TextView feedbackText;
-
-    @BindView(R.id.container_filtering_view_large_feedbackBtn)
-    Button feedbackButton;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout)
-    BothWaySwipeRefreshLayout refreshLayout;
-
     @BindView(R.id.container_photo_list_recyclerView)
-    RecyclerView recyclerView;
+    MultipleStateRecyclerView recyclerView;
+
+    private OnClickListener hideKeyboardListener;
 
     private MultiFilterModel multiFilterModel;
     private MultiFilterPresenter multiFilterPresenter;
@@ -160,21 +142,12 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    public MultiFilterPhotosView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.initialize();
-    }
-
     // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View searchingView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_filtering_view_large, this, false);
-        addView(searchingView);
-
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_photo_list, null);
+                .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
@@ -201,18 +174,14 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     }
 
     private void initView() {
-        this.initContentView();
-        this.initLoadingView();
-    }
-
-    private void initContentView() {
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setVisibility(GONE);
+        setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
+        setOnRefreshAndLoadListener(this);
+        setPermitRefresh(false);
+        setPermitLoad(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
-        refreshLayout.setDragTriggerDistance(
+        setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
@@ -226,23 +195,24 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         }
         recyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setAdapter(
+                new LargeLoadingStateAdapter(getContext(), 160, onFeedbackViewClickListener),
+                MultipleStateRecyclerView.STATE_LOADING);
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 160,
+                        R.drawable.feedback_search,
+                        getContext().getString(R.string.feedback_search_photos_tv),
+                        getContext().getString(R.string.search),
+                        false,
+                        true,
+                        onFeedbackViewClickListener,
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
 
         multiFilterPresenter.getAdapter().setRecyclerView(recyclerView);
-    }
-
-    private void initLoadingView() {
-        progressView.setVisibility(GONE);
-
-        ImageView feedbackImg = ButterKnife.findById(
-                this, R.id.container_filtering_view_large_feedbackImg);
-        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_search);
-
-        feedbackText.setText(R.string.feedback_search_photos_tv);
-        feedbackText.setVisibility(GONE);
-
-        feedbackButton.setText(getContext().getString(R.string.search));
-        feedbackButton.setVisibility(VISIBLE);
     }
 
     // save state.
@@ -278,13 +248,8 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         loadPresenter.bindActivity(a);
     }
 
-    @Override
-    public boolean isParentOffset() {
-        return false;
-    }
-
     public void setClickListenerForFeedbackView(OnClickListener l) {
-        findViewById(R.id.container_filtering_view_large).setOnClickListener(l);
+        hideKeyboardListener = l;
     }
 
     public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
@@ -296,8 +261,8 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         if (!headDirection && multiFilterPresenter.canLoadMore()) {
             multiFilterPresenter.loadMore(getContext(), false);
         }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && multiFilterPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+        if (!recyclerView.canScrollVertically(1) && multiFilterPresenter.isLoading()) {
+            setLoadingPhoto(true);
         }
 
         if (headDirection) {
@@ -420,16 +385,14 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     // on click listener.
 
-    @OnClick(R.id.container_filtering_view_large_feedbackBtn) void retrySearch() {
-        if (inputInterface != null) {
-            multiFilterPresenter.setQuery(inputInterface.onQueryInput());
-            multiFilterPresenter.setUsername(inputInterface.onUsernameInput());
-            multiFilterPresenter.setCategory(inputInterface.onCategoryInput());
-            multiFilterPresenter.setOrientation(inputInterface.onOrientationInput());
-            multiFilterPresenter.setFeatured(inputInterface.onFeaturedInput());
-            multiFilterPresenter.initRefresh(getContext());
+    private OnClickListener onFeedbackViewClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (hideKeyboardListener != null) {
+                hideKeyboardListener.onClick(v);
+            }
         }
-    }
+    };
 
     // on refresh and load listener.
 
@@ -443,12 +406,26 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         multiFilterPresenter.loadMore(getContext(), false);
     }
 
+    // on retry listener.
+
+    @Override
+    public void onRetry() {
+        if (inputInterface != null) {
+            multiFilterPresenter.setQuery(inputInterface.onQueryInput());
+            multiFilterPresenter.setUsername(inputInterface.onUsernameInput());
+            multiFilterPresenter.setCategory(inputInterface.onCategoryInput());
+            multiFilterPresenter.setOrientation(inputInterface.onOrientationInput());
+            multiFilterPresenter.setFeatured(inputInterface.onFeaturedInput());
+            multiFilterPresenter.initRefresh(getContext());
+        }
+    }
+
     // on scroll listener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -471,23 +448,23 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
     // multi-filter view.
 
     @Override
-    public void setRefreshing(boolean refreshing) {
-        refreshLayout.setRefreshing(refreshing);
+    public void setRefreshingPhoto(boolean refreshing) {
+        setRefreshing(refreshing);
     }
 
     @Override
-    public void setLoading(boolean loading) {
-        refreshLayout.setLoading(loading);
+    public void setLoadingPhoto(boolean loading) {
+        setLoading(loading);
     }
 
     @Override
     public void setPermitRefreshing(boolean permit) {
-        refreshLayout.setPermitRefresh(permit);
+        setPermitRefresh(permit);
     }
 
     @Override
     public void setPermitLoading(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
+        setPermitLoad(permit);
     }
 
     @Override
@@ -505,7 +482,6 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
         if (multiFilterPresenter.getAdapter().getRealItemCount() > 0) {
             loadPresenter.setNormalState();
         } else {
-            feedbackText.setText(feedback);
             loadPresenter.setFailedState();
         }
     }
@@ -528,9 +504,9 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(progressView);
-        animHide(feedbackContainer);
-        animHide(refreshLayout);
+        setPermitRefresh(false);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
     }
 
     @Override
@@ -539,9 +515,20 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(feedbackContainer);
-        animHide(progressView);
-        animHide(refreshLayout);
+        setPermitRefresh(false);
+        setPermitLoad(false);
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 160,
+                        R.drawable.feedback_search,
+                        getContext().getString(R.string.feedback_search_failed_tv),
+                        getContext().getString(R.string.feedback_click_retry),
+                        true,
+                        true,
+                        onFeedbackViewClickListener,
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
     }
 
     @Override
@@ -550,9 +537,9 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, true, activity.hasTranslucentNavigationBar());
         }
-        animShow(refreshLayout);
-        animHide(progressView);
-        animHide(feedbackContainer);
+        setPermitRefresh(true);
+        setPermitLoad(true);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_NORMALLY);
     }
 
     // scroll view.
@@ -564,22 +551,24 @@ public class MultiFilterPhotosView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
-                .findLastVisibleItemPositions(null);
-        int totalItemCount = multiFilterPresenter.getAdapter().getRealItemCount();
-        if (multiFilterPresenter.canLoadMore()
-                && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
-                && totalItemCount > 0
-                && dy > 0) {
-            multiFilterPresenter.loadMore(getContext(), false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
-            scrollPresenter.setToTop(true);
-        } else {
-            scrollPresenter.setToTop(false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && multiFilterPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+        if (recyclerView.getLayoutManager() != null) {
+            int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPositions(null);
+            int totalItemCount = multiFilterPresenter.getAdapter().getRealItemCount();
+            if (multiFilterPresenter.canLoadMore()
+                    && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
+                    && totalItemCount > 0
+                    && dy > 0) {
+                multiFilterPresenter.loadMore(getContext(), false);
+            }
+            if (!recyclerView.canScrollVertically(-1)) {
+                scrollPresenter.setToTop(true);
+            } else {
+                scrollPresenter.setToTop(false);
+            }
+            if (!recyclerView.canScrollVertically(1) && multiFilterPresenter.isLoading()) {
+                setLoading(true);
+            }
         }
     }
 

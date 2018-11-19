@@ -4,11 +4,10 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.Previewable;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 import java.util.List;
@@ -159,23 +158,20 @@ public class Photo
     // data.
 
     public int getRegularWidth() {
+        String parameter = Uri.parse(urls.regular).getQueryParameter("w");
+        if (TextUtils.isEmpty(parameter)) {
+            return 1080;
+        }
         try {
-            int w = Integer.parseInt(Uri.parse(urls.regular).getQueryParameter("w"));
+            int w = Integer.parseInt(parameter);
             return w == 0 ? 1080 : w;
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return 1080;
         }
     }
 
     public int getRegularHeight() {
         return (int) (1.0 * height * getRegularWidth() / width);
-    }
-
-    public String getFullSizeUrl(Context context) {
-        int[] size = DisplayUtils.getScreenSize(context);
-        int w = (int) (0.6 * size[0]);
-        int h = (int) (0.6 * size[1]);
-        return urls.raw + "?q=75&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
     }
 
     public String getWallpaperSizeUrl(Context context) {
@@ -192,45 +188,21 @@ public class Photo
     public String getRegularSizeUrl(Context context) {
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
         int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
-        if (DisplayUtils.isLandscape(context)) {
+
+        float screenRatio = (float) (1.0 * screenWidth / screenHeight);
+        float imageRatio = (float) (1.0 * width / height);
+
+        if (imageRatio > screenRatio) {
             return urls.raw
-                    + "?q=75&fm=jpg&w="
-                    + (int) (screenWidth * 0.6)
+                    + "?q=80&fm=jpg&h="
+                    + (int) (Math.min(screenHeight * 0.5, height))
                     + "&fit=max";
         } else {
-            boolean landPhoto = 1.0 * height / width * screenWidth <= screenHeight
-                    - context.getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
-            if (DisplayUtils.isTabletDevice(context)) {
-                if (landPhoto) {
-                    return urls.raw
-                            + "?q=75&fm=jpg&w="
-                            + screenWidth
-                            + "&fit=max";
-                } else {
-                    return urls.raw
-                            + "?q=75&fm=jpg&w="
-                            + (int) (screenWidth * 0.6)
-                            + "&fit=max";
-                }
-            } else {
-                if (landPhoto) {
-                    return urls.raw
-                            + "?q=75&fm=jpg&w="
-                            + (int) (screenWidth * 0.9)
-                            + "&fit=max";
-                } else {
-                    return urls.raw
-                            + "?q=75&fm=jpg&w="
-                            + (int) (screenWidth * 0.6)
-                            + "&fit=max";
-                }
-            }
+            return urls.raw
+                    + "?q=80&fm=jpg&w="
+                    + (int) (Math.min(screenWidth * 0.5, width))
+                    + "&fit=max";
         }
-        /*
-        return urls.raw
-                + "?q=75&fm=jpg&w="
-                + ((DisplayUtils.isTabletDevice(context) || DisplayUtils.isLandscape(context)) ? 1080 : 960)
-                + "&fit=max";*/
     }
 
     // parcel.

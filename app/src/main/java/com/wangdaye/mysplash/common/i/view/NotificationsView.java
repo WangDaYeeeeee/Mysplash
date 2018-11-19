@@ -10,8 +10,8 @@ package com.wangdaye.mysplash.common.i.view;
 
 public interface NotificationsView {
 
-    void setRefreshing(boolean refreshing);
-    void setLoading(boolean loading);
+    void setRefreshingNotification(boolean refreshing);
+    void setLoadingNotification(boolean loading);
 
     void setPermitRefreshing(boolean permit);
     void setPermitLoading(boolean permit);

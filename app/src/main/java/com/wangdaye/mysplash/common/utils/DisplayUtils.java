@@ -39,7 +39,7 @@ import java.util.Date;
 
 public class DisplayUtils {
 
-    private int dpi = 0;
+    private int dpi;
 
     public DisplayUtils(Context context) {
         dpi = context.getResources().getDisplayMetrics().densityDpi;

@@ -69,7 +69,7 @@ public class CollectionsImplementor
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingCollection(true);
         }
         requestCollections(c, model.getCollectionsPage(), true);
     }
@@ -77,7 +77,7 @@ public class CollectionsImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingCollection(true);
         }
         requestCollections(c, model.getCollectionsPage(), false);
     }
@@ -173,9 +173,9 @@ public class CollectionsImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingCollection(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingCollection(false);
             }
             if (response.isSuccessful()) {
                 model.setCollectionsPage(page);
@@ -206,9 +206,9 @@ public class CollectionsImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingCollection(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingCollection(false);
             }
             NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast)

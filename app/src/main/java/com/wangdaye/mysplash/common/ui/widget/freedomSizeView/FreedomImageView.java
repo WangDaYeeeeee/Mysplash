@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.common.ui.widget.freedomSizeView;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -35,7 +34,6 @@ public class FreedomImageView extends AppCompatImageView {
     private @interface SizeRule {}
 
     private boolean notFree = false; // if set false, there will be no different between this view and a ImageView.
-    private boolean coverMode = false; // if set true, it means this ImageView is a cover in PhotoActivity.
     private boolean showShadow = false;
 
     private int textPosition;
@@ -50,18 +48,17 @@ public class FreedomImageView extends AppCompatImageView {
 
     public FreedomImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.initialize(context, attrs, 0, 0);
+        this.initialize(context, attrs, 0);
     }
 
     public FreedomImageView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        this.initialize(context, attrs, defStyleAttr, 0);
+        this.initialize(context, attrs, defStyleAttr);
     }
 
-    private void initialize(Context c, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.FreedomImageView, defStyleAttr, defStyleRes);
+    private void initialize(Context c, AttributeSet attrs, int defStyleAttr) {
+        TypedArray a = c.obtainStyledAttributes(attrs, R.styleable.FreedomImageView, defStyleAttr, 0);
         this.notFree = a.getBoolean(R.styleable.FreedomImageView_fiv_not_free, false);
-        this.coverMode = a.getBoolean(R.styleable.FreedomImageView_fiv_cover_mode, false);
         this.textPosition = a.getInt(R.styleable.FreedomImageView_fiv_shadow_position, POSITION_NONE);
         a.recycle();
 
@@ -75,9 +72,7 @@ public class FreedomImageView extends AppCompatImageView {
             if (notFree) {
                 super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             } else {
-                int[] size = getMeasureSize(
-                        getContext(),
-                        MeasureSpec.getSize(widthMeasureSpec), width, height, coverMode);
+                int[] size = getMeasureSize(MeasureSpec.getSize(widthMeasureSpec), width, height);
                 setMeasuredDimension(size[0], size[1]);
             }
         } else {
@@ -124,32 +119,7 @@ public class FreedomImageView extends AppCompatImageView {
     }
 
     @Size(2)
-    public static int[] getMeasureSize(Context c,
-                                       int measureWidth, float w, float h, boolean coverMode) {
-        if (coverMode) {
-            int screenWidth = c.getResources().getDisplayMetrics().widthPixels;
-            int screenHeight = c.getResources().getDisplayMetrics().heightPixels;
-            if (DisplayUtils.isLandscape(c)) {
-                return new int[] {
-                        measureWidth,
-                        screenHeight};
-            }
-
-            float limitHeight;
-            if (c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                limitHeight = screenHeight;
-            } else {
-                limitHeight = screenHeight
-                        - c.getResources().getDimensionPixelSize(R.dimen.photo_info_base_view_height);
-            }
-
-            if (1.0 * h / w * screenWidth <= limitHeight) {
-                return new int[] {
-                        // (int) (limitHeight * w / h),
-                        measureWidth,
-                        (int) limitHeight};
-            }
-        }
+    public static int[] getMeasureSize(int measureWidth, float w, float h) {
         return new int[] {
                 measureWidth,
                 (int) (measureWidth * h / w)};

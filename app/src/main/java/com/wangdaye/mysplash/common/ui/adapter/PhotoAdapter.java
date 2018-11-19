@@ -108,7 +108,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
                 params.setMargins(0, 0, margin, margin);
                 card.setLayoutParams(params);
-                card.setRadius(new DisplayUtils(a).dpToPx(2));
+                card.setRadius(a.getResources().getDimensionPixelSize(R.dimen.material_card_radius));
             } else {
                 params.setMargins(0, 0, 0, 0);
                 card.setLayoutParams(params);
@@ -156,8 +156,6 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
         void update(int position) {
             this.photo = itemList.get(position);
-
-            ImageHelper.preloadRegularPhoto(image.getContext(), photo);
 
             if (photo.current_user_collections.size() != 0) {
                 collectionButton.setImageResource(R.drawable.ic_item_collected);

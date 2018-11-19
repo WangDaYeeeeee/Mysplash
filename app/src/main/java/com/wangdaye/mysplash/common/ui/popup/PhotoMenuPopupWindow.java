@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
  * Photo menu popup window.
  *
  * This popup window is used to show the menu in
- * {@link com.wangdaye.mysplash.photo.view.activity.PhotoActivity}.
+ * {@link com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2}.
  *
  * */
 
@@ -62,7 +62,7 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
 
         ThemeManager.setImageResource(
                 (ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon),
-                R.drawable.ic_image_light, R.drawable.ic_image_dark);
+                R.drawable.ic_image_search_light, R.drawable.ic_image_search_dark);
         ThemeManager.setImageResource(
                 (ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon),
                 R.drawable.ic_book_light, R.drawable.ic_book_dark);

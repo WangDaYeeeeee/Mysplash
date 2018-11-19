@@ -5,7 +5,6 @@
     <dimen name="tab_layout_height">48dp</dimen>
     <dimen name="mini_loading_view_height">80dp</dimen>
     <dimen name="user_cover_view_height">240dp</dimen>
-    <dimen name="photo_info_base_view_height">300dp</dimen>
     <dimen name="tablet_download_button_bar_width">386dp</dimen>
     <dimen name="item_photo_more_vertical_height">72dp</dimen>
     <dimen name="item_photo_2_more_vertical_height">72dp</dimen>
@@ -38,5 +37,9 @@
     <dimen name="low_elevation">2dp</dimen>
     <dimen name="middle_elevation">4dp</dimen>
     <dimen name="high_elevation">10dp</dimen>
+
+    <!-- card. -->
+    <dimen name="material_card_radius">8dp</dimen>
+    <dimen name="material_card_radius_large">12dp</dimen>
 
 </resources>

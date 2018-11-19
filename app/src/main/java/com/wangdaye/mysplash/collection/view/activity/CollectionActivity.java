@@ -254,7 +254,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
     private void initModel() {
         Object o = getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION);
-        if (o == null || !(o instanceof Collection)) {
+        if (!(o instanceof Collection)) {
             this.editResultModel = new EditResultObject(null);
         } else {
             this.editResultModel = new EditResultObject((Collection) o);
@@ -337,7 +337,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
             photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
 
             BaseSavedStateFragment f = SavedStateFragment.getData(this);
-            if (f != null && f instanceof SavedStateFragment) {
+            if (f instanceof SavedStateFragment) {
                 photosView.setPhotos(((SavedStateFragment) f).getPhotoList());
             } else {
                 photosView.initAnimShow();

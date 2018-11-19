@@ -11,7 +11,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
     app:cardBackgroundColor="@color/colorPrimary_dark"
-    app:cardCornerRadius="2dp"
+    app:cardCornerRadius="@dimen/material_card_radius"
     app:cardPreventCornerOverlap="false"
     app:cardElevation="@dimen/low_elevation"
     tools:ignore="RtlHardcoded,UnusedAttribute">

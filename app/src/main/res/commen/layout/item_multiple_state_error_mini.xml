@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_multiple_state_error_mini_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/root_color">
+
+    <Button
+        android:id="@+id/item_multiple_state_error_mini_retryButton"
+        android:text="@string/feedback_click_retry"
+        android:textStyle="bold"
+        android:textColor="?attr/content_color"
+        android:layout_margin="@dimen/normal_icon_size"
+        android:layout_centerHorizontal="true"
+        style="@style/material_button" />
+
+</RelativeLayout>

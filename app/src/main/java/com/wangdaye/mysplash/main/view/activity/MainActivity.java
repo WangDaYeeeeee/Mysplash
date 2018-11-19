@@ -398,7 +398,7 @@ public class MainActivity extends LoadableActivity<Photo>
     public Bundle getBundleOfList() {
         Bundle bundle = new Bundle();
         MysplashFragment fragment = getTopFragment();
-        if (fragment != null && fragment instanceof LoadableFragment) {
+        if (fragment instanceof LoadableFragment) {
             bundle.putInt(KEY_MAIN_ACTIVITY_FRAGMENT_ID, fragmentManagePresenter.getId());
             return ((LoadableFragment) fragment).getBundleOfList(bundle);
         } else {
@@ -409,7 +409,7 @@ public class MainActivity extends LoadableActivity<Photo>
     @Override
     public void updateData(Photo photo) {
         MysplashFragment fragment = getTopFragment();
-        if (fragment != null && fragment instanceof LoadableFragment) {
+        if (fragment instanceof LoadableFragment) {
             ((LoadableFragment) fragment).updateData(photo);
         }
     }
@@ -451,6 +451,7 @@ public class MainActivity extends LoadableActivity<Photo>
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
 
+        nav.getMenu().getItem(4).setVisible(false);
         if (AuthManager.getInstance().isAuthorized() && Mysplash.hasNode()) {
             nav.getMenu().getItem(1).setVisible(true);
         } else {
@@ -477,7 +478,7 @@ public class MainActivity extends LoadableActivity<Photo>
 
     private void buildFragmentStack() {
         BaseSavedStateFragment f = SavedStateFragment.getData(this);
-        if (f != null && f instanceof SavedStateFragment) {
+        if (f instanceof SavedStateFragment) {
             List<MysplashFragment> fragmentList = fragmentManagePresenter.getFragmentList(this, true);
             for (int i = 0; i < fragmentList.size(); i ++) {
                 fragmentList.get(i).readLargeData(f);

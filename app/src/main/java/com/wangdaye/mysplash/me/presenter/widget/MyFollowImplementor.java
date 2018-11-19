@@ -84,7 +84,7 @@ public class MyFollowImplementor
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingFollow(true);
         }
         requestMyFollow(c, model.getUsersPage(), true);
     }
@@ -92,7 +92,7 @@ public class MyFollowImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingFollow(true);
         }
         requestMyFollow(c, model.getUsersPage(), false);
     }
@@ -170,10 +170,10 @@ public class MyFollowImplementor
             if (refresh) {
                 model.getAdapter().clearItem();
                 model.setOver(false);
-                view.setRefreshing(false);
+                view.setRefreshingFollow(false);
                 view.setPermitLoading(true);
             } else {
-                view.setLoading(false);
+                view.setLoadingFollow(false);
             }
             if (response.isSuccessful()) {
                 model.setUsersPage(page);
@@ -200,9 +200,9 @@ public class MyFollowImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingFollow(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingFollow(false);
             }
             NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast)

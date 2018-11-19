@@ -49,12 +49,21 @@
                     android:transitionName="@string/transition_photo_image"
                     tools:ignore="UnusedAttribute" />
 
-                <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
-                    android:id="@+id/activity_photo_2_fullImage"
+                <FrameLayout
+                    android:id="@+id/activity_photo_2_imageMaskContainer"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    tools:ignore="UnusedAttribute" />
+                    android:layout_height="match_parent"
+                    android:alpha="0">
+
+                    <android.support.v7.widget.CardView
+                        android:id="@+id/activity_photo_2_imageMaskCard"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="@dimen/material_card_radius_large"
+                        app:cardBackgroundColor="?attr/root_color"
+                        app:cardElevation="0dp" />
+
+                </FrameLayout>
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/activity_photo_2_recyclerView"
@@ -93,24 +102,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="?attr/actionBarSize"
                             android:background="@android:color/transparent"
-                            app:popupTheme="@style/MysplashPopupMenuTheme">
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent">
-
-                                <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
-                                    android:id="@+id/activity_photo_2_loadingFlag"
-                                    android:layout_width="40dp"
-                                    android:layout_height="40dp"
-                                    android:padding="3dp"
-                                    android:background="?attr/selectableItemBackgroundBorderless"
-                                    android:layout_centerVertical="true"
-                                    android:layout_alignParentEnd="true" />
-
-                            </RelativeLayout>
-
-                        </android.support.v7.widget.Toolbar>
+                            app:popupTheme="@style/MysplashPopupMenuTheme" />
 
                     </FrameLayout>
 

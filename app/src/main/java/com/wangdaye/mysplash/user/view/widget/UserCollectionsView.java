@@ -4,15 +4,13 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
@@ -31,8 +29,10 @@ import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common.i.view.SwipeBackView;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniErrorStateAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
+import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
@@ -54,7 +54,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * User collections view.
@@ -65,21 +64,12 @@ import butterknife.OnClick;
  * */
 
 @SuppressLint("ViewConstructor")
-public class UserCollectionsView extends NestedScrollFrameLayout
+public class UserCollectionsView extends BothWaySwipeRefreshLayout
         implements CollectionsView, PagerView, LoadView, ScrollView, SwipeBackView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-
-    @BindView(R.id.container_loading_view_mini_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_loading_view_mini_retryButton)
-    Button retryButton;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout)
-    BothWaySwipeRefreshLayout refreshLayout;
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, MiniErrorStateAdapter.OnRetryListener {
 
     @BindView(R.id.container_photo_list_recyclerView)
-    RecyclerView recyclerView;
+    MultipleStateRecyclerView recyclerView;
 
     private CollectionsModel collectionsModel;
     private CollectionsPresenter collectionsPresenter;
@@ -145,11 +135,8 @@ public class UserCollectionsView extends NestedScrollFrameLayout
     @SuppressLint("InflateParams")
     private void initialize(UserActivity a, User u,
                             int index, boolean selected) {
-        View loadingView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_loading_view_mini, this, false);
-        addView(loadingView);
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_photo_list, null);
+                .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
@@ -177,16 +164,14 @@ public class UserCollectionsView extends NestedScrollFrameLayout
     }
 
     private void initView() {
-        retryButton.setVisibility(GONE);
-
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setPermitRefresh(false);
-        refreshLayout.setVisibility(GONE);
+        setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
+        setOnRefreshAndLoadListener(this);
+        setPermitRefresh(false);
+        setPermitLoad(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
-        refreshLayout.setDragTriggerDistance(
+        setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
@@ -200,14 +185,9 @@ public class UserCollectionsView extends NestedScrollFrameLayout
         }
         recyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setAdapter(new MiniLoadingStateAdapter(), MultipleStateRecyclerView.STATE_LOADING);
+        recyclerView.setAdapter(new MiniErrorStateAdapter(this), MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addOnScrollListener(scrollListener);
-    }
-
-    // control.
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
     }
 
     // collection.
@@ -245,12 +225,6 @@ public class UserCollectionsView extends NestedScrollFrameLayout
 
     // interface.
 
-    // on click listener.
-
-    @OnClick(R.id.container_loading_view_mini_retryButton) void retryRefresh() {
-        collectionsPresenter.initRefresh(getContext());
-    }
-
     // on refresh an load listener.
 
     @Override
@@ -263,12 +237,19 @@ public class UserCollectionsView extends NestedScrollFrameLayout
         collectionsPresenter.loadMore(getContext(), false);
     }
 
+    // on retry listener.
+
+    @Override
+    public void onRetry() {
+        collectionsPresenter.initRefresh(getContext());
+    }
+
     // on scroll listener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -279,23 +260,23 @@ public class UserCollectionsView extends NestedScrollFrameLayout
     // collections view.
 
     @Override
-    public void setRefreshing(boolean refreshing) {
-        refreshLayout.setRefreshing(refreshing);
+    public void setRefreshingCollection(boolean refreshing) {
+        setRefreshing(refreshing);
     }
 
     @Override
-    public void setLoading(boolean loading) {
-        refreshLayout.setLoading(loading);
+    public void setLoadingCollection(boolean loading) {
+        setLoading(loading);
     }
 
     @Override
     public void setPermitRefreshing(boolean permit) {
-        refreshLayout.setPermitRefresh(permit);
+        setPermitRefresh(permit);
     }
 
     @Override
     public void setPermitLoading(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
+        setPermitLoad(permit);
     }
 
     @Override
@@ -419,16 +400,14 @@ public class UserCollectionsView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(progressView);
-        animHide(retryButton);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
     }
 
     @Override
     public void setFailedState(@Nullable MysplashActivity activity, int old) {
-        animShow(retryButton);
-        animHide(progressView);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
     }
 
     @Override
@@ -437,9 +416,8 @@ public class UserCollectionsView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, true, activity.hasTranslucentNavigationBar());
         }
-        animShow(refreshLayout);
-        animHide(progressView);
-        animHide(retryButton);
+        setPermitLoad(true);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_NORMALLY);
     }
 
     // scroll view.
@@ -451,22 +429,24 @@ public class UserCollectionsView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
-                .findLastVisibleItemPositions(null);
-        int totalItemCount = collectionsPresenter.getAdapter().getRealItemCount();
-        if (collectionsPresenter.canLoadMore()
-                && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
-                && totalItemCount > 0
-                && dy > 0) {
-            collectionsPresenter.loadMore(getContext(), false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
-            scrollPresenter.setToTop(true);
-        } else {
-            scrollPresenter.setToTop(false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && collectionsPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+        if (recyclerView.getLayoutManager() != null) {
+            int[] lastVisibleItems = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPositions(null);
+            int totalItemCount = collectionsPresenter.getAdapter().getRealItemCount();
+            if (collectionsPresenter.canLoadMore()
+                    && lastVisibleItems[lastVisibleItems.length - 1] >= totalItemCount - 10
+                    && totalItemCount > 0
+                    && dy > 0) {
+                collectionsPresenter.loadMore(getContext(), false);
+            }
+            if (!recyclerView.canScrollVertically(-1)) {
+                scrollPresenter.setToTop(true);
+            } else {
+                scrollPresenter.setToTop(false);
+            }
+            if (!recyclerView.canScrollVertically(1) && collectionsPresenter.isLoading()) {
+                setLoading(true);
+            }
         }
     }
 

@@ -2,19 +2,15 @@ package com.wangdaye.mysplash.me.view.widget;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.item.MyFollowUser;
@@ -34,13 +30,14 @@ import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common.i.view.SwipeBackView;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
+import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.model.widget.MyFollowObject;
@@ -56,7 +53,6 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * My follow user view.
@@ -66,25 +62,13 @@ import butterknife.OnClick;
  * */
 
 @SuppressLint("ViewConstructor")
-public class MyFollowUserView extends NestedScrollFrameLayout
+public class MyFollowUserView extends BothWaySwipeRefreshLayout
         implements MyFollowView, PagerView, LoadView, ScrollView, SwipeBackView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, LargeErrorStateAdapter.OnRetryListener,
         MyFollowAdapter.OnFollowStateChangedListener {
 
-    @BindView(R.id.container_loading_view_large_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_loading_view_large_feedbackContainer)
-    RelativeLayout feedbackContainer;
-
-    @BindView(R.id.container_loading_view_large_feedbackTxt)
-    TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout)
-    BothWaySwipeRefreshLayout refreshLayout;
-
     @BindView(R.id.container_photo_list_recyclerView)
-    RecyclerView recyclerView;
+    MultipleStateRecyclerView recyclerView;
 
     private MyFollowModel myFollowModel;
     private MyFollowPresenter myFollowPresenter;
@@ -111,12 +95,8 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     @SuppressLint("InflateParams")
     private void initialize(MysplashActivity a, int followType,
                             int index, boolean selected) {
-        View loadingView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_loading_view_large, this, false);
-        addView(loadingView);
-
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_photo_list, null);
+                .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
@@ -146,54 +126,38 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     }
 
     private void initView() {
-        this.initContentView();
-        this.initLoadingView();
-    }
-
-    private void initContentView() {
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setPermitRefresh(false);
-        refreshLayout.setVisibility(GONE);
+        setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
+        setOnRefreshAndLoadListener(this);
+        setPermitRefresh(false);
+        setPermitLoad(false);
 
         recyclerView.setAdapter(myFollowPresenter.getAdapter());
         recyclerView.setLayoutManager(
                 new GridLayoutManager(
                         getContext(),
                         DisplayUtils.getGirdColumnCount(getContext())));
+        recyclerView.setAdapter(
+                new LargeLoadingStateAdapter(getContext(), 56),
+                MultipleStateRecyclerView.STATE_LOADING);
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 56,
+                        R.drawable.feedback_search,
+                        getContext().getString(R.string.feedback_load_failed_tv),
+                        getContext().getString(R.string.feedback_click_retry),
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addOnScrollListener(onScrollListener);
     }
 
-    private void initLoadingView() {
-        progressView.setVisibility(VISIBLE);
-
-        feedbackContainer.setVisibility(GONE);
-
-        ImageView feedbackImg = ButterKnife.findById(
-                this, R.id.container_loading_view_large_feedbackImg);
-        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_no_photos);
-
-    }
-
     // control.
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
-    }
 
     public int getDeltaValue() {
         return myFollowPresenter.getDeltaValue();
     }
 
     // interface.
-
-    // on click listener.
-
-    @OnClick(R.id.container_loading_view_large_feedbackBtn) void retryRefresh() {
-        myFollowPresenter.initRefresh(getContext());
-    }
 
     // on refresh an load listener.
 
@@ -207,6 +171,13 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         myFollowPresenter.loadMore(getContext(), false);
     }
 
+    // on retry listener.
+
+    @Override
+    public void onRetry() {
+        myFollowPresenter.initRefresh(getContext());
+    }
+
     // on follow state changed listener.
 
     @Override
@@ -215,12 +186,15 @@ public class MyFollowUserView extends NestedScrollFrameLayout
             myFollowPresenter.setDeltaValue(switchTo ? 1 : -1);
         }
         LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        int firstPosition = layoutManager.findFirstVisibleItemPosition();
-        int lastPosition = layoutManager.findLastVisibleItemPosition();
-        if (firstPosition <= position && position <= lastPosition) {
-            MyFollowAdapter.ViewHolder holder
-                    = (MyFollowAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-            holder.setSwitchResult(succeed);
+        if (layoutManager != null) {
+            int firstPosition = layoutManager.findFirstVisibleItemPosition();
+            int lastPosition = layoutManager.findLastVisibleItemPosition();
+            if (firstPosition <= position && position <= lastPosition) {
+                RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
+                if (holder instanceof MyFollowAdapter.ViewHolder) {
+                    ((MyFollowAdapter.ViewHolder) holder).setSwitchResult(succeed);
+                }
+            }
         }
     }
 
@@ -228,7 +202,7 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -239,23 +213,23 @@ public class MyFollowUserView extends NestedScrollFrameLayout
     // photos view.
 
     @Override
-    public void setRefreshing(boolean refreshing) {
-        refreshLayout.setRefreshing(refreshing);
+    public void setRefreshingFollow(boolean refreshing) {
+        setRefreshing(refreshing);
     }
 
     @Override
-    public void setLoading(boolean loading) {
-        refreshLayout.setLoading(loading);
+    public void setLoadingFollow(boolean loading) {
+        setLoading(loading);
     }
 
     @Override
     public void setPermitRefreshing(boolean permit) {
-        refreshLayout.setPermitRefresh(permit);
+        setPermitRefresh(permit);
     }
 
     @Override
     public void setPermitLoading(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
+        setPermitLoad(permit);
     }
 
     @Override
@@ -273,7 +247,6 @@ public class MyFollowUserView extends NestedScrollFrameLayout
         if (myFollowPresenter.getAdapter().getItemCount() > 0) {
             loadPresenter.setNormalState();
         } else {
-            feedbackText.setText(feedback);
             loadPresenter.setFailedState();
         }
     }
@@ -372,23 +345,20 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     @Override
     public void setLoadingState(@Nullable MysplashActivity activity, int old) {
-        animShow(progressView);
-        animHide(feedbackContainer);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
     }
 
     @Override
     public void setFailedState(@Nullable MysplashActivity activity, int old) {
-        animShow(feedbackContainer);
-        animHide(progressView);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
     }
 
     @Override
     public void setNormalState(@Nullable MysplashActivity activity, int old) {
-        animShow(refreshLayout);
-        animHide(progressView);
-        animHide(feedbackContainer);
+        setPermitLoad(true);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_NORMALLY);
     }
 
     // scroll view.
@@ -400,20 +370,24 @@ public class MyFollowUserView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int lastVisibleItem = ((GridLayoutManager) recyclerView.getLayoutManager())
-                .findLastVisibleItemPosition();
-        int totalItemCount = recyclerView.getAdapter().getItemCount();
-        if (myFollowPresenter.canLoadMore()
-                && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-            myFollowPresenter.loadMore(getContext(), false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
-            scrollPresenter.setToTop(true);
-        } else {
-            scrollPresenter.setToTop(false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && myFollowPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+        if (recyclerView.getLayoutManager() != null) {
+            int lastVisibleItem = ((GridLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPosition();
+            if (recyclerView.getAdapter() != null) {
+                int totalItemCount = recyclerView.getAdapter().getItemCount();
+                if (myFollowPresenter.canLoadMore()
+                        && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
+                    myFollowPresenter.loadMore(getContext(), false);
+                }
+                if (!recyclerView.canScrollVertically(-1)) {
+                    scrollPresenter.setToTop(true);
+                } else {
+                    scrollPresenter.setToTop(false);
+                }
+                if (!recyclerView.canScrollVertically(1) && myFollowPresenter.isLoading()) {
+                    setLoading(true);
+                }
+            }
         }
     }
 

@@ -606,9 +606,13 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
      * */
     public void setPermitRefresh(boolean permit) {
         mPermitRefresh = permit;
+        // TODO: 2018/11/18 check the relationship between permit refresh flag and enabled flag.
+        /*
         if (!mPermitRefresh && !mPermitLoad) {
             setEnabled(false);
-        }
+        } else {
+            setEnabled(true);
+        }*/
     }
 
     /**
@@ -618,9 +622,13 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
      * */
     public void setPermitLoad(boolean permit) {
         mPermitLoad = permit;
+        // TODO: 2018/11/18 check the relationship between permit load flag and enabled flag.
+        /*
         if (!mPermitRefresh && !mPermitLoad) {
             setEnabled(false);
-        }
+        } else {
+            setEnabled(true);
+        }*/
     }
 
     // position.

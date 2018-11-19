@@ -73,7 +73,7 @@ public class MultiFilterImplementor
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingPhoto(true);
         }
         requestPhotos(c, true);
     }
@@ -81,7 +81,7 @@ public class MultiFilterImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingPhoto(true);
         }
         requestPhotos(c, false);
     }
@@ -206,9 +206,9 @@ public class MultiFilterImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingPhoto(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingPhoto(false);
             }
             if (response.isSuccessful()
                     && response.body() != null
@@ -237,9 +237,9 @@ public class MultiFilterImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingPhoto(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingPhoto(false);
             }
             Toast.makeText(
                     c,

@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -84,7 +85,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
                 params.setMargins(0, 0, margin, margin);
                 card.setLayoutParams(params);
-                card.setRadius(new DisplayUtils(a).dpToPx(2));
+                card.setRadius(a.getResources().getDimensionPixelSize(R.dimen.material_card_radius));
             } else {
                 params.setMargins(0, 0, 0, 0);
                 card.setLayoutParams(params);
@@ -138,7 +139,6 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             } else {
                 collection = newItem;
 
-                ImageHelper.preloadRegularPhoto(image.getContext(), collection.cover_photo);
                 ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, getAdapterPosition(), null);
 
                 title.setText(collection.title.toUpperCase());
@@ -226,14 +226,14 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder && position < itemList.size()) {
             ((ViewHolder) holder).onBindView(itemList.get(position));
         }
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof ViewHolder) {
             ((ViewHolder) holder).onRecycled();

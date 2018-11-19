@@ -5,20 +5,15 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.FooterAdapter;
@@ -43,14 +38,15 @@ import com.wangdaye.mysplash.common.i.view.SwipeBackView;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.UserAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
+import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.search.model.widget.LoadObject;
 import com.wangdaye.mysplash.search.model.widget.PagerObject;
@@ -72,7 +68,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Search page view.
@@ -80,28 +75,15 @@ import butterknife.OnClick;
  * */
 
 @SuppressLint("ViewConstructor")
-public class SearchPageView extends NestedScrollFrameLayout
+public class SearchPageView extends BothWaySwipeRefreshLayout
         implements SearchView, PagerView, LoadView, ScrollView, SwipeBackView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, 
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, LargeErrorStateAdapter.OnRetryListener,
         SelectCollectionDialog.OnCollectionsChangedListener{
 
-    @BindView(R.id.container_photo_list_swipeRefreshLayout)
-    BothWaySwipeRefreshLayout refreshLayout;
-
     @BindView(R.id.container_photo_list_recyclerView)
-    RecyclerView recyclerView;
+    MultipleStateRecyclerView recyclerView;
 
-    @BindView(R.id.container_searching_view_large_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_searching_view_large_feedbackContainer)
-    RelativeLayout feedbackContainer;
-
-    @BindView(R.id.container_searching_view_large_feedbackTxt)
-    TextView feedbackText;
-
-    @BindView(R.id.container_searching_view_large_feedbackBtn)
-    Button feedbackButton;
+    private OnClickListener hideKeyboardListener;
 
     private SearchModel searchModel;
     private SearchPresenter searchPresenter;
@@ -177,12 +159,8 @@ public class SearchPageView extends NestedScrollFrameLayout
     @SuppressLint("InflateParams")
     private void initialize(SearchActivity a, @TypeRule int type,
                             int index, boolean selected) {
-        View searchingView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_searching_view_large, this, false);
-        addView(searchingView);
-
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_photo_list, null);
+                .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
@@ -245,19 +223,14 @@ public class SearchPageView extends NestedScrollFrameLayout
     }
 
     private void initView(int type) {
-        initContentView(type);
-        initSearchingView(type);
-    }
-
-    private void initContentView(int type) {
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setPermitRefresh(false);
-        refreshLayout.setVisibility(GONE);
+        setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
+        setOnRefreshAndLoadListener(this);
+        setPermitRefresh(false);
+        setPermitLoad(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
-        refreshLayout.setDragTriggerDistance(
+        setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
@@ -275,55 +248,43 @@ public class SearchPageView extends NestedScrollFrameLayout
             recyclerView.setLayoutManager(
                     new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
         }
+        recyclerView.setAdapter(
+                new LargeLoadingStateAdapter(getContext(), 98, onFeedbackViewClickListener),
+                MultipleStateRecyclerView.STATE_LOADING);
+        String feedbackText = getContext().getString(R.string.search);
+        switch (type) {
+            case SEARCH_PHOTOS_TYPE:
+                feedbackText = getContext().getString(R.string.feedback_search_photos_tv);
+                break;
+
+            case SEARCH_COLLECTIONS_TYPE:
+                feedbackText = getContext().getString(R.string.feedback_search_collections_tv);
+                break;
+
+            case SEARCH_USERS_TYPE:
+                feedbackText = getContext().getString(R.string.feedback_search_users_tv);
+                break;
+        }
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 98,
+                        R.drawable.feedback_search,
+                        feedbackText,
+                        getContext().getString(R.string.search),
+                        true,
+                        false,
+                        onFeedbackViewClickListener,
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addOnScrollListener(scrollListener);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
 
         if (searchPresenter.getAdapter() instanceof PhotoAdapter) {
             ((PhotoAdapter) searchPresenter.getAdapter()).setRecyclerView(recyclerView);
         }
     }
 
-    private void initSearchingView(@TypeRule int type) {
-        setForceScrolling(true);
-
-        if (loadPresenter.getLoadState() == LoadModel.FAILED_STATE) {
-            progressView.setVisibility(GONE);
-        } else {
-            progressView.setVisibility(VISIBLE);
-        }
-
-        if (loadPresenter.getLoadState() == LoadModel.FAILED_STATE) {
-            feedbackContainer.setVisibility(VISIBLE);
-        } else {
-            feedbackContainer.setVisibility(GONE);
-        }
-
-        ImageView feedbackImg = ButterKnife.findById(
-                this, R.id.container_searching_view_large_feedbackImg);
-        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_search);
-
-        switch (type) {
-            case SEARCH_PHOTOS_TYPE:
-                feedbackText.setText(getContext().getString(R.string.feedback_search_photos_tv));
-                break;
-
-            case SEARCH_COLLECTIONS_TYPE:
-                feedbackText.setText(getContext().getString(R.string.feedback_search_collections_tv));
-                break;
-
-            case SEARCH_USERS_TYPE:
-                feedbackText.setText(getContext().getString(R.string.feedback_search_users_tv));
-                break;
-        }
-
-        feedbackButton.setVisibility(GONE);
-    }
-
     // control.
-
-    @Override
-    public boolean isParentOffset() {
-        return true;
-    }
 
     public void clearAdapter() {
         RecyclerView.Adapter adapter = searchPresenter.getAdapter();
@@ -337,7 +298,7 @@ public class SearchPageView extends NestedScrollFrameLayout
     }
 
     public SearchPageView setOnClickListenerForFeedbackView(OnClickListener l) {
-        findViewById(R.id.container_searching_view_large).setOnClickListener(l);
+        hideKeyboardListener = l;
         return this;
     }
 
@@ -352,8 +313,8 @@ public class SearchPageView extends NestedScrollFrameLayout
             if (!headDirection && searchPresenter.canLoadMore()) {
                 searchPresenter.loadMore(getContext(), false);
             }
-            if (!ViewCompat.canScrollVertically(recyclerView, 1) && searchPresenter.isLoading()) {
-                refreshLayout.setLoading(true);
+            if (!recyclerView.canScrollVertically(1) && searchPresenter.isLoading()) {
+                setLoadingSearchItem(true);
             }
 
             if (headDirection) {
@@ -494,9 +455,14 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     // on click listener.
 
-    @OnClick(R.id.container_searching_view_large_feedbackBtn) void retrySearch() {
-        searchPresenter.initRefresh(getContext());
-    }
+    private OnClickListener onFeedbackViewClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (hideKeyboardListener != null) {
+                hideKeyboardListener.onClick(v);
+            }
+        }
+    };
 
     // on refresh and load listener.
 
@@ -510,12 +476,19 @@ public class SearchPageView extends NestedScrollFrameLayout
         searchPresenter.loadMore(getContext(), false);
     }
 
+    // on retry listener.
+
+    @Override
+    public void onRetry() {
+        searchPresenter.initRefresh(getContext());
+    }
+
     // on scroll listener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -540,23 +513,23 @@ public class SearchPageView extends NestedScrollFrameLayout
     // search view.
 
     @Override
-    public void setRefreshing(boolean refreshing) {
-        refreshLayout.setRefreshing(refreshing);
+    public void setRefreshingSearchItem(boolean refreshing) {
+        setRefreshing(refreshing);
     }
 
     @Override
-    public void setLoading(boolean loading) {
-        refreshLayout.setLoading(loading);
+    public void setLoadingSearchItem(boolean loading) {
+        setLoading(loading);
     }
 
     @Override
     public void setPermitRefreshing(boolean permit) {
-        refreshLayout.setPermitRefresh(permit);
+        setPermitRefresh(permit);
     }
 
     @Override
     public void setPermitLoading(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
+        setPermitLoad(permit);
     }
 
     @Override
@@ -575,7 +548,6 @@ public class SearchPageView extends NestedScrollFrameLayout
                 && ((FooterAdapter) searchPresenter.getAdapter()).getRealItemCount() > 0) {
             loadPresenter.setNormalState();
         } else {
-            feedbackText.setText(feedback);
             loadPresenter.setFailedState();
         }
     }
@@ -681,38 +653,43 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     @Override
     public void setLoadingState(@Nullable MysplashActivity activity, int old) {
-        setForceScrolling(true);
         if (activity != null && old == LoadModel.NORMAL_STATE && pagerPresenter.isSelected()) {
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(progressView);
-        animHide(feedbackContainer);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
     }
 
     @Override
     public void setFailedState(@Nullable MysplashActivity activity, int old) {
-        setForceScrolling(true);
         if (activity != null && old == LoadModel.NORMAL_STATE && pagerPresenter.isSelected()) {
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(feedbackContainer);
-        animHide(progressView);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 98,
+                        R.drawable.feedback_search,
+                        getContext().getString(R.string.feedback_search_failed_tv),
+                        getContext().getString(R.string.feedback_click_retry),
+                        true,
+                        true,
+                        onFeedbackViewClickListener,
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
     }
 
     @Override
     public void setNormalState(@Nullable MysplashActivity activity, int old) {
-        setForceScrolling(false);
         if (activity != null && old == LoadModel.LOADING_STATE && pagerPresenter.isSelected()) {
             DisplayUtils.setNavigationBarStyle(
                     activity, true, activity.hasTranslucentNavigationBar());
         }
-        animShow(refreshLayout);
-        animHide(progressView);
-        animHide(feedbackContainer);
+        setPermitLoad(true);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_NORMALLY);
     }
 
     // scroll view.
@@ -724,30 +701,34 @@ public class SearchPageView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
-        int lastVisibleItem;
-        if (manager instanceof StaggeredGridLayoutManager) {
-            int[] lastVisibleItems = ((StaggeredGridLayoutManager) manager)
-                    .findLastVisibleItemPositions(null);
-            lastVisibleItem = lastVisibleItems[lastVisibleItems.length - 1];
-        } else {
-            lastVisibleItem = ((GridLayoutManager) manager).findLastVisibleItemPosition();
-        }
+        if (recyclerView.getLayoutManager() != null) {
+            RecyclerView.LayoutManager manager = recyclerView.getLayoutManager();
+            int lastVisibleItem;
+            if (manager instanceof StaggeredGridLayoutManager) {
+                int[] lastVisibleItems = ((StaggeredGridLayoutManager) manager)
+                        .findLastVisibleItemPositions(null);
+                lastVisibleItem = lastVisibleItems[lastVisibleItems.length - 1];
+            } else {
+                lastVisibleItem = ((GridLayoutManager) manager).findLastVisibleItemPosition();
+            }
 
-        int totalItemCount = recyclerView.getAdapter().getItemCount() - 1;
-        if (searchPresenter.canLoadMore()
-                && lastVisibleItem >= totalItemCount - 10
-                && totalItemCount > 0
-                && dy > 0) {
-            searchPresenter.loadMore(getContext(), false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
-            scrollPresenter.setToTop(true);
-        } else {
-            scrollPresenter.setToTop(false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && searchPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+            if (recyclerView.getAdapter() != null) {
+                int totalItemCount = recyclerView.getAdapter().getItemCount() - 1;
+                if (searchPresenter.canLoadMore()
+                        && lastVisibleItem >= totalItemCount - 10
+                        && totalItemCount > 0
+                        && dy > 0) {
+                    searchPresenter.loadMore(getContext(), false);
+                }
+                if (!recyclerView.canScrollVertically(-1)) {
+                    scrollPresenter.setToTop(true);
+                } else {
+                    scrollPresenter.setToTop(false);
+                }
+                if (!recyclerView.canScrollVertically(1) && searchPresenter.isLoading()) {
+                    setLoading(true);
+                }
+            }
         }
     }
 

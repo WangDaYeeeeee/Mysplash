@@ -48,6 +48,19 @@ public class MoreHolder extends PhotoInfoAdapter2.ViewHolder
 
     public static final int TYPE_MORE = 7;
 
+    public MoreHolder(View itemView, Photo photo, @Nullable MoreHolderModel model,
+                      int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
+        ButterKnife.bind(this, itemView);
+
+        if (model == null) {
+            model = new MoreHolderModel(photo);
+        }
+        this.model = model;
+        this.covers = new ImageView[model.totalPage];
+        this.titles = new TextView[model.totalPage];
+    }
+
     public static class MoreHolderModel {
 
         int position;
@@ -62,17 +75,6 @@ public class MoreHolder extends PhotoInfoAdapter2.ViewHolder
                 hasFadedIn[i] = false;
             }
         }
-    }
-
-    public MoreHolder(View itemView, Photo photo, @Nullable MoreHolderModel model) {
-        super(itemView);
-        ButterKnife.bind(this, itemView);
-        if (model == null) {
-            model = new MoreHolderModel(photo);
-        }
-        this.model = model;
-        this.covers = new ImageView[model.totalPage];
-        this.titles = new TextView[model.totalPage];
     }
 
     @SuppressLint("InflateParams")

@@ -57,7 +57,7 @@ public class TrendingImplementor implements TrendingPresenter {
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingPhoto(true);
         }
         requestTrendingFeed(c, true);
     }
@@ -65,7 +65,7 @@ public class TrendingImplementor implements TrendingPresenter {
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingPhoto(true);
         }
         requestTrendingFeed(c, false);
     }
@@ -158,9 +158,9 @@ public class TrendingImplementor implements TrendingPresenter {
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingPhoto(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingPhoto(false);
             }
 
             if (response.isSuccessful()
@@ -190,9 +190,9 @@ public class TrendingImplementor implements TrendingPresenter {
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingPhoto(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingPhoto(false);
             }
             Log.d("onFailed", t.getLocalizedMessage() +  "\n" +t.getMessage());
             NotificationHelper.showSnackbar(

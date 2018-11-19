@@ -70,7 +70,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
 
         ImageView wallpaperIcon = ButterKnife.findById(v, R.id.dialog_download_type_wallpaperIcon);
         ThemeManager.setImageResource(
-                wallpaperIcon, R.drawable.ic_mountain_light, R.drawable.ic_mountain_dark);
+                wallpaperIcon, R.drawable.ic_image_light, R.drawable.ic_image_dark);
 
         TextView downloadText = ButterKnife.findById(v, R.id.dialog_download_type_downloadTxt);
         downloadText.setText(getResources().getStringArray(R.array.download_options)[0]);

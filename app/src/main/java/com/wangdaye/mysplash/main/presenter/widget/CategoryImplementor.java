@@ -71,7 +71,7 @@ public class CategoryImplementor
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingCategory(true);
         }
         requestPhotos(c, model.getPhotosPage(), true);
     }
@@ -79,7 +79,7 @@ public class CategoryImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingCategory(true);
         }
         requestPhotos(c, model.getPhotosPage(), false);
     }
@@ -208,9 +208,9 @@ public class CategoryImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingCategory(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingCategory(false);
             }
             if (response.isSuccessful()
                     && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
@@ -243,9 +243,9 @@ public class CategoryImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingCategory(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingCategory(false);
             }
             NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast)

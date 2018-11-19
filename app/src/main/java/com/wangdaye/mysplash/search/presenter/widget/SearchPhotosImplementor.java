@@ -65,7 +65,7 @@ public class SearchPhotosImplementor
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingSearchItem(true);
         }
         requestPhotos(c, model.getPhotosPage(), true);
     }
@@ -73,7 +73,7 @@ public class SearchPhotosImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingSearchItem(true);
         }
         requestPhotos(c, model.getPhotosPage(), false);
     }
@@ -162,9 +162,9 @@ public class SearchPhotosImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingSearchItem(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingSearchItem(false);
             }
             if (response.isSuccessful()
                     && response.body() != null
@@ -195,9 +195,9 @@ public class SearchPhotosImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingSearchItem(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingSearchItem(false);
             }
             Toast.makeText(
                     c,

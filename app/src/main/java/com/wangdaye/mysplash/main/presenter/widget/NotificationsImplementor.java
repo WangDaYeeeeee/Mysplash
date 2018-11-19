@@ -52,7 +52,7 @@ public class NotificationsImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingNotification(true);
         }
         requestNotifications(c, false);
     }
@@ -106,18 +106,18 @@ public class NotificationsImplementor
     @Override
     public void onRequestNotificationSucceed(List<NotificationResult> resultList) {
         model.setRefreshing(false);
-        view.setRefreshing(false);
+        view.setRefreshingNotification(false);
         model.setLoading(false);
-        view.setLoading(false);
+        view.setLoadingNotification(false);
         view.requestNotificationsSuccess();
     }
 
     @Override
     public void onRequestNotificationFailed() {
         model.setRefreshing(false);
-        view.setRefreshing(false);
+        view.setRefreshingNotification(false);
         model.setLoading(false);
-        view.setLoading(false);
+        view.setLoadingNotification(false);
         view.requestNotificationsFailed(context.getString(R.string.feedback_load_failed_tv));
     }
 

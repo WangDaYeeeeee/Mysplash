@@ -2,18 +2,14 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
@@ -25,14 +21,15 @@ import com.wangdaye.mysplash.common.i.presenter.ScrollPresenter;
 import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.i.view.ScrollView;
 import com.wangdaye.mysplash.common.ui.adapter.NotificationAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.decotarion.ListDecoration;
+import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.manager.UserNotificationManager;
 import com.wangdaye.mysplash.main.model.widget.LoadObject;
@@ -44,7 +41,6 @@ import com.wangdaye.mysplash.main.presenter.widget.ScrollImplementor;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Notifications view.
@@ -54,24 +50,11 @@ import butterknife.OnClick;
  *
  * */
 
-public class NotificationsView extends NestedScrollFrameLayout
+public class NotificationsView extends BothWaySwipeRefreshLayout
         implements com.wangdaye.mysplash.common.i.view.NotificationsView, LoadView, ScrollView,
-        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener {
-
-    @BindView(R.id.container_loading_in_category_view_large_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_loading_in_category_view_large_feedbackContainer)
-    RelativeLayout feedbackContainer;
-
-    @BindView(R.id.container_loading_in_category_view_large_feedbackTxt)
-    TextView feedbackText;
-
-    @BindView(R.id.container_photo_list_swipeRefreshLayout)
-    BothWaySwipeRefreshLayout refreshLayout;
-
+        BothWaySwipeRefreshLayout.OnRefreshAndLoadListener, LargeErrorStateAdapter.OnRetryListener {
     @BindView(R.id.container_photo_list_recyclerView)
-    RecyclerView recyclerView;
+    MultipleStateRecyclerView recyclerView;
 
     private NotificationsModel notificationsModel;
     private NotificationsPresenter notificationsPresenter;
@@ -92,21 +75,12 @@ public class NotificationsView extends NestedScrollFrameLayout
         this.initialize();
     }
 
-    public NotificationsView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        this.initialize();
-    }
-
     // init.
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        View searchingView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_loading_in_category_view_large, this, false);
-        addView(searchingView);
-
         View contentView = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_photo_list, null);
+                .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
@@ -129,32 +103,28 @@ public class NotificationsView extends NestedScrollFrameLayout
     }
 
     private void initView() {
-        this.initContentView();
-        this.initLoadingView();
-    }
-
-    private void initContentView() {
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
-        refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setPermitRefresh(false);
-        refreshLayout.setPermitLoad(false);
-        refreshLayout.setVisibility(GONE);
+        setColorSchemeColors(ThemeManager.getContentColor(getContext()));
+        setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
+        setOnRefreshAndLoadListener(this);
+        setPermitRefresh(false);
+        setPermitLoad(false);
 
         recyclerView.setAdapter(notificationsPresenter.getAdapter());
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
+        recyclerView.setAdapter(
+                new LargeLoadingStateAdapter(getContext(), 56),
+                MultipleStateRecyclerView.STATE_LOADING);
+        recyclerView.setAdapter(
+                new LargeErrorStateAdapter(
+                        getContext(), 56,
+                        R.drawable.feedback_no_photos,
+                        getContext().getString(R.string.feedback_load_failed_tv),
+                        getContext().getString(R.string.feedback_click_retry),
+                        this),
+                MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addItemDecoration(new ListDecoration(getContext()));
         recyclerView.addOnScrollListener(scrollListener);
-    }
-
-    private void initLoadingView() {
-        progressView.setVisibility(VISIBLE);
-        feedbackContainer.setVisibility(GONE);
-
-        ImageView feedbackImg = ButterKnife.findById(
-                this, R.id.container_loading_in_category_view_large_feedbackImg);
-        ImageHelper.loadResourceImage(getContext(), feedbackImg, R.drawable.feedback_no_photos);
     }
 
     // control.
@@ -167,11 +137,6 @@ public class NotificationsView extends NestedScrollFrameLayout
     public void setActivity(MysplashActivity a) {
         notificationsPresenter.setActivityForAdapter(a);
         loadPresenter.bindActivity(a);
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return false;
     }
 
     public NotificationAdapter getAdapter() {
@@ -217,12 +182,6 @@ public class NotificationsView extends NestedScrollFrameLayout
 
     // interface.
 
-    // on click listener.
-
-    @OnClick(R.id.container_loading_in_category_view_large_feedbackBtn) void retryRefresh() {
-        notificationsPresenter.initRefresh(getContext());
-    }
-
     // on refresh an load listener.
 
     @Override
@@ -235,12 +194,19 @@ public class NotificationsView extends NestedScrollFrameLayout
         notificationsPresenter.loadMore(getContext(), false);
     }
 
+    // on retry listener.
+
+    @Override
+    public void onRetry() {
+        notificationsPresenter.initRefresh(getContext());
+    }
+
     // on scroll listener.
 
     private RecyclerView.OnScrollListener scrollListener = new RecyclerView.OnScrollListener() {
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
             scrollPresenter.autoLoad(dy);
         }
@@ -251,23 +217,23 @@ public class NotificationsView extends NestedScrollFrameLayout
     // notifications view.
 
     @Override
-    public void setRefreshing(boolean refreshing) {
-        refreshLayout.setRefreshing(refreshing);
+    public void setRefreshingNotification(boolean refreshing) {
+        setRefreshing(refreshing);
     }
 
     @Override
-    public void setLoading(boolean loading) {
-        refreshLayout.setLoading(loading);
+    public void setLoadingNotification(boolean loading) {
+        setLoading(loading);
     }
 
     @Override
     public void setPermitRefreshing(boolean permit) {
-        refreshLayout.setPermitRefresh(permit);
+        setPermitRefresh(permit);
     }
 
     @Override
     public void setPermitLoading(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
+        setPermitLoad(permit);
     }
 
     @Override
@@ -285,7 +251,6 @@ public class NotificationsView extends NestedScrollFrameLayout
         if (notificationsPresenter.getAdapter().getItemCount() > 0) {
             loadPresenter.setNormalState();
         } else {
-            feedbackText.setText(feedback);
             loadPresenter.setFailedState();
         }
     }
@@ -308,16 +273,14 @@ public class NotificationsView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, false, activity.hasTranslucentNavigationBar());
         }
-        animShow(progressView);
-        animHide(feedbackContainer);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
     }
 
     @Override
     public void setFailedState(@Nullable MysplashActivity activity, int old) {
-        animShow(feedbackContainer);
-        animHide(progressView);
-        animHide(refreshLayout);
+        setPermitLoad(false);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
     }
 
     @Override
@@ -326,9 +289,8 @@ public class NotificationsView extends NestedScrollFrameLayout
             DisplayUtils.setNavigationBarStyle(
                     activity, true, activity.hasTranslucentNavigationBar());
         }
-        animShow(refreshLayout);
-        animHide(progressView);
-        animHide(feedbackContainer);
+        setPermitLoad(true);
+        recyclerView.setState(MultipleStateRecyclerView.STATE_NORMALLY);
     }
 
     // scroll view.
@@ -340,19 +302,21 @@ public class NotificationsView extends NestedScrollFrameLayout
 
     @Override
     public void autoLoad(int dy) {
-        int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
-        int totalItemCount = notificationsPresenter.getAdapter().getItemCount();
-        if (notificationsPresenter.canLoadMore()
-                && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
-            notificationsPresenter.loadMore(getContext(), false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, -1)) {
-            scrollPresenter.setToTop(true);
-        } else {
-            scrollPresenter.setToTop(false);
-        }
-        if (!ViewCompat.canScrollVertically(recyclerView, 1) && notificationsPresenter.isLoading()) {
-            refreshLayout.setLoading(true);
+        if (recyclerView.getLayoutManager() != null) {
+            int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+            int totalItemCount = notificationsPresenter.getAdapter().getItemCount();
+            if (notificationsPresenter.canLoadMore()
+                    && lastVisibleItem >= totalItemCount - 10 && totalItemCount > 0 && dy > 0) {
+                notificationsPresenter.loadMore(getContext(), false);
+            }
+            if (!recyclerView.canScrollVertically(-1)) {
+                scrollPresenter.setToTop(true);
+            } else {
+                scrollPresenter.setToTop(false);
+            }
+            if (!recyclerView.canScrollVertically(1) && notificationsPresenter.isLoading()) {
+                setLoading(true);
+            }
         }
     }
 

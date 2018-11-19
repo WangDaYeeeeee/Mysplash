@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -31,6 +33,9 @@ import butterknife.OnClick;
 
 public class ExifHolder extends PhotoInfoAdapter2.ViewHolder {
 
+    @BindView(R.id.item_photo_2_exif)
+    LinearLayout container;
+
     @BindView(R.id.item_photo_2_exif_icon)
     ImageView icon;
 
@@ -46,11 +51,27 @@ public class ExifHolder extends PhotoInfoAdapter2.ViewHolder {
     private int position;
     public static final int TYPE_EXIF = 50;
 
-    public ExifHolder(View itemView) {
-        super(itemView);
+    public ExifHolder(View itemView, int marginHorizontal, int columnCount, int viewType) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
         DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), content);
+
+        position = viewType - TYPE_EXIF;
+        if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
+            if (position % (columnCount / 2) == 0) {
+                // set start margin.
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+                params.setMarginStart(marginHorizontal);
+                container.setLayoutParams(params);
+            } else {
+                // set end margin.
+                RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+                params.setMarginEnd(marginHorizontal);
+                container.setLayoutParams(params);
+            }
+        }
+        setIsRecyclable(false);
     }
 
     @Override

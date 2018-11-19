@@ -1,6 +1,8 @@
 package com.wangdaye.mysplash.photo2.view.holder;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -14,9 +16,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-/** <br> Location holder. */
+/**
+ * Info holder.
+ * */
 
 public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
+
+    @BindView(R.id.item_photo_2_info_container)
+    LinearLayout container;
 
     @BindView(R.id.item_photo_2_info_views)
     NumberAnimTextView views;
@@ -32,8 +39,8 @@ public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
 
     public static final int TYPE_INFO = 4;
 
-    public InfoHolder(View itemView, PhotoActivity2 a) {
-        super(itemView);
+    public InfoHolder(PhotoActivity2 a, View itemView, int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
         DisplayUtils.setTypeface(a, views);
@@ -50,6 +57,13 @@ public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
 
         this.a = a;
         this.enableAnim = false;
+
+        if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+            params.setMarginStart(marginHorizontal);
+            params.setMarginEnd(marginHorizontal);
+            container.setLayoutParams(params);
+        }
     }
 
     @Override

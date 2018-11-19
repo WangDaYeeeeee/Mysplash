@@ -69,7 +69,7 @@
 
             <ImageView
                 android:id="@+id/dialog_download_type_wallpaperIcon"
-                android:src="@drawable/ic_mountain_light"
+                android:src="@drawable/ic_image_light"
                 style="@style/material_icon"
                 tools:ignore="ContentDescription" />
 

@@ -867,8 +867,6 @@ class PhotoHolder extends RecyclerView.ViewHolder
     void update(Photo photo) {
         this.photo = photo;
 
-        ImageHelper.preloadRegularPhoto(image.getContext(), photo);
-
         if (photo.current_user_collections.size() != 0) {
             collectionButton.setImageResource(R.drawable.ic_item_collected);
         } else {

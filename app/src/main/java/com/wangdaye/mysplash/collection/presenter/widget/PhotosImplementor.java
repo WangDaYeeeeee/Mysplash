@@ -79,7 +79,7 @@ public class PhotosImplementor
     @Override
     public void refreshNew(Context c, boolean notify) {
         if (notify) {
-            view.setRefreshing(true);
+            view.setRefreshingPhoto(true);
         }
         requestPhotos(c, model.getPhotosPage(), true);
     }
@@ -87,7 +87,7 @@ public class PhotosImplementor
     @Override
     public void loadMore(Context c, boolean notify) {
         if (notify) {
-            view.setLoading(true);
+            view.setLoadingPhoto(true);
         }
         requestPhotos(c, model.getPhotosPage(), false);
     }
@@ -224,9 +224,9 @@ public class PhotosImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingPhoto(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingPhoto(false);
             }
             if (response.isSuccessful() && response.body() != null) {
                 model.setPhotosPage(page);
@@ -254,9 +254,9 @@ public class PhotosImplementor
             model.setRefreshing(false);
             model.setLoading(false);
             if (refresh) {
-                view.setRefreshing(false);
+                view.setRefreshingPhoto(false);
             } else {
-                view.setLoading(false);
+                view.setLoadingPhoto(false);
             }
             NotificationHelper.showSnackbar(
                     c.getString(R.string.feedback_load_failed_toast)

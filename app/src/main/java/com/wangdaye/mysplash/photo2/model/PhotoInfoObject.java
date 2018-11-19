@@ -19,10 +19,10 @@ public class PhotoInfoObject
     private PhotoInfoAdapter2 adapter;
     private PhotoService photoService;
 
-    public PhotoInfoObject(PhotoActivity2 a, Photo p) {
+    public PhotoInfoObject(PhotoActivity2 a, Photo p, int marginHorizontal, int columnCount) {
         setPhoto(p, true);
         this.failed = false;
-        this.adapter = new PhotoInfoAdapter2(a, p);
+        this.adapter = new PhotoInfoAdapter2(a, p, marginHorizontal, columnCount);
         this.photoService = PhotoService.getService();
     }
 

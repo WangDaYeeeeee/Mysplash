@@ -7,15 +7,16 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -48,7 +49,6 @@ import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
 import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.popup.PhotoMenuPopupWindow;
-import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
@@ -71,7 +71,6 @@ import com.wangdaye.mysplash.photo2.model.PhotoInfoObject;
 import com.wangdaye.mysplash.photo2.model.PhotoListManageObject;
 import com.wangdaye.mysplash.photo2.presenter.BrowsableImplementor;
 import com.wangdaye.mysplash.photo2.presenter.DownloadImplementor;
-import com.wangdaye.mysplash.photo2.presenter.LoadingFlagPresenter;
 import com.wangdaye.mysplash.photo2.presenter.MessageManageImplementor;
 import com.wangdaye.mysplash.photo2.presenter.PhotoActivityPopupManageImplementor;
 import com.wangdaye.mysplash.photo2.presenter.PhotoInfoImplementor;
@@ -86,7 +85,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Photo activity.
@@ -117,8 +115,11 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     @BindView(R.id.activity_photo_2_regularImage)
     FullScreenImageView regularImage;
 
-    @BindView(R.id.activity_photo_2_fullImage)
-    FullScreenImageView fullImage;
+    @BindView(R.id.activity_photo_2_imageMaskContainer)
+    FrameLayout imageMaskContainer;
+
+    @BindView(R.id.activity_photo_2_imageMaskCard)
+    FrameLayout imageMaskCard;
 
     @BindView(R.id.activity_photo_2_recyclerView)
     RecyclerView recyclerView;
@@ -128,9 +129,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @BindView(R.id.activity_photo_2_toolbar)
     Toolbar toolbar;
-
-    @BindView(R.id.activity_photo_2_loadingFlag)
-    CircularProgressIcon loadingFlag;
 
     @BindView(R.id.activity_photo_2_statusBar)
     StatusBarView statusBar;
@@ -154,9 +152,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     private MessageManagePresenter messageManagePresenter;
 
-    @Nullable
-    private LoadingFlagPresenter loadingFlagPresenter;
-
     private final Object messageManagePresenterLock = new Object();
 
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_LIST = "photo_activity_2_photo_list";
@@ -164,6 +159,8 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX = "photo_activity_2_photo_head_index";
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_BUNDLE = "photo_activity_2_photo_bundle";
     public static final String KEY_PHOTO_ACTIVITY_2_ID = "photo_activity_2_id";
+
+    private static final int LANDSCAPE_MAX_WIDTH_DP = 580;
 
     /**
      * This runnable is used to poll download progress.
@@ -219,7 +216,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     protected void onDestroy() {
         super.onDestroy();
         ImageHelper.releaseImageView(regularImage);
-        ImageHelper.releaseImageView(fullImage);
         browsablePresenter.cancelRequest();
         photoInfoPresenter.cancelRequest();
         progressRunnable.setRunning(false);
@@ -315,9 +311,23 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                 getIntent().putExtra(KEY_PHOTO_ACTIVITY_2_ID, "");
             }
         }
+
+        int marginHorizontal = 0;
+        if (DisplayUtils.isLandscape(this)) {
+            int screenWidth = getResources().getDisplayMetrics().widthPixels;
+            float density = getResources().getDisplayMetrics().density;
+            int widthDp = (int) (screenWidth / density);
+            if (widthDp > LANDSCAPE_MAX_WIDTH_DP) {
+                marginHorizontal = (int) new DisplayUtils(this)
+                        .dpToPx((int) ((widthDp - LANDSCAPE_MAX_WIDTH_DP) * 0.5));
+            }
+        }
+        int columnCount = DisplayUtils.isLandscape(this)
+                ? PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL : PhotoInfoAdapter2.COLUMN_COUNT_VERTICAL;
+
         this.photoListManageModel = new PhotoListManageObject(photoList, currentIndex, headIndex);
         this.photoInfoModel = new PhotoInfoObject(
-                this, photo == null ? photoListManageModel.getPhoto() : photo);
+                this, photo == null ? photoListManageModel.getPhoto() : photo, marginHorizontal, columnCount);
         this.downloadModel = new DownloadObject(photoInfoModel.getPhoto());
         this.browsableModel = new BorwsableObject(getIntent());
         if (!TextUtils.isEmpty(id)) {
@@ -357,18 +367,21 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
             resetPhotoImage(true);
 
-            recyclerView.setAdapter(photoInfoPresenter.getAdapter());
-            int columnCount;
-            if (DisplayUtils.isLandscape(this)) {
-                columnCount = 4;
-            } else {
-                columnCount = 2;
+            imageMaskContainer.setBackgroundColor(Color.argb((int) (0.25 * 255), 0, 0, 0));
+
+            PhotoInfoAdapter2 adapter = photoInfoPresenter.getAdapter();
+            if (adapter.getMarginHorizontal() > 0) {
+                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) imageMaskCard.getLayoutParams();
+                params.setMarginStart(adapter.getMarginHorizontal());
+                params.setMarginEnd(adapter.getMarginHorizontal());
+                imageMaskCard.setLayoutParams(params);
             }
-            GridLayoutManager layoutManager = new GridLayoutManager(this, columnCount);
-            layoutManager.setSpanSizeLookup(
-                    new PhotoInfoAdapter2.SpanSizeLookup(
-                            photoInfoPresenter.getAdapter(), columnCount));
+
+            GridLayoutManager layoutManager = new GridLayoutManager(this, adapter.getColumnCount());
+            layoutManager.setSpanSizeLookup(new PhotoInfoAdapter2.SpanSizeLookup(adapter, adapter.getColumnCount()));
             recyclerView.setLayoutManager(layoutManager);
+
+            recyclerView.setAdapter(adapter);
             recyclerView.addOnScrollListener(new OnScrollListener());
 
             toolbar.setTitle("");
@@ -380,8 +393,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
             toolbar.setNavigationOnClickListener(this);
             toolbar.setOnMenuItemClickListener(this);
-
-            loadingFlag.setProgressColor(ContextCompat.getColor(this, R.color.colorTextTitle_dark));
 
             if (!photoInfoPresenter.getPhoto().complete) {
                 initRefresh();
@@ -431,8 +442,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     private void resetPhotoImage(boolean init) {
         ImageHelper.releaseImageView(regularImage);
-        ImageHelper.releaseImageView(fullImage);
-
         ImageHelper.loadRegularPhoto(
                 this, regularImage, photoInfoPresenter.getPhoto(), 0,
                 new ImageHelper.OnLoadImageListener<Photo>() {
@@ -449,45 +458,17 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                     }
                 });
 
-        fullImage.setImageDrawable(null);
-        loadFullImage(true);
-
         if (init) {
-            fullImage.setAlpha(0F);
             appBar.setAlpha(0F);
-            AnimUtils.alphaInitShow(fullImage, 350);
             AnimUtils.alphaInitShow(appBar, 350);
         }
     }
 
-    private void loadFullImage(boolean init) {
-        if (loadingFlagPresenter == null) {
-            loadingFlagPresenter = new LoadingFlagPresenter(loadingFlag);
-        }
-        loadingFlagPresenter.setLoadingState(init);
-        ImageHelper.loadFullPhotoWithoutThumbnail(
-                PhotoActivity2.this, fullImage, photoInfoPresenter.getPhoto(),
-                new ImageHelper.OnLoadImageListener<Photo>() {
-                    @Override
-                    public void onLoadImageSucceed(Photo newT, int index) {
-                        if (loadingFlagPresenter == null) {
-                            loadingFlagPresenter = new LoadingFlagPresenter(loadingFlag);
-                        }
-                        loadingFlagPresenter.setSucceedState();
-                    }
-
-                    @Override
-                    public void onLoadImageFailed(Photo originalT, int index) {
-                        if (loadingFlagPresenter == null) {
-                            loadingFlagPresenter = new LoadingFlagPresenter(loadingFlag);
-                        }
-                        loadingFlagPresenter.setFailedState();
-                    }
-                });
-    }
-
     @Nullable
     private BaseHolder getBaseHolder() {
+        if (recyclerView.getLayoutManager() == null) {
+            return null;
+        }
         int firstVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
                 .findFirstVisibleItemPosition();
         if (firstVisibleItemPosition == 0) {
@@ -517,7 +498,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     private MoreHolder getMoreHolder() {
         if (!photoInfoPresenter.getAdapter().isComplete()) {
             return null;
-        } else {
+        } else if (recyclerView.getLayoutManager() != null) {
             int lastVisibleItemPosition = ((GridLayoutManager) recyclerView.getLayoutManager())
                     .findLastVisibleItemPosition();
             if (lastVisibleItemPosition == photoInfoPresenter.getAdapter().getRealItemCount() - 1) {
@@ -532,6 +513,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                 return null;
             }
         }
+        return null;
     }
 
     public void showPopup(Context c, View anchor, String value, int position) {
@@ -620,11 +602,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         }
     }
 
-    @OnClick(R.id.activity_photo_2_loadingFlag)
-    void reloadFullImage() {
-        loadFullImage(false);
-    }
-
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
@@ -699,8 +676,14 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         // interface.
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             scrollY += dy;
+
+            // image mask.
+            if (imageMaskContainer.getAlpha() == 0) {
+                imageMaskContainer.setAlpha(1F);
+            }
+            imageMaskContainer.setTranslationY(Math.max(imageMaskContainer.getMeasuredHeight() - scrollY, 0));
             
             // base holder.
             if (baseHolder == null) {
@@ -950,10 +933,12 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @Override
     public void requestPhotoFailed() {
-        if (((GridLayoutManager) recyclerView.getLayoutManager())
-                .findLastVisibleItemPosition() == 2) {
+        if (recyclerView.getLayoutManager() != null &&
+                ((GridLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == 2) {
             ProgressHolder holder = (ProgressHolder) recyclerView.findViewHolderForAdapterPosition(2);
-            holder.setFailedState();
+            if (holder != null) {
+                holder.setFailedState();
+            }
         }
     }
 

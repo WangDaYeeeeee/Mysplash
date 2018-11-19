@@ -59,10 +59,6 @@ public class ImageHelper {
         @Nullable
         private OnLoadImageListener<Photo> listener;
 
-        PhotoSaturationListener(Context context, ImageView view) {
-            this(context, view, null, 0, null);
-        }
-
         PhotoSaturationListener(Context context, ImageView view, @Nullable Photo photo, int index,
                                 @Nullable OnLoadImageListener<Photo> l) {
             this.context = context;
@@ -211,13 +207,11 @@ public class ImageHelper {
      * */
     public static void loadRegularPhoto(Context context, ImageView view, Photo photo, int index,
                                         @Nullable OnLoadImageListener<Photo> l) {
-        loadRegularPhoto(context, view, photo, index, true, true, l);
+        loadRegularPhoto(context, view, photo, index, true, l);
     }
 
-    private static DrawableRequestBuilder<String> loadRegularPhoto(Context context, ImageView view,
-                                                                  Photo photo, int index,
-                                                                  boolean saturation, boolean execute,
-                                                                  @Nullable OnLoadImageListener<Photo> l) {
+    private static void loadRegularPhoto(Context context, ImageView view, Photo photo, int index,
+                                         boolean saturation, @Nullable OnLoadImageListener<Photo> l) {
         if (photo != null && photo.urls != null
                 && photo.width != 0 && photo.height != 0) {
 
@@ -247,55 +241,12 @@ public class ImageHelper {
             } else if (l != null) {
                 regularRequest.listener(new BaseRequestListener<Photo, String, GlideDrawable>(photo, 0, l));
             }
-            if (execute) {
-                regularRequest.into(view);
-            }
-            return regularRequest;
+            regularRequest.into(view);
         }
-        return null;
-    }
-
-    public static void preloadRegularPhoto(Context context, Photo photo) {
-        if (photo != null && photo.urls != null
-                && photo.width != 0 && photo.height != 0) {
-            Glide.with(context)
-                    .load(photo.getRegularSizeUrl(context))
-                    .downloadOnly(photo.getRegularWidth(), photo.getRegularHeight());
-        }
-    }
-
-    /**
-     * Load full size photo image.
-     *
-     * Load full size image after getting the regular size image.
-     * */
-    public static void loadFullPhoto(Context context, ImageView view, Photo photo,
-                                     @Nullable OnLoadImageListener<Photo> l) {
-        Glide.with(context)
-                .load(photo.getWallpaperSizeUrl(context))
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .thumbnail(loadRegularPhoto(context, view, photo, 0, true, false, l))
-                .listener(new PhotoSaturationListener(context, view))
-                .animate(new FadeAnimator())
-                .into(view);
-    }
-
-    /**
-     * Load full size photo image without thumbnail.
-     *
-     * Load full size image without regular request as the thumbnail.
-     * */
-    public static void loadFullPhotoWithoutThumbnail(Context context, ImageView view, Photo photo,
-                                     @Nullable OnLoadImageListener<Photo> l) {
-        Glide.with(context)
-                .load(photo.getFullSizeUrl(context))
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .listener(new BaseRequestListener<Photo, String, GlideDrawable>(photo, 0, l))
-                .into(view);
     }
 
     public static void loadBackgroundPhoto(Context context, final ImageView view, Photo photo) {
-        loadRegularPhoto(context, view, photo, 0, false, true, null);
+        loadRegularPhoto(context, view, photo, 0, false, null);
     }
 
     // collection cover.
@@ -304,7 +255,7 @@ public class ImageHelper {
         if (collection != null) {
             loadRegularPhoto(
                     context,
-                    view, collection.cover_photo, 0, false, true, null);
+                    view, collection.cover_photo, 0, false, null);
         }
     }
 

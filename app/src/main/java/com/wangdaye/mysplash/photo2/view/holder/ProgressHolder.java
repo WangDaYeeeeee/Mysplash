@@ -1,7 +1,9 @@
 package com.wangdaye.mysplash.photo2.view.holder;
 
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
@@ -25,6 +27,9 @@ import butterknife.OnClick;
 
 public class ProgressHolder extends PhotoInfoAdapter2.ViewHolder {
 
+    @BindView(R.id.item_photo_2_progress_container)
+    RelativeLayout container;
+
     @BindView(R.id.item_photo_2_progress_progressView)
     CircularProgressView progress;
 
@@ -34,9 +39,16 @@ public class ProgressHolder extends PhotoInfoAdapter2.ViewHolder {
     private boolean failed;
     public static final int TYPE_PROGRESS = 1;
 
-    public ProgressHolder(View itemView) {
-        super(itemView);
+    public ProgressHolder(View itemView, int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
+
+        if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
+            RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
+            params.setMarginStart(marginHorizontal);
+            params.setMarginEnd(marginHorizontal);
+            container.setLayoutParams(params);
+        }
     }
 
     @Override

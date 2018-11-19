@@ -318,7 +318,7 @@ public class MeActivity extends LoadableActivity<Photo>
     @Override
     public void updateData(Photo photo) {
         ((MePhotosView) pagers[pagerManagePresenter.getPagerPosition()])
-                .updatePhoto(photo, true);
+                .updatePhoto(photo);
     }
 
     // init.
@@ -650,8 +650,8 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        ((MePhotosView) pagers[0]).updatePhoto(p, true);
-        ((MePhotosView) pagers[1]).updatePhoto(p, true);
+        ((MePhotosView) pagers[0]).updatePhoto(p);
+        ((MePhotosView) pagers[1]).updatePhoto(p);
         ((MeCollectionsView) pagers[2]).updateCollection(c, true);
     }
 

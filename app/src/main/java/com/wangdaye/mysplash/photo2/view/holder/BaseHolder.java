@@ -70,9 +70,8 @@ public class BaseHolder extends PhotoInfoAdapter2.ViewHolder
 
     public static final int TYPE_BASE = 0;
 
-
-    public BaseHolder(PhotoActivity2 a, View itemView) {
-        super(itemView);
+    public BaseHolder(PhotoActivity2 a, View itemView, int marginHorizontal, int columnCount) {
+        super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
         this.activity = a;

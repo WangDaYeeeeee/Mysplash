@@ -10,8 +10,8 @@ package com.wangdaye.mysplash.common.i.view;
 
 public interface MyFollowView {
 
-    void setRefreshing(boolean refreshing);
-    void setLoading(boolean loading);
+    void setRefreshingFollow(boolean refreshing);
+    void setLoadingFollow(boolean loading);
 
     void setPermitRefreshing(boolean permit);
     void setPermitLoading(boolean permit);

@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -41,15 +42,21 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
     private Photo photo;
     private List<Integer> typeList; // information of view holder.
 
+    private int marginHorizontal;
+    private int columnCount;
+
     private boolean complete; // if true, means the photo object is completely. (has data like exif)
     private boolean needShowInitAnim; // need do the initialize animation when first bind basic view.
     private boolean numberTextAnimEnable; // need to show animation when first bind info view.
 
     private MoreHolder.MoreHolderModel moreHolderModel;
 
+    public static final int COLUMN_COUNT_VERTICAL = 2;
+    public static final int COLUMN_COUNT_HORIZONTAL = 4;
+
     public static abstract class ViewHolder extends RecyclerView.ViewHolder {
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, int marginHorizontal, int columnCount) {
             super(itemView);
         }
 
@@ -72,18 +79,20 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
         public int getSpanSize(int position) {
             if (position < adapter.typeList.size()
                     && adapter.typeList.get(position) >= ExifHolder.TYPE_EXIF) {
-                return 1;
+                return columnCount / 2;
             } else {
                 return columnCount;
             }
         }
     }
 
-    public PhotoInfoAdapter2(PhotoActivity2 a, Photo photo) {
+    public PhotoInfoAdapter2(PhotoActivity2 a, Photo photo, int marginHorizontal, int columnCount) {
         this.a = a;
         this.tagListener = new OnScrollListener();
         this.moreListener = new OnScrollListener();
         this.photo = photo;
+        this.marginHorizontal = marginHorizontal;
+        this.columnCount = columnCount;
         this.complete = photo != null && photo.complete;
         this.needShowInitAnim = true;
         this.numberTextAnimEnable = true;
@@ -91,8 +100,9 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
         buildTypeList();
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case -1:
                 return FooterHolder.buildInstance(parent);
@@ -101,57 +111,82 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
                 return new BaseHolder(
                         a,
                         LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_photo_2_base, parent, false));
+                                .inflate(R.layout.item_photo_2_base, parent, false),
+                        marginHorizontal,
+                        columnCount);
 
             case ProgressHolder.TYPE_PROGRESS:
                 return new ProgressHolder(
                         LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_photo_2_progress, parent, false));
+                                .inflate(R.layout.item_photo_2_progress, parent, false),
+                        marginHorizontal,
+                        columnCount);
 
             case StoryHolder.TYPE_STORY:
                 return new StoryHolder(
                         LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_photo_2_story, parent, false));
+                                .inflate(R.layout.item_photo_2_story, parent, false),
+                        marginHorizontal,
+                        columnCount);
 
             case LocationHolder.TYPE_LOCATION:
                 return new LocationHolder(
                         LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_photo_2_location, parent, false));
+                                .inflate(R.layout.item_photo_2_location, parent, false),
+                        marginHorizontal,
+                        columnCount);
 
             case InfoHolder.TYPE_INFO:
                 return new InfoHolder(
+                        a,
                         LayoutInflater.from(parent.getContext())
                                 .inflate(R.layout.item_photo_2_info, parent, false),
-                        a);
+                        marginHorizontal,
+                        columnCount);
 
             case TagHolder.TYPE_TAG:
                 return new TagHolder(
+                        a,
                         LayoutInflater.from(parent.getContext())
                                 .inflate(R.layout.item_photo_2_tag, parent, false),
-                        a);
+                        marginHorizontal,
+                        columnCount);
 
             case MoreHolder.TYPE_MORE:
                 return new MoreHolder(
                         LayoutInflater.from(parent.getContext())
                                 .inflate(R.layout.item_photo_2_more, parent, false),
-                        photo,
-                        moreHolderModel);
+                        photo, moreHolderModel, marginHorizontal, columnCount);
 
             case MoreLandscapeHolder.TYPE_MORE_LANDSCAPE:
                 return new MoreLandscapeHolder(
+                        a,
                         LayoutInflater.from(parent.getContext())
                                 .inflate(R.layout.item_photo_2_more_landscape, parent, false),
-                        a);
+                        marginHorizontal,
+                        columnCount);
 
             default:
-                return new ExifHolder(
-                        LayoutInflater.from(parent.getContext())
-                                .inflate(R.layout.item_photo_2_exif, parent, false));
+                if (columnCount == COLUMN_COUNT_HORIZONTAL) {
+                    return new ExifHolder(
+                            LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.item_photo_2_exif_horizontal, parent, false),
+                            marginHorizontal,
+                            columnCount,
+                            viewType);
+                } else {
+                    return new ExifHolder(
+                            LayoutInflater.from(parent.getContext())
+                                    .inflate(R.layout.item_photo_2_exif, parent, false),
+                            marginHorizontal,
+                            columnCount,
+                            viewType);
+                }
         }
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder) {
             ((ViewHolder) holder).onBindView(a, photo);
             if (needShowInitAnim && getItemViewType(position) == BaseHolder.TYPE_BASE) {
@@ -176,7 +211,7 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof ViewHolder) {
             ((ViewHolder) holder).onRecycled();
@@ -254,6 +289,14 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
         return complete;
     }
 
+    public int getMarginHorizontal() {
+        return marginHorizontal;
+    }
+
+    public int getColumnCount() {
+        return columnCount;
+    }
+
     // interface.
 
     // on scroll swipeListener.
@@ -276,7 +319,7 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
         // interface.
 
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             scrollX += dx;
         }
     }
