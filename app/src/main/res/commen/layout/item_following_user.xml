@@ -44,7 +44,7 @@
         android:layout_marginStart="@dimen/nano_margin"
         android:layout_marginTop="@dimen/nano_margin"
         android:layout_marginBottom="@dimen/normal_margin"
-        style="@style/subtitle_text"
+        style="@style/body_text"
         tools:text="An developer from Qingdao, Chinaaaaaaa. Contact me by email : Wangdayeeeeee@gmail.com"
         tools:ignore="RtlHardcoded" />
 

@@ -90,9 +90,9 @@
                         android:layout_marginEnd="@dimen/mini_icon_size"
                         android:layout_width="wrap_content"
                         android:layout_centerInParent="true"
-                        android:lineSpacingMultiplier="1.3"
+                        android:lineSpacingMultiplier="1.2"
                         android:textIsSelectable="false"
-                        style="@style/content_text"
+                        style="@style/body_text"
                         tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
                 </com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskLayout>

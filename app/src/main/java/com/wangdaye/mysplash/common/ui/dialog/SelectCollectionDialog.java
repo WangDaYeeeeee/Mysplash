@@ -208,10 +208,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         recyclerView.addOnScrollListener(new LoadScrollListener());
 
         creatorContainer.setVisibility(View.GONE);
-
-        DisplayUtils.setTypeface(getActivity(), nameTxt);
-        DisplayUtils.setTypeface(getActivity(), descriptionTxt);
-        DisplayUtils.setTypeface(getActivity(), checkBox);
     }
 
     // control.

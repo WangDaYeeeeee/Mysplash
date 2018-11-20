@@ -7,7 +7,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.model.AboutModel;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.LibraryObject;
 
@@ -35,8 +34,6 @@ public class LibraryHolder extends AboutAdapter.ViewHolder {
     public LibraryHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        DisplayUtils.setTypeface(itemView.getContext(), title);
-        DisplayUtils.setTypeface(itemView.getContext(), content);
     }
 
     @Override

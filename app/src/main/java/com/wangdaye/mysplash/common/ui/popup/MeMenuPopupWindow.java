@@ -6,14 +6,10 @@ import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import butterknife.ButterKnife;
 
 /**
  * Me menu popup window.
@@ -54,15 +50,6 @@ public class MeMenuPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_me_menu_submit).setOnClickListener(this);
         v.findViewById(R.id.popup_me_menu_portfolio).setOnClickListener(this);
         v.findViewById(R.id.popup_me_menu_share).setOnClickListener(this);
-
-        TextView submitTxt = ButterKnife.findById(v, R.id.popup_me_menu_submitTxt);
-        DisplayUtils.setTypeface(v.getContext(), submitTxt);
-
-        TextView portfolioTxt = ButterKnife.findById(v, R.id.popup_me_menu_portfolioTxt);
-        DisplayUtils.setTypeface(v.getContext(), portfolioTxt);
-
-        TextView shareTxt = ButterKnife.findById(v, R.id.popup_me_menu_shareTxt);
-        DisplayUtils.setTypeface(v.getContext(), shareTxt);
 
         ThemeManager.setImageResource(
                 (ImageView) v.findViewById(R.id.popup_me_menu_submitIcon),

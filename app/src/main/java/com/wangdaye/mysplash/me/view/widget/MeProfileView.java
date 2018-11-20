@@ -27,7 +27,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.ui.adapter.MiniTagAdapter;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.i.model.LoadModel;
@@ -128,9 +127,6 @@ public class MeProfileView  extends FrameLayout
         rippleButton.setDontAnimate(true);
         rippleButton.setOnSwitchListener(this);
 
-        DisplayUtils.setTypeface(getContext(), locationTxt);
-        DisplayUtils.setTypeface(getContext(), bioTxt);
-
         ImageView locationIcon = ButterKnife.findById(this, R.id.container_user_profile_locationIcon);
         ThemeManager.setImageResource(
                 locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);
@@ -141,7 +137,7 @@ public class MeProfileView  extends FrameLayout
     @SuppressLint("SetTextI18n")
     public void drawMeProfile(User u) {
         ViewParent parent = getAppBarParent();
-        if (parent != null && parent instanceof NestedScrollAppBarLayout) {
+        if (parent instanceof NestedScrollAppBarLayout) {
             TransitionManager.beginDelayedTransition((ViewGroup) parent);
         }
 

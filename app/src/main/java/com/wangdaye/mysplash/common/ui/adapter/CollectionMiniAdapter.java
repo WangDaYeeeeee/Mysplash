@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
@@ -59,7 +59,6 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
         void onBindView(int position) {
@@ -179,20 +178,21 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         updatePhoto(p);
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_collection_mini, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.onBindView(position);
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onRecycled();
     }

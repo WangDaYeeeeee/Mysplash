@@ -37,9 +37,9 @@
             android:layout_marginStart="@dimen/mini_icon_size"
             android:layout_marginEnd="@dimen/mini_icon_size"
             android:layout_width="wrap_content"
-            android:lineSpacingMultiplier="1.3"
+            android:lineSpacingMultiplier="1.2"
             android:textIsSelectable="false"
-            style="@style/content_text"
+            style="@style/body_text"
             tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
         <RelativeLayout
@@ -53,14 +53,16 @@
                 android:id="@+id/container_user_profile_locationIcon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/little_margin"
-                android:layout_marginBottom="@dimen/little_margin"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginBottom="@dimen/normal_margin"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:src="@drawable/ic_location_light"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
             <TextView
                 android:id="@+id/container_user_profile_locationTxt"
+                android:textColor="?attr/content_color"
+                android:textStyle="italic|bold"
                 android:layout_toEndOf="@id/container_user_profile_locationIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/normal_margin"

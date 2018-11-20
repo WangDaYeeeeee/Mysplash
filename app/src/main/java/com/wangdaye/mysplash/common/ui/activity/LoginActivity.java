@@ -12,7 +12,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -20,7 +19,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash.common.data.service.AuthorizeService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
@@ -153,8 +151,6 @@ public class LoginActivity extends MysplashActivity
 
         ImageView icon = ButterKnife.findById(this, R.id.activity_login_icon);
         ImageHelper.loadResourceImage(this, icon, R.drawable.ic_launcher);
-
-        DisplayUtils.setTypeface(this, ((TextView) ButterKnife.findById(this, R.id.activity_login_content)));
 
         Button loginBtn = ButterKnife.findById(this, R.id.activity_login_loginBtn);
         Button joinBtn = ButterKnife.findById(this, R.id.activity_login_joinBtn);

@@ -17,7 +17,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Total;
 import com.wangdaye.mysplash.common.data.service.StatusService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
@@ -88,9 +87,6 @@ public class TotalDialog extends MysplashDialogFragment
 
         progress.setVisibility(View.VISIBLE);
         dataContainer.setVisibility(View.GONE);
-
-        DisplayUtils.setTypeface(getActivity(), photoNum);
-        DisplayUtils.setTypeface(getActivity(), downloadNum);
 
         ImageView download = ButterKnife.findById(v, R.id.dialog_total_photoDownloadsIcon);
         ThemeManager.setImageResource(

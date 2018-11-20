@@ -22,7 +22,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash.common.data.service.UserService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
@@ -197,25 +196,18 @@ public class UpdateMeActivity extends MysplashActivity
         contentView.setVisibility(View.VISIBLE);
 
         this.usernameTxt = ButterKnife.findById(this, R.id.container_update_me_usernameTxt);
-        DisplayUtils.setTypeface(this, usernameTxt);
 
         this.firstNameTxt = ButterKnife.findById(this, R.id.container_update_me_firstNameTxt);
-        DisplayUtils.setTypeface(this, firstNameTxt);
 
         this.lastNameTxt = ButterKnife.findById(this, R.id.container_update_me_lastNameTxt);
-        DisplayUtils.setTypeface(this, lastNameTxt);
 
         this.emailTxt = ButterKnife.findById(this, R.id.container_update_me_emailTxt);
-        DisplayUtils.setTypeface(this, emailTxt);
 
         this.portfolioTxt = ButterKnife.findById(this, R.id.container_update_me_portfolioTxt);
-        DisplayUtils.setTypeface(this, portfolioTxt);
 
         this.locationTxt = ButterKnife.findById(this, R.id.container_update_me_locationTxt);
-        DisplayUtils.setTypeface(this, locationTxt);
 
         this.bioTxt = ButterKnife.findById(this, R.id.container_update_me_bioTxt);
-        DisplayUtils.setTypeface(this, bioTxt);
 
         Button saveBtn = ButterKnife.findById(this, R.id.container_update_me_saveBtn);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

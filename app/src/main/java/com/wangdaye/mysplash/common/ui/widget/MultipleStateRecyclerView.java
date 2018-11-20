@@ -20,6 +20,11 @@ public class MultipleStateRecyclerView extends RecyclerView {
     private LayoutManager[] multipleLayouts;
     private List<OnScrollListener> onScrollListenerList;
 
+    private int paddingStart;
+    private int paddingTop;
+    private int paddingEnd;
+    private int paddingBottom;
+
     @StateRule
     private int state;
 
@@ -55,8 +60,26 @@ public class MultipleStateRecyclerView extends RecyclerView {
                 new LinearLayoutManager(context)};
         onScrollListenerList = new ArrayList<>();
 
+        paddingStart = paddingEnd = paddingTop = paddingBottom = 0;
+
         state = STATE_LOADING;
         setLayoutManager(multipleLayouts[STATE_LOADING], STATE_LOADING);
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        this.setPaddingRelative(left, top, right, bottom);
+    }
+
+    @Override
+    public void setPaddingRelative(int start, int top, int end, int bottom) {
+        if (state == STATE_NORMALLY) {
+            super.setPaddingRelative(start, top, end, bottom);
+        }
+        paddingStart = start;
+        paddingTop = top;
+        paddingEnd = end;
+        paddingBottom = bottom;
     }
 
     @Override
@@ -145,8 +168,10 @@ public class MultipleStateRecyclerView extends RecyclerView {
             for (OnScrollListener l : onScrollListenerList) {
                 super.addOnScrollListener(l);
             }
+            super.setPaddingRelative(paddingStart, paddingTop, paddingEnd, paddingBottom);
         } else {
             super.clearOnScrollListeners();
+            super.setPaddingRelative(0, 0, 0, 0);
         }
         ObjectAnimator
                 .ofFloat(this, "alpha", 0, 1F)

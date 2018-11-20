@@ -65,7 +65,6 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            DisplayUtils.setTypeface(itemView.getContext(), subtitle);
         }
 
         @SuppressLint("SetTextI18n")

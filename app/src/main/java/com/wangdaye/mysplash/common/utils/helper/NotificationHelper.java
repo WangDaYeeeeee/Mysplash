@@ -159,7 +159,6 @@ public class NotificationHelper {
                 snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
 
                 TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
-                DisplayUtils.setTypeface(a, contentTxt);
                 contentTxt.setTextColor(ThemeManager.getContentColor(a));
 
                 snackbar.show();
@@ -181,7 +180,6 @@ public class NotificationHelper {
                 snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
 
                 TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
-                DisplayUtils.setTypeface(a, contentTxt);
                 contentTxt.setTextColor(ThemeManager.getContentColor(a));
 
                 Button actionBtn = snackbarLayout.findViewById(R.id.snackbar_action);

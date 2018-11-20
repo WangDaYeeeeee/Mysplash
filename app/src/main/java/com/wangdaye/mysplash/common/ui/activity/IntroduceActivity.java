@@ -22,7 +22,6 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -244,7 +243,6 @@ public class IntroduceActivity extends MysplashActivity
 
             TextView description = ButterKnife.findById(v, R.id.container_introduce_description);
             description.setText(introduceModelList.get(i).description);
-            DisplayUtils.setTypeface(this, description);
 
             setPageButtonStyle(v, i);
 

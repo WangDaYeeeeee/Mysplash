@@ -32,9 +32,11 @@
                 <TextView
                     android:id="@+id/dialog_total_totalPhotosNum"
                     android:text="0 PHOTOS"
+                    android:textStyle="bold"
+                    android:textColor="?attr/content_color"
                     android:layout_toEndOf="@id/dialog_total_totalPhotosIcon"
                     android:layout_centerVertical="true"
-                    style="@style/content_text"
+                    style="@style/title_text"
                     tools:ignore="HardcodedText,RtlHardcoded" />
 
             </RelativeLayout>
@@ -53,9 +55,11 @@
                 <TextView
                     android:id="@+id/dialog_total_photoDownloadsNum"
                     android:text="0 DOWNLOADS"
+                    android:textStyle="bold"
+                    android:textColor="?attr/content_color"
                     android:layout_toEndOf="@id/dialog_total_photoDownloadsIcon"
                     android:layout_centerVertical="true"
-                    style="@style/content_text"
+                    style="@style/title_text"
                     tools:ignore="HardcodedText,RtlHardcoded" />
 
             </RelativeLayout>

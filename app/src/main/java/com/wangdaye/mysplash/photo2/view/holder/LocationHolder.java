@@ -7,11 +7,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
 import butterknife.BindView;
@@ -35,8 +33,6 @@ public class LocationHolder extends PhotoInfoAdapter2.ViewHolder {
         super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), title);
-
         if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
             params.setMarginStart(marginHorizontal);
@@ -49,7 +45,7 @@ public class LocationHolder extends PhotoInfoAdapter2.ViewHolder {
     @Override
     protected void onBindView(PhotoActivity2 a, Photo photo) {
         if (!TextUtils.isEmpty(photo.location.title)) {
-            title.setText(a.getString(R.string.from) + " " + photo.location.title);
+            title.setText(photo.location.title);
         }
     }
 

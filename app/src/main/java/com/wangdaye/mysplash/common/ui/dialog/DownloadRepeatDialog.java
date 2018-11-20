@@ -7,11 +7,9 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,7 +38,6 @@ public class DownloadRepeatDialog extends MysplashDialogFragment {
         View view = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_download_repeat, null, false);
         ButterKnife.bind(this, view);
-        initWidget(view);
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -49,11 +46,6 @@ public class DownloadRepeatDialog extends MysplashDialogFragment {
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
-    }
-
-    private void initWidget(View v) {
-        TextView content = ButterKnife.findById(v, R.id.dialog_download_repeat_text);
-        DisplayUtils.setTypeface(getActivity(), content);
     }
 
     public void setDownloadKey(Object obj) {

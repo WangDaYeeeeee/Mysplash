@@ -305,7 +305,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
             if (TextUtils.isEmpty(c.description)) {
                 description.setVisibility(View.GONE);
             } else {
-                DisplayUtils.setTypeface(this, description);
                 description.setText(c.description);
             }
 
@@ -331,7 +330,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
             ImageHelper.loadAvatar(this, avatarImage, c.user);
 
             TextView subtitle = ButterKnife.findById(this, R.id.activity_collection_subtitle);
-            DisplayUtils.setTypeface(this, subtitle);
             subtitle.setText(getString(R.string.by) + " " + c.user.name);
 
             photosView.initMP(this, (Collection) editResultPresenter.getEditKey());
@@ -568,7 +566,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
         if (TextUtils.isEmpty(c.description)) {
             description.setVisibility(View.GONE);
         } else {
-            DisplayUtils.setTypeface(this, description);
             description.setText(c.description);
         }
     }

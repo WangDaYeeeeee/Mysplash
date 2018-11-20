@@ -176,7 +176,7 @@ public class MeCollectionsView extends BothWaySwipeRefreshLayout
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         recyclerView.setAdapter(collectionsPresenter.getAdapter());
         if (columnCount > 1) {
-            int margin = getResources().getDimensionPixelSize(R.dimen.little_margin);
+            int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
             recyclerView.setPadding(margin, margin, 0, 0);
         } else {
             recyclerView.setPadding(0, 0, 0, 0);

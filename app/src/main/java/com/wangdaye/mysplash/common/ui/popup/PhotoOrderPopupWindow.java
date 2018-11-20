@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.ButterKnife;
@@ -79,24 +78,28 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
         }
 
         TextView latestTxt = ButterKnife.findById(v, R.id.popup_photo_order_latestTxt);
-        DisplayUtils.setTypeface(v.getContext(), latestTxt);
         latestTxt.setText(names[0]);
-        latestTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        if (valueNow.equals(values[0])) {
+            latestTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        }
 
         TextView oldestTxt = ButterKnife.findById(v, R.id.popup_photo_order_oldestTxt);
-        DisplayUtils.setTypeface(v.getContext(), oldestTxt);
         oldestTxt.setText(names[1]);
-        oldestTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        if (valueNow.equals(values[1])) {
+            oldestTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        }
 
         TextView popularTxt = ButterKnife.findById(v, R.id.popup_photo_order_popularTxt);
-        DisplayUtils.setTypeface(v.getContext(), popularTxt);
         popularTxt.setText(names[2]);
-        popularTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        if (valueNow.equals(values[2])) {
+            popularTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        }
 
         TextView randomTxt = ButterKnife.findById(v, R.id.popup_photo_order_randomTxt);
-        DisplayUtils.setTypeface(v.getContext(), randomTxt);
         randomTxt.setText(names[3]);
-        randomTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        if (valueNow.equals(values[3])) {
+            randomTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
+        }
 
         if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
             ((ImageView) v.findViewById(R.id.popup_photo_order_latestIcon)).setImageResource(R.drawable.ic_timer_light);

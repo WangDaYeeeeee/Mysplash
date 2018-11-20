@@ -6,11 +6,9 @@ import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.ButterKnife;
@@ -53,12 +51,6 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
 
         v.findViewById(R.id.popup_photo_menu_downloadPage).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_storyPage).setOnClickListener(this);
-
-        TextView downloadPageTxt = ButterKnife.findById(v, R.id.popup_photo_menu_downloadPageTxt);
-        DisplayUtils.setTypeface(v.getContext(), downloadPageTxt);
-
-        TextView storyPageTxt = ButterKnife.findById(v, R.id.popup_photo_menu_storyPageTxt);
-        DisplayUtils.setTypeface(v.getContext(), storyPageTxt);
 
         ThemeManager.setImageResource(
                 (ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon),

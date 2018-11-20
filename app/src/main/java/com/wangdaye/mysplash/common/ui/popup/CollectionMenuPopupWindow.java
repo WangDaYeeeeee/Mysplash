@@ -6,17 +6,13 @@ import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import butterknife.ButterKnife;
 
 /**
  * Collection menu popup window.
@@ -68,15 +64,6 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
         if (!MuzeiOptionManager.isInstalledMuzei(c)) {
             v.findViewById(R.id.popup_collection_menu_setAsSource).setVisibility(View.GONE);
         }
-
-        TextView editTxt = ButterKnife.findById(v, R.id.popup_collection_menu_editTxt);
-        DisplayUtils.setTypeface(v.getContext(), editTxt);
-
-        TextView downloadTxt = ButterKnife.findById(v, R.id.popup_collection_menu_downloadTxt);
-        DisplayUtils.setTypeface(v.getContext(), downloadTxt);
-
-        TextView setAsSourceTxt = ButterKnife.findById(v, R.id.popup_collection_menu_setAsSourceTxt);
-        DisplayUtils.setTypeface(v.getContext(), setAsSourceTxt);
 
         ThemeManager.setImageResource(
                 (ImageView) v.findViewById(R.id.popup_collection_menu_editIcon),

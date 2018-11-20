@@ -7,12 +7,10 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +35,6 @@ public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
         View view = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_confirm_exit_without_save, null, false);
         ButterKnife.bind(this, view);
-        initWidget(view);
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -46,11 +43,6 @@ public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
-    }
-
-    private void initWidget(View v) {
-        TextView content = ButterKnife.findById(v, R.id.dialog_confirm_exit_without_save_text);
-        DisplayUtils.setTypeface(getActivity(), content);
     }
 
     // interface.

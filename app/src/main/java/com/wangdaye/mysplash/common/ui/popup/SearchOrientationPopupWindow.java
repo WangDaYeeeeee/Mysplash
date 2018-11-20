@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.ButterKnife;
@@ -61,28 +60,24 @@ public class SearchOrientationPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_search_orientation_squarish).setOnClickListener(this);
 
         TextView allTxt = ButterKnife.findById(v, R.id.popup_search_orientation_allTxt);
-        DisplayUtils.setTypeface(v.getContext(), allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (TextUtils.isEmpty(valueNow)) {
             allTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView landscapeTxt = ButterKnife.findById(v, R.id.popup_search_orientation_landscapeTxt);
-        DisplayUtils.setTypeface(v.getContext(), landscapeTxt);
         landscapeTxt.setText(names[0]);
         if (values[0].equals(valueNow)) {
             landscapeTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView portraitTxt = ButterKnife.findById(v, R.id.popup_search_orientation_portraitTxt);
-        DisplayUtils.setTypeface(v.getContext(), portraitTxt);
         portraitTxt.setText(names[1]);
         if (values[1].equals(valueNow)) {
             portraitTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView squarishTxt = ButterKnife.findById(v, R.id.popup_search_orientation_squarishTxt);
-        DisplayUtils.setTypeface(v.getContext(), squarishTxt);
         squarishTxt.setText(names[2]);
         if (values[2].equals(valueNow)) {
             squarishTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));

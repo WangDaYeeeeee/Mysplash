@@ -322,7 +322,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
                         .dpToPx((int) ((widthDp - LANDSCAPE_MAX_WIDTH_DP) * 0.5));
             }
         }
-        int columnCount = DisplayUtils.isLandscape(this)
+        int columnCount = DisplayUtils.isLandscape(this) || DisplayUtils.isTabletDevice(this)
                 ? PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL : PhotoInfoAdapter2.COLUMN_COUNT_VERTICAL;
 
         this.photoListManageModel = new PhotoListManageObject(photoList, currentIndex, headIndex);
@@ -378,7 +378,11 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             }
 
             GridLayoutManager layoutManager = new GridLayoutManager(this, adapter.getColumnCount());
-            layoutManager.setSpanSizeLookup(new PhotoInfoAdapter2.SpanSizeLookup(adapter, adapter.getColumnCount()));
+            layoutManager.setSpanSizeLookup(
+                    new PhotoInfoAdapter2.SpanSizeLookup(
+                            adapter,
+                            adapter.getColumnCount(),
+                            DisplayUtils.isLandscape(this)));
             recyclerView.setLayoutManager(layoutManager);
 
             recyclerView.setAdapter(adapter);

@@ -14,7 +14,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
@@ -69,8 +68,6 @@ public class MoreHorizontalAdapter2 extends RecyclerView.Adapter<MoreHorizontalA
             title.setText("");
             subtitle.setText("");
             image.setShowShadow(false);
-
-            DisplayUtils.setTypeface(a, subtitle);
 
             if (collection.cover_photo != null) {
                 ImageHelper.loadCollectionCover(image.getContext(), image, collection, getAdapterPosition(), this);

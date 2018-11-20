@@ -11,11 +11,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
@@ -55,11 +53,9 @@ public class ExifHolder extends PhotoInfoAdapter2.ViewHolder {
         super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), content);
-
         position = viewType - TYPE_EXIF;
         if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
-            if (position % (columnCount / 2) == 0) {
+            if (position % 2 == 0) {
                 // set start margin.
                 RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
                 params.setMarginStart(marginHorizontal);

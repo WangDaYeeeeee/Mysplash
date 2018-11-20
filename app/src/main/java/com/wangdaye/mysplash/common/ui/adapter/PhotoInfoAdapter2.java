@@ -69,17 +69,19 @@ public class PhotoInfoAdapter2 extends FooterAdapter<RecyclerView.ViewHolder> {
 
         private PhotoInfoAdapter2 adapter;
         private int columnCount;
+        private boolean landscape;
 
-        public SpanSizeLookup(PhotoInfoAdapter2 adapter, int columnCount) {
+        public SpanSizeLookup(PhotoInfoAdapter2 adapter, int columnCount, boolean landscape) {
             this.adapter = adapter;
             this.columnCount = columnCount;
+            this.landscape = landscape;
         }
 
         @Override
         public int getSpanSize(int position) {
             if (position < adapter.typeList.size()
                     && adapter.typeList.get(position) >= ExifHolder.TYPE_EXIF) {
-                return columnCount / 2;
+                return landscape ? columnCount / 2 : 1;
             } else {
                 return columnCount;
             }

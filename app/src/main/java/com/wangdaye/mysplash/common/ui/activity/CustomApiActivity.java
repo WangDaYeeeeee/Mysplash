@@ -7,13 +7,11 @@ import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -130,18 +128,13 @@ public class CustomApiActivity extends MysplashActivity
         ImageButton closeBtn = ButterKnife.findById(this, R.id.activity_custom_api_closeBtn);
         ThemeManager.setImageResource(closeBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
 
-        DisplayUtils.setTypeface(this, key);
         if (!TextUtils.isEmpty(CustomApiManager.getInstance(this).getCustomApiKey())) {
             key.setText(CustomApiManager.getInstance(this).getCustomApiKey());
         }
 
-        DisplayUtils.setTypeface(this, secret);
         if (!TextUtils.isEmpty(CustomApiManager.getInstance(this).getCustomApiSecret())) {
             secret.setText(CustomApiManager.getInstance(this).getCustomApiSecret());
         }
-
-        TextView redirectUri = findViewById(R.id.activity_custom_api_redirectUri);
-        DisplayUtils.setTypeface(this, redirectUri);
     }
 
     // interface.

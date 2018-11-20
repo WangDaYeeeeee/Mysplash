@@ -6,8 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise_item"
-    app:cardElevation="@dimen/low_elevation"
+    android:stateListAnimator="@animator/touch_rise_avatar"
+    app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false"
     app:cardBackgroundColor="?attr/root_color"
     tools:ignore="UnusedAttribute">

@@ -22,7 +22,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import butterknife.BindView;
@@ -116,14 +115,11 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
         progressView.setVisibility(View.GONE);
         contentView.setVisibility(View.VISIBLE);
 
-        DisplayUtils.setTypeface(getActivity(), nameTxt);
         nameTxt.setText(collection.title);
 
-        DisplayUtils.setTypeface(getActivity(), descriptionTxt);
         descriptionTxt.setText(collection.description == null ? "" : collection.description);
 
         checkBox.setChecked(collection.privateX);
-        DisplayUtils.setTypeface(getActivity(), checkBox);
 
         baseBtnContainer.setVisibility(View.VISIBLE);
         confirmBtnContainer.setVisibility(View.GONE);

@@ -8,6 +8,7 @@
 
     <TextView
         android:id="@+id/item_about_library_title"
+        android:textStyle="bold"
         android:layout_marginTop="@dimen/normal_margin"
         android:layout_marginStart="@dimen/normal_margin"
         style="@style/title_text"
@@ -16,13 +17,12 @@
 
     <TextView
         android:id="@+id/item_about_library_content"
-        android:lineSpacingMultiplier="1.3"
         android:layout_below="@id/item_about_library_title"
         android:layout_marginTop="@dimen/mini_margin"
         android:layout_marginStart="@dimen/normal_margin"
         android:layout_marginEnd="@dimen/normal_margin"
         android:layout_marginBottom="@dimen/normal_margin"
-        style="@style/content_text"
+        style="@style/body_text"
         tools:text="@string/about_unsplash"
         tools:ignore="RtlHardcoded" />
 

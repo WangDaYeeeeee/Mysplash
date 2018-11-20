@@ -76,12 +76,6 @@ public class BaseHolder extends PhotoInfoAdapter2.ViewHolder
 
         this.activity = a;
 
-        title.getPaint().setFakeBoldText(true);
-        subtitle.getPaint().setFakeBoldText(true);
-
-        DisplayUtils.setTypeface(activity, title);
-        DisplayUtils.setTypeface(activity, subtitle);
-
         landscape = DisplayUtils.isLandscape(a);
         navigationBarHeight = DisplayUtils.getNavigationBarHeight(a.getResources());
     }

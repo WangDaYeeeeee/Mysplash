@@ -9,7 +9,6 @@ import com.wangdaye.mysplash.common.i.model.AboutModel;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
@@ -47,7 +46,6 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder {
     public TranslatorHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        DisplayUtils.setTypeface(itemView.getContext(), subtitle);
     }
 
     @Override
@@ -69,7 +67,7 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder {
     }
 
     @OnClick(R.id.item_about_translator_container) void clickItem() {
-        String check = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        String check = "^([a-z0-9A-Z]+[-|.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         Pattern regex = Pattern.compile(check);
         Matcher matcher = regex.matcher(url);
         IntentHelper.startWebActivity(

@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.fragment;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -55,6 +56,7 @@ public class SettingsFragment extends PreferenceFragment
         initView();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -230,6 +232,7 @@ public class SettingsFragment extends PreferenceFragment
 
         // interface.
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View v, MotionEvent ev) {
             switch (ev.getAction()) {

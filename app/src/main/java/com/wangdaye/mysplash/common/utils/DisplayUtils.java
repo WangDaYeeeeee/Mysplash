@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,7 +17,6 @@ import android.support.annotation.Size;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
@@ -174,12 +172,6 @@ public class DisplayUtils {
                 .setLightTheme(
                         c,
                         !ThemeManager.getInstance(c).isLightTheme());
-    }
-
-    public static void setTypeface(Context c, TextView t) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            t.setTypeface(Typeface.createFromAsset(c.getAssets(), "fonts/Courier.ttf"));
-        }
     }
 
     public static String abridgeNumber(int num) {

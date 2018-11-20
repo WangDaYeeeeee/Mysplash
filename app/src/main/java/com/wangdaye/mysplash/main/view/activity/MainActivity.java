@@ -467,10 +467,8 @@ public class MainActivity extends LoadableActivity<Photo>
         ImageHelper.loadResourceImage(this, appIcon, R.drawable.ic_launcher);
 
         this.navTitle = ButterKnife.findById(header, R.id.container_nav_header_title);
-        DisplayUtils.setTypeface(this, navTitle);
 
         this.navSubtitle = ButterKnife.findById(header, R.id.container_nav_header_subtitle);
-        DisplayUtils.setTypeface(this, navSubtitle);
 
         this.navButton = ButterKnife.findById(header, R.id.container_nav_header_button);
         navButton.setOnClickListener(this);

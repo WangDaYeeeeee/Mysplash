@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- activity & fragment themes. -->
 
@@ -202,6 +202,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/large_title_text_size</item>
         <item name="android:textColor">?attr/title_color</item>
+        <item name="android:letterSpacing" tools:ignore="NewApi">0.025</item>
     </style>
 
     <style name="title_text">
@@ -209,6 +210,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/title_text_size</item>
         <item name="android:textColor">?attr/title_color</item>
+        <item name="android:letterSpacing" tools:ignore="NewApi">0.025</item>
     </style>
 
     <style name="subtitle_text">
@@ -216,6 +218,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/subtitle_text_size</item>
         <item name="android:textColor">?attr/subtitle_color</item>
+        <item name="android:letterSpacing" tools:ignore="NewApi">0.04</item>
     </style>
 
     <style name="content_text">
@@ -223,6 +226,17 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/content_text_size</item>
         <item name="android:textColor">?attr/content_color</item>
+        <item name="android:lineSpacingMultiplier">1.05</item>
+        <item name="android:letterSpacing" tools:ignore="NewApi">0.04</item>
+    </style>
+
+    <style name="body_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/content_text_size</item>
+        <item name="android:textColor">?attr/subtitle_color</item>
+        <item name="android:lineSpacingMultiplier">1.05</item>
+        <item name="android:letterSpacing" tools:ignore="NewApi">0.04</item>
     </style>
 
     <!-- button -->

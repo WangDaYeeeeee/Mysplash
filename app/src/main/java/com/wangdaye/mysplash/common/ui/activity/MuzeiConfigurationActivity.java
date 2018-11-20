@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Switch;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
@@ -22,7 +21,6 @@ import com.wangdaye.mysplash.common.ui.adapter.WallpaperSourceAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
@@ -162,19 +160,9 @@ public class MuzeiConfigurationActivity extends MysplashActivity
             }
         });
 
-        TextView intervalTitle = ButterKnife.findById(this, R.id.activity_muzei_configuration_intervalTitle);
-        DisplayUtils.setTypeface(this, intervalTitle);
-
         intervalEditText.setText(String.valueOf(manager.getUpdateInterval()));
-        DisplayUtils.setTypeface(this, intervalEditText);
-
-        TextView wifiTitle = ButterKnife.findById(this, R.id.activity_muzei_configuration_wifiTitle);
-        DisplayUtils.setTypeface(this, wifiTitle);
 
         wifiSwitch.setChecked(manager.isUpdateOnlyInWifi());
-
-        TextView collectionTitle = ButterKnife.findById(this, R.id.activity_muzei_configuration_collectionTitle);
-        DisplayUtils.setTypeface(this, collectionTitle);
 
         RecyclerView collectionList = ButterKnife.findById(this, R.id.activity_muzei_configuration_collectionList);
         collectionList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));

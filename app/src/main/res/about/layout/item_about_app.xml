@@ -17,7 +17,7 @@
         android:textStyle="bold"
         android:layout_toEndOf="@id/item_about_app_icon"
         android:layout_centerVertical="true"
-        style="@style/subtitle_text"
+        style="@style/content_text"
         tools:text="@string/introduce"
         tools:ignore="RtlHardcoded" />
 

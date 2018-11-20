@@ -50,9 +50,6 @@ public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
         super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
 
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), content);
-
         if (marginHorizontal > 0 && columnCount == PhotoInfoAdapter2.COLUMN_COUNT_HORIZONTAL) {
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
             params.setMarginStart(marginHorizontal);

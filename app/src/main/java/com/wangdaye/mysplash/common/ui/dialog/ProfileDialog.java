@@ -17,7 +17,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.data.service.UserService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -75,7 +74,6 @@ public class ProfileDialog extends MysplashDialogFragment
 
     private void initWidget() {
         scrollView.setVisibility(View.GONE);
-        DisplayUtils.setTypeface(getActivity(), contentTxt);
     }
 
     public void setUsername(String username) {
@@ -92,6 +90,7 @@ public class ProfileDialog extends MysplashDialogFragment
 
     // on request user profile listener.
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {
         if (response.isSuccessful() && response.body() != null) {

@@ -15,7 +15,6 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.fragment.SettingsFragment;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
@@ -134,7 +133,6 @@ public class SettingsActivity extends MysplashActivity
         snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(this));
 
         TextView contentTxt = ButterKnife.findById(snackbarLayout, R.id.snackbar_text);
-        DisplayUtils.setTypeface(this, contentTxt);
         contentTxt.setTextColor(ThemeManager.getContentColor(this));
 
         snackbar.show();

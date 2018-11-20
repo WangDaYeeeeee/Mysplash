@@ -8,6 +8,7 @@
         <attr name="title_color" format="reference|color" />
         <attr name="subtitle_color" format="reference|color" />
         <attr name="content_color" format="reference|color" />
+        <attr name="body_color" format="reference|color" />
     </declare-styleable>
 
     <!-- StatusBarView -->

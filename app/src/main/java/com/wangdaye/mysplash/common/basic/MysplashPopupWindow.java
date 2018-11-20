@@ -40,7 +40,7 @@ public class MysplashPopupWindow extends PopupWindow {
         setOutsideTouchable(true);
         setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            setElevation(context.getResources().getDimensionPixelSize(R.dimen.low_elevation));
+            setElevation(context.getResources().getDimensionPixelSize(R.dimen.middle_elevation));
         }
     }
 

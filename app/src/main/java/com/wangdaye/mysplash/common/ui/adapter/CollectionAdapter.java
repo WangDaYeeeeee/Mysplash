@@ -72,8 +72,6 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            DisplayUtils.setTypeface(itemView.getContext(), subtitle);
-            DisplayUtils.setTypeface(itemView.getContext(), name);
         }
 
         @SuppressLint("SetTextI18n")
@@ -82,7 +80,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
             if (columnCount > 1) {
-                int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
+                int margin = a.getResources().getDimensionPixelSize(R.dimen.normal_margin);
                 params.setMargins(0, 0, margin, margin);
                 card.setLayoutParams(params);
                 card.setRadius(a.getResources().getDimensionPixelSize(R.dimen.material_card_radius));

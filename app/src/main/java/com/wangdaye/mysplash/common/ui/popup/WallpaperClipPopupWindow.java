@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.ui.activity.SetWallpaperActivity;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.ButterKnife;
 
@@ -53,13 +52,11 @@ public class WallpaperClipPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_wallpaper_clip_rect).setOnClickListener(this);
 
         TextView squareTxt = ButterKnife.findById(v, R.id.popup_wallpaper_clip_squareTxt);
-        DisplayUtils.setTypeface(v.getContext(), squareTxt);
         if (valueNow == SetWallpaperActivity.CLIP_TYPE_SQUARE) {
             squareTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
         }
 
         TextView rectTxt = ButterKnife.findById(v, R.id.popup_wallpaper_clip_rectTxt);
-        DisplayUtils.setTypeface(v.getContext(), rectTxt);
         if (valueNow == SetWallpaperActivity.CLIP_TYPE_RECT) {
             rectTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
         }

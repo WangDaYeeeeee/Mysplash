@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.ui.activity.SetWallpaperActivity;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.ButterKnife;
 
@@ -54,19 +53,16 @@ public class WallpaperAlignPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_wallpaper_align_right).setOnClickListener(this);
 
         TextView leftTxt = ButterKnife.findById(v, R.id.popup_wallpaper_align_leftTxt);
-        DisplayUtils.setTypeface(v.getContext(), leftTxt);
         if (valueNow == SetWallpaperActivity.ALIGN_TYPE_LEFT) {
             leftTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
         }
 
         TextView centerTxt = ButterKnife.findById(v, R.id.popup_wallpaper_align_centerTxt);
-        DisplayUtils.setTypeface(v.getContext(), centerTxt);
         if (valueNow == SetWallpaperActivity.ALIGN_TYPE_CENTER) {
             centerTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
         }
 
         TextView rightTxt = ButterKnife.findById(v, R.id.popup_wallpaper_align_rightTxt);
-        DisplayUtils.setTypeface(v.getContext(), rightTxt);
         if (valueNow == SetWallpaperActivity.ALIGN_TYPE_RIGHT) {
             rightTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
         }

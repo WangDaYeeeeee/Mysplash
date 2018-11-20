@@ -9,11 +9,11 @@
     android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/normal_margin"
     android:foreground="?attr/selectableItemBackground"
-    android:stateListAnimator="@animator/touch_rise_item"
+    android:stateListAnimator="@animator/touch_rise_avatar"
     app:cardBackgroundColor="@color/colorPrimary_dark"
     app:cardCornerRadius="@dimen/material_card_radius"
     app:cardPreventCornerOverlap="false"
-    app:cardElevation="@dimen/low_elevation"
+    app:cardElevation="0dp"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
     <RelativeLayout

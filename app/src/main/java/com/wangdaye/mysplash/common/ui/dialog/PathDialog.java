@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,7 +50,6 @@ public class PathDialog extends MysplashDialogFragment {
 
     private void initWidget(View v) {
         TextView content = ButterKnife.findById(v, R.id.dialog_path_text);
-        DisplayUtils.setTypeface(getActivity(), content);
     }
 
     // interface.

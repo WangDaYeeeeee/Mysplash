@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -259,12 +260,12 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     public void setTitleAvatarVisibility(RecyclerView recyclerView, int lastPosition, int newPosition) {
         RecyclerView.ViewHolder lastHolder = recyclerView.findViewHolderForAdapterPosition(lastPosition);
-        if (lastHolder != null && lastHolder instanceof TitleHolder) {
+        if (lastHolder instanceof TitleHolder) {
             ((TitleHolder) lastHolder).setAvatarVisibility(true);
         }
 
         RecyclerView.ViewHolder newHolder = recyclerView.findViewHolderForAdapterPosition(newPosition);
-        if (newHolder != null && newHolder instanceof TitleHolder) {
+        if (newHolder instanceof TitleHolder) {
             ((TitleHolder) newHolder).setAvatarVisibility(false);
         }
     }
@@ -400,7 +401,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             if (firstVisiblePosition <= position && position <= lastVisiblePosition) {
                 // is a visible item.
                 RecyclerView.ViewHolder holder = recyclerView.findViewHolderForAdapterPosition(position);
-                if (holder != null && holder instanceof PhotoHolder) {
+                if (holder instanceof PhotoHolder) {
                     ((PhotoHolder) holder).update(photo);
                 }
             } else {
@@ -612,7 +613,6 @@ class TitleHolder extends RecyclerView.ViewHolder {
     TitleHolder(View itemView, int columnCount) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-        DisplayUtils.setTypeface(itemView.getContext(), verb);
 
         avatarVisibility = false;
         setAvatarVisibility(true);
@@ -786,8 +786,8 @@ class PhotoHolder extends RecyclerView.ViewHolder
         implements ImageHelper.OnLoadImageListener<Photo>,
         DownloadRepeatDialog.OnCheckOrDownloadListener {
 
-    @BindView(R.id.item_following_photo_background)
-    RelativeLayout background;
+    @BindView(R.id.item_following_photo_card)
+    CardView card;
 
     @BindView(R.id.item_following_photo_image)
     FreedomImageView image;
@@ -812,7 +812,6 @@ class PhotoHolder extends RecyclerView.ViewHolder
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.adapter = adapter;
-        DisplayUtils.setTypeface(itemView.getContext(), title);
         this.listener = adapter;
     }
 
@@ -820,15 +819,17 @@ class PhotoHolder extends RecyclerView.ViewHolder
         this.photo = photo;
         this.position = position;
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
-        int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+        int margin = a.getResources().getDimensionPixelSize(R.dimen.normal_margin);
         if (columnCount > 1) {
+            params.setMarginStart(0);
+            params.setMarginEnd(margin);
             params.setMargins(0, 0, margin, margin);
-            background.setLayoutParams(params);
+            card.setLayoutParams(params);
         } else {
             params.setMargins(
                     a.getResources().getDimensionPixelSize(R.dimen.large_icon_size), 0, margin, margin);
-            background.setLayoutParams(params);
+            card.setLayoutParams(params);
         }
 
         image.setSize(photo.width, photo.height);
@@ -851,12 +852,12 @@ class PhotoHolder extends RecyclerView.ViewHolder
                     R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
         }
 
-        background.setBackgroundColor(
-                ImageHelper.computeCardBackgroundColor(background.getContext(), photo.color));
+        card.setCardBackgroundColor(
+                ImageHelper.computeCardBackgroundColor(card.getContext(), photo.color));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image.setTransitionName(photo.id + "-" + position + "-cover");
-            background.setTransitionName(photo.id + "-" + position + "-background");
+            card.setTransitionName(photo.id + "-" + position + "-background");
         }
     }
 
@@ -890,9 +891,9 @@ class PhotoHolder extends RecyclerView.ViewHolder
         void onClick(View image, View background, int position);
     }
 
-    @OnClick(R.id.item_following_photo_background) void clickItem() {
+    @OnClick(R.id.item_following_photo_card) void clickItem() {
         if (listener != null) {
-            listener.onClick(image, background, position);
+            listener.onClick(image, card, position);
         }
     }
 
@@ -1010,7 +1011,6 @@ class UserHolder extends RecyclerView.ViewHolder
         super(itemView);
         ButterKnife.bind(this, itemView);
         this.adapter = adapter;
-        DisplayUtils.setTypeface(Mysplash.getInstance().getTopActivity(), subtitle);
 
         if (columnCount > 1) {
             StaggeredGridLayoutManager.LayoutParams params
@@ -1086,8 +1086,8 @@ class UserHolder extends RecyclerView.ViewHolder
 class MoreHolder extends RecyclerView.ViewHolder
         implements ImageHelper.OnLoadImageListener<Photo> {
 
-    @BindView(R.id.item_following_more_background)
-    RelativeLayout background;
+    @BindView(R.id.item_following_more_card)
+    CardView card;
 
     @BindView(R.id.item_following_more_image)
     FreedomImageView image;
@@ -1114,15 +1114,17 @@ class MoreHolder extends RecyclerView.ViewHolder
         this.result = result;
         this.photo = photo;
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) background.getLayoutParams();
-        int margin = a.getResources().getDimensionPixelSize(R.dimen.little_margin);
+        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+        int margin = a.getResources().getDimensionPixelSize(R.dimen.normal_margin);
         if (columnCount > 1) {
+            params.setMarginStart(0);
+            params.setMarginEnd(margin);
             params.setMargins(0, 0, margin, margin);
-            background.setLayoutParams(params);
+            card.setLayoutParams(params);
         } else {
             params.setMargins(
                     a.getResources().getDimensionPixelSize(R.dimen.large_icon_size), 0, margin, margin);
-            background.setLayoutParams(params);
+            card.setLayoutParams(params);
         }
 
         image.setSize(photo.width, photo.height);
@@ -1134,7 +1136,7 @@ class MoreHolder extends RecyclerView.ViewHolder
         ImageHelper.loadAvatar(avatar.getContext(), avatar, result.actors.get(0), getAdapterPosition(), null);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(result.actors.get(0).username + "-" + position + "-avatar");
-            background.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
+            card.setTransitionName(result.actors.get(0).username + "-" + position + "-background");
         }
     }
 
@@ -1145,7 +1147,7 @@ class MoreHolder extends RecyclerView.ViewHolder
 
     // interface.
 
-    @OnClick(R.id.item_following_more_background) void clickItem() {
+    @OnClick(R.id.item_following_more_card) void clickItem() {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             switch (result.verb) {
@@ -1154,7 +1156,7 @@ class MoreHolder extends RecyclerView.ViewHolder
                     IntentHelper.startCollectionActivity(
                             a,
                             avatar,
-                            background,
+                            card,
                             result.targets.get(0));
                     break;
 
@@ -1163,7 +1165,7 @@ class MoreHolder extends RecyclerView.ViewHolder
                     IntentHelper.startUserActivity(
                             a,
                             avatar,
-                            background,
+                            card,
                             result.actors.get(0),
                             UserActivity.PAGE_PHOTO);
                     break;
@@ -1172,7 +1174,7 @@ class MoreHolder extends RecyclerView.ViewHolder
                     IntentHelper.startUserActivity(
                             a,
                             avatar,
-                            background,
+                            card,
                             result.actors.get(0),
                             UserActivity.PAGE_LIKE);
                     break;
@@ -1186,7 +1188,7 @@ class MoreHolder extends RecyclerView.ViewHolder
             IntentHelper.startUserActivity(
                     a,
                     avatar,
-                    background,
+                    card,
                     result.actors.get(0),
                     UserActivity.PAGE_LIKE);
         }

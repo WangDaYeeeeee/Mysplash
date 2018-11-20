@@ -7,13 +7,12 @@
 
     <TextView
         android:id="@+id/item_photo_2_story_content"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/normal_margin"
-        android:layout_marginStart="@dimen/mini_icon_size"
-        android:layout_marginEnd="@dimen/mini_icon_size"
+        android:layout_marginStart="@dimen/normal_margin"
+        android:layout_marginEnd="@dimen/normal_margin"
         android:layout_width="wrap_content"
-        android:lineSpacingMultiplier="1.3"
-        style="@style/content_text"
+        android:lineSpacingMultiplier="1.2"
+        style="@style/body_text"
         tools:text="One of the best parts of online communities is the ability to be inspired by others and challenged to try new projects. I saw friends posting photos of frozen bubbles on Instagram. So I decided to try it on activity morning when it was 10 degrees outside. My hands almost froze off, but it was worth it." />
 
     <RelativeLayout

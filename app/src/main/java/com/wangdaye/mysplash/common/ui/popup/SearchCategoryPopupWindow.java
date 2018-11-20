@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.ButterKnife;
@@ -62,44 +61,37 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_search_category_technology).setOnClickListener(this);
 
         TextView allTxt = ButterKnife.findById(v, R.id.popup_search_category_allTxt);
-        DisplayUtils.setTypeface(v.getContext(), allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (valueNow == 0) {
             allTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView buildingsTxt = ButterKnife.findById(v, R.id.popup_search_category_buildingsTxt);
-        DisplayUtils.setTypeface(v.getContext(), buildingsTxt);
         if (valueNow == Mysplash.CATEGORY_BUILDINGS_ID) {
             buildingsTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView foodDrinkTxt = ButterKnife.findById(v, R.id.popup_search_category_food_drinkTxt);
-        DisplayUtils.setTypeface(v.getContext(), foodDrinkTxt);
         if (valueNow == Mysplash.CATEGORY_FOOD_DRINK_ID) {
             foodDrinkTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView naturedTxt = ButterKnife.findById(v, R.id.popup_search_category_natureTxt);
-        DisplayUtils.setTypeface(v.getContext(), naturedTxt);
         if (valueNow == Mysplash.CATEGORY_NATURE_ID) {
             naturedTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView objectTxt = ButterKnife.findById(v, R.id.popup_search_category_objectTxt);
-        DisplayUtils.setTypeface(v.getContext(), objectTxt);
         if (valueNow == Mysplash.CATEGORY_OBJECTS_ID) {
             objectTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView peopleTxt = ButterKnife.findById(v, R.id.popup_search_category_peopleTxt);
-        DisplayUtils.setTypeface(v.getContext(), peopleTxt);
         if (valueNow == Mysplash.CATEGORY_PEOPLE_ID) {
             peopleTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView technologyTxt = ButterKnife.findById(v, R.id.popup_search_category_technologyTxt);
-        DisplayUtils.setTypeface(v.getContext(), technologyTxt);
         if (valueNow == Mysplash.CATEGORY_TECHNOLOGY_ID) {
             technologyTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }

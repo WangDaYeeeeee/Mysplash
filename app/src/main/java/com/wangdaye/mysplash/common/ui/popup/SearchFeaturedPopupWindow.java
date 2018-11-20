@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.ButterKnife;
@@ -54,15 +53,13 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_search_featured_featured).setOnClickListener(this);
 
         TextView allTxt = ButterKnife.findById(v, R.id.popup_search_featured_allTxt);
-        DisplayUtils.setTypeface(v.getContext(), allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (!valueNow) {
             allTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
         TextView featuredTxt = ButterKnife.findById(v, R.id.popup_search_featured_featuredTxt);
-        DisplayUtils.setTypeface(v.getContext(), featuredTxt);
-        featuredTxt.setText(v.getContext().getResources().getStringArray(R.array.home_tabs)[1]);
+        featuredTxt.setText(v.getContext().getResources().getString(R.string.curated));
         if (valueNow) {
             featuredTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }

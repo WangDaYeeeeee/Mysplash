@@ -144,9 +144,6 @@ public class UserProfileView extends FrameLayout
             rippleButton.setVisibility(GONE);
         }
 
-        DisplayUtils.setTypeface(getContext(), locationTxt);
-        DisplayUtils.setTypeface(getContext(), bioTxt);
-
         ImageView locationIcon = ButterKnife.findById(this, R.id.container_user_profile_locationIcon);
         ThemeManager.setImageResource(
                 locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);

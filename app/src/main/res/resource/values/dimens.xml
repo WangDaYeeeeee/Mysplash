@@ -38,7 +38,7 @@
     <dimen name="middle_elevation">4dp</dimen>
     <dimen name="high_elevation">10dp</dimen>
 
-    <!-- card. -->
+    <!-- radius. -->
     <dimen name="material_card_radius">8dp</dimen>
     <dimen name="material_card_radius_large">12dp</dimen>
 

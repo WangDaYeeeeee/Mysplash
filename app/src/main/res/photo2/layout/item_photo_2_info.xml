@@ -23,6 +23,7 @@
         <TextView
             android:text="@string/feedback_views"
             android:textStyle="bold"
+            android:alpha="0.66"
             android:maxLines="1"
             style="@style/subtitle_text" />
 
@@ -30,7 +31,7 @@
             android:id="@+id/item_photo_2_info_views"
             android:layout_width="wrap_content"
             android:maxLines="1"
-            style="@style/content_text"
+            style="@style/title_text"
             tools:text="9,021,102"/>
 
     </LinearLayout>
@@ -51,6 +52,7 @@
         <TextView
             android:text="@string/feedback_downloads"
             android:textStyle="bold"
+            android:alpha="0.66"
             android:maxLines="1"
             style="@style/subtitle_text" />
 
@@ -58,7 +60,7 @@
             android:id="@+id/item_photo_2_info_downloads"
             android:layout_width="wrap_content"
             android:maxLines="1"
-            style="@style/content_text"
+            style="@style/title_text"
             tools:text="75,905"/>
 
     </LinearLayout>
@@ -79,6 +81,7 @@
         <TextView
             android:text="@string/feedback_likes"
             android:textStyle="bold"
+            android:alpha="0.66"
             android:maxLines="1"
             style="@style/subtitle_text" />
 
@@ -86,7 +89,7 @@
             android:id="@+id/item_photo_2_info_likes"
             android:layout_width="wrap_content"
             android:maxLines="1"
-            style="@style/content_text"
+            style="@style/title_text"
             tools:text="2,454"/>
 
     </LinearLayout>

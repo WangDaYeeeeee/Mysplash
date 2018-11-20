@@ -8,7 +8,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
 import com.wangdaye.mysplash.common.ui.widget.NumberAnimTextView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
@@ -42,10 +41,6 @@ public class InfoHolder extends PhotoInfoAdapter2.ViewHolder {
     public InfoHolder(PhotoActivity2 a, View itemView, int marginHorizontal, int columnCount) {
         super(itemView, marginHorizontal, columnCount);
         ButterKnife.bind(this, itemView);
-
-        DisplayUtils.setTypeface(a, views);
-        DisplayUtils.setTypeface(a, downloads);
-        DisplayUtils.setTypeface(a, likes);
 
         views.setDuration(1000);
         downloads.setDuration(1000);

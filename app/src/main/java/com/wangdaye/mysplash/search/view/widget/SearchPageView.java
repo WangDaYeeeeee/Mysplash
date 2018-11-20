@@ -240,7 +240,7 @@ public class SearchPageView extends BothWaySwipeRefreshLayout
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), columnCount));
         } else {
             if (columnCount > 1) {
-                int margin = getResources().getDimensionPixelSize(R.dimen.little_margin);
+                int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
                 recyclerView.setPadding(margin, margin, 0, 0);
             } else {
                 recyclerView.setPadding(0, 0, 0, 0);

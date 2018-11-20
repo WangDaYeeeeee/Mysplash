@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -109,7 +110,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE = "key_multi_filter_fragment_photo_type";
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_multi_filter, container, false);
         ButterKnife.bind(this, view);
         initModel();
@@ -241,8 +242,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         editTexts[0].setOnEditorActionListener(this);
         editTexts[1].setText(multiFilterBarPresenter.getUsername());
         editTexts[1].setOnEditorActionListener(this);
-        DisplayUtils.setTypeface(getActivity(), editTexts[0]);
-        DisplayUtils.setTypeface(getActivity(), editTexts[1]);
 
         editTexts[0].setFocusable(true);
         editTexts[0].requestFocus();
@@ -251,9 +250,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         ThemeManager.setImageResource(
                 searchBtn, R.drawable.ic_toolbar_search_light, R.drawable.ic_toolbar_search_dark);
 
-        for (TextView t : menuTexts) {
-            DisplayUtils.setTypeface(getActivity(), t);
-        }
         responsePopup(String.valueOf(multiFilterBarPresenter.getCategory()), 0);
         responsePopup(String.valueOf(multiFilterBarPresenter.getOrientation()), 1);
         responsePopup(String.valueOf(multiFilterBarPresenter.isFeatured()), 2);

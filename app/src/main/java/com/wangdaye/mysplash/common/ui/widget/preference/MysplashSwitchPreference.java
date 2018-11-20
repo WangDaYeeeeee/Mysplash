@@ -13,7 +13,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
@@ -54,11 +53,10 @@ public class MysplashSwitchPreference extends SwitchPreference {
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setTextColor(ThemeManager.getTitleColor(getContext()));
 
-        TextView summary = (TextView) view.findViewById(android.R.id.summary);
+        TextView summary = view.findViewById(android.R.id.summary);
         summary.setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
                 getContext().getResources().getDimension(R.dimen.subtitle_text_size));
-        DisplayUtils.setTypeface(getContext(), summary);
         summary.setTextColor(ThemeManager.getSubtitleColor(getContext()));
     }
 

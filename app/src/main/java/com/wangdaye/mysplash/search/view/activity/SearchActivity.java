@@ -350,7 +350,6 @@ public class SearchActivity extends LoadableActivity<Photo>
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
 
-        DisplayUtils.setTypeface(this, editText);
         editText.setOnEditorActionListener(this);
         editText.setFocusable(true);
         editText.requestFocus();
@@ -418,7 +417,7 @@ public class SearchActivity extends LoadableActivity<Photo>
                 pager.onRestoreInstanceState(getBundle());
             }
             BaseSavedStateFragment f = SavedStateFragment.getData(this);
-            if (f != null && f instanceof SavedStateFragment) {
+            if (f instanceof SavedStateFragment) {
                 ((SearchPageView) pagers[0]).setPhotos(((SavedStateFragment) f).getSearchPhotoList());
                 ((SearchPageView) pagers[1]).setCollections(((SavedStateFragment) f).getSearchCollectionList());
                 ((SearchPageView) pagers[2]).setUsers(((SavedStateFragment) f).getSearchUserList());
