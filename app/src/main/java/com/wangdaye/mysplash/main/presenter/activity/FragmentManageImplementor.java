@@ -10,7 +10,7 @@ import com.wangdaye.mysplash.common.i.presenter.FragmentManagePresenter;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
+import com.wangdaye.mysplash.main.view.fragment.SelectedFragment;
 import com.wangdaye.mysplash.main.view.fragment.CollectionFragment;
 import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
@@ -169,8 +169,8 @@ public class FragmentManageImplementor
             case R.id.action_multi_filter:
                 return new MultiFilterFragment();
 
-            case R.id.action_category:
-                return new CategoryFragment();
+            case R.id.action_selected:
+                return new SelectedFragment();
 
             default:
                 return new HomeFragment();
@@ -186,8 +186,8 @@ public class FragmentManageImplementor
             return R.id.action_collection;
         } else if (f instanceof MultiFilterFragment) {
             return R.id.action_multi_filter;
-        } else { // CategoryFragment.
-            return R.id.action_category;
+        } else { // SelectedFragment.
+            return R.id.action_selected;
         }
     }
 }

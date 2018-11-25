@@ -153,6 +153,10 @@ public class SearchActivity extends LoadableActivity<Photo>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Mysplash.getInstance().finishSameActivity(getClass());
+        }
+
         setContentView(R.layout.activity_search);
         initModel();
         initPresenter();

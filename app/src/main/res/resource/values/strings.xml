@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.3.9</string>
+    <string name="version_code">3.4.0</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -222,6 +222,7 @@
     <string name="action_following">Following</string>
     <string name="action_collection">Collection</string>
     <string name="action_category">Category</string>
+    <string name="action_selected">Selected</string>
     <string name="action_multi_filter">Multi-Filter</string>
     <string name="action_change_theme">Change Theme</string>
     <string name="action_download_manage">Downloads</string>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wangdaye.mysplash.common.ui.widget.TagCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_tag_mini_card"
@@ -24,11 +24,11 @@
         android:textAllCaps="true"
         android:paddingTop="@dimen/mini_margin"
         android:paddingBottom="@dimen/mini_margin"
-        android:paddingStart="@dimen/mini_margin"
-        android:paddingEnd="@dimen/mini_margin"
+        android:paddingStart="@dimen/little_margin"
+        android:paddingEnd="@dimen/little_margin"
         android:layout_centerInParent="true"
         style="@style/subtitle_text"
         tools:text="Technology"
         tools:ignore="SmallSp" />
 
-</android.support.v7.widget.CardView>
+</com.wangdaye.mysplash.common.ui.widget.TagCardView>

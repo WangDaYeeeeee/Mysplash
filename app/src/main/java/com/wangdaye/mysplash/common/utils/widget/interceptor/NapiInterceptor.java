@@ -44,47 +44,6 @@ public class NapiInterceptor implements Interceptor {
 
     private Response buildResponse(Request request, Response response) throws IOException {
         // return response;
-
-        ResponseBody body = response.body();
-        if (body == null) {
-            return response;
-        }
-
-        BufferedSource source = body.source();
-        source.request(Long.MAX_VALUE); // Buffer the entire body.
-        Buffer buffer = source.buffer();
-
-        if ("gzip".equalsIgnoreCase(response.headers().get("Content-Encoding"))) {
-            GzipSource gzippedResponseBody = null;
-            try {
-                gzippedResponseBody = new GzipSource(buffer.clone());
-                buffer = new Buffer();
-                buffer.writeAll(gzippedResponseBody);
-            } finally {
-                if (gzippedResponseBody != null) {
-                    gzippedResponseBody.close();
-                }
-            }
-        }
-
-        Charset charset = UTF8;
-        MediaType contentType = body.contentType();
-        if (contentType != null) {
-            charset = contentType.charset(UTF8);
-        }
-
-        String bodyString = "";
-        if (charset != null) {
-            bodyString = buffer.clone().readString(charset);
-        }
-
-        return new Response.Builder()
-                .addHeader("Content-Type", "application/json")
-                .code(response.code())
-                .body(ResponseBody.create(body.contentType(), bodyString))
-                .message(response.message())
-                .request(request)
-                .protocol(Protocol.HTTP_2)
-                .build();
+        return response;
     }
 }

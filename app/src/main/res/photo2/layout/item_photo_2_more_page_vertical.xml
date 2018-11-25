@@ -34,6 +34,7 @@
         android:layout_marginStart="@dimen/normal_margin"
         android:layout_marginEnd="@dimen/normal_margin"
         android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
         style="@style/title_text"
         tools:text="LET THE INSPIRATION BEGIN"/>
 

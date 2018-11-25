@@ -166,6 +166,10 @@ public class MeActivity extends LoadableActivity<Photo>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Mysplash.getInstance().finishSameActivity(getClass());
+        }
+
         setContentView(R.layout.activity_me);
         initModel(savedInstanceState);
         initPresenter();
@@ -221,7 +225,7 @@ public class MeActivity extends LoadableActivity<Photo>
         if (ThemeManager.getInstance(this).isLightTheme()) {
             setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Me);
         } else {
-            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Me);
+            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_Me);
         }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);

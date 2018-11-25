@@ -56,7 +56,7 @@
             android:id="@+id/item_photo_2_exif_content"
             android:maxLines="1"
             android:textColor="?attr/content_color"
-            android:textStyle="italic|bold"
+            android:textStyle="bold"
             style="@style/subtitle_text"
             tools:text="Canon EOS 60D"/>
 

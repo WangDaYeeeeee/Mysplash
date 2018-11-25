@@ -9,7 +9,6 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 
 /**
@@ -24,7 +23,7 @@ public class ToolbarImplementor
 
     @Override
     public void touchNavigatorIcon(MysplashActivity a) {
-        DrawerLayout drawer = (DrawerLayout) a.findViewById(R.id.activity_main_drawerLayout);
+        DrawerLayout drawer = a.findViewById(R.id.activity_main_drawerLayout);
         drawer.openDrawer(GravityCompat.START);
     }
 
@@ -48,8 +47,6 @@ public class ToolbarImplementor
                 MysplashFragment f = activity.getTopFragment();
                 if (f instanceof HomeFragment) {
                     ((HomeFragment) f).showPopup();
-                } else if (f instanceof CategoryFragment) {
-                    ((CategoryFragment) f).showPopup();
                 }
                 break;
         }

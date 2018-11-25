@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.presenter.activity.PopupManageImplementor;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
@@ -141,6 +142,10 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Mysplash.getInstance().finishSameActivity(getClass());
+        }
+
         setContentView(R.layout.activity_collection);
         initModel();
         initPresenter();

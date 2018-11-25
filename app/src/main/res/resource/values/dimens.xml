@@ -36,7 +36,7 @@
     <dimen name="tiny_elevation">1dp</dimen>
     <dimen name="low_elevation">2dp</dimen>
     <dimen name="middle_elevation">4dp</dimen>
-    <dimen name="high_elevation">10dp</dimen>
+    <dimen name="high_elevation">8dp</dimen>
 
     <!-- radius. -->
     <dimen name="material_card_radius">8dp</dimen>

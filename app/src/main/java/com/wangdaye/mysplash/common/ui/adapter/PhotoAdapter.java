@@ -24,6 +24,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.service.PhotoService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
+import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.FileUtils;
@@ -36,6 +37,7 @@ import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
+import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +82,9 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         @BindView(R.id.item_photo_image)
         FreedomImageView image;
 
+        @BindView(R.id.item_photo_avatar)
+        CircleImageView avatar;
+
         @BindView(R.id.item_photo_title)
         TextView title;
 
@@ -115,6 +120,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             }
 
             image.setSize(photo.width, photo.height);
+
+            ImageHelper.loadAvatar(avatar.getContext(), avatar, photo.user, getAdapterPosition(), null);
 
             title.setText("");
             image.setShowShadow(false);
@@ -207,6 +214,17 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         getAdapterPosition());
                 dialog.setOnDeleteCollectionListener(PhotoAdapter.this);
                 dialog.show(((CollectionActivity) a).getFragmentManager(), null);
+            }
+        }
+
+        @OnClick(R.id.item_photo_avatar) void checkAuthor() {
+            if (a instanceof MysplashActivity) {
+                IntentHelper.startUserActivity(
+                        (MysplashActivity) a,
+                        avatar,
+                        card,
+                        photo.user,
+                        UserActivity.PAGE_PHOTO);
             }
         }
 

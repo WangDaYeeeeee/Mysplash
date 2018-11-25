@@ -41,6 +41,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Me profile view.
@@ -201,6 +202,16 @@ public class MeProfileView  extends FrameLayout
     }
 
     // interface.
+
+    // on click listener.
+
+    @OnClick(R.id.container_user_profile_locationContainer) void clickLocation() {
+        if (!TextUtils.isEmpty(locationTxt.getText())) {
+            IntentHelper.startSearchActivity(
+                    Mysplash.getInstance().getTopActivity(),
+                    locationTxt.getText().toString());
+        }
+    }
 
     // on switch listener.
 

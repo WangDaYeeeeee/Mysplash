@@ -72,6 +72,7 @@
                         android:layout_marginStart="@dimen/large_icon_size"
                         android:layout_marginEnd="@dimen/large_icon_size"
                         android:textIsSelectable="false"
+                        android:gravity="center"
                         style="@style/title_text"
                         tools:text="The Sample Collection Title" />
 
@@ -92,6 +93,7 @@
                         android:layout_centerInParent="true"
                         android:lineSpacingMultiplier="1.2"
                         android:textIsSelectable="false"
+                        android:gravity="center"
                         style="@style/body_text"
                         tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
@@ -139,7 +141,8 @@
                         android:layout_toEndOf="@id/activity_collection_avatar"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="@dimen/normal_margin"
-                        style="@style/subtitle_text"
+                        android:textStyle="bold"
+                        style="@style/title_text"
                         tools:text="By Daniil Omelchenko"
                         tools:ignore="RtlHardcoded" />
 

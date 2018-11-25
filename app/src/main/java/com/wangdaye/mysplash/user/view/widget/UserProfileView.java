@@ -35,6 +35,7 @@ import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBa
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -48,6 +49,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * User profile view.
@@ -184,6 +186,16 @@ public class UserProfileView extends FrameLayout
     }
 
     // interface.
+
+    // on click listener.
+
+    @OnClick(R.id.container_user_profile_locationContainer) void clickLocation() {
+        if (!TextUtils.isEmpty(locationTxt.getText())) {
+            IntentHelper.startSearchActivity(
+                    Mysplash.getInstance().getTopActivity(),
+                    locationTxt.getText().toString());
+        }
+    }
 
     // on request user listener.
 

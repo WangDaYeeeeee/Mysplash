@@ -19,6 +19,9 @@ import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -66,7 +69,7 @@ public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
             content.setText(photo.story.description);
         } else if (!TextUtils.isEmpty(photo.description)) {
             content.setVisibility(View.VISIBLE);
-            content.setText(photo.description);
+            content.setText(capEveryWord(photo.description));
         } else {
             content.setVisibility(View.GONE);
         }
@@ -96,6 +99,20 @@ public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
         ImageHelper.releaseImageView(avatar);
     }
 
+    private String capEveryWord(String str){
+        StringBuffer capBuffer = new StringBuffer();
+        Matcher capMatcher = Pattern.compile(
+                "([a-z])([a-z]*)",
+                Pattern.CASE_INSENSITIVE).matcher(str);
+        while (capMatcher.find()){
+            capMatcher.appendReplacement(
+                    capBuffer,
+                    capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
+        }
+
+        return capMatcher.appendTail(capBuffer).toString();
+    }
+
     @OnClick(R.id.item_photo_2_story_avatar) void checkAuthor() {
         IntentHelper.startUserActivity(
                 Mysplash.getInstance().getTopActivity(),
@@ -103,5 +120,14 @@ public class StoryHolder extends PhotoInfoAdapter2.ViewHolder {
                 itemView,
                 photo.user,
                 UserActivity.PAGE_PHOTO);
+    }
+
+    @OnClick(R.id.item_photo_2_story_subtitle) void checkSubtitle() {
+        if (photo != null &&
+                photo.location != null
+                && !TextUtils.isEmpty(photo.location.title))
+        IntentHelper.startSearchActivity(
+                Mysplash.getInstance().getTopActivity(),
+                photo.location.title);
     }
 }

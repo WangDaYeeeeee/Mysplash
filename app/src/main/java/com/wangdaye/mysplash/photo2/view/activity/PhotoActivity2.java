@@ -196,6 +196,10 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            Mysplash.getInstance().finishSameActivity(getClass());
+        }
+
         DisplayUtils.setStatusBarStyle(this, true);
         setContentView(R.layout.activity_photo_2);
         initModel(null);

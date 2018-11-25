@@ -31,10 +31,10 @@
         android:checkable="true" />
 
     <item
-        android:id="@+id/action_category"
+        android:id="@+id/action_selected"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_tag_light"
-        android:title="@string/action_category"
+        android:icon="@drawable/ic_feature_light"
+        android:title="@string/action_selected"
         android:checkable="true" />
 
     <item

@@ -9,10 +9,9 @@
     android:layout_marginStart="@dimen/large_icon_size"
     android:layout_marginEnd="@dimen/normal_margin"
     android:layout_marginBottom="@dimen/normal_margin"
-    android:background="@color/colorPrimary_dark"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_avatar"
-    app:cardBackgroundColor="?attr/root_color"
+    app:cardBackgroundColor="@color/colorPrimary_dark"
     app:cardCornerRadius="@dimen/material_card_radius"
     app:cardElevation="0dp"
     tools:ignore="RtlHardcoded,UnusedAttribute">

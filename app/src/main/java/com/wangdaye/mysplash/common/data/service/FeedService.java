@@ -35,7 +35,7 @@ public class FeedService extends TLSCompactService {
     private OkHttpClient buildClient() {
         return getClientBuilder()
                 .addInterceptor(new FeedInterceptor())
-                // .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                //.addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .addInterceptor(new NapiInterceptor())
                 .build();
     }

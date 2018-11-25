@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.ui.widget.rippleButton;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Size;
@@ -173,8 +174,7 @@ public class RippleButton extends CardView
         setOnClickListener(this);
         setPreventCornerOverlap(false);
 
-        setRadius(getResources().getDimensionPixelSize(R.dimen.middle_elevation));
-        setCardElevation(getResources().getDimensionPixelSize(R.dimen.tiny_elevation));
+        setCardElevation(0);
 
         ripple.setRippleAnimatingCallback(this);
 
@@ -241,10 +241,13 @@ public class RippleButton extends CardView
         setMeasuredDimension(
                 MeasureSpec.getSize(widthMeasureSpec),
                 MeasureSpec.getSize(heightMeasureSpec));
+
+        setRadius((float) (MeasureSpec.getSize(heightMeasureSpec) * 0.5));
     }
 
     // touch.
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);

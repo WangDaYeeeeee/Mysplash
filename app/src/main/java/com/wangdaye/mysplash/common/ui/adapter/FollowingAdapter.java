@@ -792,6 +792,9 @@ class PhotoHolder extends RecyclerView.ViewHolder
     @BindView(R.id.item_following_photo_image)
     FreedomImageView image;
 
+    @BindView(R.id.item_following_photo_avatar)
+    CircleImageView avatar;
+
     @BindView(R.id.item_following_photo_title)
     TextView title;
 
@@ -833,6 +836,8 @@ class PhotoHolder extends RecyclerView.ViewHolder
         }
 
         image.setSize(photo.width, photo.height);
+
+        ImageHelper.loadAvatar(avatar.getContext(), avatar, photo.user, getAdapterPosition(), null);
 
         title.setText("");
         image.setShowShadow(false);
@@ -894,6 +899,18 @@ class PhotoHolder extends RecyclerView.ViewHolder
     @OnClick(R.id.item_following_photo_card) void clickItem() {
         if (listener != null) {
             listener.onClick(image, card, position);
+        }
+    }
+
+    @OnClick(R.id.item_following_photo_avatar) void checkAuthor() {
+        MysplashActivity a = Mysplash.getInstance().getTopActivity();
+        if (a != null) {
+            IntentHelper.startUserActivity(
+                    a,
+                    avatar,
+                    card,
+                    photo.user,
+                    UserActivity.PAGE_PHOTO);
         }
     }
 

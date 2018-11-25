@@ -59,7 +59,6 @@ import com.wangdaye.mysplash.main.presenter.activity.FragmentManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MeManageImplementor;
 import com.wangdaye.mysplash.main.presenter.activity.MessageManageImplementor;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.main.view.fragment.CategoryFragment;
 import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
@@ -155,8 +154,6 @@ public class MainActivity extends LoadableActivity<Photo>
 
         private List<Photo> multiFilterList;
 
-        private List<Photo> categoryList;
-
         // data.
 
         public List<Photo> getHomeTrendingList() {
@@ -223,13 +220,6 @@ public class MainActivity extends LoadableActivity<Photo>
             this.multiFilterList = multiFilterList;
         }
 
-        public List<Photo> getCategoryList() {
-            return categoryList;
-        }
-
-        public void setCategoryList(List<Photo> categoryList) {
-            this.categoryList = categoryList;
-        }
     }
 
     @Override
@@ -383,12 +373,6 @@ public class MainActivity extends LoadableActivity<Photo>
                         return ((MultiFilterFragment) fragment).loadMoreData(list, headIndex, headDirection, bundle);
                     }
                     break;
-
-                case R.id.action_category:
-                    if (fragment instanceof CategoryFragment) {
-                        return ((CategoryFragment) fragment).loadMoreData(list, headIndex, headDirection, bundle);
-                    }
-                    break;
             }
         }
         return new ArrayList<>();
@@ -451,7 +435,6 @@ public class MainActivity extends LoadableActivity<Photo>
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
 
-        nav.getMenu().getItem(4).setVisible(false);
         if (AuthManager.getInstance().isAuthorized() && Mysplash.hasNode()) {
             nav.getMenu().getItem(1).setVisible(true);
         } else {
@@ -728,7 +711,7 @@ public class MainActivity extends LoadableActivity<Photo>
         if (id == R.id.action_home
                 || id == R.id.action_following
                 || id == R.id.action_multi_filter
-                || id == R.id.action_category) {
+                || id == R.id.action_selected) {
             nav.setCheckedItem(id);
         }
     }

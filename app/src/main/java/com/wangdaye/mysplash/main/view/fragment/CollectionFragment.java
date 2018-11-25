@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -82,7 +83,7 @@ public class CollectionFragment extends MysplashFragment
     private final String KEY_COLLECTION_FRAGMENT_PAGE_POSITION = "collection_fragment_page_position";
     
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_collection, container, false);
         ButterKnife.bind(this, view);
         initModel(savedInstanceState);

@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/little_margin"
             android:clipToPadding="false"
-            android:layout_marginBottom="@dimen/little_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
             tools:layout_height="24dp"
             tools:ignore="RtlHardcoded,RtlSymmetry" />
 
@@ -36,9 +36,11 @@
             android:id="@+id/container_user_profile_bio"
             android:layout_marginStart="@dimen/mini_icon_size"
             android:layout_marginEnd="@dimen/mini_icon_size"
+            android:layout_marginBottom="@dimen/little_margin"
             android:layout_width="wrap_content"
             android:lineSpacingMultiplier="1.2"
             android:textIsSelectable="false"
+            android:gravity="center_horizontal"
             style="@style/body_text"
             tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
@@ -62,7 +64,7 @@
             <TextView
                 android:id="@+id/container_user_profile_locationTxt"
                 android:textColor="?attr/content_color"
-                android:textStyle="italic|bold"
+                android:textStyle="bold"
                 android:layout_toEndOf="@id/container_user_profile_locationIcon"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/normal_margin"
@@ -78,9 +80,10 @@
             android:id="@+id/container_user_profile_followBtn"
             android:layout_width="128dp"
             android:layout_height="@dimen/little_icon_size"
-            android:layout_margin="@dimen/little_margin"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/little_margin"
             android:foreground="?attr/selectableItemBackground"
-            android:stateListAnimator="@animator/touch_rise_follow_button"
+            android:stateListAnimator="@animator/touch_rise_tag"
             app:rb_title_off="@string/follow"
             app:rb_title_on="@string/following"
             tools:ignore="UnusedAttribute" />

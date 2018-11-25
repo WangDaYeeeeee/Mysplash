@@ -20,10 +20,14 @@ public class MultipleStateRecyclerView extends RecyclerView {
     private LayoutManager[] multipleLayouts;
     private List<OnScrollListener> onScrollListenerList;
 
+    private ObjectAnimator animator;
+
     private int paddingStart;
     private int paddingTop;
     private int paddingEnd;
     private int paddingBottom;
+
+    private boolean layoutFinished;
 
     @StateRule
     private int state;
@@ -64,6 +68,12 @@ public class MultipleStateRecyclerView extends RecyclerView {
 
         state = STATE_LOADING;
         setLayoutManager(multipleLayouts[STATE_LOADING], STATE_LOADING);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        this.layoutFinished = true;
     }
 
     @Override
@@ -132,7 +142,11 @@ public class MultipleStateRecyclerView extends RecyclerView {
 
     public void setState(@StateRule int state) {
         if (getState() != state) {
-            animSwitchState(state);
+            if (layoutFinished) {
+                animSwitchState(state);
+            } else {
+                bindStateData(state);
+            }
         }
     }
 
@@ -142,25 +156,28 @@ public class MultipleStateRecyclerView extends RecyclerView {
     }
 
     private void animSwitchState(@StateRule final int state) {
-        clearAnimation();
+        if (animator != null) {
+            animator.cancel();
+        }
         if (getAlpha() == 0) {
             animShow(state);
         } else {
-            ObjectAnimator hide = ObjectAnimator
+            animator = ObjectAnimator
                     .ofFloat(this, "alpha", getAlpha(), 0)
                     .setDuration(150);
-            hide.addListener(new AnimatorListenerAdapter() {
+            animator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     super.onAnimationEnd(animation);
+                    animator = null;
                     animShow(state);
                 }
             });
-            hide.start();
+            animator.start();
         }
     }
 
-    private void animShow(@StateRule int state) {
+    private void bindStateData(@StateRule int state) {
         this.state = state;
         setAdapter(multipleAdapters[state], state);
         setLayoutManager(multipleLayouts[state], state);
@@ -173,9 +190,23 @@ public class MultipleStateRecyclerView extends RecyclerView {
             super.clearOnScrollListeners();
             super.setPaddingRelative(0, 0, 0, 0);
         }
-        ObjectAnimator
+    }
+
+    private void animShow(@StateRule int state) {
+        bindStateData(state);
+        if (animator != null) {
+            animator.cancel();
+        }
+        animator = ObjectAnimator
                 .ofFloat(this, "alpha", 0, 1F)
-                .setDuration(150)
-                .start();
+                .setDuration(150);
+        animator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                animator = null;
+            }
+        });
+        animator.start();
     }
 }

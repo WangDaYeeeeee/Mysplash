@@ -195,6 +195,7 @@
     <string name="action_collection">收藏集</string>
     <string name="action_multi_filter">多项筛选</string>
     <string name="action_category">标签</string>
+    <string name="action_selected">精选</string>
     <string name="action_change_theme">更换主题</string>
     <string name="action_download_manage">下载管理</string>
     <string name="action_settings">设置</string>

@@ -150,10 +150,11 @@ public class CollectionsImplementor
     }
 
     private void requestAllCollections(Context c, int page, boolean refresh) {
+        page = Math.max(1, refresh ? 1 : page + 1);
         listener = new OnRequestCollectionsListener(c, page, refresh);
         model.getService()
                 .requestAllCollections(
-                        Math.max(1, refresh ? 1 : page + 1),
+                        page,
                         Mysplash.DEFAULT_PER_PAGE,
                         listener);
     }

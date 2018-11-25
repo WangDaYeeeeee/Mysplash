@@ -7,13 +7,16 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
+import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Location holder.
@@ -52,5 +55,15 @@ public class LocationHolder extends PhotoInfoAdapter2.ViewHolder {
     @Override
     protected void onRecycled() {
         // do nothing.
+    }
+
+    // interface.
+
+    @OnClick(R.id.item_photo_2_location_container) void click() {
+        if (!TextUtils.isEmpty(title.getText().toString())) {
+            IntentHelper.startSearchActivity(
+                    Mysplash.getInstance().getTopActivity(),
+                    title.getText().toString());
+        }
     }
 }
