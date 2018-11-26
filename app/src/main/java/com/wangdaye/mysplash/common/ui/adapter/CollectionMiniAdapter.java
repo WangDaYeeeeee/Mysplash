@@ -155,12 +155,15 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
 
         @Override
         public void onLoadImageSucceed(Photo newT, int index) {
-            if (collection.cover_photo.updateLoadInformation(newT)) {
+            if (collection.cover_photo != null
+                    && collection.cover_photo.updateLoadInformation(newT)) {
                 Collection c = AuthManager.getInstance()
                         .getCollectionsManager()
                         .getCollectionList()
                         .get(index);
-                c.cover_photo.updateLoadInformation(newT);
+                if (c.cover_photo != null) {
+                    c.cover_photo.updateLoadInformation(newT);
+                }
                 AuthManager.getInstance()
                         .getCollectionsManager()
                         .updateCollection(c);

@@ -476,6 +476,9 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             }
 
             bindLayoutManager();
+            if (manager == null) {
+                return;
+            }
 
             int firstVisibleItemPosition = manager.findFirstVisibleItemPositions(null)[0];
             if (followingPresenter.getAdapter().isFooterView(firstVisibleItemPosition)) {

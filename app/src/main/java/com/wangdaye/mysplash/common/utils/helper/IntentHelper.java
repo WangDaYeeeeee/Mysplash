@@ -295,10 +295,15 @@ public class IntentHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            c.getString(R.string.check)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    c.getString(R.string.check));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         } catch (Exception e) {
             Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
             File file = new File(
@@ -312,10 +317,15 @@ public class IntentHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            c.getString(R.string.check)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    c.getString(R.string.check));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         }
     }
 
@@ -333,10 +343,15 @@ public class IntentHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            c.getString(R.string.check)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    c.getString(R.string.check));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         } catch (Exception e) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             File file = new File(
@@ -351,10 +366,15 @@ public class IntentHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            c.getString(R.string.check)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    c.getString(R.string.check));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         }
     }
 

@@ -225,9 +225,19 @@ public class DisplayUtils {
             e.printStackTrace();
         }
         if (date != null) {
-            return new SimpleDateFormat(context.getString(R.string.date_format), LanguageUtils.getLocale(context)).format(date);
-        } else {
-            return null;
+            try {
+                return new SimpleDateFormat(
+                        context.getString(R.string.date_format),
+                        LanguageUtils.getLocale(context)).format(date);
+            } catch (Exception ignored) {
+
+            }
         }
+        try {
+            return text.split("T")[0];
+        } catch (Exception ignored) {
+
+        }
+        return text;
     }
 }

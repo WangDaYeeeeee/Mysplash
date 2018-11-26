@@ -69,11 +69,12 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
         @SuppressLint("SetTextI18n")
         void onBindView(int position) {
-            this.user = itemList.get(position);
-
             if (itemList.size() <= position || itemList.get(position) == null) {
                 return;
             }
+
+            this.user = itemList.get(position);
+
             title.setText(user.name);
             if (TextUtils.isEmpty(user.bio)) {
                 subtitle.setText(

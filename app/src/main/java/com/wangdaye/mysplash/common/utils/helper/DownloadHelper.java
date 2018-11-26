@@ -332,11 +332,15 @@ public class DownloadHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            Mysplash.getInstance()
-                                    .getString(R.string.feedback_choose_share_app)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    Mysplash.getInstance()
+                            .getString(R.string.feedback_choose_share_app));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         } catch (Exception e) {
             Uri uri = FileProvider.getUriForFile(
                     c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
@@ -352,11 +356,15 @@ public class DownloadHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            Mysplash.getInstance()
-                                    .getString(R.string.feedback_choose_share_app)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    Mysplash.getInstance()
+                            .getString(R.string.feedback_choose_share_app));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         }
     }
 
@@ -369,11 +377,15 @@ public class DownloadHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            Mysplash.getInstance()
-                                    .getString(R.string.feedback_choose_wallpaper_app)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    Mysplash.getInstance()
+                            .getString(R.string.feedback_choose_wallpaper_app));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         } catch (Exception e) {
             Uri uri = FileProvider.getUriForFile(
                     c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
@@ -384,11 +396,15 @@ public class DownloadHelper {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(
-                    Intent.createChooser(
-                            intent,
-                            Mysplash.getInstance()
-                                    .getString(R.string.feedback_choose_wallpaper_app)));
+
+            Intent chooser = Intent.createChooser(
+                    intent,
+                    Mysplash.getInstance()
+                            .getString(R.string.feedback_choose_wallpaper_app));
+            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            c.startActivity(chooser);
         }
     }
 
