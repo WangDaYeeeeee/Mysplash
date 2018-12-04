@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.model.widget;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.service.FeedService;
+import com.wangdaye.mysplash.common.data.service.network.FeedService;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 

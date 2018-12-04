@@ -62,6 +62,16 @@
         <item>random</item>
     </string-array>
 
+    <!-- downloader -->
+    <string-array name="downloader_types">
+        <item>Mysplash Downloader</item>
+        <item>System Downloader</item>
+    </string-array>
+    <string-array name="downloader_type_values">
+        <item>mysplash</item>
+        <item>system</item>
+    </string-array>
+
     <!-- download type. -->
     <string-array name="download_types">
         <item>Tiny</item>

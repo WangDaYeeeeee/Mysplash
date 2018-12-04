@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(26);
+        List<AboutModel> modelList = new ArrayList<>(29);
         boolean light = ThemeManager.getInstance(c).isLightTheme();
 
         // header.
@@ -140,6 +140,14 @@ public class CreateAboutModelImplementor {
                 c.getString(R.string.number_anim_text_view),
                 c.getString(R.string.about_number_anim_text_view),
                 "https://github.com/Bakumon/NumberAnimTextView"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.number_anim_text_view),
+                c.getString(R.string.about_number_anim_text_view),
+                "https://github.com/Bakumon/NumberAnimTextView"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.file_downloader),
+                c.getString(R.string.about_file_downloader),
+                "https://github.com/lingochamp/FileDownloader"));
 
         return modelList;
     }

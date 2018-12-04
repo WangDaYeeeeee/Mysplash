@@ -70,6 +70,10 @@ public class DatabaseHelper {
         return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase(), result);
     }
 
+    public int readDownloadEntityCount(int result) {
+        return DownloadMissionEntity.readDownloadEntityCount(openHelper.getReadableDatabase(), result);
+    }
+
     @Nullable
     public DownloadMissionEntity readDownloadEntity(long missionId) {
         return DownloadMissionEntity.searchDownloadEntity(openHelper.getReadableDatabase(), missionId);

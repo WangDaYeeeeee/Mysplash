@@ -38,6 +38,19 @@ public class ValueUtils {
         }
     }
 
+    public static String getDownloaderName(Context c, String key) {
+        switch (key) {
+            case "mysplash":
+                return c.getResources().getStringArray(R.array.downloader_types)[0];
+
+            case "system":
+                return c.getResources().getStringArray(R.array.downloader_types)[1];
+
+            default:
+                return null;
+        }
+    }
+
     public static String getScaleName(Context c, String key) {
         switch (key) {
             case "tiny":

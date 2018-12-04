@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.me.model.widget;
 import android.support.annotation.IntDef;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.data.service.network.UserService;
 import com.wangdaye.mysplash.common.i.model.MyFollowModel;
 import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
 

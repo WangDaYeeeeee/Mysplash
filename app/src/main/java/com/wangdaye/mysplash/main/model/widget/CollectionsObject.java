@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.model.widget;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.service.CollectionService;
+import com.wangdaye.mysplash.common.data.service.network.CollectionService;
 import com.wangdaye.mysplash.common.i.model.CollectionsModel;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 

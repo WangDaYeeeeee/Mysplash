@@ -11,8 +11,8 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationFeed;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationStream;
-import com.wangdaye.mysplash.common.data.service.GetStreamService;
-import com.wangdaye.mysplash.common.data.service.NotificationService;
+import com.wangdaye.mysplash.common.data.service.network.GetStreamService;
+import com.wangdaye.mysplash.common.data.service.network.NotificationService;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import java.text.SimpleDateFormat;

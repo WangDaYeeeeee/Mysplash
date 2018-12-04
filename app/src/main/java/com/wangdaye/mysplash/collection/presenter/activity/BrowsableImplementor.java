@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.collection.presenter.activity;
 import android.net.Uri;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.service.CollectionService;
+import com.wangdaye.mysplash.common.data.service.network.CollectionService;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash.common.i.view.BrowsableView;

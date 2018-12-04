@@ -31,7 +31,8 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
@@ -955,7 +956,7 @@ class PhotoHolder extends RecyclerView.ViewHolder
                     dialog.show(activity.getFragmentManager(), null);
                 }
             } else {
-                DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
+                DownloadHelper.getInstance(a).addMission(a, photo, DownloaderService.DOWNLOAD_TYPE);
             }
         }
     }
@@ -994,7 +995,7 @@ class PhotoHolder extends RecyclerView.ViewHolder
     public void onDownload(Object obj) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
-            DownloadHelper.getInstance(a).addMission(a, photo, DownloadHelper.DOWNLOAD_TYPE);
+            DownloadHelper.getInstance(a).addMission(a, photo, DownloaderService.DOWNLOAD_TYPE);
         }
     }
 }

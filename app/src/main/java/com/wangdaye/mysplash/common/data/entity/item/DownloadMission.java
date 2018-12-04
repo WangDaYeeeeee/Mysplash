@@ -28,6 +28,6 @@ public class DownloadMission {
     public DownloadMission(DownloadMissionEntity entity,
                            @ProcessRangeRule float process) {
         this.entity = entity;
-        this.process = process;
+        this.process = Math.max(0, Math.min(process, 100));
     }
 }

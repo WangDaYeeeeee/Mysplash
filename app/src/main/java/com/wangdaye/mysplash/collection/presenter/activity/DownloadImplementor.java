@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
@@ -27,7 +28,7 @@ public class DownloadImplementor
         if (key instanceof Collection) {
             DownloadHelper.getInstance(context).addMission(context, ((Collection) key));
         } else {
-            DownloadHelper.getInstance(context).addMission(context, (Photo) key, DownloadHelper.DOWNLOAD_TYPE);
+            DownloadHelper.getInstance(context).addMission(context, (Photo) key, DownloaderService.DOWNLOAD_TYPE);
         }
     }
 

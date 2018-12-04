@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotoInfoModel2;
 import com.wangdaye.mysplash.common.i.presenter.PhotoInfoPresenter2;
 import com.wangdaye.mysplash.common.i.view.PhotoInfoView;

@@ -263,6 +263,14 @@ public class IntentHelper {
         context.startActivity(intent);
     }
 
+    public static Intent getDownloadManageActivityIntent(Context context) {
+        Intent intent = new Intent(context, DownloadManageActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra(DownloadManageActivity.EXTRA_NOTIFICATION, true);
+        return intent;
+    }
+
     public static void startSettingsActivity(MysplashActivity a) {
         Intent intent = new Intent(a, SettingsActivity.class);
         a.startActivity(intent);

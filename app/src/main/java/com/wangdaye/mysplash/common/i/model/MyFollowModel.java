@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.i.model;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.data.service.network.UserService;
 import com.wangdaye.mysplash.common.ui.adapter.MyFollowAdapter;
 
 /**

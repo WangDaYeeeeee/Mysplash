@@ -43,8 +43,6 @@ public class NapiInterceptor implements Interceptor {
     }
 
     private Response buildResponse(Request request, Response response) throws IOException {
-        // return response;
-
         return response;
     }
 }

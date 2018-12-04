@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,7 +22,7 @@ import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
@@ -306,8 +307,9 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         this.downloadPhotoListener = dl;
     }
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int position) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
         if (isFooter(position)) {
             // footer.
             return FooterHolder.buildInstance(parent);
@@ -319,14 +321,14 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof ViewHolder && position < getRealItemCount()) {
             ((ViewHolder) holder).onBindView(position);
         }
     }
 
     @Override
-    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof ViewHolder) {
             ((ViewHolder) holder).onRecycled();
@@ -453,9 +455,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     }
 
     public List<Photo> getPhotoData() {
-        List<Photo> list = new ArrayList<>();
-        list.addAll(itemList);
-        return list;
+        return new ArrayList<>(itemList);
     }
 
     private void dispatchUpdate(int position) {

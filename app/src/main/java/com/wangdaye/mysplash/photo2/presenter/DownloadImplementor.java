@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.photo2.presenter;
 import android.content.Context;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
@@ -22,17 +23,17 @@ public class DownloadImplementor
 
     @Override
     public void download(Context context) {
-        doDownload(context, DownloadHelper.DOWNLOAD_TYPE);
+        doDownload(context, DownloaderService.DOWNLOAD_TYPE);
     }
 
     @Override
     public void share(Context context) {
-        doDownload(context, DownloadHelper.SHARE_TYPE);
+        doDownload(context, DownloaderService.SHARE_TYPE);
     }
 
     @Override
     public void setWallpaper(Context context) {
-        doDownload(context, DownloadHelper.WALLPAPER_TYPE);
+        doDownload(context, DownloaderService.WALLPAPER_TYPE);
     }
 
     @Override

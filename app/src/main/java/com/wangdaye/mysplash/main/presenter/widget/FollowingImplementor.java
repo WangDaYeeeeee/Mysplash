@@ -5,7 +5,7 @@ import android.text.TextUtils;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
-import com.wangdaye.mysplash.common.data.service.FeedService;
+import com.wangdaye.mysplash.common.data.service.network.FeedService;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.i.presenter.FollowingPresenter;
 import com.wangdaye.mysplash.common.i.view.FollowingView;

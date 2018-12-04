@@ -10,13 +10,13 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenTouchView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
@@ -93,7 +93,7 @@ public class BaseHolder extends PhotoInfoAdapter2.ViewHolder
 
         buttonBar.setState(photo);
         if (DatabaseHelper.getInstance(a).readDownloadingEntityCount(photo.id) > 0) {
-            a.startCheckDownloadProgressThread();
+            a.setOnDownloadListener();
         }
         buttonBar.setOnClickButtonListener(this);
 
@@ -176,11 +176,11 @@ public class BaseHolder extends PhotoInfoAdapter2.ViewHolder
 
     @Override
     public void onDownloadButtonClicked() {
-        activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE, true);
+        activity.readyToDownload(DownloaderService.DOWNLOAD_TYPE, true);
     }
 
     @Override
     public void onDownloadButtonLongClicked() {
-        activity.readyToDownload(DownloadHelper.DOWNLOAD_TYPE);
+        activity.readyToDownload(DownloaderService.DOWNLOAD_TYPE);
     }
 }

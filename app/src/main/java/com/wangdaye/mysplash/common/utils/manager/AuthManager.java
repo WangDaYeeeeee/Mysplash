@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.AccessToken;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.data.service.network.UserService;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import java.util.ArrayList;

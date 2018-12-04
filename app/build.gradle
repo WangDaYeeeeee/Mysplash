@@ -7,8 +7,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 341
-        versionName "3.4.1"
+        versionCode 343
+        versionName "3.4.3"
     }
     sourceSets {
         main {
@@ -119,4 +119,6 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.2.0'
     implementation "com.google.android.apps.muzei:muzei-api:3.1.0-alpha01"
     implementation 'org.jetbrains:annotations-java5:15.0'
+
+    implementation 'com.liulishuo.filedownloader:library:1.7.5'
 }

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.text.TextUtils;
 
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 

@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.photo2.model;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotoInfoModel2;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;

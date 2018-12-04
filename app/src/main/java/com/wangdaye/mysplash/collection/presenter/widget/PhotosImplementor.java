@@ -6,7 +6,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.i.model.PhotosModel;
 import com.wangdaye.mysplash.common.i.presenter.PhotosPresenter;
 import com.wangdaye.mysplash.common.i.view.PhotosView;

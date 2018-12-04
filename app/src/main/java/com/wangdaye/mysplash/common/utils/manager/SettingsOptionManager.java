@@ -32,6 +32,7 @@ public class SettingsOptionManager {
     private boolean notifiedSetBackToTop;
     private String language;
     private String defaultPhotoOrder;
+    private String downloader;
     private String downloadScale;
     private int saturationAnimationDuration;
     private boolean showGridInPort;
@@ -51,6 +52,9 @@ public class SettingsOptionManager {
         this.defaultPhotoOrder = sharedPreferences.getString(
                 context.getString(R.string.key_default_photo_order),
                 "latest");
+        this.downloader = sharedPreferences.getString(
+                context.getString(R.string.key_downloader),
+                "mysplash");
         this.downloadScale = sharedPreferences.getString(
                 context.getString(R.string.key_download_scale),
                 "compact");
@@ -106,6 +110,14 @@ public class SettingsOptionManager {
 
     public void setDefaultPhotoOrder(String defaultPhotoOrder) {
         this.defaultPhotoOrder = defaultPhotoOrder;
+    }
+
+    public String getDownloader() {
+        return downloader;
+    }
+
+    public void setDownloader(String downloader) {
+        this.downloader = downloader;
     }
 
     public String getDownloadScale() {

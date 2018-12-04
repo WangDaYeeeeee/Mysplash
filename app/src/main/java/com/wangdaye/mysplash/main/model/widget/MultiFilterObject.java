@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.model.widget;
 
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.i.model.MultiFilterModel;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 

@@ -49,6 +49,13 @@
         android:layout="@layout/preference_category">
 
         <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
+            android:title="@string/settings_title_downloader"
+            android:key="@string/key_downloader"
+            android:entries="@array/downloader_types"
+            android:entryValues="@array/downloader_type_values"
+            android:defaultValue="mysplash" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
             android:title="@string/settings_title_download_scale"
             android:key="@string/key_download_scale"
             android:entries="@array/download_types"

@@ -27,6 +27,7 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     private Bundle bundle; // saved instance state.
     private boolean started; // flag of onStart() method.
+    private boolean foreground;
 
     private List<MysplashDialogFragment> dialogList = new ArrayList<>();
     private List<MysplashPopupWindow> popupList = new ArrayList<>();
@@ -113,6 +114,18 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
         this.bundle = savedInstanceState;
         this.started = false;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        foreground = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        foreground = false;
     }
 
     @CallSuper
@@ -214,6 +227,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     public boolean isStarted() {
         return started;
+    }
+
+    public boolean isForeground() {
+        return foreground;
     }
 
     public List<MysplashDialogFragment> getDialogList() {

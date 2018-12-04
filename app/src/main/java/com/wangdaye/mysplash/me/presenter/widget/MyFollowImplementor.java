@@ -5,7 +5,7 @@ import android.content.Context;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.data.service.network.UserService;
 import com.wangdaye.mysplash.common.i.model.MyFollowModel;
 import com.wangdaye.mysplash.common.i.presenter.MyFollowPresenter;
 import com.wangdaye.mysplash.common.i.view.MyFollowView;

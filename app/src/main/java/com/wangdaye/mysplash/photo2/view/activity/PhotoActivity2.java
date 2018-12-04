@@ -5,8 +5,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -22,25 +20,22 @@ import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.FlagRunnable;
 import com.wangdaye.mysplash.common.basic.activity.RequestLoadActivity;
-import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.model.PhotoInfoModel2;
 import com.wangdaye.mysplash.common.i.model.PhotoListManageModel;
 import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
-import com.wangdaye.mysplash.common.i.presenter.MessageManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.PhotoInfoPresenter2;
 import com.wangdaye.mysplash.common.i.presenter.PhotoListManagePresenter;
 import com.wangdaye.mysplash.common.i.presenter.PopupManagePresenter;
 import com.wangdaye.mysplash.common.i.view.BrowsableView;
-import com.wangdaye.mysplash.common.i.view.MessageManageView;
 import com.wangdaye.mysplash.common.i.view.PhotoInfoView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
@@ -63,15 +58,12 @@ import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.photo2.model.BorwsableObject;
 import com.wangdaye.mysplash.photo2.model.DownloadObject;
 import com.wangdaye.mysplash.photo2.model.PhotoInfoObject;
 import com.wangdaye.mysplash.photo2.model.PhotoListManageObject;
 import com.wangdaye.mysplash.photo2.presenter.BrowsableImplementor;
 import com.wangdaye.mysplash.photo2.presenter.DownloadImplementor;
-import com.wangdaye.mysplash.photo2.presenter.MessageManageImplementor;
 import com.wangdaye.mysplash.photo2.presenter.PhotoActivityPopupManageImplementor;
 import com.wangdaye.mysplash.photo2.presenter.PhotoInfoImplementor;
 import com.wangdaye.mysplash.photo2.presenter.PhotoListManageImplementor;
@@ -94,11 +86,10 @@ import butterknife.ButterKnife;
  * */
 
 public class PhotoActivity2 extends RequestLoadActivity<Photo>
-        implements PhotoInfoView, PopupManageView, BrowsableView, MessageManageView,
+        implements PhotoInfoView, PopupManageView, BrowsableView,
         View.OnClickListener, Toolbar.OnMenuItemClickListener,
         DownloadRepeatDialog.OnCheckOrDownloadListener, DownloadTypeDialog.OnSelectTypeListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener,
-        SafeHandler.HandlerContainer {
+        SwipeBackCoordinatorLayout.OnSwipeListener, SelectCollectionDialog.OnCollectionsChangedListener {
 
     @BindView(R.id.activity_photo_2_container)
     CoordinatorLayout container;
@@ -134,7 +125,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     StatusBarView statusBar;
 
     private RequestBrowsableDataDialog requestDialog;
-    private SafeHandler<PhotoActivity2> handler;
 
     private PhotoListManageModel photoListManageModel;
     private PhotoListManagePresenter photoListManagePresenter;
@@ -150,10 +140,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     private BrowsableModel browsableModel;
     private BrowsablePresenter browsablePresenter;
 
-    private MessageManagePresenter messageManagePresenter;
-
-    private final Object messageManagePresenterLock = new Object();
-
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_LIST = "photo_activity_2_photo_list";
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_CURRENT_INDEX = "photo_activity_2_photo_current_index";
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX = "photo_activity_2_photo_head_index";
@@ -162,36 +148,32 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     private static final int LANDSCAPE_MAX_WIDTH_DP = 580;
 
-    /**
-     * This runnable is used to poll download progress.
-     * */
-    private FlagRunnable progressRunnable = new FlagRunnable(false) {
+    private OnDownloadListener listener;
+    private class OnDownloadListener extends DownloaderService.OnDownloadListener {
+
+        OnDownloadListener(DownloadMissionEntity entity) {
+            super(entity.missionId, entity.getNotificationTitle(), entity.result);
+        }
+
         @Override
-        public void run() {
-            while (isRunning()) {
-                Photo photo = photoInfoPresenter.getPhoto();
-                if (photo != null) {
-                    DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity2.this)
-                            .readDownloadingEntity(photo.id);
-                    synchronized (messageManagePresenterLock) {
-                        if (entity != null && entity.missionId != -1
-                                && entity.result == DownloadHelper.RESULT_DOWNLOADING) {
-                            DownloadMission mission = DownloadHelper.getInstance(PhotoActivity2.this)
-                                    .getDownloadMission(PhotoActivity2.this, entity.missionId);
-                            if (mission == null || mission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
-                                messageManagePresenter.sendMessage(-1, null);
-                            } else {
-                                messageManagePresenter.sendMessage((int) mission.process, null);
-                            }
-                        } else {
-                            messageManagePresenter.sendMessage(-1, null);
-                        }
-                    }
-                }
-                SystemClock.sleep(200);
+        public void onProcess(float process) {
+            final PhotoButtonBar buttonBar = getPhotoButtonBar();
+            if (buttonBar != null) {
+                buttonBar.setDownloadState(
+                        true,
+                        (int) Math.max(0, Math.min(process, 100)));
             }
         }
-    };
+
+        @Override
+        public void onComplete(int result) {
+            listener = null;
+            PhotoButtonBar buttonBar = getPhotoButtonBar();
+            if (buttonBar != null) {
+                buttonBar.setDownloadState(false, -1);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,7 +204,10 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         ImageHelper.releaseImageView(regularImage);
         browsablePresenter.cancelRequest();
         photoInfoPresenter.cancelRequest();
-        progressRunnable.setRunning(false);
+        if (listener != null) {
+            DownloadHelper.getInstance(this).removeOnDownloadListener(listener);
+            listener = null;
+        }
     }
 
     @Override
@@ -345,14 +330,10 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         this.downloadPresenter = new DownloadImplementor(downloadModel);
         this.popupManagePresenter = new PhotoActivityPopupManageImplementor(this);
         this.browsablePresenter = new BrowsableImplementor(browsableModel, this);
-        synchronized (messageManagePresenterLock) {
-            this.messageManagePresenter = new MessageManageImplementor(this);
-        }
     }
 
     @SuppressLint({"SetTextI18n", "CutPasteId"})
     private void initView(boolean init) {
-        this.handler = new SafeHandler<>(this);
         if (init && /*browsablePresenter.isBrowsable() &&*/ photoInfoPresenter.getPhoto() == null) {
             browsablePresenter.requestBrowsableData();
         } else {
@@ -402,7 +383,8 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             toolbar.setNavigationOnClickListener(this);
             toolbar.setOnMenuItemClickListener(this);
 
-            if (!photoInfoPresenter.getPhoto().complete) {
+            if (photoInfoPresenter.getPhoto() != null
+                    && !photoInfoPresenter.getPhoto().complete) {
                 initRefresh();
             }
         }
@@ -561,15 +543,15 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     public void downloadByType(int type) {
         switch (type) {
-            case DownloadHelper.DOWNLOAD_TYPE:
+            case DownloaderService.DOWNLOAD_TYPE:
                 downloadPresenter.download(this);
                 break;
 
-            case DownloadHelper.SHARE_TYPE:
+            case DownloaderService.SHARE_TYPE:
                 downloadPresenter.share(this);
                 break;
 
-            case DownloadHelper.WALLPAPER_TYPE:
+            case DownloaderService.WALLPAPER_TYPE:
                 downloadPresenter.setWallpaper(this);
                 break;
         }
@@ -577,13 +559,20 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         if (buttonBar != null) {
             buttonBar.setDownloadState(true, -1);
         }
-        startCheckDownloadProgressThread();
+        setOnDownloadListener();
     }
 
-    public void startCheckDownloadProgressThread() {
-        if (!progressRunnable.isRunning()) {
-            progressRunnable.setRunning(true);
-            ThreadManager.getInstance().execute(progressRunnable);
+    public void setOnDownloadListener() {
+        if (listener == null) {
+            Photo photo = photoInfoPresenter.getPhoto();
+            if (photo != null) {
+                DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity2.this)
+                        .readDownloadingEntity(photo.id);
+                if (entity != null) {
+                    listener = new OnDownloadListener(entity);
+                    DownloadHelper.getInstance(this).addOnDownloadListener(listener);
+                }
+            }
         }
     }
 
@@ -880,15 +869,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
         Mysplash.getInstance().dispatchPhotoUpdate(this, photo);
     }
 
-    // handler.
-
-    @Override
-    public void handleMessage(Message message) {
-        synchronized (messageManagePresenterLock) {
-            messageManagePresenter.responseMessage(message.what, message.obj);
-        }
-    }
-
     // view.
 
     // photo info view.
@@ -1003,37 +983,5 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     @Override
     public void visitPreviousPage() {
         IntentHelper.startMainActivity(this);
-    }
-
-    // message manage view.
-
-    @Override
-    public void sendMessage(int what, Object o) {
-        handler.obtainMessage(what, o).sendToTarget();
-    }
-
-    @Override
-    public void responseMessage(int what, Object o) {
-        final PhotoButtonBar buttonBar = getPhotoButtonBar();
-        final int progress = what;
-        if (buttonBar != null) {
-            if (0 <= what && what <= 100) {
-                buttonBar.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        buttonBar.setDownloadState(true, progress);
-                    }
-                });
-
-            } else {
-                progressRunnable.setRunning(false);
-                buttonBar.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        buttonBar.setDownloadState(false, -1);
-                    }
-                });
-            }
-        }
     }
 }

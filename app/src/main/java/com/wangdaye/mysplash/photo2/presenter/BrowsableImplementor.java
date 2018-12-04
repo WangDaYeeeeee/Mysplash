@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.photo2.presenter;
 import android.net.Uri;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.PhotoService;
+import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.i.model.BrowsableModel;
 import com.wangdaye.mysplash.common.i.presenter.BrowsablePresenter;
 import com.wangdaye.mysplash.common.i.view.BrowsableView;

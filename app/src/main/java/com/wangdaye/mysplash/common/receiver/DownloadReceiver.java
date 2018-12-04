@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.wangdaye.mysplash.common.data.service.downloader.AndroidDownloaderService;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
@@ -24,7 +25,7 @@ public class DownloadReceiver extends BroadcastReceiver {
             switch (intent.getAction()) {
                 case DownloadManager.ACTION_DOWNLOAD_COMPLETE:
                     long missionId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                    DownloadHelper.downloadFinish(context, missionId);
+                    new AndroidDownloaderService(context).downloadFinish(context, missionId);
                     break;
 
                 case DownloadManager.ACTION_NOTIFICATION_CLICKED:

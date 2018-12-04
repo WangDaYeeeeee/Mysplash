@@ -16,7 +16,7 @@ import android.widget.RelativeLayout;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.AccessToken;
-import com.wangdaye.mysplash.common.data.service.AuthorizeService;
+import com.wangdaye.mysplash.common.data.service.network.AuthorizeService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;

@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.4.1</string>
+    <string name="version_code">3.4.3</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -90,6 +90,8 @@
     <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
     <string name="number_anim_text_view">NumberAnimTextView</string>
     <string name="about_number_anim_text_view">A TextView with animation when increase number.</string>
+    <string name="file_downloader">FileDownloader</string>
+    <string name="about_file_downloader">Multitask、MultiThread(MultiConnection)、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>
@@ -211,6 +213,8 @@
     <string name="feedback_set_as_source_failed">This source is already exist.</string>
     <string name="feedback_confirm_exit_without_save">Do you want to exit without saving settings?</string>
 
+    <string name="feedback_task_in_process">Cannot switch downloader when downloading.</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">Scroll To Top</string>
     <string name="introduce_description_back_top">Click top bar or back button, the photo list view will scroll back to the top.</string>
@@ -302,6 +306,7 @@
     <string name="settings_title_default_collection_type">Default collection type</string>
 
     <string name="settings_category_download">Download</string>
+    <string name="settings_title_downloader">Downloader</string>
     <string name="settings_title_download_scale">Download scale</string>
 
     <string name="settings_category_display">Display</string>
@@ -315,6 +320,7 @@
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
     <string name="key_default_photo_order">default_photo_order</string>
+    <string name="key_downloader">downloader</string>
     <string name="key_download_scale">download_scale</string>
     <string name="key_saturation_animation_duration">saturation_animation_duration</string>
     <string name="key_grid_list_in_port">grid_list_in_port</string>

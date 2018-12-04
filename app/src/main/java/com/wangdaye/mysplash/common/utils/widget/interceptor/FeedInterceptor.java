@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.utils.widget.interceptor;
 
 import com.wangdaye.mysplash.BuildConfig;
-import com.wangdaye.mysplash.common.data.service.FeedService;
+import com.wangdaye.mysplash.common.data.service.network.FeedService;
 
 import java.io.IOException;
 

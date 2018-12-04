@@ -6,7 +6,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.service.CollectionService;
+import com.wangdaye.mysplash.common.data.service.network.CollectionService;
 import com.wangdaye.mysplash.common.i.model.SelectedModel;
 import com.wangdaye.mysplash.common.i.presenter.SelectedPresenter;
 import com.wangdaye.mysplash.common.i.view.SelectedView;

@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
@@ -23,10 +23,10 @@ import butterknife.OnClick;
  * Download type dialog.
  *
  * This dialog is used to select download type.
- * {@link com.wangdaye.mysplash.common.utils.helper.DownloadHelper#DOWNLOAD_TYPE}
- * {@link com.wangdaye.mysplash.common.utils.helper.DownloadHelper#SHARE_TYPE}
- * {@link com.wangdaye.mysplash.common.utils.helper.DownloadHelper#WALLPAPER_TYPE}
- * {@link com.wangdaye.mysplash.common.utils.helper.DownloadHelper.DownloadTypeRule}
+ * {@link DownloaderService#DOWNLOAD_TYPE}
+ * {@link DownloaderService#SHARE_TYPE}
+ * {@link DownloaderService#WALLPAPER_TYPE}
+ * {@link DownloaderService.DownloadTypeRule}
  *
  * */
 
@@ -99,7 +99,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @OnClick(R.id.dialog_download_type_download)
     void download() {
         if (listener != null) {
-            listener.onSelectType(DownloadHelper.DOWNLOAD_TYPE);
+            listener.onSelectType(DownloaderService.DOWNLOAD_TYPE);
         }
         dismiss();
     }
@@ -107,7 +107,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @OnClick(R.id.dialog_download_type_share)
     void share() {
         if (listener != null) {
-            listener.onSelectType(DownloadHelper.SHARE_TYPE);
+            listener.onSelectType(DownloaderService.SHARE_TYPE);
         }
         dismiss();
     }
@@ -115,7 +115,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @OnClick(R.id.dialog_download_type_wallpaper)
     void wallpaper() {
         if (listener != null) {
-            listener.onSelectType(DownloadHelper.WALLPAPER_TYPE);
+            listener.onSelectType(DownloaderService.WALLPAPER_TYPE);
         }
         dismiss();
     }

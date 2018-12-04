@@ -50,6 +50,12 @@
         <item>随机</item>
     </string-array>
 
+    <!-- 下载器类型 -->
+    <string-array name="downloader_types">
+        <item>Mysplash下载器</item>
+        <item>系统下载器</item>
+    </string-array>
+
     <!-- 下载类型 -->
     <string-array name="download_types">
         <item>极小的</item>

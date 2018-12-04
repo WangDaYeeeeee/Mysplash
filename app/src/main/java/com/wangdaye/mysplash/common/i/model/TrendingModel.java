@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.model;
 
-import com.wangdaye.mysplash.common.data.service.FeedService;
+import com.wangdaye.mysplash.common.data.service.network.FeedService;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 
 /**

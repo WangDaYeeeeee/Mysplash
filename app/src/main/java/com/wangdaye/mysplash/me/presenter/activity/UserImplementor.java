@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.me.presenter.activity;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.UserService;
+import com.wangdaye.mysplash.common.data.service.network.UserService;
 import com.wangdaye.mysplash.common.i.model.UserModel;
 import com.wangdaye.mysplash.common.i.presenter.UserPresenter;
 import com.wangdaye.mysplash.common.i.view.UserView;

@@ -183,6 +183,8 @@
     <string name="feedback_set_as_source_failed">源已经存在</string>
     <string name="feedback_confirm_exit_without_save">你希望直接退出而不保存设置么?</string>
 
+    <string name="feedback_task_in_process">不能在下载时切换下载器</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">回滚至顶部</string>
     <string name="introduce_description_back_top">点击顶栏或返回键，照片列表页面将会自动回滚到顶部</string>
@@ -259,6 +261,7 @@
     <string name="settings_title_default_collection_type">收藏默认类型</string>
 
     <string name="settings_category_download">下载</string>
+    <string name="settings_title_downloader">下载器</string>
     <string name="settings_title_download_scale">下载规格</string>
 
     <string name="settings_category_display">显示</string>

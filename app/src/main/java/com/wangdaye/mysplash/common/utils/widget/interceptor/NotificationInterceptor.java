@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.utils.widget.interceptor;
 
+import com.wangdaye.mysplash.common.data.service.network.NotificationService;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import java.io.IOException;
@@ -12,7 +13,7 @@ import okhttp3.Response;
  * NotificationFeed interceptor.
  *
  * A interceptor for {@link retrofit2.Retrofit}, it is used to get notification data by a HTTP
- * request from {@link com.wangdaye.mysplash.common.data.service.NotificationService}.
+ * request from {@link NotificationService}.
  *
  * */
 

@@ -7,7 +7,7 @@ import android.util.Log;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.TrendingFeed;
-import com.wangdaye.mysplash.common.data.service.FeedService;
+import com.wangdaye.mysplash.common.data.service.network.FeedService;
 import com.wangdaye.mysplash.common.i.model.TrendingModel;
 import com.wangdaye.mysplash.common.i.presenter.TrendingPresenter;
 import com.wangdaye.mysplash.common.i.view.TrendingView;

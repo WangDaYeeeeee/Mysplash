@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.search.model.widget;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.data.service.SearchService;
+import com.wangdaye.mysplash.common.data.service.network.SearchService;
 import com.wangdaye.mysplash.common.i.model.SearchModel;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 

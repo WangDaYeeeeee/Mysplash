@@ -27,6 +27,7 @@ import com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -109,6 +110,13 @@ public class SettingsFragment extends PreferenceFragment
     }
 
     private void initDownloadPart(SharedPreferences sharedPreferences) {
+        // downloader.
+        MysplashListPreference downloader = (MysplashListPreference) findPreference(getString(R.string.key_downloader));
+        String downloaderValue = sharedPreferences.getString(getString(R.string.key_downloader), "mysplash");
+        String downloaderName = ValueUtils.getDownloaderName(getActivity(), downloaderValue);
+        downloader.setSummary(getString(R.string.now) + " : " + downloaderName);
+        downloader.setOnPreferenceChangeListener(this);
+
         // download scale.
         MysplashListPreference downloadScale = (MysplashListPreference) findPreference(getString(R.string.key_download_scale));
         String scaleValue = sharedPreferences.getString(getString(R.string.key_download_scale), "compact");
@@ -187,6 +195,16 @@ public class SettingsFragment extends PreferenceFragment
             String order = ValueUtils.getOrderName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + order);
             showRebootSnackbar();
+        } else if (preference.getKey().equals(getString(R.string.key_downloader))) {
+            // downloader.
+            if (DownloadHelper.getInstance(getActivity()).switchDownloader(getActivity(), (String) o)) {
+                SettingsOptionManager.getInstance(getActivity()).setDownloader((String) o);
+                String downloader = ValueUtils.getDownloaderName(getActivity(), (String) o);
+                preference.setSummary(getString(R.string.now) + " : " + downloader);
+            } else {
+                NotificationHelper.showSnackbar(getString(R.string.feedback_task_in_process));
+                return false;
+            }
         } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {
             // download scale.
             SettingsOptionManager.getInstance(getActivity()).setDownloadScale((String) o);

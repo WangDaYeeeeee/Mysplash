@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.SearchCollectionsResult;
-import com.wangdaye.mysplash.common.data.service.SearchService;
+import com.wangdaye.mysplash.common.data.service.network.SearchService;
 import com.wangdaye.mysplash.common.i.model.SearchModel;
 import com.wangdaye.mysplash.common.i.presenter.SearchPresenter;
 import com.wangdaye.mysplash.common.i.view.SearchView;

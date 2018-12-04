@@ -62,10 +62,7 @@ public class WallpaperSource {
 
     public static void insertWallpaperSource(SQLiteDatabase database,
                                             @NonNull WallpaperSource source) {
-        WallpaperSource s = searchWallpaperSource(database, source.collectionId);
-        if (s != null) {
-            deleteWallpaperSource(database, s.collectionId);
-        }
+        deleteWallpaperSource(database, source.collectionId);
         new DaoMaster(database)
                 .newSession()
                 .getWallpaperSourceDao()
@@ -84,13 +81,10 @@ public class WallpaperSource {
     // delete.
 
     public static void deleteWallpaperSource(SQLiteDatabase database, long collectionId) {
-        WallpaperSource source = searchWallpaperSource(database, collectionId);
-        if (source != null) {
-            new DaoMaster(database)
-                    .newSession()
-                    .getWallpaperSourceDao()
-                    .delete(source);
-        }
+        new DaoMaster(database)
+                .newSession()
+                .getWallpaperSourceDao()
+                .deleteByKey(collectionId);
     }
 
     public static void clearWallpaperSource(SQLiteDatabase database) {

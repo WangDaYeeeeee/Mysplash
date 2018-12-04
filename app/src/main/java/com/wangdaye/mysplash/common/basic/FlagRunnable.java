@@ -9,10 +9,10 @@ package com.wangdaye.mysplash.common.basic;
 
 public abstract class FlagRunnable implements Runnable {
 
-    private boolean running = true;
+    private boolean running;
 
-    public FlagRunnable(boolean running) {
-        this.running = running;
+    public FlagRunnable() {
+        this.running = true;
     }
 
     public void setRunning(boolean b) {

@@ -16,6 +16,7 @@ import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.basic.activity.RequestLoadActivity;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
@@ -112,6 +113,8 @@ public class Mysplash extends Application {
 
         instance = this;
         activityList = new ArrayList<>();
+
+        DownloadHelper.getInstance(this);
     }
 
     public static String getAppId(Context c, boolean auth) {

@@ -2,8 +2,6 @@ package com.wangdaye.mysplash.common.ui.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
-import android.os.SystemClock;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +13,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
+import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -24,9 +23,6 @@ import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.common.basic.FlagRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,8 +39,7 @@ import butterknife.ButterKnife;
 
 public class DownloadManageActivity extends ReadWriteActivity
         implements View.OnClickListener, Toolbar.OnMenuItemClickListener,
-        DownloadAdapter.OnRetryListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        SafeHandler.HandlerContainer {
+        DownloadAdapter.OnRetryListener, SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R.id.activity_download_manage_container)
     CoordinatorLayout container;
@@ -58,11 +53,11 @@ public class DownloadManageActivity extends ReadWriteActivity
     @BindView(R.id.activity_download_manage_recyclerView)
     RecyclerView recyclerView;
 
-    private SafeHandler<DownloadManageActivity> handler;
-
     private DownloadAdapter adapter;
     // if we need to restart a mission, we need save it by this object and request permission.
     private DownloadMissionEntity readyToDownloadEntity;
+
+    private List<OnDownloadListener> listenerList;
 
     public static final String ACTION_DOWNLOAD_MANAGER = "com.wangdaye.mysplash.DownloadManager";
 
@@ -70,35 +65,83 @@ public class DownloadManageActivity extends ReadWriteActivity
     // If is true, that means this activity was opened by click downloading notification.
     public static final String EXTRA_NOTIFICATION = "notification";
 
-    private final int CHECK_AND_UPDATE = 1;
+    private class OnDownloadListener extends DownloaderService.OnDownloadListener {
 
-    /**
-     * This Runnable class is used to poll download progress.
-     * */
-    private FlagRunnable checkRunnable = new FlagRunnable(true) {
+        OnDownloadListener(DownloadMission mission) {
+            super(mission.entity.missionId, mission.entity.getNotificationTitle(), mission.entity.result);
+        }
+
         @Override
-        public void run() {
-            while (isRunning()) {
-                for (int i = 0; isRunning() && i < adapter.itemList.size(); i ++) {
-                    if (adapter.itemList.get(i).entity.result == DownloadHelper.RESULT_DOWNLOADING) {
-                        DownloadMission mission = DownloadHelper.getInstance(DownloadManageActivity.this)
-                                .getDownloadMission(
-                                        DownloadManageActivity.this,
-                                        adapter.itemList.get(i).entity.missionId);
-                        if (mission != null
-                                && (mission.entity.result == DownloadHelper.RESULT_DOWNLOADING
-                                || mission.entity.result != adapter.itemList.get(i).entity.result)) {
-                            // only if the state of mission has changed or the progress changed,
-                            // then we should send a message to update the item view.
-                            handler.obtainMessage(CHECK_AND_UPDATE, mission).sendToTarget();
-                        }
-                        SystemClock.sleep(50);
-                    }
-                }
-                SystemClock.sleep(50);
+        public void onProcess(float process) {
+            int index = locateMission();
+            if (index == -1) {
+                // cannot find the mission's position.
+                return;
+            }
+            DownloadMission mission = adapter.itemList.get(index);
+            float oldProcess = mission.process;
+            mission.process = process;
+            if (mission.entity.result != DownloaderService.RESULT_DOWNLOADING) {
+                DownloadHelper.getInstance(DownloadManageActivity.this)
+                        .updateMissionResult(
+                                DownloadManageActivity.this,
+                                mission.entity,
+                                DownloaderService.RESULT_DOWNLOADING);
+                drawRecyclerItemProcess(index, mission, true);
+            } else if (mission.process != oldProcess) {
+                drawRecyclerItemProcess(index, mission, false);
             }
         }
-    };
+
+        @Override
+        public void onComplete(int result) {
+            listenerList.remove(this);
+
+            int index = locateMission();
+            if (index == -1) {
+                // cannot find the mission's position.
+                return;
+            }
+            DownloadMission mission = adapter.itemList.get(index);
+            int oldResult = mission.entity.result;
+            mission.entity.result = result;
+            switch (result) {
+                case DownloaderService.RESULT_SUCCEED:
+                    if (oldResult != DownloaderService.RESULT_SUCCEED) {
+                        DownloadHelper.getInstance(DownloadManageActivity.this)
+                                .updateMissionResult(
+                                        DownloadManageActivity.this,
+                                        mission.entity,
+                                        DownloaderService.RESULT_SUCCEED);
+                        drawRecyclerItemSucceed(index, mission);
+                    }
+                    break;
+
+                case DownloaderService.RESULT_FAILED:
+                    if (oldResult != DownloaderService.RESULT_FAILED) {
+                        DownloadHelper.getInstance(DownloadManageActivity.this)
+                                .updateMissionResult(
+                                        DownloadManageActivity.this,
+                                        mission.entity,
+                                        DownloaderService.RESULT_FAILED);
+                        drawRecyclerItemFailed(index, mission);
+                    }
+                    break;
+
+                case DownloaderService.RESULT_DOWNLOADING:
+                    break;
+            }
+        }
+
+        private int locateMission() {
+            for (int i = 0; i < adapter.getItemCount(); i ++) {
+                if (adapter.itemList.get(i).entity.missionId == missionId) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,16 +158,26 @@ public class DownloadManageActivity extends ReadWriteActivity
             initData();
             initWidget();
 
-            checkRunnable.setRunning(true);
-            ThreadManager.getInstance().execute(checkRunnable);
+            listenerList = new ArrayList<>();
+            for (int i = 0; i < adapter.getItemCount(); i ++) {
+                if (adapter.itemList.get(i).entity.result == DownloaderService.RESULT_DOWNLOADING) {
+                    OnDownloadListener listener = new OnDownloadListener(adapter.itemList.get(i));
+                    listenerList.add(listener);
+                    DownloadHelper.getInstance(this).addOnDownloadListener(listener);
+                }
+            }
         }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        checkRunnable.setRunning(false);
-        handler.removeCallbacksAndMessages(null);
+        if (listenerList != null) {
+            for (int i = listenerList.size() - 1; i >= 0; i --) {
+                DownloadHelper.getInstance(this).removeOnDownloadListener(listenerList.get(i));
+                listenerList.remove(i);
+            }
+        }
     }
 
     @Override
@@ -168,8 +221,6 @@ public class DownloadManageActivity extends ReadWriteActivity
     }
 
     private void initWidget() {
-        this.handler = new SafeHandler<>(this);
-
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_download_manage_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
@@ -209,14 +260,16 @@ public class DownloadManageActivity extends ReadWriteActivity
         adapter.itemList.set(position, mission);
 
         GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-        int firstPosition = layoutManager.findFirstVisibleItemPosition();
-        int lastPosition = layoutManager.findLastVisibleItemPosition();
-        if (firstPosition <= position && position <= lastPosition) {
-            // we doesn't need to refresh a item view that is not displayed.
-            DownloadAdapter.ViewHolder holder
-                    = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-            if (holder != null) {
-                holder.drawProcessStatus(mission, switchState);
+        if (layoutManager != null) {
+            int firstPosition = layoutManager.findFirstVisibleItemPosition();
+            int lastPosition = layoutManager.findLastVisibleItemPosition();
+            if (firstPosition <= position && position <= lastPosition) {
+                // we doesn't need to refresh a item view that is not displayed.
+                DownloadAdapter.ViewHolder holder
+                        = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
+                if (holder != null) {
+                    holder.drawProcessStatus(mission, switchState);
+                }
             }
         }
     }
@@ -232,7 +285,7 @@ public class DownloadManageActivity extends ReadWriteActivity
         adapter.notifyItemRemoved(position);
 
         for (int i = adapter.itemList.size() - 1; i >= 0; i --) {
-            if (adapter.itemList.get(i).entity.result != DownloadHelper.RESULT_SUCCEED) {
+            if (adapter.itemList.get(i).entity.result != DownloaderService.RESULT_SUCCEED) {
                 adapter.itemList.add(i + 1, mission);
                 adapter.notifyItemInserted(i + 1);
                 return;
@@ -267,6 +320,13 @@ public class DownloadManageActivity extends ReadWriteActivity
         readyToDownloadEntity = null;
 
         DownloadMission mission = DownloadHelper.getInstance(this).restartMission(this, oldId);
+        if (mission == null) {
+            return;
+        }
+
+        OnDownloadListener listener = new OnDownloadListener(mission);
+        listenerList.add(listener);
+        DownloadHelper.getInstance(this).addOnDownloadListener(listener);
 
         // remove the old item.
         for (int i = 0; i < adapter.itemList.size(); i ++) {
@@ -280,7 +340,7 @@ public class DownloadManageActivity extends ReadWriteActivity
         if (adapter.itemList.size() > 0) {
             // if the list's size > 0, we need find the last failed mission item and add the new item after it.
             for (int i = 0; i < adapter.itemList.size(); i ++) {
-                if (adapter.itemList.get(i).entity.result != DownloadHelper.RESULT_FAILED) {
+                if (adapter.itemList.get(i).entity.result != DownloaderService.RESULT_FAILED) {
                     adapter.itemList.add(i, mission);
                     adapter.notifyItemInserted(i);
                     return;
@@ -368,67 +428,5 @@ public class DownloadManageActivity extends ReadWriteActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishSelf(false);
-    }
-
-    // handler.
-
-    @Override
-    public void handleMessage(Message message) {
-        switch (message.what) {
-            case CHECK_AND_UPDATE:
-                if (message.obj != null && message.obj instanceof DownloadMission) {
-                    DownloadMission newMission = (DownloadMission) message.obj;
-                    // try to find the mission's position.
-                    int index = -1;
-                    for (int i = 0; i < adapter.getItemCount(); i ++) {
-                        if (adapter.itemList.get(i).entity.missionId == newMission.entity.missionId) {
-                            index = i;
-                            break;
-                        }
-                    }
-                    if (index == -1) {
-                        // cannot find the mission's position.
-                        return;
-                    }
-                    DownloadMission oldMission = adapter.itemList.get(index);
-                    switch (newMission.entity.result) {
-                        case DownloadHelper.RESULT_DOWNLOADING:
-                            if (oldMission.entity.result != DownloadHelper.RESULT_DOWNLOADING) {
-                                DownloadHelper.getInstance(this)
-                                        .updateMissionResult(
-                                                this,
-                                                newMission.entity.missionId,
-                                                DownloadHelper.RESULT_DOWNLOADING);
-                                drawRecyclerItemProcess(index, newMission, true);
-                            } else if (oldMission.process != newMission.process) {
-                                drawRecyclerItemProcess(index, newMission, false);
-                            }
-                            break;
-
-                        case DownloadHelper.RESULT_SUCCEED:
-                            if (oldMission.entity.result != DownloadHelper.RESULT_SUCCEED) {
-                                DownloadHelper.getInstance(this)
-                                        .updateMissionResult(
-                                                this,
-                                                newMission.entity.missionId,
-                                                DownloadHelper.RESULT_SUCCEED);
-                                drawRecyclerItemSucceed(index, newMission);
-                            }
-                            break;
-
-                        case DownloadHelper.RESULT_FAILED:
-                            if (oldMission.entity.result != DownloadHelper.RESULT_FAILED) {
-                                DownloadHelper.getInstance(this)
-                                        .updateMissionResult(
-                                                this,
-                                                newMission.entity.missionId,
-                                                DownloadHelper.RESULT_FAILED);
-                                drawRecyclerItemFailed(index, newMission);
-                            }
-                            break;
-                    }
-                }
-                break;
-        }
     }
 }
