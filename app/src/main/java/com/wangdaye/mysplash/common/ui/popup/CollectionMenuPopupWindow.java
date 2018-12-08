@@ -5,14 +5,12 @@ import android.content.Context;
 import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
  * Collection menu popup window.
@@ -64,16 +62,6 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
         if (!MuzeiOptionManager.isInstalledMuzei(c)) {
             v.findViewById(R.id.popup_collection_menu_setAsSource).setVisibility(View.GONE);
         }
-
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_collection_menu_editIcon),
-                R.drawable.ic_pencil_light, R.drawable.ic_pencil_dark);
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_collection_menu_downloadIcon),
-                R.drawable.ic_download_light, R.drawable.ic_download_dark);
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_collection_menu_setAsSourceIcon),
-                R.drawable.ic_plus_light, R.drawable.ic_plus_dark);
     }
 
     public static boolean isUsable(Context c, Collection collection) {

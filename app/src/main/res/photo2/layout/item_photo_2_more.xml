@@ -28,7 +28,7 @@
         android:layout_centerHorizontal="true"
         app:animationDuration="300"
         app:pageIndicatorColor="@color/colorTextGrey"
-        app:currentPageIndicatorColor="@color/colorRoot_light"
+        app:currentPageIndicatorColor="@android:color/white"
         app:dotDiameter="@dimen/little_margin"
         app:dotGap="@dimen/little_margin" />
 

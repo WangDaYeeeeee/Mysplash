@@ -4,8 +4,7 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
-        <item>TRENDING</item>
-        <item>НОВЫЕ</item>
+        <item>EDITORIAL</item>
         <item>FEATURED</item>
     </string-array>
 

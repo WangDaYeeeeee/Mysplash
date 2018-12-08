@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/black"
-        android:alpha="0" />
+        android:alpha="0"/>
 
     <com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout
         android:id="@+id/activity_me_swipeBackView"
@@ -38,7 +38,7 @@
                     android:id="@+id/activity_me_fakeStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true" />
+                    app:sbv_fill_in_mode="true"/>
 
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/activity_me_toolbar"
@@ -46,7 +46,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_below="@id/activity_me_fakeStatusBar"
                     android:background="@android:color/transparent"
-                    app:popupTheme="@style/MysplashPopupMenuTheme" />
+                    app:popupTheme="@style/MysplashPopupMenuTheme"/>
 
                 <com.wangdaye.mysplash.common.ui.widget.CircleImageView
                     android:id="@+id/activity_me_avatar"
@@ -54,33 +54,33 @@
                     android:layout_height="@dimen/design_icon_size"
                     android:layout_below="@id/activity_me_toolbar"
                     android:layout_centerHorizontal="true"
-                    android:scaleType="centerCrop"
-                    android:src="?attr/line_color"
-                    android:transitionName="@string/transition_me_avatar"
                     android:foreground="?attr/selectableItemBackground"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/transition_me_avatar"
                     android:stateListAnimator="@animator/touch_rise_avatar"
-                    tools:ignore="ContentDescription,RtlHardcoded" />
+                    tools:ignore="ContentDescription,RtlHardcoded"
+                    android:src="?attr/line_color"/>
 
                 <TextView
+                    style="@style/title_text"
                     android:id="@+id/activity_me_title"
-                    android:text="..."
-                    android:textStyle="bold"
-                    android:textSize="@dimen/large_title_text_size"
-                    android:textColor="?attr/title_color"
-                    android:maxLines="1"
                     android:layout_below="@id/activity_me_avatar"
-                    android:layout_marginTop="@dimen/normal_margin"
+                    android:layout_centerHorizontal="true"
                     android:layout_marginStart="@dimen/normal_margin"
                     android:layout_marginEnd="@dimen/normal_margin"
-                    android:layout_centerHorizontal="true"
-                    style="@style/title_text"
-                    tools:ignore="HardcodedText,RtlHardcoded" />
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/large_title_text_size"
+                    android:maxLines="1"
+                    tools:ignore="HardcodedText,RtlHardcoded"
+                    android:textColor="?attr/title_color"
+                    android:text="..."/>
 
                 <com.wangdaye.mysplash.me.view.widget.MeProfileView
                     android:id="@+id/activity_me_profileView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/activity_me_title" />
+                    android:layout_below="@id/activity_me_title"/>
 
             </RelativeLayout>
 
@@ -93,13 +93,13 @@
                 <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true" />
+                    app:sbv_fill_in_mode="true"/>
 
                 <android.support.design.widget.TabLayout
+                    style="@style/MysplashTabLayoutTheme"
                     android:id="@+id/activity_me_tabLayout"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/tab_layout_height"
-                    style="@style/MysplashTabLayoutTheme" />
+                    android:layout_height="@dimen/tab_layout_height"/>
 
             </LinearLayout>
 
@@ -109,7 +109,7 @@
             android:id="@+id/activity_me_viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
         <com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator
             android:id="@+id/activity_me_indicator"
@@ -121,7 +121,7 @@
             app:pageIndicatorColor="?attr/subtitle_color"
             app:currentPageIndicatorColor="?attr/title_color"
             app:dotDiameter="@dimen/little_margin"
-            app:dotGap="@dimen/little_margin" />
+            app:dotGap="@dimen/little_margin"/>
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
@@ -129,6 +129,6 @@
         android:id="@+id/activity_me_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:sbv_translucent_mode="true" />
+        app:sbv_translucent_mode="true"/>
 
 </android.support.design.widget.CoordinatorLayout>

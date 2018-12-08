@@ -296,6 +296,9 @@
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
     <string name="settings_title_back_to_top">Press back button to scroll to top</string>
+    <string name="settings_title_auto_night_mode">Auto Night mode</string>
+    <string name="settings_title_night_start_time">Night mode start time</string>
+    <string name="settings_title_night_end_time">Night mode end time</string>
     <string name="settings_title_load_image_size">Select the resolution of images to load</string>
     <string name="settings_title_custom_api_key">Custom API key</string>
     <string name="settings_summary_custom_api_key">Set your own API key and Secret.</string>
@@ -316,6 +319,9 @@
 
     <!-- share preferences. -->
     <string name="key_back_to_top">back_to_top</string>
+    <string name="key_auto_night_mode">auto_night_mode</string>
+    <string name="key_night_start_time">night_start_time</string>
+    <string name="key_night_end_time">night_end_time</string>
     <string name="key_load_image_size">load_image_size</string>
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>

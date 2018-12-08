@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_search_featured_allIcon"
-            android:src="@drawable/ic_infinity_light"
+            android:src="@drawable/ic_infinity"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_search_featured_featuredIcon"
             android:src="@drawable/ic_feature_light"
             style="@style/material_icon"

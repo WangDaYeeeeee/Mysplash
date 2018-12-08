@@ -3,8 +3,7 @@
 
     <!-- 主页标签 -->
     <string-array name="home_tabs">
-        <item>推荐</item>
-        <item>新作</item>
+        <item>社论</item>
         <item>精选</item>
     </string-array>
 
@@ -68,6 +67,13 @@
         <item>应用于所有的照片列表界面</item>
         <item>只应用于主页列表</item>
         <item>关闭</item>
+    </string-array>
+
+    <!-- 自动夜间模式 -->
+    <string-array name="auto_night_mode_types">
+        <item>关闭</item>
+        <item>自动</item>
+        <item>跟随系统</item>
     </string-array>
 
     <!-- 饱和度动画时长 -->

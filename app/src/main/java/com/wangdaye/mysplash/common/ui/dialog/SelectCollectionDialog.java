@@ -10,6 +10,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -19,8 +20,6 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -182,7 +181,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private void initWidget(View v) {
         setCancelable(true);
 
-        ImageView cover = ButterKnife.findById(v, R.id.dialog_select_collection_cover);
+        AppCompatImageView cover = ButterKnife.findById(v, R.id.dialog_select_collection_cover);
         if (DisplayUtils.isTabletDevice(getActivity())) {
             ImageHelper.loadRegularPhoto(getActivity(), cover, photo, 0, null);
         } else {
@@ -191,9 +190,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         progressContainer.setVisibility(View.GONE);
         selectorContainer.setVisibility(View.VISIBLE);
-
-        ImageButton refreshBtn = ButterKnife.findById(v, R.id.dialog_select_collection_selectorRefreshBtn);
-        ThemeManager.setImageResource(refreshBtn, R.drawable.ic_refresh_light, R.drawable.ic_refresh_dark);
 
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getActivity()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getActivity()));

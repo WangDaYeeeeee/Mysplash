@@ -217,11 +217,6 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
         }
@@ -349,8 +344,7 @@ public class SearchActivity extends LoadableActivity<Photo>
         Toolbar toolbar = ButterKnife.findById(this, R.id.activity_search_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
-        ThemeManager.inflateMenu(
-                toolbar, R.menu.activity_search_toolbar_light, R.menu.activity_search_toolbar_dark);
+        toolbar.inflateMenu(R.menu.activity_search_toolbar);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
 

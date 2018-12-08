@@ -298,7 +298,7 @@ public class FileDownloaderService extends DownloaderService {
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setContentText(context.getString(R.string.feedback_downloading))
                 .setSubText(((int) (float) 0) + "%")
-                .setColor(ContextCompat.getColor(context, R.color.colorPrimary_dark))
+                .setColor(ContextCompat.getColor(context, R.color.colorNotification))
                 .setSound(null)
                 .setShowWhen(false)
                 .setProgress(0, 0, true)

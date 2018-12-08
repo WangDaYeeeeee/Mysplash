@@ -5,14 +5,15 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,7 +60,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         CircleImageView avatar;
 
         @BindView(R.id.item_notification_verbIcon)
-        ImageView verbIcon;
+        AppCompatImageView verbIcon;
 
         @BindView(R.id.item_notification_imageContainer)
         RelativeLayout imageContainer;
@@ -346,8 +347,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         this.a = a;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_notification, parent, false);
         return new ViewHolder(v);
@@ -359,7 +361,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(@NonNull ViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onRecycled();
     }

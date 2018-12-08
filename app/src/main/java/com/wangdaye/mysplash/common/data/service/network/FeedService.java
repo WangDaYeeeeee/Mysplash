@@ -2,15 +2,16 @@ package com.wangdaye.mysplash.common.data.service.network;
 
 import android.net.Uri;
 
-
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.FeedApi;
-import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.TrendingFeed;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.FeedInterceptor;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.NapiInterceptor;
+
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -51,7 +52,29 @@ public class FeedService extends TLSCompactService {
                 .create((FeedApi.class));
     }
 
-    public void requestTrendingFeed(String url, final OnRequestTrendingFeedListener l) {
+    public void requestFollowingFeed(@Mysplash.PageRule int page,
+                                     @Mysplash.PerPageRule int per_page,
+                                     final OnRequestFeedPhotoListener l) {
+        Call<List<Photo>> getPhotos = buildApi(buildClient()).getFollowingFeed(page, per_page);
+        getPhotos.enqueue(new Callback<List<Photo>>() {
+            @Override
+            public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
+                if (l != null) {
+                    l.onRequestFeedPhotoSuccess(call, response);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Photo>> call, Throwable t) {
+                if (l != null) {
+                    l.onRequestFeedPhotoFailed(call, t);
+                }
+            }
+        });
+        call = getPhotos;
+    }
+
+    public void requestTrendFeed(String url, final OnRequestTrendingFeedListener l) {
         String after = Uri.parse(url).getQueryParameter("after");
         Call<TrendingFeed> getFeed = buildApi(buildClient()).getTrendingFeed(after, "1");
         getFeed.enqueue(new Callback<TrendingFeed>() {
@@ -66,27 +89,6 @@ public class FeedService extends TLSCompactService {
             public void onFailure(Call<TrendingFeed> call, Throwable t) {
                 if (l != null) {
                     l.onRequestTrendingFeedFailed(call, t);
-                }
-            }
-        });
-        call = getFeed;
-    }
-
-    public void requestFollowingFeed(String url, final OnRequestFollowingFeedListener l) {
-        String after = Uri.parse(url).getQueryParameter("after");
-        Call<FollowingFeed> getFeed = buildApi(buildClient()).getFollowingFeed(after, "1");
-        getFeed.enqueue(new Callback<FollowingFeed>() {
-            @Override
-            public void onResponse(Call<FollowingFeed> call, retrofit2.Response<FollowingFeed> response) {
-                if (l != null) {
-                    l.onRequestFollowingFeedSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<FollowingFeed> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestFollowingFeedFailed(call, t);
                 }
             }
         });
@@ -134,14 +136,14 @@ public class FeedService extends TLSCompactService {
 
     // interface.
 
+    public interface OnRequestFeedPhotoListener {
+        void onRequestFeedPhotoSuccess(Call<List<Photo>> call, Response<List<Photo>> response);
+        void onRequestFeedPhotoFailed(Call<List<Photo>> call, Throwable t);
+    }
+
     public interface OnRequestTrendingFeedListener {
         void onRequestTrendingFeedSuccess(Call<TrendingFeed> call, Response<TrendingFeed> response);
         void onRequestTrendingFeedFailed(Call<TrendingFeed> call, Throwable t);
-    }
-
-    public interface OnRequestFollowingFeedListener {
-        void onRequestFollowingFeedSuccess(Call<FollowingFeed> call, Response<FollowingFeed> response);
-        void onRequestFollowingFeedFailed(Call<FollowingFeed> call, Throwable t);
     }
 
     public interface OnFollowListener {

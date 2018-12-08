@@ -10,13 +10,13 @@
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
-    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
     app:cardCornerRadius="@dimen/material_card_radius"
     app:cardPreventCornerOverlap="false"
     app:cardElevation="@dimen/low_elevation"
     tools:ignore="UnusedAttribute">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/item_collection_mini_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -64,7 +64,7 @@
                     style="@style/subtitle_text"
                     tools:text="3 photos" />
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/item_collection_mini_lockIcon"
                     android:src="@drawable/ic_item_lock"
                     android:layout_centerVertical="true"

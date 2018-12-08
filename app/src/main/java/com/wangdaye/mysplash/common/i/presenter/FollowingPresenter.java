@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.i.presenter;
 
 import android.content.Context;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 
@@ -16,7 +17,7 @@ public interface FollowingPresenter {
 
     // HTTP request.
 
-    void requestFollowingFeed(Context c, boolean refresh);
+    void requestFollowingFeed(Context c, int page, boolean refresh);
     void cancelRequest();
 
     // load data interface.
@@ -35,8 +36,7 @@ public interface FollowingPresenter {
 
     // manage HTTP request parameters.
 
-    void setNextPage(String nextPage);
-    String getNextPage();
+    void setPage(@Mysplash.PageRule int page);
 
     void setOver(boolean over);
 

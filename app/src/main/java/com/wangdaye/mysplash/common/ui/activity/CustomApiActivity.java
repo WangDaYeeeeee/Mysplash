@@ -6,7 +6,6 @@ import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.widget.EditText;
-import android.widget.ImageButton;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
@@ -72,15 +71,6 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
@@ -124,9 +114,6 @@ public class CustomApiActivity extends MysplashActivity
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_custom_api_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
-
-        ImageButton closeBtn = ButterKnife.findById(this, R.id.activity_custom_api_closeBtn);
-        ThemeManager.setImageResource(closeBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
 
         if (!TextUtils.isEmpty(CustomApiManager.getInstance(this).getCustomApiKey())) {
             key.setText(CustomApiManager.getInstance(this).getCustomApiKey());

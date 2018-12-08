@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.model.AboutModel;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.about.model.AppObject;
 import com.wangdaye.mysplash.about.model.CategoryObject;
 import com.wangdaye.mysplash.about.model.HeaderObject;
@@ -26,7 +25,6 @@ public class CreateAboutModelImplementor {
 
     public static List<AboutModel> createModelList(Context c) {
         List<AboutModel> modelList = new ArrayList<>(29);
-        boolean light = ThemeManager.getInstance(c).isLightTheme();
 
         // header.
         modelList.add(new HeaderObject());
@@ -35,23 +33,23 @@ public class CreateAboutModelImplementor {
         modelList.add(new CategoryObject(c.getString(R.string.about_app)));
         modelList.add(new AppObject(
                 1,
-                light ? R.drawable.ic_book_light : R.drawable.ic_book_dark,
+                R.drawable.ic_book,
                 c.getString(R.string.introduce)));
         modelList.add(new AppObject(
                 2,
-                light ? R.drawable.ic_github_light : R.drawable.ic_github_dark,
+                R.drawable.ic_github,
                 c.getString(R.string.gitHub)));
         modelList.add(new AppObject(
                 3,
-                light ? R.drawable.ic_email_light : R.drawable.ic_email_dark,
+                R.drawable.ic_email,
                 c.getString(R.string.email)));
         modelList.add(new AppObject(
                 4,
-                light ? R.drawable.ic_android_studio_light : R.drawable.ic_android_studio_dark,
+                R.drawable.ic_android_studio,
                 c.getString(R.string.source_code)));
         modelList.add(new AppObject(
                 5,
-                light ? R.drawable.ic_gift_light : R.drawable.ic_gift_dark,
+                R.drawable.ic_gift,
                 c.getString(R.string.donate)));
 
         // translator.

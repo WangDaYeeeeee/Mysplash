@@ -4,12 +4,12 @@
     android:id="@+id/container_following_avatar_avatarContainer"
     android:layout_width="@dimen/large_icon_size"
     android:layout_height="@dimen/large_icon_size">
-
+<!--
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:background="@android:color/transparent" />
-
+-->
     <FrameLayout
         android:id="@+id/container_following_avatar_background"
         android:layout_width="40dp"
@@ -28,17 +28,5 @@
         android:foreground="?attr/selectableItemBackground"
         tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription,UnusedAttribute" />
-
-    <ImageView
-        android:id="@+id/container_following_avatar_verbIcon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignEnd="@id/container_following_avatar_avatar"
-        android:layout_alignBottom="@id/container_following_avatar_avatar"
-        android:layout_marginEnd="-8dp"
-        android:layout_marginBottom="-8dp"
-        android:elevation="10dp"
-        tools:src="@drawable/ic_verb_followed_light"
-        tools:ignore="ContentDescription,RtlHardcoded,UnusedAttribute" />
 
 </RelativeLayout>

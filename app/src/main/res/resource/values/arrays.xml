@@ -4,8 +4,7 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
-        <item>TRENDING</item>
-        <item>NEW</item>
+        <item>EDITORIAL</item>
         <item>FEATURED</item>
     </string-array>
 
@@ -94,6 +93,18 @@
         <item>all</item>
         <item>home</item>
         <item>none</item>
+    </string-array>
+
+    <!-- auto night mode. -->
+    <string-array name="auto_night_mode_types">
+        <item>Close</item>
+        <item>Auto</item>
+        <item>Follow system</item>
+    </string-array>
+    <string-array name="auto_night_mode_type_values">
+        <item>close</item>
+        <item>auto</item>
+        <item>follow_system</item>
     </string-array>
 
     <!-- saturation animation duration. -->

@@ -40,7 +40,7 @@
     <string name="download">下载</string>
     <string name="followed">已关注</string>
     <string name="released">已发布</string>
-    <string name="published">已提交</string>
+    <string name="published">已发布</string>
     <string name="curated">已展览</string>
     <string name="photos">张照片</string>
     <string name="users">位用户</string>
@@ -251,6 +251,9 @@
     <!-- 设置项. -->
     <string name="settings_category_basic">基础</string>
     <string name="settings_title_back_to_top">点击返回键回到顶部</string>
+    <string name="settings_title_auto_night_mode">自动夜间模式</string>
+    <string name="settings_title_night_start_time">夜间模式开始时间</string>
+    <string name="settings_title_night_end_time">夜间模式结束时间</string>
     <string name="settings_title_load_image_size">选择加载分辨率</string>
     <string name="settings_title_custom_api_key">自定义API key</string>
     <string name="settings_summary_custom_api_key">设置你自己的API key及Secret</string>

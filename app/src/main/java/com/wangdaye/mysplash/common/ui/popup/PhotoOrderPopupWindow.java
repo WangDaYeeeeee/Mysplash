@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -99,18 +98,6 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
         randomTxt.setText(names[3]);
         if (valueNow.equals(values[3])) {
             randomTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
-        }
-
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_photo_order_latestIcon)).setImageResource(R.drawable.ic_timer_light);
-            ((ImageView) v.findViewById(R.id.popup_photo_order_oldestIcon)).setImageResource(R.drawable.ic_timer_off_light);
-            ((ImageView) v.findViewById(R.id.popup_photo_order_popularIcon)).setImageResource(R.drawable.ic_fire_light);
-            ((ImageView) v.findViewById(R.id.popup_photo_order_randomIcon)).setImageResource(R.drawable.ic_random_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_photo_order_latestIcon)).setImageResource(R.drawable.ic_timer_dark);
-            ((ImageView) v.findViewById(R.id.popup_photo_order_oldestIcon)).setImageResource(R.drawable.ic_timer_off_dark);
-            ((ImageView) v.findViewById(R.id.popup_photo_order_popularIcon)).setImageResource(R.drawable.ic_fire_dark);
-            ((ImageView) v.findViewById(R.id.popup_photo_order_randomIcon)).setImageResource(R.drawable.ic_random_dark);
         }
     }
 

@@ -29,6 +29,7 @@ public class SettingsOptionManager {
     }
 
     private String backToTopType;
+    private String autoNightMode;
     private boolean notifiedSetBackToTop;
     private String language;
     private String defaultPhotoOrder;
@@ -43,6 +44,9 @@ public class SettingsOptionManager {
         this.backToTopType = sharedPreferences.getString(
                 context.getString(R.string.key_back_to_top),
                 "all");
+        this.autoNightMode = sharedPreferences.getString(
+                context.getString(R.string.key_auto_night_mode),
+                "follow_system");
         this.notifiedSetBackToTop = sharedPreferences.getBoolean(
                 context.getString(R.string.key_notified_set_back_to_top),
                 false);
@@ -75,6 +79,14 @@ public class SettingsOptionManager {
 
     public void setBackToTopType(String backToTopType) {
         this.backToTopType = backToTopType;
+    }
+
+    public String getAutoNightMode() {
+        return autoNightMode;
+    }
+
+    public void setAutoNightMode(String autoNightMode) {
+        this.autoNightMode = autoNightMode;
     }
 
     public boolean isNotifiedSetBackToTop() {

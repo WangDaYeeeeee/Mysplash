@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_photo_menu_downloadPageIcon"
             android:src="@drawable/ic_image_light"
             style="@style/material_icon"
@@ -36,9 +36,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_photo_menu_storyPageIcon"
-            android:src="@drawable/ic_book_light"
+            android:src="@drawable/ic_book"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 

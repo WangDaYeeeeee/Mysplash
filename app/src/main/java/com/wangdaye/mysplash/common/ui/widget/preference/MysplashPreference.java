@@ -22,6 +22,8 @@ import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 public class MysplashPreference extends Preference {
 
+    private View view;
+
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MysplashPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
@@ -42,8 +44,9 @@ public class MysplashPreference extends Preference {
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
+        this.view = view;
 
-        TextView title = (TextView) view.findViewById(android.R.id.title);
+        TextView title = view.findViewById(android.R.id.title);
         title.setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
                 getContext().getResources().getDimension(R.dimen.title_text_size));
@@ -55,5 +58,17 @@ public class MysplashPreference extends Preference {
                 TypedValue.COMPLEX_UNIT_PX,
                 getContext().getResources().getDimension(R.dimen.subtitle_text_size));
         summary.setTextColor(ThemeManager.getSubtitleColor(getContext()));
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (view != null) {
+            if (enabled) {
+                view.setAlpha(1F);
+            } else {
+                view.setAlpha(0.33F);
+            }
+        }
     }
 }

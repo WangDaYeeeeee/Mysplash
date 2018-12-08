@@ -47,7 +47,7 @@
                 android:layout_alignParentEnd="true"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/item_following_photo_collectionButton"
                 android:src="@drawable/ic_item_collected"
                 android:layout_width="34dp"
@@ -62,7 +62,7 @@
                 android:layout_toStartOf="@id/item_following_photo_likeButton"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
-            <ImageButton
+            <android.support.v7.widget.AppCompatImageButton
                 android:id="@+id/item_following_photo_downloadButton"
                 android:src="@drawable/ic_item_download"
                 android:layout_width="34dp"

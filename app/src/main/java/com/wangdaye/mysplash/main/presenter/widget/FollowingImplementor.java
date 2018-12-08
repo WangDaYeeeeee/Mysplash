@@ -1,10 +1,10 @@
 package com.wangdaye.mysplash.main.presenter.widget;
 
 import android.content.Context;
-import android.text.TextUtils;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingFeed;
+import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.service.network.FeedService;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
 import com.wangdaye.mysplash.common.i.presenter.FollowingPresenter;
@@ -12,6 +12,8 @@ import com.wangdaye.mysplash.common.i.view.FollowingView;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+
+import java.util.List;
 
 import retrofit2.Call;
 
@@ -33,14 +35,20 @@ public class FollowingImplementor implements FollowingPresenter {
     }
 
     @Override
-    public void requestFollowingFeed(Context c, boolean refresh) {
+    public void requestFollowingFeed(Context c, int page, boolean refresh) {
         if (!model.isRefreshing() && !model.isLoading()) {
             if (refresh) {
                 model.setRefreshing(true);
             } else {
                 model.setLoading(true);
             }
-            requestFollowingFeed(c, model.getNextPage(), refresh);
+            page = Math.max(1, refresh ? 1 : page + 1);
+            listener = new OnRequestFollowingFeedListener(c, page, refresh);
+            model.getService()
+                    .requestFollowingFeed(
+                            page,
+                            Mysplash.DEFAULT_PER_PAGE,
+                            listener);
         }
     }
 
@@ -59,7 +67,7 @@ public class FollowingImplementor implements FollowingPresenter {
         if (notify) {
             view.setRefreshing(true);
         }
-        requestFollowingFeed(c, true);
+        requestFollowingFeed(c, model.getPhotosPage(), true);
     }
 
     @Override
@@ -67,7 +75,7 @@ public class FollowingImplementor implements FollowingPresenter {
         if (notify) {
             view.setLoading(true);
         }
-        requestFollowingFeed(c, false);
+        requestFollowingFeed(c, model.getPhotosPage(), false);
     }
 
     @Override
@@ -93,13 +101,8 @@ public class FollowingImplementor implements FollowingPresenter {
     }
 
     @Override
-    public void setNextPage(String nextPage) {
-        model.setNextPage(nextPage);
-    }
-
-    @Override
-    public String getNextPage() {
-        return model.getNextPage();
+    public void setPage(int page) {
+        model.setPhotosPage(page);
     }
 
     @Override
@@ -123,24 +126,18 @@ public class FollowingImplementor implements FollowingPresenter {
         return model.getAdapter();
     }
 
-    private void requestFollowingFeed(Context c, String nextPage, boolean refresh) {
-        listener = new OnRequestFollowingFeedListener(c, refresh);
-        model.getService()
-                .requestFollowingFeed(
-                        refresh ? model.getFirstPage() : nextPage,
-                        listener);
-    }
-
     // interface.
 
-    private class OnRequestFollowingFeedListener implements FeedService.OnRequestFollowingFeedListener {
+    private class OnRequestFollowingFeedListener implements FeedService.OnRequestFeedPhotoListener {
 
         private Context c;
+        private int page;
         private boolean refresh;
         private boolean canceled;
 
-        OnRequestFollowingFeedListener(Context c, boolean refresh) {
+        OnRequestFollowingFeedListener(Context c, int page, boolean refresh) {
             this.c = c;
+            this.page = page;
             this.refresh = refresh;
             this.canceled = false;
         }
@@ -150,7 +147,7 @@ public class FollowingImplementor implements FollowingPresenter {
         }
 
         @Override
-        public void onRequestFollowingFeedSuccess(Call<FollowingFeed> call, retrofit2.Response<FollowingFeed> response) {
+        public void onRequestFeedPhotoSuccess(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
             if (canceled) {
                 return;
             }
@@ -166,16 +163,14 @@ public class FollowingImplementor implements FollowingPresenter {
             }
 
             if (response.isSuccessful()
-                    && model.getAdapter().getRealItemCount() + response.body().results.size() > 0) {
-                model.setNextPage(response.body().next_page);
+                    && model.getAdapter().getRealItemCount() + response.body().size() > 0) {
+                model.setPhotosPage(page);
                 if (refresh) {
                     model.getAdapter().clearItem();
                     setOver(false);
                 }
-                for (int i = 0; i < response.body().results.size(); i ++) {
-                    model.getAdapter().insertItem(response.body().results.get(i));
-                }
-                if (TextUtils.isEmpty(response.body().next_page)) {
+                model.getAdapter().insertItems(response.body());
+                if (response.body().size() < Mysplash.DEFAULT_PER_PAGE) {
                     setOver(true);
                 }
                 view.requestFollowingFeedSuccess();
@@ -185,7 +180,7 @@ public class FollowingImplementor implements FollowingPresenter {
         }
 
         @Override
-        public void onRequestFollowingFeedFailed(Call<FollowingFeed> call, Throwable t) {
+        public void onRequestFeedPhotoFailed(Call<List<Photo>> call, Throwable t) {
             if (canceled) {
                 return;
             }

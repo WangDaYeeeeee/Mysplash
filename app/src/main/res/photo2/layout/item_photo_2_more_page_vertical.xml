@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
-    android:background="@color/colorTextTitle_light"
+    android:background="@color/colorDarkCardBackground"
     tools:layout_height="72dp"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 

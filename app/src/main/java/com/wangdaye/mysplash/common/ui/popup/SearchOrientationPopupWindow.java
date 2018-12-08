@@ -5,7 +5,6 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -81,26 +80,6 @@ public class SearchOrientationPopupWindow extends MysplashPopupWindow
         squarishTxt.setText(names[2]);
         if (values[2].equals(valueNow)) {
             squarishTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
-        }
-
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_allIcon))
-                    .setImageResource(R.drawable.ic_infinity_light);
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_landscapeIcon))
-                    .setImageResource(R.drawable.ic_orientation_landscape_light);
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_portraitIcon))
-                    .setImageResource(R.drawable.ic_orientation_portrait_light);
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_squarishIcon))
-                    .setImageResource(R.drawable.ic_orientation_squarish_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_allIcon))
-                    .setImageResource(R.drawable.ic_infinity_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_landscapeIcon))
-                    .setImageResource(R.drawable.ic_orientation_landscape_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_portraitIcon))
-                    .setImageResource(R.drawable.ic_orientation_portrait_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_orientation_squarishIcon))
-                    .setImageResource(R.drawable.ic_orientation_squarish_dark);
         }
     }
 

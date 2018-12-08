@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -24,6 +25,7 @@ import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
@@ -192,6 +194,15 @@ public class ImageHelper {
         }
     }
 
+    private static Context checkContextNull(Context context) {
+        if (context == null
+                || (context instanceof Activity && ((Activity) context).isDestroyed())) {
+            return Mysplash.getInstance().getApplicationContext();
+        } else {
+            return context;
+        }
+    }
+
     // photo.
 
     /**
@@ -212,6 +223,7 @@ public class ImageHelper {
 
     private static void loadRegularPhoto(Context context, ImageView view, Photo photo, int index,
                                          boolean saturation, @Nullable OnLoadImageListener<Photo> l) {
+        context = checkContextNull(context);
         if (photo != null && photo.urls != null
                 && photo.width != 0 && photo.height != 0) {
 
@@ -277,6 +289,7 @@ public class ImageHelper {
         if (user != null && user.profile_image != null) {
             loadAvatar(context, view, user, user.profile_image.large, index, l);
         } else {
+            context = checkContextNull(context);
             Glide.with(context)
                     .load(R.drawable.default_avatar)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
@@ -294,6 +307,7 @@ public class ImageHelper {
     public static void loadAvatar(Context context, ImageView view,
                                   @Nullable User user, @NotNull String url, int index,
                                   @Nullable OnLoadImageListener<User> l) {
+        context = checkContextNull(context);
         DrawableRequestBuilder<Integer> thumbnailRequest = Glide.with(context)
                 .load(R.drawable.default_avatar)
                 .override(128, 128)
@@ -319,8 +333,8 @@ public class ImageHelper {
 
     public static void loadResourceImage(Context context, ImageView view, int resId,
                                          @Nullable BitmapTransformation transformation) {
-        DrawableRequestBuilder<Integer> request = Glide
-                .with(context)
+        context = checkContextNull(context);
+        DrawableRequestBuilder<Integer> request = Glide.with(context)
                 .load(resId)
                 .dontAnimate()
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE);
@@ -333,6 +347,7 @@ public class ImageHelper {
     // bitmap.
 
     public static void loadBitmap(Context context, Target<Bitmap> target, Uri uri) {
+        context = checkContextNull(context);
         Glide.with(context)
                 .load(uri)
                 .asBitmap()
@@ -340,6 +355,7 @@ public class ImageHelper {
     }
 
     public static void loadBitmap(Context context, ImageView view, Uri uri) {
+        context = checkContextNull(context);
         Glide.with(context)
                 .load(uri)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
@@ -348,6 +364,7 @@ public class ImageHelper {
 
     public static Bitmap loadBitmap(Context context, @DrawableRes int id, int width, int height)
             throws ExecutionException, InterruptedException {
+        context = checkContextNull(context);
         return Glide.with(context)
                 .load(id)
                 .asBitmap()
@@ -360,8 +377,8 @@ public class ImageHelper {
 
     public static void loadImageFromUrl(Context context, ImageView view, String url, boolean lowPriority,
                                         @Nullable OnLoadImageListener<String> l) {
-        DrawableRequestBuilder<String> request = Glide
-                .with(context)
+        context = checkContextNull(context);
+        DrawableRequestBuilder<String> request = Glide.with(context)
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE);
         if (lowPriority) {
@@ -375,6 +392,7 @@ public class ImageHelper {
 
     public static void loadImageFromUrl(Context context,
                                          Target<Bitmap> target, String url, boolean clipWithCircle) {
+        context = checkContextNull(context);
         if (clipWithCircle) {
             Glide.with(context)
                     .load(url)

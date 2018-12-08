@@ -24,38 +24,38 @@
             android:layout_height="wrap_content"
             app:sbv_fill_in_mode="true" />
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/activity_set_wallpaper_closeBtn"
             android:src="@drawable/ic_toolbar_close_dark"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
-            style="@style/material_image_button"
+            style="@style/material_image_button_without_tint"
             tools:ignore="ContentDescription" />
 
         <Button
             android:id="@+id/activity_set_wallpaper_setBtn"
             android:text="@string/set"
             android:textStyle="bold"
-            android:textColor="@color/colorTextTitle_dark"
+            android:textColor="@color/colorTextTitle"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
             android:layout_alignParentEnd="true"
             android:layout_margin="4dp"
             style="@style/material_button"
             tools:ignore="RtlHardcoded" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/activity_set_wallpaper_alignBtn"
             android:src="@drawable/ic_align_center_dark"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
             android:layout_toStartOf="@id/activity_set_wallpaper_setBtn"
-            style="@style/material_image_button"
+            style="@style/material_image_button_without_tint"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/activity_set_wallpaper_typeBtn"
             android:src="@drawable/ic_orientation_squarish_dark"
             android:layout_below="@id/activity_set_wallpaper_statusBar"
             android:layout_toStartOf="@id/activity_set_wallpaper_alignBtn"
-            style="@style/material_image_button"
+            style="@style/material_image_button_without_tint"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
     </RelativeLayout>

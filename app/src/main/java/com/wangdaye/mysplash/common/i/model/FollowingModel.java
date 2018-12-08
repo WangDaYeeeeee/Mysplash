@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.i.model;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.service.network.FeedService;
 import com.wangdaye.mysplash.common.ui.adapter.FollowingAdapter;
 
@@ -17,10 +18,8 @@ public interface FollowingModel {
 
     // manage HTTP request parameters.
 
-    /** {@link com.wangdaye.mysplash.common.data.api.FeedApi#getFollowingFeed(String)} */
-    String getFirstPage();
-    String getNextPage();
-    void setNextPage(String nextPage);
+    int getPhotosPage();
+    void setPhotosPage(@Mysplash.PageRule int page);
 
     // control load state.
 

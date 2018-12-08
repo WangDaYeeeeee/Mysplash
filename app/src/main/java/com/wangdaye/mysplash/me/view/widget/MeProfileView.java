@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -33,7 +32,6 @@ import com.wangdaye.mysplash.common.i.model.LoadModel;
 import com.wangdaye.mysplash.common.i.presenter.LoadPresenter;
 import com.wangdaye.mysplash.common.i.view.LoadView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.me.model.widget.LoadObject;
 import com.wangdaye.mysplash.me.presenter.widget.LoadImplementor;
 
@@ -127,10 +125,6 @@ public class MeProfileView  extends FrameLayout
 
         rippleButton.setDontAnimate(true);
         rippleButton.setOnSwitchListener(this);
-
-        ImageView locationIcon = ButterKnife.findById(this, R.id.container_user_profile_locationIcon);
-        ThemeManager.setImageResource(
-                locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);
     }
 
     // control.

@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.about.view.holder;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -33,7 +33,7 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder {
     CircleImageView avatar;
 
     @BindView(R.id.item_about_translator_flag)
-    ImageView flag;
+    AppCompatImageView flag;
 
     @BindView(R.id.item_about_translator_title)
     TextView title;

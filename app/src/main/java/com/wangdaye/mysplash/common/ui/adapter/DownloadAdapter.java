@@ -2,13 +2,14 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -51,7 +52,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_download_image)
-        ImageView image;
+        AppCompatImageView image;
 
         @BindView(R.id.item_download_stateIcon)
         CircularProgressIcon stateIcon;
@@ -60,7 +61,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
         TextView title;
 
         @BindView(R.id.item_download_retry_check_btn)
-        ImageButton retryCheckBtn;
+        AppCompatImageButton retryCheckBtn;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -72,6 +73,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
             ImageHelper.loadImageFromUrl(
                     image.getContext(), image, itemList.get(position).entity.getPhotoUri(), false, null);
 
+            stateIcon.setProgressColor(Color.WHITE);
             switch (itemList.get(position).entity.result) {
                 case DownloaderService.RESULT_DOWNLOADING:
                     stateIcon.forceSetProgressState();

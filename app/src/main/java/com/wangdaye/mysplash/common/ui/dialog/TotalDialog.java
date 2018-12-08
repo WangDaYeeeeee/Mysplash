@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,7 +16,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Total;
 import com.wangdaye.mysplash.common.data.service.network.StatusService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -87,14 +85,6 @@ public class TotalDialog extends MysplashDialogFragment
 
         progress.setVisibility(View.VISIBLE);
         dataContainer.setVisibility(View.GONE);
-
-        ImageView download = ButterKnife.findById(v, R.id.dialog_total_photoDownloadsIcon);
-        ThemeManager.setImageResource(
-                download, R.drawable.ic_download_light, R.drawable.ic_download_dark);
-
-        ImageView photo = ButterKnife.findById(v, R.id.dialog_total_totalPhotosIcon);
-        ThemeManager.setImageResource(
-                photo, R.drawable.ic_image_light, R.drawable.ic_image_dark);
     }
 
     private void setState(int stateTo) {

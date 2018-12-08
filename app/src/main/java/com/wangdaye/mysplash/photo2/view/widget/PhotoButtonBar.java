@@ -3,10 +3,10 @@ package com.wangdaye.mysplash.photo2.view.widget;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Color;
+import android.support.v7.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -33,7 +33,7 @@ public class PhotoButtonBar extends RelativeLayout {
     CircularProgressIcon likeButton;
 
     @BindView(R.id.container_photo_2_button_bar_collectButton)
-    ImageButton collectButton;
+    AppCompatImageButton collectButton;
 
     @BindView(R.id.container_photo_2_button_bar_downloadButton)
     CircularProgressIcon downloadButton;
@@ -78,12 +78,12 @@ public class PhotoButtonBar extends RelativeLayout {
 
     private void initWidget() {
         likeButton.forceSetResultState(getLikeIcon(false));
-        likeButton.setProgressColor(ContextCompat.getColor(getContext(), R.color.colorTextTitle_dark));
+        likeButton.setProgressColor(Color.WHITE);
 
         collectButton.setImageResource(getCollectIcon(false));
 
         downloadButton.forceSetResultState(getDownloadIcon());
-        downloadButton.setProgressColor(ContextCompat.getColor(getContext(), R.color.colorTextTitle_dark));
+        downloadButton.setProgressColor(Color.WHITE);
     }
 
     // draw.

@@ -7,13 +7,11 @@ import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -60,18 +58,6 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     }
 
     private void initWidget(View v) {
-        ImageView downloadIcon = ButterKnife.findById(v, R.id.dialog_download_type_downloadIcon);
-        ThemeManager.setImageResource(
-                downloadIcon, R.drawable.ic_download_light, R.drawable.ic_download_dark);
-
-        ImageView shareIcon = ButterKnife.findById(v, R.id.dialog_download_type_shareIcon);
-        ThemeManager.setImageResource(
-                shareIcon, R.drawable.ic_share_light, R.drawable.ic_share_dark);
-
-        ImageView wallpaperIcon = ButterKnife.findById(v, R.id.dialog_download_type_wallpaperIcon);
-        ThemeManager.setImageResource(
-                wallpaperIcon, R.drawable.ic_image_light, R.drawable.ic_image_dark);
-
         TextView downloadText = ButterKnife.findById(v, R.id.dialog_download_type_downloadTxt);
         downloadText.setText(getResources().getStringArray(R.array.download_options)[0]);
 

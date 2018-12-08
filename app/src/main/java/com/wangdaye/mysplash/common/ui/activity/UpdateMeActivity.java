@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
@@ -130,15 +129,6 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         if (state == INPUT_STATE && backPressed) {
             finishSelf(true);
@@ -188,9 +178,6 @@ public class UpdateMeActivity extends MysplashActivity
         SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
                 this, R.id.activity_update_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
-
-        ImageButton closeBtn = ButterKnife.findById(this, R.id.container_update_me_closeBtn);
-        ThemeManager.setImageResource(closeBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
 
         progressView.setVisibility(View.GONE);
         contentView.setVisibility(View.VISIBLE);

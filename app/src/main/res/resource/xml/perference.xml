@@ -13,6 +13,21 @@
             android:entryValues="@array/back_to_top_type_values"
             android:defaultValue="all" />
 
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference
+            android:title="@string/settings_title_auto_night_mode"
+            android:key="@string/key_auto_night_mode"
+            android:entries="@array/auto_night_mode_types"
+            android:entryValues="@array/auto_night_mode_type_values"
+            android:defaultValue="follow_system" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference
+            android:title="@string/settings_title_night_start_time"
+            android:key="@string/key_night_start_time" />
+
+        <com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference
+            android:title="@string/settings_title_night_end_time"
+            android:key="@string/key_night_end_time" />
+
         <com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference
             android:title="@string/settings_title_custom_api_key"
             android:key="@string/key_custom_api_key"

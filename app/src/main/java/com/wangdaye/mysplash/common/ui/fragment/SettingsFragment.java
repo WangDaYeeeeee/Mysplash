@@ -13,6 +13,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.view.NestedScrollingChild;
 import android.support.v4.view.NestedScrollingChildHelper;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -23,6 +24,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
+import com.wangdaye.mysplash.common.ui.dialog.TimePickerDialog;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashListPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashPreference;
 import com.wangdaye.mysplash.common.ui.widget.preference.MysplashSwitchPreference;
@@ -33,6 +35,7 @@ import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 
 import butterknife.ButterKnife;
@@ -45,7 +48,7 @@ import butterknife.ButterKnife;
  * */
 
 public class SettingsFragment extends PreferenceFragment
-        implements Preference.OnPreferenceChangeListener, NestedScrollingChild {
+        implements Preference.OnPreferenceChangeListener, TimePickerDialog.OnTimeChangedListener, NestedScrollingChild {
 
     private NestedScrollingChildHelper nestedScrollingChildHelper; // used to dispatch scroll action.
     private ListView listView; // preference list in preference fragment.
@@ -84,6 +87,29 @@ public class SettingsFragment extends PreferenceFragment
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
         backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
+
+        // auto night mode.
+        MysplashListPreference autoNightMode = (MysplashListPreference) findPreference(getString(R.string.key_auto_night_mode));
+        String autoNightModeValue = sharedPreferences.getString(getString(R.string.key_auto_night_mode), "follow_system");
+        String autoNightModeName = ValueUtils.getAutoNightModeName(getActivity(), autoNightModeValue);
+        autoNightMode.setSummary(getString(R.string.now) + " : " + autoNightModeName);
+        autoNightMode.setOnPreferenceChangeListener(this);
+
+        MysplashPreference nightStartTime = (MysplashPreference) findPreference(getString(R.string.key_night_start_time));
+        nightStartTime.setSummary(getString(R.string.now) + " : " + ThemeManager.getInstance(getActivity()).getNightStartTime());
+        if (autoNightModeValue.equals("auto")) {
+            nightStartTime.setEnabled(true);
+        } else {
+            nightStartTime.setEnabled(false);
+        }
+
+        MysplashPreference nightEndTime = (MysplashPreference) findPreference(getString(R.string.key_night_end_time));
+        nightEndTime.setSummary(getString(R.string.now) + " : " + ThemeManager.getInstance(getActivity()).getNightEndTime());
+        if (autoNightModeValue.equals("auto")) {
+            nightEndTime.setEnabled(true);
+        } else {
+            nightEndTime.setEnabled(false);
+        }
 
         // language.
         MysplashListPreference language = (MysplashListPreference) findPreference(getString(R.string.key_language));
@@ -164,7 +190,19 @@ public class SettingsFragment extends PreferenceFragment
 
     @Override
     public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
-        if (preference.getKey().equals("muzei_settings")) {
+        if (preference.getKey().equals(getString(R.string.key_night_start_time))) {
+            Log.d("SettingsFragment", "key_night_start_time");
+            TimePickerDialog dialog = new TimePickerDialog();
+            dialog.setModel(true);
+            dialog.setOnTimeChangedListener(this);
+            dialog.show(getFragmentManager(), null);
+        } else if (preference.getKey().equals(getString(R.string.key_night_end_time))) {
+            Log.d("SettingsFragment", "key_night_end_time");
+            TimePickerDialog dialog = new TimePickerDialog();
+            dialog.setModel(false);
+            dialog.setOnTimeChangedListener(this);
+            dialog.show(getFragmentManager(), null);
+        } else if (preference.getKey().equals("muzei_settings")) {
             IntentHelper.startMuzeiConfigrationActivity((MysplashActivity) getActivity());
         } else if (preference.getKey().equals(getString(R.string.key_custom_api_key))) {
             IntentHelper.startCustomApiActivity((SettingsActivity) getActivity());
@@ -183,6 +221,18 @@ public class SettingsFragment extends PreferenceFragment
             SettingsOptionManager.getInstance(getActivity()).setBackToTopType((String) o);
             String backType = ValueUtils.getBackToTopName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + backType);
+        } else if (preference.getKey().equals(getString(R.string.key_auto_night_mode))) {
+            // auto night mode.
+            SettingsOptionManager.getInstance(getActivity()).setAutoNightMode((String) o);
+            String autoNightMode = ValueUtils.getAutoNightModeName(getActivity(), (String) o);
+            preference.setSummary(getString(R.string.now) + " : " + autoNightMode);
+            if (((String) o).equals("auto")) {
+                findPreference(getString(R.string.key_night_start_time)).setEnabled(true);
+                findPreference(getString(R.string.key_night_end_time)).setEnabled(true);
+            } else {
+                findPreference(getString(R.string.key_night_start_time)).setEnabled(false);
+                findPreference(getString(R.string.key_night_end_time)).setEnabled(false);
+            }
         } else if (preference.getKey().equals(getString(R.string.key_language))) {
             // language.
             SettingsOptionManager.getInstance(getActivity()).setLanguage((String) o);
@@ -235,6 +285,19 @@ public class SettingsFragment extends PreferenceFragment
             }
         }
     };
+
+    // on time changed listener.
+
+    @Override
+    public void timeChanged() {
+        MysplashPreference nightStartTime = (MysplashPreference) findPreference(getString(R.string.key_night_start_time));
+        nightStartTime.setSummary(
+                getString(R.string.now) + " : " + ThemeManager.getInstance(getActivity()).getNightStartTime());
+
+        MysplashPreference nightEndTime = (MysplashPreference) findPreference(getString(R.string.key_night_end_time));
+        nightEndTime.setSummary(
+                getString(R.string.now) + " : " + ThemeManager.getInstance(getActivity()).getNightEndTime());
+    }
 
     // on touch listener.
 

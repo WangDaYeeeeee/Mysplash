@@ -17,23 +17,13 @@
         tools:src="@drawable/default_avatar_round"
         tools:ignore="ContentDescription" />
 
-    <ImageView
-        android:id="@+id/item_following_title_verbIcon"
-        android:layout_width="16dp"
-        android:layout_height="16dp"
-        android:layout_alignEnd="@id/item_following_title_avatar"
-        android:layout_alignBottom="@id/item_following_title_avatar"
-        android:layout_marginEnd="-8dp"
-        android:layout_marginBottom="-8dp"
-        android:elevation="10dp"
-        tools:src="@drawable/ic_verb_published"
-        tools:ignore="ContentDescription,RtlHardcoded" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/item_following_title_avatar"
         android:foreground="?attr/selectableItemBackground"
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
         tools:ignore="RtlHardcoded">
 
         <TextView
@@ -41,7 +31,6 @@
             android:layout_width="match_parent"
             android:maxLines="1"
             android:textStyle="bold"
-            android:paddingTop="@dimen/normal_margin"
             android:layout_marginEnd="@dimen/normal_margin"
             android:gravity="bottom"
             android:textAlignment="gravity"
@@ -53,7 +42,6 @@
             android:id="@+id/item_following_title_verb"
             android:layout_width="match_parent"
             android:layout_below="@id/item_following_title_actor"
-            android:paddingBottom="@dimen/normal_margin"
             android:layout_marginEnd="@dimen/normal_margin"
             style="@style/subtitle_text"
             tools:text="added 3 photos to Unsplash Instant 2"

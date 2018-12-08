@@ -228,11 +228,6 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_User);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_User);
-        }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
         }
@@ -374,8 +369,7 @@ public class UserActivity extends LoadableActivity<Photo>
                 ThemeManager.setNavigationIcon(
                         toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
             }
-            ThemeManager.inflateMenu(
-                    toolbar, R.menu.activity_user_toolbar_light, R.menu.activity_user_toolbar_dark);
+            toolbar.inflateMenu(R.menu.activity_user_toolbar);
             toolbar.setOnMenuItemClickListener(this);
             toolbar.setNavigationOnClickListener(this);
             if (TextUtils.isEmpty(u.portfolio_url)) {
@@ -447,7 +441,7 @@ public class UserActivity extends LoadableActivity<Photo>
         indicator.setAlpha(0f);
 
         BaseSavedStateFragment f = SavedStateFragment.getData(this);
-        if (f != null && f instanceof SavedStateFragment) {
+        if (f instanceof SavedStateFragment) {
             ((UserPhotosView) pagers[0]).setPhotos(((SavedStateFragment) f).getPhotoList());
             ((UserPhotosView) pagers[1]).setPhotos(((SavedStateFragment) f).getLikeList());
             ((UserCollectionsView) pagers[2]).setCollections(((SavedStateFragment) f).getCollectionList());

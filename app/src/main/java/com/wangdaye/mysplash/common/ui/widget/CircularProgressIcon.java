@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.ColorInt;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,7 +12,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
@@ -30,7 +30,7 @@ import butterknife.ButterKnife;
 public class CircularProgressIcon extends FrameLayout {
 
     @BindView(R.id.container_circular_progress_icon_image)
-    ImageView image;
+    AppCompatImageView image;
 
     @BindView(R.id.container_circular_progress_icon_progress)
     CircularProgressView progress;

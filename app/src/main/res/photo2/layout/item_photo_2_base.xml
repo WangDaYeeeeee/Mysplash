@@ -77,7 +77,7 @@
 
                 <TextView
                     android:id="@+id/item_photo_2_base_title"
-                    android:textColor="@color/colorTextTitle_dark"
+                    android:textColor="@android:color/white"
                     android:maxLines="1"
                     android:shadowDx="1"
                     android:shadowDy="1"
@@ -89,7 +89,7 @@
 
                 <TextView
                     android:id="@+id/item_photo_2_base_subtitle"
-                    android:textColor="@color/colorTextTitle_dark"
+                    android:textColor="@android:color/white"
                     android:maxLines="1"
                     android:shadowDx="1"
                     android:shadowDy="1"

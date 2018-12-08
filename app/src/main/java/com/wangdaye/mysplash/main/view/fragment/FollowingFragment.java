@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -106,7 +107,7 @@ public class FollowingFragment extends LoadableFragment<Photo>
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
@@ -169,7 +170,7 @@ public class FollowingFragment extends LoadableFragment<Photo>
 
     @Override
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
-        return feedView.loadMore(list, headIndex, headDirection, bundle);
+        return feedView.loadMore(list, headIndex, headDirection);
     }
 
     @Override

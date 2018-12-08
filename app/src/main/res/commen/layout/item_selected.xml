@@ -9,7 +9,7 @@
     android:stateListAnimator="@animator/touch_rise_avatar"
     app:cardElevation="0dp"
     app:cardPreventCornerOverlap="false"
-    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
     tools:ignore="UnusedAttribute">
 
     <RelativeLayout

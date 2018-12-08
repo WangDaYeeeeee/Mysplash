@@ -12,6 +12,7 @@ import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.LanguageUtils;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +118,16 @@ public abstract class MysplashActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        if (ThemeManager.getInstance(this).isDayNightSwitchTime(this)) {
+            ThemeManager.getInstance(this)
+                    .setLightTheme(this, !ThemeManager.getInstance(this).isLightTheme());
+            Mysplash.getInstance().dispatchRecreate();
+        }
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         foreground = true;
@@ -137,7 +148,9 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     // control style.
 
-    protected abstract void setTheme();
+    protected void setTheme() {
+        // do nothing.
+    }
 
     /**
      * If return true, child class will be responsible for the operation of the status bar.

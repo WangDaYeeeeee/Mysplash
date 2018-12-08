@@ -39,9 +39,6 @@ public class FragmentManageImplementor
     @Override
     public List<MysplashFragment> getFragmentList(MysplashActivity a, boolean includeHidden) {
         List<Fragment> fragmentList = a.getSupportFragmentManager().getFragments();
-        if (fragmentList == null) {
-            fragmentList = new ArrayList<>();
-        }
         List<MysplashFragment> resultList = new ArrayList<>();
         for (int i = 0; i < fragmentList.size(); i ++) {
             if (fragmentList.get(i) instanceof MysplashFragment

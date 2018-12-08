@@ -9,11 +9,11 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -134,15 +134,6 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
@@ -207,8 +198,7 @@ public class IntroduceActivity extends MysplashActivity
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
 
-        ImageButton backBtn = ButterKnife.findById(this, R.id.activity_introduce_backBtn);
-        ThemeManager.setImageResource(backBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
+        AppCompatImageButton backBtn = ButterKnife.findById(this, R.id.activity_introduce_backBtn);
         backBtn.setOnClickListener(this);
 
         button.setOnClickListener(this);
@@ -235,7 +225,7 @@ public class IntroduceActivity extends MysplashActivity
             TextView title = ButterKnife.findById(v, R.id.container_introduce_title);
             title.setText(introduceModelList.get(i).title);
 
-            ImageView image = ButterKnife.findById(v, R.id.container_introduce_image);
+            AppCompatImageView image = ButterKnife.findById(v, R.id.container_introduce_image);
             Glide.with(this)
                     .load(introduceModelList.get(i).imageRes)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)

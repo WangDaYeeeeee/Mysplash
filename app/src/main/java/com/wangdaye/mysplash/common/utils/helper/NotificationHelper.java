@@ -185,7 +185,7 @@ public class NotificationHelper {
                     NotificationManager.IMPORTANCE_LOW);
             channel.setShowBadge(true);
             channel.setSound(null, null);
-            channel.setLightColor(ContextCompat.getColor(c, R.color.colorPrimary_dark));
+            channel.setLightColor(ContextCompat.getColor(c, R.color.colorNotification));
             manager.createNotificationChannel(channel);
         }
     }

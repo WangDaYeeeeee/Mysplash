@@ -75,15 +75,6 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Settings);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Settings);
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         finishSelf(true);
     }

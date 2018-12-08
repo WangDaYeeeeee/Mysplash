@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.presenter.NotificationBarPresenter;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
  * Home fragment notification bar implementor.
@@ -139,13 +138,11 @@ public class HomeFragmentNotificationBarImplementor
     private void loadImage(ImageButton bellBtn, ImageView dot) {
         if (AuthManager.getInstance().getNotificationManager().hasUnseenNotification()) {
             unread = true;
-            ThemeManager.setImageResource(
-                    bellBtn, R.drawable.ic_bell_light, R.drawable.ic_bell_dark);
+            bellBtn.setImageResource(R.drawable.ic_bell);
             dot.setImageResource(R.drawable.ic_unread);
         } else {
             unread = false;
-            ThemeManager.setImageResource(
-                    bellBtn, R.drawable.ic_bell_outline_light, R.drawable.ic_bell_outline_dark);
+            bellBtn.setImageResource(R.drawable.ic_bell_outline);
             dot.setImageResource(R.drawable.ic_read);
         }
     }

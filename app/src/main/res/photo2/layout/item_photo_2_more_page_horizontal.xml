@@ -10,7 +10,7 @@
     android:layout_marginBottom="@dimen/normal_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_avatar"
-    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
     app:cardCornerRadius="@dimen/material_card_radius"
     app:cardPreventCornerOverlap="false"
     app:cardElevation="0dp"

@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/dialog_select_collection_cover"
             android:layout_width="256dp"
             android:layout_height="match_parent"
@@ -61,15 +61,16 @@
                         android:layout_margin="@dimen/normal_margin"
                         style="@style/title_text" />
 
-                    <ImageButton
+                    <android.support.v7.widget.AppCompatImageButton
                         android:id="@+id/dialog_select_collection_selectorRefreshBtn"
+                        android:src="@drawable/ic_refresh_light"
+                        android:tint="?attr/content_color"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
                         android:layout_margin="@dimen/normal_margin"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
-                        tools:src="@drawable/ic_refresh_light"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 
                 </RelativeLayout>

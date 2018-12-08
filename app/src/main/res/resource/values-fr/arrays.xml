@@ -3,8 +3,7 @@
 
     <!-- home tab. -->
     <string-array name="home_tabs">
-        <item>TRENDING</item>
-        <item>NOUVEAUTÉS</item>
+        <item>EDITORIAL</item>
         <item>EN VEDETTE</item>
     </string-array>
 

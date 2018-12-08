@@ -4,9 +4,9 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
@@ -16,7 +16,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollPhotoView;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -68,11 +67,6 @@ public class PreviewActivity extends MysplashActivity
 
     @Override
     protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Preview);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_Preview);
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
@@ -123,7 +117,7 @@ public class PreviewActivity extends MysplashActivity
         final NestedScrollPhotoView photoView = ButterKnife.findById(this, R.id.activity_preview_photoView);
         photoView.setMaxScale(getMaxiScale(false));
         if (previewable instanceof Photo) {
-            photoView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            photoView.setScaleType(AppCompatImageView.ScaleType.FIT_CENTER);
             ImageHelper.loadRegularPhoto(this, photoView, (Photo) previewable, 0, null);
         } else {
             ImageHelper.loadImageFromUrl(

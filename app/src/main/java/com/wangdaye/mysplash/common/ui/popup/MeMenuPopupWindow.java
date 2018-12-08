@@ -5,11 +5,9 @@ import android.content.Context;
 import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
  * Me menu popup window.
@@ -50,16 +48,6 @@ public class MeMenuPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_me_menu_submit).setOnClickListener(this);
         v.findViewById(R.id.popup_me_menu_portfolio).setOnClickListener(this);
         v.findViewById(R.id.popup_me_menu_share).setOnClickListener(this);
-
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_me_menu_submitIcon),
-                R.drawable.ic_plus_light, R.drawable.ic_plus_dark);
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_me_menu_portfolioIcon),
-                R.drawable.ic_earth_light, R.drawable.ic_earth_dark);
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_me_menu_shareIcon),
-                R.drawable.ic_share_light, R.drawable.ic_share_dark);
     }
 
     // interface.

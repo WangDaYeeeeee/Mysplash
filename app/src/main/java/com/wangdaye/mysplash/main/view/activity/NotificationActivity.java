@@ -81,15 +81,6 @@ public class NotificationActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         if (notificationsView.needPagerBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
@@ -138,8 +129,7 @@ public class NotificationActivity extends MysplashActivity
         Toolbar toolbar = ButterKnife.findById(this, R.id.activity_notification_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
-        ThemeManager.inflateMenu(
-                toolbar, R.menu.activity_notification_light, R.menu.activity_notification_dark);
+        toolbar.inflateMenu(R.menu.activity_notification);
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnMenuItemClickListener(this);
 

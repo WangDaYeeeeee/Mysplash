@@ -1,8 +1,7 @@
 package com.wangdaye.mysplash.about.view.holder;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -12,7 +11,6 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.TotalDialog;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -28,15 +26,11 @@ import butterknife.OnClick;
 public class HeaderHolder extends AboutAdapter.ViewHolder {
 
     @BindView(R.id.item_about_header_appIcon)
-    ImageView appIcon;
+    AppCompatImageView appIcon;
 
     public HeaderHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
-
-        ImageButton backBtn = ButterKnife.findById(itemView, R.id.item_about_header_backButton);
-        ThemeManager.setImageResource(
-                backBtn, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
 
         TextView unsplashTitle = itemView.findViewById(R.id.item_about_header_unsplashTitle);
         unsplashTitle.setText(itemView.getContext().getString(R.string.unsplash));

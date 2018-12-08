@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +37,6 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.user.model.widget.LoadObject;
 import com.wangdaye.mysplash.user.presenter.widget.LoadImplementor;
 import com.wangdaye.mysplash.user.model.widget.UserObject;
@@ -145,10 +143,6 @@ public class UserProfileView extends FrameLayout
         } else {
             rippleButton.setVisibility(GONE);
         }
-
-        ImageView locationIcon = ButterKnife.findById(this, R.id.container_user_profile_locationIcon);
-        ThemeManager.setImageResource(
-                locationIcon, R.drawable.ic_location_light, R.drawable.ic_location_dark);
     }
 
     // control.

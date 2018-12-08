@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/dialog_download_type_downloadIcon"
                 android:src="@drawable/ic_download_light"
                 style="@style/material_icon"
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/dialog_download_type_shareIcon"
                 android:src="@drawable/ic_share_light"
                 style="@style/material_icon"
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/dialog_download_type_wallpaperIcon"
                 android:src="@drawable/ic_image_light"
                 style="@style/material_icon"

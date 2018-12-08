@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_photo_order_latestIcon"
-            android:src="@drawable/ic_timer_light"
+            android:src="@drawable/ic_timer"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 
@@ -36,9 +36,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_photo_order_oldestIcon"
-            android:src="@drawable/ic_timer_off_light"
+            android:src="@drawable/ic_timer_off"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 
@@ -60,9 +60,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_photo_order_popularIcon"
-            android:src="@drawable/ic_fire_light"
+            android:src="@drawable/ic_fire"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 
@@ -84,9 +84,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_photo_order_randomIcon"
-            android:src="@drawable/ic_random_light"
+            android:src="@drawable/ic_random"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 

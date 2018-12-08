@@ -12,9 +12,9 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_me_menu_submitIcon"
-            android:src="@drawable/ic_plus_light"
+            android:src="@drawable/ic_plus"
             style="@style/material_icon"
             tools:ignore="ContentDescription" />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_me_menu_portfolioIcon"
             android:src="@drawable/ic_earth_light"
             style="@style/material_icon"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_me_menu_shareIcon"
             android:src="@drawable/ic_share_light"
             style="@style/material_icon"

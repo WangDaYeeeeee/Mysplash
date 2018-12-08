@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/colorRoot_light">
+    android:background="@color/colorRoot">
 
     <RelativeLayout
         android:id="@+id/popup_wallpaper_clip_square"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_wallpaper_clip_squareIcon"
             android:src="@drawable/ic_orientation_squarish_light"
             style="@style/material_icon"
@@ -25,7 +25,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/popup_wallpaper_clip_squareIcon"
             android:layout_width="wrap_content"
-            android:textColor="@color/colorTextContent_light"
+            android:textColor="@color/colorTextContent"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_wallpaper_clip_rectIcon"
             android:src="@drawable/ic_orientation_portrait_light"
             style="@style/material_icon"
@@ -50,7 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/popup_wallpaper_clip_rectIcon"
             android:layout_width="wrap_content"
-            android:textColor="@color/colorTextContent_light"
+            android:textColor="@color/colorTextContent"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
 

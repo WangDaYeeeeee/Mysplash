@@ -32,10 +32,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageButton
+                    <android.support.v7.widget.AppCompatImageButton
                         android:id="@+id/activity_custom_api_closeBtn"
+                        android:src="@drawable/ic_close"
                         style="@style/material_image_button"
-                        tools:src="@drawable/ic_close_light"
                         tools:ignore="ContentDescription" />
 
                     <LinearLayout

@@ -10,9 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/container_update_me_closeBtn"
-            android:src="@drawable/ic_close_light"
+            android:src="@drawable/ic_close"
             style="@style/material_image_button"
             tools:ignore="ContentDescription" />
 

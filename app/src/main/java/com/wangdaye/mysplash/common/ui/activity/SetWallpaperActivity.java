@@ -16,10 +16,10 @@ import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -62,13 +62,13 @@ public class SetWallpaperActivity extends ReadWriteActivity
     CoordinatorLayout container;
 
     @BindView(R.id.activity_set_wallpaper_closeBtn)
-    ImageButton closeBtn;
+    AppCompatImageButton closeBtn;
 
     @BindView(R.id.activity_set_wallpaper_typeBtn)
-    ImageView typeBtn;
+    AppCompatImageView typeBtn;
 
     @BindView(R.id.activity_set_wallpaper_alignBtn)
-    ImageView alignBtn;
+    AppCompatImageView alignBtn;
 
     @BindView(R.id.activity_set_wallpaper_setBtn)
     Button setBtn;
@@ -126,7 +126,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @Override
     protected void setTheme() {
-        setTheme(R.style.MysplashTheme_dark_SetWallpaper);
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -193,7 +192,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
         photoView.enable();
         photoView.setMaxScale(2.5f);
-        photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        photoView.setScaleType(AppCompatImageView.ScaleType.CENTER_CROP);
         ImageHelper.loadBitmap(this, photoView, getIntent().getData());
         ImageHelper.loadBitmap(
                 this,
@@ -225,12 +224,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
             closeBtn.setImageResource(R.drawable.ic_toolbar_close_light);
-            setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextContent_light));
+            setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextDark2nd));
         } else {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             closeBtn.setImageResource(R.drawable.ic_toolbar_close_dark);
-            setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextContent_dark));
+            setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextLight2nd));
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -309,7 +308,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     @Nullable
     private InputStream getPhotoStream() {
         Uri uri = getIntent().getData();
-        if (uri != null && uri.getScheme().equals("file")) {
+        if (uri != null && uri.getScheme() != null && uri.getScheme().equals("file")) {
             File file = new File(uri.getSchemeSpecificPart());
             if (file.exists()) {
                 String path = FileUtils.uriToFilePath(this, uri);
@@ -322,7 +321,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                     }
                 }
             }
-        } else if (uri != null && uri.getScheme().equals("content")) {
+        } else if (uri != null && uri.getScheme() != null && uri.getScheme().equals("content")) {
             try {
                 ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
                 if (parcelFileDescriptor != null) {

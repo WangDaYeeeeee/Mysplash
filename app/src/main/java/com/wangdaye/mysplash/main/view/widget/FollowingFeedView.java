@@ -2,24 +2,20 @@ package com.wangdaye.mysplash.main.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.FollowingModel;
@@ -87,9 +83,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @BindView(R.id.container_following_avatar_avatar)
     CircleImageView avatar;
 
-    @BindView(R.id.container_following_avatar_verbIcon)
-    ImageView verbIcon;
-
     private AvatarScrollListener avatarScrollListener;
 
     private FollowingModel followingModel;
@@ -109,20 +102,20 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     private static class SavedState extends BaseSavedState {
 
-        String nextPage;
+        int page;
         boolean over;
         float offsetY;
 
         SavedState(FollowingFeedView view, Parcelable superState) {
             super(superState);
-            this.nextPage = view.followingModel.getNextPage();
+            this.page = view.followingModel.getPhotosPage();
             this.over = view.followingModel.isOver();
             this.offsetY = view.offsetY;
         }
 
         private SavedState(Parcel in) {
             super(in);
-            this.nextPage = in.readString();
+            this.page = in.readInt();
             this.over = in.readByte() != 0;
             this.offsetY = in.readFloat();
         }
@@ -130,7 +123,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         @Override
         public void writeToParcel(Parcel out, int flags) {
             super.writeToParcel(out, flags);
-            out.writeString(this.nextPage);
+            out.writeInt(this.page);
             out.writeByte(this.over ? (byte) 1 : (byte) 0);
             out.writeFloat(this.offsetY);
         }
@@ -184,7 +177,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         this.followingModel = new FollowingObject(
                 new FollowingAdapter(
                         getContext(),
-                        new ArrayList<FollowingResult>(Mysplash.DEFAULT_PER_PAGE)));
+                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE)));
         this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
 
@@ -271,7 +264,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         SavedState ss = (SavedState) state;
         super.onRestoreInstanceState(ss.getSuperState());
 
-        followingPresenter.setNextPage(ss.nextPage);
+        followingPresenter.setPage(ss.page);
         followingPresenter.setOver(ss.over);
         setOffsetY(ss.offsetY);
     }
@@ -293,11 +286,35 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         return false;
     }
 
-    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
+        if ((headDirection && followingPresenter.getAdapter().getRealItemCount() < headIndex)
+                || (!headDirection && followingPresenter.getAdapter().getRealItemCount() < headIndex + list.size())) {
+            return new ArrayList<>();
+        }
+
+        if (!headDirection && followingPresenter.canLoadMore()) {
+            followingPresenter.loadMore(getContext(), false);
+        }
+        if (!recyclerView.canScrollVertically(1) && followingPresenter.isLoading()) {
+            setLoading(true);
+        }
+
         if (headDirection) {
-            return followingPresenter.getAdapter().getPhotoListToAnIndex(bundle, headIndex - 1);
+            if (headIndex == 0) {
+                return new ArrayList<>();
+            } else {
+                return followingPresenter.getAdapter().getPhotoList().subList(0, headIndex - 1);
+            }
         } else {
-            return followingPresenter.getAdapter().getPhotoListFromAnIndex(bundle, headIndex + list.size());
+            if (followingPresenter.getAdapter().getRealItemCount() == headIndex + list.size()) {
+                return new ArrayList<>();
+            } else {
+                return followingPresenter.getAdapter()
+                        .getPhotoList()
+                        .subList(
+                                headIndex + list.size(),
+                                followingPresenter.getAdapter().getRealItemCount() - 1);
+            }
         }
     }
 
@@ -312,8 +329,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
      *
      * @return Following feeds in adapter.
      * */
-    public List<FollowingResult> getFeeds() {
-        return followingPresenter.getAdapter().getFeeds();
+    public List<Photo> getFeeds() {
+        return followingPresenter.getAdapter().getPhotoList();
     }
 
     /**
@@ -321,11 +338,11 @@ public class FollowingFeedView extends NestedScrollFrameLayout
      *
      * @param list Following feeds that will be set to the adapter.
      * */
-    public void setFeeds(List<FollowingResult> list) {
+    public void setFeeds(List<Photo> list) {
         if (list == null) {
             list = new ArrayList<>();
         }
-        followingPresenter.getAdapter().setFeeds(list);
+        followingPresenter.getAdapter().setPhotoList(list);
         if (list.size() == 0) {
             initRefresh();
         } else {
@@ -399,12 +416,15 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         if (recyclerView.getLayoutManager() != null) {
             int adapterPosition = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
                     .findFirstVisibleItemPositions(null)[0];
-            IntentHelper.startUserActivity(
-                    Mysplash.getInstance().getTopActivity(),
-                    avatar,
-                    avatarBackground,
-                    followingPresenter.getAdapter().getActor(adapterPosition),
-                    UserActivity.PAGE_PHOTO);
+            User user = followingPresenter.getAdapter().getUser(adapterPosition);
+            if (user != null) {
+                IntentHelper.startUserActivity(
+                        Mysplash.getInstance().getTopActivity(),
+                        avatar,
+                        avatarBackground,
+                        user,
+                        UserActivity.PAGE_PHOTO);
+            }
         }
     }
 
@@ -451,8 +471,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         // data
         private int column;
 
+        @Nullable
         private User lastActor;
-        private String lastVerb;
 
         private int avatarPosition;
         private int lastAvatarPosition;
@@ -463,7 +483,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             this.column = column;
 
             this.lastActor = null;
-            this.lastVerb = null;
 
             this.avatarPosition = 0;
             this.lastAvatarPosition = 0;
@@ -526,59 +545,30 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
 
         private void setAvatarAppearance(RecyclerView recyclerView) {
-            User user = followingPresenter.getAdapter().getActor(avatarPosition);
+            User user = followingPresenter.getAdapter().getUser(avatarPosition);
+            if (user == null) {
+                return;
+            }
+
             if (lastActor == null || !lastActor.username.equals(user.username)) {
                 setAvatarImage(avatarPosition);
             }
-            setAvatarVerb(avatarPosition);
 
             followingPresenter.getAdapter()
                     .setTitleAvatarVisibility(recyclerView, lastAvatarPosition, avatarPosition);
         }
 
         private void setAvatarImage(int position) {
-            lastActor = followingPresenter.getAdapter().getActor(position);
-            ImageHelper.loadAvatar(getContext(), avatar, lastActor, 0, null);
-        }
-
-        private void setAvatarVerb(int position) {
-            String verb = followingPresenter.getAdapter().getVerb(position);
-            if (TextUtils.isEmpty(lastVerb) || !lastVerb.equals(verb)) {
-                lastVerb = verb;
-                switch (verb) {
-                    case FollowingResult.VERB_LIKED:
-                        verbIcon.setImageResource(R.drawable.ic_verb_liked);
-                        break;
-
-                    case FollowingResult.VERB_COLLECTED:
-                        verbIcon.setImageResource(R.drawable.ic_verb_collected);
-                        break;
-
-                    case FollowingResult.VERB_FOLLOWED:
-                        verbIcon.setImageResource(
-                                ThemeManager.getInstance(getContext()).isLightTheme() ?
-                                        R.drawable.ic_verb_followed_light : R.drawable.ic_verb_followed_dark);
-                        break;
-
-                    case FollowingResult.VERB_RELEASE:
-                        verbIcon.setImageResource(R.drawable.ic_verb_published);
-                        break;
-
-                    case FollowingResult.VERB_PUBLISHED:
-                        verbIcon.setImageResource(R.drawable.ic_verb_published);
-                        break;
-
-                    case FollowingResult.VERB_CURATED:
-                        verbIcon.setImageResource(R.drawable.ic_verb_curated);
-                        break;
-                }
+            lastActor = followingPresenter.getAdapter().getUser(position);
+            if (lastActor != null) {
+                ImageHelper.loadAvatar(getContext(), avatar, lastActor, 0, null);
             }
         }
     }
 
     // view.
 
-    // category view.
+    // following view.
 
     @Override
     public void setRefreshing(boolean refreshing) {
@@ -674,7 +664,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     @Override
     public void scrollToTop() {
         avatarScrollListener.setAvatarImage(0);
-        avatarScrollListener.setAvatarVerb(0);
         BackToTopUtils.scrollToTop(recyclerView);
     }
 

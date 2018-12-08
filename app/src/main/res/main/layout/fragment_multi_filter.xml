@@ -45,8 +45,10 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
-                            <ImageButton
+                            <android.support.v7.widget.AppCompatImageButton
                                 android:id="@+id/fragment_multi_filter_searchBtn"
+                                android:src="@drawable/ic_toolbar_search_light"
+                                android:tint="?attr/content_color"
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
                                 android:layout_width="40dp"
@@ -54,7 +56,6 @@
                                 android:padding="@dimen/little_margin"
                                 android:layout_marginEnd="@dimen/little_margin"
                                 android:background="?attr/selectableItemBackgroundBorderless"
-                                tools:src="@drawable/ic_toolbar_search_light"
                                 tools:ignore="ContentDescription,RtlHardcoded" />
 
                             <android.support.v7.widget.CardView
@@ -132,12 +133,12 @@
                         android:layout_weight="1"
                         android:foreground="?attr/selectableItemBackground">
 
-                        <ImageButton
+                        <android.support.v7.widget.AppCompatImageButton
                             android:id="@+id/fragment_multi_filter_categoryBtn"
+                            android:src="@drawable/ic_menu_down"
                             android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
                             style="@style/material_image_button"
-                            tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription" />
 
                         <TextView
@@ -158,12 +159,12 @@
                         android:layout_weight="1"
                         android:foreground="?attr/selectableItemBackground">
 
-                        <ImageButton
+                        <android.support.v7.widget.AppCompatImageButton
                             android:id="@+id/fragment_multi_filter_orientationBtn"
+                            android:src="@drawable/ic_menu_down"
                             android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
                             style="@style/material_image_button"
-                            tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription" />
 
                         <TextView
@@ -184,12 +185,12 @@
                         android:layout_weight="1"
                         android:foreground="?attr/selectableItemBackground">
 
-                        <ImageButton
+                        <android.support.v7.widget.AppCompatImageButton
                             android:id="@+id/fragment_multi_filter_featuredBtn"
+                            android:src="@drawable/ic_menu_down"
                             android:layout_centerVertical="true"
                             android:layout_alignParentEnd="true"
                             style="@style/material_image_button"
-                            tools:src="@drawable/ic_menu_down_light"
                             tools:ignore="ContentDescription" />
 
                         <TextView

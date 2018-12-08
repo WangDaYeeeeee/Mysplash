@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_google"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
@@ -51,7 +51,7 @@
                         android:layout_centerVertical="true"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_microphone"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_folder"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_rect"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_cube"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_flask"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_phone"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -168,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_message"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_drawer"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -200,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_circle"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_rect"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"

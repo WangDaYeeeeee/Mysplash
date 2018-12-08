@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextPaint;
 import android.util.TypedValue;
@@ -13,8 +15,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -32,7 +32,6 @@ import com.wangdaye.mysplash.common.i.view.PagerManageView;
 import com.wangdaye.mysplash.common.i.view.PagerView;
 import com.wangdaye.mysplash.common.i.view.PopupManageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.model.fragment.PagerManageObject;
 import com.wangdaye.mysplash.main.presenter.fragment.HomeFragmentPopupManageImplementor;
@@ -42,7 +41,6 @@ import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.main.view.widget.HomePhotosView;
-import com.wangdaye.mysplash.main.view.widget.HomeTrendingView;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,10 +76,10 @@ public class HomeFragment extends LoadableFragment<Photo>
     Toolbar toolbar;
 
     @BindView(R.id.container_notification_bar_button)
-    ImageButton bellBtn;
+    AppCompatImageButton bellBtn;
 
     @BindView(R.id.container_notification_bar_unreadFlag)
-    ImageView redDot;
+    AppCompatImageView redDot;
 
     @BindView(R.id.fragment_home_viewPager)
     ViewPager viewPager;
@@ -89,7 +87,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     @BindView(R.id.fragment_home_indicator)
     AutoHideInkPageIndicator indicator;
 
-    private PagerView[] pagers = new PagerView[Mysplash.hasNode() ? 3 : 2];
+    private PagerView[] pagers = new PagerView[2];
 
     private ToolbarPresenter toolbarPresenter;
 
@@ -171,12 +169,6 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void writeLargeData(MysplashActivity.BaseSavedStateFragment outState) {
-
-        if (Mysplash.hasNode() && pagers[trendingPage()] != null) {
-            ((MainActivity.SavedStateFragment) outState).setHomeTrendingList(
-                    ((HomeTrendingView) pagers[trendingPage()]).getPhotos());
-        }
-
         if (pagers[newPage()] != null) {
             ((MainActivity.SavedStateFragment) outState).setHomeNewList(
                     ((HomePhotosView) pagers[newPage()]).getPhotos());
@@ -189,12 +181,6 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState) {
-
-        if (Mysplash.hasNode() && pagers[trendingPage()] != null) {
-            ((HomeTrendingView) pagers[trendingPage()]).setPhotos(
-                    ((MainActivity.SavedStateFragment) savedInstanceState).getHomeTrendingList());
-        }
-
         if (pagers[newPage()] != null) {
             ((HomePhotosView) pagers[newPage()]).setPhotos(
                     ((MainActivity.SavedStateFragment) savedInstanceState).getHomeNewList());
@@ -226,14 +212,10 @@ public class HomeFragment extends LoadableFragment<Photo>
     @Override
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
         int pagerIndex = bundle.getInt(KEY_HOME_FRAGMENT_PAGE_POSITION, -1);
-        if (Mysplash.hasNode() && pagerIndex == trendingPage()) {
-            return ((HomeTrendingView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
-        } else {
-            if (((HomePhotosView) pagers[pagerIndex])
-                    .getOrder()
-                    .equals(bundle.getString(KEY_HOME_FRAGMENT_PAGE_ORDER, ""))) {
-                return ((HomePhotosView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
-            }
+        if (((HomePhotosView) pagers[pagerIndex])
+                .getOrder()
+                .equals(bundle.getString(KEY_HOME_FRAGMENT_PAGE_ORDER, ""))) {
+            return ((HomePhotosView) pagers[pagerIndex]).loadMore(list, headIndex, headDirection);
         }
         return new ArrayList<>();
     }
@@ -252,11 +234,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     @Override
     public void updateData(Photo photo) {
         int page = pagerManagePresenter.getPagerPosition();
-        if (Mysplash.hasNode() && page == trendingPage()) {
-            ((HomeTrendingView) pagers[page]).updatePhoto(photo, true);
-        } else {
-            ((HomePhotosView) pagers[page]).updatePhoto(photo, true);
-        }
+        ((HomePhotosView) pagers[page]).updatePhoto(photo, true);
     }
 
     // init.
@@ -270,10 +248,9 @@ public class HomeFragment extends LoadableFragment<Photo>
     private void initView(View v, Bundle savedInstanceState) {
         appBar.setOnNestedScrollingListener(this);
 
-        ThemeManager.inflateMenu(
-                toolbar, R.menu.fragment_home_toolbar_light, R.menu.fragment_home_toolbar_dark);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);
+        toolbar.inflateMenu(R.menu.fragment_home_toolbar);
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
 
@@ -307,14 +284,6 @@ public class HomeFragment extends LoadableFragment<Photo>
     private void initPages(View v, Bundle savedInstanceState) {
         List<View> pageList = new ArrayList<>();
 
-        if (Mysplash.hasNode()) {
-            pageList.add(
-                    new HomeTrendingView(
-                            (MainActivity) getActivity(),
-                            R.id.fragment_home_page_trending,
-                            trendingPage(),
-                            pagerManagePresenter.getPagerPosition() == trendingPage()));
-        }
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
@@ -337,9 +306,6 @@ public class HomeFragment extends LoadableFragment<Photo>
 
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, homeTabs);
-        if (!Mysplash.hasNode()) {
-            tabList.remove(0);
-        }
 
         MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
 
@@ -377,27 +343,19 @@ public class HomeFragment extends LoadableFragment<Photo>
     public void showPopup() {
         int page = pagerManagePresenter.getPagerPosition();
 
-        if (Mysplash.hasNode() && page == trendingPage()) {
-            NotificationHelper.showSnackbar(getString(R.string.feedback_no_filter));
-        } else {
-            popupManageImplementor.showPopup(
-                    getActivity(),
-                    toolbar,
-                    pagerManagePresenter.getPagerKey(page),
-                    page);
-        }
-    }
-
-    public static int trendingPage() {
-        return 0;
+        popupManageImplementor.showPopup(
+                getActivity(),
+                toolbar,
+                pagerManagePresenter.getPagerKey(page),
+                page);
     }
 
     public static int newPage() {
-        return Mysplash.hasNode() ? 1 : 0;
+        return 0;
     }
 
     public static int featuredPage() {
-        return Mysplash.hasNode() ? 2 : 1;
+        return 1;
     }
 
     // interface.

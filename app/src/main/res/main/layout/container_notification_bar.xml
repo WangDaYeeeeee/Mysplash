@@ -14,9 +14,10 @@
         android:layout_centerVertical="true"
         tools:ignore="RelativeOverlap" />
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/container_notification_bar_button"
-        android:src="@drawable/ic_bell_light"
+        android:src="@drawable/ic_bell"
+        android:tint="?attr/content_color"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:padding="3dp"
@@ -26,7 +27,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/container_notification_bar_unreadFlag"
         android:src="@drawable/ic_unread"
         android:layout_width="30dp"

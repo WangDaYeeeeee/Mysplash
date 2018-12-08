@@ -11,15 +11,16 @@
         android:layout_height="wrap_content"
         tools:ignore="UselessParent">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/item_photo_2_location_icon"
+            android:src="@drawable/ic_location"
+            android:tint="?attr/content_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/normal_margin"
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_marginBottom="@dimen/normal_margin"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_location_light"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <TextView

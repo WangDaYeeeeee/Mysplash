@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -62,18 +61,6 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         featuredTxt.setText(v.getContext().getResources().getString(R.string.curated));
         if (valueNow) {
             featuredTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
-        }
-
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_search_featured_allIcon))
-                    .setImageResource(R.drawable.ic_infinity_light);
-            ((ImageView) v.findViewById(R.id.popup_search_featured_featuredIcon))
-                    .setImageResource(R.drawable.ic_feature_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_search_featured_allIcon))
-                    .setImageResource(R.drawable.ic_infinity_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_featured_featuredIcon))
-                    .setImageResource(R.drawable.ic_feature_dark);
         }
     }
 

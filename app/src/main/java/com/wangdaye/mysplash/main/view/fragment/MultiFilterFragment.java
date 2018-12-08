@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
@@ -15,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -89,7 +89,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
             R.id.fragment_multi_filter_categoryBtn,
             R.id.fragment_multi_filter_orientationBtn,
             R.id.fragment_multi_filter_featuredBtn})
-    ImageButton[] menuIcons;
+    AppCompatImageButton[] menuIcons;
 
     @BindView(R.id.fragment_multi_filter_photosView)
     MultiFilterPhotosView photosView;
@@ -137,7 +137,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, editTexts[0].getText().toString());
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_USER, editTexts[1].getText().toString());
@@ -246,18 +246,9 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         editTexts[0].setFocusable(true);
         editTexts[0].requestFocus();
 
-        ImageButton searchBtn = ButterKnife.findById(v, R.id.fragment_multi_filter_searchBtn);
-        ThemeManager.setImageResource(
-                searchBtn, R.drawable.ic_toolbar_search_light, R.drawable.ic_toolbar_search_dark);
-
         responsePopup(String.valueOf(multiFilterBarPresenter.getCategory()), 0);
         responsePopup(String.valueOf(multiFilterBarPresenter.getOrientation()), 1);
         responsePopup(String.valueOf(multiFilterBarPresenter.isFeatured()), 2);
-
-        for (ImageButton b : menuIcons) {
-            ThemeManager.setImageResource(
-                    b, R.drawable.ic_menu_down_light, R.drawable.ic_menu_down_dark);
-        }
 
         photosView.setActivity((MainActivity) getActivity());
         photosView.setOnMultiFilterDataInputInterface(this);

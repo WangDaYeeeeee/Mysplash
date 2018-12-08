@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/colorRoot_light">
+    android:background="@color/colorRoot">
 
     <RelativeLayout
         android:id="@+id/popup_wallpaper_align_left"
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_wallpaper_align_leftIcon"
             android:src="@drawable/ic_align_left_light"
             style="@style/material_image_button"
@@ -25,7 +25,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/popup_wallpaper_align_leftIcon"
             android:layout_width="wrap_content"
-            android:textColor="@color/colorTextContent_light"
+            android:textColor="@color/colorTextContent"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_wallpaper_align_centerIcon"
             android:src="@drawable/ic_align_center_light"
             style="@style/material_image_button"
@@ -50,7 +50,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/popup_wallpaper_align_centerIcon"
             android:layout_width="wrap_content"
-            android:textColor="@color/colorTextContent_light"
+            android:textColor="@color/colorTextContent"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
 
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/popup_wallpaper_align_rightIcon"
             android:src="@drawable/ic_align_right_light"
             style="@style/material_image_button"
@@ -75,7 +75,7 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@id/popup_wallpaper_align_rightIcon"
             android:layout_width="wrap_content"
-            android:textColor="@color/colorTextContent_light"
+            android:textColor="@color/colorTextContent"
             style="@style/content_text"
             tools:ignore="HardcodedText,RtlHardcoded" />
 

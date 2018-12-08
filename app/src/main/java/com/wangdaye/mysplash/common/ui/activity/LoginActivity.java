@@ -5,11 +5,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -86,15 +85,6 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     protected void backToTop() {
         // do nothing.
     }
@@ -146,20 +136,17 @@ public class LoginActivity extends MysplashActivity
                 this, R.id.activity_login_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        ImageButton closeBtn = ButterKnife.findById(this, R.id.activity_login_closeBtn);
-        ThemeManager.setImageResource(closeBtn, R.drawable.ic_close_light, R.drawable.ic_close_dark);
-
-        ImageView icon = ButterKnife.findById(this, R.id.activity_login_icon);
+        AppCompatImageView icon = ButterKnife.findById(this, R.id.activity_login_icon);
         ImageHelper.loadResourceImage(this, icon, R.drawable.ic_launcher);
 
         Button loginBtn = ButterKnife.findById(this, R.id.activity_login_loginBtn);
         Button joinBtn = ButterKnife.findById(this, R.id.activity_login_joinBtn);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             if (ThemeManager.getInstance(this).isLightTheme()) {
-                loginBtn.setBackgroundResource(R.color.colorTextTitle_light);
+                loginBtn.setBackgroundResource(R.color.colorPrimaryDark_dark);
                 joinBtn.setBackgroundResource(R.color.colorPrimaryDark_light);
             } else {
-                loginBtn.setBackgroundResource(R.color.colorTextTitle_dark);
+                loginBtn.setBackgroundResource(R.color.colorPrimaryDark_light);
                 joinBtn.setBackgroundResource(R.color.colorPrimaryDark_dark);
             }
         } else {

@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.about.view.holder;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -28,7 +28,7 @@ import butterknife.OnClick;
 public class AppHolder extends AboutAdapter.ViewHolder {
 
     @BindView(R.id.item_about_app_icon)
-    ImageView icon;
+    AppCompatImageView icon;
 
     @BindView(R.id.item_about_app_title)
     TextView text;

@@ -83,6 +83,22 @@ public class ValueUtils {
         }
     }
 
+    public static String getAutoNightModeName(Context c, String key) {
+        switch (key) {
+            case "close":
+                return c.getResources().getStringArray(R.array.auto_night_mode_types)[0];
+
+            case "auto":
+                return c.getResources().getStringArray(R.array.auto_night_mode_types)[1];
+
+            case "follow_system":
+                return c.getResources().getStringArray(R.array.auto_night_mode_types)[2];
+
+            default:
+                return null;
+        }
+    }
+
     public static String getSaturationAnimationDurationName(Context c, String key) {
         switch (key) {
             case "300":

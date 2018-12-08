@@ -5,11 +5,9 @@ import android.content.Context;
 import android.support.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.ButterKnife;
 
@@ -51,13 +49,6 @@ public class PhotoMenuPopupWindow extends MysplashPopupWindow
 
         v.findViewById(R.id.popup_photo_menu_downloadPage).setOnClickListener(this);
         v.findViewById(R.id.popup_photo_menu_storyPage).setOnClickListener(this);
-
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_photo_menu_downloadPageIcon),
-                R.drawable.ic_image_search_light, R.drawable.ic_image_search_dark);
-        ThemeManager.setImageResource(
-                (ImageView) v.findViewById(R.id.popup_photo_menu_storyPageIcon),
-                R.drawable.ic_book_light, R.drawable.ic_book_dark);
     }
 
     // interface.

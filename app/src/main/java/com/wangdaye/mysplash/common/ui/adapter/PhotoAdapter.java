@@ -1,10 +1,12 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +14,6 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -90,10 +91,10 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         TextView title;
 
         @BindView(R.id.item_photo_deleteButton)
-        ImageButton deleteButton;
+        AppCompatImageButton deleteButton;
 
         @BindView(R.id.item_photo_collectionButton)
-        ImageButton collectionButton;
+        AppCompatImageButton collectionButton;
 
         @BindView(R.id.item_photo_likeButton)
         CircularProgressIcon likeButton;
@@ -140,6 +141,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 collectionButton.setImageResource(R.drawable.ic_item_collect);
             }
 
+            likeButton.setProgressColor(Color.WHITE);
             if (photo.settingLike) {
                 likeButton.forceSetProgressState();
             } else {

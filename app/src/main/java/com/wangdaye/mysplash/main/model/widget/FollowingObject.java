@@ -15,7 +15,7 @@ public class FollowingObject implements FollowingModel {
     private FollowingAdapter adapter;
     private FeedService service;
 
-    private String nextPage;
+    private int photosPage;
 
     private boolean refreshing;
     private boolean loading;
@@ -25,7 +25,7 @@ public class FollowingObject implements FollowingModel {
         this.adapter = adapter;
         this.service = FeedService.getService();
 
-        this.nextPage = getFirstPage();
+        this.photosPage = adapter.getRealItemCount() / Mysplash.DEFAULT_PER_PAGE;
 
         this.refreshing = false;
         this.loading = false;
@@ -43,18 +43,13 @@ public class FollowingObject implements FollowingModel {
     }
 
     @Override
-    public String getFirstPage() {
-        return Mysplash.UNSPLASH_URL + Mysplash.UNSPLASH_NODE_API_URL + Mysplash.UNSPLASH_FOLLOWING_FEED_URL;
+    public int getPhotosPage() {
+        return photosPage;
     }
 
     @Override
-    public String getNextPage() {
-        return nextPage;
-    }
-
-    @Override
-    public void setNextPage(String nextPage) {
-        this.nextPage = nextPage;
+    public void setPhotosPage(int page) {
+        photosPage = page;
     }
 
     @Override

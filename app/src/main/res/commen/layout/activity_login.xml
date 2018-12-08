@@ -32,9 +32,9 @@
                     android:layout_height="match_parent"
                     android:background="?attr/root_color">
 
-                    <ImageButton
+                    <android.support.v7.widget.AppCompatImageButton
                         android:id="@+id/activity_login_closeBtn"
-                        android:src="@drawable/ic_close_light"
+                        android:src="@drawable/ic_close"
                         style="@style/material_image_button"
                         tools:ignore="ContentDescription" />
 
@@ -43,7 +43,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true">
 
-                        <ImageView
+                        <android.support.v7.widget.AppCompatImageView
                             android:id="@+id/activity_login_icon"
                             android:layout_centerHorizontal="true"
                             android:layout_width="@dimen/design_icon_size"

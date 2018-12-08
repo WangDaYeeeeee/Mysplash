@@ -42,8 +42,10 @@
             tools:text="Wang Yueeeeee"
             tools:ignore="RtlHardcoded" />
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/item_user_portfolio"
+            android:src="@drawable/ic_item_earth_light"
+            android:tint="?attr/content_color"
             android:layout_width="@dimen/nano_icon_size"
             android:layout_height="@dimen/nano_icon_size"
             android:layout_marginStart="@dimen/little_margin"
@@ -51,7 +53,6 @@
             android:layout_toEndOf="@id/item_user_title"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            tools:src="@drawable/ic_item_earth_light"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
     </RelativeLayout>

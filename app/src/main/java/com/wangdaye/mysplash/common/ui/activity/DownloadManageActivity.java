@@ -181,15 +181,6 @@ public class DownloadManageActivity extends ReadWriteActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_Common);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_Common);
-        }
-    }
-
-    @Override
     public void handleBackPressed() {
         finishSelf(true);
     }
@@ -235,9 +226,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                     toolbar,
                     R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         }
-        ThemeManager.inflateMenu(toolbar,
-                R.menu.activity_download_manage_toolbar_light,
-                R.menu.activity_download_manage_toolbar_dark);
+        toolbar.inflateMenu(R.menu.activity_download_manage_toolbar);
         toolbar.setNavigationOnClickListener(this);
         toolbar.setOnMenuItemClickListener(this);
 

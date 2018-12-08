@@ -10,9 +10,9 @@
     android:background="?attr/root_color"
     tools:ignore="DisableBaselineAlignment">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/item_photo_2_exif_icon"
-        android:src="@drawable/ic_camera_light"
+        android:src="@drawable/ic_camera"
         style="@style/material_icon"
         tools:ignore="ContentDescription" />
 

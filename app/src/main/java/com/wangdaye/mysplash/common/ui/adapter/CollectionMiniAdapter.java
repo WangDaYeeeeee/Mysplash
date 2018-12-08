@@ -2,13 +2,14 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
@@ -40,7 +41,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
             implements ImageHelper.OnLoadImageListener<Photo> {
 
         @BindView(R.id.item_collection_mini_image)
-        ImageView image;
+        AppCompatImageView image;
 
         @BindView(R.id.item_collection_mini_title)
         TextView title;
@@ -49,7 +50,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         TextView subtitle;
 
         @BindView(R.id.item_collection_mini_lockIcon)
-        ImageView lockIcon;
+        AppCompatImageView lockIcon;
 
         @BindView(R.id.item_collection_icon)
         CircularProgressIcon stateIcon;
@@ -90,6 +91,7 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
                 lockIcon.setAlpha(0f);
             }
 
+            stateIcon.setProgressColor(Color.WHITE);
             if (collection.editing) {
                 stateIcon.forceSetProgressState();
             } else {

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,7 +16,6 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -101,7 +101,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
     SwipeSwitchLayout swipeSwitchView;
 
     @BindView(R.id.activity_photo_2_switchBackground)
-    ImageView switchBackground;
+    AppCompatImageView switchBackground;
 
     @BindView(R.id.activity_photo_2_regularImage)
     FullScreenImageView regularImage;
@@ -212,11 +212,6 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @Override
     protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_Translucent_TranslucentNavigation_Photo2);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_Translucent_TranslucentNavigation_Photo2);
-        }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
         }
@@ -379,7 +374,7 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
             } else {
                 toolbar.setNavigationIcon(R.drawable.ic_toolbar_back_dark);
             }
-            toolbar.inflateMenu(R.menu.activity_photo_toolbar_dark);
+            toolbar.inflateMenu(R.menu.activity_photo_toolbar);
             toolbar.setNavigationOnClickListener(this);
             toolbar.setOnMenuItemClickListener(this);
 
@@ -921,8 +916,9 @@ public class PhotoActivity2 extends RequestLoadActivity<Photo>
 
     @Override
     public void requestPhotoFailed() {
-        if (recyclerView.getLayoutManager() != null &&
-                ((GridLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == 2) {
+        if (recyclerView.getLayoutManager() != null
+                && recyclerView.getLayoutManager() instanceof GridLayoutManager
+                && ((GridLayoutManager) recyclerView.getLayoutManager()).findLastVisibleItemPosition() == 2) {
             ProgressHolder holder = (ProgressHolder) recyclerView.findViewHolderForAdapterPosition(2);
             if (holder != null) {
                 holder.setFailedState();

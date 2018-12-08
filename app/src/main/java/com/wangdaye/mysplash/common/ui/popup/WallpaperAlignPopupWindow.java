@@ -54,17 +54,17 @@ public class WallpaperAlignPopupWindow extends MysplashPopupWindow
 
         TextView leftTxt = ButterKnife.findById(v, R.id.popup_wallpaper_align_leftTxt);
         if (valueNow == SetWallpaperActivity.ALIGN_TYPE_LEFT) {
-            leftTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
+            leftTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle));
         }
 
         TextView centerTxt = ButterKnife.findById(v, R.id.popup_wallpaper_align_centerTxt);
         if (valueNow == SetWallpaperActivity.ALIGN_TYPE_CENTER) {
-            centerTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
+            centerTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle));
         }
 
         TextView rightTxt = ButterKnife.findById(v, R.id.popup_wallpaper_align_rightTxt);
         if (valueNow == SetWallpaperActivity.ALIGN_TYPE_RIGHT) {
-            rightTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle_light));
+            rightTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle));
         }
     }
 

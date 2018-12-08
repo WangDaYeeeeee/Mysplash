@@ -54,11 +54,11 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/activity_introduce_backBtn"
+        android:src="@drawable/ic_close"
         android:layout_below="@id/activity_introduce_statusBar"
         style="@style/material_image_button"
-        tools:src="@drawable/ic_close_light"
         tools:ignore="ContentDescription" />
 
 </RelativeLayout>

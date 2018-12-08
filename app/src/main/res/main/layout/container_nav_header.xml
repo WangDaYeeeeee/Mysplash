@@ -29,7 +29,7 @@
             tools:src="@drawable/ic_launcher"
             tools:ignore="ContentDescription" />
 
-        <ImageView
+        <android.support.v7.widget.AppCompatImageView
             android:id="@+id/container_nav_header_appIcon"
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"
@@ -62,9 +62,9 @@
         style="@style/subtitle_text"
         tools:ignore="RtlHardcoded" />
 
-    <ImageButton
+    <android.support.v7.widget.AppCompatImageButton
         android:id="@+id/container_nav_header_button"
-        android:src="@drawable/ic_plus_mini_light"
+        android:src="@drawable/ic_plus_mini"
         android:layout_width="34dp"
         android:layout_height="34dp"
         android:padding="@dimen/little_margin"
@@ -72,6 +72,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignBottom="@id/container_nav_header_subtitle"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:tint="?attr/content_color"
         tools:ignore="ContentDescription,RtlHardcoded" />
 
 </RelativeLayout>

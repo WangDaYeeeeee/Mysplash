@@ -11,11 +11,12 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.AppCompatImageButton;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -23,7 +24,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.entity.unsplash.FollowingResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
@@ -87,11 +87,11 @@ public class MainActivity extends LoadableActivity<Photo>
     @BindView(R.id.activity_main_navView)
     NavigationView nav;
 
-    private ImageView appIcon;
+    private AppCompatImageView appIcon;
     private CircleImageView navAvatar;
     private TextView navTitle;
     private TextView navSubtitle;
-    private ImageButton navButton;
+    private AppCompatImageButton navButton;
 
     private SafeHandler<MainActivity> handler;
 
@@ -142,11 +142,10 @@ public class MainActivity extends LoadableActivity<Photo>
 
     public static class SavedStateFragment extends BaseSavedStateFragment {
         // data
-        private List<Photo> homeTrendingList;
         private List<Photo> homeNewList;
         private List<Photo> homeFeaturedList;
 
-        private List<FollowingResult> followingFeedList;
+        private List<Photo> followingFeedList;
 
         private List<Collection> featuredCollectionList;
         private List<Collection> allCollectionList;
@@ -155,14 +154,6 @@ public class MainActivity extends LoadableActivity<Photo>
         private List<Photo> multiFilterList;
 
         // data.
-
-        public List<Photo> getHomeTrendingList() {
-            return homeTrendingList;
-        }
-
-        public void setHomeTrendingList(List<Photo> homeTrendingList) {
-            this.homeTrendingList = homeTrendingList;
-        }
 
         public List<Photo> getHomeNewList() {
             return homeNewList;
@@ -204,11 +195,11 @@ public class MainActivity extends LoadableActivity<Photo>
             this.curatedCollectionList = curatedCollectionList;
         }
 
-        public List<FollowingResult> getFollowingFeedList() {
+        public List<Photo> getFollowingFeedList() {
             return followingFeedList;
         }
 
-        public void setFollowingFeedList(List<FollowingResult> followingFeedList) {
+        public void setFollowingFeedList(List<Photo> followingFeedList) {
             this.followingFeedList = followingFeedList;
         }
 
@@ -277,11 +268,6 @@ public class MainActivity extends LoadableActivity<Photo>
 
     @Override
     protected void setTheme() {
-        if (ThemeManager.getInstance(this).isLightTheme()) {
-            setTheme(R.style.MysplashTheme_light_TranslucentNavigation_Main);
-        } else {
-            setTheme(R.style.MysplashTheme_dark_TranslucentNavigation_Main);
-        }
         if (DisplayUtils.isLandscape(this)) {
             DisplayUtils.cancelTranslucentNavigation(this);
         }
@@ -428,9 +414,9 @@ public class MainActivity extends LoadableActivity<Photo>
         this.handler = new SafeHandler<>(this);
 
         if (ThemeManager.getInstance(this).isLightTheme()) {
-            nav.inflateMenu(R.menu.activity_main_drawer_light);
+            nav.inflateMenu(R.menu.activity_main_drawer);
         } else {
-            nav.inflateMenu(R.menu.activity_main_drawer_dark);
+            nav.inflateMenu(R.menu.activity_main_drawer);
         }
         nav.setCheckedItem(drawerPresenter.getCheckedItemId());
         nav.setNavigationItemSelectedListener(this);
@@ -473,7 +459,10 @@ public class MainActivity extends LoadableActivity<Photo>
 
     private void changeTheme() {
         DisplayUtils.changeTheme(this);
-        reboot();
+        AppCompatDelegate.setDefaultNightMode(
+                ThemeManager.getInstance(this).isLightTheme()
+                        ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+        recreate();
     }
 
     public void reboot() {
@@ -690,11 +679,9 @@ public class MainActivity extends LoadableActivity<Photo>
     @Override
     public void drawMeButton() {
         if (!AuthManager.getInstance().isAuthorized()) {
-            ThemeManager.setImageResource(
-                    navButton, R.drawable.ic_plus_mini_light, R.drawable.ic_plus_mini_dark);
+            navButton.setImageResource(R.drawable.ic_plus_mini);
         } else {
-            ThemeManager.setImageResource(
-                    navButton, R.drawable.ic_close_mini_light, R.drawable.ic_close_mini_dark);
+            navButton.setImageResource(R.drawable.ic_close_mini);
         }
     }
 

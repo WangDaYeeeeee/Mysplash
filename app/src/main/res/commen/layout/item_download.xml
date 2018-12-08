@@ -11,12 +11,12 @@
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
     app:cardElevation="@dimen/low_elevation"
-    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
     app:cardCornerRadius="@dimen/material_card_radius"
     app:cardPreventCornerOverlap="false"
     tools:ignore="UnusedAttribute">
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/item_download_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/item_download_closeBtn"
             android:src="@drawable/ic_item_close"
             android:layout_width="34dp"
@@ -41,7 +41,7 @@
             android:layout_alignParentEnd="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/item_download_retry_check_btn"
             android:layout_width="34dp"
             android:layout_height="34dp"

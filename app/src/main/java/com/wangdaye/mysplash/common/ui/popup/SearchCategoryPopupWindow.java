@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -94,38 +93,6 @@ public class SearchCategoryPopupWindow extends MysplashPopupWindow
         TextView technologyTxt = ButterKnife.findById(v, R.id.popup_search_category_technologyTxt);
         if (valueNow == Mysplash.CATEGORY_TECHNOLOGY_ID) {
             technologyTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
-        }
-
-        if (ThemeManager.getInstance(v.getContext()).isLightTheme()) {
-            ((ImageView) v.findViewById(R.id.popup_search_category_allIcon))
-                    .setImageResource(R.drawable.ic_infinity_light);
-            ((ImageView) v.findViewById(R.id.popup_search_category_buildingsIcon))
-                    .setImageResource(R.drawable.ic_building_light);
-            ((ImageView) v.findViewById(R.id.popup_search_category_food_drinkIcon))
-                    .setImageResource(R.drawable.ic_drink_light);
-            ((ImageView) v.findViewById(R.id.popup_search_category_natureIcon))
-                    .setImageResource(R.drawable.ic_flower_light);
-            ((ImageView) v.findViewById(R.id.popup_search_category_objectIcon))
-                    .setImageResource(R.drawable.ic_cube_light);
-            ((ImageView) v.findViewById(R.id.popup_search_category_peopleIcon))
-                    .setImageResource(R.drawable.ic_face_light);
-            ((ImageView) v.findViewById(R.id.popup_search_category_technologyIcon))
-                    .setImageResource(R.drawable.ic_technology_light);
-        } else {
-            ((ImageView) v.findViewById(R.id.popup_search_category_allIcon))
-                    .setImageResource(R.drawable.ic_infinity_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_category_buildingsIcon))
-                    .setImageResource(R.drawable.ic_building_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_category_food_drinkIcon))
-                    .setImageResource(R.drawable.ic_drink_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_category_natureIcon))
-                    .setImageResource(R.drawable.ic_flower_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_category_objectIcon))
-                    .setImageResource(R.drawable.ic_cube_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_category_peopleIcon))
-                    .setImageResource(R.drawable.ic_face_dark);
-            ((ImageView) v.findViewById(R.id.popup_search_category_technologyIcon))
-                    .setImageResource(R.drawable.ic_technology_dark);
         }
 
         if (showAll) {

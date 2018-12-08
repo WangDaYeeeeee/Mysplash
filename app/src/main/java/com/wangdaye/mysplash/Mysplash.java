@@ -10,6 +10,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringDef;
+import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
@@ -18,6 +19,8 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
+import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
+import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
@@ -115,6 +118,15 @@ public class Mysplash extends Application {
         activityList = new ArrayList<>();
 
         DownloadHelper.getInstance(this);
+
+        if (SettingsOptionManager.getInstance(this).getAutoNightMode().equals("follow_system")) {
+            ThemeManager.getInstance(this);
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        } else {
+            AppCompatDelegate.setDefaultNightMode(
+                    ThemeManager.getInstance(this).isLightTheme()
+                            ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+        }
     }
 
     public static String getAppId(Context c, boolean auth) {
@@ -290,6 +302,12 @@ public class Mysplash extends Application {
             if (c.isInstance(activityList.get(i))) {
                 activityList.get(i).finish();
             }
+        }
+    }
+
+    public void dispatchRecreate() {
+        for (Activity a : activityList) {
+            a.recreate();
         }
     }
 }

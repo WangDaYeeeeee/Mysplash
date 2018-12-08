@@ -3,12 +3,12 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +20,6 @@ import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
 
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         CircleImageView avatar;
 
         @BindView(R.id.item_user_portfolio)
-        ImageButton portfolioBtn;
+        AppCompatImageButton portfolioBtn;
 
         @BindView(R.id.item_user_title)
         TextView title;
@@ -93,9 +92,6 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             } else {
                 portfolioBtn.setVisibility(View.VISIBLE);
             }
-
-            ThemeManager.setImageResource(
-                    portfolioBtn, R.drawable.ic_item_earth_light, R.drawable.ic_item_earth_dark);
 
             ImageHelper.loadAvatar(avatar.getContext(), avatar, user, position, this);
 

@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,7 +15,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter2;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
 
 import butterknife.BindView;
@@ -35,7 +34,7 @@ public class ExifHolder extends PhotoInfoAdapter2.ViewHolder {
     LinearLayout container;
 
     @BindView(R.id.item_photo_2_exif_icon)
-    ImageView icon;
+    AppCompatImageView icon;
 
     @BindView(R.id.item_photo_2_exif_title)
     TextView title;
@@ -91,81 +90,49 @@ public class ExifHolder extends PhotoInfoAdapter2.ViewHolder {
         }
         switch (position) {
             case 0:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_camera_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_camera_dark);
-                }
+                icon.setImageResource(R.drawable.ic_camera);
                 title.setText(context.getString(R.string.feedback_camera_make));
                 content.setText(photo.exif.make == null ? "Unknown" : photo.exif.make);
                 break;
 
             case 1:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_film_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_film_dark);
-                }
+                icon.setImageResource(R.drawable.ic_film);
                 title.setText(context.getString(R.string.feedback_camera_model));
                 content.setText(photo.exif.model == null ? "Unknown" : photo.exif.model);
                 break;
 
             case 2:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_size_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_size_dark);
-                }
+                icon.setImageResource(R.drawable.ic_size);
                 title.setText(context.getString(R.string.feedback_size));
                 content.setText(photo.width + " × " + photo.height);
                 break;
 
             case 3:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_focal_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_focal_dark);
-                }
+                icon.setImageResource(R.drawable.ic_focal);
                 title.setText(context.getString(R.string.feedback_focal));
                 content.setText(photo.exif.focal_length == null ? "Unknown" : (photo.exif.focal_length + "mm"));
                 break;
 
             case 4:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_aperture_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_aperture_dark);
-                }
+                icon.setImageResource(R.drawable.ic_aperture);
                 title.setText(context.getString(R.string.feedback_aperture));
                 content.setText(photo.exif.aperture == null ? "Unknown" : ("f/" + photo.exif.aperture));
                 break;
 
             case 5:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_exposure_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_exposure_dark);
-                }
+                icon.setImageResource(R.drawable.ic_exposure);
                 title.setText(context.getString(R.string.feedback_exposure));
                 content.setText(photo.exif.exposure_time == null ? "Unknown" : (photo.exif.exposure_time + "s"));
                 break;
 
             case 6:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_iso_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_iso_dark);
-                }
+                icon.setImageResource(R.drawable.ic_iso);
                 title.setText(context.getString(R.string.feedback_iso));
                 content.setText(photo.exif.iso == 0 ? "Unknown" : String.valueOf(photo.exif.iso));
                 break;
 
             case 7:
-                if (ThemeManager.getInstance(context).isLightTheme()) {
-                    icon.setImageResource(R.drawable.ic_color_light);
-                } else {
-                    icon.setImageResource(R.drawable.ic_color_dark);
-                }
+                icon.setImageResource(R.drawable.ic_color);
                 title.setText(context.getString(R.string.feedback_color));
                 content.setText(photo.color);
                 break;

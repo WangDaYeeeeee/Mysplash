@@ -76,7 +76,7 @@ public class MoreHorizontalAdapter2 extends RecyclerView.Adapter<MoreHorizontalA
                                 card.getContext(),
                                 collection.cover_photo.color));
             } else {
-                image.setImageResource(R.color.colorTextContent_light);
+                image.setImageResource(R.color.colorDarkCardBackground);
             }
 
             ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, getAdapterPosition(), null);

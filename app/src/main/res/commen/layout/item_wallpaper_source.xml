@@ -10,7 +10,7 @@
     android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
-    app:cardBackgroundColor="@color/colorPrimary_dark"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
     app:cardCornerRadius="@dimen/material_card_radius"
     app:cardPreventCornerOverlap="false"
     app:cardElevation="@dimen/low_elevation"
@@ -29,7 +29,7 @@
             app:fiv_shadow_position="top"
             tools:src="?attr/title_color" />
 
-        <ImageButton
+        <android.support.v7.widget.AppCompatImageButton
             android:id="@+id/item_wallpaper_source_deleteBtn"
             android:src="@drawable/ic_item_close"
             android:layout_width="34dp"

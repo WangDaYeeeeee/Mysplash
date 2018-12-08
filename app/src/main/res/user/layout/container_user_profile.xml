@@ -51,14 +51,15 @@
             android:layout_marginStart="@dimen/normal_icon_size"
             android:layout_marginEnd="@dimen/normal_icon_size">
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/container_user_profile_locationIcon"
+                android:src="@drawable/ic_location"
+                android:tint="?attr/content_color"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/normal_margin"
                 android:layout_marginBottom="@dimen/normal_margin"
                 android:layout_marginStart="@dimen/normal_margin"
-                android:src="@drawable/ic_location_light"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
             <TextView
