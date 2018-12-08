@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_photo_3_info_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:ignore="DisableBaselineAlignment">
+
+    <LinearLayout
+        android:id="@+id/item_photo_3_info_viewsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:paddingStart="@dimen/little_margin"
+        android:paddingEnd="@dimen/little_margin"
+        android:foreground="?attr/selectableItemBackground">
+
+        <TextView
+            android:text="@string/feedback_views"
+            android:textStyle="bold"
+            android:alpha="0.66"
+            android:maxLines="1"
+            style="@style/subtitle_text" />
+
+        <com.wangdaye.mysplash.common.ui.widget.NumberAnimTextView
+            android:id="@+id/item_photo_3_info_views"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            style="@style/title_text"
+            tools:text="9,021,102"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/item_photo_3_info_downloadsContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:paddingStart="@dimen/little_margin"
+        android:paddingEnd="@dimen/little_margin"
+        android:foreground="?attr/selectableItemBackground">
+
+        <TextView
+            android:text="@string/feedback_downloads"
+            android:textStyle="bold"
+            android:alpha="0.66"
+            android:maxLines="1"
+            style="@style/subtitle_text" />
+
+        <com.wangdaye.mysplash.common.ui.widget.NumberAnimTextView
+            android:id="@+id/item_photo_3_info_downloads"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            style="@style/title_text"
+            tools:text="75,905"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/item_photo_3_info_likesContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        android:paddingStart="@dimen/little_margin"
+        android:paddingEnd="@dimen/little_margin"
+        android:foreground="?attr/selectableItemBackground">
+
+        <TextView
+            android:text="@string/feedback_likes"
+            android:textStyle="bold"
+            android:alpha="0.66"
+            android:maxLines="1"
+            style="@style/subtitle_text" />
+
+        <com.wangdaye.mysplash.common.ui.widget.NumberAnimTextView
+            android:id="@+id/item_photo_3_info_likes"
+            android:layout_width="wrap_content"
+            android:maxLines="1"
+            style="@style/title_text"
+            tools:text="2,454"/>
+
+    </LinearLayout>
+
+</LinearLayout>

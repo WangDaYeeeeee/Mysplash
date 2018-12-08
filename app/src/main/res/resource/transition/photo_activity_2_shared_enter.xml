@@ -9,7 +9,7 @@
         android:duration="350"
         tools:ignore="NewApi">
         <targets>
-            <target android:targetId="@id/activity_photo_2_swipeBackView" />
+            <target android:targetId="@id/activity_photo_3_swipeBackView" />
         </targets>
     </changeBounds>
 
@@ -18,7 +18,7 @@
         android:interpolator="@android:interpolator/fast_out_slow_in"
         tools:ignore="NewApi">
         <targets>
-            <target android:targetId="@id/activity_photo_2_regularImage" />
+            <target android:targetId="@id/activity_photo_3_regularImage" />
         </targets>
     </transition>
 

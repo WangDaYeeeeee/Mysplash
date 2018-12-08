@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.wangdaye.mysplash.photo2.view.widget.PhotoButtonBar
+            <com.wangdaye.mysplash.photo3.view.widget.PhotoButtonBar
                 android:id="@+id/container_photo_3_base_buttonBar"
                 android:layout_width="110dp"
                 android:layout_height="34dp"

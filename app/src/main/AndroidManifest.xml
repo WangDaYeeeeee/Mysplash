@@ -49,6 +49,12 @@
             android:label="@string/app_name" />
 
         <activity
+            android:name=".photo3.view.activity.PhotoActivity3"
+            android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.Photo2"
+            android:screenOrientation="user"
+            android:label="@string/app_name" />
+
+        <activity
             android:name=".common.ui.activity.PreviewActivity"
             android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation"
             android:screenOrientation="user"

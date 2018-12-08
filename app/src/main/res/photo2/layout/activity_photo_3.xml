@@ -50,34 +50,44 @@
                     tools:ignore="UnusedAttribute" />
                 
                 <android.support.v4.widget.NestedScrollView
+                    android:id="@+id/activity_photo_3_scrollView"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical">
                     
-                    <include layout="@layout/container_photo_3_base" />
-
-                    <FrameLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@android:color/black"
-                        android:alpha="0.25">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
 
-                        <android.support.v7.widget.CardView
+                        <include layout="@layout/container_photo_3_base" />
+
+                        <FrameLayout
+                            android:id="@+id/activity_photo_3_cardContainer"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            app:cardCornerRadius="@dimen/material_card_radius_large"
-                            app:cardBackgroundColor="?attr/root_color"
-                            app:cardElevation="0dp">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="-12dp">
 
-                            <android.support.v7.widget.RecyclerView
-                                android:id="@+id/activity_photo_3_recyclerView"
+                            <android.support.v7.widget.CardView
+                                android:id="@+id/activity_photo_3_card"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:scrollbars="vertical"
-                                android:scrollbarStyle="outsideOverlay" />
+                                app:cardCornerRadius="@dimen/material_card_radius_large"
+                                app:cardBackgroundColor="?attr/root_color"
+                                app:cardElevation="0dp">
 
-                        </android.support.v7.widget.CardView>
+                                <android.support.v7.widget.RecyclerView
+                                    android:id="@+id/activity_photo_3_recyclerView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:paddingBottom="12dp"
+                                    android:nestedScrollingEnabled="false" />
 
-                    </FrameLayout>
+                            </android.support.v7.widget.CardView>
+
+                        </FrameLayout>
+
+                    </LinearLayout>
 
                 </android.support.v4.widget.NestedScrollView>
 

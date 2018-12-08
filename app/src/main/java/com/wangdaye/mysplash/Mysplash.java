@@ -22,7 +22,7 @@ import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
+import com.wangdaye.mysplash.photo3.view.activity.PhotoActivity3;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
@@ -237,7 +237,7 @@ public class Mysplash extends Application {
         this.photo = photo;
     }
 
-    public List<Photo> loadMorePhotos(PhotoActivity2 activity,
+    public List<Photo> loadMorePhotos(PhotoActivity3 activity,
                                       List<Photo> list, int headIndex, boolean headDirection,
                                       Bundle bundle) {
         int index = activityList.indexOf(activity) - 1;
@@ -259,7 +259,7 @@ public class Mysplash extends Application {
         return new ArrayList<>();
     }
 
-    public void dispatchPhotoUpdate(PhotoActivity2 activity, Photo p) {
+    public void dispatchPhotoUpdate(PhotoActivity3 activity, Photo p) {
         int index = activityList.indexOf(activity) - 1;
         if (index > -1) {
             Activity a = activityList.get(index);

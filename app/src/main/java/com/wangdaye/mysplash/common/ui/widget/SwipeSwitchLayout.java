@@ -436,7 +436,7 @@ public class SwipeSwitchLayout extends FrameLayout {
 
         @Override
         protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int height = getResources().getDimensionPixelSize(R.dimen.item_photo_2_more_vertical_height)
+            int height = getResources().getDimensionPixelSize(R.dimen.item_photo_3_more_vertical_height)
                     + DisplayUtils.getNavigationBarHeight(getResources());
             super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
             setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);

@@ -17,7 +17,7 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.service.network.CollectionService;
 import com.wangdaye.mysplash.common.data.service.network.PhotoService;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
-import com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2;
+import com.wangdaye.mysplash.photo3.view.activity.PhotoActivity3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class MuzeiSourceService extends RemoteMuzeiArtSource {
     }
 
     @Override
-    protected void onTryUpdate(int reason) throws RetryException {
+    protected void onTryUpdate(int reason) {
         MuzeiOptionManager manager = MuzeiOptionManager.getInstance(this);
         if (manager.isUpdateOnlyInWifi() && !isWifi()) {
             return;
@@ -128,8 +128,8 @@ public class MuzeiSourceService extends RemoteMuzeiArtSource {
 
     private void exportPhoto(@Nullable Photo photo) {
         if (photo != null) {
-            Intent intent = new Intent(this, PhotoActivity2.class);
-            intent.putExtra(PhotoActivity2.KEY_PHOTO_ACTIVITY_2_ID, photo.id);
+            Intent intent = new Intent(this, PhotoActivity3.class);
+            intent.putExtra(PhotoActivity3.KEY_PHOTO_ACTIVITY_2_ID, photo.id);
 
             publishArtwork(
                     new Artwork.Builder()
