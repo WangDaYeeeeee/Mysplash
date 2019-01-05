@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Size;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -183,6 +184,16 @@ public class Photo
         int w = (int) (scaleRatio * width);
         int h = (int) (scaleRatio * height);
         return urls.raw + "?q=50&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
+    }
+
+    @Size(2)
+    public int[] getWallpaperSize(Context context) {
+        double scaleRatio = 0.7
+                * Math.max(
+                context.getResources().getDisplayMetrics().widthPixels,
+                context.getResources().getDisplayMetrics().heightPixels)
+                / Math.min(width, height);
+        return new int[] {(int) (scaleRatio * width), (int) (scaleRatio * height)};
     }
 
     public String getRegularSizeUrl(Context context) {

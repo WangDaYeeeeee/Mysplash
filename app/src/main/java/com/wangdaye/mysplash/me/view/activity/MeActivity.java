@@ -531,7 +531,7 @@ public class MeActivity extends LoadableActivity<Photo>
                 && !TextUtils.isEmpty(AuthManager.getInstance().getUsername())) {
             ProfileDialog dialog = new ProfileDialog();
             dialog.setUsername(AuthManager.getInstance().getUsername());
-            dialog.show(getFragmentManager(), null);
+            dialog.show(getSupportFragmentManager(), null);
         }
     }
 

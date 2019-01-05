@@ -12,14 +12,12 @@ public class MultiFilterBarObject
 
     private String searchQuery;
     private String searchUser;
-    private int searchCategory;
     private String searchOrientation;
     private boolean searchFeatured;
 
     public MultiFilterBarObject() {
         this.searchQuery = "";
         this.searchUser = "";
-        this.searchCategory = 0;
         this.searchOrientation = "";
         this.searchFeatured = false;
     }
@@ -42,16 +40,6 @@ public class MultiFilterBarObject
     @Override
     public void setUsername(String username) {
         searchUser = username;
-    }
-
-    @Override
-    public int getCategory() {
-        return searchCategory;
-    }
-
-    @Override
-    public void setCategory(int c) {
-        searchCategory = c;
     }
 
     @Override

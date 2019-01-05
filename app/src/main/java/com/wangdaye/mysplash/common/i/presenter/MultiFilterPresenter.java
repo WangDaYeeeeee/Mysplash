@@ -41,9 +41,6 @@ public interface MultiFilterPresenter {
     void setUsername(String username);
     String getUsername();
 
-    void setCategory(int c);
-    int getCategory();
-
     void setOrientation(String o);
     String getOrientation();
 

@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.4.5</string>
+    <string name="version_code">3.4.7</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -28,6 +28,7 @@
     <string name="save">SAVE</string>
     <string name="check">CHECK</string>
     <string name="set">SET</string>
+    <string name="reset">RESET</string>
     <string name="search">SEARCH</string>
     <string name="follow">FOLLOW</string>
     <string name="following">FOLLOWING</string>
@@ -205,7 +206,7 @@
 
     <string name="feedback_get_notification_failed">Failed to load notifications.</string>
 
-    <string name="feedback_pick_update_interval">Update interval. (Hour)</string>
+    <string name="feedback_pick_update_interval">Update interval. (Hour)\nOnly work for versions prior to Muzei 3.0</string>
     <string name="feedback_interval_bounds">The interval must ranges from 1 to 24.</string>
     <string name="feedback_update_only_in_wifi">Update only when device is connected to WIFI.</string>
     <string name="feedback_source_collection">Source collections.</string>
@@ -260,7 +261,8 @@
 
     <string name="action_edit">Edit</string>
     <string name="action_download">Download</string>
-    <string name="action_set_as_source">Set As Source For Muzei</string>
+    <string name="action_set_as_source">Set As Wallpaper Source</string>
+    <string name="action_remove_source">Remove From Wallpaper Source</string>
 
     <string name="action_path">Download Path</string>
     <string name="action_cancel_all">Cancel All</string>
@@ -276,7 +278,7 @@
     <string name="action_lockscreen">LockScreen</string>
     <string name="action_wallpaper_lockscreen">Wallpaper And LockScreen</string>
 
-    <string name="action_muzei_settings">Settings for Muzei</string>
+    <string name="action_muzei_settings">Settings For Muzei</string>
 
     <!-- transition name. -->
     <string name="transition_activity_container">activity_container</string>
@@ -295,27 +297,32 @@
 
     <!-- settings. -->
     <string name="settings_category_basic">Basic</string>
-    <string name="settings_title_back_to_top">Press back button to scroll to top</string>
+    <string name="settings_title_back_to_top">Press Back Button To Scroll To Top</string>
     <string name="settings_title_auto_night_mode">Auto Night mode</string>
-    <string name="settings_title_night_start_time">Night mode start time</string>
-    <string name="settings_title_night_end_time">Night mode end time</string>
-    <string name="settings_title_load_image_size">Select the resolution of images to load</string>
-    <string name="settings_title_custom_api_key">Custom API key</string>
-    <string name="settings_summary_custom_api_key">Set your own API key and Secret.</string>
+    <string name="settings_title_night_start_time">Night Mode Start Time</string>
+    <string name="settings_title_night_end_time">Night Mode End Time</string>
+    <string name="settings_title_load_image_size">Select The Resolution Of Images To Load</string>
+    <string name="settings_title_custom_api_key">Custom API Key</string>
+    <string name="settings_summary_custom_api_key">Set your own API key and secret.</string>
     <string name="settings_title_language">Language</string>
+    <string name="settings_title_live_wallpaper">Live Wallpaper</string>
+    <string name="settings_summary_live_wallpaper">Get images from Unsplash regularly and set them as wallpaper.</string>
 
     <string name="settings_category_filter">Filter</string>
-    <string name="settings_title_default_order">Default order</string>
-    <string name="settings_title_default_collection_type">Default collection type</string>
+    <string name="settings_title_default_order">Default Order</string>
+    <string name="settings_title_default_collection_type">Default Collection Type</string>
 
     <string name="settings_category_download">Download</string>
     <string name="settings_title_downloader">Downloader</string>
-    <string name="settings_title_download_scale">Download scale</string>
+    <string name="settings_title_download_scale">Download Scale</string>
 
     <string name="settings_category_display">Display</string>
-    <string name="settings_title_saturation_animation_duration">Saturation animation duration</string>
-    <string name="settings_title_grid_list_in_port">Show image grid in vertical orientation</string>
-    <string name="settings_title_grid_list_in_land">Show image grid in horizontal orientation</string>
+    <string name="settings_title_saturation_animation_duration">Saturation Animation Duration</string>
+    <string name="settings_title_grid_list_in_port">Show Image Grid In Vertical Orientation</string>
+    <string name="settings_title_grid_list_in_land">Show Image Grid In Horizontal Orientation</string>
+
+    <string name="muzei_settings_title_source">Source</string>
+    <string name="muzei_settings_title_collection_source">Collection Source</string>
 
     <!-- share preferences. -->
     <string name="key_back_to_top">back_to_top</string>
@@ -325,12 +332,17 @@
     <string name="key_load_image_size">load_image_size</string>
     <string name="key_custom_api_key">custom_api_key</string>
     <string name="key_language">language</string>
+    <string name="key_live_wallpaper">live_wallpaper</string>
+    <string name="key_live_wallpaper_settings">live_wallpaper_settings</string>
     <string name="key_default_photo_order">default_photo_order</string>
     <string name="key_downloader">downloader</string>
     <string name="key_download_scale">download_scale</string>
     <string name="key_saturation_animation_duration">saturation_animation_duration</string>
     <string name="key_grid_list_in_port">grid_list_in_port</string>
     <string name="key_grid_list_in_land">grid_list_in_land</string>
+
+    <string name="key_muzei_source">muzei_source</string>
+    <string name="key_muzei_collection_source">muzei_collection_source</string>
 
     <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 

@@ -463,7 +463,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
     public void collectPhoto() {
         SelectCollectionDialog dialog = new SelectCollectionDialog();
         dialog.setPhotoAndListener(getPhoto(), this);
-        dialog.show((this).getFragmentManager(), null);
+        dialog.show((this).getSupportFragmentManager(), null);
     }
 
     // HTTP request.
@@ -534,7 +534,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
             if (showTypeDialog) {
                 DownloadTypeDialog dialog = new DownloadTypeDialog();
                 dialog.setOnSelectTypeListener(this);
-                dialog.show(getFragmentManager(), null);
+                dialog.show(getSupportFragmentManager(), null);
             } else if (DatabaseHelper.getInstance(this)
                     .readDownloadingEntityCount(photo.id) > 0) {
                 NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
@@ -542,7 +542,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
                 DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                 dialog.setDownloadKey(type);
                 dialog.setOnCheckOrDownloadListener(this);
-                dialog.show(getFragmentManager(), null);
+                dialog.show(getSupportFragmentManager(), null);
             } else {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
                     downloadByType(type);
@@ -1005,7 +1005,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
     @Override
     public void showRequestDialog() {
         requestDialog = new RequestBrowsableDataDialog();
-        requestDialog.show(getFragmentManager(), null);
+        requestDialog.show(getSupportFragmentManager(), null);
     }
 
     @Override

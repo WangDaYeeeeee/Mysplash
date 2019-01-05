@@ -373,7 +373,7 @@ public class DownloadManageActivity extends ReadWriteActivity
         switch (item.getItemId()) {
             case R.id.action_path:
                 PathDialog dialog = new PathDialog();
-                dialog.show(getFragmentManager(), null);
+                dialog.show(getSupportFragmentManager(), null);
                 break;
 
             case R.id.action_cancel_all:

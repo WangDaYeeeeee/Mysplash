@@ -512,7 +512,7 @@ public class UserActivity extends LoadableActivity<Photo>
             User user = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
             ProfileDialog dialog = new ProfileDialog();
             dialog.setUsername(user.username);
-            dialog.show(getFragmentManager(), null);
+            dialog.show(getSupportFragmentManager(), null);
         }
     }
 
@@ -701,7 +701,7 @@ public class UserActivity extends LoadableActivity<Photo>
     @Override
     public void showRequestDialog() {
         requestDialog = new RequestBrowsableDataDialog();
-        requestDialog.show(getFragmentManager(), null);
+        requestDialog.show(getSupportFragmentManager(), null);
     }
 
     @Override

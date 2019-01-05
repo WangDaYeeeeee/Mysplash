@@ -69,7 +69,7 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
             notifyItemRemoved(getAdapterPosition());
 
             if (itemList.size() == 0) {
-                itemList.add(WallpaperSource.buildDefaultSource());
+                itemList.add(WallpaperSource.mysplashSource());
                 notifyItemInserted(0);
             }
         }

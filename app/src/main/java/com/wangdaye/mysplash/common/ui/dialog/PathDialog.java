@@ -7,6 +7,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ public class PathDialog extends MysplashDialogFragment {
     @BindView(R.id.dialog_path_container)
     CoordinatorLayout container;
 
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

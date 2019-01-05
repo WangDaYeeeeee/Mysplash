@@ -33,9 +33,9 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
-import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.main.model.fragment.MultiFilterBarObject;
 import com.wangdaye.mysplash.main.presenter.fragment.MessageManageImplementor;
 import com.wangdaye.mysplash.main.presenter.fragment.MultiFilterBarImplementor;
@@ -80,13 +80,11 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
             R.id.fragment_multi_filter_users_editText})
     EditText[] editTexts;
     @BindViews({
-            R.id.fragment_multi_filter_categoryTxt,
             R.id.fragment_multi_filter_orientationTxt,
             R.id.fragment_multi_filter_featuredTxt})
     TextView[] menuTexts;
 
     @BindViews({
-            R.id.fragment_multi_filter_categoryBtn,
             R.id.fragment_multi_filter_orientationBtn,
             R.id.fragment_multi_filter_featuredBtn})
     AppCompatImageButton[] menuIcons;
@@ -105,7 +103,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     private final String KEY_MULTI_FILTER_FRAGMENT_QUERY = "key_multi_filter_fragment_query";
     private final String KEY_MULTI_FILTER_FRAGMENT_USER = "key_multi_filter_fragment_user";
-    private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY = "key_multi_filter_fragment_photo_category";
     private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION = "key_multi_filter_fragment_photo_orientation";
     private final String KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE = "key_multi_filter_fragment_photo_type";
 
@@ -141,7 +138,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         super.onSaveInstanceState(outState);
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, editTexts[0].getText().toString());
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_USER, editTexts[1].getText().toString());
-        outState.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, multiFilterBarPresenter.getCategory());
         outState.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, multiFilterBarPresenter.getOrientation());
         outState.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, multiFilterBarPresenter.isFeatured());
     }
@@ -197,7 +193,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection, Bundle bundle) {
         if (TextUtils.equals(bundle.getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""), photosView.getQuery())
                 && TextUtils.equals(bundle.getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""), photosView.getUsername())
-                && bundle.getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, -1) == photosView.getCategory()
                 && TextUtils.equals(bundle.getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""), photosView.getOrientation())
                 && bundle.getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false) == photosView.isFeatured()) {
             return photosView.loadMore(list, headIndex, headDirection);
@@ -210,7 +205,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     public Bundle getBundleOfList(Bundle bundle) {
         bundle.putString(KEY_MULTI_FILTER_FRAGMENT_QUERY, photosView.getQuery());
         bundle.putString(KEY_MULTI_FILTER_FRAGMENT_USER, photosView.getUsername());
-        bundle.putInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, photosView.getCategory());
         bundle.putString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, photosView.getOrientation());
         bundle.putBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, photosView.isFeatured());
         return bundle;
@@ -246,9 +240,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         editTexts[0].setFocusable(true);
         editTexts[0].requestFocus();
 
-        responsePopup(String.valueOf(multiFilterBarPresenter.getCategory()), 0);
-        responsePopup(String.valueOf(multiFilterBarPresenter.getOrientation()), 1);
-        responsePopup(String.valueOf(multiFilterBarPresenter.isFeatured()), 2);
+        responsePopup(String.valueOf(multiFilterBarPresenter.getOrientation()), 0);
+        responsePopup(String.valueOf(multiFilterBarPresenter.isFeatured()), 1);
 
         photosView.setActivity((MainActivity) getActivity());
         photosView.setOnMultiFilterDataInputInterface(this);
@@ -260,7 +253,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         if (saveInstanceState != null) {
             multiFilterBarPresenter.setQuery(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_QUERY, ""));
             multiFilterBarPresenter.setUsername(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_USER, ""));
-            multiFilterBarPresenter.setCategory(saveInstanceState.getInt(KEY_MULTI_FILTER_FRAGMENT_PHOTO_CATEGORY, 0));
             multiFilterBarPresenter.setOrientation(saveInstanceState.getString(KEY_MULTI_FILTER_FRAGMENT_PHOTO_ORIENTATION, ""));
             multiFilterBarPresenter.setFeatured(saveInstanceState.getBoolean(KEY_MULTI_FILTER_FRAGMENT_PHOTO_TYPE, false));
         }
@@ -276,7 +268,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
                 popupManagePresenter.showPopup(
                         getActivity(),
                         menuIcons[0],
-                        String.valueOf(multiFilterBarPresenter.getCategory()),
+                        multiFilterBarPresenter.getOrientation(),
                         0);
                 break;
 
@@ -284,16 +276,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
                 popupManagePresenter.showPopup(
                         getActivity(),
                         menuIcons[1],
-                        multiFilterBarPresenter.getOrientation(),
-                        1);
-                break;
-
-            case 2:
-                popupManagePresenter.showPopup(
-                        getActivity(),
-                        menuIcons[2],
                         String.valueOf(multiFilterBarPresenter.isFeatured()),
-                        2);
+                        1);
                 break;
         }
     }
@@ -327,21 +311,15 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     }
 
     @OnClick({
-            R.id.fragment_multi_filter_categoryBtn,
-            R.id.fragment_multi_filter_categoryContainer}) void showCategoryList() {
-        showPopup(0);
-    }
-
-    @OnClick({
             R.id.fragment_multi_filter_orientationBtn,
             R.id.fragment_multi_filter_orientationContainer}) void showOrientationList() {
-        showPopup(1);
+        showPopup(0);
     }
 
     @OnClick({
             R.id.fragment_multi_filter_featuredBtn,
             R.id.fragment_multi_filter_featuredContainer}) void showFeaturedList() {
-        showPopup(2);
+        showPopup(1);
     }
 
     // on editor action listener.
@@ -367,11 +345,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     public String onUsernameInput() {
         multiFilterBarPresenter.setUsername(editTexts[1].getText().toString());
         return multiFilterBarPresenter.getUsername();
-    }
-
-    @Override
-    public int onCategoryInput() {
-        return multiFilterBarPresenter.getCategory();
     }
 
     @Override
@@ -467,7 +440,6 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     public void submitSearchInfo() {
         multiFilterBarPresenter.hideKeyboard();
         photosView.doSearch(
-                multiFilterBarPresenter.getCategory(),
                 multiFilterBarPresenter.isFeatured(),
                 multiFilterBarPresenter.getUsername(),
                 multiFilterBarPresenter.getQuery(),
@@ -480,32 +452,20 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     public void responsePopup(String value, int position) {
         switch (position) {
             case 0:
-                multiFilterBarPresenter.setCategory(Integer.parseInt(value));
-                if (Integer.parseInt(value) == 0) {
+                multiFilterBarPresenter.setOrientation(value);
+                if (TextUtils.isEmpty(value)) {
                     menuTexts[0].setText(R.string.all);
                 } else {
-                    menuTexts[0].setText(
-                            ValueUtils.getToolbarTitleByCategory(
-                                    getContext(),
-                                    Integer.parseInt(value)));
+                    menuTexts[0].setText(ValueUtils.getOrientationName(getActivity(), value));
                 }
                 break;
 
             case 1:
-                multiFilterBarPresenter.setOrientation(value);
-                if (TextUtils.isEmpty(value)) {
-                    menuTexts[1].setText(R.string.all);
-                } else {
-                    menuTexts[1].setText(value);
-                }
-                break;
-
-            case 2:
                 multiFilterBarPresenter.setFeatured(Boolean.parseBoolean(value));
                 if (Boolean.parseBoolean(value)) {
-                    menuTexts[2].setText(R.string.curated);
+                    menuTexts[1].setText(getResources().getStringArray(R.array.home_tabs)[1]);
                 } else {
-                    menuTexts[2].setText(R.string.all);
+                    menuTexts[1].setText(R.string.all);
                 }
                 break;
         }

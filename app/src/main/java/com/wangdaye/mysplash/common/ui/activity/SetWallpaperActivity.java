@@ -519,7 +519,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     @OnClick(R.id.activity_set_wallpaper_setBtn) void set() {
         WallpaperWhereDialog dialog = new WallpaperWhereDialog();
         dialog.setOnWhereSelectedListener(this);
-        dialog.show(getFragmentManager(), null);
+        dialog.show(getSupportFragmentManager(), null);
     }
 
     // on clip type changed listener.

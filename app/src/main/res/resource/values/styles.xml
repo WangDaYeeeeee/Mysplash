@@ -14,6 +14,7 @@
         <item name="android:windowBackground">@color/colorPrimary</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+        <item name="android:listDivider">@color/colorLine</item>
     </style>
 
     <style name="MysplashTheme.Translucent" parent="MysplashTheme">
@@ -73,6 +74,7 @@
 
     <style name="MysplashTheme.Translucent.Settings" parent="MysplashTheme.Translucent">
         <item name="android:alertDialogTheme">@style/MysplashDialogTheme</item>
+        <item name="android:listDivider">@color/colorLine</item>
     </style>
     
     <!-- common activity theme. -->

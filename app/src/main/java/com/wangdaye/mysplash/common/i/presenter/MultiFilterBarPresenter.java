@@ -27,9 +27,6 @@ public interface MultiFilterBarPresenter {
     String getUsername();
     void setUsername(String username);
 
-    int getCategory();
-    void setCategory(int c);
-
     String getOrientation();
     void setOrientation(String o);
 

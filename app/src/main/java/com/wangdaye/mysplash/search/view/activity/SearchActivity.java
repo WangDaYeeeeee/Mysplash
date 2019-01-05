@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.search.view.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
@@ -352,16 +353,21 @@ public class SearchActivity extends LoadableActivity<Photo>
         editText.setFocusable(true);
         editText.requestFocus();
 
-        String query;
+        final String query;
         if (getBundle() != null) {
             query = getBundle().getString(KEY_SEARCH_ACTIVITY_QUERY);
         } else {
             query = getIntent().getStringExtra(KEY_SEARCH_ACTIVITY_QUERY);
         }
-        if (!TextUtils.isEmpty(query)) {
-            editText.setText(query);
-            searchBarPresenter.hideKeyboard();
-        }
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (!TextUtils.isEmpty(query)) {
+                    editText.setText(query);
+                    searchBarPresenter.hideKeyboard();
+                }
+            }
+        });
 
         initPages();
     }

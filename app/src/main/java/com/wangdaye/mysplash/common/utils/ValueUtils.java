@@ -67,6 +67,22 @@ public class ValueUtils {
         }
     }
 
+    public static String getOrientationName(Context c, String key) {
+        switch (key) {
+            case "landscape":
+                return c.getResources().getStringArray(R.array.search_orientations)[0];
+
+            case "portrait":
+                return c.getResources().getStringArray(R.array.search_orientations)[1];
+
+            case "square":
+                return c.getResources().getStringArray(R.array.search_orientations)[2];
+
+            default:
+                return null;
+        }
+    }
+
     public static String getBackToTopName(Context c, String key) {
         switch (key) {
             case "all":
@@ -152,6 +168,22 @@ public class ValueUtils {
 
             case "french":
                 return c.getResources().getStringArray(R.array.languages)[11];
+
+            default:
+                return null;
+        }
+    }
+
+    public static String getMuzeiSourceName(Context c, String key) {
+        switch (key) {
+            case "all":
+                return c.getResources().getStringArray(R.array.muzei_sources)[0];
+
+            case "featured":
+                return c.getResources().getStringArray(R.array.muzei_sources)[1];
+
+            case "collection":
+                return c.getResources().getStringArray(R.array.muzei_sources)[2];
 
             default:
                 return null;

@@ -6,7 +6,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -36,8 +35,6 @@ public class SettingsActivity extends MysplashActivity
     @BindView(R.id.activity_settings_statusBar)
     StatusBarView statusBar;
 
-    private SettingsFragment fragment;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,11 +48,10 @@ public class SettingsActivity extends MysplashActivity
             setStarted();
             ButterKnife.bind(this);
             initWidget();
-            fragment = new SettingsFragment();
-            getFragmentManager()
+            getSupportFragmentManager()
                     .beginTransaction()
                     .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(R.id.activity_settings_preferenceContainer, fragment)
+                    .replace(R.id.activity_settings_preferenceContainer, new SettingsFragment())
                     .commit();
         }
     }
@@ -146,9 +142,7 @@ public class SettingsActivity extends MysplashActivity
 
     @Override
     public boolean canSwipeBack(int dir) {
-        ListView listView = fragment.getScrolledView();
-        return listView != null
-                && SwipeBackCoordinatorLayout.canSwipeBack(listView, dir);
+        return true;
     }
 
     @Override

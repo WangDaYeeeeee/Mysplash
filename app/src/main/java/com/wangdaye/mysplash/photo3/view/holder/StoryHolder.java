@@ -56,7 +56,7 @@ public class StoryHolder extends PhotoInfoAdapter3.ViewHolder {
     @SuppressLint("SetTextI18n")
     @Override
     protected void onBindView(PhotoActivity3 a, Photo photo) {
-        if (!TextUtils.isEmpty(photo.story.description)) {
+        if (photo.story != null && !TextUtils.isEmpty(photo.story.description)) {
             content.setVisibility(View.VISIBLE);
             content.setText(photo.story.description);
         } else if (!TextUtils.isEmpty(photo.description)) {
@@ -66,7 +66,7 @@ public class StoryHolder extends PhotoInfoAdapter3.ViewHolder {
             content.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(photo.story.title)) {
+        if (photo.story != null && !TextUtils.isEmpty(photo.story.title)) {
             title.setText(photo.story.title);
         } else {
             title.setText(photo.user.name);

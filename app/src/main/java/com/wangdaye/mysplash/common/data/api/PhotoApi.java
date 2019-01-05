@@ -82,12 +82,12 @@ public interface PhotoApi {
                                                  @Query("per_page") int per_page);
 
     @GET("photos/random")
-    Call<List<Photo>> getRandomPhotos(@Query("tag") Integer categoryId,
-                                             @Query("featured") Boolean featured,
-                                             @Query("username") String username,
-                                             @Query("query") String query,
-                                             @Query("orientation") String orientation,
-                                             @Query("count") int count);
+    Call<List<Photo>> getRandomPhotos(@Query("collections") String collections,
+                                      @Query("featured") Boolean featured,
+                                      @Query("username") String username,
+                                      @Query("query") String query,
+                                      @Query("orientation") String orientation,
+                                      @Query("count") int count);
 
     @GET
     Call<ResponseBody> downloadPhoto(@Url String url);

@@ -164,7 +164,7 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadAdapter.ViewHo
                         DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                         dialog.setDownloadKey(entity);
                         dialog.setOnCheckOrDownloadListener(DownloadAdapter.this);
-                        dialog.show(activity.getFragmentManager(), null);
+                        dialog.show(activity.getSupportFragmentManager(), null);
                     }
                 } else if (listener != null) {
                     listener.onRetry(entity);

@@ -62,7 +62,7 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
                 .getTopActivity();
         if (activity != null) {
             TotalDialog dialog = new TotalDialog();
-            dialog.show(activity.getFragmentManager(), null);
+            dialog.show(activity.getSupportFragmentManager(), null);
         }
     }
 }

@@ -58,7 +58,7 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         }
 
         TextView featuredTxt = ButterKnife.findById(v, R.id.popup_search_featured_featuredTxt);
-        featuredTxt.setText(v.getContext().getResources().getString(R.string.curated));
+        featuredTxt.setText(v.getContext().getResources().getStringArray(R.array.home_tabs)[1]);
         if (valueNow) {
             featuredTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }

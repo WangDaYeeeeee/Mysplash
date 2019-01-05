@@ -49,12 +49,21 @@ public class WallpaperSource {
     public WallpaperSource() {
     }
 
-    public static WallpaperSource buildDefaultSource() {
+    public static WallpaperSource mysplashSource() {
         WallpaperSource source = new WallpaperSource();
         source.collectionId = 864380;
         source.title = "Mysplash Wallpapers";
         source.curated = false;
         source.coverUrl = "https://images.unsplash.com/photo-1451847487946-99830706c22d?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=334b584fa099b256b9e755cd3b75fd45";
+        return source;
+    }
+
+    public static WallpaperSource unsplashSource() {
+        WallpaperSource source = new WallpaperSource();
+        source.collectionId = 1065976;
+        source.title = "Unsplash Wallpaper";
+        source.curated = false;
+        source.coverUrl = "https://images.unsplash.com/photo-1544979407-1204ff29f490?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&s=334b584fa099b256b9e755cd3b75fd45";
         return source;
     }
 
@@ -113,8 +122,9 @@ public class WallpaperSource {
                 .queryBuilder()
                 .list();
         if (list.size() == 0) {
-            list.add(WallpaperSource.buildDefaultSource());
-            insertWallpaperSource(database, list.get(0));
+            list.add(unsplashSource());
+            list.add(mysplashSource());
+            insertWallpaperSource(database, list);
         }
         return list;
     }

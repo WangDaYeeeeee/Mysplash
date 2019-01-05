@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,6 +62,7 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
     @IntDef({CONFIRM_STATE, DELETE_STATE})
     private @interface StateRule {}
 
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

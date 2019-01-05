@@ -24,7 +24,8 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
-import com.wangdaye.mysplash.common.ui.activity.MuzeiConfigurationActivity;
+import com.wangdaye.mysplash.common.ui.activity.muzei.MuzeiCollectionSourceConfigActivity;
+import com.wangdaye.mysplash.common.ui.activity.muzei.MuzeiSettingsActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.main.view.activity.NotificationActivity;
 import com.wangdaye.mysplash.photo3.view.activity.PhotoActivity3;
@@ -404,8 +405,13 @@ public class IntentHelper {
         a.startActivityForResult(intent, Mysplash.CUSTOM_API_ACTIVITY);
     }
 
-    public static void startMuzeiConfigrationActivity(MysplashActivity a) {
-        Intent intent = new Intent(a, MuzeiConfigurationActivity.class);
+    public static void startMuzeiSettingsActivity(MysplashActivity a) {
+        Intent intent = new Intent(a, MuzeiSettingsActivity.class);
+        a.startActivity(intent);
+    }
+
+    public static void startMuzeiCollectionSourceConfigActivity(MysplashActivity a) {
+        Intent intent = new Intent(a, MuzeiCollectionSourceConfigActivity.class);
         a.startActivity(intent);
     }
 

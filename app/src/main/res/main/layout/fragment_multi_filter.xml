@@ -127,32 +127,6 @@
                     tools:ignore="DisableBaselineAlignment,RtlHardcoded">
 
                     <RelativeLayout
-                        android:id="@+id/fragment_multi_filter_categoryContainer"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:foreground="?attr/selectableItemBackground">
-
-                        <android.support.v7.widget.AppCompatImageButton
-                            android:id="@+id/fragment_multi_filter_categoryBtn"
-                            android:src="@drawable/ic_menu_down"
-                            android:layout_centerVertical="true"
-                            android:layout_alignParentEnd="true"
-                            style="@style/material_image_button"
-                            tools:ignore="ContentDescription" />
-
-                        <TextView
-                            android:id="@+id/fragment_multi_filter_categoryTxt"
-                            android:layout_toStartOf="@id/fragment_multi_filter_categoryBtn"
-                            android:layout_centerVertical="true"
-                            android:layout_marginStart="@dimen/normal_margin"
-                            android:maxLines="1"
-                            style="@style/content_text"
-                            tools:text="All" />
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
                         android:id="@+id/fragment_multi_filter_orientationContainer"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"

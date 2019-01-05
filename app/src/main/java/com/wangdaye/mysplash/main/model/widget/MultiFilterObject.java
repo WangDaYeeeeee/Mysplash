@@ -17,7 +17,6 @@ public class MultiFilterObject
 
     private String searchQuery;
     private String searchUser;
-    private int searchCategory;
     private String searchOrientation;
     private boolean searchFeatured;
 
@@ -31,7 +30,6 @@ public class MultiFilterObject
 
         this.searchQuery = "";
         this.searchUser = "";
-        this.searchCategory = 0;
         this.searchOrientation = "";
         this.searchFeatured = false;
 
@@ -68,16 +66,6 @@ public class MultiFilterObject
     @Override
     public String getUsername() {
         return searchUser;
-    }
-
-    @Override
-    public void setCategory(int c) {
-        searchCategory = c;
-    }
-
-    @Override
-    public int getCategory() {
-        return searchCategory;
     }
 
     @Override

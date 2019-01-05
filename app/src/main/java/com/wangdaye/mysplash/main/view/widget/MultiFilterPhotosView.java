@@ -84,7 +84,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
 
         String query;
         String user;
-        int category;
         String orientation;
         boolean featured;
         boolean over;
@@ -93,7 +92,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
             super(superState);
             this.query = view.multiFilterModel.getQuery();
             this.user = view.multiFilterModel.getUsername();
-            this.category = view.multiFilterModel.getCategory();
             this.orientation = view.multiFilterModel.getOrientation();
             this.featured = view.multiFilterModel.isFeatured();
             this.over = view.multiFilterModel.isOver();
@@ -103,7 +101,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
             super(in);
             this.query = in.readString();
             this.user = in.readString();
-            this.category = in.readInt();
             this.orientation = in.readString();
             this.featured = in.readByte() != 0;
             this.over = in.readByte() != 0;
@@ -114,7 +111,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
             super.writeToParcel(out, flags);
             out.writeString(this.query);
             out.writeString(this.user);
-            out.writeInt(this.category);
             out.writeString(this.orientation);
             out.writeByte(this.featured ? (byte) 1 : (byte) 0);
             out.writeByte(this.over ? (byte) 1 : (byte) 0);
@@ -229,7 +225,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
 
         multiFilterPresenter.setQuery(ss.query);
         multiFilterPresenter.setUsername(ss.user);
-        multiFilterPresenter.setCategory(ss.category);
         multiFilterPresenter.setOrientation(ss.orientation);
         multiFilterPresenter.setFeatured(ss.featured);
         multiFilterPresenter.setOver(ss.over);
@@ -328,10 +323,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
         return multiFilterPresenter.getUsername();
     }
 
-    public int getCategory() {
-        return multiFilterPresenter.getCategory();
-    }
-
     public String getOrientation() {
         return multiFilterPresenter.getOrientation();
     }
@@ -342,10 +333,9 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
 
     // HTTP request.
 
-    public void doSearch(int categoryId, boolean featured,
+    public void doSearch(boolean featured,
                          String username, String query,
                          String orientation) {
-        multiFilterPresenter.setCategory(categoryId);
         multiFilterPresenter.setFeatured(featured);
         multiFilterPresenter.setUsername(username);
         multiFilterPresenter.setQuery(query);
@@ -374,7 +364,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
     public interface OnMultiFilterDataInputInterface {
         String onQueryInput();
         String onUsernameInput();
-        int onCategoryInput();
         String onOrientationInput();
         boolean onFeaturedInput();
     }
@@ -413,7 +402,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
         if (inputInterface != null) {
             multiFilterPresenter.setQuery(inputInterface.onQueryInput());
             multiFilterPresenter.setUsername(inputInterface.onUsernameInput());
-            multiFilterPresenter.setCategory(inputInterface.onCategoryInput());
             multiFilterPresenter.setOrientation(inputInterface.onOrientationInput());
             multiFilterPresenter.setFeatured(inputInterface.onFeaturedInput());
             multiFilterPresenter.initRefresh(getContext());

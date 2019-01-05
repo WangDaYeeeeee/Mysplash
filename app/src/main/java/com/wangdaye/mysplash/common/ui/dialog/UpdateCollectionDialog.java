@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.NonNull;
 import android.support.design.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -81,6 +82,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment
     @IntDef({INPUT_STATE, UPDATE_STATE, CONFIRM_STATE, DELETE_STATE})
     private @interface StateRule {}
 
+    @NonNull
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

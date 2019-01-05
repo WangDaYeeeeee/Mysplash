@@ -7,8 +7,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 345
-        versionName "3.4.5"
+        versionCode 347
+        versionName "3.4.7"
     }
     sourceSets {
         main {
@@ -99,6 +99,7 @@ dependencies {
 
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support:preference-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:customtabs:28.0.0'
@@ -117,8 +118,9 @@ dependencies {
     implementation 'com.github.rahatarmanahmed:circularprogressview:2.5.0'
     implementation 'com.pacioianu.david:ink-page-indicator:1.2.0'
     implementation 'org.greenrobot:greendao:3.2.0'
-    implementation "com.google.android.apps.muzei:muzei-api:3.1.0-alpha01"
+    implementation "com.google.android.apps.muzei:muzei-api:3.1.0"
     implementation 'org.jetbrains:annotations-java5:15.0'
+    implementation 'android.arch.work:work-runtime:1.0.0-beta01'
 
     implementation 'com.liulishuo.filedownloader:library:1.7.5'
 }

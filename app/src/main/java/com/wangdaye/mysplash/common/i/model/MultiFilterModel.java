@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
  * */
 
 public interface MultiFilterModel {
-    /** {@link com.wangdaye.mysplash.common.data.api.PhotoApi#getRandomPhotos(Integer, Boolean, String, String, String, int)} */
+    /** {@link com.wangdaye.mysplash.common.data.api.PhotoApi#getRandomPhotos(String, Boolean, String, String, String, int)} */
 
     PhotoAdapter getAdapter();
     PhotoService getService();
@@ -23,9 +23,6 @@ public interface MultiFilterModel {
 
     String getUsername();
     void setUsername(String username);
-
-    int getCategory();
-    void setCategory(int c);
 
     String getOrientation();
     void setOrientation(String o);

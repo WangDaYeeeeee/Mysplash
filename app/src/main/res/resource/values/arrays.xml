@@ -161,6 +161,18 @@
         <item>square</item>
     </string-array>
 
+    <!-- Muzei source. -->
+    <string-array name="muzei_sources">
+        <item>All Photos</item>
+        <item>Featured</item>
+        <item>Collections</item>
+    </string-array>
+    <string-array name="muzei_source_values">
+        <item>all</item>
+        <item>featured</item>
+        <item>collection</item>
+    </string-array>
+
     <!-- explore. --><!--
     <string-array name="explore_items">
         <item>buildings</item>

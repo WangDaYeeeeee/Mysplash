@@ -360,7 +360,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();
             dialog.setDownloadKey(downloadPresenter.getDownloadKey());
             dialog.setOnCheckOrDownloadListener(this);
-            dialog.show(getFragmentManager(), null);
+            dialog.show(getSupportFragmentManager(), null);
         } else {
             requestPermissionAndDownload();
         }
@@ -523,7 +523,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 UpdateCollectionDialog dialog = new UpdateCollectionDialog();
                 dialog.setCollection(getCollection());
                 dialog.setOnCollectionChangedListener(this);
-                dialog.show(getFragmentManager(), null);
+                dialog.show(getSupportFragmentManager(), null);
                 break;
 
             case CollectionMenuPopupWindow.ITEM_DOWNLOAD:
@@ -531,15 +531,13 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 break;
 
             case CollectionMenuPopupWindow.ITEM_SET_AS_SOURCE:
-                WallpaperSource source = DatabaseHelper.getInstance(this)
-                        .readWallpaperSource(getCollection().id);
-                if (source == null) {
-                    source = new WallpaperSource(getCollection());
-                    DatabaseHelper.getInstance(this).writeWallpaperSource(source);
-                    NotificationHelper.showSnackbar(getString(R.string.feedback_set_as_source_succeed));
-                } else {
-                    NotificationHelper.showSnackbar(getString(R.string.feedback_set_as_source_failed));
-                }
+                DatabaseHelper.getInstance(this)
+                        .writeWallpaperSource(new WallpaperSource(getCollection()));
+                break;
+
+            case CollectionMenuPopupWindow.ITEM_REMOVE_SOURCE:
+                DatabaseHelper.getInstance(this).deleteWallpaperSource(getCollection().id);
+
                 break;
         }
     }
@@ -577,7 +575,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Override
     public void showRequestDialog() {
         requestDialog = new RequestBrowsableDataDialog();
-        requestDialog.show(getFragmentManager(), null);
+        requestDialog.show(getSupportFragmentManager(), null);
     }
 
     @Override

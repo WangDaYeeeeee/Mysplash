@@ -45,23 +45,22 @@ public class AndroidDownloaderService extends DownloaderService {
                             runnable = null;
                             return;
                         }
-                        continue;
-                    }
-
-                    final PollingResult targetResult = getDownloadInformation(listenerList.get(i).missionId);
-                    final OnDownloadListener targetListener = listenerList.get(i);
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            targetListener.result = targetResult.result;
-                            if (targetResult.result == RESULT_DOWNLOADING) {
-                                targetListener.onProcess(targetResult.process);
-                            } else {
-                                targetListener.onComplete(targetResult.result);
+                    } else {
+                        final PollingResult targetResult = getDownloadInformation(listenerList.get(i).missionId);
+                        final OnDownloadListener targetListener = listenerList.get(i);
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                targetListener.result = targetResult.result;
+                                if (targetResult.result == RESULT_DOWNLOADING) {
+                                    targetListener.onProcess(targetResult.process);
+                                } else {
+                                    targetListener.onComplete(targetResult.result);
+                                }
                             }
-                        }
-                    });
-                    SystemClock.sleep(50);
+                        });
+                        SystemClock.sleep(50);
+                    }
                 }
                 SystemClock.sleep(50);
             }

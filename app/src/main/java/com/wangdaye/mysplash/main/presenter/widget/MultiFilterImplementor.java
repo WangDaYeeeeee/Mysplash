@@ -46,17 +46,13 @@ public class MultiFilterImplementor
                 model.setLoading(true);
             }
             listener = new OnRequestPhotosListener(c, refresh);
-            Integer category = model.getCategory() == 0 ? null : model.getCategory();
             Boolean featured = !model.isFeatured() ? null : true;
             String username = TextUtils.isEmpty(model.getUsername()) ? null : model.getUsername();
             String query = TextUtils.isEmpty(model.getQuery()) ? null : model.getQuery();
             String orientation = TextUtils.isEmpty(model.getOrientation()) ? null : model.getOrientation();
 
-            model.getService()
-                    .requestRandomPhotos(
-                            category, featured,
-                            username, query,
-                            orientation, listener);
+            model.getService().requestRandomPhotos(
+                    null, featured, username, query, orientation, listener);
         }
     }
 
@@ -126,16 +122,6 @@ public class MultiFilterImplementor
     @Override
     public String getUsername() {
         return model.getUsername();
-    }
-
-    @Override
-    public void setCategory(int c) {
-        model.setCategory(c);
-    }
-
-    @Override
-    public int getCategory() {
-        return model.getCategory();
     }
 
     @Override

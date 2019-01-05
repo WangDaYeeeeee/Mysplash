@@ -83,16 +83,6 @@ public class MultiFilterBarImplementor
     }
 
     @Override
-    public void setCategory(int c) {
-        model.setCategory(c);
-    }
-
-    @Override
-    public int getCategory() {
-        return model.getCategory();
-    }
-
-    @Override
     public void setOrientation(String o) {
         model.setOrientation(o);
     }

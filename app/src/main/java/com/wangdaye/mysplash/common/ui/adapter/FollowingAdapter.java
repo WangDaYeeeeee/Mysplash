@@ -726,7 +726,7 @@ class PhotoHolder extends RecyclerView.ViewHolder
             } else {
                 SelectCollectionDialog dialog = new SelectCollectionDialog();
                 dialog.setPhotoAndListener(photo, adapter);
-                dialog.show(a.getFragmentManager(), null);
+                dialog.show(a.getSupportFragmentManager(), null);
             }
         }
     }
@@ -742,7 +742,7 @@ class PhotoHolder extends RecyclerView.ViewHolder
                     DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                     dialog.setDownloadKey(photo);
                     dialog.setOnCheckOrDownloadListener(this);
-                    dialog.show(activity.getFragmentManager(), null);
+                    dialog.show(activity.getSupportFragmentManager(), null);
                 }
             } else {
                 DownloadHelper.getInstance(a).addMission(a, photo, DownloaderService.DOWNLOAD_TYPE);

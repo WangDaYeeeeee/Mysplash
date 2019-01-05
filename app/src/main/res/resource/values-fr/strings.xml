@@ -233,8 +233,6 @@
     <string name="action_edit">Éditer</string>
     <string name="action_download">Télécharger</string>
 
-    <string name="action_set_as_source">Définir comme source pour Muzei</string>
-
     <string name="action_path">Chemin du téléchargement</string>
     <string name="action_cancel_all">Tout annuler</string>
 

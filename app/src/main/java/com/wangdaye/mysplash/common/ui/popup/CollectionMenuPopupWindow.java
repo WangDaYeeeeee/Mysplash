@@ -8,7 +8,9 @@ import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
+import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 
@@ -28,7 +30,8 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
     public static final int ITEM_EDIT = 1;
     public static final int ITEM_DOWNLOAD = 2;
     public static final int ITEM_SET_AS_SOURCE = 3;
-    @IntDef({ITEM_EDIT, ITEM_DOWNLOAD, ITEM_SET_AS_SOURCE})
+    public static final int ITEM_REMOVE_SOURCE = 4;
+    @IntDef({ITEM_EDIT, ITEM_DOWNLOAD, ITEM_SET_AS_SOURCE, ITEM_REMOVE_SOURCE})
     private @interface MenuItemRule {}
 
     public CollectionMenuPopupWindow(Context c, View anchor, Collection collection) {
@@ -59,15 +62,26 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
         }
 
         v.findViewById(R.id.popup_collection_menu_setAsSource).setOnClickListener(this);
-        if (!MuzeiOptionManager.isInstalledMuzei(c)) {
+        v.findViewById(R.id.popup_collection_menu_removeSource).setOnClickListener(this);
+        if (!MuzeiOptionManager.isInstalledMuzei(c)
+                || !MuzeiOptionManager.getInstance(c).getSource().equals("collection")) {
             v.findViewById(R.id.popup_collection_menu_setAsSource).setVisibility(View.GONE);
+            v.findViewById(R.id.popup_collection_menu_removeSource).setVisibility(View.GONE);
+        } else {
+            WallpaperSource source = DatabaseHelper.getInstance(c).readWallpaperSource(collection.id);
+            if (source != null) {
+                v.findViewById(R.id.popup_collection_menu_setAsSource).setVisibility(View.GONE);
+            } else {
+                v.findViewById(R.id.popup_collection_menu_removeSource).setVisibility(View.GONE);
+            }
         }
     }
 
     public static boolean isUsable(Context c, Collection collection) {
         return isMyCollection(collection)
                 || isCurate(collection)
-                || MuzeiOptionManager.isInstalledMuzei(c);
+                || (MuzeiOptionManager.isInstalledMuzei(c)
+                && MuzeiOptionManager.getInstance(c).getSource().equals("collection"));
     }
 
     private static boolean isMyCollection(Collection collection) {
@@ -111,6 +125,12 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
             case R.id.popup_collection_menu_setAsSource:
                 if (listener != null) {
                     listener.onSelectItem(ITEM_SET_AS_SOURCE);
+                }
+                break;
+
+            case R.id.popup_collection_menu_removeSource:
+                if (listener != null) {
+                    listener.onSelectItem(ITEM_REMOVE_SOURCE);
                 }
                 break;
         }

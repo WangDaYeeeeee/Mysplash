@@ -22,6 +22,7 @@
     <string name="save">保存</string>
     <string name="check">查看</string>
     <string name="set">设置</string>
+    <string name="reset">重置</string>
     <string name="search">搜索</string>
     <string name="follow">关注</string>
     <string name="following">已关注</string>
@@ -230,7 +231,8 @@
 
     <string name="action_edit">编辑</string>
     <string name="action_download">下载</string>
-    <string name="action_set_as_source">设置为Muzei壁纸源</string>
+    <string name="action_set_as_source">设置为壁纸源</string>
+    <string name="action_remove_source">从壁纸源中移除</string>
 
     <string name="action_path">下载路径</string>
     <string name="action_cancel_all">全部取消</string>
@@ -258,6 +260,8 @@
     <string name="settings_title_custom_api_key">自定义API key</string>
     <string name="settings_summary_custom_api_key">设置你自己的API key及Secret</string>
     <string name="settings_title_language">语言</string>
+    <string name="settings_title_live_wallpaper">动态壁纸</string>
+    <string name="settings_summary_live_wallpaper">定期从Unsplash获取图片并设置为壁纸</string>
 
     <string name="settings_category_filter">筛选</string>
     <string name="settings_title_default_order">照片默认排序</string>
@@ -271,5 +275,8 @@
     <string name="settings_title_saturation_animation_duration">饱和度动画时长</string>
     <string name="settings_title_grid_list_in_port">竖屏时以网格显示图片</string>
     <string name="settings_title_grid_list_in_land">横屏时以网格显示图片</string>
+
+    <string name="muzei_settings_title_source">壁纸源</string>
+    <string name="muzei_settings_title_collection_source">收藏集壁纸源</string>
 
 </resources>

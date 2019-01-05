@@ -216,7 +216,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                         itemList.get(getAdapterPosition()),
                         getAdapterPosition());
                 dialog.setOnDeleteCollectionListener(PhotoAdapter.this);
-                dialog.show(((CollectionActivity) a).getFragmentManager(), null);
+                dialog.show(((CollectionActivity) a).getSupportFragmentManager(), null);
             }
         }
 
@@ -251,7 +251,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 } else {
                     SelectCollectionDialog dialog = new SelectCollectionDialog();
                     dialog.setPhotoAndListener(itemList.get(getAdapterPosition()), collectionsChangedListener);
-                    dialog.show(((MysplashActivity) a).getFragmentManager(), null);
+                    dialog.show(((MysplashActivity) a).getSupportFragmentManager(), null);
                 }
             }
         }
@@ -266,7 +266,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                     dialog.setDownloadKey(p);
                     dialog.setOnCheckOrDownloadListener(PhotoAdapter.this);
-                    dialog.show(activity.getFragmentManager(), null);
+                    dialog.show(activity.getSupportFragmentManager(), null);
                 }
             } else {
                 if (downloadPhotoListener != null) {

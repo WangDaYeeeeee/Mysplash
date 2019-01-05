@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.common.data.service.network;
 
 import android.support.annotation.Nullable;
+import android.support.annotation.WorkerThread;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
@@ -103,49 +104,6 @@ public class PhotoService extends TLSCompactService {
             }
         });
         call = getCuratePhotos;
-    }
-
-    public void requestStats(String id, final OnRequestStatsListener l) {
-        Call<PhotoStats> getStats = buildApi(buildClient()).getPhotoStats(id);
-        getStats.enqueue(new Callback<PhotoStats>() {
-            @Override
-            public void onResponse(Call<PhotoStats> call, retrofit2.Response<PhotoStats> response) {
-                if (l != null) {
-                    l.onRequestStatsSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<PhotoStats> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestStatsFailed(call, t);
-                }
-            }
-        });
-        call = getStats;
-    }
-
-    public void requestPhotosInAGivenCategory(int id,
-                                              @Mysplash.PageRule int page,
-                                              @Mysplash.PerPageRule int per_page,
-                                              final OnRequestPhotosListener l) {
-        Call<List<Photo>> getPhotosInAGivenCategory = buildApi(buildClient()).getPhotosInAGivenCategory(id, page, per_page);
-        getPhotosInAGivenCategory.enqueue(new Callback<List<Photo>>() {
-            @Override
-            public void onResponse(Call<List<Photo>> call, retrofit2.Response<List<Photo>> response) {
-                if (l != null) {
-                    l.onRequestPhotosSuccess(call, response);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<Photo>> call, Throwable t) {
-                if (l != null) {
-                    l.onRequestPhotosFailed(call, t);
-                }
-            }
-        });
-        call = getPhotosInAGivenCategory;
     }
 
     public void setLikeForAPhoto(String id, boolean like, final OnSetLikeListener l) {
@@ -266,23 +224,6 @@ public class PhotoService extends TLSCompactService {
         call = getCollectionPhotos;
     }
 
-    @Nullable
-    public List<Photo> requestCollectionPhotos(int collectionId,
-                                        @Mysplash.PageRule int page,
-                                        @Mysplash.PerPageRule int per_page) {
-        Call<List<Photo>> getCollectionPhotos = buildApi(buildClient())
-                .getCollectionPhotos(collectionId, page, per_page);
-        try {
-            Response<List<Photo>> response = getCollectionPhotos.execute();
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
     public void requestCuratedCollectionPhotos(int collectionId,
                                                @Mysplash.PageRule int page,
                                                @Mysplash.PerPageRule int per_page,
@@ -307,30 +248,19 @@ public class PhotoService extends TLSCompactService {
         call = getCuratedCollectionPhotos;
     }
 
-    @Nullable
-    public List<Photo> requestCurateCollectionPhotos(int collectionId,
-                                                     @Mysplash.PageRule int page,
-                                                     @Mysplash.PerPageRule int per_page) {
-        Call<List<Photo>> getCuratedCollectionPhotos = buildApi(buildClient())
-                .getCuratedCollectionPhotos(collectionId, page, per_page);
-        try {
-            Response<List<Photo>> response = getCuratedCollectionPhotos.execute();
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void requestRandomPhotos(Integer categoryId,
+    public void requestRandomPhotos(List<Integer> collectionIdList,
                                     Boolean featured, String username, String query, String orientation,
                                     final OnRequestPhotosListener l) {
+        StringBuilder collections = new StringBuilder();
+        if (collectionIdList != null && collectionIdList.size() > 0) {
+            collections.append(collectionIdList.get(0));
+        }
+        for (int i = 1; collectionIdList != null && i < collectionIdList.size(); i ++) {
+            collections.append(",").append(collectionIdList.get(i));
+        }
+
         Call<List<Photo>> getRandomPhotos = buildApi(buildClient()).getRandomPhotos(
-                categoryId, featured,
-                username, query,
-                orientation, Mysplash.DEFAULT_PER_PAGE);
+                collections.toString(), featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE);
         getRandomPhotos.enqueue(new Callback<List<Photo>>() {
             @Override
             public void onResponse(Call<List<Photo>> call, Response<List<Photo>> response) {
@@ -347,6 +277,32 @@ public class PhotoService extends TLSCompactService {
             }
         });
         call = getRandomPhotos;
+    }
+
+    @WorkerThread
+    @Nullable
+    public List<Photo> requestRandomPhotos(@Nullable List<Integer> collectionIdList,
+                                           Boolean featured,
+                                           String username, String query, String orientation) {
+        StringBuilder collections = new StringBuilder();
+        if (collectionIdList != null && collectionIdList.size() > 0) {
+            collections.append(collectionIdList.get(0));
+        }
+        for (int i = 1; collectionIdList != null && i < collectionIdList.size(); i ++) {
+            collections.append(",").append(collectionIdList.get(i));
+        }
+
+        Call<List<Photo>> getRandomPhotos = buildApi(buildClient()).getRandomPhotos(
+                collections.toString(), featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE);
+        try {
+            Response<List<Photo>> response = getRandomPhotos.execute();
+            if (response.isSuccessful() && response.body() != null) {
+                return response.body();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public void downloadPhoto(String url) {
@@ -379,11 +335,6 @@ public class PhotoService extends TLSCompactService {
     public interface OnRequestSinglePhotoListener {
         void onRequestSinglePhotoSuccess(Call<Photo> call, retrofit2.Response<Photo> response);
         void onRequestSinglePhotoFailed(Call<Photo> call, Throwable t);
-    }
-
-    public interface OnRequestStatsListener {
-        void onRequestStatsSuccess(Call<PhotoStats> call, retrofit2.Response<PhotoStats> response);
-        void onRequestStatsFailed(Call<PhotoStats> call, Throwable t);
     }
 
     public interface OnSetLikeListener {

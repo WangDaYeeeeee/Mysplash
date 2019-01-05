@@ -12,6 +12,7 @@ import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -360,6 +361,18 @@ public class ImageHelper {
                 .load(uri)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(view);
+    }
+
+    public static Bitmap loadBitmap(Context context, @NonNull Photo photo)
+            throws ExecutionException, InterruptedException {
+        context = checkContextNull(context);
+        int[] size = photo.getWallpaperSize(context);
+        return Glide.with(context)
+                .load(photo.getWallpaperSizeUrl(context))
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(size[0], size[1])
+                .get();
     }
 
     public static Bitmap loadBitmap(Context context, @DrawableRes int id, int width, int height)
