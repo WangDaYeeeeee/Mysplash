@@ -93,7 +93,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         language.setOnPreferenceChangeListener(this);
 
         // Muzei.
-        Preference muzei = findPreference("muzei_settings");
+        Preference muzei = findPreference(getString(R.string.key_live_wallpaper_settings));
         if (!MuzeiOptionManager.isInstalledMuzei(getActivity())) {
             PreferenceCategory display = (PreferenceCategory) findPreference("basic");
             display.removePreference(muzei);
