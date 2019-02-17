@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.ui.widget.fullScreenView;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.wangdaye.mysplash.common.utils.DisplayUtils;

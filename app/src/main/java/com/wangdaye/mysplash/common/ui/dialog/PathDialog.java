@@ -7,8 +7,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -51,7 +51,7 @@ public class PathDialog extends MysplashDialogFragment {
     }
 
     private void initWidget(View v) {
-        TextView content = ButterKnife.findById(v, R.id.dialog_path_text);
+        TextView content = v.findViewById(R.id.dialog_path_text);
     }
 
     // interface.

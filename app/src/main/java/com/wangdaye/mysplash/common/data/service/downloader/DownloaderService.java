@@ -3,10 +3,10 @@ package com.wangdaye.mysplash.common.data.service.downloader;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.IntDef;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.FileProvider;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import android.view.View;
 
 import com.wangdaye.mysplash.BuildConfig;
@@ -122,29 +122,37 @@ public abstract class DownloaderService {
                     intent,
                     Mysplash.getInstance()
                             .getString(R.string.feedback_choose_share_app));
+            chooser.addCategory(Intent.CATEGORY_DEFAULT);
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             c.startActivity(chooser);
         } catch (Exception e) {
-            Uri uri = FileProvider.getUriForFile(
-                    c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.putExtra(Intent.EXTRA_STREAM, uri);
-            intent.setType("image/*");
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            e.printStackTrace();
+            try {
+                Uri uri = FileProvider.getUriForFile(
+                        c, BuildConfig.APPLICATION_ID + ".fileprovider", new File(entity.getFilePath()));
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
+                intent.setType("image/*");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-            Intent chooser = Intent.createChooser(
-                    intent,
-                    Mysplash.getInstance()
-                            .getString(R.string.feedback_choose_share_app));
-            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(chooser);
+                Intent chooser = Intent.createChooser(
+                        intent,
+                        Mysplash.getInstance()
+                                .getString(R.string.feedback_choose_share_app));
+                chooser.addCategory(Intent.CATEGORY_DEFAULT);
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                c.startActivity(chooser);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                NotificationHelper.showSnackbar("Share Photo Failed.");
+            }
         }
     }
 
@@ -162,29 +170,37 @@ public abstract class DownloaderService {
                     intent,
                     Mysplash.getInstance()
                             .getString(R.string.feedback_choose_wallpaper_app));
+            chooser.addCategory(Intent.CATEGORY_DEFAULT);
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             c.startActivity(chooser);
         } catch (Exception e) {
-            Uri uri = FileProvider.getUriForFile(
-                    c, BuildConfig.APPLICATION_ID, new File(entity.getFilePath()));
-            Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
-            intent.setDataAndType(uri, "image/jpg");
-            intent.putExtra("mimeType", "image/jpg");
-            intent.addCategory(Intent.CATEGORY_DEFAULT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            e.printStackTrace();
+            try {
+                Uri uri = FileProvider.getUriForFile(
+                        c, BuildConfig.APPLICATION_ID + ".fileprovider", new File(entity.getFilePath()));
+                Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
+                intent.setDataAndType(uri, "image/jpg");
+                intent.putExtra("mimeType", "image/jpg");
+                intent.addCategory(Intent.CATEGORY_DEFAULT);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
-            Intent chooser = Intent.createChooser(
-                    intent,
-                    Mysplash.getInstance()
-                            .getString(R.string.feedback_choose_wallpaper_app));
-            chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-            c.startActivity(chooser);
+                Intent chooser = Intent.createChooser(
+                        intent,
+                        Mysplash.getInstance()
+                                .getString(R.string.feedback_choose_wallpaper_app));
+                chooser.addCategory(Intent.CATEGORY_DEFAULT);
+                chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                chooser.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                c.startActivity(chooser);
+            } catch (Exception e1) {
+                e1.printStackTrace();
+                NotificationHelper.showSnackbar("Set Wallpaper Failed.");
+            }
         }
     }
 

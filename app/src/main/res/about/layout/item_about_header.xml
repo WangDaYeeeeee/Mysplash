@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_about_header_appIcon"
             android:layout_width="72dp"
             android:layout_height="72dp"
@@ -41,7 +41,7 @@
 
     </RelativeLayout>
 
-    <android.support.v7.widget.AppCompatImageButton
+    <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/item_about_header_backButton"
         android:src="@drawable/ic_toolbar_back_light"
         style="@style/material_image_button"

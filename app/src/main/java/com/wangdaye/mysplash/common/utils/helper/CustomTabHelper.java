@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.utils.helper;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.customtabs.CustomTabsIntent;
+import androidx.browser.customtabs.CustomTabsIntent;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;

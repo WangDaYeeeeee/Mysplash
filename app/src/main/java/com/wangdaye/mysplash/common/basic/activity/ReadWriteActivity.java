@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.common.basic.activity;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;

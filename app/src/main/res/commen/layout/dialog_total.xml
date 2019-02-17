@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/dialog_total_totalPhotosIcon"
                     android:src="@drawable/ic_image_light"
                     style="@style/material_icon"
@@ -46,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground">
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/dialog_total_photoDownloadsIcon"
                     android:src="@drawable/ic_download_light"
                     style="@style/material_icon"
@@ -78,4 +78,4 @@
 
     </RelativeLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

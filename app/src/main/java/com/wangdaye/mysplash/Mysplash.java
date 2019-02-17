@@ -5,12 +5,12 @@ import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.annotation.IntRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringDef;
-import android.support.v7.app.AppCompatDelegate;
+import androidx.annotation.IntDef;
+import androidx.annotation.IntRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringDef;
+import androidx.appcompat.app.AppCompatDelegate;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
@@ -21,7 +21,6 @@ import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
 import com.wangdaye.mysplash.photo3.view.activity.PhotoActivity3;
 
 import java.lang.reflect.ParameterizedType;
@@ -208,18 +207,6 @@ public class Mysplash extends Application {
         }
     }
 
-    @Nullable
-    public MainActivity getMainActivity() {
-        if (activityList != null && activityList.size() > 0) {
-            for (int i = 0; i < activityList.size(); i ++) {
-                if (activityList.get(i) instanceof MainActivity) {
-                    return (MainActivity) activityList.get(i);
-                }
-            }
-        }
-        return null;
-    }
-
     public int getActivityCount() {
         if (activityList != null) {
             return activityList.size();
@@ -244,15 +231,15 @@ public class Mysplash extends Application {
         if (index > -1) {
             Activity a = activityList.get(index);
             if (a instanceof LoadableActivity) {
-                if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0]
-                        .toString()
-                        .equals(Photo.class.toString())) {
-                    try {
+                try {
+                    if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                            .getActualTypeArguments()[0]
+                            .toString()
+                            .equals(Photo.class.toString())) {
                         return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection, bundle);
-                    } catch (Exception ignore) {
-
                     }
+                } catch (Exception ignored) {
+                    // do nothing.
                 }
             }
         }
@@ -264,15 +251,15 @@ public class Mysplash extends Application {
         if (index > -1) {
             Activity a = activityList.get(index);
             if (a instanceof LoadableActivity) {
-                if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0]
-                        .toString()
-                        .equals(Photo.class.toString())) {
-                    try {
+                try {
+                    if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                            .getActualTypeArguments()[0]
+                            .toString()
+                            .equals(Photo.class.toString())) {
                         ((LoadableActivity) a).receiveUpdate(p);
-                    } catch (Exception ignore) {
-
                     }
+                } catch (Exception ignore) {
+                    // do nothing.
                 }
             }
         }
@@ -283,15 +270,15 @@ public class Mysplash extends Application {
         if (index < activityList.size()) {
             Activity a = activityList.get(index);
             if (a instanceof RequestLoadActivity) {
-                if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                        .getActualTypeArguments()[0]
-                        .toString()
-                        .equals(Photo.class.toString())) {
-                    try {
+                try {
+                    if (((ParameterizedType) a.getClass().getGenericSuperclass())
+                            .getActualTypeArguments()[0]
+                            .toString()
+                            .equals(Photo.class.toString())) {
                         ((RequestLoadActivity) a).receiveUpdate(p);
-                    } catch (Exception ignore) {
-
                     }
+                } catch (Exception ignore) {
+                    // do nothing.
                 }
             }
         }
@@ -306,8 +293,8 @@ public class Mysplash extends Application {
     }
 
     public void dispatchRecreate() {
-        for (Activity a : activityList) {
-            a.recreate();
+        for (int i = activityList.size() - 1; i >= 0; i --) {
+            activityList.get(i).recreate();
         }
     }
 }

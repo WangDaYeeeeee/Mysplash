@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.common.ui.activity.muzei;
 
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
@@ -114,11 +114,11 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     }
 
     private void initWidget() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_muzei_collection_source_config_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(
+                R.id.activity_muzei_collection_source_config_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.activity_muzei_collection_source_config_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_muzei_collection_source_config_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_close_light, R.drawable.ic_toolbar_close_dark);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -128,7 +128,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
             }
         });
 
-        RecyclerView collectionList = ButterKnife.findById(this, R.id.activity_muzei_collection_source_config_collectionList);
+        RecyclerView collectionList = findViewById(R.id.activity_muzei_collection_source_config_collectionList);
         collectionList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         collectionList.setAdapter(adapter);
     }

@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 

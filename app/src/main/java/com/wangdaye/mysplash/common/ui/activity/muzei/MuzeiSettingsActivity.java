@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.common.ui.activity.muzei;
 
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
@@ -73,8 +73,7 @@ public class MuzeiSettingsActivity extends MysplashActivity
     // init.
 
     private void initWidget() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_settings_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_settings_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         Toolbar toolbar = findViewById(R.id.activity_settings_toolbar);

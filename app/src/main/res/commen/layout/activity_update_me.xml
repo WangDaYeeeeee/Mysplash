@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/activity_update_me_container"
     android:layout_width="match_parent"
@@ -21,17 +21,17 @@
             android:layout_height="match_parent"
             android:background="?attr/root_color">
 
-            <android.support.v4.widget.NestedScrollView
+            <androidx.core.widget.NestedScrollView
                 android:id="@+id/activity_update_me_scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <include layout="@layout/container_update_me" />
 
-            </android.support.v4.widget.NestedScrollView>
+            </androidx.core.widget.NestedScrollView>
 
         </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

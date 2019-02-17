@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Size;
+import androidx.annotation.Size;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;

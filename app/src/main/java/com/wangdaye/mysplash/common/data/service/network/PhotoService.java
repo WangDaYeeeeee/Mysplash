@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.data.service.network;
 
-import android.support.annotation.Nullable;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;
@@ -9,7 +9,6 @@ import com.wangdaye.mysplash.common.basic.TLSCompactService;
 import com.wangdaye.mysplash.common.data.api.PhotoApi;
 import com.wangdaye.mysplash.common.data.entity.unsplash.LikePhotoResult;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.entity.unsplash.PhotoStats;
 import com.wangdaye.mysplash.common.utils.widget.interceptor.AuthInterceptor;
 
 import java.io.IOException;

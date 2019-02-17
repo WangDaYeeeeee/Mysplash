@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.common.ui.activity;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.view.View;
 import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
@@ -110,11 +110,10 @@ public class PreviewActivity extends MysplashActivity
     }
 
     private void initWidget() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_preview_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_preview_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        final NestedScrollPhotoView photoView = ButterKnife.findById(this, R.id.activity_preview_photoView);
+        final NestedScrollPhotoView photoView = findViewById(R.id.activity_preview_photoView);
         photoView.setMaxScale(getMaxiScale(false));
         if (previewable instanceof Photo) {
             photoView.setScaleType(AppCompatImageView.ScaleType.FIT_CENTER);

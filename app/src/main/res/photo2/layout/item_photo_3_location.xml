@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         tools:ignore="UselessParent">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_photo_3_location_icon"
             android:src="@drawable/ic_location"
             android:tint="?attr/content_color"

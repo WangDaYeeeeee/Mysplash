@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoInfoAdapter3;

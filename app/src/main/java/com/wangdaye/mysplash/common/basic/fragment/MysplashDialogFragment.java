@@ -2,9 +2,9 @@ package com.wangdaye.mysplash.common.basic.fragment;
 
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.DialogFragment;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;

@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.provider;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.android.apps.muzei.api.provider.Artwork;
 import com.google.android.apps.muzei.api.provider.MuzeiArtProvider;
@@ -10,6 +10,7 @@ import com.google.android.apps.muzei.api.provider.ProviderContract;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.utils.helper.MuzeiUpdateHelper;
+import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,13 +63,18 @@ class MysplashMuzeiWorker extends Worker
             artworkList.add(new Artwork.Builder()
                     .title(getApplicationContext().getString(R.string.by) + " " + p.user.name)
                     .byline(getApplicationContext().getString(R.string.on) + " " + p.created_at.split("T")[0])
-                    .persistentUri(Uri.parse(p.getWallpaperSizeUrl(getApplicationContext())))
+                    .persistentUri(Uri.parse(p.getDownloadUrl()))
                     .token(p.id)
                     .webUri(Uri.parse(p.links.html))
                     .build());
         }
-        ProviderContract.getProviderClient(getApplicationContext(), MysplashMuzeiArtProvider.class)
-                .addArtwork(artworkList);
+        if (MuzeiOptionManager.getInstance(getApplicationContext()).getCacheMode().equals("keep")) {
+            ProviderContract.getProviderClient(getApplicationContext(), MysplashMuzeiArtProvider.class)
+                    .addArtwork(artworkList);
+        } else {
+            ProviderContract.getProviderClient(getApplicationContext(), MysplashMuzeiArtProvider.class)
+                    .setArtwork(artworkList);
+        }
     }
 
     @Override

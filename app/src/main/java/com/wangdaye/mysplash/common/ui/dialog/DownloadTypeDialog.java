@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -60,13 +60,13 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     }
 
     private void initWidget(View v) {
-        TextView downloadText = ButterKnife.findById(v, R.id.dialog_download_type_downloadTxt);
+        TextView downloadText = v.findViewById(R.id.dialog_download_type_downloadTxt);
         downloadText.setText(getResources().getStringArray(R.array.download_options)[0]);
 
-        TextView shareText = ButterKnife.findById(v, R.id.dialog_download_type_shareTxt);
+        TextView shareText = v.findViewById(R.id.dialog_download_type_shareTxt);
         shareText.setText(getResources().getStringArray(R.array.download_options)[1]);
 
-        TextView wallpaperText = ButterKnife.findById(v, R.id.dialog_download_type_wallpaperTxt);
+        TextView wallpaperText = v.findViewById(R.id.dialog_download_type_wallpaperTxt);
         wallpaperText.setText(getResources().getStringArray(R.array.download_options)[2]);
     }
 

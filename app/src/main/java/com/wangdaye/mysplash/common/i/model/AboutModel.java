@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.model;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 /**
  * About model.

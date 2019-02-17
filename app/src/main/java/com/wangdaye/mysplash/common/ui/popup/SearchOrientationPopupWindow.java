@@ -11,8 +11,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
-import butterknife.ButterKnife;
-
 /**
  * Search orientation popup window.
  *
@@ -58,25 +56,25 @@ public class SearchOrientationPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_search_orientation_portrait).setOnClickListener(this);
         v.findViewById(R.id.popup_search_orientation_squarish).setOnClickListener(this);
 
-        TextView allTxt = ButterKnife.findById(v, R.id.popup_search_orientation_allTxt);
+        TextView allTxt = v.findViewById(R.id.popup_search_orientation_allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (TextUtils.isEmpty(valueNow)) {
             allTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView landscapeTxt = ButterKnife.findById(v, R.id.popup_search_orientation_landscapeTxt);
+        TextView landscapeTxt = v.findViewById(R.id.popup_search_orientation_landscapeTxt);
         landscapeTxt.setText(names[0]);
         if (values[0].equals(valueNow)) {
             landscapeTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView portraitTxt = ButterKnife.findById(v, R.id.popup_search_orientation_portraitTxt);
+        TextView portraitTxt = v.findViewById(R.id.popup_search_orientation_portraitTxt);
         portraitTxt.setText(names[1]);
         if (values[1].equals(valueNow)) {
             portraitTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView squarishTxt = ButterKnife.findById(v, R.id.popup_search_orientation_squarishTxt);
+        TextView squarishTxt = v.findViewById(R.id.popup_search_orientation_squarishTxt);
         squarishTxt.setText(names[2]);
         if (values[2].equals(valueNow)) {
             squarishTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));

@@ -5,15 +5,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.navigation.NavigationView;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +29,6 @@ import com.wangdaye.mysplash.common.data.entity.unsplash.User;
 import com.wangdaye.mysplash.common.i.model.DownloadModel;
 import com.wangdaye.mysplash.common.i.presenter.DownloadPresenter;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
-import com.wangdaye.mysplash.common.ui.activity.invisible.RestartActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -62,6 +61,8 @@ import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 import com.wangdaye.mysplash.main.view.fragment.FollowingFragment;
 import com.wangdaye.mysplash.main.view.fragment.HomeFragment;
 import com.wangdaye.mysplash.main.view.fragment.MultiFilterFragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -279,7 +280,7 @@ public class MainActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
         List<MysplashFragment> fragmentList = fragmentManagePresenter.getFragmentList(this, true);
@@ -430,16 +431,16 @@ public class MainActivity extends LoadableActivity<Photo>
         View header = nav.getHeaderView(0);
         header.setOnClickListener(this);
 
-        this.navAvatar = ButterKnife.findById(header, R.id.container_nav_header_avatar);
+        this.navAvatar = header.findViewById(R.id.container_nav_header_avatar);
 
-        this.appIcon = ButterKnife.findById(header, R.id.container_nav_header_appIcon);
+        this.appIcon = header.findViewById(R.id.container_nav_header_appIcon);
         ImageHelper.loadResourceImage(this, appIcon, R.drawable.ic_launcher);
 
-        this.navTitle = ButterKnife.findById(header, R.id.container_nav_header_title);
+        this.navTitle = header.findViewById(R.id.container_nav_header_title);
 
-        this.navSubtitle = ButterKnife.findById(header, R.id.container_nav_header_subtitle);
+        this.navSubtitle = header.findViewById(R.id.container_nav_header_subtitle);
 
-        this.navButton = ButterKnife.findById(header, R.id.container_nav_header_button);
+        this.navButton = header.findViewById(R.id.container_nav_header_button);
         navButton.setOnClickListener(this);
     }
 
@@ -463,13 +464,6 @@ public class MainActivity extends LoadableActivity<Photo>
                 ThemeManager.getInstance(this).isLightTheme()
                         ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
         recreate();
-    }
-
-    public void reboot() {
-        Intent intent = new Intent(this, RestartActivity.class);
-        startActivity(intent);
-        overridePendingTransition(0, android.R.anim.fade_out);
-        finish();
     }
 
     public void changeFragment(int code) {

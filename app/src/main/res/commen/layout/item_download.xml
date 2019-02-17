@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_download_card"
@@ -16,7 +16,7 @@
     app:cardPreventCornerOverlap="false"
     tools:ignore="UnusedAttribute">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_download_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.AppCompatImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/item_download_closeBtn"
             android:src="@drawable/ic_item_close"
             android:layout_width="34dp"
@@ -41,7 +41,7 @@
             android:layout_alignParentEnd="true"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
-        <android.support.v7.widget.AppCompatImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/item_download_retry_check_btn"
             android:layout_width="34dp"
             android:layout_height="34dp"
@@ -81,4 +81,4 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

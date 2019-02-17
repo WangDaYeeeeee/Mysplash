@@ -10,8 +10,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
-import butterknife.ButterKnife;
-
 /**
  * Search featured popup window.
  *
@@ -51,13 +49,13 @@ public class SearchFeaturedPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_search_featured_all).setOnClickListener(this);
         v.findViewById(R.id.popup_search_featured_featured).setOnClickListener(this);
 
-        TextView allTxt = ButterKnife.findById(v, R.id.popup_search_featured_allTxt);
+        TextView allTxt = v.findViewById(R.id.popup_search_featured_allTxt);
         allTxt.setText(v.getContext().getText(R.string.all));
         if (!valueNow) {
             allTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView featuredTxt = ButterKnife.findById(v, R.id.popup_search_featured_featuredTxt);
+        TextView featuredTxt = v.findViewById(R.id.popup_search_featured_featuredTxt);
         featuredTxt.setText(v.getContext().getResources().getStringArray(R.array.home_tabs)[1]);
         if (valueNow) {
             featuredTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));

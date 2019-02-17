@@ -5,7 +5,7 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 /**
  * Toolbar presenter.
  *
- * Presenter to control the behavior of {@link android.support.v7.widget.Toolbar}.
+ * Presenter to control the behavior of {@link androidx.appcompat.widget.Toolbar}.
  *
  * */
 

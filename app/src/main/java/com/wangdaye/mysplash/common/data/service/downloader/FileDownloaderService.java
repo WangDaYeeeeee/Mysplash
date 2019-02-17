@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
@@ -226,24 +226,24 @@ public class FileDownloaderService extends DownloaderService {
 
     private void downloadFinish(Context context, @NonNull DownloadMissionEntity entity, boolean complete) {
         if (complete) {
-            if (entity.downloadType != DownloaderService.COLLECTION_TYPE) {
-                downloadPhotoSuccess(context, entity);
-            } else {
-                downloadCollectionSuccess(context, entity);
-            }
             updateMissionResult(context, entity, DownloaderService.RESULT_SUCCEED);
             context.sendBroadcast(
                     new Intent(
                             Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                             Uri.parse(entity.getFilePath())));
+            if (entity.downloadType != DownloaderService.COLLECTION_TYPE) {
+                downloadPhotoSuccess(context, entity);
+            } else {
+                downloadCollectionSuccess(context, entity);
+            }
         } else {
             FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
+            updateMissionResult(context, entity, DownloaderService.RESULT_FAILED);
             if (entity.downloadType != DownloaderService.COLLECTION_TYPE) {
                 downloadPhotoFailed(context, entity);
             } else {
                 downloadCollectionFailed(context, entity);
             }
-            updateMissionResult(context, entity, DownloaderService.RESULT_FAILED);
         }
     }
 

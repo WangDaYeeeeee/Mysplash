@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:title="@string/muzei_settings_title_source"
+        android:key="@string/key_muzei_source"
+        android:entries="@array/muzei_sources"
+        android:entryValues="@array/muzei_source_values"
+        android:defaultValue="collection" />
+
+    <ListPreference
+        android:title="@string/muzei_settings_cache_mode"
+        android:key="@string/key_muzei_cache_mode"
+        android:entries="@array/muzei_cache_modes"
+        android:entryValues="@array/muzei_cache_mode_values"
+        android:defaultValue="keep" />
+
+    <Preference
+        android:title="@string/muzei_settings_title_collection_source"
+        android:key="@string/key_muzei_collection_source" />
+
+</PreferenceScreen>

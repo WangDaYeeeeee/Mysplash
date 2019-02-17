@@ -2,10 +2,10 @@ package com.wangdaye.mysplash.me.view.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
@@ -184,11 +184,10 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     private void initView() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_my_follow_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_my_follow_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.activity_my_follow_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_my_follow_toolbar);
         toolbar.setTitle(getString(R.string.my_follow));
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
@@ -230,7 +229,7 @@ public class MyFollowActivity extends MysplashActivity
         viewPager.addOnPageChangeListener(this);
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
 
-        TabLayout tabLayout = ButterKnife.findById(this, R.id.activity_my_follow_tabLayout);
+        TabLayout tabLayout = findViewById(R.id.activity_my_follow_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
     }

@@ -12,7 +12,7 @@
     android:paddingEnd="@dimen/little_margin"
     tools:ignore="DisableBaselineAlignment">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_photo_3_exif_icon"
         android:src="@drawable/ic_camera"
         style="@style/material_icon"

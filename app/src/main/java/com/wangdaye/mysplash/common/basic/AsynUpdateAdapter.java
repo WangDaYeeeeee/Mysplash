@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.basic;
 
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 

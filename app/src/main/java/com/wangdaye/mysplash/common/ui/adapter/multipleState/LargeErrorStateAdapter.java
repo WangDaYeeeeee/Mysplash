@@ -1,10 +1,10 @@
 package com.wangdaye.mysplash.common.ui.adapter.multipleState;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,8 +53,7 @@ public class LargeErrorStateAdapter extends RecyclerView.Adapter<LargeErrorState
             super(itemView);
             ButterKnife.bind(this, itemView);
 
-            RelativeLayout container = ButterKnife.findById(
-                    itemView, R.id.item_multiple_state_error_large_container);
+            RelativeLayout container = itemView.findViewById(R.id.item_multiple_state_error_large_container);
             RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) container.getLayoutParams();
             params.setMargins(0, 0, 0, (int) new DisplayUtils(context).dpToPx(marginBottomDp));
             container.setLayoutParams(params);

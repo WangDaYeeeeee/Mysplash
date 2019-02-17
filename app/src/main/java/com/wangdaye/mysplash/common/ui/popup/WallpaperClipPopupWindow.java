@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.ui.popup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.ui.activity.SetWallpaperActivity;
-
-import butterknife.ButterKnife;
 
 /**
  * Wallpaper clip popup window.
@@ -51,12 +49,12 @@ public class WallpaperClipPopupWindow extends MysplashPopupWindow
         v.findViewById(R.id.popup_wallpaper_clip_square).setOnClickListener(this);
         v.findViewById(R.id.popup_wallpaper_clip_rect).setOnClickListener(this);
 
-        TextView squareTxt = ButterKnife.findById(v, R.id.popup_wallpaper_clip_squareTxt);
+        TextView squareTxt = v.findViewById(R.id.popup_wallpaper_clip_squareTxt);
         if (valueNow == SetWallpaperActivity.CLIP_TYPE_SQUARE) {
             squareTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle));
         }
 
-        TextView rectTxt = ButterKnife.findById(v, R.id.popup_wallpaper_clip_rectTxt);
+        TextView rectTxt = v.findViewById(R.id.popup_wallpaper_clip_rectTxt);
         if (valueNow == SetWallpaperActivity.CLIP_TYPE_RECT) {
             rectTxt.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorTextSubtitle));
         }

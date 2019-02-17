@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.search.presenter.widget;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.wangdaye.mysplash.Mysplash;

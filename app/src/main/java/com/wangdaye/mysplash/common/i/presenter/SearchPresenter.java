@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.i.presenter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.mysplash.Mysplash;
 

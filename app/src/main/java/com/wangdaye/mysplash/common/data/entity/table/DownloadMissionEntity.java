@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.common.data.entity.table;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;

@@ -3,11 +3,11 @@ package com.wangdaye.mysplash.user.view.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.IntDef;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -378,11 +378,11 @@ public class UserActivity extends LoadableActivity<Photo>
                 toolbar.getMenu().getItem(0).setVisible(true);
             }
 
-            CircleImageView avatar = ButterKnife.findById(this, R.id.activity_user_avatar);
+            CircleImageView avatar = findViewById(R.id.activity_user_avatar);
             avatar.setOnClickListener(new OnClickAvatarListener(u));
             ImageHelper.loadAvatar(this, avatar, u);
 
-            TextView title = ButterKnife.findById(this, R.id.activity_user_title);
+            TextView title = findViewById(R.id.activity_user_title);
             title.setText(u.name);
 
             initPages(u);
@@ -433,7 +433,7 @@ public class UserActivity extends LoadableActivity<Photo>
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition());
         viewPager.addOnPageChangeListener(this);
 
-        TabLayout tabLayout = ButterKnife.findById(this, R.id.activity_user_tabLayout);
+        TabLayout tabLayout = findViewById(R.id.activity_user_tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 

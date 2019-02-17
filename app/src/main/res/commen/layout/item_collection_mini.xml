@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_collection_mini_card"
@@ -16,7 +16,7 @@
     app:cardElevation="@dimen/low_elevation"
     tools:ignore="UnusedAttribute">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_collection_mini_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -64,7 +64,7 @@
                     style="@style/subtitle_text"
                     tools:text="3 photos" />
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/item_collection_mini_lockIcon"
                     android:src="@drawable/ic_item_lock"
                     android:layout_centerVertical="true"
@@ -95,4 +95,4 @@
 
     </RelativeLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

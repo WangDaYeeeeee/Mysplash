@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.user.model.widget;
 
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;

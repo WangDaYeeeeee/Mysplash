@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.model;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 

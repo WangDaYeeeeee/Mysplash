@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash.main.view.fragment;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -188,7 +188,7 @@ public class FollowingFragment extends LoadableFragment<Photo>
     private void initView(View v, Bundle saveInstanceState) {
         appBar.setOnNestedScrollingListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(v, R.id.fragment_following_toolbar);
+        Toolbar toolbar = v.findViewById(R.id.fragment_following_toolbar);
         toolbar.setTitle(getString(R.string.action_following));
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);

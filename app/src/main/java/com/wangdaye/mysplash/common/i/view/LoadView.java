@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.i.view;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.View;
 
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;

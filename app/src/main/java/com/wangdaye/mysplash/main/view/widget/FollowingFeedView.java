@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -177,7 +177,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         this.followingModel = new FollowingObject(
                 new FollowingAdapter(
                         getContext(),
-                        new ArrayList<Photo>(Mysplash.DEFAULT_PER_PAGE)));
+                        new ArrayList<>(Mysplash.DEFAULT_PER_PAGE)));
         this.loadModel = new LoadObject(LoadModel.LOADING_STATE);
         this.scrollModel = new ScrollObject(true);
 

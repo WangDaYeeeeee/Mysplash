@@ -3,9 +3,9 @@ package com.wangdaye.mysplash.common.ui.activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.IntDef;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -132,15 +132,14 @@ public class LoginActivity extends MysplashActivity
     /** <br> UI. */
 
     private void initWidget() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_login_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_login_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        AppCompatImageView icon = ButterKnife.findById(this, R.id.activity_login_icon);
+        AppCompatImageView icon = findViewById(R.id.activity_login_icon);
         ImageHelper.loadResourceImage(this, icon, R.drawable.ic_launcher);
 
-        Button loginBtn = ButterKnife.findById(this, R.id.activity_login_loginBtn);
-        Button joinBtn = ButterKnife.findById(this, R.id.activity_login_joinBtn);
+        Button loginBtn = findViewById(R.id.activity_login_loginBtn);
+        Button joinBtn = findViewById(R.id.activity_login_joinBtn);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             if (ThemeManager.getInstance(this).isLightTheme()) {
                 loginBtn.setBackgroundResource(R.color.colorPrimaryDark_dark);

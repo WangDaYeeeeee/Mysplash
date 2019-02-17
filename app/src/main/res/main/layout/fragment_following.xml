@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content"
                     app:sbv_fill_in_mode="true" />
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/fragment_following_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"

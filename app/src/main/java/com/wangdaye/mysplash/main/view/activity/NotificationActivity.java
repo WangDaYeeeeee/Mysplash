@@ -2,8 +2,8 @@ package com.wangdaye.mysplash.main.view.activity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -122,11 +122,10 @@ public class NotificationActivity extends MysplashActivity
 
     @SuppressLint("SetTextI18n")
     private void initView() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_notification_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_notification_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.activity_notification_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_notification_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.inflateMenu(R.menu.activity_notification);

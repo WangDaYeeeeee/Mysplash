@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/popup_search_orientation_allIcon"
             android:src="@drawable/ic_infinity"
             style="@style/material_icon"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/popup_search_orientation_landscapeIcon"
             android:src="@drawable/ic_orientation_landscape"
             style="@style/material_icon"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/popup_search_orientation_portraitIcon"
             android:src="@drawable/ic_orientation_portrait_light"
             style="@style/material_icon"
@@ -84,7 +84,7 @@
         android:layout_height="wrap_content"
         android:background="?attr/selectableItemBackground">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/popup_search_orientation_squarishIcon"
             android:src="@drawable/ic_orientation_squarish_light"
             style="@style/material_icon"

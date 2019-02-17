@@ -3,6 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.wangdaye.mysplash">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+
     <application
         android:name=".Mysplash"
         android:allowBackup="true"
@@ -13,7 +24,8 @@
         android:largeHeap="true"
         android:taskAffinity="com.wangdaye.mysplash"
         android:allowTaskReparenting="true"
-        tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource">
+        tools:ignore="AllowBackup,GoogleAppIndexingWarning,ManifestResource"
+        tools:targetApi="p">
 
         <activity
             android:name=".main.view.activity.MainActivity"
@@ -262,16 +274,13 @@
                 <action android:name="com.google.android.apps.muzei.api.MuzeiArtProvider"/>
             </intent-filter>
             <meta-data
-                android:name="color"
-                android:value="@color/colorPrimary_dark" />
-            <meta-data
                 android:name="settingsActivity"
                 android:value="com.wangdaye.mysplash.common.ui.activity.muzei.MuzeiSettingsActivity" />
         </provider>
 
         <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.wangdaye.mysplash"
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data
@@ -280,18 +289,5 @@
         </provider>
 
     </application>
-
-    <uses-permission android:name="android.permission.INTERNET"
-        tools:ignore="ManifestOrder" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
-        tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER_HINTS" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <!-- Muzei. -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
 </manifest>

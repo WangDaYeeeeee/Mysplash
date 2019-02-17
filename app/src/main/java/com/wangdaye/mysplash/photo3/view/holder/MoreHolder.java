@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.photo3.view.holder;
 
 import android.annotation.SuppressLint;
-import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
+import androidx.annotation.Nullable;
+import androidx.viewpager.widget.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -92,11 +92,11 @@ public class MoreHolder extends PhotoInfoAdapter3.ViewHolder
                 }
             });
 
-            covers[i] = ButterKnife.findById(view, R.id.item_photo_3_more_page_vertical_cover);
+            covers[i] = view.findViewById(R.id.item_photo_3_more_page_vertical_cover);
             ImageHelper.loadCollectionCover(
                     a, covers[i], photo.related_collections.results.get(i));
 
-            titles[i] = ButterKnife.findById(view, R.id.item_photo_3_more_page_vertical_title);
+            titles[i] = view.findViewById(R.id.item_photo_3_more_page_vertical_title);
             titles[i].setText(photo.related_collections.results.get(i).title.toUpperCase());
 
             viewList.add(view);

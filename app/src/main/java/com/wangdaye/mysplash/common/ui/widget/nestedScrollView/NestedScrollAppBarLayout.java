@@ -2,11 +2,14 @@ package com.wangdaye.mysplash.common.ui.widget.nestedScrollView;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.ViewCompat;
+import com.google.android.material.appbar.AppBarLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.NestedScrollingChild3;
+import androidx.core.view.NestedScrollingChildHelper;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,12 +23,11 @@ import android.view.animation.DecelerateInterpolator;
  *
  * */
 
-@CoordinatorLayout.DefaultBehavior(NestedScrollAppBarLayout.Behavior.class)
 public class NestedScrollAppBarLayout extends AppBarLayout
-        implements NestedScrollingChild {
+        implements CoordinatorLayout.AttachedBehavior, NestedScrollingChild3 {
 
     private NestedScrollingChildHelper nestedScrollingChildHelper;
-    OnNestedScrollingListener nestedScrollingListener;
+    private OnNestedScrollingListener nestedScrollingListener;
 
     private AutomaticScrollAnimator animator;
 
@@ -81,7 +83,9 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                         appBarLayout.dispatchNestedPreScroll(
                                 total[0], total[1], consumed, null);
                         appBarLayout.dispatchNestedScroll(
-                                consumed[0], consumed[1], total[0] - consumed[0], total[1] - consumed[1], null);
+                                consumed[0], consumed[1],
+                                total[0] - consumed[0], total[1] - consumed[1],
+                                null);
                     }
                     oldY = ev.getY();
                     return isBeingDragged;
@@ -102,7 +106,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         @Override
         public boolean onStartNestedScroll(CoordinatorLayout parent, AppBarLayout child,
                                            View directTargetChild, View target, int nestedScrollAxes, int type) {
-            if (super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type) && type == 0) {
+            if (super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type)
+                    && type == ViewCompat.TYPE_TOUCH) {
                 bindAppBar(child);
                 if (appBarLayout.nestedScrollingListener != null) {
                     appBarLayout.nestedScrollingListener.onStartNestedScroll();
@@ -126,12 +131,12 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         }
 
         @Override
-        public void onNestedScroll(CoordinatorLayout coordinatorLayout, AppBarLayout child,
-                                   View target, int dxConsumed, int dyConsumed,
-                                   int dxUnconsumed, int dyUnconsumed, int type) {
+        public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull AppBarLayout child,
+                                   @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed,
+                                   int dyUnconsumed, @ViewCompat.NestedScrollType int type, @NonNull int[] consumed) {
             super.onNestedScroll(
                     coordinatorLayout, child, target,
-                    dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
+                    dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type, consumed);
             bindAppBar(child);
             if (appBarLayout.nestedScrollingListener != null) {
                 appBarLayout.nestedScrollingListener.onNestedScrolling();
@@ -187,11 +192,14 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                         int[] total = new int[] {0, lastY - newY};
                         int[] consumed = new int[] {0, 0};
                         behavior.onNestedPreScroll(
-                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this, NestedScrollAppBarLayout.this,
-                                total[0], total[1], consumed, 0);
+                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this,
+                                NestedScrollAppBarLayout.this, total[0], total[1],
+                                consumed, ViewCompat.TYPE_TOUCH);
                         behavior.onNestedScroll(
-                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this, NestedScrollAppBarLayout.this,
-                                consumed[0], consumed[1], total[0] - consumed[0], total[1] - consumed[1], 0);
+                                (CoordinatorLayout) getParent(), NestedScrollAppBarLayout.this,
+                                NestedScrollAppBarLayout.this, consumed[0], consumed[1],
+                                total[0] - consumed[0], total[1] - consumed[1],
+                                ViewCompat.TYPE_TOUCH, consumed);
                         lastY = newY;
                     }
                 }
@@ -211,6 +219,7 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
     private void initialize() {
         this.nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
+        this.nestedScrollingChildHelper.setNestedScrollingEnabled(true);
         setNestedScrollingEnabled(true);
 
         this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
@@ -301,53 +310,52 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         this.nestedScrollingListener = l;
     }
 
+    // attached behavior.
+
+    @NonNull
+    @Override
+    public CoordinatorLayout.Behavior getBehavior() {
+        return new Behavior();
+    }
+
     // nested scrolling child.
 
     @Override
-    public void setNestedScrollingEnabled(boolean enabled) {
-        nestedScrollingChildHelper.setNestedScrollingEnabled(enabled);
+    public boolean startNestedScroll(int axes, int type) {
+        return nestedScrollingChildHelper.startNestedScroll(axes, type);
     }
 
     @Override
-    public boolean isNestedScrollingEnabled() {
-        return nestedScrollingChildHelper.isNestedScrollingEnabled();
+    public void stopNestedScroll(int type) {
+        nestedScrollingChildHelper.stopNestedScroll(type);
     }
 
     @Override
-    public boolean startNestedScroll(int axes) {
-        return nestedScrollingChildHelper.startNestedScroll(axes);
+    public boolean hasNestedScrollingParent(int type) {
+        return nestedScrollingChildHelper.hasNestedScrollingParent(type);
     }
 
     @Override
-    public void stopNestedScroll() {
-        nestedScrollingChildHelper.stopNestedScroll();
+    public boolean dispatchNestedPreScroll(int dx, int dy,
+                                           @Nullable int[] consumed, @Nullable int[] offsetInWindow,
+                                           int type) {
+        return nestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type);
     }
 
     @Override
-    public boolean hasNestedScrollingParent() {
-        return nestedScrollingChildHelper.hasNestedScrollingParent();
+    public void dispatchNestedScroll(int dxConsumed, int dyConsumed,
+                                     int dxUnconsumed, int dyUnconsumed,
+                                     @Nullable int[] offsetInWindow, int type,
+                                     @NonNull int[] consumed) {
+        nestedScrollingChildHelper.dispatchNestedScroll(
+                dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type, consumed);
     }
 
     @Override
     public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed,
-                                        int dxUnconsumed, int dyUnconsumed, int[] offsetInWindow) {
+                                        int dxUnconsumed, int dyUnconsumed,
+                                        @Nullable int[] offsetInWindow, int type) {
         return nestedScrollingChildHelper.dispatchNestedScroll(
-                dxConsumed, dyConsumed,
-                dxUnconsumed, dyUnconsumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean dispatchNestedPreScroll(int dx, int dy, int[] consumed, int[] offsetInWindow) {
-        return nestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow);
-    }
-
-    @Override
-    public boolean dispatchNestedFling(float velocityX, float velocityY, boolean consumed) {
-        return nestedScrollingChildHelper.dispatchNestedFling(velocityX, velocityY, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedPreFling(float velocityX, float velocityY) {
-        return nestedScrollingChildHelper.dispatchNestedPreFling(velocityX, velocityY);
+                dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type);
     }
 }

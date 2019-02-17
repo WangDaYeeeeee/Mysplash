@@ -7,9 +7,9 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
-import android.support.annotation.IntRange;
-import android.support.annotation.Size;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.IntRange;
+import androidx.annotation.Size;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 import com.wangdaye.mysplash.R;

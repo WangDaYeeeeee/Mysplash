@@ -1,10 +1,10 @@
 package com.wangdaye.mysplash.common.ui.widget;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.IntDef;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IntDef;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;

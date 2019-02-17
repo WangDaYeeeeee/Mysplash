@@ -1,10 +1,14 @@
 package com.wangdaye.mysplash.common.i.view;
 
+import com.google.android.material.navigation.NavigationView;
+
+import androidx.drawerlayout.widget.DrawerLayout;
+
 /**
  * Drawer view.
  *
- * A view which has {@link android.support.v4.widget.DrawerLayout}
- * and {@link android.support.design.widget.NavigationView}.
+ * A view which has {@link DrawerLayout}
+ * and {@link NavigationView}.
  *
  * */
 

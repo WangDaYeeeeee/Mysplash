@@ -5,10 +5,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -336,13 +336,12 @@ public class SearchActivity extends LoadableActivity<Photo>
     private void initView() {
         this.handler = new SafeHandler<>(this);
 
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_search_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_search_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         appBar.setOnNestedScrollingListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.activity_search_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_search_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.inflateMenu(R.menu.activity_search_toolbar);
@@ -350,8 +349,6 @@ public class SearchActivity extends LoadableActivity<Photo>
         toolbar.setNavigationOnClickListener(this);
 
         editText.setOnEditorActionListener(this);
-        editText.setFocusable(true);
-        editText.requestFocus();
 
         final String query;
         if (getBundle() != null) {
@@ -362,9 +359,11 @@ public class SearchActivity extends LoadableActivity<Photo>
         new Handler().post(new Runnable() {
             @Override
             public void run() {
-                if (!TextUtils.isEmpty(query)) {
+                if (TextUtils.isEmpty(query)) {
+                    editText.setFocusable(true);
+                    editText.requestFocus();
+                } else {
                     editText.setText(query);
-                    searchBarPresenter.hideKeyboard();
                 }
             }
         });
@@ -409,7 +408,7 @@ public class SearchActivity extends LoadableActivity<Photo>
         viewPager.addOnPageChangeListener(this);
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
 
-        TabLayout tabLayout = ButterKnife.findById(this, R.id.activity_search_tabLayout);
+        TabLayout tabLayout = findViewById(R.id.activity_search_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 

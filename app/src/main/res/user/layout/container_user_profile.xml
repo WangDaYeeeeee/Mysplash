@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:gravity="center_horizontal">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/container_user_profile_tagList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
             android:layout_marginStart="@dimen/normal_icon_size"
             android:layout_marginEnd="@dimen/normal_icon_size">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/container_user_profile_locationIcon"
                 android:src="@drawable/ic_location"
                 android:tint="?attr/content_color"

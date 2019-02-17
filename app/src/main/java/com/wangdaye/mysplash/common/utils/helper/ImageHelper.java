@@ -11,10 +11,10 @@ import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
@@ -494,8 +494,8 @@ public class ImageHelper {
 
     /**
      * Release the {@link ImageView} from {@link Glide}.
-     * A ViewHolder in {@link android.support.v7.widget.RecyclerView} need to call this method in
-     * {@link android.support.v7.widget.RecyclerView.Adapter#onViewRecycled(RecyclerView.ViewHolder)}.
+     * A ViewHolder in {@link RecyclerView} need to call this method in
+     * {@link RecyclerView.Adapter#onViewRecycled(RecyclerView.ViewHolder)}.
      * Otherwise, there might be a OOM problem.
      *
      * @param view The ImageView to be released.

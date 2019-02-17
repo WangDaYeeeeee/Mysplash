@@ -1,7 +1,9 @@
 package com.wangdaye.mysplash.common.ui.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
+
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -189,6 +191,7 @@ public class SwipeSwitchLayout extends FrameLayout {
         return isUsable() && isBeingDragged && isHorizontalDragged && listener != null;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getAction()) {
@@ -277,7 +280,7 @@ public class SwipeSwitchLayout extends FrameLayout {
         this.listener = l;
     }
 
-    public static class RecyclerView extends android.support.v7.widget.RecyclerView {
+    public static class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
 
         private SwipeSwitchLayout switchView;
 
@@ -321,6 +324,7 @@ public class SwipeSwitchLayout extends FrameLayout {
             return super.onInterceptTouchEvent(ev);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouchEvent(MotionEvent ev) {
             ensureSwitchView(this);
@@ -356,7 +360,7 @@ public class SwipeSwitchLayout extends FrameLayout {
         }
     }
 
-    public static class ViewPager extends android.support.v4.view.ViewPager {
+    public static class ViewPager extends androidx.viewpager.widget.ViewPager {
 
         private SwipeSwitchLayout switchView;
 
@@ -389,6 +393,7 @@ public class SwipeSwitchLayout extends FrameLayout {
             return super.onInterceptTouchEvent(ev);
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouchEvent(MotionEvent ev) {
             ensureSwitchView(this);

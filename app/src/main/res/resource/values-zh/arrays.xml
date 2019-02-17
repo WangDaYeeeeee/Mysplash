@@ -97,4 +97,10 @@
         <item>收藏集</item>
     </string-array>
 
+    <!-- Muzei缓存模式 -->
+    <string-array name="muzei_cache_modes">
+        <item>保留旧照片</item>
+        <item>删除旧照片</item>
+    </string-array>
+
 </resources>

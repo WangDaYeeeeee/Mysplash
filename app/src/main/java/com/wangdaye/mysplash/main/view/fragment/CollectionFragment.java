@@ -2,11 +2,11 @@ package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -247,7 +247,7 @@ public class CollectionFragment extends MysplashFragment
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
         viewPager.addOnPageChangeListener(this);
 
-        TabLayout tabLayout = ButterKnife.findById(v, R.id.fragment_collection_tabLayout);
+        TabLayout tabLayout = v.findViewById(R.id.fragment_collection_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 

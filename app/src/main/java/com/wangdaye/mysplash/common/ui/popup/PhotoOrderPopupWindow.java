@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.ui.popup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -10,8 +10,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import butterknife.ButterKnife;
 
 /**
  * Order popup window.
@@ -76,25 +74,25 @@ public class PhotoOrderPopupWindow extends MysplashPopupWindow
             v.findViewById(R.id.popup_photo_order_random).setVisibility(View.GONE);
         }
 
-        TextView latestTxt = ButterKnife.findById(v, R.id.popup_photo_order_latestTxt);
+        TextView latestTxt = v.findViewById(R.id.popup_photo_order_latestTxt);
         latestTxt.setText(names[0]);
         if (valueNow.equals(values[0])) {
             latestTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView oldestTxt = ButterKnife.findById(v, R.id.popup_photo_order_oldestTxt);
+        TextView oldestTxt = v.findViewById(R.id.popup_photo_order_oldestTxt);
         oldestTxt.setText(names[1]);
         if (valueNow.equals(values[1])) {
             oldestTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView popularTxt = ButterKnife.findById(v, R.id.popup_photo_order_popularTxt);
+        TextView popularTxt = v.findViewById(R.id.popup_photo_order_popularTxt);
         popularTxt.setText(names[2]);
         if (valueNow.equals(values[2])) {
             popularTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));
         }
 
-        TextView randomTxt = ButterKnife.findById(v, R.id.popup_photo_order_randomTxt);
+        TextView randomTxt = v.findViewById(R.id.popup_photo_order_randomTxt);
         randomTxt.setText(names[3]);
         if (valueNow.equals(values[3])) {
             randomTxt.setTextColor(ThemeManager.getSubtitleColor(v.getContext()));

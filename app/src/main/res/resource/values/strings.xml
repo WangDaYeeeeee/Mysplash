@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.4.8</string>
+    <string name="version_code">3.5.0</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -17,7 +17,7 @@
     <string name="libraries">LIBRARIES</string>
     <string name="enter">ENTER</string>
     <string name="exit">EXIT</string>
-    <string name="copy">COPY</string>
+    <string name="copy" tools:ignore="PrivateResource">COPY</string>
     <string name="next">NEXT</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="backstage">BACKSTAGE</string>
@@ -322,6 +322,7 @@
     <string name="settings_title_grid_list_in_land">Show Image Grid In Horizontal Orientation</string>
 
     <string name="muzei_settings_title_source">Source</string>
+    <string name="muzei_settings_cache_mode">Cache Mode</string>
     <string name="muzei_settings_title_collection_source">Collection Source</string>
 
     <!-- share preferences. -->
@@ -342,6 +343,7 @@
     <string name="key_grid_list_in_land">grid_list_in_land</string>
 
     <string name="key_muzei_source">muzei_source</string>
+    <string name="key_muzei_cache_mode">muzei_cache_mode</string>
     <string name="key_muzei_collection_source">muzei_collection_source</string>
 
     <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>

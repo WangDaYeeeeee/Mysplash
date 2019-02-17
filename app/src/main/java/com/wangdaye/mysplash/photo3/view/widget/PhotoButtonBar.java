@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.support.v7.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;

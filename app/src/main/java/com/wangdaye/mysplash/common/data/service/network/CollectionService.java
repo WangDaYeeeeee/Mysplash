@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.data.service.network;
 
-import android.support.annotation.IntRange;
-import android.support.annotation.Nullable;
+import androidx.annotation.IntRange;
+import androidx.annotation.Nullable;
 
 import com.google.gson.GsonBuilder;
 import com.wangdaye.mysplash.Mysplash;

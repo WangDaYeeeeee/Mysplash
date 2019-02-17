@@ -1,16 +1,15 @@
 package com.wangdaye.mysplash.about.view.activity;
 
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.AboutAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,13 +75,12 @@ public class AboutActivity extends MysplashActivity
     }
 
     private void initWidget() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_about_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_about_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         recyclerView.setAdapter(new AboutAdapter(this));
         recyclerView.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+                new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
     }
 
     // interface.

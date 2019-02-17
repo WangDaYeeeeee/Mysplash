@@ -173,6 +173,16 @@
         <item>collection</item>
     </string-array>
 
+    <!-- Muzei cache mode. -->
+    <string-array name="muzei_cache_modes">
+        <item>Keep Old Photos</item>
+        <item>Delete Old Photos</item>
+    </string-array>
+    <string-array name="muzei_cache_mode_values">
+        <item>keep</item>
+        <item>delete</item>
+    </string-array>
+
     <!-- explore. --><!--
     <string-array name="explore_items">
         <item>buildings</item>

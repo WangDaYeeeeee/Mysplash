@@ -10,9 +10,9 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.service.wallpaper.WallpaperService;
-import android.support.annotation.FloatRange;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+import androidx.annotation.FloatRange;
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.view.SurfaceHolder;
 

@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.utils.helper;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;

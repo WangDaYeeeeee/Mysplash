@@ -5,14 +5,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.widget.NestedScrollView;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -76,6 +76,8 @@ import com.wangdaye.mysplash.photo3.view.holder.MoreHolder;
 import com.wangdaye.mysplash.photo3.view.holder.ProgressHolder;
 import com.wangdaye.mysplash.photo3.view.widget.PhotoButtonBar;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -247,7 +249,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
 
     @SuppressLint("MissingSuperCall")
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         // do nothing.
     }
 
@@ -346,8 +348,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
                 statusBar.setDarkerAlpha(StatusBarView.LIGHT_INIT_MASK_ALPHA);
             }
 
-            SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                    this, R.id.activity_photo_3_swipeBackView);
+            SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_photo_3_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
             if (photoListManagePresenter.getCurrentIndex() > -1) {
@@ -364,7 +365,7 @@ public class PhotoActivity3 extends RequestLoadActivity<Photo>
             scrollView.setOnScrollChangeListener(listener);
             listener.onScrollChange(scrollView, 0, 0, 0, 0);
 
-            ButterKnife.findById(this, R.id.activity_photo_3_cardContainer)
+            findViewById(R.id.activity_photo_3_cardContainer)
                     .setBackgroundColor(Color.argb((int) (0.25 * 255), 0, 0, 0));
 
             PhotoInfoAdapter3 adapter = photoInfoPresenter.getAdapter();

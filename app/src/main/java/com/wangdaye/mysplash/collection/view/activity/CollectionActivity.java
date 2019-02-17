@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
+
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,6 +66,8 @@ import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.me.view.activity.MeActivity;
 import com.wangdaye.mysplash.user.view.activity.UserActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -181,7 +185,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         // save large data.
         SavedStateFragment f = new SavedStateFragment();
         f.setPhotoList(photosView.getPhotos());
@@ -219,7 +223,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
         // told parent if this collection is created by the user.
         result.putExtra(
                 MeActivity.KEY_ME_ACTIVITY_COLLECTION,
-                getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
+                (Parcelable) getIntent().getParcelableExtra(KEY_COLLECTION_ACTIVITY_COLLECTION));
         setResult(RESULT_OK, result);
         finish();
         if (backPressed) {
@@ -279,19 +283,18 @@ public class CollectionActivity extends LoadableActivity<Photo>
         } else {
             Collection c = (Collection) editResultPresenter.getEditKey();
 
-            SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                    this, R.id.activity_collection_swipeBackView);
+            SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_collection_swipeBackView);
             swipeBackView.setOnSwipeListener(this);
 
             appBar.setOnNestedScrollingListener(this);
 
-            AppCompatImageView coverImage = ButterKnife.findById(this, R.id.activity_collection_coverImage);
+            AppCompatImageView coverImage = findViewById(R.id.activity_collection_coverImage);
             ImageHelper.loadCollectionCover(this, coverImage, c);
 
-            TextView title = ButterKnife.findById(this, R.id.activity_collection_title);
+            TextView title = findViewById(R.id.activity_collection_title);
             title.setText(c.title);
 
-            RecyclerView tagList = ButterKnife.findById(this, R.id.activity_collection_tagList);
+            RecyclerView tagList = findViewById(R.id.activity_collection_tagList);
             if (c.tags == null || c.tags.size() == 0) {
                 tagList.setVisibility(View.GONE);
             } else {
@@ -300,7 +303,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 tagList.setAdapter(new MiniTagAdapter(c.tags));
             }
 
-            TextView description = ButterKnife.findById(this, R.id.activity_collection_description);
+            TextView description = findViewById(R.id.activity_collection_description);
             if (TextUtils.isEmpty(c.description)) {
                 description.setVisibility(View.GONE);
             } else {
@@ -325,7 +328,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
             ImageHelper.loadAvatar(this, avatarImage, c.user);
 
-            TextView subtitle = ButterKnife.findById(this, R.id.activity_collection_subtitle);
+            TextView subtitle = findViewById(R.id.activity_collection_subtitle);
             subtitle.setText(getString(R.string.by) + " " + c.user.name);
 
             photosView.initMP(this, (Collection) editResultPresenter.getEditKey());

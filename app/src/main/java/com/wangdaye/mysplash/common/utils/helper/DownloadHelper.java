@@ -2,8 +2,8 @@ package com.wangdaye.mysplash.common.utils.helper;
 
 import android.app.DownloadManager;
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
 import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;

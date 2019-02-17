@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.data.entity.item;
 
-import android.support.annotation.FloatRange;
+import androidx.annotation.FloatRange;
 
 import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
 

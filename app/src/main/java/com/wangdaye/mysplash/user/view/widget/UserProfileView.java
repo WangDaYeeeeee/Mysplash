@@ -2,10 +2,10 @@ package com.wangdaye.mysplash.user.view.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.transition.TransitionManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.transition.TransitionManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;

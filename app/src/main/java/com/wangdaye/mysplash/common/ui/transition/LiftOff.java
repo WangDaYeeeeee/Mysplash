@@ -5,7 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.transition.Transition;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;

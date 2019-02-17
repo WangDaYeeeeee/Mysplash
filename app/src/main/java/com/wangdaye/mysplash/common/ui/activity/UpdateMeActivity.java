@@ -6,9 +6,9 @@ import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.IntDef;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.widget.NestedScrollView;
+import androidx.annotation.IntDef;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -25,7 +25,6 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 
 import java.util.Timer;
@@ -175,28 +174,27 @@ public class UpdateMeActivity extends MysplashActivity
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
 
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_update_me_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_update_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         progressView.setVisibility(View.GONE);
         contentView.setVisibility(View.VISIBLE);
 
-        this.usernameTxt = ButterKnife.findById(this, R.id.container_update_me_usernameTxt);
+        this.usernameTxt = findViewById(R.id.container_update_me_usernameTxt);
 
-        this.firstNameTxt = ButterKnife.findById(this, R.id.container_update_me_firstNameTxt);
+        this.firstNameTxt = findViewById(R.id.container_update_me_firstNameTxt);
 
-        this.lastNameTxt = ButterKnife.findById(this, R.id.container_update_me_lastNameTxt);
+        this.lastNameTxt = findViewById(R.id.container_update_me_lastNameTxt);
 
-        this.emailTxt = ButterKnife.findById(this, R.id.container_update_me_emailTxt);
+        this.emailTxt = findViewById(R.id.container_update_me_emailTxt);
 
-        this.portfolioTxt = ButterKnife.findById(this, R.id.container_update_me_portfolioTxt);
+        this.portfolioTxt = findViewById(R.id.container_update_me_portfolioTxt);
 
-        this.locationTxt = ButterKnife.findById(this, R.id.container_update_me_locationTxt);
+        this.locationTxt = findViewById(R.id.container_update_me_locationTxt);
 
-        this.bioTxt = ButterKnife.findById(this, R.id.container_update_me_bioTxt);
+        this.bioTxt = findViewById(R.id.container_update_me_bioTxt);
 
-        Button saveBtn = ButterKnife.findById(this, R.id.container_update_me_saveBtn);
+        Button saveBtn = findViewById(R.id.container_update_me_saveBtn);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             saveBtn.setBackgroundResource(R.drawable.button_login);
         }

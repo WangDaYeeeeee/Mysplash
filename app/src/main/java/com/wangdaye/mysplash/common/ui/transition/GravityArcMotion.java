@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.ui.transition;
 import android.content.Context;
 import android.graphics.Path;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.transition.ArcMotion;
 import android.util.AttributeSet;
 

@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.ui.popup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.IntDef;
+import androidx.annotation.IntDef;
 import android.view.LayoutInflater;
 import android.view.View;
 

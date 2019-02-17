@@ -2,10 +2,11 @@ package com.wangdaye.mysplash.common.ui.widget;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
-import android.support.annotation.IntDef;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.ColorInt;
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -139,7 +140,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes, int type) {
         super.onStartNestedScroll(child, target, nestedScrollAxes, type);
         isVerticalDragged = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
-        return type == 0;
+        return type == ViewCompat.TYPE_TOUCH;
     }
 
     @Override
@@ -157,8 +158,9 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     @Override
-    public void onNestedScroll(View target, int dxConsumed, int dyConsumed,
-                               int dxUnconsumed, int dyUnconsumed, int type) {
+    public void onNestedScroll(@NonNull View target, int dxConsumed, int dyConsumed,
+                               int dxUnconsumed, int dyUnconsumed, int type,
+                               @NonNull int[] consumed) {
         int newDyConsumed = dyConsumed;
         int newDyUnconsumed = dyUnconsumed;
         if (isVerticalDragged && swipeDistance == 0) {
@@ -170,7 +172,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
             }
         }
 
-        super.onNestedScroll(target, dxConsumed, newDyConsumed, dxUnconsumed, newDyUnconsumed, type);
+        super.onNestedScroll(target, dxConsumed, newDyConsumed, dxUnconsumed, newDyUnconsumed, type, consumed);
     }
 
     @Override

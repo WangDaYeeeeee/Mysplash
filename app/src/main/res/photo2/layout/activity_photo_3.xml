@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,7 +28,7 @@
             android:layout_height="match_parent"
             android:background="@android:color/black">
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/activity_photo_3_switchBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -49,7 +49,7 @@
                     android:transitionName="@string/transition_photo_image"
                     tools:ignore="UnusedAttribute" />
                 
-                <android.support.v4.widget.NestedScrollView
+                <androidx.core.widget.NestedScrollView
                     android:id="@+id/activity_photo_3_scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -69,7 +69,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="-12dp">
 
-                            <android.support.v7.widget.CardView
+                            <androidx.cardview.widget.CardView
                                 android:id="@+id/activity_photo_3_card"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
@@ -77,20 +77,20 @@
                                 app:cardBackgroundColor="?attr/root_color"
                                 app:cardElevation="0dp">
 
-                                <android.support.v7.widget.RecyclerView
+                                <androidx.recyclerview.widget.RecyclerView
                                     android:id="@+id/activity_photo_3_recyclerView"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:paddingBottom="12dp"
                                     android:nestedScrollingEnabled="false" />
 
-                            </android.support.v7.widget.CardView>
+                            </androidx.cardview.widget.CardView>
 
                         </FrameLayout>
 
                     </LinearLayout>
 
-                </android.support.v4.widget.NestedScrollView>
+                </androidx.core.widget.NestedScrollView>
 
                 <LinearLayout
                     android:id="@+id/activity_photo_3_appBar"
@@ -117,7 +117,7 @@
                             app:cml_to_alpha="0.15"
                             app:cml_mask_color="@android:color/black" />
 
-                        <android.support.v7.widget.Toolbar
+                        <androidx.appcompat.widget.Toolbar
                             android:id="@+id/activity_photo_3_toolbar"
                             android:layout_width="match_parent"
                             android:layout_height="?attr/actionBarSize"
@@ -140,4 +140,4 @@
         android:layout_height="wrap_content"
         app:sbv_translucent_mode="true" />
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

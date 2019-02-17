@@ -7,10 +7,10 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.AppCompatImageView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -198,7 +198,7 @@ public class IntroduceActivity extends MysplashActivity
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
 
-        AppCompatImageButton backBtn = ButterKnife.findById(this, R.id.activity_introduce_backBtn);
+        AppCompatImageButton backBtn = findViewById(R.id.activity_introduce_backBtn);
         backBtn.setOnClickListener(this);
 
         button.setOnClickListener(this);
@@ -206,7 +206,7 @@ public class IntroduceActivity extends MysplashActivity
 
         initPage();
 
-        InkPageIndicator indicator = ButterKnife.findById(this, R.id.activity_introduce_indicator);
+        InkPageIndicator indicator = findViewById(R.id.activity_introduce_indicator);
         indicator.setViewPager(viewPager);
         if (introduceModelList.size() <= 1) {
             indicator.setAlpha(0f);
@@ -222,16 +222,16 @@ public class IntroduceActivity extends MysplashActivity
         for (int i = 0; i < introduceModelList.size(); i ++) {
             View v = LayoutInflater.from(this).inflate(R.layout.container_introduce, null);
 
-            TextView title = ButterKnife.findById(v, R.id.container_introduce_title);
+            TextView title = v.findViewById(R.id.container_introduce_title);
             title.setText(introduceModelList.get(i).title);
 
-            AppCompatImageView image = ButterKnife.findById(v, R.id.container_introduce_image);
+            AppCompatImageView image = v.findViewById(R.id.container_introduce_image);
             Glide.with(this)
                     .load(introduceModelList.get(i).imageRes)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .into(image);
 
-            TextView description = ButterKnife.findById(v, R.id.container_introduce_description);
+            TextView description = v.findViewById(R.id.container_introduce_description);
             description.setText(introduceModelList.get(i).description);
 
             setPageButtonStyle(v, i);
@@ -257,7 +257,7 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     private void setPageButtonStyle(View page, int position) {
-        Button b = ButterKnife.findById(page, R.id.container_introduce_button);
+        Button b = page.findViewById(R.id.container_introduce_button);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             if (ThemeManager.getInstance(this).isLightTheme()) {
                 b.setBackgroundResource(R.color.colorPrimary_dark);

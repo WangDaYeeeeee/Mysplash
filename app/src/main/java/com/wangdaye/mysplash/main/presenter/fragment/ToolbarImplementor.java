@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.main.presenter.fragment;
 
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.i.presenter.ToolbarPresenter;

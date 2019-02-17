@@ -37,6 +37,7 @@ public class MuzeiOptionManager {
     private int updateInterval;
     private boolean updateOnlyInWifi;
     private String source;
+    private String cacheMode;
     private List<WallpaperSource> collectionSourceList;
 
     private static final int DEFAULT_INTERVAL = 1;
@@ -47,6 +48,8 @@ public class MuzeiOptionManager {
         this.updateOnlyInWifi = DEFAULT_UPDATE_ONLY_IN_WIFI;
         setSource(PreferenceManager.getDefaultSharedPreferences(context)
                 .getString(context.getString(R.string.key_muzei_source), "collection"));
+        setCacheMode(PreferenceManager.getDefaultSharedPreferences(context)
+                .getString(context.getString(R.string.key_muzei_cache_mode), "keep"));
         setCollectionSourceList(DatabaseHelper.getInstance(context).readWallpaperSourceList());
     }
 
@@ -80,6 +83,14 @@ public class MuzeiOptionManager {
 
     public void setSource(String source) {
         this.source = source;
+    }
+
+    public String getCacheMode() {
+        return cacheMode;
+    }
+
+    public void setCacheMode(String cacheMode) {
+        this.cacheMode = cacheMode;
     }
 
     public List<WallpaperSource> getCollectionSourceList() {

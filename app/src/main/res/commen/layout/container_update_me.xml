@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatImageButton
+        <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/container_update_me_closeBtn"
             android:src="@drawable/ic_close"
             style="@style/material_image_button"
@@ -49,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -74,9 +74,9 @@
                     android:maxLines="1"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -101,9 +101,9 @@
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -128,9 +128,9 @@
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -155,9 +155,9 @@
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -182,9 +182,9 @@
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -210,9 +210,9 @@
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
@@ -237,7 +237,7 @@
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
             <Button
                 android:id="@+id/container_update_me_saveBtn"

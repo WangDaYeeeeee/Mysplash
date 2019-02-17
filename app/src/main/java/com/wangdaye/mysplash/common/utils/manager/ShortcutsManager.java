@@ -8,10 +8,10 @@ import android.content.pm.ShortcutManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
 import android.os.Build;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
-import android.support.annotation.UiThread;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.UiThread;
 import android.text.TextUtils;
 
 import com.bumptech.glide.request.animation.GlideAnimation;

@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.common.basic.activity;
 
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;

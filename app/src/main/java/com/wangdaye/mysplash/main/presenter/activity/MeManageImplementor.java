@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.presenter.activity;
 
-import android.support.design.widget.NavigationView;
+import com.google.android.material.navigation.NavigationView;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;

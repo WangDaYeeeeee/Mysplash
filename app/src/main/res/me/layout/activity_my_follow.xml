@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -38,7 +38,7 @@
                 android:background="?attr/colorPrimary"
                 app:theme="@style/MysplashToolbarTheme">
 
-                <android.support.v7.widget.Toolbar
+                <androidx.appcompat.widget.Toolbar
                     android:id="@+id/activity_my_follow_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
@@ -46,7 +46,7 @@
                     app:layout_scrollFlags="scroll|enterAlways"
                     app:popupTheme="@style/MysplashPopupMenuTheme"/>
 
-                <android.support.design.widget.TabLayout
+                <com.google.android.material.tabs.TabLayout
                     style="@style/MysplashTabLayoutTheme"
                     android:id="@+id/activity_my_follow_tabLayout"
                     android:layout_width="match_parent"
@@ -54,7 +54,7 @@
 
             </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
-            <android.support.v4.view.ViewPager
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/activity_my_follow_viewPager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -64,4 +64,4 @@
 
     </LinearLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

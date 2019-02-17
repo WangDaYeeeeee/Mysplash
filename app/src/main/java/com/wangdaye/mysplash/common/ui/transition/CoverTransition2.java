@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.ui.transition;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;

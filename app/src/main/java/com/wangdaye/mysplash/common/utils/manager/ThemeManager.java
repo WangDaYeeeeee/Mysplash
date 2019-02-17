@@ -4,13 +4,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.ImageView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 import java.util.Calendar;

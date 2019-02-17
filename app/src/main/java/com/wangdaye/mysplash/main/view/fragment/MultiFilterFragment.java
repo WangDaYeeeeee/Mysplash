@@ -3,12 +3,12 @@ package com.wangdaye.mysplash.main.view.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -226,7 +226,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
         appBar.setOnNestedScrollingListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(v, R.id.fragment_multi_filter_toolbar);
+        Toolbar toolbar = v.findViewById(R.id.fragment_multi_filter_toolbar);
         toolbar.setTitle(getString(R.string.action_multi_filter));
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_menu_light, R.drawable.ic_toolbar_menu_dark);

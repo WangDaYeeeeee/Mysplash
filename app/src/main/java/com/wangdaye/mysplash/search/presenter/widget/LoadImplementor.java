@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.search.presenter.widget;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.i.model.LoadModel;

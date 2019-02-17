@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.utils.helper;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Log;
 
 import com.wangdaye.mysplash.common.data.entity.table.DaoMaster;

@@ -3,16 +3,16 @@ package com.wangdaye.mysplash.common.ui.widget.swipeRefreshView;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v4.view.NestedScrollingChild;
-import android.support.v4.view.NestedScrollingChildHelper;
-import android.support.v4.view.NestedScrollingParent;
-import android.support.v4.view.NestedScrollingParentHelper;
-import android.support.v4.view.ViewCompat;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.MotionEventCompat;
+import androidx.core.view.NestedScrollingChild;
+import androidx.core.view.NestedScrollingChildHelper;
+import androidx.core.view.NestedScrollingParent;
+import androidx.core.view.NestedScrollingParentHelper;
+import androidx.core.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -24,10 +24,12 @@ import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Transformation;
 import android.widget.AbsListView;
 
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 /**
  * Both way swipe refresh layout.
  *
- * This is a more powerful {@link android.support.v4.widget.SwipeRefreshLayout}, it can swipe
+ * This is a more powerful {@link SwipeRefreshLayout}, it can swipe
  * to refresh and load.
  *
  * */
@@ -145,10 +147,11 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         mDragTriggerDistances[DIRECTION_BOTTOM] = DEFAULT_CIRCLE_TARGET * metrics.density;
 
         createProgressView();
-        ViewCompat.setChildrenDrawingOrderEnabled(this, true);
+        setChildrenDrawingOrderEnabled(true);
 
         mNestedScrollingParentHelper = new NestedScrollingParentHelper(this);
         mNestedScrollingChildHelper = new NestedScrollingChildHelper(this);
+        mNestedScrollingChildHelper.setNestedScrollingEnabled(true);
         setNestedScrollingEnabled(true);
 
         final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
@@ -158,8 +161,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
     private void createProgressView() {
         this.mCircleViews = new CircleImageView[] {
-                new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2),
-                new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2)
+                new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER / 2f),
+                new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER / 2f)
         };
         this.mProgress = new MaterialProgressDrawable[] {
                 new MaterialProgressDrawable(getContext(), this),
@@ -338,6 +341,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         return mIsBeingDragged;
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = MotionEventCompat.getActionMasked(ev);
@@ -406,8 +410,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
 
         if (!mScale) {
-            ViewCompat.setScaleX(mCircleViews[dir], 1f);
-            ViewCompat.setScaleY(mCircleViews[dir], 1f);
+            mCircleViews[dir].setScaleX(1f);
+            mCircleViews[dir].setScaleY(1f);
         }
 
         if (mScale) {
@@ -484,7 +488,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
      *         scroll up. Override this if the child view is a custom view.
      */
     public boolean canChildScrollUp() {
-        return ViewCompat.canScrollVertically(mTarget, -1);
+        return mTarget.canScrollVertically(-1);
     }
 
     /**
@@ -492,7 +496,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
      *         scroll down. Override this if the child view is a custom view.
      */
     public boolean canChildScrollDown() {
-        return ViewCompat.canScrollVertically(mTarget, 1);
+        return mTarget.canScrollVertically(1);
     }
 
     @Override
@@ -810,7 +814,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private void startScaleDownReturnToTopStartAnimation(int from,
                                                          Animation.AnimationListener listener) {
         mFrom = from;
-        mStartingScale = ViewCompat.getScaleX(mCircleViews[DIRECTION_TOP]);
+        mStartingScale = mCircleViews[DIRECTION_TOP].getScaleX();
         mScaleDownToStartAnimation = new Animation() {
             @Override
             public void applyTransformation(float interpolatedTime, Transformation t) {
@@ -830,7 +834,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private void startScaleDownReturnToBottomStartAnimation(int from,
                                                             Animation.AnimationListener listener) {
         mFrom = from;
-        mStartingScale = ViewCompat.getScaleX(mCircleViews[DIRECTION_BOTTOM]);
+        mStartingScale = mCircleViews[DIRECTION_BOTTOM].getScaleX();
         mScaleDownToStartAnimation = new Animation() {
             @Override
             public void applyTransformation(float interpolatedTime, Transformation t) {
@@ -849,12 +853,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
     private void startScaleUpAnimation(final int dir, Animation.AnimationListener listener) {
         mCircleViews[dir].setVisibility(View.VISIBLE);
-        if (android.os.Build.VERSION.SDK_INT >= 11) {
-            // Pre API 11, alpha is used in place of scale up to show the
-            // progress circle appearing.
-            // Don't adjust the alpha during appearance otherwise.
-            mProgress[dir].setAlpha(MAX_ALPHA);
-        }
+        // Pre API 11, alpha is used in place of scale up to show the
+        // progress circle appearing.
+        // Don't adjust the alpha during appearance otherwise.
+        mProgress[dir].setAlpha(MAX_ALPHA);
         mScaleAnimation = new Animation() {
             @Override
             public void applyTransformation(float interpolatedTime, Transformation t) {
@@ -870,8 +872,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     }
 
     private void setAnimationProgress(int dir, float progress) {
-        ViewCompat.setScaleX(mCircleViews[dir], progress);
-        ViewCompat.setScaleY(mCircleViews[dir], progress);
+        mCircleViews[dir].setScaleX(progress);
+        mCircleViews[dir].setScaleY(progress);
     }
 
     private void startScaleDownAnimation(final int dir, Animation.AnimationListener listener) {

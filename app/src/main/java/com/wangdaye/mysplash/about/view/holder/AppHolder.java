@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.about.view.holder;
 
-import android.support.v7.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatImageView;
 import android.view.View;
 import android.widget.TextView;
 

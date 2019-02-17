@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Message;
-import android.support.design.widget.CoordinatorLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.text.TextUtils;
 import android.widget.EditText;
 
@@ -13,7 +13,6 @@ import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
-import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
 
 import java.util.Timer;
@@ -111,8 +110,7 @@ public class CustomApiActivity extends MysplashActivity
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
 
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_custom_api_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_custom_api_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         if (!TextUtils.isEmpty(CustomApiManager.getInstance(this).getCustomApiKey())) {

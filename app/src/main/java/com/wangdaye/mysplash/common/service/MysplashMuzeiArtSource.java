@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.common.service;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.android.apps.muzei.api.Artwork;
 import com.google.android.apps.muzei.api.RemoteMuzeiArtSource;
@@ -52,7 +52,7 @@ public class MysplashMuzeiArtSource extends RemoteMuzeiArtSource
                 new Artwork.Builder()
                         .title(getString(R.string.by) + " " + photo.user.name)
                         .byline(getString(R.string.on) + " " + photo.created_at.split("T")[0])
-                        .imageUri(Uri.parse(photo.getWallpaperSizeUrl(this)))
+                        .imageUri(Uri.parse(photo.getDownloadUrl()))
                         .token(photo.id)
                         .viewIntent(intent)
                         .build());

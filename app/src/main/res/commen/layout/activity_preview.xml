@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 app:sbv_fill_in_mode="true" />
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/normal_icon_size"
                 android:layout_margin="@dimen/normal_margin"
@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_google"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
@@ -51,7 +51,7 @@
                         android:layout_centerVertical="true"
                         tools:ignore="ContentDescription,RtlHardcoded" />
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_microphone"
                         android:layout_width="@dimen/mini_icon_size"
                         android:layout_height="@dimen/mini_icon_size"
@@ -62,7 +62,7 @@
 
                 </RelativeLayout>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
@@ -84,7 +84,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_folder"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -99,7 +99,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_rect"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_cube"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_flask"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -152,7 +152,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_phone"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -168,7 +168,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_message"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -184,7 +184,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_drawer"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -200,7 +200,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_circle"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
 
-                    <android.support.v7.widget.AppCompatImageView
+                    <androidx.appcompat.widget.AppCompatImageView
                         android:src="@drawable/ic_preview_rect"
                         android:layout_width="@dimen/large_icon_size"
                         android:layout_height="@dimen/large_icon_size"
@@ -237,4 +237,4 @@
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

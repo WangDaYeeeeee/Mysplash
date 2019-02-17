@@ -41,7 +41,7 @@
             tools:text="Wang Yueeeeee"
             tools:ignore="RtlHardcoded" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/item_about_translator_flag"
             android:layout_width="@dimen/nano_icon_size"
             android:layout_height="@dimen/nano_icon_size"

@@ -2,10 +2,10 @@ package com.wangdaye.mysplash.common.ui.activity;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -212,11 +212,10 @@ public class DownloadManageActivity extends ReadWriteActivity
     }
 
     private void initWidget() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_download_manage_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_download_manage_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
-        Toolbar toolbar = ButterKnife.findById(this, R.id.activity_download_manage_toolbar);
+        Toolbar toolbar = findViewById(R.id.activity_download_manage_toolbar);
         if (Mysplash.getInstance().getActivityCount() == 1) {
             ThemeManager.setNavigationIcon(
                     toolbar,

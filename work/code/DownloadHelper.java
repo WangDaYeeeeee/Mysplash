@@ -4,8 +4,8 @@ import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;

@@ -4,11 +4,11 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +59,8 @@ import com.wangdaye.mysplash.me.presenter.activity.ToolbarImplementor;
 import com.wangdaye.mysplash.me.view.widget.MeCollectionsView;
 import com.wangdaye.mysplash.me.view.widget.MePhotosView;
 import com.wangdaye.mysplash.me.view.widget.MeProfileView;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -233,7 +235,7 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         // write large data.
         SavedStateFragment f = new SavedStateFragment();
         if (pagers[0] != null) {
@@ -346,8 +348,7 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     private void initView() {
-        SwipeBackCoordinatorLayout swipeBackView = ButterKnife.findById(
-                this, R.id.activity_me_swipeBackView);
+        SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
 
         appBar.setOnNestedScrollingListener(this);
@@ -402,7 +403,7 @@ public class MeActivity extends LoadableActivity<Photo>
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
         viewPager.addOnPageChangeListener(this);
 
-        TabLayout tabLayout = ButterKnife.findById(this, R.id.activity_me_tabLayout);
+        TabLayout tabLayout = findViewById(R.id.activity_me_tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 

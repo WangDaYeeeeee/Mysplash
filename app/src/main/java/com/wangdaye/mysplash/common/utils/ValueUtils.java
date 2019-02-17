@@ -190,6 +190,19 @@ public class ValueUtils {
         }
     }
 
+    public static String getMuzeiCacheModeName(Context c, String key) {
+        switch (key) {
+            case "keep":
+                return c.getResources().getStringArray(R.array.muzei_cache_modes)[0];
+
+            case "delete":
+                return c.getResources().getStringArray(R.array.muzei_cache_modes)[1];
+
+            default:
+                return null;
+        }
+    }
+
     public static String getToolbarTitleByCategory(Context context, int id) {
         switch (id) {
             case Mysplash.CATEGORY_BUILDINGS_ID:

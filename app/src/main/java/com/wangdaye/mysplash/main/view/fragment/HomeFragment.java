@@ -2,13 +2,13 @@ package com.wangdaye.mysplash.main.view.fragment;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.AppCompatImageButton;
-import android.support.v7.widget.AppCompatImageView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import com.google.android.material.tabs.TabLayout;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextPaint;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -254,7 +254,7 @@ public class HomeFragment extends LoadableFragment<Photo>
         toolbar.setOnMenuItemClickListener(this);
         toolbar.setNavigationOnClickListener(this);
 
-        TextView title = ButterKnife.findById(v, R.id.container_notification_bar_title);
+        TextView title = v.findViewById(R.id.container_notification_bar_title);
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             title.setTextSize(
                     TypedValue.COMPLEX_UNIT_PX,
@@ -313,7 +313,7 @@ public class HomeFragment extends LoadableFragment<Photo>
         viewPager.setCurrentItem(pagerManagePresenter.getPagerPosition(), false);
         viewPager.addOnPageChangeListener(this);
 
-        TabLayout tabLayout = ButterKnife.findById(v, R.id.fragment_home_tabLayout);
+        TabLayout tabLayout = v.findViewById(R.id.fragment_home_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
 
