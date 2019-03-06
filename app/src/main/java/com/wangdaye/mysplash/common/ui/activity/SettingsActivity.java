@@ -16,6 +16,7 @@ import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -27,33 +28,22 @@ import butterknife.ButterKnife;
  * */
 
 public class SettingsActivity extends MysplashActivity
-        implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
-    @BindView(R.id.activity_settings_container)
-    CoordinatorLayout container;
-
-    @BindView(R.id.activity_settings_statusBar)
-    StatusBarView statusBar;
+    @BindView(R.id.activity_settings_container) CoordinatorLayout container;
+    @BindView(R.id.activity_settings_statusBar) StatusBarView statusBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initWidget();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(R.id.activity_settings_preferenceContainer, new SettingsFragment())
-                    .commit();
-        }
+        ButterKnife.bind(this);
+        initWidget();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.activity_settings_preferenceContainer, new SettingsFragment())
+                .commit();
     }
 
     @Override
@@ -104,7 +94,7 @@ public class SettingsActivity extends MysplashActivity
         Toolbar toolbar = findViewById(R.id.activity_settings_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
-        toolbar.setNavigationOnClickListener(this);
+        toolbar.setNavigationOnClickListener(v -> finishSelf(true));
     }
 
     // control.
@@ -125,17 +115,6 @@ public class SettingsActivity extends MysplashActivity
     }
 
     // interface.
-
-    // on click listener.
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case -1:
-                finishSelf(true);
-                break;
-        }
-    }
 
     // on swipe back listener.
 

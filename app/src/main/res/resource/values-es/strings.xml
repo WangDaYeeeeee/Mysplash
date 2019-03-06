@@ -8,7 +8,7 @@
     <string name="about_circle_image_view">Una vista de imagen circular para Android.</string>
     <string name="about_circular_progress_view">Barra de progreso circular de estilo de material para Android.</string>
     <string name="about_glide">Un cargador de imágenes y almacenamiento en caché de biblioteca para Android basado en una opción de desplazamiento suave. </string>
-    <string name="about_greendao_db">greenDAO es una solución ORM rápida y ligera light de contexto para Android que asigna objetos a las bases de datos de SQLite.</string>
+    <string name="about_greendao_db">greenDAO es una solución ORM rápida y ligera light de contexto para Android que asigna objetos activity las bases de datos de SQLite.</string>
     <string name="about_page_indicator">InkPageIndicator creado por @nickbutcher para Plaid https://github.com/nickbutcher/plaid y corregido por David Pacioianu para API 14 (4.0+).</string>
     <string name="about_photo_view">Ejecución de ImageView para Android compatible con acercamiento de imagen mediante varios gestos táctiles.</string>
     <string name="about_retrofit">HTTP Client con seguridad de tipos para Android y Java por Square, Inc.</string>
@@ -54,13 +54,13 @@
     <string name="email">CORREO</string>
     <string name="enter">ENTRAR</string>
     <string name="feedback_add_photo_failed">Se ha producido un error al añadir foto.</string>
-    <string name="feedback_add_to_collection">Añadir a la colección</string>
+    <string name="feedback_add_to_collection">Añadir activity la colección</string>
     <string name="feedback_aperture">Apertura</string>
     <string name="feedback_cancel_follow_failed">Se ha producido un error al dejar de seguir.</string>
     <string name="feedback_change_theme_warning">Se cancelarán las descargas ahora si cambias el tema.</string>
     <string name="feedback_choose_share_app">Compartir foto</string>
     <string name="feedback_choose_wallpaper_app">Establecer fondo de pantalla</string>
-    <string name="feedback_click_again_to_exit">Vuelve a hacer clic para salir.</string>
+    <string name="feedback_click_again_to_exit">Vuelve activity hacer clic para salir.</string>
     <string name="feedback_click_retry">HAZ CLIC PARA VOLVER A INTENTAR</string>
     <string name="feedback_collection_private">Convertir tu colección en privada</string>
     <string name="feedback_color">Color</string>
@@ -107,7 +107,7 @@
     <string name="feedback_need_permission">Se ha producido un error al obtener permiso.</string>
     <string name="feedback_no_filter">No hay elementos filtrados.</string>
     <string name="feedback_no_sd_card">No se ha podido encontrar la trajeta SD.</string>
-    <string name="feedback_notify_restart">Volver a encender.</string>
+    <string name="feedback_notify_restart">Volver activity encender.</string>
     <string name="feedback_notify_set_back_to_top">Puedes configurar el efecto de presión trasera.</string>
     <string name="feedback_overload">Sobrecargar</string>
     <string name="feedback_please_login">Inicia sesión.</string>
@@ -177,13 +177,13 @@
     <string name="settings_title_language">Idiomas</string>
     <string name="source_code">CÓDIGO FUENTE</string>
     <string name="stats">Estadísticas</string>
-    <string name="to">a</string>
+    <string name="to">activity</string>
     <string name="translators">TRADUCTORES</string>
     <string name="users">usuarios</string>
 
     <string name="action_align_center">Alinear al centro</string>
-    <string name="action_align_left">Alinear a la izquierda</string>
-    <string name="action_align_right">Alinear a la derecha</string>
+    <string name="action_align_left">Alinear activity la izquierda</string>
+    <string name="action_align_right">Alinear activity la derecha</string>
     <string name="action_clip_with_rectangle">Recortar con rectángulo</string>
     <string name="action_clip_with_square">Recortar con cuadrado</string>
     <string name="action_lockscreen">Pantalla de bloqueo</string>

@@ -12,14 +12,15 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
-import com.wangdaye.mysplash.common.data.entity.item.DownloadMission;
-import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
+import com.wangdaye.mysplash.common.db.DatabaseHelper;
+import com.wangdaye.mysplash.common.download.DownloadMission;
+import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.download.DownloadHelper;
+import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -38,20 +39,13 @@ import butterknife.ButterKnife;
  * */
 
 public class DownloadManageActivity extends ReadWriteActivity
-        implements View.OnClickListener, Toolbar.OnMenuItemClickListener,
-        DownloadAdapter.OnRetryListener, SwipeBackCoordinatorLayout.OnSwipeListener {
+        implements Toolbar.OnMenuItemClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
+        DownloadAdapter.ItemEventCallback {
 
-    @BindView(R.id.activity_download_manage_container)
-    CoordinatorLayout container;
-
-    @BindView(R.id.activity_download_manage_shadow)
-    View shadow;
-
-    @BindView(R.id.activity_download_manage_statusBar)
-    StatusBarView statusBar;
-
-    @BindView(R.id.activity_download_manage_recyclerView)
-    RecyclerView recyclerView;
+    @BindView(R.id.activity_download_manage_container) CoordinatorLayout container;
+    @BindView(R.id.activity_download_manage_shadow) View shadow;
+    @BindView(R.id.activity_download_manage_statusBar) StatusBarView statusBar;
+    @BindView(R.id.activity_download_manage_recyclerView) RecyclerView recyclerView;
 
     private DownloadAdapter adapter;
     // if we need to restart a mission, we need save it by this object and request permission.
@@ -87,9 +81,9 @@ public class DownloadManageActivity extends ReadWriteActivity
                                 DownloadManageActivity.this,
                                 mission.entity,
                                 DownloaderService.RESULT_DOWNLOADING);
-                drawRecyclerItemProcess(index, mission, true);
+                drawRecyclerItemProcess(index, mission);
             } else if (mission.process != oldProcess) {
-                drawRecyclerItemProcess(index, mission, false);
+                drawRecyclerItemProcess(index, mission);
             }
         }
 
@@ -147,24 +141,16 @@ public class DownloadManageActivity extends ReadWriteActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download_mange);
-    }
+        ButterKnife.bind(this);
+        initData();
+        initWidget();
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initData();
-            initWidget();
-
-            listenerList = new ArrayList<>();
-            for (int i = 0; i < adapter.getItemCount(); i ++) {
-                if (adapter.itemList.get(i).entity.result == DownloaderService.RESULT_DOWNLOADING) {
-                    OnDownloadListener listener = new OnDownloadListener(adapter.itemList.get(i));
-                    listenerList.add(listener);
-                    DownloadHelper.getInstance(this).addOnDownloadListener(listener);
-                }
+        listenerList = new ArrayList<>();
+        for (int i = 0; i < adapter.getItemCount(); i ++) {
+            if (adapter.itemList.get(i).entity.result == DownloaderService.RESULT_DOWNLOADING) {
+                OnDownloadListener listener = new OnDownloadListener(adapter.itemList.get(i));
+                listenerList.add(listener);
+                DownloadHelper.getInstance(this).addOnDownloadListener(listener);
             }
         }
     }
@@ -208,7 +194,26 @@ public class DownloadManageActivity extends ReadWriteActivity
     // init.
 
     private void initData() {
-        this.adapter = new DownloadAdapter(this, this);
+        List<DownloadMission> missionList = new ArrayList<>();
+        List<DownloadMissionEntity> entityList;
+        entityList = DatabaseHelper.getInstance(this).readDownloadEntityList(DownloaderService.RESULT_FAILED);
+        for (int i = 0; i < entityList.size(); i ++) {
+            missionList.add(
+                    new DownloadMission(
+                            entityList.get(i)));
+        }
+        entityList = DatabaseHelper.getInstance(this).readDownloadEntityList(DownloaderService.RESULT_DOWNLOADING);
+        for (int i = 0; i < entityList.size(); i ++) {
+            missionList.add(DownloadHelper.getInstance(this).getDownloadMission(this, entityList.get(i)));
+        }
+        entityList = DatabaseHelper.getInstance(this).readDownloadEntityList(DownloaderService.RESULT_SUCCEED);
+        for (int i = 0; i < entityList.size(); i ++) {
+            missionList.add(
+                    new DownloadMission(
+                            entityList.get(i)));
+        }
+        this.adapter = new DownloadAdapter(missionList);
+        adapter.setItemEventCallback(this);
     }
 
     private void initWidget() {
@@ -226,7 +231,12 @@ public class DownloadManageActivity extends ReadWriteActivity
                     R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         }
         toolbar.inflateMenu(R.menu.activity_download_manage_toolbar);
-        toolbar.setNavigationOnClickListener(this);
+        toolbar.setNavigationOnClickListener(v -> {
+            if (Mysplash.getInstance().getActivityCount() == 1) {
+                IntentHelper.startMainActivity(DownloadManageActivity.this);
+            }
+            finishSelf(true);
+        });
         toolbar.setOnMenuItemClickListener(this);
 
         recyclerView.setLayoutManager(
@@ -240,11 +250,8 @@ public class DownloadManageActivity extends ReadWriteActivity
      * Make item view show downloading progress and percent.
      *
      * @param position    Adapter position for item.
-     * @param mission     A {@link DownloadMission} object which saved information of downloading task.
-     * @param switchState If set true, that means the item view will switch from another state to
-     *                    the downloading state.
-     * */
-    private void drawRecyclerItemProcess(int position, DownloadMission mission, boolean switchState) {
+     * @param mission     A {@link DownloadMission} object which saved information of downloading task. */
+    private void drawRecyclerItemProcess(int position, DownloadMission mission) {
         adapter.itemList.set(position, mission);
 
         GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
@@ -253,11 +260,7 @@ public class DownloadManageActivity extends ReadWriteActivity
             int lastPosition = layoutManager.findLastVisibleItemPosition();
             if (firstPosition <= position && position <= lastPosition) {
                 // we doesn't need to refresh a item view that is not displayed.
-                DownloadAdapter.ViewHolder holder
-                        = (DownloadAdapter.ViewHolder) recyclerView.findViewHolderForAdapterPosition(position);
-                if (holder != null) {
-                    holder.drawProcessStatus(mission, switchState);
-                }
+                adapter.updateItemView(position);
             }
         }
     }
@@ -345,25 +348,11 @@ public class DownloadManageActivity extends ReadWriteActivity
     // permission.
 
     @Override
-    protected void requestReadWritePermissionSucceed(int requestCode) {
+    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
         restartMission();
     }
 
     // interface.
-
-    // on click listener.
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case -1:
-                if (Mysplash.getInstance().getActivityCount() == 1) {
-                    IntentHelper.startMainActivity(this);
-                }
-                finishSelf(true);
-                break;
-        }
-    }
 
     // on menu item click listener.
 
@@ -388,18 +377,6 @@ public class DownloadManageActivity extends ReadWriteActivity
         return true;
     }
 
-    // on retry listener.
-
-    @Override
-    public void onRetry(DownloadMissionEntity entity) {
-        readyToDownloadEntity = entity;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            restartMission();
-        } else {
-            requestReadWritePermission();
-        }
-    }
-
     // on swipe listener.
 
     @Override
@@ -416,5 +393,24 @@ public class DownloadManageActivity extends ReadWriteActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishSelf(false);
+    }
+
+    // item event callback.
+
+    @Override
+    public void onDelete(DownloadMissionEntity entity, int adapterPosition) {
+        DownloadHelper.getInstance(this).removeMission(this, entity);
+        adapter.itemList.remove(adapterPosition);
+        adapter.notifyItemRemoved(adapterPosition);
+    }
+
+    @Override
+    public void onRetry(DownloadMissionEntity entity, int adapterPosition) {
+        readyToDownloadEntity = entity;
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            restartMission();
+        } else {
+            requestReadWritePermission(null);
+        }
     }
 }

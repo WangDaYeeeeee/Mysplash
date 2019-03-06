@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.common.ui.adapter;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +11,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Tag;
+import com.wangdaye.mysplash.common.network.json.Tag;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 import java.util.List;
@@ -31,24 +33,26 @@ public class MiniTagAdapter extends RecyclerView.Adapter<MiniTagAdapter.ViewHold
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_tag_mini_text)
-        TextView text;
+        @BindView(R.id.item_tag_mini_text) TextView text;
 
         ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        void onBindView(int position) {
-            text.setText(itemList.get(position).getTitle());
+        void onBindView(Tag tag) {
+            text.setText(tag.getTitle());
         }
 
         // interface.
 
         @OnClick(R.id.item_tag_mini_card) void clickItem() {
-            IntentHelper.startSearchActivity(
-                    Mysplash.getInstance().getTopActivity(),
-                    itemList.get(getAdapterPosition()).getTitle());
+            if (Mysplash.getInstance().getTopActivity() != null
+                    && !TextUtils.isEmpty(text.getText().toString())) {
+                IntentHelper.startSearchActivity(
+                        Mysplash.getInstance().getTopActivity(),
+                        text.getText().toString());
+            }
         }
     }
 
@@ -59,13 +63,14 @@ public class MiniTagAdapter extends RecyclerView.Adapter<MiniTagAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag_mini, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_tag_mini, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.onBindView(position);
+        holder.onBindView(itemList.get(position));
     }
 
     @Override

@@ -21,8 +21,7 @@ import java.util.Calendar;
  * Time picker dialog.
  * */
 
-public class TimePickerDialog extends MysplashDialogFragment
-        implements View.OnClickListener, TimePicker.OnTimeChangedListener {
+public class TimePickerDialog extends MysplashDialogFragment {
 
     private CoordinatorLayout container;
     private OnTimeChangedListener listener;
@@ -36,7 +35,8 @@ public class TimePickerDialog extends MysplashDialogFragment
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_time_picker, null, false);
+        View view = LayoutInflater.from(getActivity())
+                .inflate(R.layout.dialog_time_picker, null, false);
         this.initData();
         this.initWidget(view);
 
@@ -64,14 +64,46 @@ public class TimePickerDialog extends MysplashDialogFragment
         this.container = view.findViewById(R.id.dialog_time_picker_container);
 
         Button done = view.findViewById(R.id.dialog_time_picker_done);
-        done.setOnClickListener(this);
+        done.setOnClickListener(v -> {
+            String hourText;
+            String minuteText;
+
+            if (hour < 10) {
+                hourText = "0" + Integer.toString(hour);
+            } else {
+                hourText = Integer.toString(hour);
+            }
+
+            if (minute < 10) {
+                minuteText = "0" + Integer.toString(minute);
+            } else {
+                minuteText = Integer.toString(minute);
+            }
+
+            if (startTime) {
+                ThemeManager.getInstance(getActivity())
+                        .setNightStartTime(getActivity(), hourText + ":" + minuteText);
+            } else {
+                ThemeManager.getInstance(getActivity())
+                        .setNightEndTime(getActivity(), hourText + ":" + minuteText);
+            }
+
+            if (listener != null) {
+                listener.timeChanged();
+            }
+
+            dismiss();
+        });
 
         Button cancel = view.findViewById(R.id.dialog_time_picker_cancel);
-        cancel.setOnClickListener(this);
+        cancel.setOnClickListener(v -> dismiss());
 
         TimePicker timePicker = view.findViewById(R.id.dialog_time_picker_time_picker);
         timePicker.setIs24HourView(true);
-        timePicker.setOnTimeChangedListener(this);
+        timePicker.setOnTimeChangedListener((view1, hourOfDay, minute) -> {
+            this.hour = hourOfDay;
+            this.minute = minute;
+        });
     }
 
     // interface.
@@ -84,55 +116,5 @@ public class TimePickerDialog extends MysplashDialogFragment
 
     public void setOnTimeChangedListener(OnTimeChangedListener l) {
         this.listener = l;
-    }
-
-    // on time changed listener.
-
-    @Override
-    public void onTimeChanged(TimePicker timePicker, int i, int i1) {
-        this.hour = i;
-        this.minute = i1;
-    }
-
-    // on click.
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.dialog_time_picker_cancel:
-                dismiss();
-                break;
-
-            case R.id.dialog_time_picker_done:
-                String hourText;
-                String minuteText;
-
-                if (hour < 10) {
-                    hourText = "0" + Integer.toString(hour);
-                } else {
-                    hourText = Integer.toString(hour);
-                }
-
-                if (minute < 10) {
-                    minuteText = "0" + Integer.toString(minute);
-                } else {
-                    minuteText = Integer.toString(minute);
-                }
-
-                if (startTime) {
-                    ThemeManager.getInstance(getActivity())
-                            .setNightStartTime(getActivity(), hourText + ":" + minuteText);
-                } else {
-                    ThemeManager.getInstance(getActivity())
-                            .setNightEndTime(getActivity(), hourText + ":" + minuteText);
-                }
-
-                if (listener != null) {
-                    listener.timeChanged();
-                }
-
-                dismiss();
-                break;
-        }
     }
 }

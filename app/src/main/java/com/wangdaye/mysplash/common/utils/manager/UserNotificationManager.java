@@ -8,21 +8,23 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationFeed;
-import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationResult;
-import com.wangdaye.mysplash.common.data.entity.unsplash.NotificationStream;
-import com.wangdaye.mysplash.common.data.service.network.GetStreamService;
-import com.wangdaye.mysplash.common.data.service.network.NotificationService;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
+import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.json.NotificationFeed;
+import com.wangdaye.mysplash.common.network.json.NotificationResult;
+import com.wangdaye.mysplash.common.network.json.NotificationStream;
+import com.wangdaye.mysplash.common.network.service.GetStreamService;
+import com.wangdaye.mysplash.common.network.service.NotificationService;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * User notification manager.
@@ -33,13 +35,14 @@ import retrofit2.Response;
 
 public class UserNotificationManager {
 
+    @Inject GetStreamService streamService;
+    @Inject NotificationService notificationService;
+
     private Gson gson;
     private SimpleDateFormat format;
 
-    private GetStreamService streamService;
-    private NotificationService notificationService;
-    private OnRequestStreamListener requestStreamListener;
-    private OnRequestNotificationListener requestNotificationListener;
+    private OnRequestStreamCallback requestStreamCallback;
+    private OnRequestNotificationCallback requestNotificationCallback;
 
     private List<OnUpdateNotificationListener> listenerList;
 
@@ -58,7 +61,7 @@ public class UserNotificationManager {
     // primary key for the first result in the first page stream feed.
     // if the first result in a new feed has a id that's same as this value,
     // it means there is no unseen result.
-    /** {@link com.wangdaye.mysplash.common.data.entity.unsplash.NotificationStream.Results#id} */
+    /** {@link com.wangdaye.mysplash.common.network.json.NotificationStream.Results#id} */
     private String firstResultId;
 
     private boolean loadFinish;
@@ -69,11 +72,10 @@ public class UserNotificationManager {
 
     @SuppressLint("SimpleDateFormat")
     UserNotificationManager() {
+        DaggerServiceComponent.builder().build().inject(this);
+
         gson = new Gson();
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-        streamService = GetStreamService.getService();
-        notificationService = NotificationService.getService();
 
         listenerList = new ArrayList<>();
 
@@ -107,14 +109,14 @@ public class UserNotificationManager {
     private void requestFirstPageNotifications() {
         requesting = true;
         latestRefreshTime = System.currentTimeMillis();
-        requestStreamListener = new OnRequestStreamListener(true);
-        streamService.requestFirstPageStream(requestStreamListener);
+        requestStreamCallback = new OnRequestStreamCallback(true);
+        streamService.requestFirstPageStream(requestStreamCallback);
     }
 
     private void requestNextPageNotifications() {
         requesting = true;
-        requestStreamListener = new OnRequestStreamListener(false);
-        streamService.requestNextPageStream(nextPage, requestStreamListener);
+        requestStreamCallback = new OnRequestStreamCallback(false);
+        streamService.requestNextPageStream(nextPage, requestStreamCallback);
     }
 
     void checkToRefreshNotification() {
@@ -136,11 +138,11 @@ public class UserNotificationManager {
     public void cancelRequest(boolean force) {
         if (force || (requesting && !TextUtils.isEmpty(nextPage))) {
             requesting = false;
-            if (requestStreamListener != null) {
-                requestStreamListener.setCanceled();
+            if (requestStreamCallback != null) {
+                requestStreamCallback.setCanceled();
             }
-            if (requestNotificationListener != null) {
-                requestNotificationListener.setCanceled();
+            if (requestNotificationCallback != null) {
+                requestNotificationCallback.setCanceled();
             }
             streamService.cancel();
             notificationService.cancel();
@@ -248,152 +250,113 @@ public class UserNotificationManager {
         this.listenerList.remove(l);
     }
 
-    // on request stream listener.
+    private class OnRequestStreamCallback extends Callback<ResponseBody> {
 
-    private class OnRequestStreamListener implements GetStreamService.OnRequestStreamListener {
-        // data
         private boolean refresh;
         private boolean canceled;
 
-        // life cycle.
-
-        OnRequestStreamListener(boolean refresh) {
+        OnRequestStreamCallback(boolean refresh) {
             this.refresh = refresh;
             this.canceled = false;
         }
-
-        // data.
 
         void setCanceled() {
             this.canceled = true;
         }
 
-        // interface.
-
         @Override
-        public void onRequestEnrichSucceed(Call<ResponseBody> call, Response<ResponseBody> response) {
+        public void onSucceed(ResponseBody responseBody) {
             if (canceled) {
                 return;
             }
             String json = null;
             NotificationStream stream = null;
             try {
-                json = response.body().string();
+                json = responseBody.string();
                 stream = gson.fromJson(json, NotificationStream.class);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (!response.isSuccessful() || response.code() / 100 != 2
-                    || TextUtils.isEmpty(json) || stream == null) {
-                // failed to request.
-                requesting = false;
-                requestFailed(response.code() + "(" + response.message() + ")");
+            if (stream == null || TextUtils.isEmpty(stream.next)) {
+                nextPage = null;
+                loadFinish = true;
             } else {
-                // request successfully.
-                if (TextUtils.isEmpty(stream.next)) {
-                    nextPage = null;
-                    loadFinish = true;
-                } else {
-                    nextPage = stream.next;
-                }
+                nextPage = stream.next;
+            }
 
-                if (stream.results != null && stream.results.size() != 0
-                        && (!refresh
-                        || TextUtils.isEmpty(firstResultId)
-                        || !stream.results.get(0).id.equals(firstResultId))) {
-                    if (refresh) {
-                        firstResultId = stream.results.get(0).id;
-                    }
-                    requestNotificationListener = new OnRequestNotificationListener(refresh);
-                    notificationService.requestNotificationFeed(
-                            streamService.getStreamUsablePart(json),
-                            requestNotificationListener);
-                } else {
-                    requesting = false;
-                    for (int j = 0; j < listenerList.size(); j ++) {
-                        listenerList.get(j).onRequestNotificationSucceed(
-                                new ArrayList<NotificationResult>());
-                    }
+            if (stream != null && stream.results != null && stream.results.size() != 0
+                    && (!refresh
+                    || TextUtils.isEmpty(firstResultId)
+                    || !stream.results.get(0).id.equals(firstResultId))) {
+                if (refresh) {
+                    firstResultId = stream.results.get(0).id;
+                }
+                requestNotificationCallback = new OnRequestNotificationCallback(refresh);
+                notificationService.requestNotificationFeed(
+                        streamService.getStreamUsablePart(json),
+                        requestNotificationCallback);
+            } else {
+                requesting = false;
+                for (int j = 0; j < listenerList.size(); j ++) {
+                    listenerList.get(j).onRequestNotificationSucceed(
+                            new ArrayList<>());
                 }
             }
         }
 
         @Override
-        public void onRequestEnrichFailed(Call<ResponseBody> call, Throwable t) {
-            requestFailed(t.getMessage());
-        }
-
-        private void requestFailed(String msg) {
+        public void onFailed() {
             for (int j = 0; j < listenerList.size(); j ++) {
                 listenerList.get(j).onRequestNotificationFailed();
             }
             NotificationHelper.showSnackbar(
-                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed)
-                            + "(" + msg + ")");
+                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed));
         }
     }
 
-    // on request notification listener.
+    private class OnRequestNotificationCallback extends Callback<NotificationFeed> {
 
-    private class OnRequestNotificationListener implements NotificationService.OnRequestNotificationListener {
-        // data
         private boolean refresh;
         private boolean canceled;
 
-        // life cycle.
-
-        OnRequestNotificationListener(boolean refresh) {
+        OnRequestNotificationCallback(boolean refresh) {
             this.refresh = refresh;
             this.canceled = false;
         }
-
-        // data.
 
         void setCanceled() {
             this.canceled = true;
         }
 
-        // interface.
-
         @Override
-        public void onRequestNotificationSucceed(Call<NotificationFeed> call, Response<NotificationFeed> response) {
+        public void onSucceed(NotificationFeed notificationFeed) {
             if (canceled) {
                 return;
             }
             requesting = false;
-            if (!response.isSuccessful() || response.code() / 100 != 2
-                    || response.body() == null) {
-                requestFailed(response.code() + " " + response.message());
-            } else {
-                // request successfully.
-                if (response.body().results != null && response.body().results.size() > 0) {
-                    if (refresh
-                            && notificationList.size() > 0
-                            && !response.body().results.get(0).id.equals(notificationList.get(0).id)) {
-                        // already have notifications in the list.
-                        // and there are some new feeds in the request result.
-                        removeAllNotifications();
-                    }
-                    addNotification(response.body().results);
+            // request successfully.
+            if (notificationFeed.results != null && notificationFeed.results.size() > 0) {
+                if (refresh
+                        && notificationList.size() > 0
+                        && !notificationFeed.results.get(0).id.equals(notificationList.get(0).id)) {
+                    // already have notifications in the list.
+                    // and there are some new feeds in the request result.
+                    removeAllNotifications();
                 }
-                for (int j = 0; j < listenerList.size(); j ++) {
-                    listenerList.get(j).onRequestNotificationSucceed(response.body().results);
-                }
+                addNotification(notificationFeed.results);
+            }
+            for (int j = 0; j < listenerList.size(); j ++) {
+                listenerList.get(j).onRequestNotificationSucceed(notificationFeed.results);
             }
         }
 
         @Override
-        public void onRequestNotificationFailed(Call<NotificationFeed> call, Throwable t) {
-            requestFailed(t.getMessage());
-        }
-
-        private void requestFailed(String msg) {
+        public void onFailed() {
             for (int j = 0; j < listenerList.size(); j ++) {
                 listenerList.get(j).onRequestNotificationFailed();
             }
             NotificationHelper.showSnackbar(
-                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed)
-                            + "(" + msg + ")");
+                    Mysplash.getInstance().getString(R.string.feedback_get_notification_failed));
         }
     }
 }

@@ -51,10 +51,10 @@
     <style
         name="MysplashTheme.Translucent.TranslucentNavigation.Photo2"
         parent="MysplashTheme.Translucent.TranslucentNavigation">
-        <item name="android:windowEnterTransition">@transition/photo_activity_2_enter</item>
-        <item name="android:windowReturnTransition">@transition/photo_activity_2_return</item>
-        <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_2_shared_enter</item>
-        <item name="android:windowSharedElementReturnTransition">@transition/photo_activity_2_shared_return</item>
+        <item name="android:windowEnterTransition">@transition/photo_activity_3_enter</item>
+        <item name="android:windowReturnTransition">@transition/photo_activity_3_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_3_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/photo_activity_3_shared_return</item>
     </style>
 
     <!-- preview activity. -->

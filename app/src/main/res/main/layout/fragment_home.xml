@@ -34,11 +34,7 @@
                     android:layout_height="?attr/actionBarSize"
                     android:background="?attr/colorPrimary"
                     app:popupTheme="@style/MysplashPopupMenuTheme"
-                    tools:ignore="UnusedAttribute">
-
-                    <include layout="@layout/container_notification_bar" />
-
-                </androidx.appcompat.widget.Toolbar>
+                    tools:ignore="UnusedAttribute" />
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/fragment_home_tabLayout"

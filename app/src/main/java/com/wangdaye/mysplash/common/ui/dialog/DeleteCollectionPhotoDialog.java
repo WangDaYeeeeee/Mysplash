@@ -13,19 +13,20 @@ import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.ChangeCollectionPhotoResult;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.service.network.CollectionService;
+import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Delete collection photo dialog fragment.
@@ -34,25 +35,41 @@ import retrofit2.Response;
  *
  * */
 
-public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
-        implements CollectionService.OnChangeCollectionPhotoListener {
+public class DeleteCollectionPhotoDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_delete_collection_photo_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_delete_collection_photo_container) CoordinatorLayout container;
+    @BindView(R.id.dialog_delete_collection_photo_confirmContainer) RelativeLayout confirmContainer;
+    @BindView(R.id.dialog_delete_collection_photo_progress) CircularProgressView progressView;
 
-    @BindView(R.id.dialog_delete_collection_photo_confirmContainer)
-    RelativeLayout confirmContainer;
+    @OnClick(R.id.dialog_delete_collection_photo_deleteBtn) void delete() {
+        setState(DELETE_STATE);
+        service.deletePhotoFromCollection(collection.id, photo.id, new Callback<ChangeCollectionPhotoResult>() {
+            @Override
+            public void onSucceed(ChangeCollectionPhotoResult changeCollectionPhotoResult) {
+                if (listener != null) {
+                    listener.onDeletePhotoSuccess(changeCollectionPhotoResult);
+                }
+                dismiss();
+            }
 
-    @BindView(R.id.dialog_delete_collection_photo_progress)
-    CircularProgressView progressView;
+            @Override
+            public void onFailed() {
+                setState(CONFIRM_STATE);
+                notifyFailed();
+            }
+        });
+    }
+
+    @OnClick(R.id.dialog_delete_collection_photo_cancelBtn) void cancel() {
+        dismiss();
+    }
 
     private OnDeleteCollectionListener listener;
 
-    private CollectionService service;
+    @Inject CollectionService service;
 
     private Collection collection;
     private Photo photo;
-    private int position;
 
     @StateRule
     private int state;
@@ -89,7 +106,6 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
     }
 
     private void initData() {
-        this.service = CollectionService.getService();
         this.state = CONFIRM_STATE;
     }
 
@@ -119,10 +135,9 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
         state = newState;
     }
 
-    public void setDeleteInfo(Collection c, Photo p, int position) {
+    public void setDeleteInfo(Collection c, Photo p) {
         collection = c;
         photo = p;
-        this.position = position;
     }
 
     private void notifyFailed() {
@@ -134,43 +149,10 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment
     // on delete collection listener.
 
     public interface OnDeleteCollectionListener {
-        void onDeletePhotoSuccess(ChangeCollectionPhotoResult result, int position);
+        void onDeletePhotoSuccess(ChangeCollectionPhotoResult result);
     }
 
     public void setOnDeleteCollectionListener(OnDeleteCollectionListener l) {
         listener = l;
-    }
-
-    // on click listener.
-
-    @OnClick(R.id.dialog_delete_collection_photo_deleteBtn) void delete() {
-        setState(DELETE_STATE);
-        service.deletePhotoFromCollection(collection.id, photo.id, this);
-    }
-
-    @OnClick(R.id.dialog_delete_collection_photo_cancelBtn) void cancel() {
-        dismiss();
-    }
-
-    // on change collection photo listener.
-
-    @Override
-    public void onChangePhotoSuccess(Call<ChangeCollectionPhotoResult> call,
-                                     Response<ChangeCollectionPhotoResult> response) {
-        if (response.isSuccessful() && response.body() != null) {
-            if (listener != null) {
-                listener.onDeletePhotoSuccess(response.body(), position);
-            }
-            dismiss();
-        } else {
-            setState(CONFIRM_STATE);
-            notifyFailed();
-        }
-    }
-
-    @Override
-    public void onChangePhotoFailed(Call<ChangeCollectionPhotoResult> call, Throwable t) {
-        setState(CONFIRM_STATE);
-        notifyFailed();
     }
 }

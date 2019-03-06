@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 /**
@@ -133,12 +133,9 @@ public class BackToTopUtils {
                 NotificationHelper.showActionSnackbar(
                         c.getString(R.string.feedback_notify_set_back_to_top),
                         c.getString(R.string.set),
-                        new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent s = new Intent(c, SettingsActivity.class);
-                                c.startActivity(s);
-                            }
+                        v -> {
+                            Intent s = new Intent(c, SettingsActivity.class);
+                            c.startActivity(s);
                         });
             }
         }

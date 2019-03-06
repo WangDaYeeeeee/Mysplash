@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialog_retry_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/dialog_retry_button"
+            android:text="@string/feedback_click_retry"
+            android:textStyle="bold"
+            android:textColor="?attr/content_color"
+            android:layout_margin="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            style="@style/material_button" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

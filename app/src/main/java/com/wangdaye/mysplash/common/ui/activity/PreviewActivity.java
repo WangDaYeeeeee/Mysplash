@@ -10,12 +10,12 @@ import android.view.animation.TranslateAnimation;
 import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.Previewable;
+import com.wangdaye.mysplash.common.basic.model.Previewable;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollPhotoView;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,14 +32,9 @@ import butterknife.OnLongClick;
 public class PreviewActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
-    @BindView(R.id.activity_preview_container)
-    CoordinatorLayout container;
-
-    @BindView(R.id.activity_preview_widgetContainer)
-    LinearLayout widgetContainer;
-
-    @BindView(R.id.activity_preview_iconContainer)
-    LinearLayout iconContainer;
+    @BindView(R.id.activity_preview_container) CoordinatorLayout container;
+    @BindView(R.id.activity_preview_widgetContainer) LinearLayout widgetContainer;
+    @BindView(R.id.activity_preview_iconContainer) LinearLayout iconContainer;
 
     private Previewable previewable; // this object will provide data for picture.
     private boolean showIcon = false; // If set true, the icon view will become visible when user tap picture.
@@ -52,17 +47,9 @@ public class PreviewActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preview);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initData();
-            initWidget();
-        }
+        ButterKnife.bind(this);
+        initData();
+        initWidget();
     }
 
     @Override
@@ -117,7 +104,7 @@ public class PreviewActivity extends MysplashActivity
         photoView.setMaxScale(getMaxiScale(false));
         if (previewable instanceof Photo) {
             photoView.setScaleType(AppCompatImageView.ScaleType.FIT_CENTER);
-            ImageHelper.loadRegularPhoto(this, photoView, (Photo) previewable, 0, null);
+            ImageHelper.loadRegularPhoto(this, photoView, (Photo) previewable, null);
         } else {
             ImageHelper.loadImageFromUrl(
                     this, photoView, previewable.getFullUrl(), false, null);

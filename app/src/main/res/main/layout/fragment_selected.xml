@@ -40,7 +40,7 @@
 
         </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
-        <com.wangdaye.mysplash.main.view.widget.SelectedView
+        <com.wangdaye.mysplash.main.selected.ui.SelectedView
             android:id="@+id/fragment_selected_collectionView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

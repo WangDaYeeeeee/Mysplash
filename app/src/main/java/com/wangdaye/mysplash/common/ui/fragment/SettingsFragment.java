@@ -13,12 +13,12 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.data.api.PhotoApi;
+import com.wangdaye.mysplash.common.network.api.PhotoApi;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash.common.ui.dialog.TimePickerDialog;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.DownloadHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
@@ -55,14 +55,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void initBasicPart(SharedPreferences sharedPreferences) {
         // back to top.
-        ListPreference backToTop = (ListPreference) findPreference(getString(R.string.key_back_to_top));
+        ListPreference backToTop = findPreference(getString(R.string.key_back_to_top));
         String backToTopValue = sharedPreferences.getString(getString(R.string.key_back_to_top), "all");
         String backToTopName = ValueUtils.getBackToTopName(getActivity(), backToTopValue);
         backToTop.setSummary(getString(R.string.now) + " : " + backToTopName);
         backToTop.setOnPreferenceChangeListener(this);
 
         // auto night mode.
-        ListPreference autoNightMode = (ListPreference) findPreference(getString(R.string.key_auto_night_mode));
+        ListPreference autoNightMode = findPreference(getString(R.string.key_auto_night_mode));
         String autoNightModeValue = sharedPreferences.getString(getString(R.string.key_auto_night_mode), "follow_system");
         String autoNightModeName = ValueUtils.getAutoNightModeName(getActivity(), autoNightModeValue);
         autoNightMode.setSummary(getString(R.string.now) + " : " + autoNightModeName);
@@ -85,7 +85,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
 
         // language.
-        ListPreference language = (ListPreference) findPreference(getString(R.string.key_language));
+        ListPreference language = findPreference(getString(R.string.key_language));
         String languageValue = sharedPreferences.getString(getString(R.string.key_language), "follow_system");
         String languageName = ValueUtils.getLanguageName(getActivity(), languageValue);
         language.setSummary(getString(R.string.now) + " : " + languageName);
@@ -101,7 +101,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void initFilterPart(SharedPreferences sharedPreferences) {
         // default order.
-        ListPreference defaultOrder = (ListPreference) findPreference(getString(R.string.key_default_photo_order));
+        ListPreference defaultOrder = findPreference(getString(R.string.key_default_photo_order));
         String orderValue = sharedPreferences.getString(getString(R.string.key_default_photo_order), PhotoApi.ORDER_BY_LATEST);
         String orderName = ValueUtils.getOrderName(getActivity(), orderValue);
         defaultOrder.setSummary(getString(R.string.now) + " : " + orderName);
@@ -110,14 +110,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void initDownloadPart(SharedPreferences sharedPreferences) {
         // downloader.
-        ListPreference downloader = (ListPreference) findPreference(getString(R.string.key_downloader));
+        ListPreference downloader = findPreference(getString(R.string.key_downloader));
         String downloaderValue = sharedPreferences.getString(getString(R.string.key_downloader), "mysplash");
         String downloaderName = ValueUtils.getDownloaderName(getActivity(), downloaderValue);
         downloader.setSummary(getString(R.string.now) + " : " + downloaderName);
         downloader.setOnPreferenceChangeListener(this);
 
         // download scale.
-        ListPreference downloadScale = (ListPreference) findPreference(getString(R.string.key_download_scale));
+        ListPreference downloadScale = findPreference(getString(R.string.key_download_scale));
         String scaleValue = sharedPreferences.getString(getString(R.string.key_download_scale), "compact");
         String scaleName = ValueUtils.getScaleName(getActivity(), scaleValue);
         downloadScale.setSummary(getString(R.string.now) + " : " + scaleName);
@@ -126,14 +126,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     private void initDisplayPart(SharedPreferences sharedPreferences) {
         // saturation animation duration.
-        ListPreference duration = (ListPreference) findPreference(getString(R.string.key_saturation_animation_duration));
+        ListPreference duration = findPreference(getString(R.string.key_saturation_animation_duration));
         String durationValue = sharedPreferences.getString(getString(R.string.key_saturation_animation_duration), "2000");
         String durationName = ValueUtils.getSaturationAnimationDurationName(getActivity(), durationValue);
         duration.setSummary(getString(R.string.now) + " : " + durationName);
         duration.setOnPreferenceChangeListener(this);
 
         // grid list in port.
-        SwitchPreference gridPort = (SwitchPreference) findPreference(getString(R.string.key_grid_list_in_port));
+        SwitchPreference gridPort = findPreference(getString(R.string.key_grid_list_in_port));
         gridPort.setOnPreferenceChangeListener(this);
         if (!DisplayUtils.isTabletDevice(getActivity())) {
             PreferenceCategory display = (PreferenceCategory) findPreference("display");
@@ -141,7 +141,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         }
 
         // grid list in land.
-        SwitchPreference gridLand = (SwitchPreference) findPreference(getString(R.string.key_grid_list_in_land));
+        SwitchPreference gridLand = findPreference(getString(R.string.key_grid_list_in_land));
         gridLand.setOnPreferenceChangeListener(this);
     }
 
@@ -241,12 +241,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     // on action click listener.
 
-    private View.OnClickListener rebootListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (getActivity() != null) {
-                Mysplash.getInstance().dispatchRecreate();
-            }
+    private View.OnClickListener rebootListener = v -> {
+        if (getActivity() != null) {
+            Mysplash.getInstance().dispatchRecreate();
         }
     };
 

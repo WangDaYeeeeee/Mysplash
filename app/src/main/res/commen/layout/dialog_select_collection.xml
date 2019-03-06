@@ -108,34 +108,47 @@
                         android:layout_margin="@dimen/normal_margin"
                         style="@style/title_text" />
 
-                    <EditText
-                        android:id="@+id/dialog_select_collection_creatorName"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/dialog_select_collection_creatorNameContainer"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/little_icon_size"
-                        android:hint="@string/feedback_name"
-                        android:textColorHint="?attr/subtitle_color"
-                        android:textColorHighlight="?attr/subtitle_color"
-                        android:textSize="@dimen/content_text_size"
-                        android:textColor="?attr/content_color"
-                        android:background="@android:color/transparent"
-                        android:maxLines="1"
-                        android:maxLength="30"
+                        android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/normal_margin"
                         android:layout_marginEnd="@dimen/normal_margin"
-                        android:layout_marginTop="@dimen/little_margin" />
+                        android:layout_marginTop="@dimen/little_margin"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="30">
 
-                    <EditText
-                        android:id="@+id/dialog_select_collection_creatorDescription"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/dialog_select_collection_creatorName"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:hint="@string/feedback_name"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:textColorHighlight="?attr/subtitle_color"
+                            android:textSize="@dimen/content_text_size"
+                            android:textColor="?attr/content_color" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/design_icon_size"
-                        android:hint="@string/feedback_description"
-                        android:textColorHint="?attr/subtitle_color"
-                        android:textColorHighlight="?attr/subtitle_color"
-                        android:textSize="@dimen/content_text_size"
-                        android:textColor="?attr/content_color"
-                        android:background="@android:color/transparent"
-                        android:maxLength="250"
-                        android:layout_margin="@dimen/normal_margin" />
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/normal_margin"
+                        app:counterEnabled="true"
+                        app:counterMaxLength="250">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/dialog_select_collection_creatorDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="@string/feedback_description"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:textColorHighlight="?attr/subtitle_color"
+                            android:textSize="@dimen/content_text_size"
+                            android:textColor="?attr/content_color" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <CheckBox
                         android:id="@+id/dialog_select_collection_creatorCheckBox"

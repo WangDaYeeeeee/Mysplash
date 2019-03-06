@@ -76,7 +76,7 @@
                     android:textColor="?attr/title_color"
                     android:text="..."/>
 
-                <com.wangdaye.mysplash.me.view.widget.MeProfileView
+                <com.wangdaye.mysplash.me.ui.MeProfileView
                     android:id="@+id/activity_me_profileView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

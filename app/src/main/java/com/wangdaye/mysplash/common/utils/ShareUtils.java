@@ -5,9 +5,11 @@ import android.content.Intent;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.json.User;
+
+import androidx.annotation.NonNull;
 
 /**
  * Share utils.
@@ -43,7 +45,7 @@ public class ShareUtils {
         }
     }
 
-    public static void shareCollection(Collection c) {
+    public static void shareCollection(@NonNull Collection c) {
         Activity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
             Intent intent = new Intent(Intent.ACTION_SEND);

@@ -28,7 +28,7 @@
         tools:targetApi="p">
 
         <activity
-            android:name=".main.view.activity.MainActivity"
+            android:name=".main.MainActivity"
             android:theme="@style/MysplashTheme.TranslucentNavigation.Main"
             android:screenOrientation="user"
             android:label="@string/app_name">
@@ -42,20 +42,14 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".search.view.activity.SearchActivity"
+        <activity android:name=".search.ui.SearchActivity"
             android:theme="@style/MysplashTheme.Translucent.Common"
             android:screenOrientation="user"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize" />
 
         <activity
-            android:name=".main.view.activity.NotificationActivity"
-            android:theme="@style/MysplashTheme.Common"
-            android:screenOrientation="user"
-            android:label="@string/app_name" />
-
-        <activity
-            android:name=".photo3.view.activity.PhotoActivity3"
+            android:name=".photo3.ui.PhotoActivity3"
             android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.Photo2"
             android:screenOrientation="user"
             android:label="@string/app_name" />
@@ -67,13 +61,13 @@
             android:label="@string/app_name" />
 
         <activity
-            android:name=".collection.view.activity.CollectionActivity"
+            android:name=".collection.ui.CollectionActivity"
             android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.Collection"
             android:screenOrientation="user"
             android:label="@string/app_name" />
 
         <activity
-            android:name=".user.view.activity.UserActivity"
+            android:name=".user.ui.UserActivity"
             android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.User"
             android:screenOrientation="user"
             android:label="@string/app_name" />
@@ -94,7 +88,7 @@
         </activity>
 
         <activity
-            android:name=".me.view.activity.MeActivity"
+            android:name=".me.ui.MeActivity"
             android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.Me"
             android:screenOrientation="user"
             android:label="@string/app_name">
@@ -105,7 +99,7 @@
         </activity>
 
         <activity
-            android:name=".me.view.activity.MyFollowActivity"
+            android:name=".me.ui.MyFollowActivity"
             android:theme="@style/MysplashTheme.Translucent.Common"
             android:screenOrientation="user"
             android:label="@string/app_name" />
@@ -113,7 +107,8 @@
         <activity android:name=".common.ui.activity.UpdateMeActivity"
             android:theme="@style/MysplashTheme.Translucent.Common"
             android:screenOrientation="user"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".common.ui.activity.DownloadManageActivity"
@@ -134,7 +129,7 @@
             android:label="@string/action_settings" />
 
         <activity
-            android:name=".about.view.activity.AboutActivity"
+            android:name=".about.ui.AboutActivity"
             android:theme="@style/MysplashTheme.Translucent.Common"
             android:screenOrientation="user"
             android:label="@string/action_about"/>
@@ -148,7 +143,8 @@
         <activity android:name=".common.ui.activity.CustomApiActivity"
             android:theme="@style/MysplashTheme.Translucent.Common"
             android:screenOrientation="user"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity android:name=".common.ui.activity.SetWallpaperActivity"
             android:theme="@style/MysplashTheme.SetWallpaper"
@@ -231,7 +227,7 @@
         <!-- receiver. -->
 
         <receiver
-            android:name=".common.receiver.DownloadReceiver">
+            android:name=".common.download.DownloadReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
                 <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
@@ -241,7 +237,7 @@
         <!-- service. -->
 
         <service
-            android:name=".common.service.MysplashMuzeiArtSource"
+            android:name=".common.muzei.MysplashMuzeiArtSource"
             android:label="@string/app_name"
             android:description="@string/muzei_description"
             android:icon="@drawable/ic_notification"
@@ -264,7 +260,7 @@
         <!-- provider. -->
 
         <provider
-            android:name=".common.provider.MysplashMuzeiArtProvider"
+            android:name=".common.muzei.MysplashMuzeiArtProvider"
             android:authorities="com.wangdaye.mysplash"
             android:label="@string/app_name"
             android:description="@string/muzei_description"

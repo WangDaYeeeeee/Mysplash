@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.common.ui.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,15 +13,16 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Collection mini adapter.
@@ -30,174 +31,41 @@ import butterknife.OnClick;
  *
  * */
 
-public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAdapter.ViewHolder> {
-
-    private Context c;
-    private OnCollectionResponseListener listener;
+public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniHolder> {
 
     private Photo photo;
+    @Nullable private ItemEventCallback callback;
 
-    public class ViewHolder extends RecyclerView.ViewHolder
-            implements ImageHelper.OnLoadImageListener<Photo> {
-
-        @BindView(R.id.item_collection_mini_image)
-        AppCompatImageView image;
-
-        @BindView(R.id.item_collection_mini_title)
-        TextView title;
-
-        @BindView(R.id.item_collection_mini_subtitle)
-        TextView subtitle;
-
-        @BindView(R.id.item_collection_mini_lockIcon)
-        AppCompatImageView lockIcon;
-
-        @BindView(R.id.item_collection_icon)
-        CircularProgressIcon stateIcon;
-
-        private Collection collection;
-
-        ViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-
-        void onBindView(int position) {
-            if (position == 0) {
-                ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_creator);
-                title.setText(c.getString(R.string.feedback_create_collection).toUpperCase());
-                subtitle.setVisibility(View.GONE);
-                lockIcon.setVisibility(View.GONE);
-                stateIcon.forceSetResultState(android.R.color.transparent);
-                return;
-            }
-
-            this.collection = AuthManager.getInstance()
-                    .getCollectionsManager()
-                    .getCollectionList()
-                    .get(position - 1);
-
-            subtitle.setVisibility(View.VISIBLE);
-            lockIcon.setVisibility(View.VISIBLE);
-
-            title.setText(collection.title.toUpperCase());
-            setSubtitle(collection);
-
-            reloadCoverImage(collection);
-
-            if (collection.privateX) {
-                lockIcon.setAlpha(1f);
-            } else {
-                lockIcon.setAlpha(0f);
-            }
-
-            stateIcon.setProgressColor(Color.WHITE);
-            if (collection.editing) {
-                stateIcon.forceSetProgressState();
-            } else {
-                for (int i = 0; i < photo.current_user_collections.size(); i ++) {
-                    if (collection.id == photo.current_user_collections.get(i).id) {
-                        stateIcon.forceSetResultState(R.drawable.ic_item_state_succeed);
-                        return;
-                    }
-                }
-                stateIcon.forceSetResultState(android.R.color.transparent);
-            }
-        }
-
-        void onRecycled() {
-            ImageHelper.releaseImageView(image);
-        }
-
-        public void setProgressState() {
-            stateIcon.setProgressState();
-        }
-
-        @SuppressLint("SetTextI18n")
-        public void setSubtitle(Collection collection) {
-            subtitle.setText(
-                    collection.total_photos
-                            + " " + c.getResources().getStringArray(R.array.user_tabs)[0]);
-        }
-
-        public void setResultState(@DrawableRes int imageId) {
-            stateIcon.setResultState(imageId);
-        }
-
-        public void reloadCoverImage(Collection collection) {
-            if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(image.getContext(), image, collection, getAdapterPosition() - 1, this);
-            } else {
-                ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
-            }
-        }
-
-        @OnClick(R.id.item_collection_mini_card) void clickItem() {
-            if (getAdapterPosition() == 0 && listener != null) {
-                listener.onCreateCollection();
-            } else if (stateIcon.isUsable() && listener != null) {
-                Collection collection = AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .getCollectionList()
-                        .get(getAdapterPosition() - 1);
-                collection.editing = true;
-                AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .updateCollection(collection);
-                listener.onClickCollectionItem(
-                        AuthManager.getInstance()
-                                .getCollectionsManager()
-                                .getCollectionList()
-                                .get(getAdapterPosition() - 1).id,
-                        getAdapterPosition());
-            }
-        }
-
-        // on load image listener.
-
-        @Override
-        public void onLoadImageSucceed(Photo newT, int index) {
-            if (collection.cover_photo != null
-                    && collection.cover_photo.updateLoadInformation(newT)) {
-                Collection c = AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .getCollectionList()
-                        .get(index);
-                if (c.cover_photo != null) {
-                    c.cover_photo.updateLoadInformation(newT);
-                }
-                AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .updateCollection(c);
-            }
-        }
-
-        @Override
-        public void onLoadImageFailed(Photo originalT, int index) {
-            ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
-        }
-    }
-
-    public CollectionMiniAdapter(Context c, Photo p) {
-        this.c = c;
-        updatePhoto(p);
+    public CollectionMiniAdapter(Photo p) {
+        this.photo = p;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CollectionMiniHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_collection_mini, parent, false);
-        return new ViewHolder(v);
+        return new CollectionMiniHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.onBindView(position);
+    public void onBindViewHolder(@NonNull CollectionMiniHolder holder, int position) {
+        if (position == 0) {
+            holder.onBindView(null, true, photo, callback);
+        } else {
+            holder.onBindView(
+                    AuthManager.getInstance()
+                            .getCollectionsManager()
+                            .getCollectionList()
+                            .get(position - 1),
+                    false,
+                    photo,
+                    callback);
+        }
     }
 
     @Override
-    public void onViewRecycled(@NonNull ViewHolder holder) {
+    public void onViewRecycled(@NonNull CollectionMiniHolder holder) {
         super.onViewRecycled(holder);
         holder.onRecycled();
     }
@@ -215,18 +83,125 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniAd
         return position;
     }
 
-    public void updatePhoto(Photo p) {
+    public void setPhoto(Photo p) {
         this.photo = p;
     }
 
-    // interface.
+    public void updateItem(Collection collection, Photo photo) {
+        this.photo = photo;
 
-    public interface OnCollectionResponseListener {
-        void onCreateCollection();
-        void onClickCollectionItem(int collectionId, int adapterPosition);
+        List<Collection> list = AuthManager.getInstance()
+                .getCollectionsManager()
+                .getCollectionList();
+        for (int i = 0; i < list.size(); i ++) {
+            if (list.get(i).id == collection.id) {
+                notifyItemChanged(i + 1);
+                return;
+            }
+        }
     }
 
-    public void setOnCollectionResponseListener(OnCollectionResponseListener l) {
-        this.listener = l;
+    public interface ItemEventCallback {
+        void onCreateCollection();
+        void onAddPhotoToCollectionOrRemoveIt(Collection collection, Photo photo,
+                                              int adapterPosition, boolean add);
+    }
+
+    public void setItemEventCallback(@Nullable ItemEventCallback c) {
+        this.callback = c;
+    }
+}
+
+class CollectionMiniHolder extends RecyclerView.ViewHolder {
+
+    @BindView(R.id.item_collection_mini_image) AppCompatImageView image;
+    @BindView(R.id.item_collection_mini_title) TextView title;
+    @BindView(R.id.item_collection_mini_subtitle) TextView subtitle;
+    @BindView(R.id.item_collection_mini_lockIcon) AppCompatImageView lockIcon;
+    @BindView(R.id.item_collection_mini_icon) CircularProgressIcon stateIcon;
+
+    CollectionMiniHolder(View itemView) {
+        super(itemView);
+        ButterKnife.bind(this, itemView);
+    }
+
+    @SuppressLint("SetTextI18n")
+    void onBindView(Collection collection, boolean header, Photo photo,
+                    CollectionMiniAdapter.ItemEventCallback callback) {
+        Context context = itemView.getContext();
+
+        itemView.findViewById(R.id.item_collection_mini_card).setOnClickListener(v -> {
+            if (callback == null) {
+                return;
+            }
+            if (header) {
+                callback.onCreateCollection();
+            } else if (stateIcon.isUsable()) {
+                stateIcon.setProgressState();
+                collection.editing = true;
+                for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+                    if (collection.id == photo.current_user_collections.get(i).id) {
+                        // delete photo.
+                        callback.onAddPhotoToCollectionOrRemoveIt(
+                                collection, photo, getAdapterPosition(), false);
+                        return;
+                    }
+                }
+                callback.onAddPhotoToCollectionOrRemoveIt(
+                        collection, photo, getAdapterPosition(), true);
+            }
+        });
+
+        if (header) {
+            ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_creator);
+            title.setText(context.getString(R.string.feedback_create_collection).toUpperCase());
+            subtitle.setVisibility(View.GONE);
+            lockIcon.setVisibility(View.GONE);
+            stateIcon.setResultState(android.R.color.transparent);
+            return;
+        }
+
+        subtitle.setVisibility(View.VISIBLE);
+        lockIcon.setVisibility(View.VISIBLE);
+
+        title.setText(collection.title.toUpperCase());
+        subtitle.setText(
+                collection.total_photos
+                        + " " + context.getResources().getStringArray(R.array.user_tabs)[0]);
+
+        if (collection.cover_photo != null) {
+            ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
+                collection.cover_photo.loadPhotoSuccess = true;
+                if (!collection.cover_photo.hasFadedIn) {
+                    collection.cover_photo.hasFadedIn = true;
+                    ImageHelper.startSaturationAnimation(image.getContext(), image);
+                }
+            });
+        } else {
+            ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
+        }
+
+        if (collection.privateX) {
+            lockIcon.setAlpha(1f);
+        } else {
+            lockIcon.setAlpha(0f);
+        }
+
+        stateIcon.setProgressColor(Color.WHITE);
+        if (collection.editing) {
+            stateIcon.setProgressState();
+        } else {
+            for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+                if (collection.id == photo.current_user_collections.get(i).id) {
+                    stateIcon.setResultState(R.drawable.ic_item_state_succeed);
+                    return;
+                }
+            }
+            stateIcon.setResultState(android.R.color.transparent);
+        }
+    }
+
+    void onRecycled() {
+        ImageHelper.releaseImageView(image);
     }
 }

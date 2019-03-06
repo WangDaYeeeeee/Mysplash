@@ -11,8 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 
 import java.io.File;
 

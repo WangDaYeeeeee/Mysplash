@@ -25,15 +25,15 @@ import butterknife.ButterKnife;
 
 public class RequestBrowsableDataDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_request_browsable_data_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_request_browsable_data_container) CoordinatorLayout container;
 
     @NonNull
     @SuppressLint("InflateParams")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_request_browsable_data, null, false);
+        View view = LayoutInflater.from(getActivity())
+                .inflate(R.layout.dialog_request_browsable_data, null, false);
         ButterKnife.bind(this, view);
         setCancelable(false);
         return new AlertDialog.Builder(getActivity())

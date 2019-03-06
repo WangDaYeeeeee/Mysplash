@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.common.ui.activity.muzei;
 import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.appcompat.widget.Toolbar;
-import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
@@ -12,37 +11,27 @@ import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MuzeiSettingsActivity extends MysplashActivity
-        implements View.OnClickListener, SwipeBackCoordinatorLayout.OnSwipeListener {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
-    @BindView(R.id.activity_settings_container)
-    CoordinatorLayout container;
-
-    @BindView(R.id.activity_settings_statusBar)
-    StatusBarView statusBar;
+    @BindView(R.id.activity_settings_container) CoordinatorLayout container;
+    @BindView(R.id.activity_settings_statusBar) StatusBarView statusBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initWidget();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .setTransition(android.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(R.id.activity_settings_preferenceContainer, new MuzeiSettingsFragment())
-                    .commit();
-        }
+        ButterKnife.bind(this);
+        initWidget();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .replace(R.id.activity_settings_preferenceContainer, new MuzeiSettingsFragment())
+                .commit();
     }
 
     @Override
@@ -80,21 +69,10 @@ public class MuzeiSettingsActivity extends MysplashActivity
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.setTitle(getString(R.string.action_muzei_settings));
-        toolbar.setNavigationOnClickListener(this);
+        toolbar.setNavigationOnClickListener(v -> finishSelf(true));
     }
 
     // interface.
-
-    // on click listener.
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case -1:
-                finishSelf(true);
-                break;
-        }
-    }
 
     // on swipe back listener.
 

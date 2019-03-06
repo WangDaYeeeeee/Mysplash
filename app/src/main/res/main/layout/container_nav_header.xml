@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="?attr/root_color"
-    android:foreground="?attr/selectableItemBackground">
+    android:foreground="?attr/selectableItemBackground"
+    tools:ignore="UnusedAttribute">
 
     <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
         android:id="@+id/container_nav_header_statusBar"

@@ -8,14 +8,12 @@ import android.transition.ChangeBounds;
 import android.transition.TransitionValues;
 import android.util.AttributeSet;
 
-import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * Cover transition.
  *
- * This transition is working for {@link com.wangdaye.mysplash.photo2.view.activity.PhotoActivity2},
+ * This transition is working for {@link com.wangdaye.mysplash.photo3.ui.PhotoActivity3},
  * it is responsible of the animation of photo image.
  *
  * */
@@ -34,10 +32,9 @@ public class CoverTransition2 extends ChangeBounds {
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
         super.captureEndValues(transitionValues);
-        Photo photo = Mysplash.getInstance().getPhoto();
-        if (photo != null) {
-            int[] size = DisplayUtils.getScreenSize(context);
-            Rect bounds = (Rect) transitionValues.values.get(PROPNAME_BOUNDS);
+        int[] size = DisplayUtils.getScreenSize(context);
+        Rect bounds = (Rect) transitionValues.values.get(PROPNAME_BOUNDS);
+        if (bounds != null) {
             bounds.left = 0;
             bounds.top = 0;
             bounds.right = size[0];

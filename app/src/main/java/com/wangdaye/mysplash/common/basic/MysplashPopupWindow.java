@@ -28,12 +28,7 @@ public class MysplashPopupWindow extends PopupWindow {
         final MysplashActivity activity = Mysplash.getInstance().getTopActivity();
         if (activity != null) {
             activity.getPopupList().add(this);
-            setOnDismissListener(new OnDismissListener() {
-                @Override
-                public void onDismiss() {
-                    activity.getPopupList().remove(MysplashPopupWindow.this);
-                }
-            });
+            setOnDismissListener(() -> activity.getPopupList().remove(MysplashPopupWindow.this));
         }
         setFocusable(true);
         setTouchable(true);

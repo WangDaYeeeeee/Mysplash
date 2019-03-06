@@ -12,29 +12,34 @@ import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Me;
-import com.wangdaye.mysplash.common.data.service.network.UserService;
+import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.json.Me;
+import com.wangdaye.mysplash.common.network.service.UserService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
-import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.common.basic.SafeHandler;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Update me activity.
@@ -44,35 +49,35 @@ import retrofit2.Response;
  * */
 
 public class UpdateMeActivity extends MysplashActivity
-        implements SwipeBackCoordinatorLayout.OnSwipeListener,
-        UserService.OnRequestMeProfileListener, SafeHandler.HandlerContainer {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
 
-    @BindView(R.id.activity_update_me_container)
-    CoordinatorLayout container;
+    @BindView(R.id.activity_update_me_container) CoordinatorLayout container;
+    @BindView(R.id.activity_update_me_statusBar) StatusBarView statusBar;
 
-    @BindView(R.id.activity_update_me_statusBar)
-    StatusBarView statusBar;
+    @BindView(R.id.activity_update_me_scrollView) NestedScrollView scrollView;
+    @BindView(R.id.container_update_me_progressView) CircularProgressView progressView;
+    @BindView(R.id.container_update_me_textContainer) LinearLayout contentView;
 
-    @BindView(R.id.activity_update_me_scrollView)
-    NestedScrollView scrollView;
+    @OnClick(R.id.container_update_me_closeBtn) void close() {
+        finishSelf(true);
+    }
+    @OnClick(R.id.container_update_me_saveBtn) void save() {
+        updateProfile();
+    }
 
-    @BindView(R.id.container_update_me_progressView)
-    CircularProgressView progressView;
-
-    @BindView(R.id.container_update_me_textContainer)
-    LinearLayout contentView;
-
-    private EditText usernameTxt;
-    private EditText firstNameTxt;
-    private EditText lastNameTxt;
-    private EditText emailTxt;
-    private EditText portfolioTxt;
-    private EditText locationTxt;
-    private EditText bioTxt;
+    @BindView(R.id.container_update_me_usernameTxtContainer) TextInputLayout usernameTextContainer;
+    private TextInputEditText usernameTxt;
+    private TextInputEditText firstNameTxt;
+    private TextInputEditText lastNameTxt;
+    private TextInputEditText emailTxt;
+    private TextInputEditText portfolioTxt;
+    private TextInputEditText locationTxt;
+    private TextInputEditText bioTxt;
 
     private SafeHandler<UpdateMeActivity> handler;
+    private FullscreenInputWorkaround workaround;
 
-    private UserService service;
+    @Inject UserService service;
 
     private boolean backPressed = false;
 
@@ -96,17 +101,9 @@ public class UpdateMeActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_me);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initData();
-            initWidget();
-        }
+        ButterKnife.bind(this);
+        initData();
+        initWidget(savedInstanceState);
     }
 
     @Override
@@ -116,15 +113,29 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NotNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_USERNAME, usernameTxt.getText().toString());
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_FIRSTNAME, firstNameTxt.getText().toString());
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_LASTNAME, lastNameTxt.getText().toString());
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_EMAIL, emailTxt.getText().toString());
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_PORTFOLIO, portfolioTxt.getText().toString());
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_LOCATION, locationTxt.getText().toString());
-        outState.putString(KEY_UPDATE_ME_ACTIVITY_BIO, bioTxt.getText().toString());
+        if (usernameTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_USERNAME, usernameTxt.getText().toString());
+        }
+        if (firstNameTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_FIRSTNAME, firstNameTxt.getText().toString());
+        }
+        if (lastNameTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_LASTNAME, lastNameTxt.getText().toString());
+        }
+        if (emailTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_EMAIL, emailTxt.getText().toString());
+        }
+        if (portfolioTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_PORTFOLIO, portfolioTxt.getText().toString());
+        }
+        if (locationTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_LOCATION, locationTxt.getText().toString());
+        }
+        if (bioTxt.getText() != null) {
+            outState.putString(KEY_UPDATE_ME_ACTIVITY_BIO, bioTxt.getText().toString());
+        }
     }
 
     @Override
@@ -167,12 +178,13 @@ public class UpdateMeActivity extends MysplashActivity
     // init.
 
     private void initData() {
-        this.service = UserService.getService();
         this.state = INPUT_STATE;
     }
 
-    private void initWidget() {
+    private void initWidget(Bundle savedInstanceState) {
         this.handler = new SafeHandler<>(this);
+        this.workaround = FullscreenInputWorkaround.assistActivity(
+                this, container, null);
 
         SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_update_me_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
@@ -199,43 +211,44 @@ public class UpdateMeActivity extends MysplashActivity
             saveBtn.setBackgroundResource(R.drawable.button_login);
         }
 
-        if (getBundle() == null) {
-            usernameTxt.setText(AuthManager.getInstance().getMe().username);
-            firstNameTxt.setText(AuthManager.getInstance().getMe().first_name);
-            lastNameTxt.setText(AuthManager.getInstance().getMe().last_name);
-            emailTxt.setText(AuthManager.getInstance().getMe().email);
-            portfolioTxt.setText(AuthManager.getInstance().getMe().portfolio_url);
-            locationTxt.setText(AuthManager.getInstance().getMe().location);
-            bioTxt.setText(AuthManager.getInstance().getMe().bio);
+        usernameTxt.setOnFocusChangeListener((v, hasFocus) -> usernameTextContainer.setError(null));
+        if (savedInstanceState == null) {
+            usernameTxt.setText(AuthManager.getInstance().getUsername());
+            firstNameTxt.setText(AuthManager.getInstance().getFirstName());
+            lastNameTxt.setText(AuthManager.getInstance().getLastName());
+            emailTxt.setText(AuthManager.getInstance().getEmail());
+            portfolioTxt.setText(AuthManager.getInstance().getUser().portfolio_url);
+            locationTxt.setText(AuthManager.getInstance().getUser().location);
+            bioTxt.setText(AuthManager.getInstance().getUser().bio);
         } else {
             usernameTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_USERNAME,
-                            AuthManager.getInstance().getMe().username));
+                            AuthManager.getInstance().getUsername()));
             firstNameTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_FIRSTNAME,
-                            AuthManager.getInstance().getMe().first_name));
+                            AuthManager.getInstance().getFirstName()));
             lastNameTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_LASTNAME,
-                            AuthManager.getInstance().getMe().last_name));
+                            AuthManager.getInstance().getLastName()));
             emailTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_EMAIL,
-                            AuthManager.getInstance().getMe().email));
+                            AuthManager.getInstance().getEmail()));
             portfolioTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_PORTFOLIO,
-                            AuthManager.getInstance().getMe().portfolio_url));
+                            AuthManager.getInstance().getUser().portfolio_url));
             locationTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_LOCATION,
-                            AuthManager.getInstance().getMe().location));
+                            AuthManager.getInstance().getUser().location));
             bioTxt.setText(
-                    getBundle().getString(
+                    savedInstanceState.getString(
                             KEY_UPDATE_ME_ACTIVITY_BIO,
-                            AuthManager.getInstance().getMe().bio));
+                            AuthManager.getInstance().getUser().bio));
         }
     }
 
@@ -261,20 +274,40 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     private void updateProfile() {
-        String username = usernameTxt.getText().toString();
-        if (!TextUtils.isEmpty(username)) {
+        if (usernameTxt.getText() != null && !TextUtils.isEmpty(usernameTxt.getText().toString())
+                && firstNameTxt.getText() != null
+                && lastNameTxt.getText() != null
+                && emailTxt.getText() != null
+                && portfolioTxt.getText() != null
+                && locationTxt.getText() != null
+                && bioTxt.getText() != null) {
             service.updateMeProfile(
-                    username,
+                    usernameTxt.getText().toString(),
                     firstNameTxt.getText().toString(),
                     lastNameTxt.getText().toString(),
                     emailTxt.getText().toString(),
                     portfolioTxt.getText().toString(),
                     locationTxt.getText().toString(),
                     bioTxt.getText().toString(),
-                    this);
+                    new Callback<Me>() {
+                        @Override
+                        public void onSucceed(Me me) {
+                            AuthManager.getInstance().writeMe(me);
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                                ShortcutsManager.refreshShortcuts(UpdateMeActivity.this);
+                            }
+                            finishSelf(true);
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            setState(INPUT_STATE);
+                            NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));
+                        }
+                    });
             setState(UPDATE_STATE);
         } else {
-            NotificationHelper.showSnackbar(getString(R.string.feedback_name_is_required));
+            usernameTextContainer.setError(getString(R.string.feedback_name_is_required));
         }
     }
 
@@ -304,16 +337,6 @@ public class UpdateMeActivity extends MysplashActivity
 
     // interface.
 
-    // on click listener.
-
-    @OnClick(R.id.container_update_me_closeBtn) void close() {
-        finishSelf(true);
-    }
-
-    @OnClick(R.id.container_update_me_saveBtn) void save() {
-        updateProfile();
-    }
-
     // on swipe listener.
 
     @Override
@@ -330,28 +353,6 @@ public class UpdateMeActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishSelf(false);
-    }
-
-    // on request me profile listener.
-
-    @Override
-    public void onRequestMeProfileSuccess(Call<Me> call, Response<Me> response) {
-        if (response.isSuccessful() && response.body() != null) {
-            AuthManager.getInstance().writeUserInfo(response.body());
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
-                ShortcutsManager.refreshShortcuts(this);
-            }
-            finishSelf(true);
-        } else {
-            setState(INPUT_STATE);
-            NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));
-        }
-    }
-
-    @Override
-    public void onRequestMeProfileFailed(Call<Me> call, Throwable t) {
-        setState(INPUT_STATE);
-        NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));
     }
 
     // handler.

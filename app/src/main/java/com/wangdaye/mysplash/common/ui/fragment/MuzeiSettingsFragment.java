@@ -23,13 +23,13 @@ public class MuzeiSettingsFragment extends PreferenceFragmentCompat
         if (getActivity() != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            ListPreference source = (ListPreference) findPreference(getString(R.string.key_muzei_source));
+            ListPreference source = findPreference(getString(R.string.key_muzei_source));
             String sourceValue = sharedPreferences.getString(getString(R.string.key_muzei_source), "collection");
             String sourceName = ValueUtils.getMuzeiSourceName(getActivity(), sourceValue);
             source.setSummary(getString(R.string.now) + " : " + sourceName);
             source.setOnPreferenceChangeListener(this);
 
-            ListPreference cacheMode = (ListPreference) findPreference(getString(R.string.key_muzei_cache_mode));
+            ListPreference cacheMode = findPreference(getString(R.string.key_muzei_cache_mode));
             String cacheModeValue = sharedPreferences.getString(getString(R.string.key_muzei_cache_mode), "keep");
             String cacheModeName = ValueUtils.getMuzeiCacheModeName(getActivity(), cacheModeValue);
             cacheMode.setSummary(getString(R.string.now) + " : " + cacheModeName);

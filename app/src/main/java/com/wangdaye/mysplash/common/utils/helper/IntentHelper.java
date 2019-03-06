@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -19,17 +18,16 @@ import android.view.View;
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
-import com.wangdaye.mysplash.common.data.entity.unsplash.User;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.activity.CustomApiActivity;
 import com.wangdaye.mysplash.common.ui.activity.muzei.MuzeiCollectionSourceConfigActivity;
 import com.wangdaye.mysplash.common.ui.activity.muzei.MuzeiSettingsActivity;
 import com.wangdaye.mysplash.common.utils.FileUtils;
-import com.wangdaye.mysplash.main.view.activity.NotificationActivity;
-import com.wangdaye.mysplash.photo3.view.activity.PhotoActivity3;
-import com.wangdaye.mysplash.search.view.activity.SearchActivity;
+import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
+import com.wangdaye.mysplash.search.ui.SearchActivity;
 import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
 import com.wangdaye.mysplash.common.ui.activity.LoginActivity;
@@ -37,12 +35,12 @@ import com.wangdaye.mysplash.common.ui.activity.PreviewActivity;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash.common.ui.activity.UpdateMeActivity;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.about.view.activity.AboutActivity;
-import com.wangdaye.mysplash.collection.view.activity.CollectionActivity;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.me.view.activity.MeActivity;
-import com.wangdaye.mysplash.me.view.activity.MyFollowActivity;
-import com.wangdaye.mysplash.user.view.activity.UserActivity;
+import com.wangdaye.mysplash.about.ui.AboutActivity;
+import com.wangdaye.mysplash.collection.ui.CollectionActivity;
+import com.wangdaye.mysplash.main.MainActivity;
+import com.wangdaye.mysplash.me.ui.MeActivity;
+import com.wangdaye.mysplash.me.ui.MyFollowActivity;
+import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -64,12 +62,6 @@ public class IntentHelper {
         a.startActivity(intent);
     }
 
-    public static void startNotificationActivity(MysplashActivity a) {
-        Intent intent = new Intent(a, NotificationActivity.class);
-        a.startActivity(intent);
-        a.overridePendingTransition(R.anim.activity_slide_in, R.anim.none);
-    }
-
     public static void startSearchActivity(MysplashActivity a, @Nullable String query) {
         Intent intent = new Intent(a, SearchActivity.class);
         if (!TextUtils.isEmpty(query)) {
@@ -81,15 +73,11 @@ public class IntentHelper {
     }
 
     public static void startPhotoActivity(MysplashActivity a, View image, View background,
-                                          ArrayList<Photo> photoList, int currentIndex, int headIndex,
-                                          Bundle bundle) {
-        Mysplash.getInstance().setPhoto(photoList.get(currentIndex - headIndex));
-
+                                          ArrayList<Photo> photoList, int currentIndex, int headIndex) {
         Intent intent = new Intent(a, PhotoActivity3.class);
         intent.putParcelableArrayListExtra(PhotoActivity3.KEY_PHOTO_ACTIVITY_2_PHOTO_LIST, photoList);
         intent.putExtra(PhotoActivity3.KEY_PHOTO_ACTIVITY_2_PHOTO_CURRENT_INDEX, currentIndex);
         intent.putExtra(PhotoActivity3.KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX, headIndex);
-        intent.putExtra(PhotoActivity3.KEY_PHOTO_ACTIVITY_2_PHOTO_BUNDLE, bundle);
         intent.putExtra(PhotoActivity3.KEY_PHOTO_ACTIVITY_2_ID, photoList.get(currentIndex - headIndex).id);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -152,8 +140,7 @@ public class IntentHelper {
                             Pair.create(background, a.getString(R.string.transition_collection_background)));
         }
 
-        ActivityCompat.startActivityForResult(
-                a, intent, Mysplash.COLLECTION_ACTIVITY, options.toBundle());
+        ActivityCompat.startActivity(a, intent, options.toBundle());
     }
 
     public static void startCollectionActivity(MysplashActivity a, Collection c) {
@@ -191,8 +178,7 @@ public class IntentHelper {
                                 a,
                                 Pair.create(avatar, a.getString(R.string.transition_user_avatar)),
                                 Pair.create(background, a.getString(R.string.transition_user_background)));
-                ActivityCompat.startActivityForResult(
-                        a, intent, Mysplash.USER_ACTIVITY, options.toBundle());
+                ActivityCompat.startActivity(a, intent, options.toBundle());
             }
         }
     }
@@ -224,8 +210,7 @@ public class IntentHelper {
                             a,
                             Pair.create(avatar, a.getString(R.string.transition_me_avatar)),
                             Pair.create(background, a.getString(R.string.transition_me_background)));
-            ActivityCompat.startActivityForResult(
-                    a, intent, Mysplash.ME_ACTIVITY, options.toBundle());
+            ActivityCompat.startActivity(a, intent, options.toBundle());
         } else {
             Intent intent = new Intent(a, MeActivity.class);
             intent.putExtra(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page);

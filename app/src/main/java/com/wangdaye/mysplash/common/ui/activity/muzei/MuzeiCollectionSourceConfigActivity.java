@@ -6,16 +6,15 @@ import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
-import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
+import com.wangdaye.mysplash.common.db.WallpaperSource;
 import com.wangdaye.mysplash.common.ui.adapter.WallpaperSourceAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
@@ -36,14 +35,23 @@ import butterknife.OnClick;
 public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
-    @BindView(R.id.activity_muzei_collection_source_config_container)
-    CoordinatorLayout container;
+    @BindView(R.id.activity_muzei_collection_source_config_container) CoordinatorLayout container;
+    @BindView(R.id.activity_muzei_collection_source_config_statusBar) StatusBarView statusBar;
+    @BindView(R.id.activity_muzei_collection_source_config_scrollView) NestedScrollView scrollView;
 
-    @BindView(R.id.activity_muzei_collection_source_config_statusBar)
-    StatusBarView statusBar;
+    @OnClick(R.id.activity_muzei_collection_source_config_doneBtn)
+    void submit() {
+        MuzeiOptionManager.updateCollectionSource(this, adapter.itemList);
+        finishSelf(true);
+    }
 
-    @BindView(R.id.activity_muzei_collection_source_config_scrollView)
-    NestedScrollView scrollView;
+    @OnClick(R.id.activity_muzei_collection_source_config_resetBtn)
+    void reset() {
+        List<WallpaperSource> list = new ArrayList<>();
+        list.add(WallpaperSource.unsplashSource());
+        list.add(WallpaperSource.mysplashSource());
+        refreshSourceList(list);
+    }
 
     private WallpaperSourceAdapter adapter;
 
@@ -51,17 +59,9 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_muzei_collection_source_config);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initData();
-            initWidget();
-        }
+        ButterKnife.bind(this);
+        initData();
+        initWidget();
     }
 
     @Override
@@ -110,7 +110,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     // init.
 
     private void initData() {
-        this.adapter = new WallpaperSourceAdapter(this, new ArrayList<WallpaperSource>());
+        this.adapter = new WallpaperSourceAdapter(new ArrayList<>());
     }
 
     private void initWidget() {
@@ -121,12 +121,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
         Toolbar toolbar = findViewById(R.id.activity_muzei_collection_source_config_toolbar);
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_close_light, R.drawable.ic_toolbar_close_dark);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finishSelf(true);
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finishSelf(true));
 
         RecyclerView collectionList = findViewById(R.id.activity_muzei_collection_source_config_collectionList);
         collectionList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -146,22 +141,6 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     }
 
     // interface.
-
-    // on click listener.
-
-    @OnClick(R.id.activity_muzei_collection_source_config_doneBtn)
-    void submit() {
-        MuzeiOptionManager.updateCollectionSource(this, adapter.itemList);
-        finishSelf(true);
-    }
-
-    @OnClick(R.id.activity_muzei_collection_source_config_resetBtn)
-    void reset() {
-        List<WallpaperSource> list = new ArrayList<>();
-        list.add(WallpaperSource.unsplashSource());
-        list.add(WallpaperSource.mysplashSource());
-        refreshSourceList(list);
-    }
 
     // on swipe listener.
 

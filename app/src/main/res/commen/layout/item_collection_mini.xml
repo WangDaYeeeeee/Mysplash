@@ -29,7 +29,7 @@
         android:layout_height="match_parent">
 
         <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
-            android:id="@+id/item_collection_icon"
+            android:id="@+id/item_collection_mini_icon"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:layout_margin="@dimen/little_margin"
@@ -43,7 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/item_collection_icon"
+            android:layout_toStartOf="@id/item_collection_mini_icon"
             tools:ignore="RtlHardcoded,UselessParent">
 
             <RelativeLayout

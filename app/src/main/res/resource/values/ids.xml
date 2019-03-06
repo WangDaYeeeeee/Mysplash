@@ -26,4 +26,8 @@
     <item name="activity_me_page_collection" type="id" />
     <item name="activity_me_page_like" type="id" />
 
+    <!-- activity my follow. -->
+    <item name="activity_my_follower" type="id" />
+    <item name="activity_my_following" type="id" />
+
 </resources>

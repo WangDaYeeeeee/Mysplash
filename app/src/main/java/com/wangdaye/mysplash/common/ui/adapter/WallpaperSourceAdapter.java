@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.db.WallpaperSource;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -29,16 +32,12 @@ import butterknife.OnClick;
 
 public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSourceAdapter.ViewHolder> {
 
-    private MysplashActivity c;
     public List<WallpaperSource> itemList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_wallpaper_source_cover)
-        ImageView cover;
-
-        @BindView(R.id.item_wallpaper_source_title)
-        TextView title;
+        @BindView(R.id.item_wallpaper_source_cover) ImageView cover;
+        @BindView(R.id.item_wallpaper_source_title) TextView title;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -59,9 +58,12 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
         }
 
         @OnClick(R.id.item_wallpaper_source) void clickItem() {
-            IntentHelper.startCollectionActivity(
-                    c,
-                    String.valueOf(itemList.get(getAdapterPosition()).collectionId));
+            MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+            if (activity != null) {
+                IntentHelper.startCollectionActivity(
+                        activity,
+                        String.valueOf(itemList.get(getAdapterPosition()).collectionId));
+            }
         }
 
         @OnClick(R.id.item_wallpaper_source_deleteBtn) void deleteItem() {
@@ -75,25 +77,25 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
         }
     }
 
-    public WallpaperSourceAdapter(MysplashActivity c, List<WallpaperSource> list) {
-        this.c = c;
+    public WallpaperSourceAdapter(List<WallpaperSource> list) {
         this.itemList = list;
     }
 
+    @NotNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_wallpaper_source, parent, false);
         return new WallpaperSourceAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
         holder.onBindView(itemList.get(position));
     }
 
     @Override
-    public void onViewRecycled(ViewHolder holder) {
+    public void onViewRecycled(@NotNull ViewHolder holder) {
         super.onViewRecycled(holder);
         holder.onRecycled();
     }

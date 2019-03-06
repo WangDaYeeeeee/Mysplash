@@ -184,7 +184,7 @@
 
         </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
-        <com.wangdaye.mysplash.main.view.widget.MultiFilterPhotosView
+        <com.wangdaye.mysplash.main.multiFilter.ui.MultiFilterPhotosView
             android:id="@+id/fragment_multi_filter_photosView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

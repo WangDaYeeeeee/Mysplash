@@ -14,23 +14,24 @@ import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.AccessToken;
-import com.wangdaye.mysplash.common.data.service.network.AuthorizeService;
+import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.json.AccessToken;
+import com.wangdaye.mysplash.common.network.service.AuthorizeService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Login activity.
@@ -40,16 +41,27 @@ import retrofit2.Response;
  * */
 
 public class LoginActivity extends MysplashActivity
-    implements SwipeBackCoordinatorLayout.OnSwipeListener,
-        AuthorizeService.OnRequestAccessTokenListener {
-    // widget
+    implements SwipeBackCoordinatorLayout.OnSwipeListener {
+
     @BindView(R.id.activity_login_container) CoordinatorLayout container;
     @BindView(R.id.activity_login_statusBar) StatusBarView statusBar;
     @BindView(R.id.activity_login_buttonContainer) LinearLayout buttonContainer;
     @BindView(R.id.activity_login_progressContainer) RelativeLayout progressContainer;
 
+    @OnClick(R.id.activity_login_closeBtn) void close() {
+        finishSelf(true);
+    }
+
+    @OnClick(R.id.activity_login_loginBtn) void login() {
+        IntentHelper.startWebActivity(this, Mysplash.getLoginUrl(this));
+    }
+
+    @OnClick(R.id.activity_login_joinBtn) void join() {
+        IntentHelper.startWebActivity(this, Mysplash.UNSPLASH_JOIN_URL);
+    }
+
     // data
-    private AuthorizeService service;
+    @Inject AuthorizeService service;
 
     @StateRule
     private int state;
@@ -59,23 +71,13 @@ public class LoginActivity extends MysplashActivity
     @IntDef({NORMAL_STATE, AUTH_STATE})
     private @interface StateRule {}
 
-    /** <br> life cycle. */
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initData();
-            initWidget();
-        }
+        ButterKnife.bind(this);
+        initData();
+        initWidget();
     }
 
     @Override
@@ -114,7 +116,21 @@ public class LoginActivity extends MysplashActivity
             service.requestAccessToken(
                     Mysplash.getInstance(),
                     intent.getData().getQueryParameter("code"),
-                    this);
+                    new Callback<AccessToken>() {
+                        @Override
+                        public void onSucceed(AccessToken accessToken) {
+                            AuthManager.getInstance().writeAccessToken(accessToken);
+                            AuthManager.getInstance().requestPersonalProfile();
+                            IntentHelper.startMainActivity(LoginActivity.this);
+                            finish();
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
+                            setState(NORMAL_STATE);
+                        }
+                    });
             setState(AUTH_STATE);
         }
     }
@@ -128,8 +144,6 @@ public class LoginActivity extends MysplashActivity
     public CoordinatorLayout getSnackbarContainer() {
         return container;
     }
-
-    /** <br> UI. */
 
     private void initWidget() {
         SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_login_swipeBackView);
@@ -175,28 +189,11 @@ public class LoginActivity extends MysplashActivity
         state = newState;
     }
 
-    /** <br> data. */
-
     private void initData() {
-        this.service = AuthorizeService.getService();
         this.state = NORMAL_STATE;
     }
 
-    /** <br> interface. */
-
-    // on click listener.
-
-    @OnClick(R.id.activity_login_closeBtn) void close() {
-        finishSelf(true);
-    }
-
-    @OnClick(R.id.activity_login_loginBtn) void login() {
-        IntentHelper.startWebActivity(this, Mysplash.getLoginUrl(this));
-    }
-
-    @OnClick(R.id.activity_login_joinBtn) void join() {
-        IntentHelper.startWebActivity(this, Mysplash.UNSPLASH_JOIN_URL);
-    }
+    // interface.
 
     // on swipe listener.
 
@@ -214,26 +211,5 @@ public class LoginActivity extends MysplashActivity
     @Override
     public void onSwipeFinish(int dir) {
         finishSelf(false);
-    }
-
-    // on request access token listener.
-
-    @Override
-    public void onRequestAccessTokenSuccess(Call<AccessToken> call, Response<AccessToken> response) {
-        if (response.isSuccessful()) {
-            AuthManager.getInstance().writeAccessToken(response.body());
-            AuthManager.getInstance().requestPersonalProfile();
-            IntentHelper.startMainActivity(this);
-            finish();
-        } else {
-            NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
-            setState(NORMAL_STATE);
-        }
-    }
-
-    @Override
-    public void onRequestAccessTokenFailed(Call<AccessToken> call, Throwable t) {
-        NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
-        setState(NORMAL_STATE);
     }
 }

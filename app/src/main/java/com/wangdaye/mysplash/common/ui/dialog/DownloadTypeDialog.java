@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
-import com.wangdaye.mysplash.common.data.service.downloader.DownloaderService;
+import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,8 +31,31 @@ import butterknife.OnClick;
 
 public class DownloadTypeDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_download_type_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_download_type_container) CoordinatorLayout container;
+
+    @OnClick(R.id.dialog_download_type_download)
+    void download() {
+        if (listener != null) {
+            listener.onSelectType(DownloaderService.DOWNLOAD_TYPE);
+        }
+        dismiss();
+    }
+
+    @OnClick(R.id.dialog_download_type_share)
+    void share() {
+        if (listener != null) {
+            listener.onSelectType(DownloaderService.SHARE_TYPE);
+        }
+        dismiss();
+    }
+
+    @OnClick(R.id.dialog_download_type_wallpaper)
+    void wallpaper() {
+        if (listener != null) {
+            listener.onSelectType(DownloaderService.WALLPAPER_TYPE);
+        }
+        dismiss();
+    }
 
     private OnSelectTypeListener listener;
 
@@ -41,7 +64,8 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_download_type, null, false);
+        View view = LayoutInflater.from(getActivity())
+                .inflate(R.layout.dialog_download_type, null, false);
         ButterKnife.bind(this, view);
         initWidget(view);
         return new AlertDialog.Builder(getActivity())
@@ -80,31 +104,5 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
 
     public void setOnSelectTypeListener(OnSelectTypeListener l) {
         listener = l;
-    }
-
-    // on click listener.
-
-    @OnClick(R.id.dialog_download_type_download)
-    void download() {
-        if (listener != null) {
-            listener.onSelectType(DownloaderService.DOWNLOAD_TYPE);
-        }
-        dismiss();
-    }
-
-    @OnClick(R.id.dialog_download_type_share)
-    void share() {
-        if (listener != null) {
-            listener.onSelectType(DownloaderService.SHARE_TYPE);
-        }
-        dismiss();
-    }
-
-    @OnClick(R.id.dialog_download_type_wallpaper)
-    void wallpaper() {
-        if (listener != null) {
-            listener.onSelectType(DownloaderService.WALLPAPER_TYPE);
-        }
-        dismiss();
     }
 }

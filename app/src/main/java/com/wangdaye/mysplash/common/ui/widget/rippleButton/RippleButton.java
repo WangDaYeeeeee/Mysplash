@@ -3,7 +3,8 @@ package com.wangdaye.mysplash.common.ui.widget.rippleButton;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
-import androidx.annotation.Size;
+
+import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
 import android.text.TextUtils;
@@ -26,63 +27,31 @@ import butterknife.ButterKnife;
 
 /**
  * Ripple button.
- *
- * A Button widget that has reveal animation and control state operation.
- *
- * The process of transform state is as follow:
- *
- * 0.     {@link MotionEvent#ACTION_UP}.
- * 1.     execute reveal animation in {@link RippleView} & asynchronous task start.
- *
- * 2-1-0. task complete.
- * 2-1-1. {@link #switchUI()} & execute fade animation to hide {@link RippleView}.
- *
- * 2-2-0. reveal animation complete.
- * 2-2-1. execute fade animation to show {@link CircularProgressView}.
- * 2-2-3. task complete --> {@link #switchUI()} & execute fade animation to hide
- *        {@link CircularProgressView} and {@link RippleView}.
- *
  * */
 
 public class RippleButton extends CardView
-        implements View.OnClickListener, RippleView.RippleAnimatingCallback {
+        implements View.OnClickListener {
 
-    @BindView(R.id.container_ripple_button)
-    RelativeLayout container;
-
-    @BindView(R.id.container_ripple_button_text)
-    TextView text;
-
-    @BindView(R.id.container_ripple_button_ripple)
-    RippleView ripple;
-
-    @BindView(R.id.container_ripple_button_progress)
-    CircularProgressView progress;
+    @BindView(R.id.container_ripple_button) RelativeLayout container;
+    @BindView(R.id.container_ripple_button_text) TextView text;
+    @BindView(R.id.container_ripple_button_ripple) RippleView ripple;
+    @BindView(R.id.container_ripple_button_progress) CircularProgressView progress;
 
     private ProgressAlphaAnimation progressAlphaAnimation;
     private OnSwitchListener listener;
 
-    // if set true, there will has no difference between this view and a Button.
-    private boolean dontAnimate;
+    private State state;
+    public enum State {
+        OFF, TRANSFORM_TO_ON, ON, TRANSFORM_TO_OFF
+    }
 
-    private boolean animating;
-    private boolean switchOn;
+    private String titleOff;
+    private String titleOn;
 
-    // When the view is performing an asynchronous task, there will be 2 cases.
-    // 1. If the transform animation complete first, the animation callback will set
-    // waitingResponse to true and wait for the asynchronous task complete.
-    // 2. If the asynchronous task complete first, the situation will turn.
-    private boolean waitingResponse;
-    private boolean waitingAnimation;
+    @ColorInt private int colorLight;
+    @ColorInt private int colorDark;
 
-    private boolean switchSucceed; // save the result of the asynchronous task.
-
-    @Size(2)
-    private String[] buttonTitles;
-    @Size(2)
-    private int[] backgroundColors;
-    @Size(2)
-    private int[] widgetColors;
+    private int fingerX, fingerY;
 
     private Animation rippleAlphaShow = new Animation() {
         @Override
@@ -133,7 +102,8 @@ public class RippleButton extends CardView
     }
 
     private void initialize(AttributeSet attrs, int defStyleAttr) {
-        View v = LayoutInflater.from(getContext()).inflate(R.layout.container_ripple_button, this, false);
+        View v = LayoutInflater.from(getContext())
+                .inflate(R.layout.container_ripple_button, this, false);
         addView(v);
         ButterKnife.bind(this, this);
         initData(attrs, defStyleAttr);
@@ -141,33 +111,21 @@ public class RippleButton extends CardView
     }
 
     private void initData(AttributeSet attrs, int defStyleAttr) {
-        setSwitchOn(false);
-        setAnimating(false);
-
-        if (ThemeManager.getInstance(getContext()).isLightTheme()) {
-            backgroundColors = new int[] {
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_light),
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_dark)};
-            widgetColors = new int[] {
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_dark),
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_light)};
-        } else {
-            backgroundColors = new int[] {
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_dark),
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_light)};
-            widgetColors = new int[] {
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_light),
-                    ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_dark)};
-        }
-
         TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RippleButton, defStyleAttr, 0);
         String titleOn = a.getString(R.styleable.RippleButton_rb_title_on);
         String titleOff = a.getString(R.styleable.RippleButton_rb_title_off);
         a.recycle();
 
-        this.buttonTitles = new String[] {
-                TextUtils.isEmpty(titleOff) ? "OFF" : titleOff,
-                TextUtils.isEmpty(titleOn) ? "ON" : titleOn};
+        this.titleOff = TextUtils.isEmpty(titleOff) ? "OFF" : titleOff;
+        this.titleOn = TextUtils.isEmpty(titleOn) ? "ON" : titleOn;
+
+        if (ThemeManager.getInstance(getContext()).isLightTheme()) {
+            this.colorLight = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_light);
+            this.colorDark = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_dark);
+        } else {
+            this.colorLight = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_dark);
+            this.colorDark = ContextCompat.getColor(getContext(), R.color.colorPrimaryDark_light);
+        }
     }
 
     private void initWidget() {
@@ -176,14 +134,12 @@ public class RippleButton extends CardView
 
         setCardElevation(0);
 
-        ripple.setRippleAnimatingCallback(this);
-
-        forceSwitch(isSwitchOn());
-
         rippleAlphaShow.setDuration(100);
         rippleAlphaShow.setInterpolator(new AccelerateDecelerateInterpolator());
         rippleAlphaHide.setDuration(200);
         rippleAlphaHide.setInterpolator(new AccelerateDecelerateInterpolator());
+
+        setState(State.ON);
     }
 
     // draw.
@@ -243,6 +199,9 @@ public class RippleButton extends CardView
                 MeasureSpec.getSize(heightMeasureSpec));
 
         setRadius((float) (MeasureSpec.getSize(heightMeasureSpec) * 0.5));
+
+        fingerX = getMeasuredWidth() / 2;
+        fingerY = getMeasuredHeight() / 2;
     }
 
     // touch.
@@ -253,14 +212,10 @@ public class RippleButton extends CardView
         super.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_UP:
-                if (listener != null) {
-                    if (isDontAnimate()) {
-                        if (listener != null) {
-                            listener.onSwitch(!isSwitchOn());
-                        }
-                    } else {
-                        animSwitch((int) event.getX(), (int) event.getY());
-                    }
+                if (state == State.ON || state == State.OFF || listener != null) {
+                    fingerX = (int) event.getX();
+                    fingerY = (int) event.getY();
+                    listener.onSwitch(state);
                 }
                 break;
         }
@@ -269,73 +224,100 @@ public class RippleButton extends CardView
 
     // control.
 
-    // interface.
-
-    private void switchUI() {
-        setSwitchOn(!isSwitchOn());
-        setCardBackgroundColor(backgroundColors[isSwitchOn() ? 1 : 0]);
-        text.setTextColor(widgetColors[isSwitchOn() ? 1 : 0]);
-        text.setText(buttonTitles[isSwitchOn() ? 1 : 0]);
+    public State getState() {
+        return state;
     }
 
-    public boolean isSwitchOn() {
-        return switchOn;
-    }
-
-    public void setSwitchOn(boolean on) {
-        this.switchOn = on;
-    }
-
-    public void setButtonTitles(String[] titles) {
-        if (titles != null && titles.length >= 2) {
-            buttonTitles = titles;
-            text.setText(buttonTitles[isSwitchOn() ? 1 : 0]);
+    public void setState(State state) {
+        if (this.state != state) {
+            this.state = state;
+            controlColor(state);
+            controlTitle(state);
+            controlAnimation(state);
         }
     }
 
-    // force.
+    private void controlColor(State state) {
+        switch (state) {
+            case OFF:
+                text.setTextColor(colorDark);
+                progress.setColor(colorDark);
+                ripple.setColor(colorLight);
+                setCardBackgroundColor(colorLight);
+                break;
 
-    public void forceSwitch(boolean switchTo) {
-        setSwitchOn(switchTo);
-        setAnimating(false);
-        setCardBackgroundColor(backgroundColors[isSwitchOn() ? 1 : 0]);
-        text.setTextColor(widgetColors[isSwitchOn() ? 1 : 0]);
-        text.setText(buttonTitles[isSwitchOn() ? 1 : 0]);
-        ripple.setAlpha(0);
-        ripple.setColor(widgetColors[isSwitchOn() ? 0 : 1]);
-        progress.setAlpha(0);
-        progress.setColor(widgetColors[isSwitchOn() ? 0 : 1]);
-    }
+            case TRANSFORM_TO_ON:
+                text.setTextColor(colorDark);
+                progress.setColor(colorLight);
+                ripple.setColor(colorDark);
+                setCardBackgroundColor(colorLight);
+                break;
 
-    public void forceProgress(boolean switchTo) {
-        setSwitchOn(!switchTo);
-        setAnimating(true);
-        setWaitingResponse(true);
-        setCardBackgroundColor(backgroundColors[isSwitchOn() ? 1 : 0]);
-        text.setTextColor(widgetColors[isSwitchOn() ? 1 : 0]);
-        text.setText(buttonTitles[isSwitchOn() ? 1 : 0]);
-        ripple.setColor(widgetColors[isSwitchOn() ? 0 : 1]);
-        ripple.setAlpha(1);
-        progress.setColor(widgetColors[isSwitchOn() ? 0 : 1]);
-        progress.setAlpha(1);
-    }
+            case ON:
+                text.setTextColor(colorLight);
+                progress.setColor(colorLight);
+                ripple.setColor(colorDark);
+                setCardBackgroundColor(colorDark);
+                break;
 
-    // anim transform.
-
-    public void animSwitch(int x, int y) {
-        if (!isAnimating() && !ripple.isDrawing()) {
-            setAnimating(true);
-            if (listener != null) {
-                listener.onSwitch(!isSwitchOn());
-            }
-            // alpha.
-            rippleAlphaShow.cancel();
-            rippleAlphaShow.reset();
-            startAnimation(rippleAlphaShow);
-            // ripple.
-            progress.setColor(widgetColors[isSwitchOn() ? 0 : 1]);
-            ripple.drawRipple(backgroundColors[isSwitchOn() ? 0 : 1], x, y);
+            case TRANSFORM_TO_OFF:
+                text.setTextColor(colorLight);
+                progress.setColor(colorDark);
+                ripple.setColor(colorLight);
+                setCardBackgroundColor(colorDark);
+                break;
         }
+    }
+
+    private void controlTitle(State state) {
+        switch (state) {
+            case OFF:
+            case TRANSFORM_TO_ON:
+                text.setText(titleOff);
+                break;
+
+            case ON:
+            case TRANSFORM_TO_OFF:
+                text.setText(titleOn);
+                break;
+        }
+    }
+
+    private void controlAnimation(State state) {
+        switch (state) {
+            case OFF:
+            case ON:
+                // ripple fade out.
+                rippleAlphaShow.cancel();
+                rippleAlphaHide.cancel();
+                rippleAlphaHide.reset();
+                startAnimation(rippleAlphaHide);
+
+                // progress fade out.
+                doProgressAnimation(progress.getAlpha(), 0);
+                break;
+
+            case TRANSFORM_TO_ON:
+            case TRANSFORM_TO_OFF:
+                // ripple fade in.
+                rippleAlphaShow.cancel();
+                rippleAlphaHide.cancel();
+                rippleAlphaShow.reset();
+                startAnimation(rippleAlphaShow);
+                ripple.drawRipple(fingerX, fingerY);
+                fingerX = getMeasuredWidth();
+                fingerY = getMeasuredHeight();
+
+                // progress fade in.
+                doProgressAnimation(progress.getAlpha(), 1);
+                break;
+        }
+    }
+
+    public void setButtonTitles(String off, String on) {
+        titleOff = off;
+        titleOn = on;
+        controlTitle(state);
     }
 
     private void doProgressAnimation(float from, float to) {
@@ -348,103 +330,13 @@ public class RippleButton extends CardView
         progress.startAnimation(progressAlphaAnimation);
     }
 
-    public boolean isDontAnimate() {
-        return dontAnimate;
-    }
-
-    public void setDontAnimate(boolean dontAnimate) {
-        this.dontAnimate = dontAnimate;
-    }
-
-    public boolean isAnimating() {
-        return animating;
-    }
-
-    public void setAnimating(boolean animating) {
-        setWaitingResponse(false);
-        setWaitingAnimation(false);
-        setSwitchSucceed(false);
-        this.animating = animating;
-    }
-
-    // callback.
-
-    /**
-     * A interface method for outside. When a asynchronous task complete, the callback need user
-     * this method to set the result of task.
-     *
-     * @param succeed result of task.
-     * */
-    public void setSwitchResult(boolean succeed) {
-        setSwitchSucceed(succeed);
-        if (isWaitingResponse()) {
-            // transform animation has already completed.
-            if (isSwitchSucceed()) {
-                switchUI();
-            }
-            if (progressAlphaAnimation != null) {
-                progressAlphaAnimation.cancel();
-            }
-            progressAlphaAnimation = new ProgressAlphaAnimation(progress.getAlpha(), 0);
-            progressAlphaAnimation.setDuration(150);
-            progressAlphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-            progress.startAnimation(progressAlphaAnimation);
-
-            rippleAlphaHide.cancel();
-            rippleAlphaHide.reset();
-            rippleAlphaHide.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    // do nothing.
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    setAnimating(false);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    // do nothing.
-                }
-            });
-            startAnimation(rippleAlphaHide);
-        } else {
-            // task complete but animation doesn't complete.
-            setWaitingAnimation(true);
-        }
-    }
-
-    public boolean isSwitchSucceed() {
-        return switchSucceed;
-    }
-
-    public void setSwitchSucceed(boolean switchSucceed) {
-        this.switchSucceed = switchSucceed;
-    }
-
-    public boolean isWaitingAnimation() {
-        return waitingAnimation;
-    }
-
-    public void setWaitingAnimation(boolean waitingAnimation) {
-        this.waitingAnimation = waitingAnimation;
-    }
-
-    public boolean isWaitingResponse() {
-        return waitingResponse;
-    }
-
-    public void setWaitingResponse(boolean waitingResponse) {
-        this.waitingResponse = waitingResponse;
-    }
-
     // interface.
 
     // on switch swipeListener.
 
     public interface OnSwitchListener {
-        void onSwitch(boolean switchTo);
+
+        void onSwitch(State current);
     }
 
     public void setOnSwitchListener(OnSwitchListener l) {
@@ -456,38 +348,5 @@ public class RippleButton extends CardView
     @Override
     public void onClick(View view) {
         // do nothing.
-    }
-
-    // ripple animating callback.
-
-    @Override
-    public void animationDone() {
-        if (isWaitingAnimation()) {
-            if (isSwitchSucceed()) {
-                switchUI();
-            }
-            rippleAlphaHide.cancel();
-            rippleAlphaHide.reset();
-            rippleAlphaHide.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    // do nothing.
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    setAnimating(false);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    // do nothing.
-                }
-            });
-            startAnimation(rippleAlphaHide);
-        } else {
-            setWaitingResponse(true);
-            doProgressAnimation(0, 1);
-        }
     }
 }

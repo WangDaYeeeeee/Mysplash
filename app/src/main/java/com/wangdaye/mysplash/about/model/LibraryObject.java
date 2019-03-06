@@ -1,11 +1,11 @@
 package com.wangdaye.mysplash.about.model;
 
-import com.wangdaye.mysplash.common.i.model.AboutModel;
+import com.wangdaye.mysplash.about.ui.AboutAdapter;
 
 /**
  * Library object.
  *
- * library information in {@link com.wangdaye.mysplash.common.ui.adapter.AboutAdapter}.
+ * library information in {@link AboutAdapter}.
  *
  * */
 

@@ -1,7 +1,5 @@
 package com.wangdaye.mysplash.common.basic.fragment;
 
-import android.os.Bundle;
-
 import java.util.List;
 
 /**
@@ -11,12 +9,7 @@ import java.util.List;
 public abstract class LoadableFragment<T> extends MysplashFragment {
 
     /**
-     * {@link com.wangdaye.mysplash.common.basic.activity.LoadableActivity#loadMoreData(List, int, boolean, Bundle)}.
+     * {@link com.wangdaye.mysplash.common.basic.activity.LoadableActivity#loadMoreData(List, int, boolean)}.
      * */
-    public abstract List<T> loadMoreData(List<T> list, int headIndex, boolean headDirection,
-                                         Bundle bundle);
-
-    public abstract Bundle getBundleOfList(Bundle bundle);
-
-    public abstract void updateData(T t);
+    public abstract List<T> loadMoreData(List<T> list, int headIndex, boolean headDirection);
 }

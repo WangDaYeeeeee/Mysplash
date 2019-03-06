@@ -14,16 +14,17 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.User;
-import com.wangdaye.mysplash.common.data.service.network.UserService;
+import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.network.service.UserService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Profile dialog.
@@ -32,22 +33,18 @@ import retrofit2.Response;
  *
  * */
 
-public class ProfileDialog extends MysplashDialogFragment
-        implements UserService.OnRequestUserProfileListener {
+public class ProfileDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_profile_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_profile_container) CoordinatorLayout container;
+    @BindView(R.id.dialog_profile_progress) CircularProgressView progressView;
+    @BindView(R.id.dialog_profile_scrollView) NestedScrollView scrollView;
+    @BindView(R.id.dialog_profile_text) TextView contentTxt;
 
-    @BindView(R.id.dialog_profile_progress)
-    CircularProgressView progressView;
+    @OnClick(R.id.dialog_profile_enterBtn) void enter() {
+        dismiss();
+    }
 
-    @BindView(R.id.dialog_profile_scrollView)
-    NestedScrollView scrollView;
-
-    @BindView(R.id.dialog_profile_text)
-    TextView contentTxt;
-
-    private UserService service;
+    @Inject UserService service;
     private String username;
 
     @NonNull
@@ -55,11 +52,11 @@ public class ProfileDialog extends MysplashDialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_profile, null, false);
+        View view = LayoutInflater.from(getActivity())
+                .inflate(R.layout.dialog_profile, null, false);
         ButterKnife.bind(this, view);
-        initData();
         initWidget();
-        service.requestUserProfile(username, this);
+        service.requestUserProfile(username, onRequestUserCallback);
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -68,10 +65,6 @@ public class ProfileDialog extends MysplashDialogFragment
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
-    }
-
-    private void initData() {
-        this.service = UserService.getService();
     }
 
     private void initWidget() {
@@ -84,19 +77,13 @@ public class ProfileDialog extends MysplashDialogFragment
 
     // interface.
 
-    // on click listener.
-
-    @OnClick(R.id.dialog_profile_enterBtn) void enter() {
-        dismiss();
-    }
-
     // on request user profile listener.
 
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onRequestUserProfileSuccess(Call<User> call, Response<User> response) {
-        if (response.isSuccessful() && response.body() != null) {
-            User user = response.body();
+    private Callback<User> onRequestUserCallback = new Callback<User>() {
+
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onSucceed(User user) {
             contentTxt.setText(
                     user.name + "\n\n"
                             + user.bio + "\n\n"
@@ -108,15 +95,13 @@ public class ProfileDialog extends MysplashDialogFragment
 
             AnimUtils.animShow(scrollView);
             AnimUtils.animHide(progressView);
-        } else {
-            service.requestUserProfile(username, this);
         }
-    }
 
-    @Override
-    public void onRequestUserProfileFailed(Call<User> call, Throwable t) {
-        if (!TextUtils.isEmpty(username)) {
-            service.requestUserProfile(username, this);
+        @Override
+        public void onFailed() {
+            if (!TextUtils.isEmpty(username)) {
+                service.requestUserProfile(username, this);
+            }
         }
-    }
+    };
 }

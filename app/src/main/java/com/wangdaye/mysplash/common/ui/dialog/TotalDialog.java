@@ -13,15 +13,16 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Total;
-import com.wangdaye.mysplash.common.data.service.network.StatusService;
+import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.json.Total;
+import com.wangdaye.mysplash.common.network.service.StatusService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Response;
 
 /**
  * Total dialog.
@@ -30,25 +31,15 @@ import retrofit2.Response;
  *
  * */
 
-public class TotalDialog extends MysplashDialogFragment
-        implements StatusService.OnRequestTotalListener {
+public class TotalDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_total_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_total_container) CoordinatorLayout container;
+    @BindView(R.id.dialog_total_progress) CircularProgressView progress;
+    @BindView(R.id.dialog_total_dataContainer) LinearLayout dataContainer;
+    @BindView(R.id.dialog_total_totalPhotosNum) TextView photoNum;
+    @BindView(R.id.dialog_total_photoDownloadsNum) TextView downloadNum;
 
-    @BindView(R.id.dialog_total_progress)
-    CircularProgressView progress;
-
-    @BindView(R.id.dialog_total_dataContainer)
-    LinearLayout dataContainer;
-
-    @BindView(R.id.dialog_total_totalPhotosNum)
-    TextView photoNum;
-
-    @BindView(R.id.dialog_total_photoDownloadsNum)
-    TextView downloadNum;
-
-    private StatusService service;
+    @Inject StatusService service;
 
     private int state = 0;
     private final int LOADING_STATE = 0;
@@ -62,8 +53,8 @@ public class TotalDialog extends MysplashDialogFragment
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_total, null, false);
         ButterKnife.bind(this, view);
         this.state = LOADING_STATE;
-        initWidget(view);
-        service.requestTotal(this);
+        initWidget();
+        service.requestTotal(onRequestTotalCallback);
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -82,9 +73,7 @@ public class TotalDialog extends MysplashDialogFragment
         return container;
     }
 
-    private void initWidget(View v) {
-        this.service = StatusService.getService();
-
+    private void initWidget() {
         progress.setVisibility(View.VISIBLE);
         dataContainer.setVisibility(View.GONE);
     }
@@ -103,22 +92,18 @@ public class TotalDialog extends MysplashDialogFragment
 
     // interface.
 
-    // on request stats listener.
-
-    @SuppressLint("SetTextI18n")
-    @Override
-    public void onRequestTotalSuccess(Call<Total> call, Response<Total> response) {
-        if (response.isSuccessful() && response.body() != null) {
-            photoNum.setText(response.body().total_photos + " PHOTOS");
-            downloadNum.setText(response.body().photo_downloads + " DOWNLOADS");
+    private Callback<Total> onRequestTotalCallback = new Callback<Total>() {
+        @SuppressLint("SetTextI18n")
+        @Override
+        public void onSucceed(Total total) {
+            photoNum.setText(total.total_photos + " PHOTOS");
+            downloadNum.setText(total.photo_downloads + " DOWNLOADS");
             setState(SUCCESS_STATE);
-        } else {
+        }
+
+        @Override
+        public void onFailed() {
             service.requestTotal(this);
         }
-    }
-
-    @Override
-    public void onRequestTotalFailed(Call<Total> call, Throwable t) {
-        service.requestTotal(this);
-    }
+    };
 }

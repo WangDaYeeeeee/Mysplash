@@ -6,6 +6,8 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
+import com.wangdaye.mysplash.common.download.NotificationHelper;
+
 import java.net.URLEncoder;
 
 /**

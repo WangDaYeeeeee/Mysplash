@@ -23,7 +23,7 @@
 ### Contact Me
 
 * wangdayeeeeee@gmail.com
-* [Google Play Mysplash page](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
+* [Google Play Mysplash index](https://play.google.com/store/apps/details?id=com.wangdaye.mysplash)
 
 -----
 
@@ -161,7 +161,7 @@ the following:
    b) Accompany the Combined Work with activity copy of the GNU GPL and this license
    document.
 
-   a) For activity Combined Work that displays copyright notices during
+   activity) For activity Combined Work that displays copyright notices during
    execution, include the copyright notice for the Library among
    these notices, as well as activity reference directing the user to the
    copies of the GNU GPL and this license document.

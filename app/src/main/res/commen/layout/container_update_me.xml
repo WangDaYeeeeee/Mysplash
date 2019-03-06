@@ -49,101 +49,87 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/container_update_me_usernameTxtContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_usernameTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="textFilter"
                     android:hint="@string/feedback_edit_username"
                     android:textColorHint="?attr/subtitle_color"
                     android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
-                    android:background="@android:color/transparent"
                     android:layout_margin="@dimen/little_margin"
                     android:maxLines="1"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_firstNameTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="none"
                     android:hint="@string/feedback_edit_first_name"
                     android:textColorHint="?attr/subtitle_color"
                     android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
-                    android:background="@android:color/transparent"
                     android:maxLines="1"
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_lastNameTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="none"
                     android:hint="@string/feedback_edit_last_name"
                     android:textColorHint="?attr/subtitle_color"
                     android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
-                    android:background="@android:color/transparent"
                     android:maxLines="1"
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_emailTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
                     android:hint="@string/feedback_edit_email"
                     android:textColorHint="?attr/subtitle_color"
@@ -151,93 +137,80 @@
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
                     android:maxLines="1"
-                    android:background="@android:color/transparent"
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_portfolioTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="textUri"
                     android:hint="@string/feedback_edit_portfolio"
                     android:textColorHint="?attr/subtitle_color"
                     android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
-                    android:background="@android:color/transparent"
                     android:maxLines="1"
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_locationTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="text"
                     android:hint="@string/feedback_edit_location"
                     android:textColorHint="?attr/subtitle_color"
                     android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
-                    android:background="@android:color/transparent"
                     android:maxLines="1"
                     android:maxLength="30"
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <androidx.cardview.widget.CardView
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/normal_margin"
                 android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginTop="@dimen/normal_margin"
-                app:cardCornerRadius="@dimen/material_card_radius"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="?attr/line_color">
+                android:layout_marginTop="@dimen/normal_margin">
 
-                <EditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/container_update_me_bioTxt"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/design_icon_size"
+                    android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
                     android:hint="@string/feedback_edit_bio"
                     android:textColorHint="?attr/subtitle_color"
                     android:textColorHighlight="?attr/subtitle_color"
                     android:textSize="@dimen/content_text_size"
                     android:textColor="?attr/content_color"
-                    android:background="@android:color/transparent"
                     android:maxLength="250"
                     android:layout_margin="@dimen/little_margin"
                     tools:ignore="Autofill" />
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:id="@+id/container_update_me_saveBtn"

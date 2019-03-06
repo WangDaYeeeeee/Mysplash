@@ -15,7 +15,7 @@ import android.widget.FrameLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -155,9 +155,46 @@ public class CircularProgressIcon extends FrameLayout {
         this.state = state;
     }
 
+    // anim.
+
+    public void setProgressState() {
+        if (getState() == STATE_RESULT) {
+            setState(STATE_PROGRESS);
+            cancelAllAnimation();
+            showAnimation = new ShowAnimation(progress);
+            progress.startAnimation(showAnimation);
+            hideAnimation = new HideAnimation(image);
+            image.startAnimation(hideAnimation);
+        }
+        // else forceSetProgressState();
+    }
+
+    public void setResultState(@DrawableRes int imageId) {
+        if (getState() == STATE_PROGRESS) {
+            setState(STATE_RESULT);
+            cancelAllAnimation();
+            ImageHelper.loadResourceImage(getContext(), image, imageId);
+            showAnimation = new ShowAnimation(image);
+            image.startAnimation(showAnimation);
+            hideAnimation = new HideAnimation(progress);
+            progress.startAnimation(hideAnimation);
+        } else {
+            forceSetResultState(imageId);
+        }
+    }
+
+    private void cancelAllAnimation() {
+        if (showAnimation != null) {
+            showAnimation.cancel();
+        }
+        if (hideAnimation != null) {
+            hideAnimation.cancel();
+        }
+    }
+
     // force.
 
-    public void forceSetProgressState() {
+    private void forceSetProgressState() {
         cancelAllAnimation();
         setState(STATE_PROGRESS);
         setAnimating(false);
@@ -173,7 +210,7 @@ public class CircularProgressIcon extends FrameLayout {
         progress.setRotation(0);
     }
 
-    public void forceSetResultState(@DrawableRes int imageId) {
+    private void forceSetResultState(@DrawableRes int imageId) {
         cancelAllAnimation();
         setState(STATE_RESULT);
         setAnimating(false);
@@ -188,40 +225,6 @@ public class CircularProgressIcon extends FrameLayout {
         progress.setScaleX(1f);
         progress.setScaleY(1f);
         progress.setRotation(0);
-    }
-
-    // anim.
-
-    public void setProgressState() {
-        if (getState() == STATE_RESULT) {
-            setState(STATE_PROGRESS);
-            cancelAllAnimation();
-            showAnimation = new ShowAnimation(progress);
-            progress.startAnimation(showAnimation);
-            hideAnimation = new HideAnimation(image);
-            image.startAnimation(hideAnimation);
-        }
-    }
-
-    public void setResultState(@DrawableRes int imageId) {
-        if (getState() == STATE_PROGRESS) {
-            setState(STATE_RESULT);
-            cancelAllAnimation();
-            ImageHelper.loadResourceImage(getContext(), image, imageId);
-            showAnimation = new ShowAnimation(image);
-            image.startAnimation(showAnimation);
-            hideAnimation = new HideAnimation(progress);
-            progress.startAnimation(hideAnimation);
-        }
-    }
-
-    private void cancelAllAnimation() {
-        if (showAnimation != null) {
-            showAnimation.cancel();
-        }
-        if (hideAnimation != null) {
-            hideAnimation.cancel();
-        }
     }
 
     public boolean isAnimating() {

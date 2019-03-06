@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.Tag;
+import com.wangdaye.mysplash.common.basic.model.Tag;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 
@@ -33,8 +33,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_tag_text)
-        TextView text;
+        @BindView(R.id.item_tag_text) TextView text;
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -45,12 +44,10 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
             text.setText(itemList.get(position).getTitle());
         }
 
-        // interface.
-
         @OnClick(R.id.item_tag_card) void clickItem() {
             IntentHelper.startSearchActivity(
                     Mysplash.getInstance().getTopActivity(),
-                    itemList.get(getAdapterPosition()).getTitle());
+                    text.getText().toString());
         }
     }
 
@@ -61,7 +58,8 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_tag, parent, false);
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_tag, parent, false);
         return new ViewHolder(v);
     }
 

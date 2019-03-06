@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 
 /**
  * Read write activity.
@@ -18,17 +18,21 @@ import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 public abstract class ReadWriteActivity extends MysplashActivity {
 
+    private Downloadable downloadable;
+
     @RequiresApi(api = Build.VERSION_CODES.M)
-    protected void requestReadWritePermission() {
+    protected void requestReadWritePermission(Downloadable downloadable) {
+        this.downloadable = downloadable;
         requestPermission(0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    protected void requestReadWritePermission(int requestCode) {
+    protected void requestReadWritePermission(Downloadable downloadable, int requestCode) {
+        this.downloadable = downloadable;
         requestPermission(requestCode);
     }
 
-    protected void requestReadWritePermissionSucceed(int requestCode) {
+    protected void requestReadWritePermissionSucceed(Downloadable target, int requestCode) {
         // do nothing.
     }
 
@@ -48,7 +52,8 @@ public abstract class ReadWriteActivity extends MysplashActivity {
                             Manifest.permission.READ_EXTERNAL_STORAGE},
                     requestCode);
         } else {
-            requestReadWritePermissionSucceed(requestCode);
+            requestReadWritePermissionSucceed(downloadable, requestCode);
+            downloadable = null;
         }
     }
 
@@ -62,6 +67,9 @@ public abstract class ReadWriteActivity extends MysplashActivity {
                 return;
             }
         }
-        requestReadWritePermissionSucceed(requestCode);
+        requestReadWritePermissionSucceed(downloadable, requestCode);
+        downloadable = null;
     }
+
+    public interface Downloadable {}
 }

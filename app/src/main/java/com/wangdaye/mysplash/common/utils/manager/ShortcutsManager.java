@@ -9,19 +9,16 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import androidx.annotation.DrawableRes;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.UiThread;
 import android.text.TextUtils;
 
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
-import com.wangdaye.mysplash.main.view.activity.MainActivity;
-import com.wangdaye.mysplash.me.view.activity.MeActivity;
+import com.wangdaye.mysplash.common.image.ImageHelper;
+import com.wangdaye.mysplash.main.MainActivity;
+import com.wangdaye.mysplash.me.ui.MeActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,31 +45,7 @@ public class ShortcutsManager {
     @UiThread
     public static void refreshShortcuts(final Context context) {
         if (needRefresh(context)) {
-            if (!TextUtils.isEmpty(AuthManager.getInstance().getAvatarPath())) {
-                ImageHelper.loadImageFromUrl(
-                        context,
-                        new SimpleTarget<Bitmap>(128, 128) {
-                            @Override
-                            public void onResourceReady(final Bitmap resource,
-                                                        GlideAnimation<? super Bitmap> glideAnimation) {
-                                ThreadManager.getInstance().execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        setShortcuts(context, resource);
-                                    }
-                                });
-                            }
-                        },
-                        AuthManager.getInstance().getAvatarPath(),
-                        true);
-            } else {
-                ThreadManager.getInstance().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        setShortcuts(context, null);
-                    }
-                });
-            }
+            ThreadManager.getInstance().execute(() -> setShortcuts(context));
         }
     }
 
@@ -84,7 +57,12 @@ public class ShortcutsManager {
         String avatarUrl = sharedPreferences.getString(KEY_AVATAR_URL, "");
         String username = sharedPreferences.getString(KEY_USERNAME, "");
 
-        String authAvatarUrl = AuthManager.getInstance().getAvatarPath();
+        String authAvatarUrl = null;
+        if (AuthManager.getInstance().getUser() != null
+                && AuthManager.getInstance().getUser().profile_image != null
+                && !TextUtils.isEmpty(AuthManager.getInstance().getUser().profile_image.large)) {
+            authAvatarUrl = AuthManager.getInstance().getUser().profile_image.large;
+        }
         if (authAvatarUrl == null) {
             authAvatarUrl = "";
         }
@@ -95,7 +73,9 @@ public class ShortcutsManager {
 
         if (versionCode < VERSION_CODE
                 || authorized != AuthManager.getInstance().isAuthorized()
+                || avatarUrl == null
                 || !avatarUrl.equals(authAvatarUrl)
+                || username == null
                 || !username.equals(authUsername)) {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putInt(KEY_VERSION_CODE, VERSION_CODE);
@@ -110,7 +90,7 @@ public class ShortcutsManager {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N_MR1)
-    private static void setShortcuts(Context context, @Nullable Bitmap bitmap) {
+    private static void setShortcuts(Context context) {
         ShortcutManager shortcutManager = context.getSystemService(ShortcutManager.class);
         if (shortcutManager == null) {
             return;
@@ -141,36 +121,31 @@ public class ShortcutsManager {
                         .setIntent(new Intent(DownloadManageActivity.ACTION_DOWNLOAD_MANAGER))
                         .setRank(3)
                         .build());
-        if (AuthManager.getInstance().isAuthorized()) {
+
+        if (AuthManager.getInstance().isAuthorized() && AuthManager.getInstance().getUser() != null) {
+
             Icon icon;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                if (bitmap != null) {
-                    icon = Icon.createWithAdaptiveBitmap(bitmap);
-                } else {
-                    DisplayUtils utils = new DisplayUtils(context);
-                    int size = (int) Math.min(utils.dpToPx(108), 192);
-                    try {
-                        icon = Icon.createWithAdaptiveBitmap(
-                                ImageHelper.loadBitmap(
-                                        context,
-                                        R.drawable.default_avatar_foreground,
-                                        size, size));
-                    } catch (ExecutionException | InterruptedException e) {
-                        icon = Icon.createWithResource(context, R.drawable.default_avatar_round);
-                    }
-                }
-            } else {
-                if (bitmap != null) {
-                    icon = Icon.createWithBitmap(bitmap);
-                } else {
+                DisplayUtils utils = new DisplayUtils(context);
+                int size = (int) Math.min(utils.dpToPx(108), 192);
+                try {
+                    icon = Icon.createWithAdaptiveBitmap(
+                            ImageHelper.loadBitmap(
+                                    context,
+                                    R.drawable.default_avatar_foreground,
+                                    size, size));
+                } catch (ExecutionException | InterruptedException e) {
                     icon = Icon.createWithResource(context, R.drawable.default_avatar_round);
                 }
+            } else {
+                icon = Icon.createWithResource(context, R.drawable.default_avatar_round);
             }
+
             shortcutList.add(
-                    new ShortcutInfo.Builder(context, AuthManager.getInstance().getUsername())
+                    new ShortcutInfo.Builder(context, AuthManager.getInstance().getUser().username)
                             .setIcon(icon)
-                            .setShortLabel(AuthManager.getInstance().getUsername())
-                            .setLongLabel(AuthManager.getInstance().getUsername())
+                            .setShortLabel(AuthManager.getInstance().getUser().username)
+                            .setLongLabel(AuthManager.getInstance().getUser().username)
                             .setIntent(
                                     new Intent("com.wangdaye.mysplash.Me")
                                             .putExtra(MeActivity.EXTRA_BROWSABLE, true))

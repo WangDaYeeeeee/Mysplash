@@ -7,7 +7,7 @@
     android:background="?attr/root_color"
     tools:background="?attr/title_color">
 
-    <view class="com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout$ViewPager2"
+    <view class="com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout$ViewPager2"
         android:id="@+id/item_photo_3_more_viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

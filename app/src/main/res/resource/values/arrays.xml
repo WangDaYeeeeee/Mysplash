@@ -158,7 +158,7 @@
     <string-array name="search_orientation_values">
         <item>landscape</item>
         <item>portrait</item>
-        <item>square</item>
+        <item>squarish</item>
     </string-array>
 
     <!-- Muzei source. -->

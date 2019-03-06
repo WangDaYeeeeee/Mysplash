@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,22 +32,25 @@ public class LargeErrorStateAdapter extends RecyclerView.Adapter<LargeErrorState
     private boolean showFeedbackText;
     private boolean showFeedbackButton;
 
-    private View.OnClickListener onClickListener;
-    private OnRetryListener onRetryListener;
+    @Nullable private View.OnClickListener onClickListener;
+    @NonNull private OnRetryListener onRetryListener;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_multiple_state_error_large_container)
-        RelativeLayout container;
+        @BindView(R.id.item_multiple_state_error_large_container) RelativeLayout container;
+        @OnClick({R.id.item_multiple_state_error_large_container}) void click() {
+            if (onClickListener != null) {
+                onClickListener.onClick(container);
+            }
+        }
 
-        @BindView(R.id.item_multiple_state_error_large_feedbackImg)
-        AppCompatImageView feedbackImg;
+        @BindView(R.id.item_multiple_state_error_large_feedbackImg) AppCompatImageView feedbackImg;
+        @BindView(R.id.item_multiple_state_error_large_feedbackTxt) TextView feedbackTxt;
 
-        @BindView(R.id.item_multiple_state_error_large_feedbackTxt)
-        TextView feedbackTxt;
-
-        @BindView(R.id.item_multiple_state_error_large_feedbackBtn)
-        TextView feedbackBtn;
+        @BindView(R.id.item_multiple_state_error_large_feedbackBtn) TextView feedbackBtn;
+        @OnClick({R.id.item_multiple_state_error_large_feedbackBtn}) void retry() {
+            onRetryListener.onRetry();
+        }
 
         ViewHolder(Context context, View itemView) {
             super(itemView);
@@ -75,16 +78,6 @@ public class LargeErrorStateAdapter extends RecyclerView.Adapter<LargeErrorState
             ImageHelper.loadResourceImage(context, feedbackImg, feedbackImageResId);
             feedbackTxt.setText(feedbackText);
             feedbackBtn.setText(feedbackButton);
-        }
-
-        @OnClick({R.id.item_multiple_state_error_large_container}) void click() {
-            if (onClickListener != null) {
-                onClickListener.onClick(container);
-            }
-        }
-
-        @OnClick({R.id.item_multiple_state_error_large_feedbackBtn}) void retry() {
-            onRetryListener.onRetry();
         }
     }
 

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.api.PhotoApi;
+import com.wangdaye.mysplash.common.network.api.PhotoApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +75,7 @@ public class ValueUtils {
             case "portrait":
                 return c.getResources().getStringArray(R.array.search_orientations)[1];
 
-            case "square":
+            case "squarish":
                 return c.getResources().getStringArray(R.array.search_orientations)[2];
 
             default:
@@ -203,6 +203,7 @@ public class ValueUtils {
         }
     }
 
+    @Deprecated
     public static String getToolbarTitleByCategory(Context context, int id) {
         switch (id) {
             case Mysplash.CATEGORY_BUILDINGS_ID:

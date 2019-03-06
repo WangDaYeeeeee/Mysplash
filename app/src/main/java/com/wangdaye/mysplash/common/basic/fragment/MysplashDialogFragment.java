@@ -1,13 +1,17 @@
 package com.wangdaye.mysplash.common.basic.fragment;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
+import dagger.android.support.AndroidSupportInjection;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
+
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Mysplash dialog fragment.
@@ -17,6 +21,12 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
  * */
 
 public abstract class MysplashDialogFragment extends DialogFragment {
+
+    @Override
+    public void onAttach(@NotNull Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

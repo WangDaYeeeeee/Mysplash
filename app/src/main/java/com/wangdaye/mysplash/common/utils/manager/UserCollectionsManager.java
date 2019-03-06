@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.utils.manager;
 
-import com.wangdaye.mysplash.common.data.entity.unsplash.Collection;
+import com.wangdaye.mysplash.common.network.json.Collection;
 
 import java.util.ArrayList;
 import java.util.List;

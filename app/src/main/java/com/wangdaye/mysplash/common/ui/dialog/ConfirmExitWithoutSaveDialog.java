@@ -13,6 +13,8 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.activity.muzei.MuzeiCollectionSourceConfigActivity;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -26,8 +28,19 @@ import butterknife.OnClick;
 
 public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_confirm_exit_without_save_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_confirm_exit_without_save_container) CoordinatorLayout container;
+
+    @OnClick(R.id.dialog_confirm_exit_without_save_saveBtn) void save() {
+        ((MuzeiCollectionSourceConfigActivity) Objects.requireNonNull(getActivity()))
+                .saveConfiguration();
+        dismiss();
+    }
+
+    @OnClick(R.id.dialog_confirm_exit_without_save_exitBtn) void exit() {
+        ((MuzeiCollectionSourceConfigActivity) Objects.requireNonNull(getActivity()))
+                .finishSelf(true);
+        dismiss();
+    }
 
     @NonNull
     @SuppressLint("InflateParams")
@@ -45,20 +58,5 @@ public class ConfirmExitWithoutSaveDialog extends MysplashDialogFragment {
     @Override
     public CoordinatorLayout getSnackbarContainer() {
         return container;
-    }
-
-    // interface.
-
-    // on click listener.
-
-    @OnClick(R.id.dialog_confirm_exit_without_save_saveBtn) void save() {
-        ((MuzeiCollectionSourceConfigActivity) getActivity()).saveConfiguration();
-        dismiss();
-    }
-
-    @OnClick(R.id.dialog_confirm_exit_without_save_exitBtn) void exit() {
-        ((MuzeiCollectionSourceConfigActivity) getActivity())
-                .finishSelf(true);
-        dismiss();
     }
 }

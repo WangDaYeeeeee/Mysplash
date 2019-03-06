@@ -140,6 +140,15 @@ public class MultipleStateRecyclerView extends RecyclerView {
         multipleAdapters[state] = adapter;
     }
 
+    @Override
+    public Adapter getAdapter() {
+        return getAdapter(STATE_NORMALLY);
+    }
+
+    public Adapter getAdapter(@StateRule int state) {
+        return multipleAdapters[state];
+    }
+
     public void setState(@StateRule int state) {
         if (getState() != state) {
             if (layoutFinished) {

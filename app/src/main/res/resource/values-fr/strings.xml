@@ -123,7 +123,7 @@
     <string name="feedback_portfolio_is_null">Le lien du portfolio est vide.</string>
     <string name="feedback_no_filter">Aucune option de filtre.</string>
 
-    <string name="feedback_request_token_failed">Le jeton d\'accès a échoué.</string>
+    <string name="feedback_request_token_failed">Le jeton d\'accès activity échoué.</string>
     <string name="feedback_login_text">S\'identifier avec votre compte Unsplash.</string>
     <string name="feedback_please_login">Veuillez vous identifier.</string>
 
@@ -178,7 +178,7 @@
     <string name="feedback_follow_failed">Impossible de suivre.</string>
     <string name="feedback_cancel_follow_failed">Impossible de ne plus suivre.</string>
 
-    <string name="feedback_story_is_null">La Story n\'existe pas ou n\'a pas pu être chargée.</string>
+    <string name="feedback_story_is_null">La Story n\'existe pas ou n\'activity pas pu être chargée.</string>
 
     <string name="feedback_get_notification_failed">Impossible de charger les notifications.</string>
 
@@ -222,8 +222,8 @@
 
     <string name="action_clear_text">Effacer le texte</string>
 
-    <string name="action_open_download_link">Afficher la page web de téléchargement</string>
-    <string name="action_open_story_link">Ouvrir la page de la Story</string>
+    <string name="action_open_download_link">Afficher la index web de téléchargement</string>
+    <string name="action_open_story_link">Ouvrir la index de la Story</string>
     <string name="action_share">Partager</string>
     <string name="action_menu">Menu</string>
 

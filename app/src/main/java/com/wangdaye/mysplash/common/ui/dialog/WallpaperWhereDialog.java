@@ -30,14 +30,36 @@ import butterknife.OnClick;
 
 public class WallpaperWhereDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_wallpaper_where_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_wallpaper_where_container) CoordinatorLayout container;
+    @BindView(R.id.dialog_wallpaper_where_progress) CircularProgressView progressView;
+    @BindView(R.id.dialog_wallpaper_where_selector) LinearLayout selector;
 
-    @BindView(R.id.dialog_wallpaper_where_progress)
-    CircularProgressView progressView;
+    @OnClick(R.id.dialog_wallpaper_where_wallpaper) void clickWallpaper() {
+        if (listener != null) {
+            listener.onWhereSelected(SetWallpaperActivity.WHERE_WALLPAPER);
+        }
+        setCancelable(false);
+        AnimUtils.animShow(progressView);
+        AnimUtils.animHide(selector);
+    }
 
-    @BindView(R.id.dialog_wallpaper_where_selector)
-    LinearLayout selector;
+    @OnClick(R.id.dialog_wallpaper_where_lockscreen) void clickLockScreen() {
+        if (listener != null) {
+            listener.onWhereSelected(SetWallpaperActivity.WHERE_LOCKSCREEN);
+        }
+        setCancelable(false);
+        AnimUtils.animShow(progressView);
+        AnimUtils.animHide(selector);
+    }
+
+    @OnClick(R.id.dialog_wallpaper_where_all) void clickAll() {
+        if (listener != null) {
+            listener.onWhereSelected(SetWallpaperActivity.WHERE_WALL_LOCK);
+        }
+        setCancelable(false);
+        AnimUtils.animShow(progressView);
+        AnimUtils.animHide(selector);
+    }
 
     private OnWhereSelectedListener listener;
 
@@ -83,34 +105,5 @@ public class WallpaperWhereDialog extends MysplashDialogFragment {
 
     public void setOnWhereSelectedListener(OnWhereSelectedListener l) {
         this.listener = l;
-    }
-
-    // on click listener.
-
-    @OnClick(R.id.dialog_wallpaper_where_wallpaper) void clickWallpaper() {
-        if (listener != null) {
-            listener.onWhereSelected(SetWallpaperActivity.WHERE_WALLPAPER);
-        }
-        setCancelable(false);
-        AnimUtils.animShow(progressView);
-        AnimUtils.animHide(selector);
-    }
-
-    @OnClick(R.id.dialog_wallpaper_where_lockscreen) void clickLockScreen() {
-        if (listener != null) {
-            listener.onWhereSelected(SetWallpaperActivity.WHERE_LOCKSCREEN);
-        }
-        setCancelable(false);
-        AnimUtils.animShow(progressView);
-        AnimUtils.animHide(selector);
-    }
-
-    @OnClick(R.id.dialog_wallpaper_where_all) void clickAll() {
-        if (listener != null) {
-            listener.onWhereSelected(SetWallpaperActivity.WHERE_WALL_LOCK);
-        }
-        setCancelable(false);
-        AnimUtils.animShow(progressView);
-        AnimUtils.animHide(selector);
     }
 }

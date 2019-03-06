@@ -75,7 +75,7 @@
                     tools:text="Alfredo Wong"
                     tools:ignore="RtlHardcoded" />
 
-                <com.wangdaye.mysplash.user.view.widget.UserProfileView
+                <com.wangdaye.mysplash.user.ui.UserProfileView
                     android:id="@+id/activity_user_profileView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

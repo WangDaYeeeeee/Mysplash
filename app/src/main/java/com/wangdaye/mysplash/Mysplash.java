@@ -4,28 +4,38 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.os.Bundle;
-import androidx.annotation.IntDef;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+import dagger.android.support.HasSupportFragmentInjector;
+import okhttp3.OkHttpClient;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
-import com.wangdaye.mysplash.common.basic.activity.RequestLoadActivity;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.utils.helper.DownloadHelper;
+import com.wangdaye.mysplash.common.download.DownloadHelper;
+import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.photo3.view.activity.PhotoActivity3;
+import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Mysplash.
@@ -34,17 +44,20 @@ import java.util.List;
  *
  * */
 
-public class Mysplash extends Application {
+public class Mysplash extends Application
+        implements HasActivityInjector, HasSupportFragmentInjector {
 
     private static Mysplash instance;
-
     public static Mysplash getInstance() {
         return instance;
     }
 
-    private List<MysplashActivity> activityList;
+    @Inject DispatchingAndroidInjector<Activity> activityInjector;
+    @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
+    @Inject OkHttpClient httpClient;
+    @Inject GsonConverterFactory gsonConverterFactory;
 
-    private Photo photo;
+    private List<MysplashActivity> activityList;
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
@@ -56,10 +69,10 @@ public class Mysplash extends Application {
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
     public static final String UNSPLASH_LOGIN_CALLBACK = "unsplash-auth-callback";
 
-    public static final String DATE_FORMAT = "yyyy/MM/dd";
     public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
     public static final String DOWNLOAD_PHOTO_FORMAT = ".jpg";
     public static final String DOWNLOAD_COLLECTION_FORMAT = ".zip";
+
     @StringDef({DOWNLOAD_PHOTO_FORMAT, DOWNLOAD_COLLECTION_FORMAT})
     public @interface DownloadFormatRule {}
 
@@ -78,22 +91,6 @@ public class Mysplash extends Application {
     public static final int CATEGORY_OBJECTS_ID = 8;
     public static final int CATEGORY_PEOPLE_ID = 6;
     public static final int CATEGORY_TECHNOLOGY_ID = 7;
-    @IntDef({CATEGORY_TOTAL_NEW, CATEGORY_TOTAL_FEATURED})
-    public @interface PhotosTypeRule {}
-    @IntDef({
-            CATEGORY_BUILDINGS_ID,
-            CATEGORY_FOOD_DRINK_ID,
-            CATEGORY_NATURE_ID,
-            CATEGORY_OBJECTS_ID,
-            CATEGORY_PEOPLE_ID,
-            CATEGORY_TECHNOLOGY_ID})
-    public @interface CategoryIdRule {}
-
-    public static final int COLLECTION_TYPE_FEATURED = 0;
-    public static final int COLLECTION_TYPE_ALL = 1;
-    public static final int COLLECTION_TYPE_CURATED = 2;
-    @IntDef({COLLECTION_TYPE_FEATURED, COLLECTION_TYPE_ALL, COLLECTION_TYPE_CURATED})
-    public @interface CollectionTypeRule {}
 
     public static int TOTAL_NEW_PHOTOS_COUNT = 17444;
     public static int TOTAL_FEATURED_PHOTOS_COUNT = 1192;
@@ -104,16 +101,19 @@ public class Mysplash extends Application {
     public static int PEOPLE_PHOTOS_COUNT = 3410;
     public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
-    public static final int COLLECTION_ACTIVITY = 1;
-    public static final int USER_ACTIVITY = 2;
-    public static final int ME_ACTIVITY = 3;
-    public static final int CUSTOM_API_ACTIVITY = 4;
+    public static final int CUSTOM_API_ACTIVITY = 1;
+
+    public enum MessageType {
+        CREATE, DELETE, UPDATE
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
 
         instance = this;
+        DaggerApplicationComponent.create().inject(this);
+
         activityList = new ArrayList<>();
 
         DownloadHelper.getInstance(this);
@@ -126,6 +126,14 @@ public class Mysplash extends Application {
                     ThemeManager.getInstance(this).isLightTheme()
                             ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
         }
+    }
+
+    public OkHttpClient getHttpClient() {
+        return httpClient;
+    }
+
+    public GsonConverterFactory getGsonConverterFactory() {
+        return gsonConverterFactory;
     }
 
     public static String getAppId(Context c, boolean auth) {
@@ -215,18 +223,8 @@ public class Mysplash extends Application {
         }
     }
 
-    @Nullable
-    public Photo getPhoto() {
-        return photo;
-    }
-
-    public void setPhoto(Photo photo) {
-        this.photo = photo;
-    }
-
     public List<Photo> loadMorePhotos(PhotoActivity3 activity,
-                                      List<Photo> list, int headIndex, boolean headDirection,
-                                      Bundle bundle) {
+                                      List<Photo> list, int headIndex, boolean headDirection) {
         int index = activityList.indexOf(activity) - 1;
         if (index > -1) {
             Activity a = activityList.get(index);
@@ -236,7 +234,7 @@ public class Mysplash extends Application {
                             .getActualTypeArguments()[0]
                             .toString()
                             .equals(Photo.class.toString())) {
-                        return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection, bundle);
+                        return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection);
                     }
                 } catch (Exception ignored) {
                     // do nothing.
@@ -246,41 +244,21 @@ public class Mysplash extends Application {
         return new ArrayList<>();
     }
 
-    public void dispatchPhotoUpdate(PhotoActivity3 activity, Photo p) {
-        int index = activityList.indexOf(activity) - 1;
-        if (index > -1) {
-            Activity a = activityList.get(index);
-            if (a instanceof LoadableActivity) {
-                try {
-                    if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[0]
-                            .toString()
-                            .equals(Photo.class.toString())) {
-                        ((LoadableActivity) a).receiveUpdate(p);
-                    }
-                } catch (Exception ignore) {
-                    // do nothing.
-                }
-            }
+    public void dispatchPhotoUpdate(@NonNull Photo photo, MessageType type) {
+        for (int i = activityList.size() - 1; i >= 0; i --) {
+            activityList.get(i).updatePhoto(photo, type);
         }
     }
 
-    public void dispatchPhotoUpdate(LoadableActivity<Photo> activity, Photo p) {
-        int index = activityList.indexOf(activity) + 1;
-        if (index < activityList.size()) {
-            Activity a = activityList.get(index);
-            if (a instanceof RequestLoadActivity) {
-                try {
-                    if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[0]
-                            .toString()
-                            .equals(Photo.class.toString())) {
-                        ((RequestLoadActivity) a).receiveUpdate(p);
-                    }
-                } catch (Exception ignore) {
-                    // do nothing.
-                }
-            }
+    public void dispatchCollectionUpdate(@NonNull Collection collection, MessageType type) {
+        for (int i = activityList.size() - 1; i >= 0; i --) {
+            activityList.get(i).updateCollection(collection, type);
+        }
+    }
+
+    public void dispatchUserUpdate(@NonNull User user, MessageType type) {
+        for (int i = activityList.size() - 1; i >= 0; i --) {
+            activityList.get(i).updateUser(user, type);
         }
     }
 
@@ -296,5 +274,17 @@ public class Mysplash extends Application {
         for (int i = activityList.size() - 1; i >= 0; i --) {
             activityList.get(i).recreate();
         }
+    }
+
+    // interface.
+
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return activityInjector;
+    }
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentInjector;
     }
 }

@@ -13,9 +13,13 @@ import butterknife.OnClick;
 
 public class MiniErrorStateAdapter extends RecyclerView.Adapter<MiniErrorStateAdapter.ViewHolder> {
 
-    private OnRetryListener listener;
+    @NonNull private OnRetryListener listener;
 
     class ViewHolder extends RecyclerView.ViewHolder {
+
+        @OnClick({R.id.item_multiple_state_error_mini_retryButton}) void retry() {
+            listener.onRetry();
+        }
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -24,10 +28,6 @@ public class MiniErrorStateAdapter extends RecyclerView.Adapter<MiniErrorStateAd
 
         void onBindView() {
             // do nothing.
-        }
-
-        @OnClick({R.id.item_multiple_state_error_mini_retryButton}) void retry() {
-            listener.onRetry();
         }
     }
 

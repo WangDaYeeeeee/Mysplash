@@ -18,7 +18,7 @@ import android.view.SurfaceHolder;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.FlagRunnable;
-import com.wangdaye.mysplash.common.data.entity.unsplash.Photo;
+import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.LiveWallpaperHelper;

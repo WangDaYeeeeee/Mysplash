@@ -22,7 +22,7 @@
         android:transitionName="@string/transition_photo_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout
+        <com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout
             android:id="@+id/activity_photo_3_swipeSwitchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:background="?attr/root_color">
 
-                <com.wangdaye.mysplash.common.ui.widget.fullScreenView.FullScreenImageView
+                <com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.ScalableImageView
                     android:id="@+id/activity_photo_3_regularImage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
 
             </FrameLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout>
+        </com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout>
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 

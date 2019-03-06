@@ -11,10 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,35 +30,10 @@ import butterknife.OnClick;
 
 public class PathDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_path_container)
-    CoordinatorLayout container;
-
-    @NonNull
-    @SuppressLint("InflateParams")
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        super.onCreateDialog(savedInstanceState);
-        View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_path, null, false);
-        ButterKnife.bind(this, view);
-        initWidget(view);
-        return new AlertDialog.Builder(getActivity())
-                .setView(view)
-                .create();
-    }
-
-    @Override
-    public CoordinatorLayout getSnackbarContainer() {
-        return container;
-    }
-
-    private void initWidget(View v) {
-        TextView content = v.findViewById(R.id.dialog_path_text);
-    }
-
-    // interface.
+    @BindView(R.id.dialog_path_container) CoordinatorLayout container;
 
     @OnClick(R.id.dialog_path_copyBtn) void copy() {
-        ((ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE))
+        ((ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE))
                 .setPrimaryClip(
                         ClipData.newPlainText(
                                 "storage/emulated/0/Pictures/Mysplash",
@@ -66,5 +42,23 @@ public class PathDialog extends MysplashDialogFragment {
 
     @OnClick(R.id.dialog_path_enterBtn) void enter() {
         dismiss();
+    }
+
+    @NonNull
+    @SuppressLint("InflateParams")
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        super.onCreateDialog(savedInstanceState);
+        View view = LayoutInflater.from(getActivity())
+                .inflate(R.layout.dialog_path, null, false);
+        ButterKnife.bind(this, view);
+        return new AlertDialog.Builder(getActivity())
+                .setView(view)
+                .create();
+    }
+
+    @Override
+    public CoordinatorLayout getSnackbarContainer() {
+        return container;
     }
 }

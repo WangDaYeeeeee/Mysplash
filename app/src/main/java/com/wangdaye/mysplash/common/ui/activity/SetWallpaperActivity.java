@@ -31,10 +31,12 @@ import com.wangdaye.mysplash.common.ui.popup.WallpaperClipPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.photoView.Info;
 import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
 import com.wangdaye.mysplash.common.utils.FileUtils;
-import com.wangdaye.mysplash.common.utils.helper.ImageHelper;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.common.basic.SafeHandler;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileDescriptor;
@@ -58,23 +60,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
         WallpaperAlignPopupWindow.OnAlignTypeChangedListener,
         WallpaperWhereDialog.OnWhereSelectedListener, SafeHandler.HandlerContainer {
 
-    @BindView(R.id.activity_set_wallpaper_container)
-    CoordinatorLayout container;
-
-    @BindView(R.id.activity_set_wallpaper_closeBtn)
-    AppCompatImageButton closeBtn;
-
-    @BindView(R.id.activity_set_wallpaper_typeBtn)
-    AppCompatImageView typeBtn;
-
-    @BindView(R.id.activity_set_wallpaper_alignBtn)
-    AppCompatImageView alignBtn;
-
-    @BindView(R.id.activity_set_wallpaper_setBtn)
-    Button setBtn;
-
-    @BindView(R.id.activity_set_wallpaper_photoView)
-    PhotoView photoView;
+    @BindView(R.id.activity_set_wallpaper_container) CoordinatorLayout container;
+    @BindView(R.id.activity_set_wallpaper_closeBtn) AppCompatImageButton closeBtn;
+    @BindView(R.id.activity_set_wallpaper_typeBtn) AppCompatImageView typeBtn;
+    @BindView(R.id.activity_set_wallpaper_alignBtn) AppCompatImageView alignBtn;
+    @BindView(R.id.activity_set_wallpaper_setBtn) Button setBtn;
+    @BindView(R.id.activity_set_wallpaper_photoView) PhotoView photoView;
 
     private SafeHandler<SetWallpaperActivity> handler;
 
@@ -107,20 +98,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_wallpaper);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestReadWritePermission();
-            } else {
-                initData();
-                initWidget();
-            }
+        ButterKnife.bind(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestReadWritePermission(null);
+        } else {
+            initData();
+            initWidget();
         }
     }
 
@@ -135,7 +118,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @SuppressLint("MissingSuperCall")
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NotNull Bundle outState) {
         // do nothing.
     }
 
@@ -167,7 +150,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     // permission.
 
     @Override
-    protected void requestReadWritePermissionSucceed(int requestCode) {
+    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
         initData();
         initWidget();
     }
@@ -544,49 +527,25 @@ public class SetWallpaperActivity extends ReadWriteActivity
     public void onWhereSelected(int where) {
         switch (where) {
             case WHERE_WALLPAPER:
-                loadSourceBitmap(new OnLoadSourceListener() {
-                    @Override
-                    public void onLoadSourceBitmap(final Bitmap source) {
-                        ThreadManager.getInstance().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                setWallpaper(source, true);
-                                handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
-                            }
-                        });
-                    }
-                });
+                loadSourceBitmap(source -> ThreadManager.getInstance().execute(() -> {
+                    setWallpaper(source, true);
+                    handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
+                }));
                 break;
 
             case WHERE_LOCKSCREEN:
-                loadSourceBitmap(new OnLoadSourceListener() {
-                    @Override
-                    public void onLoadSourceBitmap(final Bitmap source) {
-                        ThreadManager.getInstance().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                setWallpaper(source, false);
-                                handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
-                            }
-                        });
-                    }
-                });
+                loadSourceBitmap(source -> ThreadManager.getInstance().execute(() -> {
+                    setWallpaper(source, false);
+                    handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
+                }));
                 break;
 
             case WHERE_WALL_LOCK:
-                loadSourceBitmap(new OnLoadSourceListener() {
-                    @Override
-                    public void onLoadSourceBitmap(final Bitmap source) {
-                        ThreadManager.getInstance().execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                setWallpaper(source, true);
-                                setWallpaper(source, false);
-                                handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
-                            }
-                        });
-                    }
-                });
+                loadSourceBitmap(source -> ThreadManager.getInstance().execute(() -> {
+                    setWallpaper(source, true);
+                    setWallpaper(source, false);
+                    handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
+                }));
                 break;
         }
     }

@@ -22,10 +22,10 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.common.basic.SafeHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +34,7 @@ import java.util.TimerTask;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Introduce activity.
@@ -43,17 +44,20 @@ import butterknife.ButterKnife;
  * */
 
 public class IntroduceActivity extends MysplashActivity
-        implements View.OnClickListener, ViewPager.OnPageChangeListener,
-        SafeHandler.HandlerContainer {
+        implements ViewPager.OnPageChangeListener, SafeHandler.HandlerContainer {
 
-    @BindView(R.id.activity_introduce_container)
-    CoordinatorLayout container;
-
-    @BindView(R.id.activity_introduce_viewPager)
-    ViewPager viewPager;
-
-    @BindView(R.id.activity_introduce_button)
-    Button button;
+    @BindView(R.id.activity_introduce_container) CoordinatorLayout container;
+    @BindView(R.id.activity_introduce_viewPager) ViewPager viewPager;
+    @BindView(R.id.activity_introduce_button) Button button;
+    @OnClick(R.id.activity_introduce_button) void clickBtn() {
+        if (viewPager.getCurrentItem() == introduceModelList.size() - 1) {
+            // last page --> finish activity.
+            finishSelf(true);
+        } else {
+            // jump to next page.
+            viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+        }
+    }
 
     private SafeHandler<IntroduceActivity> handler;
 
@@ -114,17 +118,9 @@ public class IntroduceActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_introduce);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initData();
-            initWidget();
-        }
+        ButterKnife.bind(this);
+        initData();
+        initWidget();
     }
 
     @Override
@@ -199,9 +195,8 @@ public class IntroduceActivity extends MysplashActivity
         this.handler = new SafeHandler<>(this);
 
         AppCompatImageButton backBtn = findViewById(R.id.activity_introduce_backBtn);
-        backBtn.setOnClickListener(this);
+        backBtn.setOnClickListener(v -> finishSelf(true));
 
-        button.setOnClickListener(this);
         setBottomButtonStyle(0);
 
         initPage();
@@ -271,7 +266,13 @@ public class IntroduceActivity extends MysplashActivity
         switch (introduceModelList.get(position).imageRes) {
             case R.drawable.illustration_back_top:
                 b.setText(getString(R.string.set));
-                b.setOnClickListener(this);
+                b.setOnClickListener(v -> {
+                    if (introduceModelList.get(viewPager.getCurrentItem()).imageRes == R.drawable.illustration_back_top) {
+                        Intent s = new Intent(this, SettingsActivity.class);
+                        startActivity(s);
+                        overridePendingTransition(R.anim.activity_slide_in, 0);
+                    }
+                });
                 break;
 
             default:
@@ -281,38 +282,6 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     // interface.
-
-    // on click listener.
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.activity_introduce_backBtn:
-                // finish activity.
-                finishSelf(true);
-                break;
-
-            case R.id.activity_introduce_button:
-                if (viewPager.getCurrentItem() == introduceModelList.size() - 1) {
-                    // last page --> finish activity.
-                    finishSelf(true);
-                } else {
-                    // jump to next page.
-                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
-                }
-                break;
-
-            case R.id.container_introduce_button:
-                switch (introduceModelList.get(viewPager.getCurrentItem()).imageRes) {
-                    case R.drawable.illustration_back_top:
-                        Intent s = new Intent(this, SettingsActivity.class);
-                        startActivity(s);
-                        overridePendingTransition(R.anim.activity_slide_in, 0);
-                        break;
-                }
-                break;
-        }
-    }
 
     // on page changed listener.
 

@@ -6,8 +6,8 @@ import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.table.WallpaperSource;
-import com.wangdaye.mysplash.common.utils.helper.DatabaseHelper;
+import com.wangdaye.mysplash.common.db.WallpaperSource;
+import com.wangdaye.mysplash.common.db.DatabaseHelper;
 
 import java.util.ArrayList;
 import java.util.List;

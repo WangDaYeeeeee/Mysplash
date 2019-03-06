@@ -152,7 +152,7 @@
 
         </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
-        <com.wangdaye.mysplash.collection.view.widget.CollectionPhotosView
+        <com.wangdaye.mysplash.collection.ui.CollectionPhotosView
             android:id="@+id/activity_collection_photosView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

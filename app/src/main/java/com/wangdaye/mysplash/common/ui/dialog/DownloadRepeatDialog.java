@@ -25,8 +25,21 @@ import butterknife.OnClick;
 
 public class DownloadRepeatDialog extends MysplashDialogFragment {
 
-    @BindView(R.id.dialog_download_repeat_container)
-    CoordinatorLayout container;
+    @BindView(R.id.dialog_download_repeat_container) CoordinatorLayout container;
+
+    @OnClick(R.id.dialog_download_repeat_checkBtn) void check() {
+        if (listener != null) {
+            listener.onCheck(downloadKey);
+        }
+        dismiss();
+    }
+
+    @OnClick(R.id.dialog_download_repeat_downloadBtn) void download() {
+        if (listener != null) {
+            listener.onDownload(downloadKey);
+        }
+        dismiss();
+    }
 
     private OnCheckOrDownloadListener listener;
 
@@ -65,21 +78,5 @@ public class DownloadRepeatDialog extends MysplashDialogFragment {
 
     public void setOnCheckOrDownloadListener(OnCheckOrDownloadListener l) {
         this.listener = l;
-    }
-
-    // on click listener.
-
-    @OnClick(R.id.dialog_download_repeat_checkBtn) void check() {
-        if (listener != null) {
-            listener.onCheck(downloadKey);
-        }
-        dismiss();
-    }
-
-    @OnClick(R.id.dialog_download_repeat_downloadBtn) void download() {
-        if (listener != null) {
-            listener.onDownload(downloadKey);
-        }
-        dismiss();
     }
 }

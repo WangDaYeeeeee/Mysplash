@@ -23,12 +23,10 @@ public class RippleView extends View {
     private Paint paint;
 
     private RippleAnim anim;
-    private RippleAnimatingCallback callback;
 
     private int centerX;
     private int centerY;
     private int radius;
-    private boolean drawing;
 
     private class RippleAnim extends Animation {
 
@@ -42,25 +40,6 @@ public class RippleView extends View {
             calcEndRadius(x, y);
             setDuration(200);
             setInterpolator(new AccelerateDecelerateInterpolator());
-            setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    // do nothing.
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    setDrawing(false);
-                    if (callback != null) {
-                        callback.animationDone();
-                    }
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                    // do nothing.
-                }
-            });
         }
 
         @Override
@@ -105,7 +84,6 @@ public class RippleView extends View {
     }
 
     private void initialize() {
-        setDrawing(false);
         setDrawData(0, 0, 0);
 
         this.paint = new Paint();
@@ -130,24 +108,12 @@ public class RippleView extends View {
 
     // control.
 
-    public void drawRipple(@ColorInt int color, int startX, int startY) {
-        if (!isDrawing()) {
-            setDrawing(true);
-            if (anim != null) {
-                anim.cancel();
-            }
-            paint.setColor(color);
-            anim = new RippleAnim(startX, startY);
-            startAnimation(anim);
+    public void drawRipple(int startX, int startY) {
+        if (anim != null) {
+            anim.cancel();
         }
-    }
-
-    public void setDrawing(boolean drawing) {
-        this.drawing = drawing;
-    }
-
-    public boolean isDrawing() {
-        return drawing;
+        anim = new RippleAnim(startX, startY);
+        startAnimation(anim);
     }
 
     private void setDrawData(int x, int y, int r) {
@@ -158,15 +124,5 @@ public class RippleView extends View {
 
     public void setColor(@ColorInt int color) {
         this.paint.setColor(color);
-    }
-
-    // interface.
-
-    public interface RippleAnimatingCallback {
-        void animationDone();
-    }
-
-    public void setRippleAnimatingCallback(RippleAnimatingCallback callback) {
-        this.callback = callback;
     }
 }

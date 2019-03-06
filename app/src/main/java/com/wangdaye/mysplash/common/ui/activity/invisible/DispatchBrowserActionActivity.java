@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
+import com.wangdaye.mysplash.common.utils.LogUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 import java.util.List;
@@ -36,20 +36,24 @@ public class DispatchBrowserActionActivity extends Activity {
         Uri uri = intent.getData();
         if (uri != null) {
             List<String> keyList = uri.getPathSegments();
-            Log.d("URI", "uri: "+uri);
-            Log.d("URI", "scheme: "+uri.getScheme());
-            Log.d("URI", "host: "+uri.getHost());
-            Log.d("URI", "port: "+uri.getPort());
-            Log.d("URI", "path: "+uri.getPath());
-            Log.d("URI", "queryString: "+uri.getQuery());
-            Log.d("URI", "queryParameter: "+uri.getQueryParameter("key"));
+            LogUtils.log("URI", "uri: "+uri);
+            LogUtils.log("URI", "scheme: "+uri.getScheme());
+            LogUtils.log("URI", "host: "+uri.getHost());
+            LogUtils.log("URI", "port: "+uri.getPort());
+            LogUtils.log("URI", "path: "+uri.getPath());
+            LogUtils.log("URI", "queryString: "+uri.getQuery());
+            LogUtils.log("URI", "queryParameter: "+uri.getQueryParameter("key"));
             try {
                 if (keyList.size() == 0) {
                     IntentHelper.startMainActivity(this);
                 } else if (keyList.get(0).equals("photos")) {
                     IntentHelper.startPhotoActivity(this, keyList.get(1));
                 } else if (keyList.get(0).equals("collections")) {
-                    IntentHelper.startCollectionActivity(this, keyList.get(1));
+                    if (keyList.get(1).equals("curated")) {
+                        IntentHelper.startCollectionActivity(this, keyList.get(2));
+                    } else {
+                        IntentHelper.startCollectionActivity(this, keyList.get(1));
+                    }
                 } else if (keyList.get(0).charAt(0) == '@') {
                     IntentHelper.startUserActivity(this, keyList.get(0).replaceFirst("@", ""));
                 } else {

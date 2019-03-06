@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.data.entity.table.DownloadMissionEntity;
+import com.wangdaye.mysplash.common.data.table.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.basic.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;

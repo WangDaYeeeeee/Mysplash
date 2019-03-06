@@ -48,7 +48,7 @@
 
             </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
 
-            <com.wangdaye.mysplash.main.view.widget.NotificationsView
+            <com.wangdaye.mysplash.main._old.view.NotificationsView
                 android:id="@+id/activity_notification_notificationsView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

@@ -1,10 +1,18 @@
 package com.wangdaye.mysplash.common.basic.fragment;
 
-import android.content.Intent;
+import android.content.Context;
+
+import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.json.User;
+
+import org.jetbrains.annotations.NotNull;
+
+import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-
-import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
+import dagger.android.support.AndroidSupportInjection;
 
 /**
  * Mysplash fragment.
@@ -14,6 +22,12 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
  * */
 
 public abstract class MysplashFragment extends Fragment {
+
+    @Override
+    public void onAttach(@NotNull Context context) {
+        AndroidSupportInjection.inject(this);
+        super.onAttach(context);
+    }
 
     // style.
 
@@ -28,22 +42,6 @@ public abstract class MysplashFragment extends Fragment {
      * */
     public abstract boolean needSetDarkStatusBar();
 
-    // save instance.
-
-    /**
-     * Write large data to the BaseSavedStateFragment when application saving instance state.
-     *
-     * @param outState The BaseSavedStateFragment which is used to save large data.
-     * */
-    public abstract void writeLargeData(MysplashActivity.BaseSavedStateFragment outState);
-
-    /**
-     * Read large data from the BaseSavedStateFragment when application restarting.
-     *
-     * @param savedInstanceState The BaseSavedStateFragment which is used to save large data.
-     * */
-    public abstract void readLargeData(MysplashActivity.BaseSavedStateFragment savedInstanceState);
-
     // snack bar.
 
     /**
@@ -56,21 +54,24 @@ public abstract class MysplashFragment extends Fragment {
     // control.
 
     /**
-     * Handle the result data from last activity.
-     *
-     * @param requestCode {@link android.app.Activity#onActivityResult(int, int, Intent)}.
-     * @param resultCode  {@link android.app.Activity#onActivityResult(int, int, Intent)}.
-     * @param data        {@link android.app.Activity#onActivityResult(int, int, Intent)}.
-     * */
-    public void handleActivityResult(int requestCode, int resultCode, Intent data) {
-        // do nothing.
-    }
-
-    /**
      * This method can tell you if the list view need back to top when user press the back button.
      *
      * @return if list view need back to top.
      * */
     public abstract boolean needBackToTop();
     public abstract void backToTop();
+
+    // update data.
+
+    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
+        // do nothing.
+    }
+
+    public void updateUser(@NonNull User user, Mysplash.MessageType type) {
+        // do nothing.
+    }
+
+    public void updateCollection(@NonNull Collection collection, Mysplash.MessageType type) {
+        // do nothing.
+    }
 }

@@ -5,15 +5,16 @@ import android.os.Bundle;
 import android.os.Message;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.text.TextUtils;
-import android.widget.EditText;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
+import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
-import com.wangdaye.mysplash.common.utils.widget.SafeHandler;
+import com.wangdaye.mysplash.common.basic.SafeHandler;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,19 +33,37 @@ import butterknife.OnClick;
 public class CustomApiActivity extends MysplashActivity
         implements SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
 
-    @BindView(R.id.activity_custom_api_container)
-    CoordinatorLayout container;
+    @BindView(R.id.activity_custom_api_container) CoordinatorLayout container;
+    @BindView(R.id.activity_custom_api_statusBar) StatusBarView statusBar;
 
-    @BindView(R.id.activity_custom_api_statusBar)
-    StatusBarView statusBar;
+    @BindView(R.id.activity_custom_api_key) TextInputEditText key;
+    @BindView(R.id.activity_custom_api_secret) TextInputEditText secret;
 
-    @BindView(R.id.activity_custom_api_key)
-    EditText key;
+    @OnClick({
+            R.id.activity_custom_api_closeBtn,
+            R.id.activity_custom_api_cancelBtn}) void cancel() {
+        finishSelf(true);
+    }
 
-    @BindView(R.id.activity_custom_api_secret)
-    EditText secret;
+    @OnClick(R.id.activity_custom_api_enterBtn) void enter() {
+        String keyText = "";
+        String secretText = "";
+        if (key.getText() != null) {
+            keyText = key.getText().toString();
+        }
+        if (secret.getText() != null) {
+            secretText = secret.getText().toString();
+        }
+
+        boolean changed = CustomApiManager.getInstance(this).setCustomApi(this, keyText, secretText);
+
+        Intent intent = new Intent();
+        setResult(changed ? RESULT_OK : RESULT_CANCELED, intent);
+        finishSelf(true);
+    }
 
     private SafeHandler<CustomApiActivity> handler;
+    private FullscreenInputWorkaround workaround;
 
     private boolean backPressed = false; // mark the first click action.
 
@@ -52,16 +71,8 @@ public class CustomApiActivity extends MysplashActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_api);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (!isStarted()) {
-            setStarted();
-            ButterKnife.bind(this);
-            initWidget();
-        }
+        ButterKnife.bind(this);
+        initWidget();
     }
 
     @Override
@@ -109,6 +120,8 @@ public class CustomApiActivity extends MysplashActivity
 
     private void initWidget() {
         this.handler = new SafeHandler<>(this);
+        this.workaround = FullscreenInputWorkaround.assistActivity(
+                this, container, null);
 
         SwipeBackCoordinatorLayout swipeBackView = findViewById(R.id.activity_custom_api_swipeBackView);
         swipeBackView.setOnSwipeListener(this);
@@ -123,26 +136,6 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     // interface.
-
-    // on click listener.
-
-    @OnClick({
-            R.id.activity_custom_api_closeBtn,
-            R.id.activity_custom_api_cancelBtn}) void cancel() {
-        finishSelf(true);
-    }
-
-    @OnClick(R.id.activity_custom_api_enterBtn) void enter() {
-        boolean changed = CustomApiManager.getInstance(this)
-                .setCustomApi(
-                        this,
-                        key.getText().toString(),
-                        secret.getText().toString());
-
-        Intent intent = new Intent();
-        setResult(changed ? RESULT_OK : RESULT_CANCELED, intent);
-        finishSelf(true);
-    }
 
     // on swipe listener.
 

@@ -2,20 +2,29 @@ package com.wangdaye.mysplash.common.basic.activity;
 
 import android.os.Bundle;
 import androidx.annotation.CallSuper;
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
+import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.LanguageUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Mysplash activity.
@@ -24,78 +33,20 @@ import java.util.List;
  *
  * */
 
-public abstract class MysplashActivity extends AppCompatActivity {
+public abstract class MysplashActivity extends AppCompatActivity
+        implements HasSupportFragmentInjector {
 
-    private Bundle bundle; // saved instance state.
-    private boolean started; // flag of onStart() method.
+    @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
+
     private boolean foreground;
 
     private List<MysplashDialogFragment> dialogList = new ArrayList<>();
     private List<MysplashPopupWindow> popupList = new ArrayList<>();
 
-    /**
-     * Base saved state fragment.
-     *
-     * This fragment is used to save large data when application is saving state instance.
-     *
-     * */
-    public abstract static class BaseSavedStateFragment extends Fragment {
-
-        private boolean landscape;
-
-        private static final String FRAGMENT_TAG = "SavedStateFragment";
-
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            // set this flag as true, otherwise the fragment will be rebuild when activity restart.
-            setRetainInstance(true);
-        }
-
-        public void saveData(MysplashActivity a) {
-            setLandscape(DisplayUtils.isLandscape(a));
-            Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-            if (f != null) {
-                a.getSupportFragmentManager()
-                        .beginTransaction()
-                        .remove(f)
-                        .commitAllowingStateLoss();
-            }
-            a.getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(this, FRAGMENT_TAG)
-                    .commitAllowingStateLoss();
-        }
-
-        @Nullable
-        public static BaseSavedStateFragment getData(MysplashActivity a) {
-            Fragment f = a.getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-            if (f != null) {
-                a.getSupportFragmentManager()
-                        .beginTransaction()
-                        .remove(f)
-                        .commitAllowingStateLoss();
-
-                return (BaseSavedStateFragment) f;
-            } else {
-                return null;
-            }
-        }
-
-        public boolean isLandscape() {
-            return landscape;
-        }
-
-        public void setLandscape(boolean landscape) {
-            this.landscape = landscape;
-        }
-    }
-
-    // life cycle.
-
     @CallSuper
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
             Mysplash.getInstance().addActivity(this);
@@ -112,11 +63,9 @@ public abstract class MysplashActivity extends AppCompatActivity {
         if (hasTranslucentNavigationBar()) {
             DisplayUtils.setNavigationBarStyle(this, false, hasTranslucentNavigationBar());
         }
-
-        this.bundle = savedInstanceState;
-        this.started = false;
     }
 
+    @CallSuper
     @Override
     protected void onStart() {
         super.onStart();
@@ -127,12 +76,14 @@ public abstract class MysplashActivity extends AppCompatActivity {
         }
     }
 
+    @CallSuper
     @Override
     protected void onResume() {
         super.onResume();
         foreground = true;
     }
 
+    @CallSuper
     @Override
     protected void onPause() {
         super.onPause();
@@ -145,8 +96,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
         super.onDestroy();
         Mysplash.getInstance().removeActivity(this);
     }
-
-    // control style.
 
     protected void setTheme() {
         // do nothing.
@@ -163,8 +112,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
     public boolean hasTranslucentNavigationBar() {
         return false;
     }
-
-    // handle back press action.
 
     @Override
     public void onBackPressed() {
@@ -204,8 +151,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
         Mysplash.getInstance().removeActivity(this);
     }
 
-    // manage snack bar container.
-
     /**
      * Provide the container layout of snack bar. Include dialogs in this activity.
      *
@@ -230,18 +175,6 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     // save instance state.
 
-    public Bundle getBundle() {
-        return bundle;
-    }
-
-    public void setStarted() {
-        started = true;
-    }
-
-    public boolean isStarted() {
-        return started;
-    }
-
     public boolean isForeground() {
         return foreground;
     }
@@ -258,5 +191,26 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     protected boolean isTheLowestLevel() {
         return Mysplash.getInstance().getActivityCount() == 1;
+    }
+
+    // update data.
+
+    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
+        // do nothing.
+    }
+
+    public void updateUser(@NonNull User user, Mysplash.MessageType type) {
+        // do nothing.
+    }
+
+    public void updateCollection(@NonNull Collection collection, Mysplash.MessageType type) {
+        // do nothing.
+    }
+
+    // interface.
+
+    @Override
+    public AndroidInjector<Fragment> supportFragmentInjector() {
+        return fragmentInjector;
     }
 }

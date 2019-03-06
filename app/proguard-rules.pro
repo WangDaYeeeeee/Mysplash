@@ -204,3 +204,7 @@ public static java.lang.String TABLENAME;
 
 # Muzei
 -keep class com.google.android.apps.muzei.** { *; }
+
+# RetroLambda
+-dontwarn java.lang.invoke.*
+-dontwarn **$$Lambda$*

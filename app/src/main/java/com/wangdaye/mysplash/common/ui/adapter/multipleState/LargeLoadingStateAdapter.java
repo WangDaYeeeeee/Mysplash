@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.ui.adapter.multipleState;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,12 +21,16 @@ public class LargeLoadingStateAdapter extends RecyclerView.Adapter<LargeLoadingS
     private Context context;
     private int marginBottomDp;
 
-    private View.OnClickListener onClickListener;
+    @Nullable private View.OnClickListener onClickListener;
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(R.id.item_multiple_state_loading_large_container)
-        RelativeLayout container;
+        @BindView(R.id.item_multiple_state_loading_large_container) RelativeLayout container;
+        @OnClick(R.id.item_multiple_state_loading_large_container) void click() {
+            if (onClickListener != null) {
+                onClickListener.onClick(container);
+            }
+        }
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -39,19 +44,13 @@ public class LargeLoadingStateAdapter extends RecyclerView.Adapter<LargeLoadingS
         void onBindView() {
             // do nothing.
         }
-
-        @OnClick(R.id.item_multiple_state_loading_large_container) void click() {
-            if (onClickListener != null) {
-                onClickListener.onClick(container);
-            }
-        }
     }
 
     public LargeLoadingStateAdapter(Context context, int marginBottomDp) {
         this(context, marginBottomDp, null);
     }
 
-    public LargeLoadingStateAdapter(Context context, int marginBottomDp, View.OnClickListener l) {
+    public LargeLoadingStateAdapter(Context context, int marginBottomDp, @Nullable View.OnClickListener l) {
         this.context = context;
         this.marginBottomDp = marginBottomDp;
         this.onClickListener = l;
