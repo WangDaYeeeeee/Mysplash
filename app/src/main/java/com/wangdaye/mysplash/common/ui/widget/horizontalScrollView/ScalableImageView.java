@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.common.ui.widget.horizontalScrollView;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -32,6 +33,8 @@ public class ScalableImageView extends AppCompatImageView
     private float viewWidth;
     private float viewHeight;
 
+    private static final int OVER_FLING = 20;
+
     public ScalableImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -45,6 +48,8 @@ public class ScalableImageView extends AppCompatImageView
         setOnTouchListener(this);
         gestureDetector = new GestureDetector(context, this);
         overScroller = new OverScroller(context);
+
+        setBackgroundColor(Color.BLACK);
     }
 
     @Override
@@ -61,7 +66,7 @@ public class ScalableImageView extends AppCompatImageView
     @Override
     public void computeScroll() {
         if (overScroller.computeScrollOffset()) {
-            setTranslation(overScroller.getCurrX() - initTranslateX);
+            setTranslation(overScroller.getCurrX() - initTranslateX, true);
             postInvalidate();
         }
     }
@@ -91,12 +96,14 @@ public class ScalableImageView extends AppCompatImageView
     /**
      * @return consumed dx.
      * */
-    public float setTranslation(float dX) {
+    public float setTranslation(float dX, boolean fling) {
         float oldTranslateX = translateX;
 
         translateX = initTranslateX + dX;
-        translateX = Math.max(minTranslateX, translateX);
-        translateX = Math.min(maxTranslateX, translateX);
+        if (!fling) {
+            translateX = Math.max(minTranslateX, translateX);
+            translateX = Math.min(maxTranslateX, translateX);
+        }
 
         imageMatrix.set(getImageMatrix());
         imageMatrix.postTranslate(translateX - oldTranslateX, 0);
@@ -113,7 +120,8 @@ public class ScalableImageView extends AppCompatImageView
         overScroller.fling(
                 (int) translateX, 0,
                 (int) velocityX, 0,
-                (int) minTranslateX, (int) maxTranslateX, 0, 0);
+                (int) minTranslateX, (int) maxTranslateX, 0, 0,
+                OVER_FLING, 0);
     }
 
     private static int getDrawableWidth(Drawable d) {
@@ -157,7 +165,7 @@ public class ScalableImageView extends AppCompatImageView
     @Override
     public boolean onScroll(MotionEvent down, MotionEvent current, float distanceX, float distanceY) {
         dX += distanceX;
-        setTranslation(dX);
+        setTranslation(dX, false);
         return false;
     }
 

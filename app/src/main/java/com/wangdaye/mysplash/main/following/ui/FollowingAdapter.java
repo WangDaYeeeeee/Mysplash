@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +39,7 @@ import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.util.ArrayList;
@@ -243,24 +245,28 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         return photoList.get(photoPosition);
     }
 
-    public void updatePhoto(Photo newPhoto, boolean refreshView, boolean probablyRepeat) {
-        for (int i = 0; i < typeList.size(); i ++) {
-            if (typeList.get(i).type != PhotoFeedHolder.VIEW_TYPE_PHOTO) {
-                continue;
+    public void updatePhoto(RecyclerView recyclerView,
+                            Photo newPhoto, boolean refreshView, boolean probablyRepeat) {
+        ThreadManager.getInstance().execute(() -> {
+            for (int i = 0; i < typeList.size(); i ++) {
+                if (typeList.get(i).type != PhotoFeedHolder.VIEW_TYPE_PHOTO) {
+                    continue;
+                }
+                Photo photo = getPhoto(i);
+                if (photo == null || !photo.id.equals(newPhoto.id)) {
+                    continue;
+                }
+                newPhoto.settingLike = false;
+                photoList.set(typeList.get(i).photoPosition, newPhoto);
+                if (refreshView) {
+                    int finalI = i;
+                    recyclerView.post(() -> notifyItemChanged(finalI, 1));
+                }
+                if (!probablyRepeat) {
+                    return;
+                }
             }
-            Photo photo = getPhoto(i);
-            if (photo == null || !photo.id.equals(newPhoto.id)) {
-                continue;
-            }
-            newPhoto.settingLike = false;
-            photoList.set(typeList.get(i).photoPosition, newPhoto);
-            if (refreshView) {
-                notifyItemChanged(i, 1);
-            }
-            if (!probablyRepeat) {
-                return;
-            }
-        }
+        });
     }
 
     public boolean isFooterView(int adapterPosition) {
@@ -316,6 +322,17 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     list,
                     typeList.get(adapterPosition).photoPosition,
                     headIndex);
+        }
+    }
+
+    @Override
+    public void createCollectResult(Collection collection) {
+        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.CREATE);
+
+        User user = AuthManager.getInstance().getUser();
+        if (user != null) {
+            user.total_collections ++;
+            Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
         }
     }
 
@@ -507,6 +524,7 @@ class PhotoFeedHolder extends RecyclerView.ViewHolder {
 
     public interface ParentAdapter {
         void startPhotoActivity(View image, View background, int adapterPosition);
+        void createCollectResult(Collection collection);
         void updateCollectResult(Photo photo, Collection collection, User user);
     }
 
@@ -585,7 +603,7 @@ class PhotoFeedHolder extends RecyclerView.ViewHolder {
 
         @Override
         public void onAddCollection(Collection c) {
-            // do nothing.
+            adapter.createCollectResult(c);
         }
 
         @Override

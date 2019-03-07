@@ -292,7 +292,7 @@ public class UpdateMeActivity extends MysplashActivity
                     new Callback<Me>() {
                         @Override
                         public void onSucceed(Me me) {
-                            AuthManager.getInstance().writeMe(me);
+                            AuthManager.getInstance().updateMe(me);
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
                                 ShortcutsManager.refreshShortcuts(UpdateMeActivity.this);
                             }

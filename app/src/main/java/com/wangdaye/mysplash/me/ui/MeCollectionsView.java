@@ -135,7 +135,7 @@ public class MeCollectionsView extends BothWaySwipeRefreshLayout
 
     public void updateCollection(Collection c) {
         if (stateManagePresenter.getState() == State.NORMAL) {
-            collectionAdapter.updateItem(c, true, false);
+            collectionAdapter.updateItem(recyclerView, c, true, false);
         } else {
             pagerManageView.onRefresh(index);
         }

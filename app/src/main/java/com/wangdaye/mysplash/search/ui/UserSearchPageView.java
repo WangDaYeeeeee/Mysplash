@@ -42,7 +42,7 @@ public class UserSearchPageView extends AbstractSearchPageView<User> {
 
     @Override
     public void updateItem(User user, boolean refreshView) {
-        userAdapter.updateUser(user, refreshView, true);
+        userAdapter.updateUser(recyclerView, user, refreshView, true);
     }
 
     @Override

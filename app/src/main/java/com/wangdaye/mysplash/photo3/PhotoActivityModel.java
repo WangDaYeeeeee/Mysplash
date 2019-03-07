@@ -2,11 +2,7 @@ package com.wangdaye.mysplash.photo3;
 
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
-
-import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -60,15 +56,6 @@ public class PhotoActivityModel extends BrowsableViewModel<Photo> {
         setResource(Resource.success(photo));
         photoId = photo.id;
         checkToRequestPhoto();
-    }
-
-    public void setCollectedListForPhoto(List<Collection> list) {
-        Photo photo = Objects.requireNonNull(getResource().getValue()).data;
-        if (photo != null) {
-            photo.current_user_collections.clear();
-            photo.current_user_collections.addAll(list);
-            setResource(Resource.success(photo));
-        }
     }
 
     public String getPhotoId() {

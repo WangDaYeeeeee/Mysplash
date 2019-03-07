@@ -458,6 +458,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Override
     public void onLikeOrDislikePhoto(Photo photo, int adapterPosition, boolean setToLike) {
         likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                photosView.getRecyclerView(),
                 (PhotoAdapter) photosView.getRecyclerViewAdapter(),
                 photo,
                 setToLike);

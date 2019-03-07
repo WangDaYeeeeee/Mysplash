@@ -165,7 +165,7 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
     }
 
     public void updatePhoto(Photo photo) {
-        photoAdapter.updatePhoto(photo, true, false);
+        photoAdapter.updatePhoto(recyclerView, photo, true, false);
     }
 
     // interface.

@@ -460,16 +460,19 @@ public class MainActivity extends LoadableActivity<Photo>
 
         if (fragment instanceof HomeFragment) {
             likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                    ((HomeFragment) fragment).getRecyclerView(),
                     (PhotoAdapter) ((HomeFragment) fragment).getRecyclerViewAdapter(),
                     photo,
                     setToLike);
         } else if (fragment instanceof FollowingFeedFragment) {
             likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                    ((FollowingFeedFragment) fragment).getRecyclerView(),
                     (FollowingAdapter) ((FollowingFeedFragment) fragment).getRecyclerViewAdapter(),
                     photo,
                     setToLike);
         } else if (fragment instanceof MultiFilterFragment) {
             likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                    ((MultiFilterFragment) fragment).getRecyclerView(),
                     (PhotoAdapter) ((MultiFilterFragment) fragment).getRecyclerViewAdapter(),
                     photo,
                     setToLike);

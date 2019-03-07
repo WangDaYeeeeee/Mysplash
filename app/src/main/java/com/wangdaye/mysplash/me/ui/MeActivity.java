@@ -216,8 +216,6 @@ public class MeActivity extends LoadableActivity<Photo>
         }
         switch (type) {
             case CREATE:
-                user.total_collections --;
-                drawTabTitles(user);
                 ((MeCollectionsView) pagers[collectionsPage()]).addCollection(collection);
                 break;
 
@@ -226,10 +224,16 @@ public class MeActivity extends LoadableActivity<Photo>
                 break;
 
             case DELETE:
-                user.total_collections --;
-                drawTabTitles(user);
                 ((MeCollectionsView) pagers[collectionsPage()]).removeCollection(collection);
                 break;
+        }
+    }
+
+    @Override
+    public void updateUser(@NonNull User user, Mysplash.MessageType type) {
+        if (AuthManager.getInstance().getUser() != null
+                && AuthManager.getInstance().getUser().username.equals(user.username)) {
+            AuthManager.getInstance().updateUser(user);
         }
     }
 
@@ -618,6 +622,7 @@ public class MeActivity extends LoadableActivity<Photo>
     public void onLikeOrDislikePhoto(Photo photo, int adapterPosition, boolean setToLike) {
         if (pagers[getCurrentPagerPosition()] instanceof MePhotosView) {
             likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                    pagers[getCurrentPagerPosition()].getRecyclerView(),
                     (PhotoAdapter) pagers[getCurrentPagerPosition()].getRecyclerViewAdapter(),
                     photo,
                     setToLike);

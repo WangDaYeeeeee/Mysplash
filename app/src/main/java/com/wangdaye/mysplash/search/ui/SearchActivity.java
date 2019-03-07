@@ -576,6 +576,7 @@ public class SearchActivity extends LoadableActivity<Photo>
     @Override
     public void onLikeOrDislikePhoto(Photo photo, int adapterPosition, boolean setToLike) {
         likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                pagers[getCurrentPagerPosition()].getRecyclerView(),
                 (PhotoAdapter) pagers[photoPage()].getRecyclerViewAdapter(),
                 photo,
                 setToLike);

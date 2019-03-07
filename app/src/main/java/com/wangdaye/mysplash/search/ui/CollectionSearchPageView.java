@@ -50,7 +50,7 @@ public class CollectionSearchPageView extends AbstractSearchPageView<Collection>
 
     @Override
     public void updateItem(Collection collection, boolean refreshView) {
-        collectionAdapter.updateItem(collection, refreshView, false);
+        collectionAdapter.updateItem(recyclerView, collection, refreshView, false);
     }
 
     public void removeCollection(Collection c) {

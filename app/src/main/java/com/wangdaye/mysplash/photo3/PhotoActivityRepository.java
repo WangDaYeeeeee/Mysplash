@@ -1,10 +1,13 @@
 package com.wangdaye.mysplash.photo3;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.LikePhotoResult;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
+import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import javax.inject.Inject;
 
@@ -93,7 +96,13 @@ public class PhotoActivityRepository {
                 Photo photo = current.getValue().data;
                 photo.liked_by_user = likePhotoResult.photo.liked_by_user;
                 photo.settingLike = false;
-                current.setValue(Resource.success(photo));
+                Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
+
+                User user = AuthManager.getInstance().getUser();
+                if (user != null) {
+                    user.total_likes += likePhotoResult.photo.liked_by_user ? 1 : -1;
+                    Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
+                }
             }
         }
 

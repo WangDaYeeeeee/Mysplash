@@ -119,7 +119,7 @@ public class LoginActivity extends MysplashActivity
                     new Callback<AccessToken>() {
                         @Override
                         public void onSucceed(AccessToken accessToken) {
-                            AuthManager.getInstance().writeAccessToken(accessToken);
+                            AuthManager.getInstance().updateAccessToken(accessToken);
                             AuthManager.getInstance().requestPersonalProfile();
                             IntentHelper.startMainActivity(LoginActivity.this);
                             finish();

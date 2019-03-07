@@ -10,6 +10,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
 import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.network.json.NotificationFeed;
 import com.wangdaye.mysplash.common.network.json.NotificationResult;
 import com.wangdaye.mysplash.common.network.json.NotificationStream;
@@ -250,7 +251,7 @@ public class UserNotificationManager {
         this.listenerList.remove(l);
     }
 
-    private class OnRequestStreamCallback extends Callback<ResponseBody> {
+    private class OnRequestStreamCallback extends NoBodyCallback<ResponseBody> {
 
         private boolean refresh;
         private boolean canceled;

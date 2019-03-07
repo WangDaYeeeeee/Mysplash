@@ -134,7 +134,7 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
     }
 
     public void updatePhoto(Photo p) {
-        photoAdapter.updatePhoto(p, true, false);
+        photoAdapter.updatePhoto(recyclerView, p, true, false);
     }
 
     // interface.

@@ -18,7 +18,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -192,17 +191,7 @@ public class PhotoService {
     }
 
     public void downloadPhoto(String url) {
-        api.downloadPhoto(url).enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onSucceed(ResponseBody responseBody) {
-                // do nothing.
-            }
-
-            @Override
-            public void onFailed() {
-                // do nothing.
-            }
-        });
+        api.downloadPhoto(url).enqueue(null);
     }
 
     public void cancel() {

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.collection.ui.CollectionActivity;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.util.ArrayList;
@@ -147,21 +149,25 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         notifyDataSetChanged();
     }
 
-    public void updatePhoto(Photo newPhoto, boolean refreshView, boolean probablyRepeat) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id.equals(newPhoto.id)) {
-                newPhoto.loadPhotoSuccess = itemList.get(i).loadPhotoSuccess;
-                newPhoto.hasFadedIn = itemList.get(i).hasFadedIn;
-                newPhoto.settingLike = false;
-                itemList.set(i, newPhoto);
-                if (refreshView) {
-                    notifyItemChanged(i, 1);
-                }
-                if (!probablyRepeat) {
-                    return;
+    public void updatePhoto(RecyclerView recyclerView,
+                            Photo newPhoto, boolean refreshView, boolean probablyRepeat) {
+        ThreadManager.getInstance().execute(() -> {
+            for (int i = 0; i < itemList.size(); i ++) {
+                if (itemList.get(i).id.equals(newPhoto.id)) {
+                    newPhoto.loadPhotoSuccess = itemList.get(i).loadPhotoSuccess;
+                    newPhoto.hasFadedIn = itemList.get(i).hasFadedIn;
+                    newPhoto.settingLike = false;
+                    itemList.set(i, newPhoto);
+                    if (refreshView) {
+                        int finalI = i;
+                        recyclerView.post(() -> notifyItemChanged(finalI, 1));
+                    }
+                    if (!probablyRepeat) {
+                        return;
+                    }
                 }
             }
-        }
+        });
     }
 
     public void setPhotoData(List<Photo> list) {
@@ -209,6 +215,17 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     }
 
     @Override
+    public void createCollectResult(Collection collection) {
+        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.CREATE);
+
+        User user = AuthManager.getInstance().getUser();
+        if (user != null) {
+            user.total_collections ++;
+            Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
+        }
+    }
+
+    @Override
     public void updateCollectResult(Photo photo, Collection collection, User user) {
         Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
         Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.UPDATE);
@@ -216,7 +233,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
     }
 
     @Override
-    public void updateDeleteResult(Photo photo, Collection collection, User user) {
+    public void removePhotoFromCollectionResult(Photo photo, Collection collection, User user) {
         removeItem(photo);
         Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
         Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.UPDATE);
@@ -324,8 +341,9 @@ class PhotoHolder extends RecyclerView.ViewHolder {
 
     public interface ParentAdapter {
         void startPhotoActivity(View image, View background, int adapterPosition);
+        void createCollectResult(Collection collection);
         void updateCollectResult(Photo photo, Collection collection, User user);
-        void updateDeleteResult(Photo photo, Collection collection, User user);
+        void removePhotoFromCollectionResult(Photo photo, Collection collection, User user);
     }
 
     @OnClick(R.id.item_photo) void clickItem() {
@@ -341,7 +359,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             dialog.setDeleteInfo(((CollectionActivity) activity).getCollection(), photo);
             dialog.setOnDeleteCollectionListener(result -> {
                 if (parentAdapter != null) {
-                    parentAdapter.updateDeleteResult(result.photo, result.collection, result.user);
+                    parentAdapter.removePhotoFromCollectionResult(result.photo, result.collection, result.user);
                 }
             });
             dialog.show(activity.getSupportFragmentManager(), null);
@@ -416,7 +434,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
 
         @Override
         public void onAddCollection(Collection c) {
-            // do nothing.
+            adapter.createCollectResult(c);
         }
 
         @Override

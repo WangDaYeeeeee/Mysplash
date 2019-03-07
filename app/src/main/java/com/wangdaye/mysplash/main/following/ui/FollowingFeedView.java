@@ -231,7 +231,7 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     public void updatePhoto(Photo p, boolean refreshView) {
-        followingAdapter.updatePhoto(p, refreshView, true);
+        followingAdapter.updatePhoto(recyclerView, p, refreshView, true);
     }
 
     /**

@@ -36,7 +36,6 @@ import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
-import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.ScalableImageView;
@@ -610,15 +609,23 @@ public class PhotoActivity3 extends ReadWriteActivity
                         new SelectCollectionDialog.OnCollectionsChangedListener() {
                             @Override
                             public void onAddCollection(Collection c) {
-                                // do nothing.
+                                Mysplash.getInstance().dispatchCollectionUpdate(c, Mysplash.MessageType.CREATE);
+                                User user = AuthManager.getInstance().getUser();
+                                if (user != null) {
+                                    user.total_collections ++;
+                                    Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
+                                }
                             }
 
                             @Override
                             public void onUpdateCollection(Collection c, User u, Photo p) {
-                                activityModel.setCollectedListForPhoto(p.current_user_collections);
-                                Mysplash.getInstance().dispatchPhotoUpdate(
-                                        activityModel.getResource().getValue().data,
-                                        Mysplash.MessageType.UPDATE);
+                                Photo photo = activityModel.getResource().getValue().data;
+                                photo.current_user_collections.clear();
+                                photo.current_user_collections.addAll(p.current_user_collections);
+                                Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
+
+                                Mysplash.getInstance().dispatchCollectionUpdate(c, Mysplash.MessageType.UPDATE);
+                                Mysplash.getInstance().dispatchUserUpdate(u, Mysplash.MessageType.UPDATE);
                             }
                 });
                 dialog.show((this).getSupportFragmentManager(), null);

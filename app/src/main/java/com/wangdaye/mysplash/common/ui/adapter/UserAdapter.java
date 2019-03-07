@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Build;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -93,19 +95,23 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
-    public void updateUser(User newUser, boolean refreshView, boolean probablyRepeat) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id.equals(newUser.id)) {
-                newUser.hasFadedIn = itemList.get(i).hasFadedIn;
-                itemList.set(i, newUser);
-                if (refreshView) {
-                    notifyItemChanged(i);
-                }
-                if (!probablyRepeat) {
-                    return;
+    public void updateUser(RecyclerView recyclerView,
+                           User newUser, boolean refreshView, boolean probablyRepeat) {
+        ThreadManager.getInstance().execute(() -> {
+            for (int i = 0; i < itemList.size(); i ++) {
+                if (itemList.get(i).id.equals(newUser.id)) {
+                    newUser.hasFadedIn = itemList.get(i).hasFadedIn;
+                    itemList.set(i, newUser);
+                    if (refreshView) {
+                        int finalI = i;
+                        recyclerView.post(() -> notifyItemChanged(finalI));
+                    }
+                    if (!probablyRepeat) {
+                        return;
+                    }
                 }
             }
-        }
+        });
     }
 }
 

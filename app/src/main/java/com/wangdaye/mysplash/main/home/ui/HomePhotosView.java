@@ -143,7 +143,7 @@ public class HomePhotosView extends BothWaySwipeRefreshLayout
     }
 
     public void updatePhoto(Photo photo, boolean refreshView) {
-        photoAdapter.updatePhoto(photo, refreshView, false);
+        photoAdapter.updatePhoto(recyclerView, photo, refreshView, false);
     }
 
     // interface.

@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.api.CollectionApi;
+import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.interceptor.AuthInterceptor;
@@ -34,6 +35,7 @@ public class CollectionService {
 
     @Nullable private Call call;
     @Nullable private Callback callback;
+    @Nullable private NoBodyCallback noBodyCallback;
 
     private CollectionNodeService nodeService;
 
@@ -190,11 +192,11 @@ public class CollectionService {
         this.callback = callback;
     }
 
-    public void deleteCollection(@IntRange(from = 0) int id, Callback<ResponseBody> callback) {
+    public void deleteCollection(@IntRange(from = 0) int id, NoBodyCallback<ResponseBody> callback) {
         Call<ResponseBody> deleteCollection = api.deleteCollection(id);
         deleteCollection.enqueue(callback);
         this.call = deleteCollection;
-        this.callback = callback;
+        this.noBodyCallback = callback;
     }
 
     public void cancel() {
@@ -203,6 +205,9 @@ public class CollectionService {
         }
         if (callback != null) {
             callback.cancel();
+        }
+        if (noBodyCallback != null) {
+            noBodyCallback.cancel();
         }
         if (call != null) {
             call.cancel();

@@ -214,11 +214,7 @@ public class AuthManager {
 
     // setter.
 
-    public void updateUser(User u) {
-        this.user = u;
-    }
-
-    public void writeAccessToken(AccessToken token) {
+    public void updateAccessToken(AccessToken token) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_ACCESS_TOKEN, token.access_token);
@@ -232,7 +228,17 @@ public class AuthManager {
         }
     }
 
-    public void writeMe(Me me) {
+    public void updateMe(Me me) {
+        this.me = me;
+        writeMe(me);
+    }
+
+    public void updateUser(User user) {
+        this.user = user;
+        writeUser(user);
+    }
+
+    private void writeMe(Me me) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
         editor.putString(KEY_USERNAME, me.username);

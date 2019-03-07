@@ -2,8 +2,8 @@ package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.api.GetStreamApi;
+import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import javax.inject.Inject;
@@ -23,7 +23,7 @@ public class GetStreamService {
     private GetStreamApi api;
 
     @Nullable private Call call;
-    @Nullable private Callback callback;
+    @Nullable private NoBodyCallback callback;
 
     @Inject
     public GetStreamService(OkHttpClient client) {
@@ -36,7 +36,7 @@ public class GetStreamService {
         callback = null;
     }
 
-    public void requestFirstPageStream(Callback<ResponseBody> callback) {
+    public void requestFirstPageStream(NoBodyCallback<ResponseBody> callback) {
         if (AuthManager.getInstance().isAuthorized()
                 && AuthManager.getInstance().getUser() != null
                 && AuthManager.getInstance().getUser().numeric_id >= 0) {
@@ -44,13 +44,13 @@ public class GetStreamService {
         }
     }
 
-    private void optionFirstPageStream(final int numeric_id, Callback<ResponseBody> callback) {
+    private void optionFirstPageStream(final int numeric_id, NoBodyCallback<ResponseBody> callback) {
         Call<ResponseBody> optionFirstPageStream = api.optionFirstPageStream(
                 numeric_id,
                 Mysplash.DEFAULT_PER_PAGE,
                 BuildConfig.GET_STREAM_KEY,
                 "unspecified");
-        optionFirstPageStream.enqueue(new Callback<ResponseBody>() {
+        optionFirstPageStream.enqueue(new NoBodyCallback<ResponseBody>() {
             @Override
             public void onSucceed(ResponseBody responseBody) {
                 requestFirstPageStream(numeric_id, callback);
@@ -65,7 +65,7 @@ public class GetStreamService {
         this.callback = callback;
     }
 
-    private void requestFirstPageStream(int numeric_id, Callback<ResponseBody> callback) {
+    private void requestFirstPageStream(int numeric_id, NoBodyCallback<ResponseBody> callback) {
         Call<ResponseBody> getFirstPageStream = api.getFirstPageStream(
                 numeric_id, Mysplash.DEFAULT_PER_PAGE, BuildConfig.GET_STREAM_KEY, "unspecified");
         getFirstPageStream.enqueue(callback);
@@ -73,9 +73,9 @@ public class GetStreamService {
         this.callback = callback;
     }
 
-    public void requestNextPageStream(final String nextPage, Callback<ResponseBody> callback) {
+    public void requestNextPageStream(final String nextPage, NoBodyCallback<ResponseBody> callback) {
         Call<ResponseBody> optionNextPageStream = api.optionNextPageStream(nextPage);
-        optionNextPageStream.enqueue(new Callback<ResponseBody>() {
+        optionNextPageStream.enqueue(new NoBodyCallback<ResponseBody>() {
             @Override
             public void onSucceed(ResponseBody responseBody) {
                 requestNextPage(nextPage, callback);
@@ -90,7 +90,7 @@ public class GetStreamService {
         this.callback = callback;
     }
 
-    private void requestNextPage(String nextPage, Callback<ResponseBody> callback) {
+    private void requestNextPage(String nextPage, NoBodyCallback<ResponseBody> callback) {
         Call<ResponseBody> getNextPageStream = api.getNextPageStream(nextPage);
         getNextPageStream.enqueue(callback);
         this.call = getNextPageStream;

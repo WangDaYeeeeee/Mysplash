@@ -593,6 +593,7 @@ public class UserActivity extends LoadableActivity<Photo>
         if (pagers[getCurrentPagerPosition()] instanceof UserPhotosView
                 && pagers[getCurrentPagerPosition()].getRecyclerViewAdapter() instanceof PhotoAdapter) {
             likeOrDislikePhotoPresenter.likeOrDislikePhoto(
+                    pagers[getCurrentPagerPosition()].getRecyclerView(),
                     (PhotoAdapter) (pagers[getCurrentPagerPosition()]).getRecyclerViewAdapter(),
                     photo,
                     setToLike);

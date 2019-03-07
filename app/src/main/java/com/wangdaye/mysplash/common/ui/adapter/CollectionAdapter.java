@@ -6,6 +6,7 @@ import android.os.Build;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -122,32 +124,37 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         }
     }
 
-    public void updateItem(Collection c, boolean refreshView, boolean probablyRepeat) {
-        for (int i = 0; i < getRealItemCount(); i ++) {
-            if (itemList.get(i).id == c.id) {
-                if (c.cover_photo != null && itemList.get(i).cover_photo != null) {
-                    c.cover_photo.loadPhotoSuccess = itemList.get(i).cover_photo.loadPhotoSuccess;
-                    c.cover_photo.hasFadedIn = itemList.get(i).cover_photo.hasFadedIn;
-                }
-                if ((itemList.get(i).cover_photo == null && c.cover_photo != null)
-                        || (itemList.get(i).cover_photo != null && c.cover_photo == null)
-                        || (itemList.get(i).cover_photo != null && c.cover_photo != null
-                        && !itemList.get(i).cover_photo.id.equals(c.cover_photo.id))) {
-                    itemList.set(i, c);
-                    if (refreshView) {
-                        notifyItemChanged(i, PAYLOAD_RESET);
+    public void updateItem(RecyclerView recyclerView,
+                           Collection c, boolean refreshView, boolean probablyRepeat) {
+        ThreadManager.getInstance().execute(() -> {
+            for (int i = 0; i < itemList.size(); i ++) {
+                if (itemList.get(i).id == c.id) {
+                    if (c.cover_photo != null && itemList.get(i).cover_photo != null) {
+                        c.cover_photo.loadPhotoSuccess = itemList.get(i).cover_photo.loadPhotoSuccess;
+                        c.cover_photo.hasFadedIn = itemList.get(i).cover_photo.hasFadedIn;
                     }
-                } else {
-                    itemList.set(i, c);
-                    if (refreshView) {
-                        notifyItemChanged(i, PAYLOAD_UPDATE);
+                    if ((itemList.get(i).cover_photo == null && c.cover_photo != null)
+                            || (itemList.get(i).cover_photo != null && c.cover_photo == null)
+                            || (itemList.get(i).cover_photo != null && c.cover_photo != null
+                            && !itemList.get(i).cover_photo.id.equals(c.cover_photo.id))) {
+                        itemList.set(i, c);
+                        if (refreshView) {
+                            int finalI = i;
+                            recyclerView.post(() -> notifyItemChanged(finalI, PAYLOAD_RESET));
+                        }
+                    } else {
+                        itemList.set(i, c);
+                        if (refreshView) {
+                            int finalI1 = i;
+                            recyclerView.post(() -> notifyItemChanged(finalI1, PAYLOAD_UPDATE));
+                        }
                     }
-                }
-                if (!probablyRepeat) {
-                    return;
+                    if (!probablyRepeat) {
+                        return;
+                    }
                 }
             }
-        }
+        });
     }
 
     public List<Collection> getItemList() {
@@ -170,7 +177,6 @@ class CollectionHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    @SuppressLint("SetTextI18n")
     void onBindView(Collection collection, int columnCount, boolean update) {
         Context context = itemView.getContext();
 
@@ -201,33 +207,24 @@ class CollectionHolder extends RecyclerView.ViewHolder {
         }
 
         if (update) {
-            title.setText(collection.title.toUpperCase());
-            subtitle.setText(collection.total_photos
-                    + " " + context.getResources().getStringArray(R.array.user_tabs)[0]);
+            setCardText(context, collection, false);
         } else {
-            title.setText("");
-            subtitle.setText("");
-            name.setText("");
-            image.setShowShadow(false);
-
             if (collection.cover_photo != null) {
+                setCardText(context, collection, true);
                 ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
                     collection.cover_photo.loadPhotoSuccess = true;
                     if (!collection.cover_photo.hasFadedIn) {
                         collection.cover_photo.hasFadedIn = true;
                         ImageHelper.startSaturationAnimation(context, image);
                     }
-                    title.setText(collection.title.toUpperCase());
-                    subtitle.setText(collection.total_photos
-                            + " " + context.getResources().getStringArray(R.array.user_tabs)[0]);
-                    name.setText(collection.user.name);
-                    image.setShowShadow(true);
+                    setCardText(context, collection, false);
                 });
                 card.setCardBackgroundColor(
                         ImageHelper.computeCardBackgroundColor(
                                 image.getContext(),
                                 collection.cover_photo.color));
             } else {
+                setCardText(context, collection, false);
                 ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
             }
 
@@ -244,6 +241,26 @@ class CollectionHolder extends RecyclerView.ViewHolder {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             card.setTransitionName(collection.id + "-background");
             avatar.setTransitionName(collection.user.username + "-avatar");
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setCardText(Context context, Collection collection, boolean setNull) {
+        if (setNull) {
+            title.setText("");
+            subtitle.setText("");
+            name.setText("");
+            image.setShowShadow(false);
+        } else {
+            title.setText(collection.title.toUpperCase());
+            subtitle.setText(collection.total_photos
+                    + " " + context.getResources().getStringArray(R.array.user_tabs)[0]);
+            name.setText(collection.user.name);
+            if (collection.cover_photo == null) {
+                image.setShowShadow(false);
+            } else {
+                image.setShowShadow(true);
+            }
         }
     }
 

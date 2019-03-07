@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
@@ -253,7 +254,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
         }
     };
 
-    private Callback<ResponseBody> onDeleteCollectionCallback = new Callback<ResponseBody>() {
+    private NoBodyCallback<ResponseBody> onDeleteCollectionCallback = new NoBodyCallback<ResponseBody>() {
         @Override
         public void onSucceed(ResponseBody responseBody) {
             if (listener != null) {

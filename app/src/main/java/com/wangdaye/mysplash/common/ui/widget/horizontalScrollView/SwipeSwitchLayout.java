@@ -349,10 +349,18 @@ public class SwipeSwitchLayout extends FrameLayout {
                 initialY = ev.getY();
                 dX = 0;
                 swipeDistance = 0;
+
                 if (isNestedScrollEnable() && scalableView != null) {
-                    scalableView.getImageState();
                     scalableView.cancelFling();
+                    scalableView.getImageState();
                 }
+
+                if (velocityTracker != null) {
+                    velocityTracker.clear();
+                    velocityTracker = null;
+                }
+                velocityTracker = VelocityTracker.obtain();
+                velocityTracker.addMovement(ev);
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -362,6 +370,10 @@ public class SwipeSwitchLayout extends FrameLayout {
                         isBeingDragged = true;
                         if (Math.abs(ev.getX() - initialX) > Math.abs(ev.getY() - initialY)) {
                             isHorizontalDragged = true;
+                            if (velocityTracker == null) {
+                                velocityTracker = VelocityTracker.obtain();
+                            }
+                            velocityTracker.addMovement(ev);
                         }
                     } else {
                         initialX = ev.getX();
@@ -389,25 +401,12 @@ public class SwipeSwitchLayout extends FrameLayout {
         velocityTracker.addMovement(ev);
 
         switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                isBeingDragged = false;
-                isHorizontalDragged = false;
-                initialX = ev.getX();
-                initialY = ev.getY();
-                dX = 0;
-                swipeDistance = 0;
-                if (isNestedScrollEnable() && scalableView != null) {
-                    scalableView.cancelFling();
-                    scalableView.getImageState();
-                }
-                break;
-
             case MotionEvent.ACTION_MOVE:
                 if (isBeingDragged && isHorizontalDragged) {
                     dX = ev.getX() - initialX;
                     float consumed = 0;
                     if (isNestedScrollEnable() && scalableView != null) {
-                        consumed = scalableView.setTranslation(dX);
+                        consumed = scalableView.setTranslation(dX, false);
                     }
                     swipeDistance = dX - consumed;
                     if (listener != null) {

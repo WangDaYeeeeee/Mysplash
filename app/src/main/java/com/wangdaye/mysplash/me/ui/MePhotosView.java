@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -133,7 +134,7 @@ public class MePhotosView extends BothWaySwipeRefreshLayout
     }
 
     public void updatePhoto(Photo p) {
-        photoAdapter.updatePhoto(p, true, false);
+        photoAdapter.updatePhoto(recyclerView, p, true, false);
     }
 
     // interface.

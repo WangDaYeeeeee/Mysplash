@@ -128,7 +128,7 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
     // collection.
 
     public void updateCollection(Collection collection) {
-        collectionAdapter.updateItem(collection, true,  false);
+        collectionAdapter.updateItem(recyclerView, collection, true,  false);
     }
 
     public void deleteCollection(Collection collection) {

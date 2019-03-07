@@ -6,6 +6,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,7 +157,7 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
     }
 
     public void updatePhoto(Photo photo, boolean refreshView) {
-        photoAdapter.updatePhoto(photo, refreshView, true);
+        photoAdapter.updatePhoto(recyclerView, photo, refreshView, true);
     }
 
     // interface.

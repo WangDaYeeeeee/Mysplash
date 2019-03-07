@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.search.ui;
 
 import android.annotation.SuppressLint;
+import android.os.Handler;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.presenter.PagerLoadablePresenter;
@@ -25,7 +26,7 @@ public class PhotoSearchPageView extends AbstractSearchPageView<Photo>
 
     private PhotoAdapter photoAdapter;
 
-    PagerLoadablePresenter loadMorePresenter;
+    private PagerLoadablePresenter loadMorePresenter;
 
     public PhotoSearchPageView(SearchActivity a, int id, List<Photo> itemList,
                                boolean selected, int index, PagerManageView v) {
@@ -66,7 +67,7 @@ public class PhotoSearchPageView extends AbstractSearchPageView<Photo>
 
     @Override
     public void updateItem(Photo photo, boolean refreshView) {
-        photoAdapter.updatePhoto(photo, refreshView, true);
+        photoAdapter.updatePhoto(recyclerView, photo, refreshView, true);
     }
 
     @Override
@@ -127,6 +128,6 @@ public class PhotoSearchPageView extends AbstractSearchPageView<Photo>
 
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
-        photoAdapter.updatePhoto(p, true, true);
+        photoAdapter.updatePhoto(recyclerView, p, true, true);
     }
 }
