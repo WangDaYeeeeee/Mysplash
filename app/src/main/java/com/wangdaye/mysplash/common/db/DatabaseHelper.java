@@ -5,9 +5,6 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.Nullable;
 import android.util.Log;
 
-import com.wangdaye.mysplash.common.data.table.DaoMaster;
-import com.wangdaye.mysplash.common.data.table.WallpaperSourceDao;
-
 import org.greenrobot.greendao.database.Database;
 
 import java.util.List;

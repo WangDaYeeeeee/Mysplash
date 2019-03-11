@@ -18,8 +18,8 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.Me;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.UserService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -289,7 +289,7 @@ public class UpdateMeActivity extends MysplashActivity
                     portfolioTxt.getText().toString(),
                     locationTxt.getText().toString(),
                     bioTxt.getText().toString(),
-                    new Callback<Me>() {
+                    new BaseObserver<Me>() {
                         @Override
                         public void onSucceed(Me me) {
                             AuthManager.getInstance().updateMe(me);

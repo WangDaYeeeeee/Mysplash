@@ -1,33 +1,20 @@
-package com.wangdaye.mysplash.common.utils.presenter;
+package com.wangdaye.mysplash.common.utils.presenter.pager;
 
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
-import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
-import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.network.json.Photo;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 public abstract class PagerLoadablePresenter {
 
-    private BothWaySwipeRefreshLayout refreshLayout;
-    private RecyclerView recyclerView;
-    private FooterAdapter adapter;
-    @Nullable private PagerManageView pagerManageView;
-
-    public PagerLoadablePresenter(BothWaySwipeRefreshLayout refreshLayout,
-                                  RecyclerView recyclerView, FooterAdapter adapter,
-                                  @Nullable PagerManageView pagerManageView) {
-        this.refreshLayout = refreshLayout;
-        this.recyclerView = recyclerView;
-        this.adapter = adapter;
-        this.pagerManageView = pagerManageView;
-    }
-
-    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection, int pagerIndex) {
+    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection,
+                                PagerView pagerView, RecyclerView recyclerView, FooterAdapter adapter,
+                                PagerManageView pagerManageView, int pagerIndex) {
         if ((headDirection && adapter.getRealItemCount() < headIndex)
                 || (!headDirection && adapter.getRealItemCount() < headIndex + list.size())) {
             return new ArrayList<>();
@@ -38,7 +25,7 @@ public abstract class PagerLoadablePresenter {
         }
         if (!recyclerView.canScrollVertically(1)
                 && pagerManageView != null && pagerManageView.isLoading(pagerIndex)) {
-            refreshLayout.setLoading(true);
+            pagerView.setSwipeLoading(true);
         }
 
         if (headDirection) {
@@ -57,8 +44,4 @@ public abstract class PagerLoadablePresenter {
     }
 
     public abstract List<Photo> subList(int fromIndex, int toIndex);
-
-    public void setPagerManageView(@Nullable PagerManageView v) {
-        pagerManageView = v;
-    }
 }

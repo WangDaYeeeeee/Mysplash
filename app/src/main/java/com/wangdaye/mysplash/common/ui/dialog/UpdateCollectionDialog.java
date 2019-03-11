@@ -20,9 +20,9 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
-import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -162,12 +162,12 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
                 title,
                 description,
                 privateX,
-                onRequestCollectionCallback);
+                onRequestCollectionObserver);
         setState(UPDATE_STATE);
     }
 
     private void deleteCollection() {
-        service.deleteCollection(collection.id, onDeleteCollectionCallback);
+        service.deleteCollection(collection.id, onDeleteCollectionObserver);
     }
 
     private void notifyUpdateFailed() {
@@ -238,7 +238,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
         listener = l;
     }
 
-    private Callback<Collection> onRequestCollectionCallback = new Callback<Collection>() {
+    private BaseObserver<Collection> onRequestCollectionObserver = new BaseObserver<Collection>() {
         @Override
         public void onSucceed(Collection collection) {
             if (listener != null) {
@@ -254,7 +254,7 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
         }
     };
 
-    private NoBodyCallback<ResponseBody> onDeleteCollectionCallback = new NoBodyCallback<ResponseBody>() {
+    private NoBodyObserver<ResponseBody> onDeleteCollectionObserver = new NoBodyObserver<ResponseBody>() {
         @Override
         public void onSucceed(ResponseBody responseBody) {
             if (listener != null) {

@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.main.collection;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 
 import javax.inject.Inject;
@@ -30,9 +30,9 @@ public class CollectionsViewRepository {
 
         service.cancel();
         service.requestAllCollections(
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void getCuratedCollections(@NonNull MutableLiveData<ListResource<Collection>> current,
@@ -46,9 +46,9 @@ public class CollectionsViewRepository {
 
         service.cancel();
         service.requestCuratedCollections(
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void getFeaturedCollections(@NonNull MutableLiveData<ListResource<Collection>> current,
@@ -62,9 +62,9 @@ public class CollectionsViewRepository {
 
         service.cancel();
         service.requestFeaturedCollections(
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void cancel() {

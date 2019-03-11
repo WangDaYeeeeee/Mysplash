@@ -3,16 +3,21 @@ package com.wangdaye.mysplash.common.network.service;
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.network.api.GetStreamApi;
-import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
+import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
+import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import javax.inject.Inject;
 
-import androidx.annotation.Nullable;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 /**
  * Get stream service.
@@ -21,80 +26,54 @@ import retrofit2.Retrofit;
 public class GetStreamService {
 
     private GetStreamApi api;
-
-    @Nullable private Call call;
-    @Nullable private NoBodyCallback callback;
+    private CompositeDisposable compositeDisposable;
 
     @Inject
-    public GetStreamService(OkHttpClient client) {
+    public GetStreamService(OkHttpClient client,
+                            RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+                            CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.STREAM_API_BASE_URL)
                 .client(client)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((GetStreamApi.class));
-        call = null;
-        callback = null;
+        compositeDisposable = disposable;
     }
 
-    public void requestFirstPageStream(NoBodyCallback<ResponseBody> callback) {
+    public void requestFirstPageStream(NoBodyObserver<ResponseBody> observer) {
         if (AuthManager.getInstance().isAuthorized()
                 && AuthManager.getInstance().getUser() != null
                 && AuthManager.getInstance().getUser().numeric_id >= 0) {
-            optionFirstPageStream(AuthManager.getInstance().getUser().numeric_id, callback);
+            int numericId = AuthManager.getInstance().getUser().numeric_id;
+            api.optionFirstPageStream(
+                    numericId,
+                    Mysplash.DEFAULT_PER_PAGE,
+                    BuildConfig.GET_STREAM_KEY,
+                    "unspecified")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(Schedulers.io())
+                    .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody ->
+                            api.getFirstPageStream(
+                                    numericId,
+                                    Mysplash.DEFAULT_PER_PAGE,
+                                    BuildConfig.GET_STREAM_KEY,
+                                    "unspecified"))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
+        } else {
+            observer.onFailed();
         }
     }
 
-    private void optionFirstPageStream(final int numeric_id, NoBodyCallback<ResponseBody> callback) {
-        Call<ResponseBody> optionFirstPageStream = api.optionFirstPageStream(
-                numeric_id,
-                Mysplash.DEFAULT_PER_PAGE,
-                BuildConfig.GET_STREAM_KEY,
-                "unspecified");
-        optionFirstPageStream.enqueue(new NoBodyCallback<ResponseBody>() {
-            @Override
-            public void onSucceed(ResponseBody responseBody) {
-                requestFirstPageStream(numeric_id, callback);
-            }
-
-            @Override
-            public void onFailed() {
-                callback.onFailed();
-            }
-        });
-        this.call = optionFirstPageStream;
-        this.callback = callback;
-    }
-
-    private void requestFirstPageStream(int numeric_id, NoBodyCallback<ResponseBody> callback) {
-        Call<ResponseBody> getFirstPageStream = api.getFirstPageStream(
-                numeric_id, Mysplash.DEFAULT_PER_PAGE, BuildConfig.GET_STREAM_KEY, "unspecified");
-        getFirstPageStream.enqueue(callback);
-        this.call = getFirstPageStream;
-        this.callback = callback;
-    }
-
-    public void requestNextPageStream(final String nextPage, NoBodyCallback<ResponseBody> callback) {
-        Call<ResponseBody> optionNextPageStream = api.optionNextPageStream(nextPage);
-        optionNextPageStream.enqueue(new NoBodyCallback<ResponseBody>() {
-            @Override
-            public void onSucceed(ResponseBody responseBody) {
-                requestNextPage(nextPage, callback);
-            }
-
-            @Override
-            public void onFailed() {
-                callback.onFailed();
-            }
-        });
-        this.call = optionNextPageStream;
-        this.callback = callback;
-    }
-
-    private void requestNextPage(String nextPage, NoBodyCallback<ResponseBody> callback) {
-        Call<ResponseBody> getNextPageStream = api.getNextPageStream(nextPage);
-        getNextPageStream.enqueue(callback);
-        this.call = getNextPageStream;
-        this.callback = callback;
+    public void requestNextPageStream(final String nextPage, NoBodyObserver<ResponseBody> observer) {
+        api.optionNextPageStream(nextPage)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody ->
+                        api.getNextPageStream(nextPage))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public String getStreamUsablePart(String stream) {
@@ -106,11 +85,6 @@ public class GetStreamService {
     }
 
     public void cancel() {
-        if (callback != null) {
-            callback.cancel();
-        }
-        if (call != null) {
-            call.cancel();
-        }
+        compositeDisposable.clear();
     }
 }

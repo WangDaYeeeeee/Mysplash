@@ -45,9 +45,6 @@ public class TagHolder extends PhotoInfoAdapter3.ViewHolder {
     @Override
     protected void onBindView(PhotoActivity3 a, Photo photo) {
         List<Tag> tagList = new ArrayList<>();
-        if (photo.categories != null) {
-            tagList.addAll(photo.categories);
-        }
         if (photo.tags != null) {
             tagList.addAll(photo.tags);
         }

@@ -6,21 +6,25 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.SchedulerTransformer;
+import com.wangdaye.mysplash.common.network.api.PhotoNodeApi;
 import com.wangdaye.mysplash.common.network.api.PhotoApi;
+import com.wangdaye.mysplash.common.network.interceptor.NapiInterceptor;
 import com.wangdaye.mysplash.common.network.json.LikePhotoResult;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.interceptor.AuthInterceptor;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
 import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -30,108 +34,111 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class PhotoService {
 
     private PhotoApi api;
-
-    @Nullable private Call call;
-    @Nullable private Callback callback;
-
-    private PhotoNodeService nodeService;
+    private PhotoNodeApi nodeApi;
+    private CompositeDisposable compositeDisposable;
 
     @Inject
-    public PhotoService(OkHttpClient client, GsonConverterFactory factory) {
+    public PhotoService(OkHttpClient client,
+                        GsonConverterFactory gsonConverterFactory,
+                        RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+                        CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
                 .client(client.newBuilder()
                         .addInterceptor(new AuthInterceptor())
                         .build())
-                .addConverterFactory(factory)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((PhotoApi.class));
-        call = null;
-        callback = null;
-        nodeService = TextUtils.isEmpty(Mysplash.UNSPLASH_NODE_API_URL)
-                ? null : new PhotoNodeService(client, factory);
+        nodeApi = TextUtils.isEmpty(Mysplash.UNSPLASH_NODE_API_URL)
+                ? null
+                : new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_URL)
+                .client(client.newBuilder()
+                        .addInterceptor(new AuthInterceptor())
+                        .addInterceptor(new NapiInterceptor())
+                        .build())
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
+                .build()
+                .create((PhotoNodeApi.class));
+        compositeDisposable = disposable;
     }
 
     public void requestPhotos(@Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                              String order_by, Callback<List<Photo>> callback) {
-        Call<List<Photo>> getPhotos = api.getPhotos(page, per_page, order_by);
-        getPhotos.enqueue(callback);
-        this.call = getPhotos;
-        this.callback = callback;
+                              String order_by, BaseObserver<List<Photo>> observer) {
+        api.getPhotos(page, per_page, order_by)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void requestCuratePhotos(@Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                    String order_by, Callback<List<Photo>> callback) {
-        Call<List<Photo>> getCuratePhotos = api.getCuratedPhotos(page, per_page, order_by);
-        getCuratePhotos.enqueue(callback);
-        this.call = getCuratePhotos;
-        this.callback = callback;
+                                    String order_by, BaseObserver<List<Photo>> observer) {
+        api.getCuratedPhotos(page, per_page, order_by)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
-    public void likePhoto(String id, Callback<LikePhotoResult> callback) {
-        Call<LikePhotoResult> likePhoto = api.likeAPhoto(id);
-        likePhoto.enqueue(callback);
-        this.call = likePhoto;
-        this.callback = callback;
+    public void likePhoto(String id, BaseObserver<LikePhotoResult> observer) {
+        api.likeAPhoto(id)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
-    public void cancelLikePhoto(String id, Callback<LikePhotoResult> callback) {
-        Call<LikePhotoResult> cancelLikePhoto = api.unlikeAPhoto(id);
-        cancelLikePhoto.enqueue(callback);
-        this.call = cancelLikePhoto;
-        this.callback = callback;
+    public void cancelLikePhoto(String id, BaseObserver<LikePhotoResult> observer) {
+        api.unlikeAPhoto(id)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
-    public void requestAPhoto(String id, Callback<Photo> callback) {
-        if (nodeService == null) {
-            Call<Photo> getAPhoto = api.getAPhoto(id);
-            getAPhoto.enqueue(callback);
-            this.call = getAPhoto;
-            this.callback = callback;
+    public void requestAPhoto(String id, BaseObserver<Photo> observer) {
+        if (nodeApi == null) {
+            api.getAPhoto(id)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestAPhoto(id, callback);
+            nodeApi.getAPhoto(id)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
     }
 
     public void requestUserPhotos(String username,
                                   @Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                  String order_by, Callback<List<Photo>> callback) {
-        Call<List<Photo>> getUserPhotos = api.getUserPhotos(username, page, per_page, order_by);
-        getUserPhotos.enqueue(callback);
-        this.call = getUserPhotos;
-        this.callback = callback;
+                                  String order_by, BaseObserver<List<Photo>> observer) {
+        api.getUserPhotos(username, page, per_page, order_by)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void requestUserLikes(String username,
                                  @Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                 String order_by, final Callback<List<Photo>> callback) {
-        Call<List<Photo>> getUserLikes = api.getUserLikes(username, page, per_page, order_by);
-        getUserLikes.enqueue(callback);
-        this.call = getUserLikes;
-        this.callback = callback;
+                                 String order_by, final BaseObserver<List<Photo>> observer) {
+        api.getUserLikes(username, page, per_page, order_by)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void requestCollectionPhotos(int collectionId,
                                         @Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                        Callback<List<Photo>> callback) {
-        Call<List<Photo>> getCollectionPhotos = api.getCollectionPhotos(collectionId, page, per_page);
-        getCollectionPhotos.enqueue(callback);
-        this.call = getCollectionPhotos;
-        this.callback = callback;
+                                        BaseObserver<List<Photo>> observer) {
+        api.getCollectionPhotos(collectionId, page, per_page)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void requestCuratedCollectionPhotos(int collectionId,
                                                @Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                               Callback<List<Photo>> callback) {
-        Call<List<Photo>> getCuratedCollectionPhotos = api.getCuratedCollectionPhotos(collectionId, page, per_page);
-        getCuratedCollectionPhotos.enqueue(callback);
-        this.call = getCuratedCollectionPhotos;
-        this.callback = callback;
+                                               BaseObserver<List<Photo>> observer) {
+        api.getCuratedCollectionPhotos(collectionId, page, per_page)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void requestRandomPhotos(List<Integer> collectionIdList,
                                     Boolean featured, String username, String query, String orientation,
-                                    Callback<List<Photo>> callback) {
+                                    BaseObserver<List<Photo>> observer) {
         StringBuilder idBuilder = new StringBuilder();
         if (collectionIdList != null && collectionIdList.size() > 0) {
             idBuilder.append(collectionIdList.get(0));
@@ -157,18 +164,15 @@ public class PhotoService {
             orientation = null;
         }
 
-        Call<List<Photo>> getRandomPhotos = api.getRandomPhotos(
-                idString, featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE);
-        getRandomPhotos.enqueue(callback);
-        this.call = getRandomPhotos;
-        this.callback = callback;
+        api.getRandomPhotos(idString, featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     @WorkerThread
     @Nullable
     public List<Photo> requestRandomPhotos(@Nullable List<Integer> collectionIdList,
-                                           Boolean featured,
-                                           String username, String query, String orientation) {
+                                           Boolean featured, String username, String query, String orientation) {
         StringBuilder collections = new StringBuilder();
         if (collectionIdList != null && collectionIdList.size() > 0) {
             collections.append(collectionIdList.get(0));
@@ -177,13 +181,11 @@ public class PhotoService {
             collections.append(",").append(collectionIdList.get(i));
         }
 
-        Call<List<Photo>> getRandomPhotos = api.getRandomPhotos(
-                collections.toString(), featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE);
         try {
-            Response<List<Photo>> response = getRandomPhotos.execute();
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body();
-            }
+            return api.callRandomPhotos(
+                    collections.toString(), featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE)
+                    .execute()
+                    .body();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -191,18 +193,12 @@ public class PhotoService {
     }
 
     public void downloadPhoto(String url) {
-        api.downloadPhoto(url).enqueue(null);
+        api.downloadPhoto(url)
+                .compose(SchedulerTransformer.create())
+                .subscribe();
     }
 
     public void cancel() {
-        if (nodeService != null) {
-            nodeService.cancel();
-        }
-        if (callback != null) {
-            callback.cancel();
-        }
-        if (call != null) {
-            call.cancel();
-        }
+        compositeDisposable.clear();
     }
 }

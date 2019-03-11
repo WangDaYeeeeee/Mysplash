@@ -21,10 +21,11 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
-import com.wangdaye.mysplash.common.utils.presenter.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
@@ -33,18 +34,17 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.multiFilter.vm.MultiFilterFragmentModel;
 import com.wangdaye.mysplash.main.multiFilter.vm.MultiFilterPhotoViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
@@ -70,7 +70,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
             R.id.fragment_multi_filter_users_editText}) EditText[] editTexts;
     @OnClick(R.id.fragment_multi_filter_searchBtn) void clickSearchButton() {
         injectSearchParameters();
-        PagerViewManagePresenter.initRefresh(photoViewModel, photosView);
+        PagerViewManagePresenter.initRefresh(photoViewModel, photoAdapter);
     }
 
     @BindViews({
@@ -103,6 +103,9 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     }
 
     @BindView(R.id.fragment_multi_filter_photosView) MultiFilterPhotosView photosView;
+    private PhotoAdapter photoAdapter;
+
+    private PagerLoadablePresenter loadablePresenter;
 
     private MultiFilterFragmentModel multiFilterFragmentModel;
     private MultiFilterPhotoViewModel photoViewModel;
@@ -181,14 +184,10 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @Override
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        return photosView.loadMore(list, headIndex, headDirection);
-    }
-
-    // update data.
-
-    @Override
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        photosView.updatePhoto(photo, true);
+        return loadablePresenter.loadMore(
+                list, headIndex, headDirection,
+                photosView, photosView.getRecyclerView(), photoAdapter,
+                this, 0);
     }
 
     // init.
@@ -201,8 +200,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         
         photoViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(MultiFilterPhotoViewModel.class);
-        photoViewModel.init(
-                ListResource.refreshError(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        photoViewModel.init(ListResource.error(0, Mysplash.DEFAULT_PER_PAGE));
     }
 
     private void initView(View v) {
@@ -223,11 +221,21 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         editTexts[0].setOnEditorActionListener(this);
         editTexts[1].setOnEditorActionListener(this);
 
-        photosView.setItemEventCallback((MainActivity) getActivity());
-        photosView.setPhotoList(
-                Objects.requireNonNull(photoViewModel.getListResource().getValue()).dataList);
+        photoAdapter = new PhotoAdapter(
+                getActivity(),
+                Objects.requireNonNull(photoViewModel.getListResource().getValue()).dataList,
+                DisplayUtils.getGirdColumnCount(getActivity()));
+        photoAdapter.setItemEventCallback((MainActivity) getActivity());
+        photosView.setAdapter(photoAdapter);
         photosView.setPagerManageView(this);
         photosView.setClickListenerForFeedbackView(v13 -> hideKeyboard());
+
+        loadablePresenter = new PagerLoadablePresenter() {
+            @Override
+            public List<Photo> subList(int fromIndex, int toIndex) {
+                return photoViewModel.getListResource().getValue().dataList.subList(fromIndex, toIndex);
+            }
+        };
 
         multiFilterFragmentModel.getSearchQuery().observe(this, query -> editTexts[0].setText(query));
         multiFilterFragmentModel.getSearchUser().observe(this, user -> editTexts[1].setText(user));
@@ -248,20 +256,12 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         });
 
         photoViewModel.getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, photosView));
+                PagerViewManagePresenter.responsePagerListResourceChanged(resource, photosView, photoAdapter));
 
         v.post(this::showKeyboard);
     }
 
     // control.
-
-    public RecyclerView getRecyclerView() {
-        return photosView.getRecyclerView();
-    }
-
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return photosView.getRecyclerViewAdapter();
-    }
 
     private void injectSearchParameters() {
         photoViewModel.setQuery(multiFilterFragmentModel.getSearchQuery().getValue());
@@ -311,15 +311,15 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     @Override
     public boolean canLoadMore(int index) {
         return photoViewModel.getListResource().getValue() != null
-                && photoViewModel.getListResource().getValue().status != ListResource.Status.REFRESHING
-                && photoViewModel.getListResource().getValue().status != ListResource.Status.LOADING
-                && photoViewModel.getListResource().getValue().status != ListResource.Status.ALL_LOADED;
+                && photoViewModel.getListResource().getValue().state != ListResource.State.REFRESHING
+                && photoViewModel.getListResource().getValue().state != ListResource.State.LOADING
+                && photoViewModel.getListResource().getValue().state != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                photoViewModel.getListResource().getValue()).status == ListResource.Status.LOADING;
+                photoViewModel.getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on editor action listener.
@@ -327,7 +327,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         injectSearchParameters();
-        PagerViewManagePresenter.initRefresh(photoViewModel, photosView);
+        PagerViewManagePresenter.initRefresh(photoViewModel, photoAdapter);
         hideKeyboard();
         return true;
     }

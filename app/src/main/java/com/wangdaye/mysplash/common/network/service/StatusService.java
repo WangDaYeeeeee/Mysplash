@@ -1,17 +1,19 @@
 package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.StatusApi;
 import com.wangdaye.mysplash.common.network.json.Total;
 import com.wangdaye.mysplash.common.network.interceptor.AuthInterceptor;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
 import javax.inject.Inject;
 
-import androidx.annotation.Nullable;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -21,37 +23,32 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class StatusService {
 
     private StatusApi api;
-
-    @Nullable private Call call;
-    @Nullable private Callback callback;
+    private CompositeDisposable compositeDisposable;
 
     @Inject
-    public StatusService(OkHttpClient client, GsonConverterFactory factory) {
+    public StatusService(OkHttpClient client,
+                         GsonConverterFactory gsonConverterFactory,
+                         RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+                         CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
                 .client(client.newBuilder()
                         .addInterceptor(new AuthInterceptor())
                         .build())
-                .addConverterFactory(factory)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((StatusApi.class));
-        call = null;
-        callback = null;
+        compositeDisposable = disposable;
     }
 
-    public void requestTotal(Callback<Total> callback) {
-        Call<Total> getTotal = api.getTotal();
-        getTotal.enqueue(callback);
-        this.call = getTotal;
-        this.callback = callback;
+    public void requestTotal(BaseObserver<Total> observer) {
+        api.getTotal()
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void cancel() {
-        if (callback != null) {
-            callback.cancel();
-        }
-        if (call != null) {
-            call.cancel();
-        }
+        compositeDisposable.clear();
     }
 }

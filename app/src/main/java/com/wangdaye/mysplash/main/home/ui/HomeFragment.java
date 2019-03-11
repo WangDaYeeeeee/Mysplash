@@ -9,7 +9,6 @@ import com.google.android.material.tabs.TabLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.widget.Toolbar;
 
@@ -20,11 +19,13 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
+import com.wangdaye.mysplash.common.basic.model.ListResource;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
-import com.wangdaye.mysplash.common.utils.presenter.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.vm.PagerManageViewModel;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -33,13 +34,13 @@ import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.home.vm.FeaturedHomePhotosViewModel;
 import com.wangdaye.mysplash.main.home.vm.NewHomePhotosViewModel;
@@ -76,6 +77,9 @@ public class HomeFragment extends LoadableFragment<Photo>
     @BindView(R.id.fragment_home_indicator) AutoHideInkPageIndicator indicator;
 
     private PagerView[] pagers = new PagerView[pageCount()];
+    private PhotoAdapter[] adapters = new PhotoAdapter[pageCount()];
+
+    private PagerLoadablePresenter loadablePresenter;
 
     private PagerManageViewModel pagerManageModel;
     private AbstractHomePhotosViewModel[] pagerModels = new AbstractHomePhotosViewModel[pageCount()];
@@ -107,8 +111,7 @@ public class HomeFragment extends LoadableFragment<Photo>
         if (getActivity() != null) {
             DisplayUtils.setNavigationBarStyle(
                     getActivity(),
-                    pagers[getCurrentPagerPosition()]
-                            .getState() == PagerView.State.NORMAL,
+                    pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
                     true);
         }
     }
@@ -140,16 +143,12 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        return ((HomePhotosView) pagers[getCurrentPagerPosition()])
-                .loadMore(list, headIndex, headDirection);
-    }
-
-    // update data.
-
-    @Override
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        ((HomePhotosView) pagers[newPage()]).updatePhoto(photo, true);
-        ((HomePhotosView) pagers[featuredPage()]).updatePhoto(photo, true);
+        return loadablePresenter.loadMore(
+                list, headIndex, headDirection,
+                pagers[getCurrentPagerPosition()],
+                pagers[getCurrentPagerPosition()].getRecyclerView(),
+                adapters[getCurrentPagerPosition()],
+                this, getCurrentPagerPosition());
     }
 
     // init.
@@ -162,17 +161,17 @@ public class HomeFragment extends LoadableFragment<Photo>
         pagerModels[newPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(NewHomePhotosViewModel.class);
         pagerModels[newPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE),
+                ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE),
                 SettingsOptionManager.getInstance(getActivity()).getDefaultPhotoOrder(),
-                ValueUtils.getPageListByCategory(Mysplash.CATEGORY_TOTAL_NEW),
+                ValueUtils.getRandomPageList(Mysplash.TOTAL_NEW_PHOTOS_COUNT, Mysplash.DEFAULT_PER_PAGE),
                 getResources().getStringArray(R.array.photo_order_values)[3]);
 
         pagerModels[featuredPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(FeaturedHomePhotosViewModel.class);
         pagerModels[featuredPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE),
+                ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE),
                 SettingsOptionManager.getInstance(getActivity()).getDefaultPhotoOrder(),
-                ValueUtils.getPageListByCategory(Mysplash.CATEGORY_TOTAL_FEATURED),
+                ValueUtils.getRandomPageList(Mysplash.TOTAL_FEATURED_PHOTOS_COUNT, Mysplash.DEFAULT_PER_PAGE),
                 getResources().getStringArray(R.array.photo_order_values)[3]);
     }
 
@@ -193,26 +192,44 @@ public class HomeFragment extends LoadableFragment<Photo>
         });
 
         initPages(v);
+        loadablePresenter = new PagerLoadablePresenter() {
+            @Override
+            public List<Photo> subList(int fromIndex, int toIndex) {
+                return Objects.requireNonNull(
+                        pagerModels[getCurrentPagerPosition()].getListResource().getValue())
+                        .dataList.subList(fromIndex, toIndex);
+            }
+        };
     }
 
     private void initPages(View v) {
+        adapters[newPage()] = new PhotoAdapter(
+                getActivity(),
+                Objects.requireNonNull(pagerModels[newPage()].getListResource().getValue()).dataList,
+                DisplayUtils.getGirdColumnCount(getActivity()));
+        adapters[newPage()].setItemEventCallback((MainActivity) getActivity());
+
+        adapters[featuredPage()] = new PhotoAdapter(
+                getActivity(),
+                Objects.requireNonNull(pagerModels[featuredPage()].getListResource().getValue()).dataList,
+                DisplayUtils.getGirdColumnCount(getActivity()));
+        adapters[featuredPage()].setItemEventCallback((MainActivity) getActivity());
+
         List<View> pageList = new ArrayList<>();
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         R.id.fragment_home_page_new,
-                        Objects.requireNonNull(
-                                pagerModels[newPage()].getListResource().getValue()).dataList,
+                        adapters[newPage()],
                         getCurrentPagerPosition() == newPage(),
-                        newPage(), this, (MainActivity) getActivity()));
+                        newPage(), this));
         pageList.add(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         R.id.fragment_home_page_featured,
-                        Objects.requireNonNull(
-                                pagerModels[featuredPage()].getListResource().getValue()).dataList,
+                        adapters[featuredPage()],
                         getCurrentPagerPosition() == featuredPage(),
-                        featuredPage(), this, (MainActivity) getActivity()));
+                        featuredPage(), this));
         for (int i = newPage(); i < pageCount(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -248,28 +265,30 @@ public class HomeFragment extends LoadableFragment<Photo>
             ListResource resource = pagerModels[position].getListResource().getValue();
             if (resource != null
                     && resource.dataList.size() == 0
-                    && resource.status != ListResource.Status.REFRESHING
-                    && resource.status != ListResource.Status.LOADING) {
-                PagerViewManagePresenter.initRefresh(pagerModels[position], pagers[position]);
+                    && resource.state != ListResource.State.REFRESHING
+                    && resource.state != ListResource.State.LOADING) {
+                PagerViewManagePresenter.initRefresh(pagerModels[position], adapters[position]);
             }
         });
 
         pagerModels[newPage()].getPhotosOrder().observe(this, s -> {
             if (!pagerModels[newPage()].getLatestOrder().equals(s)) {
                 pagerModels[newPage()].setLatestOrder(s);
-                PagerViewManagePresenter.initRefresh(pagerModels[newPage()], pagers[newPage()]);
+                PagerViewManagePresenter.initRefresh(pagerModels[newPage()], adapters[newPage()]);
             }
         });
         pagerModels[featuredPage()].getPhotosOrder().observe(this, s ->{
             if (!pagerModels[featuredPage()].getLatestOrder().equals(s)) {
                 pagerModels[featuredPage()].setLatestOrder(s);
-                PagerViewManagePresenter.initRefresh(pagerModels[featuredPage()], pagers[featuredPage()]);
+                PagerViewManagePresenter.initRefresh(pagerModels[featuredPage()], adapters[featuredPage()]);
             }
         });
         pagerModels[newPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[newPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource, pagers[newPage()], adapters[newPage()]));
         pagerModels[featuredPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[featuredPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource, pagers[featuredPage()], adapters[featuredPage()]));
     }
 
     private int getCurrentPagerPosition() {
@@ -292,14 +311,6 @@ public class HomeFragment extends LoadableFragment<Photo>
         return 2;
     }
 
-    public RecyclerView getRecyclerView() {
-        return pagers[getCurrentPagerPosition()].getRecyclerView();
-    }
-
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return pagers[getCurrentPagerPosition()].getRecyclerViewAdapter();
-    }
-
     // interface.
 
     // pager manage view.
@@ -318,15 +329,15 @@ public class HomeFragment extends LoadableFragment<Photo>
     public boolean canLoadMore(int index) {
         ListResource resource = pagerModels[index].getListResource().getValue();
         return resource != null
-                && resource.status != ListResource.Status.REFRESHING
-                && resource.status != ListResource.Status.LOADING
-                && resource.status != ListResource.Status.ALL_LOADED;
+                && resource.state != ListResource.State.REFRESHING
+                && resource.state != ListResource.State.LOADING
+                && resource.state != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()).status == ListResource.Status.LOADING;
+                pagerModels[index].getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on menu item click listener.

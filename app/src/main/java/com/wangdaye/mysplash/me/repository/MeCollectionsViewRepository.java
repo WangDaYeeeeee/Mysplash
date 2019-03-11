@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.me.repository;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
@@ -35,9 +35,9 @@ public class MeCollectionsViewRepository {
             service.cancel();
             service.requestUserCollections(
                     AuthManager.getInstance().getUsername(),
-                    current.getValue().dataPage + 1,
+                    current.getValue().getRequestPage(),
                     current.getValue().perPage,
-                    new ListResourceCallback<>(current, refresh));
+                    new ListResourceObserver<>(current, refresh));
         }
     }
 

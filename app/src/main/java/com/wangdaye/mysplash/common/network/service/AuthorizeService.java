@@ -3,16 +3,18 @@ package com.wangdaye.mysplash.common.network.service;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.AuthorizeApi;
 import com.wangdaye.mysplash.common.network.json.AccessToken;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
 import javax.inject.Inject;
 
-import androidx.annotation.Nullable;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -22,40 +24,35 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class AuthorizeService {
 
     private AuthorizeApi api;
-
-    @Nullable private Call call;
-    @Nullable private Callback callback;
+    private CompositeDisposable compositeDisposable;
 
     @Inject
-    public AuthorizeService(OkHttpClient client, GsonConverterFactory factory) {
+    public AuthorizeService(OkHttpClient client,
+                            GsonConverterFactory gsonConverterFactory,
+                            RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+                            CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
                 .client(client)
-                .addConverterFactory(factory)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create(AuthorizeApi.class);
-        call = null;
-        callback = null;
+        compositeDisposable = disposable;
     }
 
-    public void requestAccessToken(Context c, String code, Callback<AccessToken> callback) {
-        Call<AccessToken> getAccessToken = api.getAccessToken(
+    public void requestAccessToken(Context c, String code, BaseObserver<AccessToken> observer) {
+        api.getAccessToken(
                 Mysplash.getAppId(c, true),
                 Mysplash.getSecret(c),
                 "mysplash://" + Mysplash.UNSPLASH_LOGIN_CALLBACK,
                 code,
-                "authorization_code");
-        getAccessToken.enqueue(callback);
-        this.call = getAccessToken;
-        this.callback = callback;
+                "authorization_code")
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void cancel() {
-        if (callback != null) {
-            callback.cancel();
-        }
-        if (call != null) {
-            call.cancel();
-        }
+        compositeDisposable.clear();
     }
 }

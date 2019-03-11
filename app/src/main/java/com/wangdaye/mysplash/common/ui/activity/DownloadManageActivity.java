@@ -30,6 +30,15 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.compact.RxLifecycleCompact;
+import io.reactivex.Observable;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Download manage activity.
@@ -67,73 +76,57 @@ public class DownloadManageActivity extends ReadWriteActivity
 
         @Override
         public void onProcess(float process) {
-            int index = locateMission();
-            if (index == -1) {
-                // cannot find the mission's position.
-                return;
-            }
-            DownloadMission mission = adapter.itemList.get(index);
-            float oldProcess = mission.process;
-            mission.process = process;
-            if (mission.entity.result != DownloaderService.RESULT_DOWNLOADING) {
-                DownloadHelper.getInstance(DownloadManageActivity.this)
-                        .updateMissionResult(
-                                DownloadManageActivity.this,
-                                mission.entity,
-                                DownloaderService.RESULT_DOWNLOADING);
-                drawRecyclerItemProcess(index, mission);
-            } else if (mission.process != oldProcess) {
-                drawRecyclerItemProcess(index, mission);
-            }
+            findHolderAndUpdateIt(index -> {
+                DownloadMission mission = adapter.itemList.get(index);
+                float oldProcess = mission.process;
+                mission.process = process;
+                if (mission.entity.result != DownloaderService.RESULT_DOWNLOADING) {
+                    DownloadHelper.getInstance(DownloadManageActivity.this)
+                            .updateMissionResult(
+                                    DownloadManageActivity.this,
+                                    mission.entity,
+                                    DownloaderService.RESULT_DOWNLOADING);
+                    drawRecyclerItemProcess(index, mission);
+                } else if (mission.process != oldProcess) {
+                    drawRecyclerItemProcess(index, mission);
+                }
+            }, missionId);
         }
 
         @Override
         public void onComplete(int result) {
             listenerList.remove(this);
+            findHolderAndUpdateIt(index -> {
+                DownloadMission mission = adapter.itemList.get(index);
+                int oldResult = mission.entity.result;
+                mission.entity.result = result;
+                switch (result) {
+                    case DownloaderService.RESULT_SUCCEED:
+                        if (oldResult != DownloaderService.RESULT_SUCCEED) {
+                            DownloadHelper.getInstance(DownloadManageActivity.this)
+                                    .updateMissionResult(
+                                            DownloadManageActivity.this,
+                                            mission.entity,
+                                            DownloaderService.RESULT_SUCCEED);
+                            drawRecyclerItemSucceed(index, mission);
+                        }
+                        break;
 
-            int index = locateMission();
-            if (index == -1) {
-                // cannot find the mission's position.
-                return;
-            }
-            DownloadMission mission = adapter.itemList.get(index);
-            int oldResult = mission.entity.result;
-            mission.entity.result = result;
-            switch (result) {
-                case DownloaderService.RESULT_SUCCEED:
-                    if (oldResult != DownloaderService.RESULT_SUCCEED) {
-                        DownloadHelper.getInstance(DownloadManageActivity.this)
-                                .updateMissionResult(
-                                        DownloadManageActivity.this,
-                                        mission.entity,
-                                        DownloaderService.RESULT_SUCCEED);
-                        drawRecyclerItemSucceed(index, mission);
-                    }
-                    break;
+                    case DownloaderService.RESULT_FAILED:
+                        if (oldResult != DownloaderService.RESULT_FAILED) {
+                            DownloadHelper.getInstance(DownloadManageActivity.this)
+                                    .updateMissionResult(
+                                            DownloadManageActivity.this,
+                                            mission.entity,
+                                            DownloaderService.RESULT_FAILED);
+                            drawRecyclerItemFailed(index, mission);
+                        }
+                        break;
 
-                case DownloaderService.RESULT_FAILED:
-                    if (oldResult != DownloaderService.RESULT_FAILED) {
-                        DownloadHelper.getInstance(DownloadManageActivity.this)
-                                .updateMissionResult(
-                                        DownloadManageActivity.this,
-                                        mission.entity,
-                                        DownloaderService.RESULT_FAILED);
-                        drawRecyclerItemFailed(index, mission);
-                    }
-                    break;
-
-                case DownloaderService.RESULT_DOWNLOADING:
-                    break;
-            }
-        }
-
-        private int locateMission() {
-            for (int i = 0; i < adapter.getItemCount(); i ++) {
-                if (adapter.itemList.get(i).entity.missionId == missionId) {
-                    return i;
+                    case DownloaderService.RESULT_DOWNLOADING:
+                        break;
                 }
-            }
-            return -1;
+            }, missionId);
         }
     }
 
@@ -246,6 +239,22 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     // control.
 
+    private void findHolderAndUpdateIt(Consumer<Integer> consumer, long missionId) {
+        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
+            for (int i = 0; i < adapter.getItemCount(); i ++) {
+                if (adapter.itemList.get(i).entity.missionId == missionId) {
+                    emitter.onNext(i);
+                    return;
+                }
+            }
+        }).compose(RxLifecycleCompact.bind(DownloadManageActivity.this)
+                .disposeObservableWhen(LifecycleEvent.DESTROY))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(consumer)
+                .subscribe();
+    }
+
     /**
      * Make item view show downloading progress and percent.
      *
@@ -253,16 +262,7 @@ public class DownloadManageActivity extends ReadWriteActivity
      * @param mission     A {@link DownloadMission} object which saved information of downloading task. */
     private void drawRecyclerItemProcess(int position, DownloadMission mission) {
         adapter.itemList.set(position, mission);
-
-        GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
-        if (layoutManager != null) {
-            int firstPosition = layoutManager.findFirstVisibleItemPosition();
-            int lastPosition = layoutManager.findLastVisibleItemPosition();
-            if (firstPosition <= position && position <= lastPosition) {
-                // we doesn't need to refresh a item view that is not displayed.
-                adapter.updateItemView(position);
-            }
-        }
+        adapter.notifyItemChanged(position, 1);
     }
 
     /**
@@ -319,30 +319,41 @@ public class DownloadManageActivity extends ReadWriteActivity
         listenerList.add(listener);
         DownloadHelper.getInstance(this).addOnDownloadListener(listener);
 
-        // remove the old item.
-        for (int i = 0; i < adapter.itemList.size(); i ++) {
-            if (adapter.itemList.get(i).entity.missionId == oldId) {
-                adapter.itemList.remove(i);
-                adapter.notifyItemRemoved(i);
-                break;
-            }
-        }
-        // add the new item.
-        if (adapter.itemList.size() > 0) {
-            // if the list's size > 0, we need find the last failed mission item and add the new item after it.
+        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
+            // remove the old item.
             for (int i = 0; i < adapter.itemList.size(); i ++) {
-                if (adapter.itemList.get(i).entity.result != DownloaderService.RESULT_FAILED) {
-                    adapter.itemList.add(i, mission);
-                    adapter.notifyItemInserted(i);
+                if (adapter.itemList.get(i).entity.missionId == oldId) {
+                    emitter.onNext(i);
                     return;
                 }
             }
-            adapter.itemList.add(adapter.itemList.size(), mission);
-            adapter.notifyItemInserted(adapter.itemList.size() - 1);
-        } else {
-            adapter.itemList.add(0, mission);
-            adapter.notifyItemInserted(0);
-        }
+        }).compose(RxLifecycleCompact.bind(DownloadManageActivity.this)
+                .disposeObservableWhen(LifecycleEvent.DESTROY))
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(i -> {
+                    adapter.itemList.remove((int) i);
+                    adapter.notifyItemRemoved(i);
+                }).observeOn(Schedulers.computation())
+                .flatMap((Function<Integer, ObservableSource<Integer>>) integer -> Observable.create(emitter -> {
+                    // add the new item.
+                    if (adapter.itemList.size() > 0) {
+                        // if the list's size > 0, we need find the last failed mission item and add the new item after it.
+                        for (int i = 0; i < adapter.itemList.size(); i ++) {
+                            if (adapter.itemList.get(i).entity.result != DownloaderService.RESULT_FAILED) {
+                                emitter.onNext(i);
+                                return;
+                            }
+                        }
+                        emitter.onNext(adapter.itemList.size());
+                    } else {
+                        emitter.onNext(0);
+                    }
+                })).observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(i -> {
+                    adapter.itemList.add(i, mission);
+                    adapter.notifyItemInserted(i);
+                }).subscribe();
     }
 
     // permission.

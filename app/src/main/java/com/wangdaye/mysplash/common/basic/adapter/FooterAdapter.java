@@ -23,6 +23,8 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
 
     private boolean hasFooter;
 
+    public static final int PAYLOAD_UPDATE_ITEM = 1;
+
     public FooterAdapter(Context context) {
         hasFooter = hasFooter(context);
     }

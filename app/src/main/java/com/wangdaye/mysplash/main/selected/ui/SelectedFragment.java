@@ -12,19 +12,18 @@ import android.view.ViewGroup;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
-import com.wangdaye.mysplash.common.utils.presenter.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.selected.SelectedViewModel;
 
-import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -52,6 +51,7 @@ public class SelectedFragment extends MysplashFragment
     @BindView(R.id.fragment_selected_toolbar) Toolbar toolbar;
 
     @BindView(R.id.fragment_selected_collectionView) SelectedView selectedView;
+    private SelectedAdapter selectedAdapter;
 
     private SelectedViewModel selectedViewModel;
     @Inject DaggerViewModelFactory viewModelFactory;
@@ -122,8 +122,7 @@ public class SelectedFragment extends MysplashFragment
     private void initModel() {
         selectedViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(SelectedViewModel.class);
-        selectedViewModel.init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        selectedViewModel.init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
     }
 
     private void initView() {
@@ -140,12 +139,15 @@ public class SelectedFragment extends MysplashFragment
             }
         });
 
-        selectedView.setCollectionList(
-                Objects.requireNonNull(selectedViewModel.getListResource().getValue()).dataList);
+        selectedAdapter = new SelectedAdapter(
+                getActivity(),
+                Objects.requireNonNull(selectedViewModel.getListResource().getValue()).dataList,
+                DisplayUtils.getGirdColumnCount(getActivity()));
+        selectedView.setAdapter(selectedAdapter);
         selectedView.setPagerManageView(this);
 
         selectedViewModel.getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, selectedView));
+                PagerViewManagePresenter.responsePagerListResourceChanged(resource, selectedView, selectedAdapter));
     }
 
     // interface.
@@ -165,15 +167,15 @@ public class SelectedFragment extends MysplashFragment
     @Override
     public boolean canLoadMore(int index) {
         return selectedViewModel.getListResource().getValue() != null
-                && selectedViewModel.getListResource().getValue().status != ListResource.Status.REFRESHING
-                && selectedViewModel.getListResource().getValue().status != ListResource.Status.LOADING
-                && selectedViewModel.getListResource().getValue().status != ListResource.Status.ALL_LOADED;
+                && selectedViewModel.getListResource().getValue().state != ListResource.State.REFRESHING
+                && selectedViewModel.getListResource().getValue().state != ListResource.State.LOADING
+                && selectedViewModel.getListResource().getValue().state != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                selectedViewModel.getListResource().getValue()).status == ListResource.Status.LOADING;
+                selectedViewModel.getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on nested scrolling listener.

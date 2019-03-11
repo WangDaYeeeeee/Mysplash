@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.presenter.PagerScrollablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerStateManagePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -20,8 +20,7 @@ import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefre
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import java.util.List;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +31,7 @@ import butterknife.ButterKnife;
  * */
 
 @SuppressLint("ViewConstructor")
-public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayout
+public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         LargeErrorStateAdapter.OnRetryListener {
 
@@ -40,30 +39,29 @@ public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayou
 
     private OnClickListener hideKeyboardListener;
 
-    protected PagerStateManagePresenter stateManagePresenter;
+    private PagerStateManagePresenter stateManagePresenter;
 
     protected boolean selected;
     protected int index;
     protected PagerManageView pagerManageView;
 
-    public AbstractSearchPageView(SearchActivity a, int id, List<T> itemList,
+    public AbstractSearchPageView(SearchActivity a, int id, FooterAdapter adapter,
                                   boolean selected, int index, PagerManageView v) {
         super(a);
         this.setId(id);
-        this.init(a, itemList, selected, index, v);
+        this.init(adapter, selected, index, v);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    protected void init(SearchActivity a, List<T> itemList,
-                      boolean selected, int index, PagerManageView v) {
+    protected void init(FooterAdapter adapter, boolean selected, int index, PagerManageView v) {
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
         ButterKnife.bind(this, this);
         initData(selected, index, v);
-        initView(a, itemList);
+        initView(adapter);
     }
 
     protected void initData(boolean selected, int index, PagerManageView v) {
@@ -72,9 +70,7 @@ public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayou
         this.pagerManageView = v;
     }
 
-    protected void initView(SearchActivity a, List<T> itemList) {
-        bindAdapter(a, itemList);
-
+    protected void initView(FooterAdapter adapter) {
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
@@ -86,7 +82,7 @@ public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayou
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
-        recyclerView.setAdapter(getAdapter());
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(getLayoutManager());
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 98,
@@ -107,7 +103,7 @@ public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayou
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
                         AbstractSearchPageView.this, recyclerView,
-                        getAdapter().getRealItemCount(), pagerManageView, index, dy);
+                        adapter.getRealItemCount(), pagerManageView, index, dy);
             }
         });
         recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
@@ -122,13 +118,7 @@ public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayou
         return this;
     }
 
-    protected abstract void bindAdapter(SearchActivity a, List<T> itemList);
-
-    protected abstract FooterAdapter getAdapter();
-
     protected abstract RecyclerView.LayoutManager getLayoutManager();
-
-    public abstract void updateItem(T t, boolean refreshView);
 
     protected abstract String getInitFeedbackText();
 
@@ -195,6 +185,17 @@ public abstract class AbstractSearchPageView<T> extends BothWaySwipeRefreshLayou
     @Override
     public void scrollToPageTop() {
         BackToTopUtils.scrollToTop(recyclerView);
+    }
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return stateManagePresenter.getState() != State.NORMAL
+                || SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir);
+    }
+
+    @Override
+    public RecyclerView getRecyclerView() {
+        return recyclerView;
     }
 
     // on refresh an load listener.

@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common.network.callback;
+package com.wangdaye.mysplash.common.network.observer;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 
@@ -6,16 +6,13 @@ import java.util.List;
 
 import androidx.lifecycle.MutableLiveData;
 
-public class RandomListResourceCallback<T> extends Callback<List<T>> {
+public class ListResourceObserver<T> extends BaseObserver<List<T>> {
 
     private MutableLiveData<ListResource<T>> current;
-    private List<Integer> pageList;
     private boolean refresh;
 
-    public RandomListResourceCallback(MutableLiveData<ListResource<T>> current,
-                                      List<Integer> pageList, boolean refresh) {
+    public ListResourceObserver(MutableLiveData<ListResource<T>> current, boolean refresh) {
         this.current = current;
-        this.pageList = pageList;
         this.refresh = refresh;
     }
 
@@ -26,7 +23,7 @@ public class RandomListResourceCallback<T> extends Callback<List<T>> {
         }
         if (refresh) {
             current.setValue(ListResource.refreshSuccess(current.getValue(), list));
-        } else if (current.getValue().dataPage + 1 < pageList.size() - 1) {
+        } else if (list.size() == current.getValue().perPage) {
             current.setValue(ListResource.loadSuccess(current.getValue(), list));
         } else {
             current.setValue(ListResource.allLoaded(current.getValue(), list));
@@ -38,10 +35,6 @@ public class RandomListResourceCallback<T> extends Callback<List<T>> {
         if (current.getValue() == null) {
             return;
         }
-        if (refresh) {
-            current.setValue(ListResource.refreshError(current.getValue()));
-        } else {
-            current.setValue(ListResource.loadError(current.getValue()));
-        }
+        current.setValue(ListResource.error(current.getValue()));
     }
 }

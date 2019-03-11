@@ -1,11 +1,10 @@
 package com.wangdaye.mysplash.me.repository;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.UserService;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.me.ui.MyFollowAdapter;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class MyFollowUserViewRepository {
         this.service = service;
     }
 
-    public void getFollowers(@NonNull MutableLiveData<ListResource<MyFollowAdapter.MyFollowUser>> current,
+    public void getFollowers(@NonNull MutableLiveData<ListResource<User>> current,
                              boolean refresh) {
         assert current.getValue() != null;
         if (refresh) {
@@ -35,12 +34,12 @@ public class MyFollowUserViewRepository {
         service.cancel();
         service.requestFollowers(
                 AuthManager.getInstance().getUsername(),
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new MyFollowUserCallback(current, refresh));
+                new MyFollowUserObserver(current, refresh));
     }
 
-    public void getFollowing(@NonNull MutableLiveData<ListResource<MyFollowAdapter.MyFollowUser>> current,
+    public void getFollowing(@NonNull MutableLiveData<ListResource<User>> current,
                              boolean refresh) {
         assert current.getValue() != null;
         if (refresh) {
@@ -52,21 +51,21 @@ public class MyFollowUserViewRepository {
         service.cancel();
         service.requestFollowing(
                 AuthManager.getInstance().getUsername(),
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new MyFollowUserCallback(current, refresh));
+                new MyFollowUserObserver(current, refresh));
     }
 
     public void cancel() {
         service.cancel();
     }
 
-    private class MyFollowUserCallback extends Callback<List<User>> {
+    private class MyFollowUserObserver extends BaseObserver<List<User>> {
 
-        private MutableLiveData<ListResource<MyFollowAdapter.MyFollowUser>> current;
+        private MutableLiveData<ListResource<User>> current;
         private boolean refresh;
 
-        MyFollowUserCallback(MutableLiveData<ListResource<MyFollowAdapter.MyFollowUser>> current,
+        MyFollowUserObserver(MutableLiveData<ListResource<User>> current,
                              boolean refresh) {
             this.current = current;
             this.refresh = refresh;
@@ -78,20 +77,11 @@ public class MyFollowUserViewRepository {
                 return;
             }
             if (refresh) {
-                current.setValue(
-                        ListResource.refreshSuccess(
-                                current.getValue(),
-                                MyFollowAdapter.MyFollowUser.getMyFollowUserList(list)));
+                current.setValue(ListResource.refreshSuccess(current.getValue(), list));
             } else if (list.size() == current.getValue().perPage) {
-                current.setValue(
-                        ListResource.loadSuccess(
-                                current.getValue(),
-                                MyFollowAdapter.MyFollowUser.getMyFollowUserList(list)));
+                current.setValue(ListResource.loadSuccess(current.getValue(), list));
             } else {
-                current.setValue(
-                        ListResource.allLoaded(
-                                current.getValue(),
-                                MyFollowAdapter.MyFollowUser.getMyFollowUserList(list)));
+                current.setValue(ListResource.allLoaded(current.getValue(), list));
             }
         }
 
@@ -100,11 +90,7 @@ public class MyFollowUserViewRepository {
             if (current.getValue() == null) {
                 return;
             }
-            if (refresh) {
-                current.setValue(ListResource.refreshError(current.getValue()));
-            } else {
-                current.setValue(ListResource.loadError(current.getValue()));
-            }
+            current.setValue(ListResource.error(current.getValue()));
         }
     }
 }

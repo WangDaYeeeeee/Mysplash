@@ -50,7 +50,7 @@ public class SettingsActivity extends MysplashActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
-            case Mysplash.CUSTOM_API_ACTIVITY:
+            case Mysplash.ACTIVITY_REQUEST_CODE_CUSTOM_API:
                 if (resultCode == RESULT_OK) {
                     showSnackbar(
                             getString(R.string.feedback_please_login),

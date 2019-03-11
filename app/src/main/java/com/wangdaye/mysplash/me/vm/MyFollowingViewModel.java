@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.me.vm;
 
+import com.wangdaye.mysplash.common.utils.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.mysplash.me.repository.MyFollowUserViewRepository;
 
 import javax.inject.Inject;
@@ -7,8 +8,9 @@ import javax.inject.Inject;
 public class MyFollowingViewModel extends MyFollowerViewModel {
 
     @Inject
-    public MyFollowingViewModel(MyFollowUserViewRepository repository) {
-        super(repository);
+    public MyFollowingViewModel(MyFollowUserViewRepository repository,
+                                UserEventResponsePresenter presenter) {
+        super(repository, presenter);
     }
 
     @Override

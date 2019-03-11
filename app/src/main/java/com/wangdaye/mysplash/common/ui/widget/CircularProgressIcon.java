@@ -194,22 +194,6 @@ public class CircularProgressIcon extends FrameLayout {
 
     // force.
 
-    private void forceSetProgressState() {
-        cancelAllAnimation();
-        setState(STATE_PROGRESS);
-        setAnimating(false);
-
-        image.setAlpha(0f);
-        image.setScaleX(1f);
-        image.setScaleY(1f);
-        image.setRotation(0);
-
-        progress.setAlpha(1f);
-        progress.setScaleX(1f);
-        progress.setScaleY(1f);
-        progress.setRotation(0);
-    }
-
     private void forceSetResultState(@DrawableRes int imageId) {
         cancelAllAnimation();
         setState(STATE_RESULT);

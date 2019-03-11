@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.basic.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -7,106 +8,159 @@ import androidx.annotation.NonNull;
 public class ListResource<T> {
 
     @NonNull public final List<T> dataList;
-    @NonNull public final Status status;
-    public final int dataPage;
+    @NonNull public final State state;
+    @NonNull public final Event event;
+    private final int dataPage;
     public final int perPage;
-    public final int increase;
 
-    public enum Status {
-        REFRESH_SUCCESS, LOAD_SUCCESS, ALL_LOADED,
-        REFRESH_ERROR, LOAD_ERROR,
-        REFRESHING, LOADING
+    public enum State {
+        SUCCESS, ALL_LOADED, ERROR, REFRESHING, LOADING
     }
 
-    private ListResource(@NonNull List<T> dataList, @NonNull Status status,
-                         int dataPage, int perPage, int increase) {
+    private interface Event {
+    }
+
+    private ListResource(@NonNull List<T> dataList, @NonNull State state, @NonNull Event event,
+                         int dataPage, int perPage) {
         this.dataList = dataList;
-        this.status = status;
+        this.state = state;
+        this.event = event;
         this.dataPage = dataPage;
         this.perPage = perPage;
-        this.increase = increase;
     }
 
-    // refresh success.
+    public int getRequestPage() {
+        switch (state) {
+            case REFRESHING:
+                return 1;
+
+            case LOADING:
+                return dataPage + 1;
+
+            default:
+                return dataPage;
+        }
+    }
 
     public static <T> ListResource<T> refreshSuccess(@NonNull ListResource<T> current, @NonNull List<T> newList) {
         List<T> list = current.dataList;
+        list.clear();
         list.addAll(newList);
-        return refreshSuccess(list, 1, current.perPage, newList.size());
+        return new ListResource<>(
+                list, State.SUCCESS, new DataSetChanged(), 1, current.perPage);
     }
-
-    public static <T> ListResource<T> refreshSuccess(@NonNull List<T> dataList,
-                                                     int dataPage, int perPage, int increase) {
-        return new ListResource<>(dataList, Status.REFRESH_SUCCESS, dataPage, perPage, increase);
-    }
-
-    // load success.
 
     public static <T> ListResource<T> loadSuccess(@NonNull ListResource<T> current, @NonNull List<T> newList) {
         List<T> list = current.dataList;
         list.addAll(newList);
-        return loadSuccess(list, current.dataPage + 1, current.perPage, newList.size());
+        return new ListResource<>(
+                list, State.SUCCESS, new ItemRangeInserted(newList.size()),
+                current.dataPage + 1, current.perPage);
     }
-
-    public static <T> ListResource<T> loadSuccess(@NonNull List<T> dataList,
-                                                  int dataPage, int perPage, int increase) {
-        return new ListResource<>(dataList, Status.LOAD_SUCCESS, dataPage, perPage, increase);
-    }
-
-    // all loaded.
 
     public static <T> ListResource<T> allLoaded(@NonNull ListResource<T> current, @NonNull List<T> newList) {
         List<T> list = current.dataList;
         list.addAll(newList);
-        return allLoaded(list, current.dataPage + 1, current.perPage, newList.size());
+        return new ListResource<>(
+                list, State.ALL_LOADED, new ItemRangeInserted(newList.size()),
+                current.dataPage + 1, current.perPage);
     }
 
-    public static <T> ListResource<T> allLoaded(@NonNull List<T> dataList,
-                                                int dataPage, int perPage, int increase) {
-        return new ListResource<>(dataList, Status.ALL_LOADED, dataPage, perPage, increase);
+    public static <T> ListResource<T> error(int page, int perPage) {
+        return new ListResource<>(
+                new ArrayList<>(), State.ERROR, new None(), page, perPage);
     }
 
-    // refresh error.
-
-    public static <T> ListResource<T> refreshError(@NonNull ListResource<T> current) {
-        return refreshError(current.dataList, current.dataPage, current.perPage);
+    public static <T> ListResource<T> error(@NonNull ListResource<T> current) {
+        return new ListResource<>(
+                current.dataList, State.ERROR, new None(), current.dataPage, current.perPage);
     }
 
-    public static <T> ListResource<T> refreshError(@NonNull List<T> dataList,
-                                                   int dataPage, int perPage) {
-        return new ListResource<>(dataList, Status.REFRESH_ERROR, dataPage, perPage, 0);
+    public static <T> ListResource<T> refreshing(int page, int perPage) {
+        return new ListResource<>(
+                new ArrayList<>(), State.REFRESHING, new None(), page, perPage);
     }
-
-    // load error.
-
-    public static <T> ListResource<T> loadError(@NonNull ListResource<T> current) {
-        return loadError(current.dataList, current.dataPage, current.perPage);
-    }
-
-    public static <T> ListResource<T> loadError(@NonNull List<T> dataList,
-                                                int dataPage, int perPage) {
-        return new ListResource<>(dataList, Status.LOAD_ERROR, dataPage, perPage, 0);
-    }
-
-    // refreshing.
 
     public static <T> ListResource<T> refreshing(@NonNull ListResource<T> current) {
-        return refreshing(current.dataList, current.dataPage, current.perPage);
+        return new ListResource<>(
+                current.dataList, State.REFRESHING, new None(), current.dataPage, current.perPage);
     }
 
-    public static <T> ListResource<T> refreshing(@NonNull List<T> dataList,
-                                                 int dataPage, int perPage) {
-        return new ListResource<>(dataList, Status.REFRESHING, dataPage, perPage, 0);
+    public static <T> ListResource<T> initRefreshing(@NonNull ListResource<T> current) {
+        List<T> list = current.dataList;
+        list.clear();
+        return new ListResource<>(list, State.REFRESHING, new None(), 0, current.perPage);
     }
-
-    // loading.
 
     public static <T> ListResource<T> loading(@NonNull ListResource<T> current) {
-        return loading(current.dataList, current.dataPage, current.perPage);
+        return new ListResource<>(
+                current.dataList, State.LOADING, new None(), current.dataPage, current.perPage);
     }
 
-    public static <T> ListResource<T> loading(@NonNull List<T> dataList,
-                                              int dataPage, int perPage) {
-        return new ListResource<>(dataList, Status.LOADING, dataPage, perPage, 0);
+    public static <T> ListResource<T> insertItem(@NonNull ListResource<T> current,
+                                                 @NonNull T item, int index) {
+        List<T> list = current.dataList;
+        list.add(index, item);
+        return new ListResource<>(
+                list, current.state, new ItemInserted(index), current.dataPage, current.perPage);
+    }
+
+    public static <T> ListResource<T> changeItem(@NonNull ListResource<T> current,
+                                                 @NonNull T item, int index) {
+        List<T> list = current.dataList;
+        list.set(index, item);
+        return new ListResource<>(
+                list, current.state, new ItemChanged(index), current.dataPage, current.perPage);
+    }
+
+    public static <T> ListResource<T> removeItem(@NonNull ListResource<T> current, int index) {
+        List<T> list = current.dataList;
+        list.remove(index);
+        return new ListResource<>(
+                list, current.state, new ItemRemoved(index), current.dataPage, current.perPage);
+    }
+
+    // event.
+
+    public static class None implements Event {
+    }
+
+    public static class DataSetChanged implements Event {
+    }
+
+    public static class ItemRangeInserted implements Event {
+
+        public int increase;
+
+        public ItemRangeInserted(int increase) {
+            this.increase = increase;
+        }
+    }
+
+    public static class ItemInserted implements Event {
+
+        public int index;
+
+        public ItemInserted(int index) {
+            this.index = index;
+        }
+    }
+
+    public static class ItemChanged implements Event {
+
+        public int index;
+
+        public ItemChanged(int index) {
+            this.index = index;
+        }
+    }
+
+    public static class ItemRemoved implements Event {
+
+        public int index;
+
+        public ItemRemoved(int index) {
+            this.index = index;
+        }
     }
 }

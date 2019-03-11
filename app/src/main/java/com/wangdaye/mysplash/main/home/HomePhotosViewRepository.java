@@ -2,9 +2,9 @@ package com.wangdaye.mysplash.main.home;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.network.api.PhotoApi;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
-import com.wangdaye.mysplash.common.network.callback.RandomListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
+import com.wangdaye.mysplash.common.network.observer.RandomListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
 
 import java.util.List;
@@ -37,30 +37,30 @@ public class HomePhotosViewRepository {
         if (random) {
             if (featured) {
                 service.requestCuratePhotos(
-                        pageList.get(current.getValue().dataPage + 1),
+                        pageList.get(current.getValue().getRequestPage()),
                         current.getValue().perPage,
                         PhotoApi.ORDER_BY_LATEST,
-                        new RandomListResourceCallback<>(current, pageList, refresh));
+                        new RandomListResourceObserver<>(current, pageList, refresh));
             } else {
                 service.requestPhotos(
-                        pageList.get(current.getValue().dataPage + 1),
+                        pageList.get(current.getValue().getRequestPage()),
                         current.getValue().perPage,
                         PhotoApi.ORDER_BY_LATEST,
-                        new RandomListResourceCallback<>(current, pageList, refresh));
+                        new RandomListResourceObserver<>(current, pageList, refresh));
             }
         } else {
             if (featured) {
                 service.requestCuratePhotos(
-                        current.getValue().dataPage + 1,
+                        current.getValue().getRequestPage(),
                         current.getValue().perPage,
                         order,
-                        new ListResourceCallback<>(current, refresh));
+                        new ListResourceObserver<>(current, refresh));
             } else {
                 service.requestPhotos(
-                        current.getValue().dataPage + 1,
+                        current.getValue().getRequestPage(),
                         current.getValue().perPage,
                         order,
-                        new ListResourceCallback<>(current, refresh));
+                        new ListResourceObserver<>(current, refresh));
             }
         }
     }

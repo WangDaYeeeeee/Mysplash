@@ -14,10 +14,10 @@ import android.view.animation.Transformation;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
-import com.wangdaye.mysplash.common.utils.presenter.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
@@ -25,9 +25,9 @@ import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBa
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.MainActivity;
+import com.wangdaye.mysplash.main.following.FollowingFeedViewManagePresenter;
 import com.wangdaye.mysplash.main.following.FollowingFeedViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +36,6 @@ import javax.inject.Inject;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -54,6 +53,9 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
     @BindView(R.id.fragment_following_container) CoordinatorLayout container;
     @BindView(R.id.fragment_following_appBar) NestedScrollAppBarLayout appBar;
     @BindView(R.id.fragment_following_feedView) FollowingFeedView feedView;
+    private FollowingAdapter followingAdapter;
+
+    private PagerLoadablePresenter loadablePresenter;
 
     private FollowingFeedViewModel feedViewModel;
     @Inject DaggerViewModelFactory viewModelFactory;
@@ -169,11 +171,10 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
 
     @Override
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        return feedView.loadMore(list, headIndex, headDirection);
-    }
-
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        feedView.updatePhoto(photo, true);
+        return loadablePresenter.loadMore(
+                list, headIndex, headDirection,
+                feedView, feedView.getRecyclerView(), followingAdapter,
+                this, 0);
     }
 
     // init.
@@ -181,8 +182,7 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
     private void initModel() {
         feedViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(FollowingFeedViewModel.class);
-        feedViewModel.init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        feedViewModel.init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
     }
 
     private void initView(View v) {
@@ -200,12 +200,23 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
             }
         });
 
-        feedView.setPhotoList(Objects.requireNonNull(feedViewModel.getListResource().getValue()).dataList);
-        feedView.setItemEventCallback((MainActivity) getActivity());
-        feedView.setPagerManageView(this);
+        followingAdapter = new FollowingAdapter(
+                getActivity(),
+                Objects.requireNonNull(feedViewModel.getListResource().getValue()).dataList,
+                DisplayUtils.getGirdColumnCount(getActivity()));
+        followingAdapter.setItemEventCallback((MainActivity) getActivity());
+        feedView.setAdapterAndMangeView(followingAdapter, this);
+
+        loadablePresenter = new PagerLoadablePresenter() {
+            @Override
+            public List<Photo> subList(int fromIndex, int toIndex) {
+                return feedViewModel.getListResource().getValue().dataList.subList(fromIndex, toIndex);
+            }
+        };
 
         feedViewModel.getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, feedView));
+                FollowingFeedViewManagePresenter.responsePagerListResourceChanged(
+                        resource, feedView, followingAdapter));
     }
 
     // control.
@@ -227,14 +238,6 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
         }
     }
 
-    public RecyclerView getRecyclerView() {
-        return feedView.getRecyclerView();
-    }
-
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return feedView.getRecyclerViewAdapter();
-    }
-
     // interface.
 
     // pager manage view.
@@ -252,15 +255,15 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
     @Override
     public boolean canLoadMore(int index) {
         return feedViewModel.getListResource().getValue() != null
-                && feedViewModel.getListResource().getValue().status != ListResource.Status.REFRESHING
-                && feedViewModel.getListResource().getValue().status != ListResource.Status.LOADING
-                && feedViewModel.getListResource().getValue().status != ListResource.Status.ALL_LOADED;
+                && feedViewModel.getListResource().getValue().state != ListResource.State.REFRESHING
+                && feedViewModel.getListResource().getValue().state != ListResource.State.LOADING
+                && feedViewModel.getListResource().getValue().state != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                feedViewModel.getListResource().getValue()).status == ListResource.Status.LOADING;
+                feedViewModel.getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on nested scrolling listener.

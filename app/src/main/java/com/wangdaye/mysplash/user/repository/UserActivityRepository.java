@@ -1,11 +1,12 @@
 package com.wangdaye.mysplash.user.repository;
 
 import com.wangdaye.mysplash.common.basic.model.Resource;
-import com.wangdaye.mysplash.common.network.callback.Callback;
-import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.service.FollowService;
 import com.wangdaye.mysplash.common.network.service.UserService;
+import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 
 import javax.inject.Inject;
 
@@ -29,7 +30,7 @@ public class UserActivityRepository {
         current.setValue(Resource.loading(current.getValue().data));
 
         userService.cancel();
-        userService.requestUserProfile(username, new Callback<User>() {
+        userService.requestUserProfile(username, new BaseObserver<User>() {
 
             @Override
             public void onSucceed(User user) {
@@ -46,24 +47,32 @@ public class UserActivityRepository {
 
     public void followOrCancelFollowUser(@NonNull MutableLiveData<Resource<User>> current,
                                          String username, boolean setToFollow) {
-        assert current.getValue() != null;
-        current.setValue(Resource.loading(current.getValue().data));
+        if (current.getValue() == null || current.getValue().data == null) {
+            return;
+        }
 
-        NoBodyCallback<ResponseBody> callback = new NoBodyCallback<ResponseBody>() {
+        User user = current.getValue().data;
+        user.settingFollow = true;
+        current.setValue(Resource.loading(user));
+
+        NoBodyObserver<ResponseBody> callback = new NoBodyObserver<ResponseBody>() {
             @Override
             public void onSucceed(ResponseBody responseBody) {
                 if (current.getValue() != null && current.getValue().data != null) {
                     User user = current.getValue().data;
+                    user.settingFollow = false;
                     user.followed_by_user = setToFollow;
                     user.followers_count += setToFollow ? 1 : -1;
-                    current.setValue(Resource.success(user));
+                    MessageBus.getInstance().post(user);
                 }
             }
 
             @Override
             public void onFailed() {
                 if (current.getValue() != null && current.getValue().data != null) {
-                    current.setValue(Resource.error(current.getValue().data));
+                    User user = current.getValue().data;
+                    user.settingFollow = false;
+                    MessageBus.getInstance().post(user);
                 }
             }
         };

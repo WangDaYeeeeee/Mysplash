@@ -3,14 +3,11 @@ package com.wangdaye.mysplash.common.network.json;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.basic.model.Tag;
-
 /**
  * Category.
  * */
 
-public class Category implements Tag, Parcelable {
+public class Category implements Parcelable {
 
     /**
      * id : 2
@@ -23,31 +20,6 @@ public class Category implements Tag, Parcelable {
     public int photo_count;
 
     public CategoryLinks links;
-
-    private String getRawCoverUrl() {
-        switch (id) {
-            case Mysplash.CATEGORY_BUILDINGS_ID:
-                return "https://images.unsplash.com/photo-1481205009193-0b6b42cc81ac";
-
-            case Mysplash.CATEGORY_FOOD_DRINK_ID:
-                return "https://images.unsplash.com/photo-1453831362806-3d5577f014a4";
-
-            case Mysplash.CATEGORY_NATURE_ID:
-                return "https://images.unsplash.com/photo-1433351120803-a29aeee7d1e7";
-
-            case Mysplash.CATEGORY_OBJECTS_ID:
-                return "https://images.unsplash.com/photo-1444881421460-d838c3b98f95";
-
-            case Mysplash.CATEGORY_PEOPLE_ID:
-                return "https://images.unsplash.com/photo-1482028655172-fa4270a17164";
-
-            case Mysplash.CATEGORY_TECHNOLOGY_ID:
-                return "https://images.unsplash.com/photo-1445620466293-d6316372ab59";
-
-            default:
-                return "https://images.unsplash.com/photo-1485282569499-bc24811e75ce";
-        }
-    }
 
     // parcel.
 
@@ -85,21 +57,4 @@ public class Category implements Tag, Parcelable {
             return new Category[size];
         }
     };
-
-    // interface.
-
-    @Override
-    public String getTitle() {
-        return title;
-    }
-
-    @Override
-    public String getRegularUrl() {
-        return getRawCoverUrl() + "?fm=jpg&w=720&fit=max";
-    }
-
-    @Override
-    public String getThumbnailUrl() {
-        return getRawCoverUrl() + "?fm=jpg&w=360&fit=max";
-    }
 }

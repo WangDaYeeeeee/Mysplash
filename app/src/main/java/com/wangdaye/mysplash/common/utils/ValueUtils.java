@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.common.utils;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.api.PhotoApi;
 
@@ -203,78 +202,23 @@ public class ValueUtils {
         }
     }
 
-    @Deprecated
-    public static String getToolbarTitleByCategory(Context context, int id) {
-        switch (id) {
-            case Mysplash.CATEGORY_BUILDINGS_ID:
-                return context.getString(R.string.action_category_buildings);
+    public static List<Integer> getRandomPageList(int total, int perPage) {
+        int count = total / perPage;
 
-            case Mysplash.CATEGORY_FOOD_DRINK_ID:
-                return context.getString(R.string.action_category_food_drink);
-
-            case Mysplash.CATEGORY_NATURE_ID:
-                return context.getString(R.string.action_category_nature);
-
-            case Mysplash.CATEGORY_OBJECTS_ID:
-                return context.getString(R.string.action_category_objects);
-
-            case Mysplash.CATEGORY_PEOPLE_ID:
-                return context.getString(R.string.action_category_people);
-
-            case Mysplash.CATEGORY_TECHNOLOGY_ID:
-                return context.getString(R.string.action_category_technology);
-
-            default:
-                return context.getString(R.string.app_name);
-        }
-    }
-
-    public static List<Integer> getPageListByCategory(int id) {
-        switch (id) {
-            case Mysplash.CATEGORY_TOTAL_NEW:
-                return getPageList(Mysplash.TOTAL_NEW_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_TOTAL_FEATURED:
-                return getPageList(Mysplash.TOTAL_FEATURED_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_BUILDINGS_ID:
-                return getPageList(Mysplash.BUILDING_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_FOOD_DRINK_ID:
-                return getPageList(Mysplash.FOOD_DRINK_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_NATURE_ID:
-                return getPageList(Mysplash.NATURE_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_OBJECTS_ID:
-                return getPageList(Mysplash.OBJECTS_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_PEOPLE_ID:
-                return getPageList(Mysplash.PEOPLE_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            case Mysplash.CATEGORY_TECHNOLOGY_ID:
-                return getPageList(Mysplash.TECHNOLOGY_PHOTOS_COUNT / Mysplash.DEFAULT_PER_PAGE);
-
-            default:
-                return getPageList(0);
-        }
-    }
-
-    private static int getRandomInt(int max) {
-        return new Random().nextInt(max);
-    }
-
-    private static List<Integer> getPageList(int max) {
         List<Integer> oldList = new ArrayList<>();
-        for (int i = 0; i < max; i ++) {
+        for (int i = 0; i < count; i ++) {
             oldList.add(i);
         }
 
         List<Integer> newList = new ArrayList<>();
-        for (int i = 0; i < max; i ++) {
+        for (int i = 0; i < count; i ++) {
             newList.add(oldList.get(getRandomInt(oldList.size())));
         }
 
         return newList;
+    }
+
+    private static int getRandomInt(int max) {
+        return new Random().nextInt(max);
     }
 }

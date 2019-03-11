@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.collection.repository;
 
 import com.wangdaye.mysplash.common.basic.model.Resource;
-import com.wangdaye.mysplash.common.network.callback.ResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.observer.ResourceObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 
 import androidx.annotation.NonNull;
@@ -21,7 +21,7 @@ public class CollectionActivityRepository {
         current.setValue(Resource.loading(current.getValue().data));
 
         service.cancel();
-        service.requestACollections(id, new ResourceCallback<>(current));
+        service.requestACollections(id, new ResourceObserver<>(current));
     }
 
     public void getACuratedCollection(@NonNull MutableLiveData<Resource<Collection>> current, String id) {
@@ -29,7 +29,7 @@ public class CollectionActivityRepository {
         current.setValue(Resource.loading(current.getValue().data));
 
         service.cancel();
-        service.requestACuratedCollections(id, new ResourceCallback<>(current));
+        service.requestACuratedCollections(id, new ResourceObserver<>(current));
     }
 
     public void cancel() {

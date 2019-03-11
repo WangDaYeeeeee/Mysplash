@@ -5,8 +5,6 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Pager view.
  *
- * A view which as an abstract concept for "pager".
- *
  * */
 
 public interface PagerView {
@@ -18,9 +16,6 @@ public interface PagerView {
     State getState();
     boolean setState(State state);
 
-    void notifyItemsRefreshed(int count);
-    void notifyItemsLoaded(int count);
-
     void setSelected(boolean selected);
     void setSwipeRefreshing(boolean refreshing);
     void setSwipeLoading(boolean loading);
@@ -30,8 +25,6 @@ public interface PagerView {
     boolean checkNeedBackToTop();
     void scrollToPageTop();
     boolean canSwipeBack(int dir);
-    int getItemCount();
 
     RecyclerView getRecyclerView();
-    RecyclerView.Adapter getRecyclerViewAdapter();
 }

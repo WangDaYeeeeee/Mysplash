@@ -1,19 +1,21 @@
 package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.NotificationApi;
 import com.wangdaye.mysplash.common.network.json.NotificationFeed;
 import com.wangdaye.mysplash.common.network.interceptor.NotificationInterceptor;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
 import javax.inject.Inject;
 
-import androidx.annotation.Nullable;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
-import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -23,40 +25,32 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NotificationService {
 
     private NotificationApi api;
-
-    @Nullable private Call call;
-    @Nullable private Callback callback;
+    private CompositeDisposable compositeDisposable;
 
     @Inject
-    public NotificationService(OkHttpClient client, GsonConverterFactory factory) {
+    public NotificationService(OkHttpClient client,
+                               GsonConverterFactory gsonConverterFactory,
+                               RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+                               CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
                 .client(client.newBuilder()
                         .addInterceptor(new NotificationInterceptor())
                         .build())
-                .addConverterFactory(factory)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((NotificationApi.class));
-        call = null;
-        callback = null;
+        compositeDisposable = disposable;
     }
 
-    public void requestNotificationFeed(String enrich, Callback<NotificationFeed> callback) {
-        Call<NotificationFeed> getNotification = api.getNotification(
-                RequestBody.create(
-                        MediaType.parse("text/plain"),
-                        enrich));
-        getNotification.enqueue(callback);
-        this.call = getNotification;
-        this.callback = callback;
+    public void requestNotificationFeed(String enrich, BaseObserver<NotificationFeed> observer) {
+        api.getNotification(RequestBody.create(MediaType.parse("text/plain"), enrich))
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void cancel() {
-        if (callback != null) {
-            callback.cancel();
-        }
-        if (call != null) {
-            call.cancel();
-        }
+        compositeDisposable.clear();
     }
 }

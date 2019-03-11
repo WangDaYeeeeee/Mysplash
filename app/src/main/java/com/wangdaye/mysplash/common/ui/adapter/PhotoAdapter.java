@@ -17,9 +17,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
@@ -29,13 +27,16 @@ import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
+import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
+import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.collection.ui.CollectionActivity;
-import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.utils.presenter.DispatchCollectionsChangedPresenter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.util.ArrayList;
@@ -127,56 +128,9 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                 && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
-    public void insertItemToFirst(Photo item) {
-        if (item.width != 0 && item.height != 0) {
-            itemList.add(0, item);
-            notifyItemInserted(0);
-        }
-    }
-
-    public void removeItem(Photo item) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id .equals(item.id)) {
-                itemList.remove(i);
-                notifyItemRemoved(i);
-                return;
-            }
-        }
-    }
-
     public void setShowDeleteButton(boolean showDeleteButton) {
         this.showDeleteButton = showDeleteButton;
         notifyDataSetChanged();
-    }
-
-    public void updatePhoto(RecyclerView recyclerView,
-                            Photo newPhoto, boolean refreshView, boolean probablyRepeat) {
-        ThreadManager.getInstance().execute(() -> {
-            for (int i = 0; i < itemList.size(); i ++) {
-                if (itemList.get(i).id.equals(newPhoto.id)) {
-                    newPhoto.loadPhotoSuccess = itemList.get(i).loadPhotoSuccess;
-                    newPhoto.hasFadedIn = itemList.get(i).hasFadedIn;
-                    newPhoto.settingLike = false;
-                    itemList.set(i, newPhoto);
-                    if (refreshView) {
-                        int finalI = i;
-                        recyclerView.post(() -> notifyItemChanged(finalI, 1));
-                    }
-                    if (!probablyRepeat) {
-                        return;
-                    }
-                }
-            }
-        });
-    }
-
-    public void setPhotoData(List<Photo> list) {
-        itemList = list;
-        notifyDataSetChanged();
-    }
-
-    public List<Photo> getPhotoData() {
-        return itemList;
     }
 
     // interface.
@@ -212,32 +166,6 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
             IntentHelper.startPhotoActivity(
                     activity, image, background, list, adapterPosition, headIndex);
         }
-    }
-
-    @Override
-    public void createCollectResult(Collection collection) {
-        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.CREATE);
-
-        User user = AuthManager.getInstance().getUser();
-        if (user != null) {
-            user.total_collections ++;
-            Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
-        }
-    }
-
-    @Override
-    public void updateCollectResult(Photo photo, Collection collection, User user) {
-        Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
-        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.UPDATE);
-        Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
-    }
-
-    @Override
-    public void removePhotoFromCollectionResult(Photo photo, Collection collection, User user) {
-        removeItem(photo);
-        Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
-        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.UPDATE);
-        Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
     }
 }
 
@@ -341,9 +269,6 @@ class PhotoHolder extends RecyclerView.ViewHolder {
 
     public interface ParentAdapter {
         void startPhotoActivity(View image, View background, int adapterPosition);
-        void createCollectResult(Collection collection);
-        void updateCollectResult(Photo photo, Collection collection, User user);
-        void removePhotoFromCollectionResult(Photo photo, Collection collection, User user);
     }
 
     @OnClick(R.id.item_photo) void clickItem() {
@@ -358,9 +283,13 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             DeleteCollectionPhotoDialog dialog = new DeleteCollectionPhotoDialog();
             dialog.setDeleteInfo(((CollectionActivity) activity).getCollection(), photo);
             dialog.setOnDeleteCollectionListener(result -> {
-                if (parentAdapter != null) {
-                    parentAdapter.removePhotoFromCollectionResult(result.photo, result.collection, result.user);
-                }
+                MessageBus.getInstance().post(new PhotoEvent(
+                        result.photo, result.collection, PhotoEvent.Event.REMOVE_FROM_COLLECTION));
+
+                MessageBus.getInstance().post(new CollectionEvent(
+                        result.collection, CollectionEvent.Event.UPDATE));
+
+                MessageBus.getInstance().post(result.user);
             });
             dialog.show(activity.getSupportFragmentManager(), null);
         }
@@ -381,8 +310,8 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         }
         if (AuthManager.getInstance().isAuthorized()) {
             if (likeButton.isUsable()) {
-                likeButton.setProgressState();
                 photo.settingLike = true;
+                MessageBus.getInstance().post(new PhotoEvent(photo));
                 if (callback != null) {
                     callback.onLikeOrDislikePhoto(photo, getAdapterPosition(), !photo.liked_by_user);
                 }
@@ -399,7 +328,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
                 IntentHelper.startLoginActivity(activity);
             } else {
                 SelectCollectionDialog dialog = new SelectCollectionDialog();
-                dialog.setPhotoAndListener(photo, new OnCollectionsChangedListener(parentAdapter));
+                dialog.setPhotoAndListener(photo, new DispatchCollectionsChangedPresenter());
                 dialog.show(activity.getSupportFragmentManager(), null);
             }
         }
@@ -413,57 +342,28 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             } else if (FileUtils.isPhotoExists(activity, photo.id)) {
                 DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                 dialog.setDownloadKey(photo);
-                dialog.setOnCheckOrDownloadListener(new OnCheckOrDownloadListener(photo));
+                dialog.setOnCheckOrDownloadListener(new DownloadRepeatDialog.OnCheckOrDownloadListener() {
+
+                    private final Photo p = photo;
+                    private final PhotoAdapter.ItemEventCallback c = callback;
+
+                    @Override
+                    public void onCheck(Object obj) {
+                        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+                        if (activity != null) {
+                            IntentHelper.startCheckPhotoActivity(activity, p.id);
+                        }
+                    }
+
+                    @Override
+                    public void onDownload(Object obj) {
+                        if (c != null) {
+                            c.onDownload(p);
+                        }
+                    }
+                });
                 dialog.show(activity.getSupportFragmentManager(), null);
             } else if (callback != null) {
-                callback.onDownload(photo);
-            }
-        }
-    }
-
-    // on collections changed listener.
-
-    private class OnCollectionsChangedListener
-            implements SelectCollectionDialog.OnCollectionsChangedListener {
-
-        private ParentAdapter adapter;
-
-        OnCollectionsChangedListener(ParentAdapter adapter) {
-            this.adapter = adapter;
-        }
-
-        @Override
-        public void onAddCollection(Collection c) {
-            adapter.createCollectResult(c);
-        }
-
-        @Override
-        public void onUpdateCollection(Collection c, User u, Photo p) {
-            adapter.updateCollectResult(p, c, u);
-        }
-    }
-
-    // on check or download listener. (download repeat dialog)
-
-    private class OnCheckOrDownloadListener implements DownloadRepeatDialog.OnCheckOrDownloadListener {
-
-        private Photo photo;
-
-        OnCheckOrDownloadListener(Photo photo) {
-            this.photo = photo;
-        }
-
-        @Override
-        public void onCheck(Object obj) {
-            MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-            if (activity != null) {
-                IntentHelper.startCheckPhotoActivity(activity, photo.id);
-            }
-        }
-
-        @Override
-        public void onDownload(Object obj) {
-            if (callback != null) {
                 callback.onDownload(photo);
             }
         }

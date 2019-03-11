@@ -6,9 +6,7 @@ import com.wangdaye.mysplash.common.ui.dialog.RetryDialog;
 
 import org.jetbrains.annotations.Nullable;
 
-import javax.inject.Inject;
-
-public class BrowsableDialogMangePresenter {
+public abstract class BrowsableDialogMangePresenter {
 
     @Nullable private RequestBrowsableDataDialog progress;
     @Nullable private RetryDialog retry;
@@ -18,7 +16,6 @@ public class BrowsableDialogMangePresenter {
         LOADING, ERROR, SUCCESS
     }
 
-    @Inject
     public BrowsableDialogMangePresenter() {
         state = State.SUCCESS;
     }
@@ -31,6 +28,7 @@ public class BrowsableDialogMangePresenter {
         state = State.LOADING;
         if (progress == null) {
             progress = new RequestBrowsableDataDialog();
+            progress.setOnBackPressedListener(this::finishActivity);
             progress.show(activity.getSupportFragmentManager(), null);
         }
         if (retry != null) {
@@ -49,6 +47,7 @@ public class BrowsableDialogMangePresenter {
         if (retry == null) {
             retry = new RetryDialog();
             retry.setOnRetryListener(l);
+            retry.setOnBackPressedListener(this::finishActivity);
             retry.show(activity.getSupportFragmentManager(), null);
         }
     }
@@ -64,4 +63,6 @@ public class BrowsableDialogMangePresenter {
             retry = null;
         }
     }
+
+    public abstract void finishActivity();
 }

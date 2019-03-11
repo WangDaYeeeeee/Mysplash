@@ -7,17 +7,14 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.utils.presenter.PagerScrollablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerStateManagePresenter;
-import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
@@ -25,13 +22,9 @@ import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
-import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,7 +41,6 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
         MiniErrorStateAdapter.OnRetryListener {
 
     @BindView(R.id.container_photo_list_recyclerView) MultipleStateRecyclerView recyclerView;
-    private PhotoAdapter photoAdapter;
 
     private PagerStateManagePresenter stateManagePresenter;
 
@@ -87,9 +79,6 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
 
-        photoAdapter = new PhotoAdapter(
-                getContext(), new ArrayList<>(), DisplayUtils.getGirdColumnCount(getContext()));
-        recyclerView.setAdapter(photoAdapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
             int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
@@ -101,14 +90,6 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
         recyclerView.setAdapter(new MiniLoadingStateAdapter(), MultipleStateRecyclerView.STATE_LOADING);
         recyclerView.setAdapter(new MiniErrorStateAdapter(this), MultipleStateRecyclerView.STATE_ERROR);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                PagerScrollablePresenter.onScrolled(
-                        CollectionPhotosView.this, recyclerView,
-                        photoAdapter.getRealItemCount(), pagerManageView, 0, dy);
-            }
-        });
 
         recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
 
@@ -117,55 +98,20 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
 
     // control.
 
-    public void setItemEventCallback(PhotoAdapter.ItemEventCallback callback) {
-        photoAdapter.setItemEventCallback(callback);
-    }
-
-    public void setShowDeleteButton(Collection c) {
-        photoAdapter.setShowDeleteButton(
-                !TextUtils.isEmpty(AuthManager.getInstance().getUsername())
-                        && AuthManager.getInstance().getUsername().equals(c.user.username));
-    }
-
-    public void setPhotoList(List<Photo> list) {
-        photoAdapter.setPhotoData(list);
+    public void setPhotoAdapter(PhotoAdapter adapter) {
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                PagerScrollablePresenter.onScrolled(
+                        CollectionPhotosView.this, recyclerView,
+                        adapter.getRealItemCount(), pagerManageView, 0, dy);
+            }
+        });
     }
 
     public void setPagerManageView(PagerManageView view) {
         pagerManageView = view;
-    }
-
-    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
-        if ((headDirection && photoAdapter.getRealItemCount() < headIndex)
-                || (!headDirection && photoAdapter.getRealItemCount() < headIndex + list.size())) {
-            return new ArrayList<>();
-        }
-
-        if (!headDirection && pagerManageView.canLoadMore(0)) {
-            pagerManageView.onLoad(0);
-        }
-        if (!recyclerView.canScrollVertically(1) && pagerManageView.isLoading(0)) {
-            setLoading(true);
-        }
-
-        if (headDirection) {
-            if (headIndex == 0) {
-                return new ArrayList<>();
-            } else {
-                return photoAdapter.getPhotoData().subList(0, headIndex - 1);
-            }
-        } else {
-            if (photoAdapter.getRealItemCount() == headIndex + list.size()) {
-                return new ArrayList<>();
-            } else {
-                return photoAdapter.getPhotoData()
-                        .subList(headIndex + list.size(), photoAdapter.getRealItemCount() - 1);
-            }
-        }
-    }
-
-    public void updatePhoto(Photo photo) {
-        photoAdapter.updatePhoto(recyclerView, photo, true, false);
     }
 
     // interface.
@@ -178,16 +124,6 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
     @Override
     public boolean setState(State state) {
         return stateManagePresenter.setState(state, true);
-    }
-
-    @Override
-    public void notifyItemsRefreshed(int count) {
-        photoAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemsLoaded(int count) {
-        photoAdapter.notifyItemRangeInserted(photoAdapter.getRealItemCount() - count, count);
     }
 
     @Override
@@ -229,27 +165,12 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
     @Override
     public boolean canSwipeBack(int dir) {
         return stateManagePresenter.getState() != State.NORMAL
-                || SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
-                || photoAdapter.getRealItemCount() <= 0;
-    }
-
-    @Override
-    public int getItemCount() {
-        if (stateManagePresenter.getState() != State.NORMAL) {
-            return 0;
-        } else {
-            return photoAdapter.getRealItemCount();
-        }
+                || SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir);
     }
 
     @Override
     public RecyclerView getRecyclerView() {
         return recyclerView;
-    }
-
-    @Override
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return photoAdapter;
     }
 
     // on refresh and load listener.

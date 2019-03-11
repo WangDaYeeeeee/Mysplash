@@ -2,8 +2,8 @@ package com.wangdaye.mysplash.common.network.api;
 
 import com.wangdaye.mysplash.BuildConfig;
 
+import io.reactivex.Observable;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.OPTIONS;
@@ -13,7 +13,7 @@ import retrofit2.http.Url;
 
 /**
  * Stream api.
- * */
+ */
 
 public interface GetStreamApi {
 
@@ -29,10 +29,10 @@ public interface GetStreamApi {
             "Accept-Language: zh-CN,zh;q=0.8,en;q=0.6"
     })
     @OPTIONS("api/v1.0/feed/notification/{numeric_id}/")
-    Call<ResponseBody> optionFirstPageStream(@Path("numeric_id") int numeric_id,
-                                             @Query("limit") int limit,
-                                             @Query("api_key") String api_key,
-                                             @Query("location") String location);
+    Observable<ResponseBody> optionFirstPageStream(@Path("numeric_id") int numeric_id,
+                                                   @Query("limit") int limit,
+                                                   @Query("api_key") String api_key,
+                                                   @Query("location") String location);
 
     @Headers({
             "Connection: keep-alive",
@@ -48,10 +48,10 @@ public interface GetStreamApi {
 
     })
     @GET("api/v1.0/feed/notification/{numeric_id}/")
-    Call<ResponseBody> getFirstPageStream(@Path("numeric_id") int numeric_id,
-                                          @Query("limit") int limit,
-                                          @Query("api_key") String api_key,
-                                          @Query("location") String location);
+    Observable<ResponseBody> getFirstPageStream(@Path("numeric_id") int numeric_id,
+                                                @Query("limit") int limit,
+                                                @Query("api_key") String api_key,
+                                                @Query("location") String location);
 
     @Headers({
             "Connection: keep-alive",
@@ -65,7 +65,7 @@ public interface GetStreamApi {
             "Accept-Language: zh-CN,zh;q=0.8,en;q=0.6"
     })
     @OPTIONS
-    Call<ResponseBody> optionNextPageStream(@Url String next_page);
+    Observable<ResponseBody> optionNextPageStream(@Url String next_page);
 
     @Headers({
             "Connection: keep-alive",
@@ -80,5 +80,5 @@ public interface GetStreamApi {
             "Accept-Language: zh-CN,zh;q=0.8,en;q=0.6"
     })
     @GET
-    Call<ResponseBody> getNextPageStream(@Url String next_page);
+    Observable<ResponseBody> getNextPageStream(@Url String next_page);
 }

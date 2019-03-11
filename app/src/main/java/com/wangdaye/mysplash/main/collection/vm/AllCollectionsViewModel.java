@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.collection.vm;
 
+import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.main.collection.CollectionsViewRepository;
 
 import javax.inject.Inject;
@@ -7,8 +8,9 @@ import javax.inject.Inject;
 public class AllCollectionsViewModel extends AbstractCollectionsViewModel {
 
     @Inject
-    public AllCollectionsViewModel(CollectionsViewRepository repository) {
-        super(repository);
+    public AllCollectionsViewModel(CollectionsViewRepository repository,
+                                   CollectionEventResponsePresenter presenter) {
+        super(repository, presenter);
     }
 
     @Override

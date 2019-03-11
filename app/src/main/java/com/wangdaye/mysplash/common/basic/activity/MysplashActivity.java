@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.common.basic.activity;
 
 import android.os.Bundle;
 import androidx.annotation.CallSuper;
-import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -14,9 +13,6 @@ import dagger.android.support.HasSupportFragmentInjector;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
-import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.LanguageUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -191,20 +187,6 @@ public abstract class MysplashActivity extends AppCompatActivity
 
     protected boolean isTheLowestLevel() {
         return Mysplash.getInstance().getActivityCount() == 1;
-    }
-
-    // update data.
-
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        // do nothing.
-    }
-
-    public void updateUser(@NonNull User user, Mysplash.MessageType type) {
-        // do nothing.
-    }
-
-    public void updateCollection(@NonNull Collection collection, Mysplash.MessageType type) {
-        // do nothing.
     }
 
     // interface.

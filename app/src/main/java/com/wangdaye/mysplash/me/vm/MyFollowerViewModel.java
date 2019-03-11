@@ -2,25 +2,37 @@ package com.wangdaye.mysplash.me.vm;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
+import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.utils.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.mysplash.me.repository.MyFollowUserViewRepository;
-import com.wangdaye.mysplash.me.ui.MyFollowAdapter;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
-public class MyFollowerViewModel extends PagerViewModel<MyFollowAdapter.MyFollowUser> {
+public class MyFollowerViewModel extends PagerViewModel<User>
+        implements Consumer<User> {
 
     private MyFollowUserViewRepository repository;
+    private UserEventResponsePresenter presenter;
+    private Disposable disposable;
 
     @Inject
-    public MyFollowerViewModel(MyFollowUserViewRepository repository) {
+    public MyFollowerViewModel(MyFollowUserViewRepository repository,
+                               UserEventResponsePresenter presenter) {
         super();
         this.repository = repository;
+        this.presenter = presenter;
+        this.disposable = MessageBus.getInstance()
+                .toObservable(User.class)
+                .subscribe(this);
     }
 
     @Override
-    public boolean init(@NonNull ListResource<MyFollowAdapter.MyFollowUser> resource) {
+    public boolean init(@NonNull ListResource<User> resource) {
         if (super.init(resource)) {
             refresh();
             return true;
@@ -32,6 +44,8 @@ public class MyFollowerViewModel extends PagerViewModel<MyFollowAdapter.MyFollow
     protected void onCleared() {
         super.onCleared();
         getRepository().cancel();
+        presenter.clearResponse();
+        disposable.dispose();
     }
 
     @Override
@@ -46,5 +60,12 @@ public class MyFollowerViewModel extends PagerViewModel<MyFollowAdapter.MyFollow
 
     MyFollowUserViewRepository getRepository() {
         return repository;
+    }
+
+    // interface.
+
+    @Override
+    public void accept(User user) {
+        presenter.updateUser(getListResource(), user, false);
     }
 }

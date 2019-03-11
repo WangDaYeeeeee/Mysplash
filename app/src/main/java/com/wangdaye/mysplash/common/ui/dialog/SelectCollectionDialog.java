@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -26,11 +25,11 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -46,12 +45,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.compact.RxLifecycleCompact;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
 
 /**
  * Select collection dialog.
@@ -81,8 +85,9 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     @BindView(R.id.dialog_select_collection_creatorCheckBox) CheckBox checkBox;
 
     @OnClick(R.id.dialog_select_collection_selectorRefreshBtn) void refresh() {
+        setCancelable(true);
         initRefresh();
-        refreshLayout.setLoading(true);
+        setLoading(true);
     }
 
     @OnClick(R.id.dialog_select_collection_creatorCreateBtn) void create() {
@@ -92,7 +97,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     @OnClick(R.id.dialog_select_collection_creatorCancelBtn) void cancel() {
         hideKeyboard();
-        setState(SHOW_COLLECTIONS_STATE);
+        setState(State.SHOW_COLLECTIONS);
     }
 
     private OnCollectionsChangedListener listener;
@@ -100,17 +105,17 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private Photo photo;
     private int page; // HTTP request param.
     private CollectionMiniAdapter adapter;
-    @Inject CollectionService service;
+    @Inject CollectionService collectionService;
+    @Inject CollectionService createService;
+    @Inject CollectionService addRemoveService;
 
-    @StateRule private int state;
-
-    private static final int SHOW_COLLECTIONS_STATE = 0;
-    private static final int INPUT_COLLECTION_STATE = 1;
-    private static final int CREATE_COLLECTION_STATE = 2;
-    @IntDef({SHOW_COLLECTIONS_STATE, INPUT_COLLECTION_STATE, CREATE_COLLECTION_STATE})
-    private @interface StateRule {}
+    private State state;
+    private enum State {
+        SHOW_COLLECTIONS, INPUT_COLLECTION, CREATE_COLLECTION
+    }
 
     private boolean usable; // if set false, it means the dialog has been destroyed.
+    private boolean waitingAuthInformation;
 
     private int processingCount;
 
@@ -153,7 +158,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     public void onDestroy() {
         super.onDestroy();
         usable = false;
-        service.cancel();
+        collectionService.cancel();
+        createService.cancel();
         AuthManager.getInstance().removeOnWriteDataListener(this);
         AuthManager.getInstance().getCollectionsManager().finishEdit();
     }
@@ -166,13 +172,14 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     // init.
 
     private void initData() {
-        this.state = SHOW_COLLECTIONS_STATE;
-        this.page = 1;
+        this.state = State.SHOW_COLLECTIONS;
+        this.page = 0;
 
         this.adapter = new CollectionMiniAdapter(photo);
         adapter.setItemEventCallback(this);
 
         this.usable = true;
+        this.waitingAuthInformation = false;
         this.processingCount = 0;
     }
 
@@ -208,7 +215,9 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     // control.
 
-    // HTTP request.
+    private void setLoading(boolean loading) {
+        refreshLayout.post(() -> refreshLayout.setLoading(loading));
+    }
 
     private void initRefresh() {
         if (AuthManager.getInstance().getState() == AuthManager.State.FREE) {
@@ -222,23 +231,25 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 if (listSize > 0) {
                     AuthManager.getInstance().getCollectionsManager().clearCollections();
                     adapter.notifyItemRangeRemoved(1, listSize);
-                    adapter.notifyItemChanged(1);
                 }
-                page = 1;
+                page = 0;
                 requestCollections(AuthManager.getInstance().getUser().username);
             }
         }
     }
 
     private void requestProfile() {
+        waitingAuthInformation = true;
+        setLoading(true);
         AuthManager.getInstance().requestPersonalProfile();
     }
 
     private void requestCollections(String username) {
-        service.cancel();
+        collectionService.cancel();
+        setLoading(true);
 
-        OnRequestCollectionListCallback serviceCallback = new OnRequestCollectionListCallback();
-        service.requestUserCollections(username, page, Mysplash.DEFAULT_PER_PAGE, serviceCallback);
+        OnRequestCollectionListObserver serviceCallback = new OnRequestCollectionListObserver();
+        collectionService.requestUserCollections(username, page + 1, Mysplash.DEFAULT_PER_PAGE, serviceCallback);
     }
 
     private void createCollection() {
@@ -258,49 +269,42 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         boolean privateX = checkBox.isChecked();
 
-        service.createCollection(
+        createService.createCollection(
                 title,
                 description,
                 privateX,
-                new OnRequestACollectionCallback());
-        setState(CREATE_COLLECTION_STATE);
+                new OnRequestACollectionObserver());
+        setState(State.CREATE_COLLECTION);
     }
 
     // state.
 
-    private void setState(@StateRule int newState) {
-        switch (newState) {
-            case SHOW_COLLECTIONS_STATE:
-                setCancelable(true);
-                if (state == CREATE_COLLECTION_STATE) {
+    private void setState(State newState) {
+        if (state != newState) {
+            state = newState;
+            switch (state) {
+                case SHOW_COLLECTIONS:
+                    setCancelable(true);
                     AnimUtils.animShow(selectorContainer);
                     AnimUtils.animHide(progressContainer);
-                } else if (state == INPUT_COLLECTION_STATE) {
-                    AnimUtils.animShow(selectorContainer);
                     AnimUtils.animHide(creatorContainer);
-                }
-                break;
+                    break;
 
-            case INPUT_COLLECTION_STATE:
-                setCancelable(true);
-                if (state == SHOW_COLLECTIONS_STATE) {
-                    AnimUtils.animShow(creatorContainer);
+                case INPUT_COLLECTION:
+                    setCancelable(true);
                     AnimUtils.animHide(selectorContainer);
-                } else if (state == CREATE_COLLECTION_STATE) {
-                    AnimUtils.animShow(creatorContainer);
                     AnimUtils.animHide(progressContainer);
-                }
-                break;
+                    AnimUtils.animShow(creatorContainer);
+                    break;
 
-            case CREATE_COLLECTION_STATE:
-                setCancelable(false);
-                if (state == INPUT_COLLECTION_STATE) {
+                case CREATE_COLLECTION:
+                    setCancelable(false);
+                    AnimUtils.animHide(selectorContainer);
                     AnimUtils.animShow(progressContainer);
                     AnimUtils.animHide(creatorContainer);
-                }
-                break;
+                    break;
+            }
         }
-        state = newState;
     }
 
     // keyboard.
@@ -360,10 +364,18 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private class LoadScrollListener extends RecyclerView.OnScrollListener {
 
         @Override
-        public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy){
-            if (!recyclerView.canScrollVertically(1)
-                    && !AuthManager.getInstance().getCollectionsManager().isLoadFinish()) {
-                refreshLayout.setLoading(true);
+        public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
+            if (recyclerView.getLayoutManager() == null) {
+                return;
+            }
+            int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                    .findLastVisibleItemPosition();
+
+            if (!refreshLayout.isLoading()
+                    && !AuthManager.getInstance().getCollectionsManager().isLoadFinish()
+                    && lastVisibleItem >= adapter.getItemCount() - Mysplash.DEFAULT_PER_PAGE
+                    && dy > 0) {
+                requestCollections(AuthManager.getInstance().getUser().username);
             }
         }
     }
@@ -377,13 +389,20 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     @Override
     public void onUpdateUser() {
-        requestCollections(AuthManager.getInstance().getUser().username);
+        if (waitingAuthInformation) {
+            waitingAuthInformation = false;
+            requestCollections(AuthManager.getInstance().getUser().username);
+        }
     }
 
     @Override
     public void onUpdateFailed() {
         if (AuthManager.getInstance().getUser() == null) {
-            requestProfile();
+            Observable.create(Emitter::onComplete)
+                    .compose(RxLifecycleCompact.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                    .delay(Mysplash.DEFAULT_REQUEST_INTERVAL_SECOND, TimeUnit.SECONDS)
+                    .doOnComplete(this::requestProfile)
+                    .subscribe();
         }
     }
 
@@ -396,7 +415,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     @Override
     public void onCreateCollection() {
-        setState(INPUT_COLLECTION_STATE);
+        setState(State.INPUT_COLLECTION);
     }
 
     @Override
@@ -405,23 +424,26 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         processingCount ++;
         setCancelable(false);
         if (add) {
-            service.addPhotoToCollection(
+            addRemoveService.addPhotoToCollection(
                     collection.id,
                     photo.id,
-                    new OnChangeCollectionPhotoCallback(collection, photo));
+                    new OnChangeCollectionPhotoObserver(collection, photo));
         } else {
-            service.deletePhotoFromCollection(
+            addRemoveService.deletePhotoFromCollection(
                     collection.id,
                     photo.id,
-                    new OnChangeCollectionPhotoCallback(collection, photo));
+                    new OnChangeCollectionPhotoObserver(collection, photo));
         }
     }
 
-    private class OnRequestCollectionListCallback extends Callback<List<Collection>> {
+    private class OnRequestCollectionListObserver extends BaseObserver<List<Collection>> {
 
         @Override
         public void onSucceed(List<Collection> collectionList) {
-            refreshLayout.setLoading(false);
+            page ++;
+
+            setLoading(false);
+
             if (collectionList.size() > 0) {
                 int startPosition = AuthManager.getInstance()
                         .getCollectionsManager()
@@ -434,25 +456,28 @@ public class SelectCollectionDialog extends MysplashDialogFragment
             }
             if (collectionList.size() < Mysplash.DEFAULT_PER_PAGE) {
                 AuthManager.getInstance().getCollectionsManager().setLoadFinish(true);
-            } else {
-                page ++;
-                requestCollections(AuthManager.getInstance().getUser().username);
             }
         }
 
         @Override
         public void onFailed() {
-            requestCollections(AuthManager.getInstance().getUser().username);
+            setLoading(false);
+            Observable.create(Emitter::onComplete)
+                    .compose(RxLifecycleCompact.bind(SelectCollectionDialog.this)
+                            .disposeObservableWhen(LifecycleEvent.DESTROY))
+                    .delay(Mysplash.DEFAULT_REQUEST_INTERVAL_SECOND, TimeUnit.SECONDS)
+                    .doOnComplete(() -> requestCollections(AuthManager.getInstance().getUser().username))
+                    .subscribe();
         }
     }
 
-    private class OnRequestACollectionCallback extends Callback<Collection> {
+    private class OnRequestACollectionObserver extends BaseObserver<Collection> {
 
         @Override
         public void onSucceed(Collection collection) {
             AuthManager.getInstance().getCollectionsManager().addCollectionToFirst(collection);
             adapter.notifyItemInserted(1);
-            setState(SHOW_COLLECTIONS_STATE);
+            setState(State.SHOW_COLLECTIONS);
             nameTxt.setText("");
             descriptionTxt.setText("");
             checkBox.setSelected(false);
@@ -463,17 +488,17 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         @Override
         public void onFailed() {
-            setState(INPUT_COLLECTION_STATE);
+            setState(State.INPUT_COLLECTION);
             notifyCreateFailed();
         }
     }
 
-    private class OnChangeCollectionPhotoCallback extends Callback<ChangeCollectionPhotoResult> {
+    private class OnChangeCollectionPhotoObserver extends BaseObserver<ChangeCollectionPhotoResult> {
 
         private Collection collection;
         private Photo photo;
 
-        OnChangeCollectionPhotoCallback(Collection collection, Photo photo) {
+        OnChangeCollectionPhotoObserver(Collection collection, Photo photo) {
             this.collection = collection;
             this.photo = photo;
         }
@@ -488,12 +513,10 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                             changeCollectionPhotoResult.photo);
                 }
                 // update collection.
+                changeCollectionPhotoResult.collection.editing = false;
                 AuthManager.getInstance()
                         .getCollectionsManager()
                         .updateCollection(changeCollectionPhotoResult.collection);
-                AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .finishEdit(changeCollectionPhotoResult.collection.id);
                 // update user.
                 AuthManager.getInstance().updateUser(changeCollectionPhotoResult.user);
                 // update view.

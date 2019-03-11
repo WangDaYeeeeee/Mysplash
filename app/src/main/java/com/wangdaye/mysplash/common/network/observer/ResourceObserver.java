@@ -1,14 +1,14 @@
-package com.wangdaye.mysplash.common.network.callback;
+package com.wangdaye.mysplash.common.network.observer;
 
 import com.wangdaye.mysplash.common.basic.model.Resource;
 
 import androidx.lifecycle.MutableLiveData;
 
-public class ResourceCallback<T> extends Callback<T> {
+public class ResourceObserver<T> extends BaseObserver<T> {
 
     private MutableLiveData<Resource<T>> current;
 
-    public ResourceCallback(MutableLiveData<Resource<T>> current) {
+    public ResourceObserver(MutableLiveData<Resource<T>> current) {
         this.current = current;
     }
 

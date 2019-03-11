@@ -1,13 +1,14 @@
 package com.wangdaye.mysplash.photo3;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.model.Resource;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.LikePhotoResult;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
+import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
+import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 
 import javax.inject.Inject;
 
@@ -30,7 +31,7 @@ public class PhotoActivityRepository {
         current.setValue(Resource.loading(current.getValue().data));
 
         photoService.cancel();
-        photoService.requestAPhoto(id, new Callback<Photo>() {
+        photoService.requestAPhoto(id, new BaseObserver<Photo>() {
             @Override
             public void onSucceed(Photo photo) {
                 if (current.getValue() == null || current.getValue().data == null) {
@@ -78,7 +79,7 @@ public class PhotoActivityRepository {
 
     // interface.
 
-    private class SetLikeCallback extends Callback<LikePhotoResult> {
+    private class SetLikeCallback extends BaseObserver<LikePhotoResult> {
 
         private MutableLiveData<Resource<Photo>> current;
         private String photoId;
@@ -95,13 +96,14 @@ public class PhotoActivityRepository {
                     && current.getValue().data.id.equals(photoId)) {
                 Photo photo = current.getValue().data;
                 photo.liked_by_user = likePhotoResult.photo.liked_by_user;
+                photo.likes = likePhotoResult.photo.likes;
                 photo.settingLike = false;
-                Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
+                MessageBus.getInstance().post(new PhotoEvent(photo));
 
                 User user = AuthManager.getInstance().getUser();
                 if (user != null) {
-                    user.total_likes += likePhotoResult.photo.liked_by_user ? 1 : -1;
-                    Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
+                    user.total_likes = likePhotoResult.user.total_likes;
+                    MessageBus.getInstance().post(user);
                 }
             }
         }
@@ -113,7 +115,7 @@ public class PhotoActivityRepository {
                     && current.getValue().data.id.equals(photoId)) {
                 Photo photo = current.getValue().data;
                 photo.settingLike = false;
-                current.setValue(Resource.success(photo));
+                MessageBus.getInstance().post(new PhotoEvent(photo));
             }
         }
     }

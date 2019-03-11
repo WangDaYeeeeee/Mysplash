@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -25,12 +26,13 @@ public class RetryDialog extends MysplashDialogFragment {
 
     @BindView(R.id.dialog_retry_container) CoordinatorLayout container;
     @OnClick(R.id.dialog_retry_button) void retry() {
-        if (listener != null) {
-            listener.onRetryButtonClicked();
+        if (retryListener != null) {
+            retryListener.onRetryButtonClicked();
         }
     }
 
-    private OnRetryListener listener;
+    private OnRetryListener retryListener;
+    private OnBackPressedListener backPressedListener;
 
     @NonNull
     @SuppressLint("InflateParams")
@@ -40,10 +42,21 @@ public class RetryDialog extends MysplashDialogFragment {
         View view = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_retry, null, false);
         ButterKnife.bind(this, view);
-        setCancelable(false);
-        return new AlertDialog.Builder(getActivity())
+
+        Dialog dialog = new AlertDialog.Builder(getActivity())
                 .setView(view)
+                .setOnKeyListener((dialog1, keyCode, event) -> {
+                    if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
+                        dismiss();
+                        if (backPressedListener != null) {
+                            backPressedListener.onBackPressed();
+                        }
+                    }
+                    return false;
+                })
                 .create();
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
     }
 
     @Override
@@ -56,6 +69,14 @@ public class RetryDialog extends MysplashDialogFragment {
     }
 
     public void setOnRetryListener(OnRetryListener l) {
-        listener = l;
+        retryListener = l;
+    }
+
+    public interface OnBackPressedListener {
+        void onBackPressed();
+    }
+
+    public void setOnBackPressedListener(OnBackPressedListener l) {
+        backPressedListener = l;
     }
 }

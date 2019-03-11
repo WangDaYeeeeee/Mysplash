@@ -387,7 +387,7 @@ public class IntentHelper {
 
     public static void startCustomApiActivity(SettingsActivity a) {
         Intent intent = new Intent(a, CustomApiActivity.class);
-        a.startActivityForResult(intent, Mysplash.CUSTOM_API_ACTIVITY);
+        a.startActivityForResult(intent, Mysplash.ACTIVITY_REQUEST_CODE_CUSTOM_API);
     }
 
     public static void startMuzeiSettingsActivity(MysplashActivity a) {

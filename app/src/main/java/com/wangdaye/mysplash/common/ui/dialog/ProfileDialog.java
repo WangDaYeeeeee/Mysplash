@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.User;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.UserService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -79,7 +79,7 @@ public class ProfileDialog extends MysplashDialogFragment {
 
     // on request user profile listener.
 
-    private Callback<User> onRequestUserCallback = new Callback<User>() {
+    private BaseObserver<User> onRequestUserCallback = new BaseObserver<User>() {
 
         @SuppressLint("SetTextI18n")
         @Override

@@ -17,14 +17,13 @@ import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
-import com.wangdaye.mysplash.common.utils.presenter.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.basic.model.ListResource;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.vm.PagerManageViewModel;
-import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
@@ -32,6 +31,7 @@ import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBa
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.collection.vm.AllCollectionsViewModel;
 import com.wangdaye.mysplash.main.collection.vm.AbstractCollectionsViewModel;
@@ -69,6 +69,7 @@ public class CollectionFragment extends MysplashFragment
     @BindView(R.id.fragment_collection_indicator) AutoHideInkPageIndicator indicator;
 
     private PagerView[] pagers = new PagerView[pageCount()];
+    private CollectionAdapter[] adapters = new CollectionAdapter[pageCount()];
 
     private PagerManageViewModel pagerManageModel;
     private AbstractCollectionsViewModel[] pagerModels = new AbstractCollectionsViewModel[pageCount()];
@@ -100,8 +101,7 @@ public class CollectionFragment extends MysplashFragment
         if (getActivity() != null) {
             DisplayUtils.setNavigationBarStyle(
                     getActivity(),
-                    pagers[getCurrentPagerPosition()].getState()
-                            == PagerView.State.NORMAL,
+                    pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
                     true);
         }
     }
@@ -131,19 +131,6 @@ public class CollectionFragment extends MysplashFragment
         return container;
     }
 
-    // update data.
-
-    @Override
-    public void updateCollection(@NonNull Collection collection, Mysplash.MessageType type) {
-        for (int i = featuredPage(); i < pageCount(); i ++) {
-            if (type == Mysplash.MessageType.DELETE) {
-                ((CollectionsView) pagers[i]).deleteCollection(collection);
-            } else {
-                ((CollectionsView) pagers[i]).updateCollection(collection);
-            }
-        }
-    }
-
     // init.
 
     private void initModel() {
@@ -153,18 +140,15 @@ public class CollectionFragment extends MysplashFragment
 
         pagerModels[featuredPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(FeaturedCollectionsViewModel.class);
-        pagerModels[featuredPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        pagerModels[featuredPage()].init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
 
         pagerModels[allPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(AllCollectionsViewModel.class);
-        pagerModels[allPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        pagerModels[allPage()].init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
 
         pagerModels[curatedPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(CuratedCollectionsViewModel.class);
-        pagerModels[curatedPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        pagerModels[curatedPage()].init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
     }
 
     private void initView(View v) {
@@ -185,29 +169,33 @@ public class CollectionFragment extends MysplashFragment
     }
 
     private void initPages(View v) {
+        for (int i = featuredPage(); i < pageCount(); i ++) {
+            adapters[i] = new CollectionAdapter(
+                    getActivity(),
+                    Objects.requireNonNull(pagerModels[i].getListResource().getValue()).dataList,
+                    DisplayUtils.getGirdColumnCount(getActivity()));
+        }
+
         List<View> pageList = new ArrayList<>();
         pageList.add(
                 new CollectionsView(
                         (MainActivity) getActivity(),
                         R.id.fragment_collection_page_featured,
-                        Objects.requireNonNull(
-                                pagerModels[featuredPage()].getListResource().getValue()).dataList,
+                        adapters[featuredPage()],
                         getCurrentPagerPosition() == featuredPage(),
                         featuredPage(), this));
         pageList.add(
                 new CollectionsView(
                         (MainActivity) getActivity(),
                         R.id.fragment_collection_page_all,
-                        Objects.requireNonNull(
-                                pagerModels[allPage()].getListResource().getValue()).dataList,
+                        adapters[allPage()],
                         getCurrentPagerPosition() == allPage(),
                         allPage(), this));
         pageList.add(
                 new CollectionsView(
                         (MainActivity) getActivity(),
                         R.id.fragment_collection_page_curated,
-                        Objects.requireNonNull(
-                                pagerModels[curatedPage()].getListResource().getValue()).dataList,
+                        adapters[curatedPage()],
                         getCurrentPagerPosition() == curatedPage(),
                         curatedPage(), this));
         for (int i = featuredPage(); i < pageCount(); i ++) {
@@ -245,18 +233,27 @@ public class CollectionFragment extends MysplashFragment
             ListResource resource = pagerModels[position].getListResource().getValue();
             if (resource != null
                     && resource.dataList.size() == 0
-                    && resource.status != ListResource.Status.REFRESHING
-                    && resource.status != ListResource.Status.LOADING) {
-                PagerViewManagePresenter.initRefresh(pagerModels[position], pagers[position]);
+                    && resource.state != ListResource.State.REFRESHING
+                    && resource.state != ListResource.State.LOADING) {
+                PagerViewManagePresenter.initRefresh(pagerModels[position], adapters[position]);
             }
         });
 
         pagerModels[featuredPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[featuredPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource,
+                        pagers[featuredPage()],
+                        adapters[featuredPage()]));
         pagerModels[allPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[allPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource,
+                        pagers[allPage()],
+                        adapters[allPage()]));
         pagerModels[curatedPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[curatedPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource,
+                        pagers[curatedPage()],
+                        adapters[curatedPage()]));
     }
 
     // control.
@@ -303,15 +300,15 @@ public class CollectionFragment extends MysplashFragment
     public boolean canLoadMore(int index) {
         ListResource resource = pagerModels[index].getListResource().getValue();
         return resource != null
-                && resource.status != ListResource.Status.REFRESHING
-                && resource.status != ListResource.Status.LOADING
-                && resource.status != ListResource.Status.ALL_LOADED;
+                && resource.state != ListResource.State.REFRESHING
+                && resource.state != ListResource.State.LOADING
+                && resource.state != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()).status == ListResource.Status.LOADING;
+                pagerModels[index].getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on page changed listener.

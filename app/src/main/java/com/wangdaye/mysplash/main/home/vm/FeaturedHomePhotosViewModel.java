@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.home.vm;
 
+import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.mysplash.main.home.HomePhotosViewRepository;
 
 import javax.inject.Inject;
@@ -10,8 +11,9 @@ import javax.inject.Inject;
 public class FeaturedHomePhotosViewModel extends AbstractHomePhotosViewModel {
 
     @Inject
-    public FeaturedHomePhotosViewModel(HomePhotosViewRepository repository) {
-        super(repository);
+    public FeaturedHomePhotosViewModel(HomePhotosViewRepository repository,
+                                       PhotoEventResponsePresenter presenter) {
+        super(repository, presenter);
     }
 
     @Override

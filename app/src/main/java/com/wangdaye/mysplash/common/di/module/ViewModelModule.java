@@ -5,6 +5,9 @@ import com.wangdaye.mysplash.collection.vm.CollectionPhotosViewModel;
 import com.wangdaye.mysplash.collection.repository.CollectionActivityRepository;
 import com.wangdaye.mysplash.collection.repository.CollectionPhotosViewRepository;
 import com.wangdaye.mysplash.common.basic.vm.PagerManageViewModel;
+import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.mysplash.common.utils.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.mysplash.main.MainActivityModel;
 import com.wangdaye.mysplash.main.collection.CollectionsViewRepository;
 import com.wangdaye.mysplash.main.collection.vm.AllCollectionsViewModel;
@@ -49,7 +52,7 @@ import com.wangdaye.mysplash.user.repository.UserPhotosViewRepository;
 import dagger.Module;
 import dagger.Provides;
 
-@Module(includes = RepositoryModule.class)
+@Module(includes = {RepositoryModule.class, PresenterModule.class})
 public class ViewModelModule {
     
     @Provides
@@ -58,38 +61,45 @@ public class ViewModelModule {
     }
 
     @Provides
-    public CollectionPhotosViewModel getCollectionPhotosViewModel(CollectionPhotosViewRepository repository) {
-        return new CollectionPhotosViewModel(repository);
+    public CollectionPhotosViewModel getCollectionPhotosViewModel(CollectionPhotosViewRepository repository,
+                                                                  PhotoEventResponsePresenter presenter) {
+        return new CollectionPhotosViewModel(repository, presenter);
     }
 
     @Provides
-    public AllCollectionsViewModel getAllCollectionsViewModel(CollectionsViewRepository repository) {
-        return new AllCollectionsViewModel(repository);
+    public AllCollectionsViewModel getAllCollectionsViewModel(CollectionsViewRepository repository,
+                                                              CollectionEventResponsePresenter presenter) {
+        return new AllCollectionsViewModel(repository, presenter);
     }
 
     @Provides
-    public CuratedCollectionsViewModel getCuratedCollectionsViewModel(CollectionsViewRepository repository) {
-        return new CuratedCollectionsViewModel(repository);
+    public CuratedCollectionsViewModel getCuratedCollectionsViewModel(CollectionsViewRepository repository,
+                                                                      CollectionEventResponsePresenter presenter) {
+        return new CuratedCollectionsViewModel(repository, presenter);
     }
 
     @Provides
-    public FeaturedCollectionsViewModel getFeaturedCollectionsViewModel(CollectionsViewRepository repository) {
-        return new FeaturedCollectionsViewModel(repository);
+    public FeaturedCollectionsViewModel getFeaturedCollectionsViewModel(CollectionsViewRepository repository,
+                                                                        CollectionEventResponsePresenter presenter) {
+        return new FeaturedCollectionsViewModel(repository, presenter);
     }
 
     @Provides
-    public FollowingFeedViewModel getFollowingFeedViewModel(FollowingFeedViewRepository repository) {
-        return new FollowingFeedViewModel(repository);
+    public FollowingFeedViewModel getFollowingFeedViewModel(FollowingFeedViewRepository repository,
+                                                            PhotoEventResponsePresenter presenter) {
+        return new FollowingFeedViewModel(repository, presenter);
     }
 
     @Provides
-    public FeaturedHomePhotosViewModel getFeaturedHomePhotosViewModel(HomePhotosViewRepository repository) {
-        return new FeaturedHomePhotosViewModel(repository);
+    public FeaturedHomePhotosViewModel getFeaturedHomePhotosViewModel(HomePhotosViewRepository repository,
+                                                                      PhotoEventResponsePresenter presenter) {
+        return new FeaturedHomePhotosViewModel(repository, presenter);
     }
 
     @Provides
-    public NewHomePhotosViewModel getNewHomePhotosViewModel(HomePhotosViewRepository repository) {
-        return new NewHomePhotosViewModel(repository);
+    public NewHomePhotosViewModel getNewHomePhotosViewModel(HomePhotosViewRepository repository,
+                                                            PhotoEventResponsePresenter presenter) {
+        return new NewHomePhotosViewModel(repository, presenter);
     }
 
     @Provides
@@ -98,8 +108,9 @@ public class ViewModelModule {
     }
 
     @Provides
-    public MultiFilterPhotoViewModel getMultiFilterPhotoViewModel(MultiFilterPhotoViewRepository repository) {
-        return new MultiFilterPhotoViewModel(repository);
+    public MultiFilterPhotoViewModel getMultiFilterPhotoViewModel(MultiFilterPhotoViewRepository repository,
+                                                                  PhotoEventResponsePresenter presenter) {
+        return new MultiFilterPhotoViewModel(repository, presenter);
     }
 
     @Provides
@@ -118,28 +129,33 @@ public class ViewModelModule {
     }
 
     @Provides
-    public MeCollectionsViewModel getMeCollectionsViewModel(MeCollectionsViewRepository repository) {
-        return new MeCollectionsViewModel(repository);
+    public MeCollectionsViewModel getMeCollectionsViewModel(MeCollectionsViewRepository repository,
+                                                            CollectionEventResponsePresenter presenter) {
+        return new MeCollectionsViewModel(repository, presenter);
     }
 
     @Provides
-    public MeLikesViewModel getMeLikesViewModel(MePhotosViewRepository repository) {
-        return new MeLikesViewModel(repository);
+    public MeLikesViewModel getMeLikesViewModel(MePhotosViewRepository repository,
+                                                PhotoEventResponsePresenter presenter) {
+        return new MeLikesViewModel(repository, presenter);
     }
 
     @Provides
-    public MePhotosViewModel getMePhotosViewModel(MePhotosViewRepository repository) {
-        return new MePhotosViewModel(repository);
+    public MePhotosViewModel getMePhotosViewModel(MePhotosViewRepository repository,
+                                                  PhotoEventResponsePresenter presenter) {
+        return new MePhotosViewModel(repository, presenter);
     }
 
     @Provides
-    public MyFollowerViewModel getMyFollowerViewModel(MyFollowUserViewRepository repository) {
-        return new MyFollowerViewModel(repository);
+    public MyFollowerViewModel getMyFollowerViewModel(MyFollowUserViewRepository repository,
+                                                      UserEventResponsePresenter presenter) {
+        return new MyFollowerViewModel(repository, presenter);
     }
 
     @Provides
-    public MyFollowingViewModel getMyFollowingViewModel(MyFollowUserViewRepository repository) {
-        return new MyFollowingViewModel(repository);
+    public MyFollowingViewModel getMyFollowingViewModel(MyFollowUserViewRepository repository,
+                                                        UserEventResponsePresenter presenter) {
+        return new MyFollowingViewModel(repository, presenter);
     }
 
     @Provides
@@ -148,13 +164,15 @@ public class ViewModelModule {
     }
 
     @Provides
-    public CollectionSearchPageViewModel getCollectionSearchPageViewModel(CollectionSearchPageViewRepository repository) {
-        return new CollectionSearchPageViewModel(repository);
+    public CollectionSearchPageViewModel getCollectionSearchPageViewModel(CollectionSearchPageViewRepository repository,
+                                                                          CollectionEventResponsePresenter presenter) {
+        return new CollectionSearchPageViewModel(repository, presenter);
     }
 
     @Provides
-    public PhotoSearchPageViewModel getPhotoSearchPageViewModel(PhotoSearchPageViewRepository repository) {
-        return new PhotoSearchPageViewModel(repository);
+    public PhotoSearchPageViewModel getPhotoSearchPageViewModel(PhotoSearchPageViewRepository repository,
+                                                                PhotoEventResponsePresenter presenter) {
+        return new PhotoSearchPageViewModel(repository, presenter);
     }
 
     @Provides
@@ -163,8 +181,9 @@ public class ViewModelModule {
     }
 
     @Provides
-    public UserSearchPageViewModel getUserSearchPageViewModel(UserSearchPageViewRepository repository) {
-        return new UserSearchPageViewModel(repository);
+    public UserSearchPageViewModel getUserSearchPageViewModel(UserSearchPageViewRepository repository,
+                                                              UserEventResponsePresenter presenter) {
+        return new UserSearchPageViewModel(repository, presenter);
     }
 
     @Provides
@@ -173,18 +192,21 @@ public class ViewModelModule {
     }
 
     @Provides
-    public UserCollectionsViewModel getUserCollectionsViewModel(UserCollectionsViewRepository repository) {
-        return new UserCollectionsViewModel(repository);
+    public UserCollectionsViewModel getUserCollectionsViewModel(UserCollectionsViewRepository repository,
+                                                                CollectionEventResponsePresenter presenter) {
+        return new UserCollectionsViewModel(repository, presenter);
     }
 
     @Provides
-    public UserLikesViewModel getUserLikesViewModel(UserPhotosViewRepository repository) {
-        return new UserLikesViewModel(repository);
+    public UserLikesViewModel getUserLikesViewModel(UserPhotosViewRepository repository,
+                                                    PhotoEventResponsePresenter presenter) {
+        return new UserLikesViewModel(repository, presenter);
     }
 
     @Provides
-    public UserPhotosViewModel getUserPhotosViewModel(UserPhotosViewRepository repository) {
-        return new UserPhotosViewModel(repository);
+    public UserPhotosViewModel getUserPhotosViewModel(UserPhotosViewRepository repository,
+                                                      PhotoEventResponsePresenter presenter) {
+        return new UserPhotosViewModel(repository, presenter);
     }
 
     @Provides

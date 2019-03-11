@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.network.api;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.network.json.Photo;
 
-import retrofit2.Call;
+import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 
@@ -14,5 +14,5 @@ import retrofit2.http.Path;
 public interface PhotoNodeApi {
 
     @GET(Mysplash.UNSPLASH_NODE_API_URL + "photos/{id}/info")
-    Call<Photo> getAPhoto(@Path("id") String id);
+    Observable<Photo> getAPhoto(@Path("id") String id);
 }

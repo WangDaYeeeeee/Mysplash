@@ -2,14 +2,8 @@ package com.wangdaye.mysplash.common.basic.fragment;
 
 import android.content.Context;
 
-import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.network.json.User;
-
 import org.jetbrains.annotations.NotNull;
 
-import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import dagger.android.support.AndroidSupportInjection;
@@ -60,18 +54,4 @@ public abstract class MysplashFragment extends Fragment {
      * */
     public abstract boolean needBackToTop();
     public abstract void backToTop();
-
-    // update data.
-
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        // do nothing.
-    }
-
-    public void updateUser(@NonNull User user, Mysplash.MessageType type) {
-        // do nothing.
-    }
-
-    public void updateCollection(@NonNull Collection collection, Mysplash.MessageType type) {
-        // do nothing.
-    }
 }

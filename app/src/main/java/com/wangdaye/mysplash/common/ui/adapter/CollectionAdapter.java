@@ -22,7 +22,6 @@ import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -43,9 +42,6 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     private List<Collection> itemList;
     private int columnCount;
-
-    private static final int PAYLOAD_RESET = 1;
-    private static final int PAYLOAD_UPDATE = 2;
 
     public CollectionAdapter(Context context, List<Collection> list, int columnCount) {
         super(context);
@@ -69,17 +65,7 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof CollectionHolder && position < itemList.size()) {
-            ((CollectionHolder) holder).onBindView(itemList.get(position), columnCount, false);
-        }
-    }
-
-    @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
-                                 @NonNull List<Object> payloads) {
-        if (payloads.isEmpty() || payloads.indexOf(PAYLOAD_UPDATE) == -1) {
-            onBindViewHolder(holder, position);
-        } else {
-            ((CollectionHolder) holder).onBindView(itemList.get(position), columnCount, true);
+            ((CollectionHolder) holder).onBindView(itemList.get(position), columnCount);
         }
     }
 
@@ -107,56 +93,6 @@ public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
-    public void insertItem(Collection c, int position) {
-        if (position <= itemList.size()) {
-            itemList.add(position, c);
-            notifyItemInserted(position);
-        }
-    }
-
-    public void removeItem(Collection c) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == c.id) {
-                itemList.remove(i);
-                notifyItemRemoved(i);
-                return;
-            }
-        }
-    }
-
-    public void updateItem(RecyclerView recyclerView,
-                           Collection c, boolean refreshView, boolean probablyRepeat) {
-        ThreadManager.getInstance().execute(() -> {
-            for (int i = 0; i < itemList.size(); i ++) {
-                if (itemList.get(i).id == c.id) {
-                    if (c.cover_photo != null && itemList.get(i).cover_photo != null) {
-                        c.cover_photo.loadPhotoSuccess = itemList.get(i).cover_photo.loadPhotoSuccess;
-                        c.cover_photo.hasFadedIn = itemList.get(i).cover_photo.hasFadedIn;
-                    }
-                    if ((itemList.get(i).cover_photo == null && c.cover_photo != null)
-                            || (itemList.get(i).cover_photo != null && c.cover_photo == null)
-                            || (itemList.get(i).cover_photo != null && c.cover_photo != null
-                            && !itemList.get(i).cover_photo.id.equals(c.cover_photo.id))) {
-                        itemList.set(i, c);
-                        if (refreshView) {
-                            int finalI = i;
-                            recyclerView.post(() -> notifyItemChanged(finalI, PAYLOAD_RESET));
-                        }
-                    } else {
-                        itemList.set(i, c);
-                        if (refreshView) {
-                            int finalI1 = i;
-                            recyclerView.post(() -> notifyItemChanged(finalI1, PAYLOAD_UPDATE));
-                        }
-                    }
-                    if (!probablyRepeat) {
-                        return;
-                    }
-                }
-            }
-        });
-    }
-
     public List<Collection> getItemList() {
         return itemList;
     }
@@ -177,7 +113,7 @@ class CollectionHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    void onBindView(Collection collection, int columnCount, boolean update) {
+    void onBindView(Collection collection, int columnCount) {
         Context context = itemView.getContext();
 
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
@@ -206,37 +142,33 @@ class CollectionHolder extends RecyclerView.ViewHolder {
                     collection.cover_photo.height);
         }
 
-        if (update) {
-            setCardText(context, collection, false);
-        } else {
-            if (collection.cover_photo != null) {
-                setCardText(context, collection, true);
-                ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
-                    collection.cover_photo.loadPhotoSuccess = true;
-                    if (!collection.cover_photo.hasFadedIn) {
-                        collection.cover_photo.hasFadedIn = true;
-                        ImageHelper.startSaturationAnimation(context, image);
-                    }
-                    setCardText(context, collection, false);
-                });
-                card.setCardBackgroundColor(
-                        ImageHelper.computeCardBackgroundColor(
-                                image.getContext(),
-                                collection.cover_photo.color));
-            } else {
-                setCardText(context, collection, false);
-                ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
-            }
-
-            ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, null);
-            avatar.setOnClickListener(v -> {
-                MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-                if (activity != null) {
-                    IntentHelper.startUserActivity(
-                            activity, avatar, card, collection.user, UserActivity.PAGE_PHOTO);
+        if (collection.cover_photo != null) {
+            setCardText(context, collection, true);
+            ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
+                collection.cover_photo.loadPhotoSuccess = true;
+                if (!collection.cover_photo.hasFadedIn) {
+                    collection.cover_photo.hasFadedIn = true;
+                    ImageHelper.startSaturationAnimation(context, image);
                 }
+                setCardText(context, collection, false);
             });
+            card.setCardBackgroundColor(
+                    ImageHelper.computeCardBackgroundColor(
+                            image.getContext(),
+                            collection.cover_photo.color));
+        } else {
+            setCardText(context, collection, false);
+            ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
         }
+
+        ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, null);
+        avatar.setOnClickListener(v -> {
+            MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+            if (activity != null) {
+                IntentHelper.startUserActivity(
+                        activity, avatar, card, collection.user, UserActivity.PAGE_PHOTO);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             card.setTransitionName(collection.id + "-background");

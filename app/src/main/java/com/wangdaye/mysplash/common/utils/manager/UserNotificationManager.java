@@ -9,11 +9,11 @@ import com.google.gson.Gson;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
-import com.wangdaye.mysplash.common.network.callback.Callback;
-import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
 import com.wangdaye.mysplash.common.network.json.NotificationFeed;
 import com.wangdaye.mysplash.common.network.json.NotificationResult;
 import com.wangdaye.mysplash.common.network.json.NotificationStream;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.service.GetStreamService;
 import com.wangdaye.mysplash.common.network.service.NotificationService;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
@@ -42,8 +42,8 @@ public class UserNotificationManager {
     private Gson gson;
     private SimpleDateFormat format;
 
-    private OnRequestStreamCallback requestStreamCallback;
-    private OnRequestNotificationCallback requestNotificationCallback;
+    private OnRequestStreamObserver requestStreamObserver;
+    private OnRequestNotificationObserver requestNotificationObserver;
 
     private List<OnUpdateNotificationListener> listenerList;
 
@@ -110,21 +110,21 @@ public class UserNotificationManager {
     private void requestFirstPageNotifications() {
         requesting = true;
         latestRefreshTime = System.currentTimeMillis();
-        requestStreamCallback = new OnRequestStreamCallback(true);
-        streamService.requestFirstPageStream(requestStreamCallback);
+        requestStreamObserver = new OnRequestStreamObserver(true);
+        streamService.requestFirstPageStream(requestStreamObserver);
     }
 
     private void requestNextPageNotifications() {
         requesting = true;
-        requestStreamCallback = new OnRequestStreamCallback(false);
-        streamService.requestNextPageStream(nextPage, requestStreamCallback);
+        requestStreamObserver = new OnRequestStreamObserver(false);
+        streamService.requestNextPageStream(nextPage, requestStreamObserver);
     }
 
     void checkToRefreshNotification() {
         if (latestRefreshTime < 0) {
             requestPersonalNotifications();
         } else if (System.currentTimeMillis() - latestRefreshTime > 1000 * 60 * 15
-                // // TODO: 2017/4/22 alter time.
+                // TODO: 2017/4/22 alter time.
                 && !requesting) {
             cancelRequest(true);
             requestFirstPageNotifications();
@@ -139,11 +139,11 @@ public class UserNotificationManager {
     public void cancelRequest(boolean force) {
         if (force || (requesting && !TextUtils.isEmpty(nextPage))) {
             requesting = false;
-            if (requestStreamCallback != null) {
-                requestStreamCallback.setCanceled();
+            if (requestStreamObserver != null) {
+                requestStreamObserver.setCanceled();
             }
-            if (requestNotificationCallback != null) {
-                requestNotificationCallback.setCanceled();
+            if (requestNotificationObserver != null) {
+                requestNotificationObserver.setCanceled();
             }
             streamService.cancel();
             notificationService.cancel();
@@ -251,12 +251,12 @@ public class UserNotificationManager {
         this.listenerList.remove(l);
     }
 
-    private class OnRequestStreamCallback extends NoBodyCallback<ResponseBody> {
+    private class OnRequestStreamObserver extends NoBodyObserver<ResponseBody> {
 
         private boolean refresh;
         private boolean canceled;
 
-        OnRequestStreamCallback(boolean refresh) {
+        OnRequestStreamObserver(boolean refresh) {
             this.refresh = refresh;
             this.canceled = false;
         }
@@ -292,10 +292,10 @@ public class UserNotificationManager {
                 if (refresh) {
                     firstResultId = stream.results.get(0).id;
                 }
-                requestNotificationCallback = new OnRequestNotificationCallback(refresh);
+                requestNotificationObserver = new OnRequestNotificationObserver(refresh);
                 notificationService.requestNotificationFeed(
                         streamService.getStreamUsablePart(json),
-                        requestNotificationCallback);
+                        requestNotificationObserver);
             } else {
                 requesting = false;
                 for (int j = 0; j < listenerList.size(); j ++) {
@@ -315,12 +315,12 @@ public class UserNotificationManager {
         }
     }
 
-    private class OnRequestNotificationCallback extends Callback<NotificationFeed> {
+    private class OnRequestNotificationObserver extends BaseObserver<NotificationFeed> {
 
         private boolean refresh;
         private boolean canceled;
 
-        OnRequestNotificationCallback(boolean refresh) {
+        OnRequestNotificationObserver(boolean refresh) {
             this.refresh = refresh;
             this.canceled = false;
         }

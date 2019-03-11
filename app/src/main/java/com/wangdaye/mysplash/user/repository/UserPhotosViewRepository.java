@@ -1,11 +1,9 @@
 package com.wangdaye.mysplash.user.repository;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -33,10 +31,10 @@ public class UserPhotosViewRepository {
         service.cancel();
         service.requestUserPhotos(
                 username,
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
                 order,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void getUserLikes(@NonNull MutableLiveData<ListResource<Photo>> current,
@@ -51,18 +49,13 @@ public class UserPhotosViewRepository {
         service.cancel();
         service.requestUserLikes(
                 username,
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
                 order,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void cancel() {
         service.cancel();
-    }
-
-    public interface GetPhotosCallback {
-        void onSucceed(List<Photo> photoList);
-        void onFailed();
     }
 }

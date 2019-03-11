@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
@@ -37,9 +36,11 @@ import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
+import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
+import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.utils.presenter.DispatchCollectionsChangedPresenter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.util.ArrayList;
@@ -61,6 +62,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     private List<Photo> photoList; // this list is used to save the feed data.
     private List<ViewType> typeList; // this list is used to save the display information of view holder.
+    private List<ViewType> photoViewTypeList;
 
     private boolean hasFooter;
     private int columnCount;
@@ -71,7 +73,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
      * This class is used to save the view holder's information.
      * */
     class ViewType {
-        // data
+
         int photoPosition;
         int adapterPosition;
 
@@ -93,6 +95,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         super(context);
         this.photoList = list;
         this.typeList = new ArrayList<>();
+        this.photoViewTypeList = new ArrayList<>();
         buildTypeList(0);
 
         this.hasFooter = hasFooter(context);
@@ -193,16 +196,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     // control.
 
-    public List<Photo> getPhotoList() {
-        return new ArrayList<>(photoList);
-    }
-
-    public void setPhotoList(List<Photo> list) {
-        photoList = list;
-        buildTypeList(0);
-        notifyDataSetChanged();
-    }
-
     public void buildTypeList(int photoListFromIndex) {
         for (int i = photoListFromIndex; i < photoList.size(); i ++) {
             if (typeList.size() == 0) {
@@ -218,6 +211,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     typeList.add(new ViewType(i, typeList.size(), PhotoFeedHolder.VIEW_TYPE_PHOTO));
                 }
             }
+            photoViewTypeList.add(typeList.get(typeList.size() - 1));
         }
     }
 
@@ -245,28 +239,8 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
         return photoList.get(photoPosition);
     }
 
-    public void updatePhoto(RecyclerView recyclerView,
-                            Photo newPhoto, boolean refreshView, boolean probablyRepeat) {
-        ThreadManager.getInstance().execute(() -> {
-            for (int i = 0; i < typeList.size(); i ++) {
-                if (typeList.get(i).type != PhotoFeedHolder.VIEW_TYPE_PHOTO) {
-                    continue;
-                }
-                Photo photo = getPhoto(i);
-                if (photo == null || !photo.id.equals(newPhoto.id)) {
-                    continue;
-                }
-                newPhoto.settingLike = false;
-                photoList.set(typeList.get(i).photoPosition, newPhoto);
-                if (refreshView) {
-                    int finalI = i;
-                    recyclerView.post(() -> notifyItemChanged(finalI, 1));
-                }
-                if (!probablyRepeat) {
-                    return;
-                }
-            }
-        });
+    public int getPhotoHolderAdapterPosition(int photoPosition) {
+        return photoViewTypeList.get(photoPosition).adapterPosition;
     }
 
     public boolean isFooterView(int adapterPosition) {
@@ -323,24 +297,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder>
                     typeList.get(adapterPosition).photoPosition,
                     headIndex);
         }
-    }
-
-    @Override
-    public void createCollectResult(Collection collection) {
-        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.CREATE);
-
-        User user = AuthManager.getInstance().getUser();
-        if (user != null) {
-            user.total_collections ++;
-            Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
-        }
-    }
-
-    @Override
-    public void updateCollectResult(Photo photo, Collection collection, User user) {
-        Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
-        Mysplash.getInstance().dispatchCollectionUpdate(collection, Mysplash.MessageType.UPDATE);
-        Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
     }
 }
 
@@ -524,8 +480,6 @@ class PhotoFeedHolder extends RecyclerView.ViewHolder {
 
     public interface ParentAdapter {
         void startPhotoActivity(View image, View background, int adapterPosition);
-        void createCollectResult(Collection collection);
-        void updateCollectResult(Photo photo, Collection collection, User user);
     }
 
     @OnClick(R.id.item_following_photo_card) void clickItem() {
@@ -549,8 +503,8 @@ class PhotoFeedHolder extends RecyclerView.ViewHolder {
         }
         if (AuthManager.getInstance().isAuthorized()) {
             if (likeButton.isUsable()) {
-                likeButton.setProgressState();
                 photo.settingLike = true;
+                MessageBus.getInstance().post(new PhotoEvent(photo));
                 if (callback != null) {
                     callback.onLikeOrDislikePhoto(photo, getAdapterPosition(), !photo.liked_by_user);
                 }
@@ -567,7 +521,7 @@ class PhotoFeedHolder extends RecyclerView.ViewHolder {
                 IntentHelper.startLoginActivity(activity);
             } else {
                 SelectCollectionDialog dialog = new SelectCollectionDialog();
-                dialog.setPhotoAndListener(photo, new OnCollectionsChangedListener(parentAdapter));
+                dialog.setPhotoAndListener(photo, new DispatchCollectionsChangedPresenter());
                 dialog.show(activity.getSupportFragmentManager(), null);
             }
         }
@@ -582,57 +536,28 @@ class PhotoFeedHolder extends RecyclerView.ViewHolder {
             } else if (FileUtils.isPhotoExists(activity, photo.id)) {
                 DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                 dialog.setDownloadKey(photo);
-                dialog.setOnCheckOrDownloadListener(new OnCheckOrDownloadListener(photo));
+                dialog.setOnCheckOrDownloadListener(new DownloadRepeatDialog.OnCheckOrDownloadListener() {
+
+                    private final Photo p = photo;
+                    private final FollowingAdapter.ItemEventCallback c = callback;
+
+                    @Override
+                    public void onCheck(Object obj) {
+                        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
+                        if (activity != null) {
+                            IntentHelper.startCheckPhotoActivity(activity, p.id);
+                        }
+                    }
+
+                    @Override
+                    public void onDownload(Object obj) {
+                        if (c != null) {
+                            c.onDownload(p);
+                        }
+                    }
+                });
                 dialog.show(activity.getSupportFragmentManager(), null);
             } else if (callback != null) {
-                callback.onDownload(photo);
-            }
-        }
-    }
-
-    // on collections changed listener.
-
-    private class OnCollectionsChangedListener
-            implements SelectCollectionDialog.OnCollectionsChangedListener {
-
-        private ParentAdapter adapter;
-
-        OnCollectionsChangedListener(ParentAdapter adapter) {
-            this.adapter = adapter;
-        }
-
-        @Override
-        public void onAddCollection(Collection c) {
-            adapter.createCollectResult(c);
-        }
-
-        @Override
-        public void onUpdateCollection(Collection c, User u, Photo p) {
-            adapter.updateCollectResult(p, c, u);
-        }
-    }
-
-    // on check or download listener. (download repeat dialog)
-
-    private class OnCheckOrDownloadListener implements DownloadRepeatDialog.OnCheckOrDownloadListener {
-
-        private Photo photo;
-
-        OnCheckOrDownloadListener(Photo photo) {
-            this.photo = photo;
-        }
-
-        @Override
-        public void onCheck(Object obj) {
-            MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-            if (activity != null) {
-                IntentHelper.startCheckPhotoActivity(activity, photo.id);
-            }
-        }
-
-        @Override
-        public void onDownload(Object obj) {
-            if (callback != null) {
                 callback.onDownload(photo);
             }
         }

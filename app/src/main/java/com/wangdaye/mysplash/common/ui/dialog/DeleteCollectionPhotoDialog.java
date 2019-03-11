@@ -13,10 +13,10 @@ import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -43,7 +43,7 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment {
 
     @OnClick(R.id.dialog_delete_collection_photo_deleteBtn) void delete() {
         setState(DELETE_STATE);
-        service.deletePhotoFromCollection(collection.id, photo.id, new Callback<ChangeCollectionPhotoResult>() {
+        service.deletePhotoFromCollection(collection.id, photo.id, new BaseObserver<ChangeCollectionPhotoResult>() {
             @Override
             public void onSucceed(ChangeCollectionPhotoResult changeCollectionPhotoResult) {
                 if (listener != null) {

@@ -1,9 +1,9 @@
 package com.wangdaye.mysplash.search.repository;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.network.json.SearchUsersResult;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.SearchService;
 
 import javax.inject.Inject;
@@ -32,8 +32,8 @@ public class UserSearchPageViewRepository {
         service.cancel();
         service.searchUsers(
                 query,
-                current.getValue().dataPage + 1,
-                new Callback<SearchUsersResult>() {
+                current.getValue().getRequestPage(),
+                new BaseObserver<SearchUsersResult>() {
                     @Override
                     public void onSucceed(SearchUsersResult searchUsersResult) {
                         if (refresh) {
@@ -56,11 +56,7 @@ public class UserSearchPageViewRepository {
 
                     @Override
                     public void onFailed() {
-                        if (refresh) {
-                            current.setValue(ListResource.refreshError(current.getValue()));
-                        } else {
-                            current.setValue(ListResource.loadError(current.getValue()));
-                        }
+                        current.setValue(ListResource.error(current.getValue()));
                     }
                 });
     }

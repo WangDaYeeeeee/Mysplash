@@ -1,4 +1,4 @@
-package com.wangdaye.mysplash.common.utils.presenter;
+package com.wangdaye.mysplash.common.utils.presenter.pager;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;

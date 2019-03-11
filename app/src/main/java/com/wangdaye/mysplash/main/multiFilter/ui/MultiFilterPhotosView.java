@@ -12,12 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.presenter.PagerScrollablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerLoadablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerStateManagePresenter;
-import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
@@ -26,9 +23,7 @@ import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefre
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,10 +41,8 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
         LargeErrorStateAdapter.OnRetryListener {
 
     @BindView(R.id.container_photo_list_recyclerView) MultipleStateRecyclerView recyclerView;
-    private PhotoAdapter photoAdapter;
 
     private OnClickListener hideKeyboardListener;
-    private PagerLoadablePresenter loadMorePresenter;
     private PagerStateManagePresenter stateManagePresenter;
 
     private PagerManageView pagerManageView;
@@ -87,9 +80,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
-        photoAdapter = new PhotoAdapter(
-                getContext(), new ArrayList<>(), DisplayUtils.getGirdColumnCount(getContext()));
-        recyclerView.setAdapter(photoAdapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
             int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
@@ -114,34 +104,23 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
                         v -> {if (hideKeyboardListener != null) hideKeyboardListener.onClick(v);},
                         this),
                 MultipleStateRecyclerView.STATE_ERROR);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                PagerScrollablePresenter.onScrolled(
-                        MultiFilterPhotosView.this, recyclerView,
-                        photoAdapter.getRealItemCount(), pagerManageView, 0, dy);
-            }
-        });
         recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
 
-        loadMorePresenter = new PagerLoadablePresenter(
-                this, recyclerView, photoAdapter, pagerManageView) {
-            @Override
-            public List<Photo> subList(int fromIndex, int toIndex) {
-                return photoAdapter.getPhotoData().subList(fromIndex, toIndex);
-            }
-        };
         stateManagePresenter = new PagerStateManagePresenter(recyclerView);
     }
 
     // control.
 
-    public void setItemEventCallback(PhotoAdapter.ItemEventCallback callback) {
-        photoAdapter.setItemEventCallback(callback);
-    }
-
-    public void setPhotoList(List<Photo> list) {
-        photoAdapter.setPhotoData(list);
+    public void setAdapter(PhotoAdapter adapter) {
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                PagerScrollablePresenter.onScrolled(
+                        MultiFilterPhotosView.this, recyclerView,
+                        adapter.getRealItemCount(), pagerManageView, 0, dy);
+            }
+        });
     }
 
     public void setPagerManageView(PagerManageView view) {
@@ -150,14 +129,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
 
     public void setClickListenerForFeedbackView(OnClickListener l) {
         hideKeyboardListener = l;
-    }
-
-    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
-        return loadMorePresenter.loadMore(list, headIndex, headDirection, 0);
-    }
-
-    public void updatePhoto(Photo photo, boolean refreshView) {
-        photoAdapter.updatePhoto(recyclerView, photo, refreshView, true);
     }
 
     // interface.
@@ -187,16 +158,6 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
             return true;
         }
         return stateChanged;
-    }
-
-    @Override
-    public void notifyItemsRefreshed(int count) {
-        photoAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemsLoaded(int count) {
-        photoAdapter.notifyItemRangeInserted(photoAdapter.getRealItemCount() - count, count);
     }
 
     @Override
@@ -241,22 +202,8 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
     }
 
     @Override
-    public int getItemCount() {
-        if (stateManagePresenter.getState() != State.NORMAL) {
-            return 0;
-        } else {
-            return photoAdapter.getRealItemCount();
-        }
-    }
-
-    @Override
     public RecyclerView getRecyclerView() {
         return recyclerView;
-    }
-
-    @Override
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return photoAdapter;
     }
 
     // on refresh and load listener.

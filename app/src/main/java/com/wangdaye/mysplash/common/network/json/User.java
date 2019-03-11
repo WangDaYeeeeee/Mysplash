@@ -17,6 +17,7 @@ public class User
     // data
     public boolean hasFadedIn = false;
     public boolean complete = false;
+    public boolean settingFollow = false;
 
     /**
      * id : QV5S1rtoUJ0
@@ -116,6 +117,7 @@ public class User
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.hasFadedIn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.complete ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.settingFollow ? (byte) 1 : (byte) 0);
         dest.writeString(this.id);
         dest.writeString(this.updated_at);
         dest.writeInt(this.numeric_id);
@@ -148,6 +150,7 @@ public class User
     protected User(Parcel in) {
         this.hasFadedIn = in.readByte() != 0;
         this.complete = in.readByte() != 0;
+        this.settingFollow = in.readByte() != 0;
         this.id = in.readString();
         this.updated_at = in.readString();
         this.numeric_id = in.readInt();
@@ -215,19 +218,5 @@ public class User
     @Override
     public int getHeight() {
         return 128;
-    }
-
-    /**
-     * Update load information for user.
-     *
-     * @return Return true when load information has been changed. Otherwise return false.
-     * */
-    public boolean updateLoadInformation(User user) {
-        if (this.hasFadedIn != user.hasFadedIn) {
-            this.hasFadedIn = user.hasFadedIn;
-            return true;
-        } else {
-            return false;
-        }
     }
 }

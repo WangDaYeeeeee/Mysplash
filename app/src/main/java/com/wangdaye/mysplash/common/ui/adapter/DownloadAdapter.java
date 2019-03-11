@@ -87,10 +87,6 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadHolder> {
         return position;
     }
 
-    public void updateItemView(int adapterPosition) {
-        notifyItemChanged(adapterPosition, 1);
-    }
-
     public interface ItemEventCallback {
         void onDelete(DownloadMissionEntity entity, int adapterPosition);
         void onRetry(DownloadMissionEntity entity, int adapterPosition);

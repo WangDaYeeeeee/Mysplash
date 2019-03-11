@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.main.following;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.FeedService;
 
 import javax.inject.Inject;
@@ -30,9 +30,9 @@ public class FollowingFeedViewRepository {
 
         service.cancel();
         service.requestFollowingFeed(
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void cancel() {

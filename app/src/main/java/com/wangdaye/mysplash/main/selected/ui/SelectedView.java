@@ -11,11 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.presenter.PagerScrollablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerStateManagePresenter;
-import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -23,9 +21,7 @@ import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefre
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +40,6 @@ public class SelectedView extends BothWaySwipeRefreshLayout
         LargeErrorStateAdapter.OnRetryListener {
 
     @BindView(R.id.container_photo_list_recyclerView) MultipleStateRecyclerView recyclerView;
-    private SelectedAdapter collectionAdapter;
 
     private PagerStateManagePresenter stateManagePresenter;
 
@@ -83,9 +78,6 @@ public class SelectedView extends BothWaySwipeRefreshLayout
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
-        collectionAdapter = new SelectedAdapter(
-                getContext(), new ArrayList<>(), DisplayUtils.getGirdColumnCount(getContext()));
-        recyclerView.setAdapter(collectionAdapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
             int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
@@ -106,14 +98,6 @@ public class SelectedView extends BothWaySwipeRefreshLayout
                         getContext().getString(R.string.feedback_click_retry),
                         this),
                 MultipleStateRecyclerView.STATE_ERROR);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                PagerScrollablePresenter.onScrolled(
-                        SelectedView.this, recyclerView,
-                        collectionAdapter.getRealItemCount(), pagerManageView, 0, dy);
-            }
-        });
         recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
 
         stateManagePresenter = new PagerStateManagePresenter(recyclerView);
@@ -121,18 +105,20 @@ public class SelectedView extends BothWaySwipeRefreshLayout
 
     // control.
 
-    public void setCollectionList(List<Collection> list) {
-        collectionAdapter.setCollectionData(list);
+    public void setAdapter(SelectedAdapter adapter) {
+        recyclerView.setAdapter(adapter);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                PagerScrollablePresenter.onScrolled(
+                        SelectedView.this, recyclerView,
+                        adapter.getRealItemCount(), pagerManageView, 0, dy);
+            }
+        });
     }
 
     public void setPagerManageView(PagerManageView view) {
         pagerManageView = view;
-    }
-
-    // collection.
-
-    public void updateCollection(Collection collection, boolean refreshView) {
-        collectionAdapter.updateCollection(collection, refreshView, false);
     }
 
     // interface.
@@ -147,16 +133,6 @@ public class SelectedView extends BothWaySwipeRefreshLayout
     @Override
     public boolean setState(State state) {
         return stateManagePresenter.setState(state, true);
-    }
-
-    @Override
-    public void notifyItemsRefreshed(int count) {
-        collectionAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemsLoaded(int count) {
-        collectionAdapter.notifyItemRangeInserted(collectionAdapter.getRealItemCount() - count, count);
     }
 
     @Override
@@ -201,22 +177,8 @@ public class SelectedView extends BothWaySwipeRefreshLayout
     }
 
     @Override
-    public int getItemCount() {
-        if (stateManagePresenter.getState() != State.NORMAL) {
-            return 0;
-        } else {
-            return collectionAdapter.getRealItemCount();
-        }
-    }
-
-    @Override
     public RecyclerView getRecyclerView() {
         return recyclerView;
-    }
-
-    @Override
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return collectionAdapter;
     }
 
     // on refresh an load listener.

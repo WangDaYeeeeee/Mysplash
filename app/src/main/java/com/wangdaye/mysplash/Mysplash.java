@@ -15,17 +15,16 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 import okhttp3.OkHttpClient;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
-import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -56,12 +55,12 @@ public class Mysplash extends Application
     @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject OkHttpClient httpClient;
     @Inject GsonConverterFactory gsonConverterFactory;
+    @Inject RxJava2CallAdapterFactory rxJava2CallAdapterFactory;
 
     private List<MysplashActivity> activityList;
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
-    public static final String UNSPLASH_TREND_FEEDING_URL = "feeds/home";
     public static final String UNSPLASH_FOLLOWING_FEED_URL = "feeds/following";
     public static final String UNSPLASH_NODE_API_URL = "";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
@@ -72,7 +71,6 @@ public class Mysplash extends Application
     public static final String DOWNLOAD_PATH = "/Pictures/Mysplash/";
     public static final String DOWNLOAD_PHOTO_FORMAT = ".jpg";
     public static final String DOWNLOAD_COLLECTION_FORMAT = ".zip";
-
     @StringDef({DOWNLOAD_PHOTO_FORMAT, DOWNLOAD_COLLECTION_FORMAT})
     public @interface DownloadFormatRule {}
 
@@ -83,29 +81,12 @@ public class Mysplash extends Application
     @IntRange(from = 1)
     public @interface PageRule {}
 
-    public static final int CATEGORY_TOTAL_NEW = 0;
-    public static final int CATEGORY_TOTAL_FEATURED = 1;
-    public static final int CATEGORY_BUILDINGS_ID = 2;
-    public static final int CATEGORY_FOOD_DRINK_ID = 3;
-    public static final int CATEGORY_NATURE_ID = 4;
-    public static final int CATEGORY_OBJECTS_ID = 8;
-    public static final int CATEGORY_PEOPLE_ID = 6;
-    public static final int CATEGORY_TECHNOLOGY_ID = 7;
+    public static final int DEFAULT_REQUEST_INTERVAL_SECOND = 5;
 
     public static int TOTAL_NEW_PHOTOS_COUNT = 17444;
     public static int TOTAL_FEATURED_PHOTOS_COUNT = 1192;
-    public static int BUILDING_PHOTOS_COUNT = 2720;
-    public static int FOOD_DRINK_PHOTOS_COUNT = 650;
-    public static int NATURE_PHOTOS_COUNT = 54208;
-    public static int OBJECTS_PHOTOS_COUNT = 2150;
-    public static int PEOPLE_PHOTOS_COUNT = 3410;
-    public static int TECHNOLOGY_PHOTOS_COUNT = 350;
 
-    public static final int CUSTOM_API_ACTIVITY = 1;
-
-    public enum MessageType {
-        CREATE, DELETE, UPDATE
-    }
+    public static final int ACTIVITY_REQUEST_CODE_CUSTOM_API = 1;
 
     @Override
     public void onCreate() {
@@ -134,6 +115,10 @@ public class Mysplash extends Application
 
     public GsonConverterFactory getGsonConverterFactory() {
         return gsonConverterFactory;
+    }
+
+    public RxJava2CallAdapterFactory getRxJava2CallAdapterFactory() {
+        return rxJava2CallAdapterFactory;
     }
 
     public static String getAppId(Context c, boolean auth) {
@@ -242,24 +227,6 @@ public class Mysplash extends Application
             }
         }
         return new ArrayList<>();
-    }
-
-    public void dispatchPhotoUpdate(@NonNull Photo photo, MessageType type) {
-        for (int i = activityList.size() - 1; i >= 0; i --) {
-            activityList.get(i).updatePhoto(photo, type);
-        }
-    }
-
-    public void dispatchCollectionUpdate(@NonNull Collection collection, MessageType type) {
-        for (int i = activityList.size() - 1; i >= 0; i --) {
-            activityList.get(i).updateCollection(collection, type);
-        }
-    }
-
-    public void dispatchUserUpdate(@NonNull User user, MessageType type) {
-        for (int i = activityList.size() - 1; i >= 0; i --) {
-            activityList.get(i).updateUser(user, type);
-        }
     }
 
     public void finishSameActivity(Class c) {

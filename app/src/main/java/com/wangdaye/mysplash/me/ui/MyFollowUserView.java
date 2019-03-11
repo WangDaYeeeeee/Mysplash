@@ -10,12 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.presenter.PagerScrollablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerStateManagePresenter;
-import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -23,8 +21,7 @@ import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefre
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import java.util.List;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,7 +39,6 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
         LargeErrorStateAdapter.OnRetryListener {
 
     @BindView(R.id.container_photo_list_recyclerView) MultipleStateRecyclerView recyclerView;
-    private MyFollowAdapter myFollowAdapter;
 
     private PagerStateManagePresenter stateManagePresenter;
 
@@ -51,25 +47,23 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
     private int userDeltaCount;
     private PagerManageView pagerManageView;
 
-    public MyFollowUserView(MyFollowActivity a, int id, List<MyFollowAdapter.MyFollowUser> list,
-                            boolean selected, int index,
-                            PagerManageView v, MyFollowAdapter.ItemEventCallback callback) {
+    public MyFollowUserView(MyFollowActivity a, int id, MyFollowAdapter adapter,
+                            boolean selected, int index, PagerManageView v) {
         super(a);
         this.setId(id);
-        this.init(list, selected, index, v, callback);
+        this.init(adapter, selected, index, v);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void init(List<MyFollowAdapter.MyFollowUser> list, boolean selected, int index,
-                      PagerManageView v, MyFollowAdapter.ItemEventCallback callback) {
+    private void init(MyFollowAdapter adapter, boolean selected, int index, PagerManageView v) {
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
         ButterKnife.bind(this, this);
         initData(selected, index, v);
-        initView(list, callback);
+        initView(adapter);
     }
 
     private void initData(boolean selected, int page, PagerManageView v) {
@@ -79,16 +73,14 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
         this.pagerManageView = v;
     }
 
-    private void initView(List<MyFollowAdapter.MyFollowUser> list, MyFollowAdapter.ItemEventCallback callback) {
+    private void initView(MyFollowAdapter adapter) {
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
         setPermitRefresh(false);
         setPermitLoad(false);
 
-        myFollowAdapter = new MyFollowAdapter(list);
-        myFollowAdapter.setItemEventCallback(callback);
-        recyclerView.setAdapter(myFollowAdapter);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
                 new GridLayoutManager(
                         getContext(),
@@ -109,7 +101,7 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
                         MyFollowUserView.this, recyclerView,
-                        myFollowAdapter.getItemCount(), pagerManageView, index, dy);
+                        adapter.getItemCount(), pagerManageView, index, dy);
             }
         });
 
@@ -120,10 +112,6 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
 
     public int getUserDeltaCount() {
         return userDeltaCount;
-    }
-
-    public void updateMyFollowUser(User user) {
-        myFollowAdapter.updateItem(user, true, false);
     }
 
     // interface.
@@ -138,16 +126,6 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
     @Override
     public boolean setState(State state) {
         return stateManagePresenter.setState(state, selected);
-    }
-
-    @Override
-    public void notifyItemsRefreshed(int count) {
-        myFollowAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemsLoaded(int count) {
-        myFollowAdapter.notifyItemRangeInserted(myFollowAdapter.getItemCount() - count, count);
     }
 
     @Override
@@ -189,17 +167,7 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
     @Override
     public boolean canSwipeBack(int dir) {
         return stateManagePresenter.getState() != State.NORMAL
-                || SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir)
-                || myFollowAdapter.getItemCount() <= 0;
-    }
-
-    @Override
-    public int getItemCount() {
-        if (stateManagePresenter.getState() != State.NORMAL) {
-            return 0;
-        } else {
-            return myFollowAdapter.getItemCount();
-        }
+                || SwipeBackCoordinatorLayout.canSwipeBack(recyclerView, dir);
     }
 
     // on refresh an load listener.
@@ -226,10 +194,5 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
     @Override
     public RecyclerView getRecyclerView() {
         return recyclerView;
-    }
-
-    @Override
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return myFollowAdapter;
     }
 }

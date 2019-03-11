@@ -166,11 +166,11 @@ public class Photo
         float imageRatio = (float) (1.0 * width / height);
 
         if (imageRatio > screenRatio) {
-            int h = (int) Math.min(screenHeight * 0.5, height);
+            int h = Math.min(screenHeight / 2, height);
             int w = (int) (1.0 * width / height * h);
             return new int[] {w, h};
         } else {
-            int w = (int) Math.min(screenWidth * 0.5, width);
+            int w = Math.min(screenWidth / 2, width);
             int h = (int) (1.0 * height / width * w);
             return new int[] {w, h};
         }
@@ -320,20 +320,5 @@ public class Photo
     @Override
     public int getHeight() {
         return height;
-    }
-
-    /**
-     * Update load information for photo.
-     *
-     * @return Return true when load information has been changed. Otherwise return false.
-     * */
-    public boolean updateLoadInformation(Photo photo) {
-        this.loadPhotoSuccess = photo.loadPhotoSuccess;
-        if (this.hasFadedIn != photo.hasFadedIn) {
-            this.hasFadedIn = photo.hasFadedIn;
-            return true;
-        } else {
-            return false;
-        }
     }
 }

@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.AccessToken;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.AuthorizeService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -116,7 +116,7 @@ public class LoginActivity extends MysplashActivity
             service.requestAccessToken(
                     Mysplash.getInstance(),
                     intent.getData().getQueryParameter("code"),
-                    new Callback<AccessToken>() {
+                    new BaseObserver<AccessToken>() {
                         @Override
                         public void onSucceed(AccessToken accessToken) {
                             AuthManager.getInstance().updateAccessToken(accessToken);

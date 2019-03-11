@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.Total;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.StatusService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -54,7 +54,7 @@ public class TotalDialog extends MysplashDialogFragment {
         ButterKnife.bind(this, view);
         this.state = LOADING_STATE;
         initWidget();
-        service.requestTotal(onRequestTotalCallback);
+        service.requestTotal(onRequestTotalObserver);
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -92,7 +92,7 @@ public class TotalDialog extends MysplashDialogFragment {
 
     // interface.
 
-    private Callback<Total> onRequestTotalCallback = new Callback<Total>() {
+    private BaseObserver<Total> onRequestTotalObserver = new BaseObserver<Total>() {
         @SuppressLint("SetTextI18n")
         @Override
         public void onSucceed(Total total) {

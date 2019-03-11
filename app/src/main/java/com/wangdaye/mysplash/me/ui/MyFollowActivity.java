@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.me.ui;
 
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.tabs.TabLayout;
 
@@ -15,12 +14,11 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
+import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.vm.PagerManageViewModel;
-import com.wangdaye.mysplash.common.utils.presenter.FollowOrCancelFollowPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.utils.presenter.list.FollowOrCancelFollowPresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
@@ -29,6 +27,7 @@ import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBa
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.me.vm.MyFollowerViewModel;
 import com.wangdaye.mysplash.me.vm.MyFollowingViewModel;
 
@@ -60,13 +59,14 @@ public class MyFollowActivity extends MysplashActivity
     @BindView(R.id.activity_my_follow_viewPager) ViewPager viewPager;
 
     private PagerView[] pagers = new PagerView[pageCount()];
+    private MyFollowAdapter[] adapters = new MyFollowAdapter[pageCount()];
 
     private PagerManageViewModel pagerManageModel;
     private MyFollowerViewModel[] pagerModels = new MyFollowerViewModel[pageCount()];
     @Inject DaggerViewModelFactory viewModelFactory;
 
     @Inject FollowOrCancelFollowPresenter followOrCancelFollowPresenter;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -118,12 +118,6 @@ public class MyFollowActivity extends MysplashActivity
         return container;
     }
 
-    @Override
-    public void updateUser(@NonNull User user, Mysplash.MessageType type) {
-        ((MyFollowUserView) pagers[followerPage()]).updateMyFollowUser(user);
-        ((MyFollowUserView) pagers[followingPage()]).updateMyFollowUser(user);
-    }
-
     // init.
 
     private void initModel() {
@@ -132,13 +126,11 @@ public class MyFollowActivity extends MysplashActivity
 
         pagerModels[followerPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(MyFollowerViewModel.class);
-        pagerModels[followerPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        pagerModels[followerPage()].init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
 
         pagerModels[followingPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(MyFollowingViewModel.class);
-        pagerModels[followingPage()].init(
-                ListResource.refreshing(new ArrayList<>(), 0, Mysplash.DEFAULT_PER_PAGE));
+        pagerModels[followingPage()].init(ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE));
     }
 
     private void initView() {
@@ -155,21 +147,31 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     private void initPages() {
+        adapters[followerPage()] = new MyFollowAdapter(
+                this, 
+                Objects.requireNonNull(pagerModels[followerPage()].getListResource().getValue()).dataList);
+        adapters[followerPage()].setItemEventCallback(this);
+
+        adapters[followingPage()] = new MyFollowAdapter(
+                this,
+                Objects.requireNonNull(pagerModels[followingPage()].getListResource().getValue()).dataList);
+        adapters[followingPage()].setItemEventCallback(this);
+        
         List<View> pageList = new ArrayList<>();
         pageList.add(
                 new MyFollowUserView(
                         this, R.id.activity_my_follower,
-                        Objects.requireNonNull(pagerModels[followerPage()].getListResource().getValue())
-                                .dataList,
+                        adapters[followerPage()],
                         getCurrentPagerPosition() == followerPage(),
-                        followerPage(), this, this));
+                        followerPage(), 
+                        this));
         pageList.add(
                 new MyFollowUserView(
                         this, R.id.activity_my_following,
-                        Objects.requireNonNull(pagerModels[followingPage()].getListResource().getValue())
-                                .dataList,
+                        adapters[followingPage()],
                         getCurrentPagerPosition() == followingPage(),
-                        followingPage(), this, this));
+                        followingPage(), 
+                        this));
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -201,20 +203,22 @@ public class MyFollowActivity extends MysplashActivity
             for (int i = followerPage(); i < pageCount(); i ++) {
                 pagers[i].setSelected(i == position);
             }
-            if (Objects.requireNonNull(pagerModels[position].getListResource().getValue())
-                    .dataList.size() == 0
-                    && Objects.requireNonNull(pagerModels[position].getListResource().getValue())
-                    .status != ListResource.Status.REFRESHING
-                    && Objects.requireNonNull(pagerModels[position].getListResource().getValue())
-                    .status != ListResource.Status.LOADING) {
-                PagerViewManagePresenter.initRefresh(pagerModels[position], pagers[position]);
+            if (Objects.requireNonNull(
+                    pagerModels[position].getListResource().getValue()).dataList.size() == 0
+                    && Objects.requireNonNull(
+                            pagerModels[position].getListResource().getValue()).state != ListResource.State.REFRESHING
+                    && Objects.requireNonNull(
+                            pagerModels[position].getListResource().getValue()).state != ListResource.State.LOADING) {
+                PagerViewManagePresenter.initRefresh(pagerModels[position], adapters[position]);
             }
         });
 
         pagerModels[followerPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[followerPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource, pagers[followerPage()], adapters[followerPage()]));
         pagerModels[followingPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, pagers[followingPage()]));
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource, pagers[followingPage()], adapters[followingPage()]));
     }
     
     // control.
@@ -255,18 +259,18 @@ public class MyFollowActivity extends MysplashActivity
 
     @Override
     public boolean canLoadMore(int index) {
-        return Objects.requireNonNull(pagerModels[index].getListResource().getValue()).status
-                != ListResource.Status.REFRESHING
-                && Objects.requireNonNull(pagerModels[index].getListResource().getValue()).status
-                != ListResource.Status.LOADING
-                && Objects.requireNonNull(pagerModels[index].getListResource().getValue()).status
-                != ListResource.Status.ALL_LOADED;
+        return Objects.requireNonNull(
+                pagerModels[index].getListResource().getValue()).state != ListResource.State.REFRESHING
+                && Objects.requireNonNull(
+                        pagerModels[index].getListResource().getValue()).state != ListResource.State.LOADING
+                && Objects.requireNonNull(
+                        pagerModels[index].getListResource().getValue()).state != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
-        return Objects.requireNonNull(pagerModels[index].getListResource().getValue()).status
-                == ListResource.Status.LOADING;
+        return Objects.requireNonNull(
+                pagerModels[index].getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on page change listener.
@@ -314,11 +318,7 @@ public class MyFollowActivity extends MysplashActivity
     // item event callback.
 
     @Override
-    public void onFollowUserOrCancel(MyFollowAdapter.MyFollowUser myFollowUser,
-                                     int adapterPosition, boolean follow) {
-        followOrCancelFollowPresenter.followOrCancelFollowUser(
-                (MyFollowAdapter) pagers[getCurrentPagerPosition()].getRecyclerViewAdapter(),
-                myFollowUser,
-                follow);
+    public void onFollowUserOrCancel(User user, int adapterPosition, boolean follow) {
+        followOrCancelFollowPresenter.followOrCancelFollowUser(user, follow);
     }
 }

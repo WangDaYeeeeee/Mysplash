@@ -6,8 +6,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 361
-        versionName "3.6.1"
+        versionCode 362
+        versionName "3.6.2"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -106,13 +106,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.preference:preference:1.1.0-alpha03'
-    implementation 'com.google.android.material:material:1.1.0-alpha03'
+    implementation 'com.google.android.material:material:1.1.0-alpha04'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
 
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.11.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
 
     implementation 'com.github.bumptech.glide:glide:3.7.0'
@@ -126,7 +127,7 @@ dependencies {
     implementation 'org.greenrobot:greendao:3.2.0'
     implementation "com.google.android.apps.muzei:muzei-api:3.1.0"
     implementation 'org.jetbrains:annotations-java5:15.0'
-    implementation 'android.arch.work:work-runtime:1.0.0-rc02'
+    implementation 'android.arch.work:work-runtime:1.0.0'
 
     implementation 'com.liulishuo.filedownloader:library:1.7.5'
 
@@ -135,4 +136,9 @@ dependencies {
     implementation 'com.google.dagger:dagger-android:2.21'
     implementation 'com.google.dagger:dagger-android-support:2.21'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.21'
+
+    implementation "io.reactivex.rxjava2:rxjava:2.2.7"
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'com.github.nekocode.rxlifecycle:rxlifecycle:2.0'
+    implementation 'com.github.nekocode.rxlifecycle:rxlifecycle-compact:2.0'
 }

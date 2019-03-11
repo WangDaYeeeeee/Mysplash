@@ -30,9 +30,7 @@ import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
@@ -54,6 +52,7 @@ import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.presenter.BrowsableDialogMangePresenter;
+import com.wangdaye.mysplash.common.utils.presenter.DispatchCollectionsChangedPresenter;
 import com.wangdaye.mysplash.photo3.PhotoActivityModel;
 import com.wangdaye.mysplash.photo3.PhotoListManagePresenter;
 import com.wangdaye.mysplash.photo3.ui.holder.MoreHolder;
@@ -127,7 +126,7 @@ public class PhotoActivity3 extends ReadWriteActivity
     @BindView(R.id.activity_photo_3_statusBar) StatusBarView statusBar;
 
     private PhotoListManagePresenter photoListManagePresenter;
-    @Inject BrowsableDialogMangePresenter browsableDialogMangePresenter;
+    private BrowsableDialogMangePresenter browsableDialogMangePresenter;
 
     private PhotoActivityModel activityModel;
     @Inject DaggerViewModelFactory viewModelFactory;
@@ -242,19 +241,6 @@ public class PhotoActivity3 extends ReadWriteActivity
         return container;
     }
 
-    @Override
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        for (int i = 0; i < photoListManagePresenter.getSize(); i++) {
-            if (photoListManagePresenter.getPhotoList().get(i).id.equals(photo.id)) {
-                photoListManagePresenter.getPhotoList().set(i, photo);
-                if (i == photoListManagePresenter.getCurrentIndex() - photoListManagePresenter.getHeadIndex()
-                        && photoListManagePresenter.getPhoto() != null) {
-                    activityModel.setPhoto(photoListManagePresenter.getPhoto());
-                }
-            }
-        }
-    }
-
     // init.
 
     private void initModel() {
@@ -343,6 +329,13 @@ public class PhotoActivity3 extends ReadWriteActivity
         });
         toolbar.setOnMenuItemClickListener(this);
 
+        browsableDialogMangePresenter = new BrowsableDialogMangePresenter() {
+            @Override
+            public void finishActivity() {
+                finishSelf(true);
+            }
+        };
+
         // observe.
 
         activityModel.getResource().observe(this, resource -> {
@@ -357,6 +350,12 @@ public class PhotoActivity3 extends ReadWriteActivity
             }
 
             browsableDialogMangePresenter.success();
+
+            for (int i = 0; i < photoListManagePresenter.getSize(); i++) {
+                if (photoListManagePresenter.getPhotoList().get(i).id.equals(resource.data.id)) {
+                    photoListManagePresenter.getPhotoList().set(i, resource.data);
+                }
+            }
 
             resetPhotoImage(resource.data);
 
@@ -606,28 +605,7 @@ public class PhotoActivity3 extends ReadWriteActivity
                 SelectCollectionDialog dialog = new SelectCollectionDialog();
                 dialog.setPhotoAndListener(
                         activityModel.getResource().getValue().data,
-                        new SelectCollectionDialog.OnCollectionsChangedListener() {
-                            @Override
-                            public void onAddCollection(Collection c) {
-                                Mysplash.getInstance().dispatchCollectionUpdate(c, Mysplash.MessageType.CREATE);
-                                User user = AuthManager.getInstance().getUser();
-                                if (user != null) {
-                                    user.total_collections ++;
-                                    Mysplash.getInstance().dispatchUserUpdate(user, Mysplash.MessageType.UPDATE);
-                                }
-                            }
-
-                            @Override
-                            public void onUpdateCollection(Collection c, User u, Photo p) {
-                                Photo photo = activityModel.getResource().getValue().data;
-                                photo.current_user_collections.clear();
-                                photo.current_user_collections.addAll(p.current_user_collections);
-                                Mysplash.getInstance().dispatchPhotoUpdate(photo, Mysplash.MessageType.UPDATE);
-
-                                Mysplash.getInstance().dispatchCollectionUpdate(c, Mysplash.MessageType.UPDATE);
-                                Mysplash.getInstance().dispatchUserUpdate(u, Mysplash.MessageType.UPDATE);
-                            }
-                });
+                        new DispatchCollectionsChangedPresenter());
                 dialog.show((this).getSupportFragmentManager(), null);
             }
         } else {

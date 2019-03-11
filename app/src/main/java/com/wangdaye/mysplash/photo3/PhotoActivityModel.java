@@ -3,23 +3,33 @@ package com.wangdaye.mysplash.photo3;
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Photo activity model.
  * */
-public class PhotoActivityModel extends BrowsableViewModel<Photo> {
+public class PhotoActivityModel extends BrowsableViewModel<Photo>
+        implements Consumer<PhotoEvent> {
 
     private PhotoActivityRepository repository;
+    private Disposable disposable;
+
     private String photoId;
 
     @Inject
     public PhotoActivityModel(PhotoActivityRepository repository) {
         super();
         this.repository = repository;
+        this.disposable = MessageBus.getInstance()
+                .toObservable(PhotoEvent.class)
+                .subscribe(this);
         this.photoId = null;
     }
 
@@ -39,6 +49,7 @@ public class PhotoActivityModel extends BrowsableViewModel<Photo> {
     protected void onCleared() {
         super.onCleared();
         repository.cancel();
+        disposable.dispose();
     }
 
     public void checkToRequestPhoto() {
@@ -60,5 +71,14 @@ public class PhotoActivityModel extends BrowsableViewModel<Photo> {
 
     public String getPhotoId() {
         return photoId;
+    }
+
+    // interface.
+
+    @Override
+    public void accept(PhotoEvent photoEvent) {
+        if (photoEvent.photo.id.equals(photoId)) {
+            setPhoto(photoEvent.photo);
+        }
     }
 }

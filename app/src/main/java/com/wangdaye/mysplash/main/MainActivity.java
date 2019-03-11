@@ -6,7 +6,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.google.android.material.navigation.NavigationView;
@@ -24,7 +23,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.basic.model.Resource;
-import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
@@ -41,7 +39,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.basic.SafeHandler;
-import com.wangdaye.mysplash.common.utils.presenter.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.main.collection.ui.CollectionFragment;
 import com.wangdaye.mysplash.main.following.ui.FollowingAdapter;
 import com.wangdaye.mysplash.main.following.ui.FollowingFeedFragment;
@@ -201,20 +199,6 @@ public class MainActivity extends LoadableActivity<Photo>
                 .addMission(this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE);
     }
 
-    @Override
-    public void updatePhoto(@NonNull Photo photo, Mysplash.MessageType type) {
-        for (MysplashFragment f : getFragmentList(true)) {
-            f.updatePhoto(photo, type);
-        }
-    }
-
-    @Override
-    public void updateCollection(@NonNull Collection collection, Mysplash.MessageType type) {
-        for (MysplashFragment f : getFragmentList(true)) {
-            f.updateCollection(collection, type);
-        }
-    }
-
     // init.
 
     private void initModel() {
@@ -290,7 +274,7 @@ public class MainActivity extends LoadableActivity<Photo>
                     ImageHelper.loadAvatar(
                             this, navAvatar, AuthManager.getInstance().getUser(), null);
                     navTitle.setText(AuthManager.getInstance().getUser().name);
-                    navSubtitle.setText(AuthManager.getInstance().getUser().bio);
+                    navSubtitle.setText(AuthManager.getInstance().getEmail());
                 }
             }
 
@@ -453,30 +437,7 @@ public class MainActivity extends LoadableActivity<Photo>
 
     @Override
     public void onLikeOrDislikePhoto(Photo photo, int adapterPosition, boolean setToLike) {
-        MysplashFragment fragment = getTopFragment();
-        if (fragment == null) {
-            return;
-        }
-
-        if (fragment instanceof HomeFragment) {
-            likeOrDislikePhotoPresenter.likeOrDislikePhoto(
-                    ((HomeFragment) fragment).getRecyclerView(),
-                    (PhotoAdapter) ((HomeFragment) fragment).getRecyclerViewAdapter(),
-                    photo,
-                    setToLike);
-        } else if (fragment instanceof FollowingFeedFragment) {
-            likeOrDislikePhotoPresenter.likeOrDislikePhoto(
-                    ((FollowingFeedFragment) fragment).getRecyclerView(),
-                    (FollowingAdapter) ((FollowingFeedFragment) fragment).getRecyclerViewAdapter(),
-                    photo,
-                    setToLike);
-        } else if (fragment instanceof MultiFilterFragment) {
-            likeOrDislikePhotoPresenter.likeOrDislikePhoto(
-                    ((MultiFilterFragment) fragment).getRecyclerView(),
-                    (PhotoAdapter) ((MultiFilterFragment) fragment).getRecyclerViewAdapter(),
-                    photo,
-                    setToLike);
-        }
+        likeOrDislikePhotoPresenter.likeOrDislikePhoto(photo, setToLike);
     }
 
     @Override

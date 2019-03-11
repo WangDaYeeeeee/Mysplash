@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
-import com.wangdaye.mysplash.common.network.callback.Callback;
 import com.wangdaye.mysplash.common.network.json.AccessToken;
 import com.wangdaye.mysplash.common.network.json.Me;
 import com.wangdaye.mysplash.common.network.json.User;
@@ -18,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
+
+import androidx.annotation.NonNull;
 
 /**
  * Auth manager.
@@ -144,30 +145,51 @@ public class AuthManager {
 
         this.me = null;
         this.user = null;
-        this.state = State.FREE;
 
         for (int i = 0; i < listenerList.size(); i ++) {
             listenerList.get(i).onLogout();
         }
+
+        state = State.FREE;
     }
 
     // HTTP request.
 
     public void requestPersonalProfile() {
-        if (authorized) {
-            service.cancel();
-            if (me != null) {
-                requestUser(me.username);
-            } else {
-                state = State.LOADING;
-                service.requestMeProfile(new RequestMeCallback());
-            }
+        if (!authorized) {
+            return;
         }
-    }
 
-    private void requestUser(String username) {
         state = State.LOADING;
-        service.requestUserProfile(username, new RequestUserCallback());
+
+        service.cancel();
+        service.requestAuthUser(me, new UserService.RequestAuthUserObserver() {
+            @Override
+            public void onRequestMeCompleted(@NonNull Me me) {
+                writeMe(me);
+            }
+
+            @Override
+            public void onRequestUserCompleted(@NonNull User user) {
+                writeUser(user);
+            }
+
+            @Override
+            public void onComplete() {
+                state = State.FREE;
+                for (int i = 0; i < listenerList.size(); i ++) {
+                    listenerList.get(i).onUpdateUser();
+                }
+            }
+
+            @Override
+            public void onError() {
+                state = State.FREE;
+                for (int i = 0; i < listenerList.size(); i ++) {
+                    listenerList.get(i).onUpdateFailed();
+                }
+            }
+        });
     }
 
     // getter.
@@ -236,6 +258,9 @@ public class AuthManager {
     public void updateUser(User user) {
         this.user = user;
         writeUser(user);
+        for (int i = 0; i < listenerList.size(); i ++) {
+            listenerList.get(i).onUpdateUser();
+        }
     }
 
     private void writeMe(Me me) {
@@ -266,10 +291,6 @@ public class AuthManager {
         editor.apply();
 
         this.user = user;
-
-        for (int i = 0; i < listenerList.size(); i ++) {
-            listenerList.get(i).onUpdateUser();
-        }
     }
 
     // interface.
@@ -289,40 +310,6 @@ public class AuthManager {
 
     public void removeOnWriteDataListener(OnAuthDataChangedListener l) {
         listenerList.remove(l);
-    }
-
-    private class RequestMeCallback extends Callback<Me> {
-
-        @Override
-        public void onSucceed(Me me) {
-            writeMe(me);
-            requestUser(me.username);
-        }
-
-        @Override
-        public void onFailed() {
-            state = State.FREE;
-            for (int i = 0; i < listenerList.size(); i ++) {
-                listenerList.get(i).onUpdateFailed();
-            }
-        }
-    }
-
-    private class RequestUserCallback extends Callback<User> {
-
-        @Override
-        public void onSucceed(User user) {
-            state = State.FREE;
-            writeUser(user);
-        }
-
-        @Override
-        public void onFailed() {
-            state = State.FREE;
-            for (int i = 0; i < listenerList.size(); i ++) {
-                listenerList.get(i).onUpdateFailed();
-            }
-        }
     }
 }
 

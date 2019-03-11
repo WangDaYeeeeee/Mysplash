@@ -15,12 +15,9 @@ import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.utils.presenter.PagerScrollablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerLoadablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.PagerStateManagePresenter;
-import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
@@ -35,10 +32,8 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
+import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,7 +75,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     private AvatarScrollListener avatarScrollListener;
-    private PagerLoadablePresenter loadMorePresenter;
     private PagerStateManagePresenter stateManagePresenter;
 
     private PagerManageView pagerManageView;
@@ -160,9 +154,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
 
-        followingAdapter = new FollowingAdapter(
-                getContext(), new ArrayList<>(), DisplayUtils.getGirdColumnCount(getContext()));
-        recyclerView.setAdapter(followingAdapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
             int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
@@ -183,6 +174,19 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         getContext().getString(R.string.feedback_click_retry),
                         this),
                 MultipleStateRecyclerView.STATE_ERROR);
+        avatarScrollListener = new AvatarScrollListener(columnCount);
+        recyclerView.addOnScrollListener(avatarScrollListener);
+
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
+
+        stateManagePresenter = new PagerStateManagePresenter(recyclerView);
+    }
+
+    // control.
+
+    public void setAdapterAndMangeView(@NonNull FollowingAdapter adapter, PagerManageView view) {
+        followingAdapter = adapter;
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -191,47 +195,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         followingAdapter.getRealItemCount(), pagerManageView, 0, dy);
             }
         });
-        avatarScrollListener = new AvatarScrollListener(columnCount);
-        recyclerView.addOnScrollListener(avatarScrollListener);
-
-        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
-
-        loadMorePresenter = new PagerLoadablePresenter(
-                refreshLayout, recyclerView, followingAdapter, pagerManageView) {
-            @Override
-            public List<Photo> subList(int fromIndex, int toIndex) {
-                return followingAdapter.getPhotoList().subList(fromIndex, toIndex);
-            }
-        };
-        stateManagePresenter = new PagerStateManagePresenter(recyclerView);
-    }
-
-    // control.
-
-    public void setItemEventCallback(FollowingAdapter.ItemEventCallback callback) {
-        followingAdapter.setItemEventCallback(callback);
-    }
-
-    public void setPhotoList(List<Photo> list) {
-        followingAdapter.setPhotoList(list);
-    }
-
-    public void setPagerManageView(PagerManageView view) {
         pagerManageView = view;
-        loadMorePresenter.setPagerManageView(view);
     }
 
     @Override
     public boolean isParentOffset() {
         return false;
-    }
-
-    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection) {
-        return loadMorePresenter.loadMore(list, headIndex, headDirection, 0);
-    }
-
-    public void updatePhoto(Photo p, boolean refreshView) {
-        followingAdapter.updatePhoto(recyclerView, p, refreshView, true);
     }
 
     /**
@@ -290,21 +259,6 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     @Override
-    public void notifyItemsRefreshed(int count) {
-        followingAdapter.buildTypeList(0);
-        followingAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyItemsLoaded(int count) {
-        int positionPhotoStart = followingAdapter.getRealItemCount() - count;
-        int positionTypeStart = followingAdapter.getTypeItemCount();
-        followingAdapter.buildTypeList(positionPhotoStart);
-        followingAdapter.notifyItemRangeInserted(
-                positionTypeStart, followingAdapter.getTypeItemCount() - positionTypeStart);
-    }
-
-    @Override
     public void setSelected(boolean selected) {
         // do nothing.
     }
@@ -347,22 +301,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
     }
 
     @Override
-    public int getItemCount() {
-        if (stateManagePresenter.getState() != State.NORMAL) {
-            return 0;
-        } else {
-            return followingAdapter.getRealItemCount();
-        }
-    }
-
-    @Override
     public RecyclerView getRecyclerView() {
         return recyclerView;
-    }
-
-    @Override
-    public RecyclerView.Adapter getRecyclerViewAdapter() {
-        return followingAdapter;
     }
 
     // on refresh an load listener.

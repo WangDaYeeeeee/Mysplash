@@ -122,13 +122,14 @@ public class UserProfileView extends FrameLayout {
         this.adapter = adapter;
     }
 
-    public boolean isSwitchButtonAnimating() {
-        return rippleButton.getState() == RippleButton.State.TRANSFORM_TO_ON
-                || rippleButton.getState() == RippleButton.State.TRANSFORM_TO_OFF;
-    }
-
-    public void setSwitchResult(boolean following) {
-        rippleButton.setState(following ? RippleButton.State.ON : RippleButton.State.OFF);
+    public void setRippleButtonState(User user) {
+        if (user.settingFollow) {
+            rippleButton.setState(user.followed_by_user
+                    ? RippleButton.State.TRANSFORM_TO_OFF : RippleButton.State.TRANSFORM_TO_ON);
+        } else {
+            rippleButton.setState(user.followed_by_user
+                    ? RippleButton.State.ON : RippleButton.State.OFF);
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -151,7 +152,7 @@ public class UserProfileView extends FrameLayout {
             locationTxt.setText(u.location);
         }
 
-        setSwitchResult(u.followed_by_user);
+        setRippleButtonState(u);
 
         List<String> titleList = new ArrayList<>();
         titleList.add(

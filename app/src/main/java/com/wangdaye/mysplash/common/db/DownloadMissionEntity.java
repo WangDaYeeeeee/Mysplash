@@ -7,8 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.data.table.DaoMaster;
-import com.wangdaye.mysplash.common.data.table.DownloadMissionEntityDao;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.download.imp.DownloaderService;

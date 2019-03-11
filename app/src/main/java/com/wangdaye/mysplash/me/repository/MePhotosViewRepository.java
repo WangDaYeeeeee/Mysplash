@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.me.repository;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
@@ -35,10 +35,10 @@ public class MePhotosViewRepository {
             service.cancel();
             service.requestUserPhotos(
                     AuthManager.getInstance().getUsername(),
-                    current.getValue().dataPage + 1,
+                    current.getValue().getRequestPage(),
                     current.getValue().perPage,
                     order,
-                    new ListResourceCallback<>(current, refresh));
+                    new ListResourceObserver<>(current, refresh));
         }
     }
 
@@ -55,10 +55,10 @@ public class MePhotosViewRepository {
             service.cancel();
             service.requestUserLikes(
                     AuthManager.getInstance().getUsername(),
-                    current.getValue().dataPage + 1,
+                    current.getValue().getRequestPage(),
                     current.getValue().perPage,
                     order,
-                    new ListResourceCallback<>(current, refresh));
+                    new ListResourceObserver<>(current, refresh));
         }
     }
 

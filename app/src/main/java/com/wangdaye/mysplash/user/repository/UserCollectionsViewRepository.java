@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.user.repository;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.network.callback.ListResourceCallback;
 import com.wangdaye.mysplash.common.network.json.Collection;
+import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 
 import javax.inject.Inject;
@@ -31,9 +31,9 @@ public class UserCollectionsViewRepository {
         service.cancel();
         service.requestUserCollections(
                 username,
-                current.getValue().dataPage + 1,
+                current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceCallback<>(current, refresh));
+                new ListResourceObserver<>(current, refresh));
     }
 
     public void cancel() {

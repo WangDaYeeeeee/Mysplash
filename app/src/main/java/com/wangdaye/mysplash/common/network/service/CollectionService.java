@@ -6,23 +6,27 @@ import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.network.callback.Callback;
+import com.wangdaye.mysplash.common.network.SchedulerTransformer;
+import com.wangdaye.mysplash.common.network.api.CollectionNodeApi;
 import com.wangdaye.mysplash.common.network.api.CollectionApi;
-import com.wangdaye.mysplash.common.network.callback.NoBodyCallback;
+import com.wangdaye.mysplash.common.network.interceptor.NapiInterceptor;
 import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.interceptor.AuthInterceptor;
+import com.wangdaye.mysplash.common.network.observer.BaseObserver;
+import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
+import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
@@ -32,185 +36,153 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CollectionService {
 
     private CollectionApi api;
-
-    @Nullable private Call call;
-    @Nullable private Callback callback;
-    @Nullable private NoBodyCallback noBodyCallback;
-
-    private CollectionNodeService nodeService;
+    private CollectionNodeApi nodeApi;
+    private CompositeDisposable compositeDisposable;
 
     @Inject
-    public CollectionService(OkHttpClient client, GsonConverterFactory factory) {
+    public CollectionService(OkHttpClient client,
+                             GsonConverterFactory gsonConverterFactory,
+                             RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+                             CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
                 .client(client.newBuilder()
                         .addInterceptor(new AuthInterceptor())
                         .build())
-                .addConverterFactory(factory)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((CollectionApi.class));
-        call = null;
-        callback = null;
-        nodeService = TextUtils.isEmpty(Mysplash.UNSPLASH_NODE_API_URL)
-                ? null : new CollectionNodeService(client, factory);
+        nodeApi = TextUtils.isEmpty(Mysplash.UNSPLASH_NODE_API_URL)
+                ? null
+                : new Retrofit.Builder()
+                .baseUrl(Mysplash.UNSPLASH_URL)
+                .client(client.newBuilder()
+                        .addInterceptor(new AuthInterceptor())
+                        .addInterceptor(new NapiInterceptor())
+                        .build())
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJava2CallAdapterFactory)
+                .build()
+                .create((CollectionNodeApi.class));
+        compositeDisposable = disposable;
     }
 
     public void requestAllCollections(@Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                      Callback<List<Collection>> callback) {
-        if (nodeService == null) {
-            Call<List<Collection>> getAllCollections = api.getAllCollections(page, per_page);
-            getAllCollections.enqueue(callback);
-            this.call = getAllCollections;
-            this.callback = callback;
+                                      BaseObserver<List<Collection>> observer) {
+        if (nodeApi == null) {
+            api.getAllCollections(page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestAllCollections(page, per_page, callback);
+            nodeApi.getAllCollections(page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
     }
 
     public void requestCuratedCollections(@Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                          Callback<List<Collection>> callback) {
-        if (nodeService == null) {
-            Call<List<Collection>> getCuratedCollections = api.getCuratedCollections(page, per_page);
-            getCuratedCollections.enqueue(callback);
-            this.call = getCuratedCollections;
-            this.callback = callback;
+                                          BaseObserver<List<Collection>> observer) {
+        if (nodeApi == null) {
+            api.getCuratedCollections(page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestCuratedCollections(page, per_page, callback);
+            nodeApi.getCuratedCollections(page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
     }
 
     public void requestFeaturedCollections(@Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                           Callback<List<Collection>> callback) {
-        if (nodeService == null) {
-            Call<List<Collection>> getFeaturedCollections = api.getFeaturedCollections(page, per_page);
-            getFeaturedCollections.enqueue(callback);
-            this.call = getFeaturedCollections;
-            this.callback = callback;
+                                           BaseObserver<List<Collection>> observer) {
+        if (nodeApi == null) {
+            api.getFeaturedCollections(page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestFeaturedCollections(page, per_page, callback);
+            nodeApi.getFeaturedCollections(page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
     }
 
-    public void requestACollections(String id, Callback<Collection> callback) {
-        if (nodeService == null) {
-            Call<Collection> getACollection = api.getACollection(id);
-            getACollection.enqueue(callback);
-            this.call = getACollection;
-            this.callback = callback;
+    public void requestACollections(String id, BaseObserver<Collection> observer) {
+        if (nodeApi == null) {
+            api.getACollection(id)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestACollections(id, callback);
+            nodeApi.getACollection(id)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
     }
 
-    @Nullable
-    public Collection requestACollections(String id) {
-        Call<Collection> getACollection = api.getACollection(id);
-        try {
-            Response<Collection> response = getACollection.execute();
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public void requestACuratedCollections(String id, Callback<Collection> callback) {
-        if (nodeService == null) {
-            Call<Collection> getACuratedCollection = api.getACuratedCollection(id);
-            getACuratedCollection.enqueue(callback);
-            this.call = getACuratedCollection;
-            this.callback = callback;
+    public void requestACuratedCollections(String id, BaseObserver<Collection> observer) {
+        if (nodeApi == null) {
+            api.getACuratedCollection(id)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestACuratedCollections(id, callback);
+            nodeApi.getACuratedCollection(id)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
-    }
-
-    @Nullable
-    public Collection requestACuratedCollections(String id) {
-        Call<Collection> getACuratedCollection = api.getACuratedCollection(id);
-        try {
-            Response<Collection> response = getACuratedCollection.execute();
-            if (response.isSuccessful() && response.body() != null) {
-                return response.body();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public void requestUserCollections(String username,
                                        @Mysplash.PageRule int page, @Mysplash.PerPageRule int per_page,
-                                       Callback<List<Collection>> callback) {
-        if (nodeService == null) {
-            Call<List<Collection>> getUserCollections = api.getUserCollections(username, page, per_page);
-            getUserCollections.enqueue(callback);
-            this.call = getUserCollections;
-            this.callback = callback;
+                                       BaseObserver<List<Collection>> observer) {
+        if (nodeApi == null) {
+            api.getUserCollections(username, page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
-            nodeService.requestUserCollections(username, page, per_page, callback);
+            nodeApi.getUserCollections(username, page, per_page)
+                    .compose(SchedulerTransformer.create())
+                    .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         }
     }
 
     public void createCollection(String title, @Nullable String description, boolean privateX,
-                                 Callback<Collection> callback) {
-        Call<Collection> createCollection;
-        if (description == null) {
-            createCollection = api.createCollection(title, privateX);
-        } else {
-            createCollection = api.createCollection(title, description, privateX);
-        }
-        createCollection.enqueue(callback);
-        this.call = createCollection;
-        this.callback = callback;
+                                 BaseObserver<Collection> observer) {
+        Observable<Collection> observable = description == null
+                ? api.createCollection(title, privateX)
+                : api.createCollection(title, description, privateX);
+        observable.compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void addPhotoToCollection(@IntRange(from = 0) int collectionId, String photoId,
-                                     Callback<ChangeCollectionPhotoResult> callback) {
-        Call<ChangeCollectionPhotoResult> addPhotoToCollection = api.addPhotoToCollection(collectionId, photoId);
-        addPhotoToCollection.enqueue(callback);
-        this.call = addPhotoToCollection;
-        this.callback = callback;
+                                     BaseObserver<ChangeCollectionPhotoResult> observer) {
+        api.addPhotoToCollection(collectionId, photoId)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void deletePhotoFromCollection(@IntRange(from = 0) int collectionId, String photoId,
-                                          Callback<ChangeCollectionPhotoResult> callback) {
-        Call<ChangeCollectionPhotoResult> deletePhotoFromCollection = api.deletePhotoFromCollection(collectionId, photoId);
-        deletePhotoFromCollection.enqueue(callback);
-        this.call = deletePhotoFromCollection;
-        this.callback = callback;
+                                          BaseObserver<ChangeCollectionPhotoResult> observer) {
+        api.deletePhotoFromCollection(collectionId, photoId)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void updateCollection(@IntRange(from = 0) int collectionId,
                                  String title, String description, boolean privateX,
-                                 Callback<Collection> callback) {
-        Call<Collection> updateCollection = api.updateCollection(collectionId, title, description, privateX);
-        updateCollection.enqueue(callback);
-        this.call = updateCollection;
-        this.callback = callback;
+                                 BaseObserver<Collection> observer) {
+        api.updateCollection(collectionId, title, description, privateX)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
-    public void deleteCollection(@IntRange(from = 0) int id, NoBodyCallback<ResponseBody> callback) {
-        Call<ResponseBody> deleteCollection = api.deleteCollection(id);
-        deleteCollection.enqueue(callback);
-        this.call = deleteCollection;
-        this.noBodyCallback = callback;
+    public void deleteCollection(@IntRange(from = 0) int id, NoBodyObserver<ResponseBody> observer) {
+        api.deleteCollection(id)
+                .compose(SchedulerTransformer.create())
+                .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void cancel() {
-        if (nodeService != null) {
-            nodeService.cancel();
-        }
-        if (callback != null) {
-            callback.cancel();
-        }
-        if (noBodyCallback != null) {
-            noBodyCallback.cancel();
-        }
-        if (call != null) {
-            call.cancel();
-        }
+        compositeDisposable.clear();
     }
 }
