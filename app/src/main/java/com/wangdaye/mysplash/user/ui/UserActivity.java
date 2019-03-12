@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.user.ui;
 
-import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IntDef;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -485,16 +484,6 @@ public class UserActivity extends LoadableActivity<Photo>
         return 3;
     }
 
-    // permission.
-
-    @Override
-    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
-        if (downloadable instanceof Photo) {
-            DownloadHelper.getInstance(this)
-                    .addMission(this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE);
-        }
-    }
-
     // interface.
 
     // pager manage view.
@@ -617,11 +606,9 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     public void onDownload(Photo photo) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            DownloadHelper.getInstance(this).addMission(this, photo, DownloaderService.DOWNLOAD_TYPE);
-        } else {
-            requestReadWritePermission(photo);
-        }
+        requestReadWritePermission(photo, downloadable ->
+                DownloadHelper.getInstance(this)
+                        .addMission(this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE));
     }
 
     // on page change listener.

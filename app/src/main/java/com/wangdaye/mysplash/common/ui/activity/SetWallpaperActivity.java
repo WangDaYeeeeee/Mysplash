@@ -99,12 +99,10 @@ public class SetWallpaperActivity extends ReadWriteActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_set_wallpaper);
         ButterKnife.bind(this);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestReadWritePermission(null);
-        } else {
+        requestReadWritePermission(null, downloadable -> {
             initData();
             initWidget();
-        }
+        });
     }
 
     @Override
@@ -150,14 +148,8 @@ public class SetWallpaperActivity extends ReadWriteActivity
     // permission.
 
     @Override
-    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
-        initData();
-        initWidget();
-    }
-
-    @Override
-    protected void requestReadWritePermissionFailed(int requestCode) {
-        super.requestReadWritePermissionFailed(requestCode);
+    protected void requestReadWritePermissionFailed() {
+        super.requestReadWritePermissionFailed();
         finishSelf(true);
     }
 

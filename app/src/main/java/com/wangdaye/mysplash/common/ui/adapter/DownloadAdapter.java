@@ -42,7 +42,8 @@ import butterknife.OnClick;
 
 public class DownloadAdapter extends RecyclerView.Adapter<DownloadHolder> {
 
-    public List<DownloadMission> itemList;
+    private List<DownloadMission> itemList;
+
     @Nullable private ItemEventCallback callback;
 
     public DownloadAdapter(List<DownloadMission> itemList) {

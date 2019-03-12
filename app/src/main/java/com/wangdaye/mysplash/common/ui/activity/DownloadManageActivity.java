@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.ui.activity;
 
-import android.os.Build;
 import android.os.Bundle;
+
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +38,7 @@ import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
+import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -57,8 +58,8 @@ public class DownloadManageActivity extends ReadWriteActivity
     @BindView(R.id.activity_download_manage_recyclerView) RecyclerView recyclerView;
 
     private DownloadAdapter adapter;
-    // if we need to restart a mission, we need save it by this object and request permission.
-    private DownloadMissionEntity readyToDownloadEntity;
+    private List<DownloadMission> missionList;
+    private boolean readListCompleted;
 
     private List<OnDownloadListener> listenerList;
 
@@ -76,8 +77,8 @@ public class DownloadManageActivity extends ReadWriteActivity
 
         @Override
         public void onProcess(float process) {
-            findHolderAndUpdateIt(index -> {
-                DownloadMission mission = adapter.itemList.get(index);
+            findProgressingHolderAndUpdateIt(index -> {
+                DownloadMission mission = missionList.get(index);
                 float oldProcess = mission.process;
                 mission.process = process;
                 if (mission.entity.result != DownloaderService.RESULT_DOWNLOADING) {
@@ -96,8 +97,8 @@ public class DownloadManageActivity extends ReadWriteActivity
         @Override
         public void onComplete(int result) {
             listenerList.remove(this);
-            findHolderAndUpdateIt(index -> {
-                DownloadMission mission = adapter.itemList.get(index);
+            findProgressingHolderAndUpdateIt(index -> {
+                DownloadMission mission = missionList.get(index);
                 int oldResult = mission.entity.result;
                 mission.entity.result = result;
                 switch (result) {
@@ -137,15 +138,6 @@ public class DownloadManageActivity extends ReadWriteActivity
         ButterKnife.bind(this);
         initData();
         initWidget();
-
-        listenerList = new ArrayList<>();
-        for (int i = 0; i < adapter.getItemCount(); i ++) {
-            if (adapter.itemList.get(i).entity.result == DownloaderService.RESULT_DOWNLOADING) {
-                OnDownloadListener listener = new OnDownloadListener(adapter.itemList.get(i));
-                listenerList.add(listener);
-                DownloadHelper.getInstance(this).addOnDownloadListener(listener);
-            }
-        }
     }
 
     @Override
@@ -187,26 +179,71 @@ public class DownloadManageActivity extends ReadWriteActivity
     // init.
 
     private void initData() {
-        List<DownloadMission> missionList = new ArrayList<>();
+        missionList = new ArrayList<>();
+        readListCompleted = false;
+
         List<DownloadMissionEntity> entityList;
-        entityList = DatabaseHelper.getInstance(this).readDownloadEntityList(DownloaderService.RESULT_FAILED);
+        // read failed tasks.
+        entityList = DatabaseHelper.getInstance(this)
+                .readDownloadEntityList(DownloaderService.RESULT_FAILED);
         for (int i = 0; i < entityList.size(); i ++) {
-            missionList.add(
-                    new DownloadMission(
-                            entityList.get(i)));
+            missionList.add(new DownloadMission(entityList.get(i)));
         }
-        entityList = DatabaseHelper.getInstance(this).readDownloadEntityList(DownloaderService.RESULT_DOWNLOADING);
+
+        // read downloading tasks.
+        entityList = DatabaseHelper.getInstance(this)
+                .readDownloadEntityList(DownloaderService.RESULT_DOWNLOADING);
         for (int i = 0; i < entityList.size(); i ++) {
             missionList.add(DownloadHelper.getInstance(this).getDownloadMission(this, entityList.get(i)));
         }
-        entityList = DatabaseHelper.getInstance(this).readDownloadEntityList(DownloaderService.RESULT_SUCCEED);
-        for (int i = 0; i < entityList.size(); i ++) {
-            missionList.add(
-                    new DownloadMission(
-                            entityList.get(i)));
+
+        // build listener list.
+        listenerList = new ArrayList<>();
+        for (int i = 0; i < missionList.size(); i ++) {
+            if (missionList.get(i).entity.result == DownloaderService.RESULT_DOWNLOADING) {
+                OnDownloadListener listener = new OnDownloadListener(missionList.get(i));
+                listenerList.add(listener);
+                DownloadHelper.getInstance(DownloadManageActivity.this)
+                        .addOnDownloadListener(listener);
+            } else if (missionList.get(i).entity.result == DownloaderService.RESULT_SUCCEED) {
+                return;
+            }
         }
-        this.adapter = new DownloadAdapter(missionList);
+
+        adapter = new DownloadAdapter(missionList);
         adapter.setItemEventCallback(this);
+
+        // read completed tasks.
+        Observable.create((ObservableOnSubscribe<List<DownloadMission>>) emitter -> {
+            List<DownloadMissionEntity> list = DatabaseHelper.getInstance(this)
+                    .readDownloadEntityList(DownloaderService.RESULT_SUCCEED);
+            List<DownloadMission> failedList = new ArrayList<>();
+            for (int i = 0; i < list.size(); i ++) {
+                failedList.add(new DownloadMission(list.get(i)));
+            }
+
+            emitter.onNext(failedList);
+            emitter.onComplete();
+        }).compose(RxLifecycleCompact.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableObserver<List<DownloadMission>>() {
+                    @Override
+                    public void onNext(List<DownloadMission> list) {
+                        int size = missionList.size();
+                        missionList.addAll(list);
+                        adapter.notifyItemRangeInserted(size, missionList.size() - size);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        readListCompleted = true;
+                    }
+                });
     }
 
     private void initWidget() {
@@ -239,11 +276,13 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     // control.
 
-    private void findHolderAndUpdateIt(Consumer<Integer> consumer, long missionId) {
+    private void findProgressingHolderAndUpdateIt(Consumer<Integer> consumer, long missionId) {
         Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            for (int i = 0; i < adapter.getItemCount(); i ++) {
-                if (adapter.itemList.get(i).entity.missionId == missionId) {
+            for (int i = 0; i < missionList.size(); i ++) {
+                if (missionList.get(i).entity.missionId == missionId) {
                     emitter.onNext(i);
+                    return;
+                } else if (missionList.get(i).entity.result == DownloaderService.RESULT_SUCCEED) {
                     return;
                 }
             }
@@ -261,7 +300,7 @@ public class DownloadManageActivity extends ReadWriteActivity
      * @param position    Adapter position for item.
      * @param mission     A {@link DownloadMission} object which saved information of downloading task. */
     private void drawRecyclerItemProcess(int position, DownloadMission mission) {
-        adapter.itemList.set(position, mission);
+        missionList.set(position, mission);
         adapter.notifyItemChanged(position, 1);
     }
 
@@ -272,17 +311,17 @@ public class DownloadManageActivity extends ReadWriteActivity
      * @param mission  A {@link DownloadMission} object which saved information of downloading task.
      * */
     private void drawRecyclerItemSucceed(int position, DownloadMission mission) {
-        adapter.itemList.remove(position);
+        missionList.remove(position);
         adapter.notifyItemRemoved(position);
 
-        for (int i = adapter.itemList.size() - 1; i >= 0; i --) {
-            if (adapter.itemList.get(i).entity.result != DownloaderService.RESULT_SUCCEED) {
-                adapter.itemList.add(i + 1, mission);
+        for (int i = missionList.size() - 1; i >= 0; i --) {
+            if (missionList.get(i).entity.result != DownloaderService.RESULT_SUCCEED) {
+                missionList.add(i + 1, mission);
                 adapter.notifyItemInserted(i + 1);
                 return;
             }
         }
-        adapter.itemList.add(0, mission);
+        missionList.add(0, mission);
         adapter.notifyItemInserted(0);
     }
 
@@ -295,22 +334,16 @@ public class DownloadManageActivity extends ReadWriteActivity
     private void drawRecyclerItemFailed(int position, DownloadMission mission) {
         // remove the old item and add a new item on the first position of list.
 
-        adapter.itemList.remove(position);
+        missionList.remove(position);
         adapter.notifyItemRemoved(position);
 
-        adapter.itemList.add(0, mission);
+        missionList.add(0, mission);
         adapter.notifyItemInserted(0);
     }
 
-    private void restartMission() {
-        if (readyToDownloadEntity == null) {
-            return;
-        }
-
-        long oldId = readyToDownloadEntity.missionId;
-        readyToDownloadEntity = null;
-
-        DownloadMission mission = DownloadHelper.getInstance(this).restartMission(this, oldId);
+    private void restartMission(DownloadMissionEntity entity) {
+        DownloadMission mission = DownloadHelper.getInstance(this)
+                .restartMission(this, entity.missionId);
         if (mission == null) {
             return;
         }
@@ -321,8 +354,8 @@ public class DownloadManageActivity extends ReadWriteActivity
 
         Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
             // remove the old item.
-            for (int i = 0; i < adapter.itemList.size(); i ++) {
-                if (adapter.itemList.get(i).entity.missionId == oldId) {
+            for (int i = 0; i < missionList.size(); i ++) {
+                if (missionList.get(i).entity.missionId == entity.missionId) {
                     emitter.onNext(i);
                     return;
                 }
@@ -332,35 +365,28 @@ public class DownloadManageActivity extends ReadWriteActivity
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(i -> {
-                    adapter.itemList.remove((int) i);
+                    missionList.remove((int) i);
                     adapter.notifyItemRemoved(i);
                 }).observeOn(Schedulers.computation())
                 .flatMap((Function<Integer, ObservableSource<Integer>>) integer -> Observable.create(emitter -> {
                     // add the new item.
-                    if (adapter.itemList.size() > 0) {
+                    if (missionList.size() > 0) {
                         // if the list's size > 0, we need find the last failed mission item and add the new item after it.
-                        for (int i = 0; i < adapter.itemList.size(); i ++) {
-                            if (adapter.itemList.get(i).entity.result != DownloaderService.RESULT_FAILED) {
+                        for (int i = 0; i < missionList.size(); i ++) {
+                            if (missionList.get(i).entity.result != DownloaderService.RESULT_FAILED) {
                                 emitter.onNext(i);
                                 return;
                             }
                         }
-                        emitter.onNext(adapter.itemList.size());
+                        emitter.onNext(missionList.size());
                     } else {
                         emitter.onNext(0);
                     }
                 })).observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(i -> {
-                    adapter.itemList.add(i, mission);
+                    missionList.add(i, mission);
                     adapter.notifyItemInserted(i);
                 }).subscribe();
-    }
-
-    // permission.
-
-    @Override
-    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
-        restartMission();
     }
 
     // interface.
@@ -376,13 +402,15 @@ public class DownloadManageActivity extends ReadWriteActivity
                 break;
 
             case R.id.action_cancel_all:
-                List<DownloadMissionEntity> entityList = new ArrayList<>();
-                for (int i = 0; i < adapter.getItemCount(); i ++) {
-                    entityList.add(adapter.itemList.get(i).entity);
+                if (readListCompleted) {
+                    List<DownloadMissionEntity> entityList = new ArrayList<>();
+                    for (int i = 0; i < missionList.size(); i ++) {
+                        entityList.add(missionList.get(i).entity);
+                    }
+                    DownloadHelper.getInstance(this).clearMission(this, entityList);
+                    missionList.clear();
+                    adapter.notifyDataSetChanged();
                 }
-                DownloadHelper.getInstance(this).clearMission(this, entityList);
-                adapter.itemList.clear();
-                adapter.notifyDataSetChanged();
                 break;
         }
         return true;
@@ -410,18 +438,16 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @Override
     public void onDelete(DownloadMissionEntity entity, int adapterPosition) {
-        DownloadHelper.getInstance(this).removeMission(this, entity);
-        adapter.itemList.remove(adapterPosition);
-        adapter.notifyItemRemoved(adapterPosition);
+        if (readListCompleted) {
+            DownloadHelper.getInstance(this).removeMission(this, entity);
+            missionList.remove(adapterPosition);
+            adapter.notifyItemRemoved(adapterPosition);
+        }
     }
 
     @Override
     public void onRetry(DownloadMissionEntity entity, int adapterPosition) {
-        readyToDownloadEntity = entity;
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            restartMission();
-        } else {
-            requestReadWritePermission(null);
-        }
+        requestReadWritePermission(entity, downloadable ->
+                restartMission((DownloadMissionEntity) downloadable));
     }
 }

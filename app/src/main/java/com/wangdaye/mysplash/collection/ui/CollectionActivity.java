@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.collection.ui;
 
 import android.annotation.SuppressLint;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -348,22 +347,15 @@ public class CollectionActivity extends LoadableActivity<Photo>
      * @param target {@link Photo} or {@link Collection}.
      * */
     private void requestPermissionAndDownload(@NonNull Object target) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            downloadTarget(target);
-        } else if (target instanceof Downloadable) {
-            requestReadWritePermission((Downloadable) target);
-        }
-    }
-
-    /**
-     * @param target {@link Photo} or {@link Collection}.
-     * */
-    private void downloadTarget(@NonNull Object target) {
-        if (target instanceof Collection) {
-            DownloadHelper.getInstance(this).addMission(this, ((Collection) target));
-        } else if (target instanceof Photo) {
-            DownloadHelper.getInstance(this).addMission(this, (Photo) target, DownloaderService.DOWNLOAD_TYPE);
-        }
+        requestReadWritePermission((Downloadable) target, downloadable -> {
+            if (downloadable instanceof Collection) {
+                DownloadHelper.getInstance(this)
+                        .addMission(this, ((Collection) downloadable));
+            } else if (downloadable instanceof Photo) {
+                DownloadHelper.getInstance(this)
+                        .addMission(this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE);
+            }
+        });
     }
 
     // data.
@@ -371,13 +363,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @Nullable
     public Collection getCollection() {
         return Objects.requireNonNull(activityModel.getResource().getValue()).data;
-    }
-
-    // permission.
-
-    @Override
-    protected void requestReadWritePermissionSucceed(Downloadable target, int requestCode) {
-        downloadTarget(target);
     }
 
     // interface.

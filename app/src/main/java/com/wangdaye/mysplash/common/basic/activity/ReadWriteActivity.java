@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.wangdaye.mysplash.R;
@@ -18,30 +19,41 @@ import com.wangdaye.mysplash.common.download.NotificationHelper;
 
 public abstract class ReadWriteActivity extends MysplashActivity {
 
-    private Downloadable downloadable;
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    protected void requestReadWritePermission(Downloadable downloadable) {
-        this.downloadable = downloadable;
-        requestPermission(0);
+    @Nullable private RequestPermissionCallback callback;
+    public interface RequestPermissionCallback {
+        void onGranted(Downloadable downloadable);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    protected void requestReadWritePermission(Downloadable downloadable, int requestCode) {
-        this.downloadable = downloadable;
-        requestPermission(requestCode);
+    @Nullable private Downloadable downloadable;
+    public interface Downloadable {}
+
+    private static final int REQUEST_CODE = 1;
+
+    protected void requestReadWritePermission(Downloadable downloadable,
+                                              RequestPermissionCallback callback) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            requestReadWritePermissionSucceed();
+        } else {
+            this.downloadable = downloadable;
+            this.callback = callback;
+            requestPermission();
+        }
     }
 
-    protected void requestReadWritePermissionSucceed(Downloadable target, int requestCode) {
-        // do nothing.
+    protected void requestReadWritePermissionSucceed() {
+        if (callback != null) {
+            callback.onGranted(downloadable);
+            callback = null;
+            downloadable = null;
+        }
     }
 
-    protected void requestReadWritePermissionFailed(int requestCode) {
+    protected void requestReadWritePermissionFailed() {
         NotificationHelper.showSnackbar(getString(R.string.feedback_need_permission));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    private void requestPermission(int requestCode) {
+    private void requestPermission() {
         if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED
                 || checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -50,10 +62,9 @@ public abstract class ReadWriteActivity extends MysplashActivity {
                     new String[] {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
                             Manifest.permission.READ_EXTERNAL_STORAGE},
-                    requestCode);
+                    REQUEST_CODE);
         } else {
-            requestReadWritePermissionSucceed(downloadable, requestCode);
-            downloadable = null;
+            requestReadWritePermissionSucceed();
         }
     }
 
@@ -63,13 +74,10 @@ public abstract class ReadWriteActivity extends MysplashActivity {
         super.onRequestPermissionsResult(requestCode, permission, grantResult);
         for (int i = 0; i < permission.length; i ++) {
             if (grantResult[i] != PackageManager.PERMISSION_GRANTED) {
-                requestReadWritePermissionFailed(requestCode);
+                requestReadWritePermissionFailed();
                 return;
             }
         }
-        requestReadWritePermissionSucceed(downloadable, requestCode);
-        downloadable = null;
+        requestReadWritePermissionSucceed();
     }
-
-    public interface Downloadable {}
 }

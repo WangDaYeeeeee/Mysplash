@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.download.imp.DownloaderService;
@@ -26,7 +27,8 @@ import org.greenrobot.greendao.annotation.Generated;
  * */
 
 @Entity
-public class DownloadMissionEntity {
+public class DownloadMissionEntity
+        implements ReadWriteActivity.Downloadable {
     @Id
     public long missionId;
 

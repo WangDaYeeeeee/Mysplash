@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.search.ui;
 
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -391,14 +390,6 @@ public class SearchActivity extends LoadableActivity<Photo>
         }
     }
 
-    // permission.
-
-    @Override
-    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
-        DownloadHelper.getInstance(this)
-                .addMission(this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE);
-    }
-
     // interface.
 
     // pager manage view.
@@ -578,10 +569,8 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     public void onDownload(Photo photo) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            DownloadHelper.getInstance(this).addMission(this, photo, DownloaderService.DOWNLOAD_TYPE);
-        } else {
-            requestReadWritePermission(photo);
-        }
+        requestReadWritePermission(photo, downloadable ->
+                DownloadHelper.getInstance(this)
+                        .addMission(this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE));
     }
 }

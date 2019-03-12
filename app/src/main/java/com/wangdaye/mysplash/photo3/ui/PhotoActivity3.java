@@ -499,11 +499,7 @@ public class PhotoActivity3 extends ReadWriteActivity
                 dialog.setOnCheckOrDownloadListener(this);
                 dialog.show(getSupportFragmentManager(), null);
             } else {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    downloadByType(photo, type);
-                } else {
-                    requestReadWritePermission(photo, type);
-                }
+                requestReadWritePermission(photo, downloadable -> downloadByType(photo, type));
             }
         }
     }
@@ -526,13 +522,6 @@ public class PhotoActivity3 extends ReadWriteActivity
                 }
             }
         }
-    }
-
-    // permission.
-
-    @Override
-    protected void requestReadWritePermissionSucceed(Downloadable downloadable, int requestCode) {
-        downloadByType((Photo) downloadable, requestCode);
     }
 
     // interface.
@@ -639,11 +628,8 @@ public class PhotoActivity3 extends ReadWriteActivity
     public void onDownload(Object obj) {
         if (activityModel.getResource().getValue() != null
                 && activityModel.getResource().getValue().data != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                downloadByType(activityModel.getResource().getValue().data, (Integer) obj);
-            } else {
-                requestReadWritePermission(activityModel.getResource().getValue().data, (Integer) obj);
-            }
+            requestReadWritePermission(activityModel.getResource().getValue().data, downloadable ->
+                    downloadByType((Photo) downloadable, (Integer) obj));
         }
     }
 
