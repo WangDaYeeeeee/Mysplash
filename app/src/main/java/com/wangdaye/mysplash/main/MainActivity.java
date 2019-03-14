@@ -220,6 +220,13 @@ public class MainActivity extends LoadableActivity<Photo>
             return true;
         });
 
+        if (DisplayUtils.getNavigationBarHeight(getResources()) > 0) {
+            nav.getMenu().getItem(9).setVisible(true);
+        } else {
+            nav.getMenu().getItem(9).setVisible(false);
+        }
+        nav.getMenu().getItem(9).setEnabled(false);
+
         View header = nav.getHeaderView(0);
         header.setOnClickListener(v ->
                 IntentHelper.startMeActivity(this, navAvatar, header, UserActivity.PAGE_PHOTO));

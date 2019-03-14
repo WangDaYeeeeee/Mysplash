@@ -73,6 +73,12 @@
             android:title="@string/action_about"
             android:checkable="false" />
 
+        <item
+            android:id="@+id/action_nav"
+            android:orderInCategory="100"
+            android:title=""
+            android:checkable="false" />
+
     </group>
 
 </menu>

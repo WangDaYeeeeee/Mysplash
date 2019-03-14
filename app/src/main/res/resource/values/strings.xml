@@ -93,6 +93,14 @@
     <string name="about_number_anim_text_view">A TextView with animation when increase number.</string>
     <string name="file_downloader">FileDownloader</string>
     <string name="about_file_downloader">Multitask、MultiThread(MultiConnection)、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process</string>
+    <string name="dagger">Dagger2</string>
+    <string name="about_dagger">A fast dependency injector for Android and Java.</string>
+    <string name="rx_java">RxJava</string>
+    <string name="about_rx_java">RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.</string>
+    <string name="rx_android">RxAndroid</string>
+    <string name="about_rx_android">RxJava bindings for Android</string>
+    <string name="rx_lifecycle">RxLifecycle</string>
+    <string name="about_rx_lifecycle">Bind observables to the lifecycle of Activity or Fragment in a non-invasive way.</string>
 
     <!-- feedback. -->
     <string name="feedback_click_retry">CLICK TO RETRY</string>

@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateAboutModelPresenter {
 
     public static List<AboutModel> createModelList(Context c) {
-        List<AboutModel> modelList = new ArrayList<>(29);
+        List<AboutModel> modelList = new ArrayList<>();
 
         // header.
         modelList.add(new HeaderObject());
@@ -140,13 +140,25 @@ public class CreateAboutModelPresenter {
                 c.getString(R.string.about_number_anim_text_view),
                 "https://github.com/Bakumon/NumberAnimTextView"));
         modelList.add(new LibraryObject(
-                c.getString(R.string.number_anim_text_view),
-                c.getString(R.string.about_number_anim_text_view),
-                "https://github.com/Bakumon/NumberAnimTextView"));
-        modelList.add(new LibraryObject(
                 c.getString(R.string.file_downloader),
                 c.getString(R.string.about_file_downloader),
                 "https://github.com/lingochamp/FileDownloader"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.dagger),
+                c.getString(R.string.about_dagger),
+                "https://github.com/google/dagger"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.rx_java),
+                c.getString(R.string.about_rx_java),
+                "https://github.com/ReactiveX/RxJava"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.rx_android),
+                c.getString(R.string.about_rx_android),
+                "https://github.com/ReactiveX/RxAndroid"));
+        modelList.add(new LibraryObject(
+                c.getString(R.string.rx_lifecycle),
+                c.getString(R.string.about_rx_lifecycle),
+                "https://github.com/zhihu/RxLifecycle"));
 
         return modelList;
     }
