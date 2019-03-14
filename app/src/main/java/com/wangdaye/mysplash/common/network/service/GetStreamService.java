@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
+import com.wangdaye.mysplash.common.network.NullResponseBody;
 import com.wangdaye.mysplash.common.network.api.GetStreamApi;
 import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
@@ -9,6 +11,7 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -29,8 +32,8 @@ public class GetStreamService {
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public GetStreamService(OkHttpClient client,
-                            RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public GetStreamService(@ApplicationInstace OkHttpClient client,
+                            @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                             CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.STREAM_API_BASE_URL)
@@ -53,6 +56,7 @@ public class GetStreamService {
                     "unspecified")
                     .subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
+                    .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                     .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody ->
                             api.getFirstPageStream(
                                     numericId,
@@ -60,6 +64,7 @@ public class GetStreamService {
                                     BuildConfig.GET_STREAM_KEY,
                                     "unspecified"))
                     .observeOn(AndroidSchedulers.mainThread())
+                    .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                     .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
             observer.onFailed();
@@ -70,9 +75,11 @@ public class GetStreamService {
         api.optionNextPageStream(nextPage)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody ->
                         api.getNextPageStream(nextPage))
                 .observeOn(AndroidSchedulers.mainThread())
+                .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 

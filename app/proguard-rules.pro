@@ -18,7 +18,8 @@
 
 -ignorewarnings
 
--keep class com.wangdaye.mysplash.common.data.entity.** { *; }
+-keep class com.wangdaye.mysplash.common.db.** { *; }
+-keep class com.wangdaye.mysplash.common.network.json.** { *; }
 
 -dontskipnonpubliclibraryclassmembers
 -printconfiguration

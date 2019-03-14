@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.FeedApi;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -29,9 +30,9 @@ public class FeedService {
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public FeedService(OkHttpClient client,
-                       GsonConverterFactory gsonConverterFactory,
-                       RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public FeedService(@ApplicationInstace OkHttpClient client,
+                       @ApplicationInstace GsonConverterFactory gsonConverterFactory,
+                       @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                        CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)

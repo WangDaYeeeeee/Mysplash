@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.common.network.json;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * Notification result.
  * */
@@ -24,9 +26,9 @@ public class NotificationResult {
     public boolean is_seen;
     public boolean is_read;
 
-    public List<User> actors;
-    public List<ActionObject> objects;
-    public List<Collection> targets;
+    @Nullable public List<User> actors;
+    @Nullable public List<ActionObject> objects;
+    @Nullable public List<Collection> targets;
 
     public static final String VERB_LIKED = "liked";
     public static final String VERB_COLLECTED = "collected";

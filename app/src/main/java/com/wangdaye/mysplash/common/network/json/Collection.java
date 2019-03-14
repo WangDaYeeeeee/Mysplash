@@ -8,6 +8,8 @@ import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * Collection.
  * */
@@ -49,9 +51,9 @@ public class Collection
     public Photo cover_photo;
     public User user;
     public CollectionLinks links;
-    public List<Tag> tags;
-    public List<Photo> preview_photos;
-    public List<String> keywords;
+    @Nullable public List<Tag> tags;
+    @Nullable public List<Photo> preview_photos;
+    @Nullable public List<String> keywords;
 
     // parcel.
 

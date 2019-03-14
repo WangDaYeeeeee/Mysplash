@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.network.service;
 import android.content.Context;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.AuthorizeApi;
 import com.wangdaye.mysplash.common.network.json.AccessToken;
@@ -27,9 +28,9 @@ public class AuthorizeService {
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public AuthorizeService(OkHttpClient client,
-                            GsonConverterFactory gsonConverterFactory,
-                            RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public AuthorizeService(@ApplicationInstace OkHttpClient client,
+                            @ApplicationInstace GsonConverterFactory gsonConverterFactory,
+                            @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                             CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)

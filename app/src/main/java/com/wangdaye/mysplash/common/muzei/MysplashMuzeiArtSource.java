@@ -9,12 +9,14 @@ import com.google.android.apps.muzei.api.RemoteMuzeiArtSource;
 import com.google.android.apps.muzei.api.UserCommand;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.muzei.MuzeiUpdateHelper;
+import com.wangdaye.mysplash.common.network.service.PhotoService;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 /**
  * Muzei source photoService.
@@ -25,6 +27,8 @@ import java.util.List;
 
 public class MysplashMuzeiArtSource extends RemoteMuzeiArtSource
         implements MuzeiUpdateHelper.OnUpdateCallback {
+
+    @Inject PhotoService service;
 
     private static final String SOURCE_NAME = "Mysplash";
 
@@ -41,7 +45,7 @@ public class MysplashMuzeiArtSource extends RemoteMuzeiArtSource
                 && !MuzeiUpdateHelper.isWifi(this)) {
             return;
         }
-        MuzeiUpdateHelper.update(this, this);
+        MuzeiUpdateHelper.update(this, service, this);
     }
 
     private void publishPhoto(@NonNull Photo photo) {

@@ -36,6 +36,10 @@ public class UserSearchPageViewRepository {
                 new BaseObserver<SearchUsersResult>() {
                     @Override
                     public void onSucceed(SearchUsersResult searchUsersResult) {
+                        if (searchUsersResult.results == null) {
+                            onFailed();
+                            return;
+                        }
                         if (refresh) {
                             current.setValue(
                                     ListResource.refreshSuccess(

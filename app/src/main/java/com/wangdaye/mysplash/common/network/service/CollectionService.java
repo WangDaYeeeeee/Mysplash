@@ -6,6 +6,8 @@ import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
+import com.wangdaye.mysplash.common.network.NullResponseBody;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.CollectionNodeApi;
 import com.wangdaye.mysplash.common.network.api.CollectionApi;
@@ -40,9 +42,9 @@ public class CollectionService {
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public CollectionService(OkHttpClient client,
-                             GsonConverterFactory gsonConverterFactory,
-                             RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public CollectionService(@ApplicationInstace OkHttpClient client,
+                             @ApplicationInstace GsonConverterFactory gsonConverterFactory,
+                             @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                              CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
@@ -179,6 +181,7 @@ public class CollectionService {
     public void deleteCollection(@IntRange(from = 0) int id, NoBodyObserver<ResponseBody> observer) {
         api.deleteCollection(id)
                 .compose(SchedulerTransformer.create())
+                .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 

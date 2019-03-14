@@ -37,6 +37,10 @@ public class CollectionSearchPageViewRepository {
 
                     @Override
                     public void onSucceed(SearchCollectionsResult searchCollectionsResult) {
+                        if (searchCollectionsResult.results == null) {
+                            onFailed();
+                            return;
+                        }
                         if (refresh) {
                             current.setValue(
                                     ListResource.refreshSuccess(

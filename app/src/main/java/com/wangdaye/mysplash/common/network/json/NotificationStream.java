@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.common.network.json;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * NotificationFeed stream
  * */
@@ -30,7 +32,7 @@ public class NotificationStream {
      * verb : collected
      */
 
-    public List<Results> results;
+    @Nullable public List<Results> results;
 
     public static class Results {
         public String id;

@@ -8,6 +8,8 @@ import com.wangdaye.mysplash.common.basic.model.Previewable;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * User.
  * */
@@ -68,7 +70,7 @@ public class User
     public Badge badge;
     public UserTags tags;
     public UserLinks links;
-    public List<Photo> photos;
+    @Nullable public List<Photo> photos;
 
     public static class UserTags implements Parcelable {
         public List<Tag> custom;

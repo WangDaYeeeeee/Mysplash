@@ -26,7 +26,9 @@ public class DispatchCollectionsChangedPresenter
     @Override
     public void onUpdateCollection(Collection c, User u, Photo p) {
         boolean addPhotoToCollection = false;
-        for (int i = 0; i < p.current_user_collections.size(); i ++) {
+        for (int i = 0;
+             p.current_user_collections != null && i < p.current_user_collections.size();
+             i ++) {
             if (c.id == p.current_user_collections.get(i).id) {
                 addPhotoToCollection = true;
                 MessageBus.getInstance().post(new PhotoEvent(p, c, PhotoEvent.Event.ADD_TO_COLLECTION));

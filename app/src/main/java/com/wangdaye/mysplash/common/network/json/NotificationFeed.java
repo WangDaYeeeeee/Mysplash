@@ -2,11 +2,13 @@ package com.wangdaye.mysplash.common.network.json;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * Notification feed.
  * */
 
 public class NotificationFeed {
 
-    public List<NotificationResult> results;
+    @Nullable public List<NotificationResult> results;
 }

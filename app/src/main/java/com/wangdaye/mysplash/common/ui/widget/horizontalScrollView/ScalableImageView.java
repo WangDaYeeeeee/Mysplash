@@ -13,6 +13,7 @@ import android.widget.OverScroller;
 
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 
 public class ScalableImageView extends AppCompatImageView
@@ -124,7 +125,10 @@ public class ScalableImageView extends AppCompatImageView
                 OVER_FLING, 0);
     }
 
-    private static int getDrawableWidth(Drawable d) {
+    private static int getDrawableWidth(@Nullable Drawable d) {
+        if (d == null) {
+            return 0;
+        }
         int width = d.getIntrinsicWidth();
         if (width <= 0) width = d.getMinimumWidth();
         if (width <= 0) width = d.getBounds().width();

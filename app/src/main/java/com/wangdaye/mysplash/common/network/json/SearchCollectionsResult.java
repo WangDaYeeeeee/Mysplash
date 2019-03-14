@@ -2,6 +2,8 @@ package com.wangdaye.mysplash.common.network.json;
 
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * Search collections result.
  * */
@@ -15,5 +17,5 @@ public class SearchCollectionsResult {
     public int total;
     public int total_pages;
 
-    public List<Collection> results;
+    @Nullable public List<Collection> results;
 }

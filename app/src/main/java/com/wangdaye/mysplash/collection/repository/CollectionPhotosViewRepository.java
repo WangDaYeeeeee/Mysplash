@@ -5,6 +5,8 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.observer.ListResourceObserver;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,6 +14,7 @@ public class CollectionPhotosViewRepository {
 
     private PhotoService service;
 
+    @Inject
     public CollectionPhotosViewRepository(PhotoService service) {
         this.service = service;
     }

@@ -241,7 +241,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
         toolbar.setOnMenuItemClickListener(this);
 
         photoAdapter = new PhotoAdapter(
-                this,
+                this, 
                 Objects.requireNonNull(photosViewModel.getListResource().getValue()).dataList,
                 DisplayUtils.getGirdColumnCount(this));
         photoAdapter.setItemEventCallback(this);

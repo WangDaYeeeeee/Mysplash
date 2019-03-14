@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.network.service;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.UserNodeApi;
 import com.wangdaye.mysplash.common.network.api.UserApi;
@@ -42,9 +43,9 @@ public class UserService {
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public UserService(OkHttpClient client,
-                       GsonConverterFactory gsonConverterFactory,
-                       RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public UserService(@ApplicationInstace OkHttpClient client,
+                       @ApplicationInstace GsonConverterFactory gsonConverterFactory,
+                       @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                        CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)

@@ -1,6 +1,8 @@
 package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.Mysplash;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
+import com.wangdaye.mysplash.common.network.NullResponseBody;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.FollowApi;
 import com.wangdaye.mysplash.common.network.interceptor.AuthInterceptor;
@@ -10,6 +12,9 @@ import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -27,9 +32,9 @@ public class FollowService {
     private CompositeDisposable compositeDisposable;
 
     @Inject
-    public FollowService(OkHttpClient client,
-                         GsonConverterFactory gsonConverterFactory,
-                         RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public FollowService(@ApplicationInstace OkHttpClient client,
+                         @ApplicationInstace GsonConverterFactory gsonConverterFactory,
+                         @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                          CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
@@ -47,12 +52,14 @@ public class FollowService {
     public void followUser(String username, NoBodyObserver<ResponseBody> observer) {
         api.follow(username)
                 .compose(SchedulerTransformer.create())
+                .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void cancelFollowUser(String username, NoBodyObserver<ResponseBody> observer) {
         api.cancelFollow(username)
                 .compose(SchedulerTransformer.create())
+                .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 

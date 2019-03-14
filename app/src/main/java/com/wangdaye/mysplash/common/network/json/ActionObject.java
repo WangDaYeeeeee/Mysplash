@@ -3,6 +3,8 @@ package com.wangdaye.mysplash.common.network.json;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * Action object.
  * */
@@ -26,8 +28,8 @@ public class ActionObject {
     public Exif exif;
     public PhotoUrls urls;
     public User user;
-    public List<Collection> current_user_collections;
-    public List<Category> categories;
+    @Nullable public List<Collection> current_user_collections;
+    @Nullable public List<Category> categories;
 
     // user part.
     public String username;

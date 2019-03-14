@@ -8,6 +8,8 @@ import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -27,6 +29,7 @@ public class CollectionPhotosViewModel extends PagerViewModel<Photo>
 
     public static final int INVALID_COLLECTION_ID = -1;
 
+    @Inject
     public CollectionPhotosViewModel(CollectionPhotosViewRepository repository,
                                      PhotoEventResponsePresenter presenter) {
         super();

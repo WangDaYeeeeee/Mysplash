@@ -7,6 +7,8 @@ import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
 import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
 import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 import io.reactivex.disposables.Disposable;
@@ -26,6 +28,7 @@ public class CollectionActivityModel extends BrowsableViewModel<Collection>
     private Integer collectionId;
     private Boolean curated;
 
+    @Inject
     public CollectionActivityModel(CollectionActivityRepository repository) {
         super();
         this.repository = repository;

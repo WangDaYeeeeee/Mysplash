@@ -5,6 +5,8 @@ import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.observer.ResourceObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 
+import javax.inject.Inject;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
@@ -12,6 +14,7 @@ public class CollectionActivityRepository {
 
     private CollectionService service;
 
+    @Inject
     public CollectionActivityRepository(CollectionService service) {
         this.service = service;
     }

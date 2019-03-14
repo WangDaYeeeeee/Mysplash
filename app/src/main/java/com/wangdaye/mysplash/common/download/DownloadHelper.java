@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
 import com.wangdaye.mysplash.common.download.imp.AndroidDownloaderService;
 import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.download.imp.FileDownloaderService;
@@ -48,7 +48,7 @@ public class DownloadHelper {
 
     private DownloadHelper(Context context) {
         bindDownloader(context, SettingsOptionManager.getInstance(context).getDownloader());
-        DaggerServiceComponent.builder().build().inject(this);
+        DaggerApplicationComponent.create().inject(this);
     }
 
     private void bindDownloader(Context context, String downloader) {

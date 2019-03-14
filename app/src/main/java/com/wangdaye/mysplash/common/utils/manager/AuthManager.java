@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
 import com.wangdaye.mysplash.common.network.json.AccessToken;
 import com.wangdaye.mysplash.common.network.json.Me;
 import com.wangdaye.mysplash.common.network.json.User;
@@ -76,7 +76,7 @@ public class AuthManager {
     private static final int VERSION_CODE = 8;
 
     private AuthManager() {
-        DaggerServiceComponent.builder().build().inject(this);
+        DaggerApplicationComponent.create().inject(this);
 
         SharedPreferences sharedPreferences = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE);

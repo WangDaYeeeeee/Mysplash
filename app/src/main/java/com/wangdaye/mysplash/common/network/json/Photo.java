@@ -3,6 +3,8 @@ package com.wangdaye.mysplash.common.network.json;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import androidx.annotation.Nullable;
 import androidx.annotation.Size;
 
 import com.wangdaye.mysplash.Mysplash;
@@ -59,9 +61,9 @@ public class Photo
     public Story story;
     public Stats stats;
     public User user;
-    public List<Collection> current_user_collections;
-    public List<Category> categories;
-    public List<Tag> tags;
+    @Nullable public List<Collection> current_user_collections;
+    @Nullable public List<Category> categories;
+    @Nullable public List<Tag> tags;
 
     /**
      * total : 6

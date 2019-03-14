@@ -139,7 +139,9 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
             } else if (stateIcon.isUsable()) {
                 stateIcon.setProgressState();
                 collection.editing = true;
-                for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+                for (int i = 0;
+                     photo.current_user_collections != null && i < photo.current_user_collections.size();
+                     i ++) {
                     if (collection.id == photo.current_user_collections.get(i).id) {
                         // delete photo.
                         callback.onAddPhotoToCollectionOrRemoveIt(
@@ -191,7 +193,9 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
         if (collection.editing) {
             stateIcon.setProgressState();
         } else {
-            for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+            for (int i = 0;
+                 photo.current_user_collections != null && i < photo.current_user_collections.size();
+                 i ++) {
                 if (collection.id == photo.current_user_collections.get(i).id) {
                     stateIcon.setResultState(R.drawable.ic_item_state_succeed);
                     return;

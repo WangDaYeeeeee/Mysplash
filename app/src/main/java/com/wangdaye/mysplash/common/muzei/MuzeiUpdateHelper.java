@@ -6,8 +6,8 @@ import android.net.NetworkInfo;
 import androidx.annotation.NonNull;
 
 import com.wangdaye.mysplash.common.db.WallpaperSource;
-import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
 import com.wangdaye.mysplash.common.network.json.Photo;
+import com.wangdaye.mysplash.common.network.service.PhotoService;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 
 import java.util.ArrayList;
@@ -15,26 +15,25 @@ import java.util.List;
 
 public class MuzeiUpdateHelper {
 
-    public static boolean update(Context context, @NonNull OnUpdateCallback callback) {
+    public static boolean update(Context context, PhotoService service,
+                                 @NonNull OnUpdateCallback callback) {
         switch (MuzeiOptionManager.getInstance(context).getSource()) {
             case "all":
-                return updateFromPhotos(false, callback);
+                return updateFromPhotos(service, false, callback);
 
             case "featured":
-                return updateFromPhotos(true, callback);
+                return updateFromPhotos(service, true, callback);
 
             case "collection":
-                return updateFromCollection(context, callback);
+                return updateFromCollection(context, service, callback);
         }
         return false;
     }
 
-    private static boolean updateFromPhotos(boolean featured, @NonNull OnUpdateCallback callback) {
-        List<Photo> photoList = DaggerServiceComponent.builder()
-                .build()
-                .getPhotoService()
-                .requestRandomPhotos(
-                        null, featured, null, null, null);
+    private static boolean updateFromPhotos(PhotoService service, boolean featured,
+                                            @NonNull OnUpdateCallback callback) {
+        List<Photo> photoList = service.requestRandomPhotos(
+                null, featured, null, null, null);
         if (photoList != null && photoList.size() > 1) {
             callback.onUpdateSucceed(photoList);
             return true;
@@ -44,7 +43,8 @@ public class MuzeiUpdateHelper {
         }
     }
 
-    private static boolean updateFromCollection(Context context, @NonNull OnUpdateCallback callback) {
+    private static boolean updateFromCollection(Context context, PhotoService service,
+                                                @NonNull OnUpdateCallback callback) {
         List<WallpaperSource> sourceList = MuzeiOptionManager.getInstance(context)
                 .getCollectionSourceList();
         List<Integer> collectionIdList = new ArrayList<>();
@@ -52,11 +52,8 @@ public class MuzeiUpdateHelper {
             collectionIdList.add((int) s.collectionId);
         }
 
-        List<Photo> photoList = DaggerServiceComponent.builder()
-                .build()
-                .getPhotoService()
-                .requestRandomPhotos(
-                        collectionIdList, false, null, null, null);
+        List<Photo> photoList = service.requestRandomPhotos(
+                collectionIdList, false, null, null, null);
         if (photoList != null && photoList.size() > 1) {
             callback.onUpdateSucceed(photoList);
             return true;

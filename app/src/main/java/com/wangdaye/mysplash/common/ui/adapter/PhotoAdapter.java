@@ -17,6 +17,8 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
+import com.wangdaye.mysplash.common.di.annotation.GridColumnCount;
+import com.wangdaye.mysplash.common.di.annotation.ItemList;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
@@ -42,6 +44,8 @@ import com.wangdaye.mysplash.user.ui.UserActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -63,7 +67,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder>
 
     @Nullable private ItemEventCallback callback;
 
-    public PhotoAdapter(Context context, List<Photo> list, int columnCount) {
+    @Inject
+    public PhotoAdapter(Context context, @ItemList List<Photo> list, @GridColumnCount int columnCount) {
         super(context);
         this.itemList = list;
         this.columnCount = columnCount;
@@ -236,7 +241,7 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             deleteButton.setVisibility(View.GONE);
         }
 
-        if (photo.current_user_collections.size() != 0) {
+        if (photo.current_user_collections != null && photo.current_user_collections.size() != 0) {
             collectionButton.setImageResource(R.drawable.ic_item_collected);
         } else {
             collectionButton.setImageResource(R.drawable.ic_item_collect);

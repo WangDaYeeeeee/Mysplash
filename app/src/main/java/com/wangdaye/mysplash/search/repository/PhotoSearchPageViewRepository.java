@@ -37,6 +37,10 @@ public class PhotoSearchPageViewRepository {
 
                     @Override
                     public void onSucceed(SearchPhotosResult searchPhotosResult) {
+                        if (searchPhotosResult.results == null) {
+                            onFailed();
+                            return;
+                        }
                         if (refresh) {
                             current.setValue(
                                     ListResource.refreshSuccess(

@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.di.component.DaggerServiceComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
 import com.wangdaye.mysplash.common.network.json.NotificationFeed;
 import com.wangdaye.mysplash.common.network.json.NotificationResult;
 import com.wangdaye.mysplash.common.network.json.NotificationStream;
@@ -73,7 +73,7 @@ public class UserNotificationManager {
 
     @SuppressLint("SimpleDateFormat")
     UserNotificationManager() {
-        DaggerServiceComponent.builder().build().inject(this);
+        DaggerApplicationComponent.create().inject(this);
 
         gson = new Gson();
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
