@@ -119,7 +119,7 @@ public class SettingsActivity extends MysplashActivity
     // on swipe back listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return true;
     }
 
@@ -130,7 +130,7 @@ public class SettingsActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
     }
 }

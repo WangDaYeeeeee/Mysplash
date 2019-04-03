@@ -22,7 +22,7 @@
         android:transitionName="@string/transition_photo_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout
+        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout
             android:id="@+id/activity_photo_3_swipeSwitchView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -41,96 +41,79 @@
                 android:layout_height="match_parent"
                 android:background="?attr/root_color">
 
-                <com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.ScalableImageView
-                    android:id="@+id/activity_photo_3_regularImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:scaleType="centerCrop"
-                    android:transitionName="@string/transition_photo_image"
-                    tools:ignore="UnusedAttribute" />
-                
-                <androidx.core.widget.NestedScrollView
+                <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.VerticalNestedScrollView
                     android:id="@+id/activity_photo_3_scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scrollbars="vertical">
-                    
-                    <LinearLayout
+
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:descendantFocusability="blocksDescendants">
+                        android:layout_height="wrap_content">
 
-                        <include layout="@layout/container_photo_3_base" />
-
-                        <FrameLayout
-                            android:id="@+id/activity_photo_3_cardContainer"
+                        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.ScalableImageView
+                            android:id="@+id/activity_photo_3_regularImage"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="-12dp">
+                            android:foreground="?attr/selectableItemBackground"
+                            android:scaleType="centerCrop"
+                            android:transitionName="@string/transition_photo_image"
+                            tools:ignore="UnusedAttribute" />
 
-                            <androidx.cardview.widget.CardView
-                                android:id="@+id/activity_photo_3_card"
+                        <include layout="@layout/container_photo_3_actor"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBottom="@id/activity_photo_3_regularImage" />
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/activity_photo_3_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/activity_photo_3_regularImage"
+                            android:paddingBottom="12dp"
+                            android:layout_marginBottom="-12dp"
+                            app:cardCornerRadius="@dimen/material_card_radius_large"
+                            app:cardBackgroundColor="?attr/root_color"
+                            app:cardElevation="0dp">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/activity_photo_3_recyclerView"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                app:cardCornerRadius="@dimen/material_card_radius_large"
-                                app:cardBackgroundColor="?attr/root_color"
-                                app:cardElevation="0dp">
+                                android:nestedScrollingEnabled="false" />
 
-                                <androidx.recyclerview.widget.RecyclerView
-                                    android:id="@+id/activity_photo_3_recyclerView"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:paddingBottom="12dp"
-                                    android:nestedScrollingEnabled="false" />
+                        </androidx.cardview.widget.CardView>
 
-                            </androidx.cardview.widget.CardView>
+                    </RelativeLayout>
 
-                        </FrameLayout>
-
-                    </LinearLayout>
-
-                </androidx.core.widget.NestedScrollView>
+                </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.VerticalNestedScrollView>
 
                 <LinearLayout
                     android:id="@+id/activity_photo_3_appBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:background="@drawable/gradient_shadow_appbar">
 
                     <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:sbv_translucent_mode="true"
-                        app:sbv_init_alpha="0.15"
-                        app:sbv_darker_alpha="0.15" />
+                        app:sbv_init_alpha="0"
+                        app:sbv_darker_alpha="0" />
 
-                    <FrameLayout
+                    <androidx.appcompat.widget.Toolbar
+                        android:id="@+id/activity_photo_3_toolbar"
                         android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize">
-
-                        <com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize"
-                            app:cml_gradient_angle="90"
-                            app:cml_from_alpha="0"
-                            app:cml_to_alpha="0.15"
-                            app:cml_mask_color="@android:color/black" />
-
-                        <androidx.appcompat.widget.Toolbar
-                            android:id="@+id/activity_photo_3_toolbar"
-                            android:layout_width="match_parent"
-                            android:layout_height="?attr/actionBarSize"
-                            android:background="@android:color/transparent"
-                            app:popupTheme="@style/MysplashPopupMenuTheme" />
-
-                    </FrameLayout>
+                        android:layout_height="?attr/actionBarSize"
+                        android:background="@android:color/transparent"
+                        app:popupTheme="@style/MysplashPopupMenuTheme" />
 
                 </LinearLayout>
 
             </FrameLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout>
+        </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout>
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 

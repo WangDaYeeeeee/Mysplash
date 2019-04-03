@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.PhotoNodeApi;
 import com.wangdaye.mysplash.common.network.api.PhotoApi;
@@ -19,8 +18,6 @@ import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
 import java.io.IOException;
 import java.util.List;
-
-import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
@@ -38,10 +35,9 @@ public class PhotoService {
     private PhotoNodeApi nodeApi;
     private CompositeDisposable compositeDisposable;
 
-    @Inject
-    public PhotoService(@ApplicationInstace OkHttpClient client,
-                        @ApplicationInstace GsonConverterFactory gsonConverterFactory,
-                        @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public PhotoService(OkHttpClient client,
+                        GsonConverterFactory gsonConverterFactory,
+                        RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                         CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)

@@ -97,7 +97,8 @@ public class TLSCompactHelper {
                 sc.init(null, null, null);
                 builder.sslSocketFactory(
                         new Tls12SocketFactory(sc.getSocketFactory()),
-                        Util.platformTrustManager());
+                        Util.platformTrustManager()
+                );
 
                 ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
                         .tlsVersions(TlsVersion.TLS_1_2)

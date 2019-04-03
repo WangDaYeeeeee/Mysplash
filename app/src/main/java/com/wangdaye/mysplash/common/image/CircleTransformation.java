@@ -37,10 +37,8 @@ public class CircleTransformation extends BitmapTransformation {
         }
 
         Canvas canvas = new Canvas(result);
-        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG | Paint
-                .ANTI_ALIAS_FLAG);
-        paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader
-                .TileMode.CLAMP));
+        Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG | Paint.ANTI_ALIAS_FLAG);
+        paint.setShader(new BitmapShader(squared, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP));
         float r = size / 2f;
         canvas.drawCircle(r, r, r, paint);
         return result;

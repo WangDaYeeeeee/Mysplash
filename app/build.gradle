@@ -6,8 +6,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 364
-        versionName "3.6.4"
+        versionCode 366
+        versionName "3.6.6"
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -105,8 +105,8 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0-alpha03'
-    implementation 'com.google.android.material:material:1.1.0-alpha04'
+    implementation 'androidx.preference:preference:1.1.0-alpha04'
+    implementation 'com.google.android.material:material:1.1.0-alpha05'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
 
@@ -141,4 +141,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     implementation 'com.github.nekocode.rxlifecycle:rxlifecycle:2.0'
     implementation 'com.github.nekocode.rxlifecycle:rxlifecycle-compact:2.0'
+
+    implementation 'com.tencent.bugly:crashreport:2.8.6.0'
 }

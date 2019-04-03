@@ -43,34 +43,45 @@ public class SettingsOptionManager {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.backToTopType = sharedPreferences.getString(
                 context.getString(R.string.key_back_to_top),
-                "all");
+                "all"
+        );
         this.autoNightMode = sharedPreferences.getString(
                 context.getString(R.string.key_auto_night_mode),
-                "follow_system");
+                "follow_system"
+        );
         this.notifiedSetBackToTop = sharedPreferences.getBoolean(
                 context.getString(R.string.key_notified_set_back_to_top),
-                false);
+                false
+        );
         this.language = sharedPreferences.getString(
                 context.getString(R.string.key_language),
-                "follow_system");
+                "follow_system"
+        );
         this.defaultPhotoOrder = sharedPreferences.getString(
                 context.getString(R.string.key_default_photo_order),
-                "latest");
+                "latest"
+        );
         this.downloader = sharedPreferences.getString(
                 context.getString(R.string.key_downloader),
-                "mysplash");
+                "mysplash"
+        );
         this.downloadScale = sharedPreferences.getString(
                 context.getString(R.string.key_download_scale),
-                "compact");
+                "compact"
+        );
         this.saturationAnimationDuration = Integer.parseInt(
                 sharedPreferences.getString(
-                        context.getString(R.string.key_saturation_animation_duration), "2000"));
+                        context.getString(R.string.key_saturation_animation_duration),
+                        "2000")
+        );
         this.showGridInPort = sharedPreferences.getBoolean(
                 context.getString(R.string.key_grid_list_in_port),
-                true);
+                true
+        );
         this.showGridInLand = sharedPreferences.getBoolean(
                 context.getString(R.string.key_grid_list_in_land),
-                true);
+                true
+        );
     }
 
     public String getBackToTopType() {

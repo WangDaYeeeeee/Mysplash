@@ -31,7 +31,7 @@
             android:background="?attr/root_color"
             tools:ignore="UnusedAttribute">
 
-            <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+            <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
                 android:id="@+id/activity_my_follow_appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,7 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/tab_layout_height"/>
 
-            </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+            </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/activity_my_follow_viewPager"

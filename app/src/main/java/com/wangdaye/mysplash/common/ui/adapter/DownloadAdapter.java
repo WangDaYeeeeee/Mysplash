@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -13,19 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.download.DownloadMission;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
-import com.wangdaye.mysplash.common.download.imp.DownloaderService;
-import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
-import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.image.ImageHelper;
-import com.wangdaye.mysplash.common.utils.FileUtils;
-import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 import java.util.List;
 
@@ -89,17 +80,20 @@ public class DownloadAdapter extends RecyclerView.Adapter<DownloadHolder> {
     }
 
     public interface ItemEventCallback {
+        void onPhotoItemClicked(String photoId);
+        void onCollectionItemClicked(String collectionId);
         void onDelete(DownloadMissionEntity entity, int adapterPosition);
+        void onCheck(DownloadMissionEntity entity, int adapterPosition);
         void onRetry(DownloadMissionEntity entity, int adapterPosition);
     }
 
-    public void setItemEventCallback(@Nullable ItemEventCallback c) {
+    public DownloadAdapter setItemEventCallback(@Nullable ItemEventCallback c) {
         this.callback = c;
+        return this;
     }
 }
 
-class DownloadHolder extends RecyclerView.ViewHolder
-        implements DownloadRepeatDialog.OnCheckOrDownloadListener {
+class DownloadHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_download_image) AppCompatImageView image;
     @BindView(R.id.item_download_stateIcon) CircularProgressIcon stateIcon;
@@ -122,12 +116,16 @@ class DownloadHolder extends RecyclerView.ViewHolder
 
         if (!update) {
             ImageHelper.loadImageFromUrl(
-                    image.getContext(), image, mission.entity.getPhotoUri(), false, null);
+                    image.getContext(),
+                    image, mission.entity.getPhotoUri(),
+                    false,
+                    null
+            );
         }
 
         stateIcon.setProgressColor(Color.WHITE);
         switch (mission.entity.result) {
-            case DownloaderService.RESULT_DOWNLOADING:
+            case DownloadMissionEntity.RESULT_DOWNLOADING:
                 stateIcon.setProgressState();
                 title.setText(
                         mission.entity.getNotificationTitle().toUpperCase()
@@ -136,33 +134,18 @@ class DownloadHolder extends RecyclerView.ViewHolder
                 retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
                 break;
 
-            case DownloaderService.RESULT_SUCCEED:
+            case DownloadMissionEntity.RESULT_SUCCEED:
                 stateIcon.setResultState(R.drawable.ic_item_state_succeed);
                 title.setText(mission.entity.getNotificationTitle().toUpperCase());
                 retryCheckBtn.setImageResource(R.drawable.ic_item_check);
                 break;
 
-            case DownloaderService.RESULT_FAILED:
+            case DownloadMissionEntity.RESULT_FAILED:
                 stateIcon.setResultState(R.drawable.ic_item_state_error);
                 title.setText(mission.entity.getNotificationTitle().toUpperCase());
                 retryCheckBtn.setImageResource(R.drawable.ic_item_retry);
                 break;
         }
-    }
-
-    private void checkDownloadMission(Context context, DownloadMissionEntity entity) {
-        if (entity.downloadType == DownloaderService.COLLECTION_TYPE) {
-            if (FileUtils.isCollectionExists(context, entity.title)) {
-                IntentHelper.startCheckCollectionActivity(context, entity.title);
-                return;
-            }
-        } else {
-            if (FileUtils.isPhotoExists(context, entity.title)) {
-                IntentHelper.startCheckPhotoActivity(context, entity.title);
-                return;
-            }
-        }
-        NotificationHelper.showSnackbar(context.getString(R.string.feedback_file_does_not_exist));
     }
 
     void onRecycled() {
@@ -173,17 +156,15 @@ class DownloadHolder extends RecyclerView.ViewHolder
     // interface.
 
     @OnClick(R.id.item_download_card) void clickItem() {
-        if (Mysplash.getInstance().getTopActivity() == null) {
+        if (callback == null) {
             return;
         }
-        if (mission.entity.downloadType == DownloaderService.COLLECTION_TYPE) {
-            IntentHelper.startCollectionActivity(
-                    Mysplash.getInstance().getTopActivity(),
-                    mission.entity.title.replaceAll("#", ""));
+        if (mission.entity.downloadType == DownloadMissionEntity.COLLECTION_TYPE) {
+            callback.onCollectionItemClicked(
+                    mission.entity.title.replaceAll("#", "")
+            );
         } else {
-            IntentHelper.startPhotoActivity(
-                    Mysplash.getInstance().getTopActivity(),
-                    mission.entity.title);
+            callback.onPhotoItemClicked(mission.entity.title);
         }
     }
 
@@ -194,45 +175,12 @@ class DownloadHolder extends RecyclerView.ViewHolder
     }
 
     @OnClick(R.id.item_download_retry_check_btn) void clickRetryOrCheckButton() {
-        Context context = itemView.getContext();
-        if (mission.entity.result == DownloaderService.RESULT_SUCCEED) {
-            checkDownloadMission(context, mission.entity);
+        if (callback == null) {
+            return;
+        }
+        if (mission.entity.result == DownloadMissionEntity.RESULT_SUCCEED) {
+            callback.onCheck(mission.entity, getAdapterPosition());
         } else {
-            // If there is another mission that is downloading the same thing, we cannot restart
-            // this mission.
-            int limitCount = mission.entity.result == DownloaderService.RESULT_DOWNLOADING ? 1 : 0;
-            if (DatabaseHelper.getInstance(context)
-                    .readDownloadingEntityCount(mission.entity.title) > limitCount) {
-                NotificationHelper.showSnackbar(context.getString(R.string.feedback_download_repeat));
-            } else if (FileUtils.isPhotoExists(context, mission.entity.title)
-                    || FileUtils.isCollectionExists(context, mission.entity.title)) {
-                MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-                if (activity != null) {
-                    DownloadRepeatDialog dialog = new DownloadRepeatDialog();
-                    dialog.setDownloadKey(mission.entity);
-                    dialog.setOnCheckOrDownloadListener(this);
-                    dialog.show(activity.getSupportFragmentManager(), null);
-                }
-            } else if (callback != null) {
-                callback.onRetry(mission.entity, getAdapterPosition());
-            }
-        }
-    }
-
-    // on check or download listener.
-
-    @Override
-    public void onCheck(Object obj) {
-        if (mission != null
-                && mission.entity != null
-                && mission.entity.result == DownloaderService.RESULT_SUCCEED) {
-            checkDownloadMission(Mysplash.getInstance().getTopActivity(), mission.entity);
-        }
-    }
-
-    @Override
-    public void onDownload(Object obj) {
-        if (callback != null && mission != null && mission.entity != null) {
             callback.onRetry(mission.entity, getAdapterPosition());
         }
     }

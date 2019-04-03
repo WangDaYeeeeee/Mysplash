@@ -74,20 +74,24 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(getLayoutManager());
         recyclerView.setAdapter(
-                new LargeLoadingStateAdapter(getContext(), 98,
-                        v -> { if (hideKeyboardListener != null) hideKeyboardListener.onClick(v); }),
-                MultipleStateRecyclerView.STATE_LOADING);
+                new LargeLoadingStateAdapter(getContext(), 98, v -> {
+                    if (hideKeyboardListener != null) {
+                        hideKeyboardListener.onClick(v);
+                    }
+                }), MultipleStateRecyclerView.STATE_LOADING
+        );
         recyclerView.setAdapter(
                 new LargeErrorStateAdapter(
                         getContext(), 98,
@@ -96,14 +100,20 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
                         getContext().getString(R.string.search),
                         true, false,
                         v -> { if (hideKeyboardListener != null) hideKeyboardListener.onClick(v); },
-                        this),
+                        this
+                ),
                 MultipleStateRecyclerView.STATE_ERROR);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        AbstractSearchPageView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, index, dy);
+                        AbstractSearchPageView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        index,
+                        dy
+                );
             }
         });
         recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
@@ -144,8 +154,9 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
                             true,
                             true,
                             v -> { if (hideKeyboardListener != null) hideKeyboardListener.onClick(v); },
-                            this),
-                    MultipleStateRecyclerView.STATE_ERROR);
+                            this
+                    ), MultipleStateRecyclerView.STATE_ERROR
+            );
             return true;
         }
         return stateChanged;
@@ -173,7 +184,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -88,7 +88,8 @@ public class SelectedFragment extends MysplashFragment
             DisplayUtils.setNavigationBarStyle(
                     getActivity(), 
                     selectedView.getState() == PagerView.State.NORMAL,
-                    true);
+                    true
+            );
         }
     }
 
@@ -142,12 +143,14 @@ public class SelectedFragment extends MysplashFragment
         selectedAdapter = new SelectedAdapter(
                 getActivity(),
                 Objects.requireNonNull(selectedViewModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(getActivity()));
+                DisplayUtils.getGirdColumnCount(getActivity())
+        );
         selectedView.setAdapter(selectedAdapter);
         selectedView.setPagerManageView(this);
 
         selectedViewModel.getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, selectedView, selectedAdapter));
+                PagerViewManagePresenter.responsePagerListResourceChanged(resource, selectedView, selectedAdapter)
+        );
     }
 
     // interface.
@@ -175,7 +178,8 @@ public class SelectedFragment extends MysplashFragment
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                selectedViewModel.getListResource().getValue()).state == ListResource.State.LOADING;
+                selectedViewModel.getListResource().getValue()
+        ).state == ListResource.State.LOADING;
     }
 
     // on nested scrolling listener.

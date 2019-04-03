@@ -33,7 +33,8 @@ public class UserCollectionsViewRepository {
                 username,
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void cancel() {

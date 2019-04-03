@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
-import com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout;
+import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
@@ -81,12 +81,20 @@ public class MoreHolder extends PhotoInfoAdapter3.ViewHolder
         for (int i = 0; i < size; i ++) {
             View view = LayoutInflater.from(a).inflate(R.layout.item_photo_3_more_page_vertical, null);
             final int finalI = i;
-            view.setOnClickListener(v -> IntentHelper.startCollectionActivity(
-                    a, photo.related_collections.results.get(finalI)));
+            view.setOnClickListener(v ->
+                    IntentHelper.startCollectionActivity(
+                            a,
+                            photo.related_collections.results.get(finalI)
+                    )
+            );
 
             covers[i] = view.findViewById(R.id.item_photo_3_more_page_vertical_cover);
             ImageHelper.loadCollectionCover(
-                    a, covers[i], photo.related_collections.results.get(i), null);
+                    a,
+                    covers[i],
+                    photo.related_collections.results.get(i),
+                    null
+            );
 
             titles[i] = view.findViewById(R.id.item_photo_3_more_page_vertical_title);
             titles[i].setText(photo.related_collections.results.get(i).title.toUpperCase());
@@ -94,7 +102,7 @@ public class MoreHolder extends PhotoInfoAdapter3.ViewHolder
             viewList.add(view);
         }
 
-        viewPager.setAdapter(new MyPagerAdapter(viewList, titleList));
+        viewPager.setAdapter(new PagerAdapter(viewList, titleList));
         viewPager.setCurrentItem(model.position);
         viewPager.clearOnPageChangeListeners();
         viewPager.addOnPageChangeListener(this);

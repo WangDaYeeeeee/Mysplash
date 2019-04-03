@@ -34,7 +34,6 @@ public class CollectionSearchPageViewRepository {
                 query,
                 current.getValue().getRequestPage(),
                 new BaseObserver<SearchCollectionsResult>() {
-
                     @Override
                     public void onSucceed(SearchCollectionsResult searchCollectionsResult) {
                         if (searchCollectionsResult.results == null) {
@@ -45,17 +44,23 @@ public class CollectionSearchPageViewRepository {
                             current.setValue(
                                     ListResource.refreshSuccess(
                                             current.getValue(),
-                                            searchCollectionsResult.results));
+                                            searchCollectionsResult.results
+                                    )
+                            );
                         } else if (searchCollectionsResult.results.size() == current.getValue().perPage) {
                             current.setValue(
                                     ListResource.loadSuccess(
                                             current.getValue(),
-                                            searchCollectionsResult.results));
+                                            searchCollectionsResult.results
+                                    )
+                            );
                         } else {
                             current.setValue(
                                     ListResource.allLoaded(
                                             current.getValue(),
-                                            searchCollectionsResult.results));
+                                            searchCollectionsResult.results
+                                    )
+                            );
                         }
                     }
 
@@ -63,7 +68,8 @@ public class CollectionSearchPageViewRepository {
                     public void onFailed() {
                         current.setValue(ListResource.error(current.getValue()));
                     }
-                });
+                }
+        );
     }
 
     public void cancel() {

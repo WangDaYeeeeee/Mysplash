@@ -5,7 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import androidx.annotation.IntDef;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.widget.NestedScrollView;
@@ -28,18 +27,20 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
-import com.wangdaye.mysplash.common.basic.SafeHandler;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.RxLifecycle;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
 
 /**
  * Update me activity.
@@ -49,7 +50,7 @@ import butterknife.OnClick;
  * */
 
 public class UpdateMeActivity extends MysplashActivity
-        implements SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R.id.activity_update_me_container) CoordinatorLayout container;
     @BindView(R.id.activity_update_me_statusBar) StatusBarView statusBar;
@@ -74,7 +75,6 @@ public class UpdateMeActivity extends MysplashActivity
     private TextInputEditText locationTxt;
     private TextInputEditText bioTxt;
 
-    private SafeHandler<UpdateMeActivity> handler;
     private FullscreenInputWorkaround workaround;
 
     @Inject UserService service;
@@ -146,12 +146,11 @@ public class UpdateMeActivity extends MysplashActivity
             backPressed = true;
             NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
 
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    handler.obtainMessage(1).sendToTarget();
-                }
-            }, 2000);
+            Observable.create(Emitter::onComplete)
+                    .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                    .delay(2, TimeUnit.SECONDS)
+                    .doOnComplete(() -> backPressed = false)
+                    .subscribe();
         }
     }
 
@@ -182,7 +181,6 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     private void initWidget(Bundle savedInstanceState) {
-        this.handler = new SafeHandler<>(this);
         this.workaround = FullscreenInputWorkaround.assistActivity(
                 this, container, null);
 
@@ -304,7 +302,8 @@ public class UpdateMeActivity extends MysplashActivity
                             setState(INPUT_STATE);
                             NotificationHelper.showSnackbar(getString(R.string.feedback_update_profile_failed));
                         }
-                    });
+                    }
+            );
             setState(UPDATE_STATE);
         } else {
             usernameTextContainer.setError(getString(R.string.feedback_name_is_required));
@@ -322,8 +321,7 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     public void animHide(final View v) {
-        ObjectAnimator anim = ObjectAnimator
-                .ofFloat(v, "alpha", 1, 0)
+        ObjectAnimator anim = ObjectAnimator.ofFloat(v, "alpha", 1, 0)
                 .setDuration(300);
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -340,7 +338,7 @@ public class UpdateMeActivity extends MysplashActivity
     // on swipe listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return SwipeBackCoordinatorLayout.canSwipeBack(scrollView, dir);
     }
 
@@ -351,18 +349,7 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
-    }
-
-    // handler.
-
-    @Override
-    public void handleMessage(Message message) {
-        switch (message.what) {
-            case 1:
-                backPressed = false;
-                break;
-        }
     }
 }

@@ -61,8 +61,9 @@ public abstract class ReadWriteActivity extends MysplashActivity {
             this.requestPermissions(
                     new String[] {
                             Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.READ_EXTERNAL_STORAGE},
-                    REQUEST_CODE);
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                    }, REQUEST_CODE
+            );
         } else {
             requestReadWritePermissionSucceed();
         }

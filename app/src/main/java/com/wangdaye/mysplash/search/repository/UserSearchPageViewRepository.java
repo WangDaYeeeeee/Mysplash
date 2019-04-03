@@ -44,17 +44,23 @@ public class UserSearchPageViewRepository {
                             current.setValue(
                                     ListResource.refreshSuccess(
                                             current.getValue(),
-                                            searchUsersResult.results));
+                                            searchUsersResult.results
+                                    )
+                            );
                         } else if (searchUsersResult.results.size() == current.getValue().perPage) {
                             current.setValue(
                                     ListResource.loadSuccess(
                                             current.getValue(),
-                                            searchUsersResult.results));
+                                            searchUsersResult.results
+                                    )
+                            );
                         } else {
                             current.setValue(
                                     ListResource.allLoaded(
                                             current.getValue(),
-                                            searchUsersResult.results));
+                                            searchUsersResult.results
+                                    )
+                            );
                         }
                     }
 
@@ -62,7 +68,8 @@ public class UserSearchPageViewRepository {
                     public void onFailed() {
                         current.setValue(ListResource.error(current.getValue()));
                     }
-                });
+                }
+        );
     }
 
     public void cancel() {

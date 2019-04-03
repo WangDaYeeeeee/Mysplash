@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -75,13 +75,14 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         recyclerView.setAdapter(adapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
@@ -99,8 +100,13 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        UserPhotosView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, index, dy);
+                        UserPhotosView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        index,
+                        dy
+                );
             }
         });
         recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
@@ -144,7 +150,7 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

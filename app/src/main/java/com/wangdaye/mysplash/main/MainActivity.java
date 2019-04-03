@@ -1,10 +1,8 @@
 package com.wangdaye.mysplash.main;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -14,7 +12,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
-import android.text.TextUtils;
+
 import android.view.View;
 import android.widget.TextView;
 
@@ -23,12 +21,11 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.basic.model.Resource;
+import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
-import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
@@ -38,10 +35,7 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.manager.ShortcutsManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.basic.SafeHandler;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.main.collection.ui.CollectionFragment;
-import com.wangdaye.mysplash.main.following.ui.FollowingAdapter;
 import com.wangdaye.mysplash.main.following.ui.FollowingFeedFragment;
 import com.wangdaye.mysplash.main.home.ui.HomeFragment;
 import com.wangdaye.mysplash.main.multiFilter.ui.MultiFilterFragment;
@@ -51,8 +45,7 @@ import com.wangdaye.mysplash.user.ui.UserActivity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -61,14 +54,17 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.RxLifecycle;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 
 /**
  * Main activity.
  * */
 
-public class MainActivity extends LoadableActivity<Photo>
-        implements PhotoAdapter.ItemEventCallback, FollowingAdapter.ItemEventCallback,
-        SafeHandler.HandlerContainer {
+public class MainActivity extends LoadableActivity<Photo> {
 
     @BindView(R.id.activity_main_drawerLayout) DrawerLayout drawer;
     @BindView(R.id.activity_main_navView) NavigationView nav;
@@ -79,14 +75,8 @@ public class MainActivity extends LoadableActivity<Photo>
     private TextView navSubtitle;
     private AppCompatImageButton navButton;
 
-    private SafeHandler<MainActivity> handler;
-
     private MainActivityModel mainActivityModel;
     @Inject DaggerViewModelFactory viewModelFactory;
-
-    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
-
-    public static final String ACTION_SEARCH = "com.wangdaye.mysplash.Search";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,14 +88,6 @@ public class MainActivity extends LoadableActivity<Photo>
         IntroduceActivity.checkAndStartIntroduce(MainActivity.this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             ShortcutsManager.refreshShortcuts(this);
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (isSearchIntent(intent)) {
-            mainActivityModel.selectDrawerItem(R.id.action_search);
         }
     }
 
@@ -197,26 +179,45 @@ public class MainActivity extends LoadableActivity<Photo>
 
     private void initModel() {
         mainActivityModel = ViewModelProviders.of(this, viewModelFactory).get(MainActivityModel.class);
-        if (!AuthManager.getInstance().isAuthorized()
-                || AuthManager.getInstance().getUser() == null) {
-            mainActivityModel.init(
-                    isSearchIntent(getIntent()) ? R.id.action_search : R.id.action_home,
-                    Resource.error(null));
+        if (!AuthManager.getInstance().isAuthorized() || AuthManager.getInstance().getUser() == null) {
+            mainActivityModel.init(R.id.action_home, Resource.error(null));
         } else {
-            mainActivityModel.init(
-                    isSearchIntent(getIntent()) ? R.id.action_search : R.id.action_home,
-                    Resource.success(AuthManager.getInstance().getUser()));
+            mainActivityModel.init(R.id.action_home, Resource.success(AuthManager.getInstance().getUser()));
         }
     }
 
     @SuppressLint("SetTextI18n")
     private void initView() {
-        this.handler = new SafeHandler<>(this);
-
         nav.inflateMenu(R.menu.activity_main_drawer);
         nav.setNavigationItemSelectedListener(item -> {
             drawer.closeDrawer(GravityCompat.START);
-            sendMessage(item.getItemId());
+            Observable.create(Emitter::onComplete)
+                    .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                    .delay(400, TimeUnit.MILLISECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnComplete(() -> {
+                        switch (item.getItemId()) {
+                            case R.id.action_change_theme:
+                                changeTheme();
+                                break;
+
+                            case R.id.action_download_manage:
+                                IntentHelper.startDownloadManageActivity(this);
+                                break;
+
+                            case R.id.action_settings:
+                                IntentHelper.startSettingsActivity(this);
+                                break;
+
+                            case R.id.action_about:
+                                IntentHelper.startAboutActivity(this);
+                                break;
+
+                            default:
+                                mainActivityModel.selectDrawerItem(item.getItemId());
+                                break;
+                        }
+                    }).subscribe();
             return true;
         });
 
@@ -229,7 +230,8 @@ public class MainActivity extends LoadableActivity<Photo>
 
         View header = nav.getHeaderView(0);
         header.setOnClickListener(v ->
-                IntentHelper.startMeActivity(this, navAvatar, header, UserActivity.PAGE_PHOTO));
+                IntentHelper.startMeActivity(this, navAvatar, header, UserActivity.PAGE_PHOTO)
+        );
 
         this.navAvatar = header.findViewById(R.id.container_nav_header_avatar);
         this.appIcon = header.findViewById(R.id.container_nav_header_appIcon);
@@ -293,11 +295,22 @@ public class MainActivity extends LoadableActivity<Photo>
 
     // control.
 
+    public void downloadPhoto(Photo photo) {
+        requestReadWritePermission(photo, downloadable ->
+                DownloadHelper.getInstance(this).addMission(
+                        MainActivity.this,
+                        (Photo) downloadable,
+                        DownloadMissionEntity.DOWNLOAD_TYPE
+                )
+        );
+    }
+
     private void changeTheme() {
         DisplayUtils.changeTheme(this);
         AppCompatDelegate.setDefaultNightMode(
                 ThemeManager.getInstance(this).isLightTheme()
-                        ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+                        ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES
+        );
         recreate();
     }
 
@@ -358,7 +371,7 @@ public class MainActivity extends LoadableActivity<Photo>
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.activity_main_fragment, f)
                 .commit();
-        DisplayUtils.setStatusBarStyle(this, false);
+        initFragmentStatusBarAndNavigationBar(f);
     }
 
     private void showAndHideFragment(MysplashFragment newF, MysplashFragment oldF) {
@@ -368,8 +381,7 @@ public class MainActivity extends LoadableActivity<Photo>
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .show(newF)
                 .commit();
-        newF.initStatusBarStyle();
-        newF.initNavigationBarStyle();
+        initFragmentStatusBarAndNavigationBar(newF);
     }
 
     private void showAndHideNewFragment(MysplashFragment newF, MysplashFragment oldF) {
@@ -380,8 +392,18 @@ public class MainActivity extends LoadableActivity<Photo>
                 .add(R.id.activity_main_fragment, newF)
                 .show(newF)
                 .commit();
-        DisplayUtils.setStatusBarStyle(this, false);
-        DisplayUtils.setNavigationBarStyle(this, false, true);
+        initFragmentStatusBarAndNavigationBar(newF);
+    }
+
+    private void initFragmentStatusBarAndNavigationBar(MysplashFragment f) {
+        Observable.create(Emitter::onComplete)
+                .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                .delay(300, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> {
+                    f.initStatusBarStyle();
+                    f.initNavigationBarStyle();
+                }).subscribe();
     }
 
     private MysplashFragment buildFragmentByCode(int code) {
@@ -414,64 +436,6 @@ public class MainActivity extends LoadableActivity<Photo>
             return R.id.action_multi_filter;
         } else { // SelectedFragment.
             return R.id.action_selected;
-        }
-    }
-
-    private boolean isSearchIntent(Intent intent) {
-        return intent != null
-                && !TextUtils.isEmpty(intent.getAction())
-                && Objects.requireNonNull(intent.getAction()).equals(MainActivity.ACTION_SEARCH);
-    }
-
-    private void sendMessage(final int what) {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                handler.obtainMessage(what, null).sendToTarget();
-            }
-        }, 400);
-    }
-
-    // interface.
-
-    // item event callback.
-
-    @Override
-    public void onLikeOrDislikePhoto(Photo photo, int adapterPosition, boolean setToLike) {
-        likeOrDislikePhotoPresenter.likeOrDislikePhoto(photo, setToLike);
-    }
-
-    @Override
-    public void onDownload(Photo photo) {
-        requestReadWritePermission(photo, downloadable ->
-                DownloadHelper.getInstance(MainActivity.this)
-                        .addMission(MainActivity.this, (Photo) downloadable, DownloaderService.DOWNLOAD_TYPE));
-    }
-
-    // handler.
-
-    @Override
-    public void handleMessage(Message message) {
-        switch (message.what) {
-            case R.id.action_change_theme:
-                changeTheme();
-                break;
-
-            case R.id.action_download_manage:
-                IntentHelper.startDownloadManageActivity(this);
-                break;
-
-            case R.id.action_settings:
-                IntentHelper.startSettingsActivity(this);
-                break;
-
-            case R.id.action_about:
-                IntentHelper.startAboutActivity(this);
-                break;
-
-            default:
-                mainActivityModel.selectDrawerItem(message.what);
-                break;
         }
     }
 }

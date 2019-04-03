@@ -23,8 +23,10 @@ import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
+import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.vm.PagerManageViewModel;
@@ -32,13 +34,13 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
@@ -47,6 +49,7 @@ import com.wangdaye.mysplash.main.home.vm.NewHomePhotosViewModel;
 import com.wangdaye.mysplash.main.home.vm.AbstractHomePhotosViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -80,6 +83,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     private PhotoAdapter[] adapters = new PhotoAdapter[pageCount()];
 
     private PagerLoadablePresenter loadablePresenter;
+    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
 
     private PagerManageViewModel pagerManageModel;
     private AbstractHomePhotosViewModel[] pagerModels = new AbstractHomePhotosViewModel[pageCount()];
@@ -112,7 +116,8 @@ public class HomeFragment extends LoadableFragment<Photo>
             DisplayUtils.setNavigationBarStyle(
                     getActivity(),
                     pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
-                    true);
+                    true
+            );
         }
     }
 
@@ -148,7 +153,8 @@ public class HomeFragment extends LoadableFragment<Photo>
                 pagers[getCurrentPagerPosition()],
                 pagers[getCurrentPagerPosition()].getRecyclerView(),
                 adapters[getCurrentPagerPosition()],
-                this, getCurrentPagerPosition());
+                this, getCurrentPagerPosition()
+        );
     }
 
     // init.
@@ -164,7 +170,8 @@ public class HomeFragment extends LoadableFragment<Photo>
                 ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE),
                 SettingsOptionManager.getInstance(getActivity()).getDefaultPhotoOrder(),
                 ValueUtils.getRandomPageList(Mysplash.TOTAL_NEW_PHOTOS_COUNT, Mysplash.DEFAULT_PER_PAGE),
-                getResources().getStringArray(R.array.photo_order_values)[3]);
+                getResources().getStringArray(R.array.photo_order_values)[3]
+        );
 
         pagerModels[featuredPage()] = ViewModelProviders.of(this, viewModelFactory)
                 .get(FeaturedHomePhotosViewModel.class);
@@ -172,7 +179,8 @@ public class HomeFragment extends LoadableFragment<Photo>
                 ListResource.refreshing(0, Mysplash.DEFAULT_PER_PAGE),
                 SettingsOptionManager.getInstance(getActivity()).getDefaultPhotoOrder(),
                 ValueUtils.getRandomPageList(Mysplash.TOTAL_FEATURED_PHOTOS_COUNT, Mysplash.DEFAULT_PER_PAGE),
-                getResources().getStringArray(R.array.photo_order_values)[3]);
+                getResources().getStringArray(R.array.photo_order_values)[3]
+        );
     }
 
     private void initView(View v) {
@@ -196,8 +204,8 @@ public class HomeFragment extends LoadableFragment<Photo>
             @Override
             public List<Photo> subList(int fromIndex, int toIndex) {
                 return Objects.requireNonNull(
-                        pagerModels[getCurrentPagerPosition()].getListResource().getValue())
-                        .dataList.subList(fromIndex, toIndex);
+                        pagerModels[getCurrentPagerPosition()].getListResource().getValue()
+                ).dataList.subList(fromIndex, toIndex);
             }
         };
     }
@@ -206,30 +214,48 @@ public class HomeFragment extends LoadableFragment<Photo>
         adapters[newPage()] = new PhotoAdapter(
                 getActivity(),
                 Objects.requireNonNull(pagerModels[newPage()].getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(getActivity()));
-        adapters[newPage()].setItemEventCallback((MainActivity) getActivity());
+                DisplayUtils.getGirdColumnCount(getActivity())
+        ).setItemEventCallback(new PhotoItemEventHelper(
+                (MysplashActivity) getActivity(),
+                Objects.requireNonNull(pagerModels[newPage()].getListResource().getValue()).dataList,
+                likeOrDislikePhotoPresenter) {
+            @Override
+            public void downloadPhoto(Photo photo) {
+                ((MainActivity) Objects.requireNonNull(getActivity())).downloadPhoto(photo);
+            }
+        });
 
         adapters[featuredPage()] = new PhotoAdapter(
                 getActivity(),
                 Objects.requireNonNull(pagerModels[featuredPage()].getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(getActivity()));
-        adapters[featuredPage()].setItemEventCallback((MainActivity) getActivity());
+                DisplayUtils.getGirdColumnCount(getActivity())
+        ).setItemEventCallback(new PhotoItemEventHelper(
+                (MysplashActivity) getActivity(),
+                Objects.requireNonNull(pagerModels[featuredPage()].getListResource().getValue()).dataList,
+                likeOrDislikePhotoPresenter) {
+            @Override
+            public void downloadPhoto(Photo photo) {
+                ((MainActivity) Objects.requireNonNull(getActivity())).downloadPhoto(photo);
+            }
+        });
 
-        List<View> pageList = new ArrayList<>();
-        pageList.add(
+        List<View> pageList = Arrays.asList(
                 new HomePhotosView(
                         (MainActivity) getActivity(),
                         R.id.fragment_home_page_new,
                         adapters[newPage()],
                         getCurrentPagerPosition() == newPage(),
-                        newPage(), this));
-        pageList.add(
-                new HomePhotosView(
+                        newPage(),
+                        this
+                ), new HomePhotosView(
                         (MainActivity) getActivity(),
                         R.id.fragment_home_page_featured,
                         adapters[featuredPage()],
                         getCurrentPagerPosition() == featuredPage(),
-                        featuredPage(), this));
+                        featuredPage(),
+                        this
+                )
+        );
         for (int i = newPage(); i < pageCount(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -239,7 +265,7 @@ public class HomeFragment extends LoadableFragment<Photo>
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, homeTabs);
 
-        MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
+        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(getCurrentPagerPosition(), false);
@@ -260,7 +286,8 @@ public class HomeFragment extends LoadableFragment<Photo>
                 DisplayUtils.setNavigationBarStyle(
                         getActivity(),
                         pagers[position].getState() == PagerView.State.NORMAL,
-                        true);
+                        true
+                );
             }
             ListResource resource = pagerModels[position].getListResource().getValue();
             if (resource != null
@@ -285,10 +312,18 @@ public class HomeFragment extends LoadableFragment<Photo>
         });
         pagerModels[newPage()].getListResource().observe(this, resource ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource, pagers[newPage()], adapters[newPage()]));
+                        resource,
+                        pagers[newPage()],
+                        adapters[newPage()]
+                )
+        );
         pagerModels[featuredPage()].getListResource().observe(this, resource ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource, pagers[featuredPage()], adapters[featuredPage()]));
+                        resource,
+                        pagers[featuredPage()],
+                        adapters[featuredPage()]
+                )
+        );
     }
 
     private int getCurrentPagerPosition() {
@@ -354,9 +389,11 @@ public class HomeFragment extends LoadableFragment<Photo>
                         getActivity(),
                         toolbar,
                         pagerModels[getCurrentPagerPosition()].getPhotosOrder().getValue(),
-                        PhotoOrderPopupWindow.NORMAL_TYPE);
+                        PhotoOrderPopupWindow.NORMAL_TYPE
+                );
                 window.setOnPhotoOrderChangedListener(orderValue ->
-                        pagerModels[getCurrentPagerPosition()].setPhotosOrder(orderValue));
+                        pagerModels[getCurrentPagerPosition()].setPhotosOrder(orderValue)
+                );
                 break;
         }
         return true;

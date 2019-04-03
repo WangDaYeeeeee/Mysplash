@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.common.download.imp;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
@@ -32,27 +31,6 @@ public abstract class DownloaderService {
     @Nullable
     List<OnDownloadListener> listenerList;
 
-    public static final int DOWNLOAD_TYPE = 1;
-    public static final int SHARE_TYPE = 2;
-    public static final int WALLPAPER_TYPE = 3;
-    public static final int COLLECTION_TYPE = 4;
-    @IntDef({
-            DOWNLOAD_TYPE,
-            SHARE_TYPE,
-            WALLPAPER_TYPE,
-            COLLECTION_TYPE,
-    })
-    public @interface DownloadTypeRule {}
-
-    public static final int RESULT_SUCCEED = 1;
-    public static final int RESULT_FAILED = -1;
-    public static final int RESULT_DOWNLOADING = 0;
-    @IntDef({
-            RESULT_DOWNLOADING,
-            RESULT_SUCCEED,
-            RESULT_FAILED})
-    public @interface DownloadResultRule {}
-
     // management.
 
     public abstract long addMission(Context c, @NonNull DownloadMissionEntity entity, boolean showSnackbar);
@@ -63,7 +41,8 @@ public abstract class DownloaderService {
 
     public abstract void clearMission(Context c, @NonNull List<DownloadMissionEntity> entityList);
 
-    public abstract void updateMissionResult(Context c, @NonNull DownloadMissionEntity entity, @DownloadResultRule int result);
+    public abstract void updateMissionResult(Context c, @NonNull DownloadMissionEntity entity,
+                                             @DownloadMissionEntity.DownloadResultRule int result);
 
     public abstract float getMissionProcess(Context c, @NonNull DownloadMissionEntity entity);
 
@@ -73,27 +52,29 @@ public abstract class DownloaderService {
         c.sendBroadcast(
                 new Intent(
                         Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                        Uri.parse("file://" + entity.getFilePath())));
+                        Uri.parse("file://" + entity.getFilePath())
+                )
+        );
 
         if (Mysplash.getInstance() != null
                 && Mysplash.getInstance().getTopActivity() != null
                 && Mysplash.getInstance().getTopActivity().isForeground()) {
             switch (entity.downloadType) {
-                case DOWNLOAD_TYPE:
+                case DownloadMissionEntity.DOWNLOAD_TYPE:
                     simpleDownloadSuccess(c, entity);
                     break;
 
-                case SHARE_TYPE: {
+                case DownloadMissionEntity.SHARE_TYPE: {
                     shareDownloadSuccess(c, entity);
                     break;
                 }
 
-                case WALLPAPER_TYPE: {
+                case DownloadMissionEntity.WALLPAPER_TYPE: {
                     wallpaperDownloadSuccess(c, entity);
                     break;
                 }
 
-                case COLLECTION_TYPE:
+                case DownloadMissionEntity.COLLECTION_TYPE:
                     break;
             }
         } else {
@@ -250,17 +231,18 @@ public abstract class DownloaderService {
         protected long missionId;
         protected String missionTitle;
 
-        @DownloadResultRule
+        @DownloadMissionEntity.DownloadResultRule
         protected int result;
 
-        public OnDownloadListener(long missionId, String missionTitle, @DownloadResultRule int result) {
+        public OnDownloadListener(long missionId, String missionTitle,
+                                  @DownloadMissionEntity.DownloadResultRule int result) {
             this.missionId = missionId;
             this.missionTitle = missionTitle;
             this.result = result;
         }
 
         public abstract void onProcess(float process);
-        public abstract void onComplete(@DownloadResultRule int result);
+        public abstract void onComplete(@DownloadMissionEntity.DownloadResultRule int result);
     }
 
     public void addOnDownloadListener(@NonNull OnDownloadListener l) {
@@ -314,10 +296,6 @@ public abstract class DownloaderService {
         }
     }
 
-    private static View.OnClickListener onStartManageActivityListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
+    private static View.OnClickListener onStartManageActivityListener = view ->
             IntentHelper.startDownloadManageActivity(Mysplash.getInstance().getTopActivity());
-        }
-    };
 }

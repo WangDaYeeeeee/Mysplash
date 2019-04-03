@@ -34,7 +34,8 @@ public class UserPhotosViewRepository {
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
                 order,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void getUserLikes(@NonNull MutableLiveData<ListResource<Photo>> current,
@@ -52,7 +53,8 @@ public class UserPhotosViewRepository {
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
                 order,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void cancel() {

@@ -38,7 +38,7 @@ public class LargeErrorStateAdapter extends RecyclerView.Adapter<LargeErrorState
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_multiple_state_error_large_container) RelativeLayout container;
-        @OnClick({R.id.item_multiple_state_error_large_container}) void click() {
+        @OnClick(R.id.item_multiple_state_error_large_container) void click() {
             if (onClickListener != null) {
                 onClickListener.onClick(container);
             }
@@ -48,7 +48,7 @@ public class LargeErrorStateAdapter extends RecyclerView.Adapter<LargeErrorState
         @BindView(R.id.item_multiple_state_error_large_feedbackTxt) TextView feedbackTxt;
 
         @BindView(R.id.item_multiple_state_error_large_feedbackBtn) TextView feedbackBtn;
-        @OnClick({R.id.item_multiple_state_error_large_feedbackBtn}) void retry() {
+        @OnClick(R.id.item_multiple_state_error_large_feedbackBtn) void retry() {
             onRetryListener.onRetry();
         }
 

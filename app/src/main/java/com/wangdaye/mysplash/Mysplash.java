@@ -9,17 +9,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringDef;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.fragment.app.Fragment;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
-import dagger.android.support.HasSupportFragmentInjector;
 import okhttp3.OkHttpClient;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import android.text.TextUtils;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -44,7 +43,7 @@ import javax.inject.Inject;
  * */
 
 public class Mysplash extends Application
-        implements HasActivityInjector, HasSupportFragmentInjector {
+        implements HasActivityInjector {
 
     private static Mysplash instance;
     public static Mysplash getInstance() {
@@ -52,7 +51,6 @@ public class Mysplash extends Application
     }
 
     @Inject DispatchingAndroidInjector<Activity> activityInjector;
-    @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
     @Inject OkHttpClient httpClient;
     @Inject GsonConverterFactory gsonConverterFactory;
     @Inject RxJava2CallAdapterFactory rxJava2CallAdapterFactory;
@@ -62,7 +60,7 @@ public class Mysplash extends Application
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
     public static final String UNSPLASH_FOLLOWING_FEED_URL = "feeds/following";
-    public static final String UNSPLASH_NODE_API_URL = "";
+    public static final String UNSPLASH_NODE_API_URL = "napi/";
     public static final String UNSPLASH_URL = "https://unsplash.com/";
     public static final String UNSPLASH_JOIN_URL = "https://unsplash.com/join";
     public static final String UNSPLASH_SUBMIT_URL = "https://unsplash.com/submit";
@@ -98,6 +96,7 @@ public class Mysplash extends Application
         activityList = new ArrayList<>();
 
         DownloadHelper.getInstance(this);
+        CrashReport.initCrashReport(getApplicationContext(), "c8ad99bd5d", false);
 
         if (SettingsOptionManager.getInstance(this).getAutoNightMode().equals("follow_system")) {
             ThemeManager.getInstance(this);
@@ -219,7 +218,7 @@ public class Mysplash extends Application
                             .getActualTypeArguments()[0]
                             .toString()
                             .equals(Photo.class.toString())) {
-                        return ((LoadableActivity) a).loadMoreData(list, headIndex, headDirection);
+                        return ((LoadableActivity<Photo>) a).loadMoreData(list, headIndex, headDirection);
                     }
                 } catch (Exception ignored) {
                     // do nothing.
@@ -248,10 +247,5 @@ public class Mysplash extends Application
     @Override
     public AndroidInjector<Activity> activityInjector() {
         return activityInjector;
-    }
-
-    @Override
-    public AndroidInjector<Fragment> supportFragmentInjector() {
-        return fragmentInjector;
     }
 }

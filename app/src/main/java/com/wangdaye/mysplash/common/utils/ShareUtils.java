@@ -27,21 +27,25 @@ public class ShareUtils {
             intent.setType("text/plain");
             intent.putExtra(
                     Intent.EXTRA_SUBJECT,
-                    a.getString(R.string.feedback_share_photo_title));
+                    a.getString(R.string.feedback_share_photo_title)
+            );
             intent.putExtra(
                     Intent.EXTRA_TITLE,
-                    a.getString(R.string.feedback_share_photo_title));
+                    a.getString(R.string.feedback_share_photo_title)
+            );
             intent.putExtra(
                     Intent.EXTRA_TEXT,
                     a.getString(R.string.feedback_share_photo_extra)
                             .replaceFirst("#", p.user.name)
                             .replaceFirst("$", p.created_at.split("T")[0])
-                            + "https://unsplash.com/photos/" + p.id);
+                            + "https://unsplash.com/photos/" + p.id
+            );
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             a.startActivity(
                     Intent.createChooser(
                             intent,
-                            a.getString(R.string.action_share)));
+                            a.getString(R.string.action_share))
+            );
         }
     }
 
@@ -52,24 +56,29 @@ public class ShareUtils {
             intent.setType("text/plain");
             intent.putExtra(
                     Intent.EXTRA_SUBJECT,
-                    a.getString(R.string.feedback_share_collection_title));
+                    a.getString(R.string.feedback_share_collection_title)
+            );
             intent.putExtra(
                     Intent.EXTRA_TITLE,
-                    a.getString(R.string.feedback_share_collection_title));
+                    a.getString(R.string.feedback_share_collection_title)
+            );
             intent.putExtra(
                     Intent.EXTRA_TEXT,
                     a.getString(R.string.feedback_share_collection_extra)
                             .replaceFirst("#", c.user.name)
                             .replaceFirst("$", c.published_at.split("T")[0])
-                            + (c.curated ?
-                            ("https://unsplash.com/collections/curated/" + c.id)
-                            :
-                            ("https://unsplash.com/collections/" + c.id)));
+                            + (
+                                    c.curated
+                                            ? ("https://unsplash.com/collections/curated/" + c.id)
+                                            : ("https://unsplash.com/collections/" + c.id)
+                            )
+            );
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             a.startActivity(
                     Intent.createChooser(
                             intent,
-                            a.getString(R.string.action_share)));
+                            a.getString(R.string.action_share))
+            );
         }
     }
 
@@ -80,20 +89,24 @@ public class ShareUtils {
             intent.setType("text/plain");
             intent.putExtra(
                     Intent.EXTRA_SUBJECT,
-                    a.getString(R.string.feedback_share_user_title));
+                    a.getString(R.string.feedback_share_user_title)
+            );
             intent.putExtra(
                     Intent.EXTRA_TITLE,
-                    a.getString(R.string.feedback_share_user_title));
+                    a.getString(R.string.feedback_share_user_title)
+            );
             intent.putExtra(
                     Intent.EXTRA_TEXT,
                     a.getString(R.string.feedback_share_user_extra)
                             .replaceFirst("#", u.name)
-                            + "https://unsplash.com/" + "@" + u.username);
+                            + "https://unsplash.com/" + "@" + u.username
+            );
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             a.startActivity(
                     Intent.createChooser(
                             intent,
-                            a.getString(R.string.action_share)));
+                            a.getString(R.string.action_share))
+            );
         }
     }
 }

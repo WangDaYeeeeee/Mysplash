@@ -3,8 +3,6 @@ package com.wangdaye.mysplash.common.network.interceptor;
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.common.network.service.FeedService;
 
-import java.io.IOException;
-
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -17,14 +15,19 @@ import okhttp3.Response;
  *
  * */
 
-public class FeedInterceptor implements Interceptor {
+public class FeedInterceptor extends ReportExceptionInterceptor {
 
     @Override
-    public Response intercept(Interceptor.Chain chain) throws IOException {
+    public Response intercept(Interceptor.Chain chain) {
         Request request = chain.request()
                 .newBuilder()
                 .addHeader("Authorization", "Bearer " + BuildConfig.FEED_TOKEN)
                 .build();
-        return chain.proceed(request);
+        try {
+            return chain.proceed(request);
+        } catch (Exception e) {
+            handleException(e);
+            return new Response.Builder().build();
+        }
     }
 }

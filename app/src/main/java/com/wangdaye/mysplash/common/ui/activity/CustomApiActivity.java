@@ -2,7 +2,6 @@ package com.wangdaye.mysplash.common.ui.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Message;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.text.TextUtils;
 
@@ -14,14 +13,16 @@ import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
-import com.wangdaye.mysplash.common.basic.SafeHandler;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.RxLifecycle;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
 
 /**
  * Custom api dialog.
@@ -31,7 +32,7 @@ import butterknife.OnClick;
  * */
 
 public class CustomApiActivity extends MysplashActivity
-        implements SwipeBackCoordinatorLayout.OnSwipeListener, SafeHandler.HandlerContainer {
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R.id.activity_custom_api_container) CoordinatorLayout container;
     @BindView(R.id.activity_custom_api_statusBar) StatusBarView statusBar;
@@ -41,7 +42,8 @@ public class CustomApiActivity extends MysplashActivity
 
     @OnClick({
             R.id.activity_custom_api_closeBtn,
-            R.id.activity_custom_api_cancelBtn}) void cancel() {
+            R.id.activity_custom_api_cancelBtn
+    }) void cancel() {
         finishSelf(true);
     }
 
@@ -62,7 +64,6 @@ public class CustomApiActivity extends MysplashActivity
         finishSelf(true);
     }
 
-    private SafeHandler<CustomApiActivity> handler;
     private FullscreenInputWorkaround workaround;
 
     private boolean backPressed = false; // mark the first click action.
@@ -89,12 +90,11 @@ public class CustomApiActivity extends MysplashActivity
             backPressed = true;
             NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
 
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    handler.obtainMessage(1).sendToTarget();
-                }
-            }, 2000);
+            Observable.create(Emitter::onComplete)
+                    .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                    .delay(2, TimeUnit.SECONDS)
+                    .doOnComplete(() -> backPressed = false)
+                    .subscribe();
         }
     }
 
@@ -119,7 +119,6 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     private void initWidget() {
-        this.handler = new SafeHandler<>(this);
         this.workaround = FullscreenInputWorkaround.assistActivity(
                 this, container, null);
 
@@ -140,7 +139,7 @@ public class CustomApiActivity extends MysplashActivity
     // on swipe listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return true;
     }
 
@@ -151,18 +150,7 @@ public class CustomApiActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
-    }
-
-    // handler.
-
-    @Override
-    public void handleMessage(Message message) {
-        switch (message.what) {
-            case 1:
-                backPressed = false;
-                break;
-        }
     }
 }

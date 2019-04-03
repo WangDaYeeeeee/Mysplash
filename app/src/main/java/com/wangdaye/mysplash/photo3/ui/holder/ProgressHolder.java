@@ -9,7 +9,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 

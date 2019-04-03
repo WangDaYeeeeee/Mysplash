@@ -136,7 +136,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         SwitchPreference gridPort = findPreference(getString(R.string.key_grid_list_in_port));
         gridPort.setOnPreferenceChangeListener(this);
         if (!DisplayUtils.isTabletDevice(getActivity())) {
-            PreferenceCategory display = (PreferenceCategory) findPreference("display");
+            PreferenceCategory display = findPreference("display");
             display.removePreference(gridPort);
         }
 

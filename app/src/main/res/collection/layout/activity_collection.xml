@@ -22,7 +22,7 @@
         android:transitionName="@string/transition_collection_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
             android:id="@+id/activity_collection_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,69 +35,59 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll">
 
-                <androidx.appcompat.widget.AppCompatImageView
+                <com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskImageView
                     android:id="@+id/activity_collection_coverImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
-                    tools:ignore="ContentDescription" />
-
-                <com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center_horizontal"
                     app:cml_gradient_angle="90"
                     app:cml_from_alpha="1"
                     app:cml_to_alpha="0.75"
-                    app:cml_mask_color="?attr/colorPrimary">
+                    app:cml_mask_color="?attr/colorPrimary" />
 
-                    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
-                        android:id="@+id/activity_collection_appBarStatusBar"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:sbv_fill_in_mode="true" />
+                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                    android:id="@+id/activity_collection_appBarStatusBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true" />
 
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/activity_collection_toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="@android:color/transparent"
-                        app:popupTheme="@style/MysplashPopupMenuTheme" />
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/activity_collection_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
 
-                    <TextView
-                        android:id="@+id/activity_collection_title"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/design_title_text_size"
-                        android:layout_marginStart="@dimen/large_icon_size"
-                        android:layout_marginEnd="@dimen/large_icon_size"
-                        android:textIsSelectable="false"
-                        android:gravity="center"
-                        style="@style/title_text"
-                        tools:text="The Sample Collection Title" />
+                <TextView
+                    android:id="@+id/activity_collection_title"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/design_title_text_size"
+                    android:layout_marginStart="@dimen/little_icon_size"
+                    android:layout_marginEnd="@dimen/little_icon_size"
+                    android:textIsSelectable="false"
+                    android:gravity="center"
+                    style="@style/title_text"
+                    tools:text="The Sample Collection Title" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_collection_tagList"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/little_margin"
-                        android:clipToPadding="false"
-                        tools:layout_height="24dp"
-                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_collection_tagList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/little_margin"
+                    android:clipToPadding="false"
+                    tools:layout_height="24dp"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-                    <TextView
-                        android:id="@+id/activity_collection_description"
-                        android:layout_marginStart="@dimen/mini_icon_size"
-                        android:layout_marginEnd="@dimen/mini_icon_size"
-                        android:layout_width="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:lineSpacingMultiplier="1.2"
-                        android:textIsSelectable="false"
-                        android:gravity="center"
-                        style="@style/body_text"
-                        tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
-
-                </com.wangdaye.mysplash.common.ui.widget.coverView.CoverMaskLayout>
+                <TextView
+                    android:id="@+id/activity_collection_description"
+                    android:layout_marginStart="@dimen/mini_icon_size"
+                    android:layout_marginEnd="@dimen/mini_icon_size"
+                    android:layout_width="wrap_content"
+                    android:lineSpacingMultiplier="1.2"
+                    android:textIsSelectable="false"
+                    android:gravity="center"
+                    style="@style/body_text"
+                    tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
             </com.wangdaye.mysplash.common.ui.widget.coverView.CoverContainerLayout>
 
@@ -105,6 +95,7 @@
                 android:id="@+id/activity_collection_creatorBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/activity_collection_description"
                 app:layout_scrollFlags="scroll|enterAlways"
                 tools:ignore="UselessParent">
 
@@ -150,7 +141,7 @@
 
             </RelativeLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
 
         <com.wangdaye.mysplash.collection.ui.CollectionPhotosView
             android:id="@+id/activity_collection_photosView"

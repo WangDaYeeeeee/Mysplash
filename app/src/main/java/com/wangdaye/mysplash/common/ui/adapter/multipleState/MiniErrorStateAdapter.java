@@ -17,7 +17,7 @@ public class MiniErrorStateAdapter extends RecyclerView.Adapter<MiniErrorStateAd
 
     class ViewHolder extends RecyclerView.ViewHolder {
 
-        @OnClick({R.id.item_multiple_state_error_mini_retryButton}) void retry() {
+        @OnClick(R.id.item_multiple_state_error_mini_retryButton) void retry() {
             listener.onRetry();
         }
 

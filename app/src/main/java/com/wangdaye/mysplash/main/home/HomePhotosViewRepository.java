@@ -40,13 +40,15 @@ public class HomePhotosViewRepository {
                         pageList.get(current.getValue().getRequestPage()),
                         current.getValue().perPage,
                         PhotoApi.ORDER_BY_LATEST,
-                        new RandomListResourceObserver<>(current, pageList, refresh));
+                        new RandomListResourceObserver<>(current, pageList, refresh)
+                );
             } else {
                 service.requestPhotos(
                         pageList.get(current.getValue().getRequestPage()),
                         current.getValue().perPage,
                         PhotoApi.ORDER_BY_LATEST,
-                        new RandomListResourceObserver<>(current, pageList, refresh));
+                        new RandomListResourceObserver<>(current, pageList, refresh)
+                );
             }
         } else {
             if (featured) {
@@ -54,13 +56,15 @@ public class HomePhotosViewRepository {
                         current.getValue().getRequestPage(),
                         current.getValue().perPage,
                         order,
-                        new ListResourceObserver<>(current, refresh));
+                        new ListResourceObserver<>(current, refresh)
+                );
             } else {
                 service.requestPhotos(
                         current.getValue().getRequestPage(),
                         current.getValue().perPage,
                         order,
-                        new ListResourceObserver<>(current, refresh));
+                        new ListResourceObserver<>(current, refresh)
+                );
             }
         }
     }

@@ -21,7 +21,11 @@ public class UserLikesViewModel extends UserPhotosViewModel {
             return;
         }
         getRepository().getUserLikes(
-                getListResource(), getUsername(), getPhotosOrder().getValue(), true);
+                getListResource(),
+                getUsername(),
+                getPhotosOrder().getValue(),
+                true
+        );
     }
 
     @Override
@@ -30,6 +34,10 @@ public class UserLikesViewModel extends UserPhotosViewModel {
             return;
         }
         getRepository().getUserLikes(
-                getListResource(), getUsername(), getPhotosOrder().getValue(), false);
+                getListResource(),
+                getUsername(),
+                getPhotosOrder().getValue(),
+                false
+        );
     }
 }

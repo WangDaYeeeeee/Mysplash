@@ -2,31 +2,22 @@ package com.wangdaye.mysplash.search.vm;
 
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.search.repository.CollectionSearchPageViewRepository;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-
-public class CollectionSearchPageViewModel extends AbstractSearchPageViewModel<Collection>
-        implements Consumer<CollectionEvent> {
+public class CollectionSearchPageViewModel extends AbstractSearchPageViewModel<Collection, CollectionEvent> {
     
     private CollectionSearchPageViewRepository repository;
     private CollectionEventResponsePresenter presenter;
-    private Disposable disposable;
 
     @Inject
     public CollectionSearchPageViewModel(CollectionSearchPageViewRepository repository,
                                          CollectionEventResponsePresenter presenter) {
-        super();
+        super(CollectionEvent.class);
         this.repository = repository;
         this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
-                .toObservable(CollectionEvent.class)
-                .subscribe(this);
     }
 
     @Override
@@ -34,7 +25,6 @@ public class CollectionSearchPageViewModel extends AbstractSearchPageViewModel<C
         super.onCleared();
         repository.cancel();
         presenter.clearResponse();
-        disposable.dispose();
     }
 
     @Override

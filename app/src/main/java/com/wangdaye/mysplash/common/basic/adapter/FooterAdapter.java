@@ -41,7 +41,9 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
 
         public static FooterHolder buildInstance(ViewGroup parent) {
             return new FooterHolder(
-                    LayoutInflater.from(parent.getContext()).inflate(R.layout.item_footer, parent, false));
+                    LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_footer, parent, false)
+            );
         }
 
         public void setColor(@ColorInt int color) {

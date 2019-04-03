@@ -114,7 +114,7 @@ public class LoginActivity extends MysplashActivity
                 && !TextUtils.isEmpty(intent.getData().getAuthority())
                 && Mysplash.UNSPLASH_LOGIN_CALLBACK.equals(intent.getData().getAuthority())) {
             service.requestAccessToken(
-                    Mysplash.getInstance(),
+                    this,
                     intent.getData().getQueryParameter("code"),
                     new BaseObserver<AccessToken>() {
                         @Override
@@ -130,7 +130,8 @@ public class LoginActivity extends MysplashActivity
                             NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
                             setState(NORMAL_STATE);
                         }
-                    });
+                    }
+            );
             setState(AUTH_STATE);
         }
     }
@@ -198,7 +199,7 @@ public class LoginActivity extends MysplashActivity
     // on swipe listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return true;
     }
 
@@ -209,7 +210,7 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
     }
 }

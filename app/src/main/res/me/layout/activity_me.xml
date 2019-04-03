@@ -22,7 +22,7 @@
         android:transitionName="@string/transition_me_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
             android:id="@+id/activity_me_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +76,7 @@
                     android:textColor="?attr/title_color"
                     android:text="..."/>
 
-                <com.wangdaye.mysplash.me.ui.MeProfileView
+                <com.wangdaye.mysplash.me.ui.view.MeProfileView
                     android:id="@+id/activity_me_profileView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -103,7 +103,7 @@
 
             </LinearLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/activity_me_viewPager"

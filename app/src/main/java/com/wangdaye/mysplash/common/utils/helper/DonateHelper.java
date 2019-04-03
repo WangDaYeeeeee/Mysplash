@@ -31,7 +31,9 @@ public class DonateHelper {
                 c.startActivity(
                         new Intent(
                                 Intent.ACTION_VIEW,
-                                Uri.parse(alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis())));
+                                Uri.parse(alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis())
+                        )
+                );
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -3,10 +3,8 @@ package com.wangdaye.mysplash.user.vm;
 import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.user.repository.UserCollectionsViewRepository;
 
@@ -15,39 +13,27 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
-public class UserCollectionsViewModel extends PagerViewModel<Collection>
-        implements Consumer<CollectionEvent> {
+public class UserCollectionsViewModel extends AbstractUserViewModel<Collection, CollectionEvent> {
 
     private UserCollectionsViewRepository repository;
     private CollectionEventResponsePresenter presenter;
-    private Disposable disposable;
-
-    private String username;
 
     @Inject
     public UserCollectionsViewModel(UserCollectionsViewRepository repository,
                                     CollectionEventResponsePresenter presenter) {
-        super();
+        super(CollectionEvent.class);
         this.repository = repository;
         this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
-                .toObservable(CollectionEvent.class)
-                .subscribe(this);
     }
 
-    public void init(@NonNull ListResource<Collection> defaultResource, String defaultUsername) {
-        boolean init = super.init(defaultResource);
-
-        if (username == null) {
-            username = defaultUsername;
-        }
-
-        if (init) {
+    @Override
+    public boolean init(@NonNull ListResource<Collection> defaultResource, String defaultUsername) {
+        if (super.init(defaultResource, defaultUsername)) {
             refresh();
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -55,7 +41,6 @@ public class UserCollectionsViewModel extends PagerViewModel<Collection>
         super.onCleared();
         getRepository().cancel();
         presenter.clearResponse();
-        disposable.dispose();
     }
 
     @Override
@@ -78,19 +63,11 @@ public class UserCollectionsViewModel extends PagerViewModel<Collection>
         return repository;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     // interface.
 
     @Override
     public void accept(CollectionEvent collectionEvent) {
-        if (!collectionEvent.collection.user.username.equals(username)
+        if (!collectionEvent.collection.user.username.equals(getUsername())
                 || Objects.requireNonNull(getListResource().getValue()).state != ListResource.State.SUCCESS) {
             return;
         }

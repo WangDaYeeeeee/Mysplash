@@ -15,7 +15,7 @@ import android.view.animation.Transformation;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
@@ -107,10 +107,12 @@ public class BackToTopUtils {
     public static boolean isSetBackToTop(boolean home) {
         if (home) {
             return !SettingsOptionManager.getInstance(Mysplash.getInstance())
-                    .getBackToTopType().equals("none");
+                    .getBackToTopType()
+                    .equals("none");
         } else {
             return SettingsOptionManager.getInstance(Mysplash.getInstance())
-                    .getBackToTopType().equals("all");
+                    .getBackToTopType()
+                    .equals("all");
         }
     }
 
@@ -128,7 +130,9 @@ public class BackToTopUtils {
                 editor.apply();
 
                 SettingsOptionManager.getInstance(Mysplash.getInstance())
-                        .setNotifiedSetBackToTop(Mysplash.getInstance(), true);
+                        .setNotifiedSetBackToTop(
+                                Mysplash.getInstance(),
+                                true);
 
                 NotificationHelper.showActionSnackbar(
                         c.getString(R.string.feedback_notify_set_back_to_top),

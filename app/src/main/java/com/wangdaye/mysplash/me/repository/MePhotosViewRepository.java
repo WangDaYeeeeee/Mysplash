@@ -38,7 +38,8 @@ public class MePhotosViewRepository {
                     current.getValue().getRequestPage(),
                     current.getValue().perPage,
                     order,
-                    new ListResourceObserver<>(current, refresh));
+                    new ListResourceObserver<>(current, refresh)
+            );
         }
     }
 
@@ -58,7 +59,8 @@ public class MePhotosViewRepository {
                     current.getValue().getRequestPage(),
                     current.getValue().perPage,
                     order,
-                    new ListResourceObserver<>(current, refresh));
+                    new ListResourceObserver<>(current, refresh)
+            );
         }
     }
 

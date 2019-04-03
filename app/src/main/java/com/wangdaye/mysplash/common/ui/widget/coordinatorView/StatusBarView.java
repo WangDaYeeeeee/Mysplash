@@ -95,7 +95,8 @@ public class StatusBarView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(
                 MeasureSpec.getSize(widthMeasureSpec),
-                DisplayUtils.getStatusBarHeight(getResources()));
+                DisplayUtils.getStatusBarHeight(getResources())
+        );
     }
 
     @Override

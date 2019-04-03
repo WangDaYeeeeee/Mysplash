@@ -47,54 +47,89 @@ public class ListResource<T> {
         list.clear();
         list.addAll(newList);
         return new ListResource<>(
-                list, State.SUCCESS, new DataSetChanged(), 1, current.perPage);
+                list,
+                State.SUCCESS,
+                new DataSetChanged(),
+                1,
+                current.perPage);
     }
 
     public static <T> ListResource<T> loadSuccess(@NonNull ListResource<T> current, @NonNull List<T> newList) {
         List<T> list = current.dataList;
         list.addAll(newList);
         return new ListResource<>(
-                list, State.SUCCESS, new ItemRangeInserted(newList.size()),
-                current.dataPage + 1, current.perPage);
+                list,
+                State.SUCCESS,
+                new ItemRangeInserted(newList.size()),
+                current.dataPage + 1,
+                current.perPage);
     }
 
     public static <T> ListResource<T> allLoaded(@NonNull ListResource<T> current, @NonNull List<T> newList) {
         List<T> list = current.dataList;
         list.addAll(newList);
         return new ListResource<>(
-                list, State.ALL_LOADED, new ItemRangeInserted(newList.size()),
-                current.dataPage + 1, current.perPage);
+                list,
+                State.ALL_LOADED,
+                new ItemRangeInserted(newList.size()),
+                current.dataPage + 1,
+                current.perPage);
     }
 
     public static <T> ListResource<T> error(int page, int perPage) {
         return new ListResource<>(
-                new ArrayList<>(), State.ERROR, new None(), page, perPage);
+                new ArrayList<>(),
+                State.ERROR,
+                new None(),
+                page,
+                perPage);
     }
 
     public static <T> ListResource<T> error(@NonNull ListResource<T> current) {
         return new ListResource<>(
-                current.dataList, State.ERROR, new None(), current.dataPage, current.perPage);
+                current.dataList,
+                State.ERROR,
+                new None(),
+                current.dataPage,
+                current.perPage);
     }
 
     public static <T> ListResource<T> refreshing(int page, int perPage) {
         return new ListResource<>(
-                new ArrayList<>(), State.REFRESHING, new None(), page, perPage);
+                new ArrayList<>(),
+                State.REFRESHING,
+                new None(),
+                page,
+                perPage);
     }
 
     public static <T> ListResource<T> refreshing(@NonNull ListResource<T> current) {
         return new ListResource<>(
-                current.dataList, State.REFRESHING, new None(), current.dataPage, current.perPage);
+                current.dataList,
+                State.REFRESHING,
+                new None(),
+                current.dataPage,
+                current.perPage);
     }
 
     public static <T> ListResource<T> initRefreshing(@NonNull ListResource<T> current) {
         List<T> list = current.dataList;
         list.clear();
-        return new ListResource<>(list, State.REFRESHING, new None(), 0, current.perPage);
+        return new ListResource<>(
+                list,
+                State.REFRESHING,
+                new None(),
+                0,
+                current.perPage);
     }
 
     public static <T> ListResource<T> loading(@NonNull ListResource<T> current) {
         return new ListResource<>(
-                current.dataList, State.LOADING, new None(), current.dataPage, current.perPage);
+                current.dataList,
+                State.LOADING,
+                new None(),
+                current.dataPage,
+                current.perPage);
     }
 
     public static <T> ListResource<T> insertItem(@NonNull ListResource<T> current,
@@ -102,7 +137,11 @@ public class ListResource<T> {
         List<T> list = current.dataList;
         list.add(index, item);
         return new ListResource<>(
-                list, current.state, new ItemInserted(index), current.dataPage, current.perPage);
+                list,
+                current.state,
+                new ItemInserted(index),
+                current.dataPage,
+                current.perPage);
     }
 
     public static <T> ListResource<T> changeItem(@NonNull ListResource<T> current,
@@ -110,14 +149,22 @@ public class ListResource<T> {
         List<T> list = current.dataList;
         list.set(index, item);
         return new ListResource<>(
-                list, current.state, new ItemChanged(index), current.dataPage, current.perPage);
+                list,
+                current.state,
+                new ItemChanged(index),
+                current.dataPage,
+                current.perPage);
     }
 
     public static <T> ListResource<T> removeItem(@NonNull ListResource<T> current, int index) {
         List<T> list = current.dataList;
         list.remove(index);
         return new ListResource<>(
-                list, current.state, new ItemRemoved(index), current.dataPage, current.perPage);
+                list,
+                current.state,
+                new ItemRemoved(index),
+                current.dataPage,
+                current.perPage);
     }
 
     // event.

@@ -33,11 +33,14 @@ public class PathDialog extends MysplashDialogFragment {
     @BindView(R.id.dialog_path_container) CoordinatorLayout container;
 
     @OnClick(R.id.dialog_path_copyBtn) void copy() {
-        ((ClipboardManager) Objects.requireNonNull(getActivity()).getSystemService(Context.CLIPBOARD_SERVICE))
-                .setPrimaryClip(
-                        ClipData.newPlainText(
-                                "storage/emulated/0/Pictures/Mysplash",
-                                "storage/emulated/0/Pictures/Mysplash"));
+        ((ClipboardManager) Objects.requireNonNull(
+                getActivity()
+        ).getSystemService(Context.CLIPBOARD_SERVICE)).setPrimaryClip(
+                ClipData.newPlainText(
+                        "storage/emulated/0/Pictures/Mysplash",
+                        "storage/emulated/0/Pictures/Mysplash"
+                )
+        );
     }
 
     @OnClick(R.id.dialog_path_enterBtn) void enter() {

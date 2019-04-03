@@ -47,7 +47,9 @@ public class ThemeManager {
 
     private ThemeManager(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
-                PREFERENCE_NAME, Context.MODE_PRIVATE);
+                PREFERENCE_NAME,
+                Context.MODE_PRIVATE
+        );
         nightStartTime = sharedPreferences.getString(KEY_NIGHT_START_TIME, "18:00");
         nightEndTime = sharedPreferences.getString(KEY_NIGHT_END_TIME, "06:00");
 
@@ -73,7 +75,9 @@ public class ThemeManager {
     public void setLightTheme(Context context, boolean lightTheme) {
         this.lightTheme = lightTheme;
         SharedPreferences.Editor editor = context.getSharedPreferences(
-                PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                PREFERENCE_NAME,
+                Context.MODE_PRIVATE
+        ).edit();
         editor.putBoolean(KEY_LIGHT_THEME, lightTheme);
         editor.apply();
     }
@@ -97,7 +101,9 @@ public class ThemeManager {
     public void setNightEndTime(Context context, String EndTime) {
         this.nightEndTime = EndTime;
         SharedPreferences.Editor editor = context.getSharedPreferences(
-                PREFERENCE_NAME, Context.MODE_PRIVATE).edit();
+                PREFERENCE_NAME,
+                Context.MODE_PRIVATE
+        ).edit();
         editor.putString(KEY_NIGHT_END_TIME, EndTime);
         editor.apply();
     }
@@ -134,17 +140,8 @@ public class ThemeManager {
         TypedArray a = context.obtainStyledAttributes(R.styleable.ThemeColor);
         int color = a.getColor(
                 R.styleable.ThemeColor_root_color,
-                ContextCompat.getColor(context, R.color.colorRoot));
-        a.recycle();
-        return color;
-    }
-
-    @ColorInt
-    public static int getLineColor(Context context) {
-        TypedArray a = context.obtainStyledAttributes(R.styleable.ThemeColor);
-        int color = a.getColor(
-                R.styleable.ThemeColor_line_color,
-                ContextCompat.getColor(context, R.color.colorLine));
+                ContextCompat.getColor(context, R.color.colorRoot)
+        );
         a.recycle();
         return color;
     }
@@ -154,7 +151,8 @@ public class ThemeManager {
         TypedArray a = context.obtainStyledAttributes(R.styleable.ThemeColor);
         int color = a.getColor(
                 R.styleable.ThemeColor_title_color,
-                ContextCompat.getColor(context, R.color.colorTextTitle));
+                ContextCompat.getColor(context, R.color.colorTextTitle)
+        );
         a.recycle();
         return color;
     }
@@ -164,7 +162,8 @@ public class ThemeManager {
         TypedArray a = context.obtainStyledAttributes(R.styleable.ThemeColor);
         int color = a.getColor(
                 R.styleable.ThemeColor_subtitle_color,
-                ContextCompat.getColor(context, R.color.colorTextSubtitle));
+                ContextCompat.getColor(context, R.color.colorTextSubtitle)
+        );
         a.recycle();
         return color;
     }
@@ -174,7 +173,8 @@ public class ThemeManager {
         TypedArray a = context.obtainStyledAttributes(R.styleable.ThemeColor);
         int color = a.getColor(
                 R.styleable.ThemeColor_content_color,
-                ContextCompat.getColor(context, R.color.colorTextContent));
+                ContextCompat.getColor(context, R.color.colorTextContent)
+        );
         a.recycle();
         return color;
     }

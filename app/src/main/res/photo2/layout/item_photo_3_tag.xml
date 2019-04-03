@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/root_color">
 
-    <view class="com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout$RecyclerView"
+    <view class="com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout$RecyclerView"
         android:id="@+id/item_photo_3_tag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -50,8 +50,7 @@ public class RequestBrowsableDataDialog extends MysplashDialogFragment {
                         }
                     }
                     return false;
-                })
-                .create();
+                }).create();
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }

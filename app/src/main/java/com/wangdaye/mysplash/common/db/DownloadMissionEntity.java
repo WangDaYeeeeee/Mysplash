@@ -3,6 +3,8 @@ package com.wangdaye.mysplash.common.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Environment;
+
+import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -10,7 +12,6 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -37,15 +38,35 @@ public class DownloadMissionEntity
 
     public String downloadUrl;
 
-    @DownloaderService.DownloadTypeRule
+    @DownloadTypeRule
     public int downloadType;
 
-    @DownloaderService.DownloadResultRule
+    @DownloadResultRule
     public int result;
 
-    public DownloadMissionEntity(Context context,
-                                 @NonNull Photo p,
-                                 @DownloaderService.DownloadTypeRule int type) {
+    public static final int DOWNLOAD_TYPE = 1;
+    public static final int SHARE_TYPE = 2;
+    public static final int WALLPAPER_TYPE = 3;
+    public static final int COLLECTION_TYPE = 4;
+    @IntDef({
+            DOWNLOAD_TYPE,
+            SHARE_TYPE,
+            WALLPAPER_TYPE,
+            COLLECTION_TYPE,
+    })
+    public @interface DownloadTypeRule {}
+
+    public static final int RESULT_SUCCEED = 1;
+    public static final int RESULT_FAILED = -1;
+    public static final int RESULT_DOWNLOADING = 0;
+    @IntDef({
+            RESULT_DOWNLOADING,
+            RESULT_SUCCEED,
+            RESULT_FAILED
+    })
+    public @interface DownloadResultRule {}
+
+    public DownloadMissionEntity(Context context, @NonNull Photo p, @DownloadTypeRule int type) {
         this.title = p.id;
         this.photoUri = p.getRegularSizeUrl(context);
         switch (SettingsOptionManager.getInstance(context).getDownloadScale()) {
@@ -62,15 +83,15 @@ public class DownloadMissionEntity
                 break;
         }
         this.downloadType = type;
-        this.result = DownloaderService.RESULT_DOWNLOADING;
+        this.result = RESULT_DOWNLOADING;
     }
 
     public DownloadMissionEntity(Collection c) {
         this.title = String.valueOf(c.id);
         this.photoUri = c.cover_photo.urls.regular;
         this.downloadUrl = c.links.download;
-        this.downloadType = DownloaderService.COLLECTION_TYPE;
-        this.result = DownloaderService.RESULT_DOWNLOADING;
+        this.downloadType = COLLECTION_TYPE;
+        this.result = RESULT_DOWNLOADING;
     }
 
     @Generated(hash = 616575969)
@@ -124,7 +145,7 @@ public class DownloadMissionEntity
      * @return notification description title text.
      * */
     public String getNotificationTitle() {
-        if (downloadType == DownloaderService.COLLECTION_TYPE) {
+        if (downloadType == COLLECTION_TYPE) {
             return "COLLECTION #" + title;
         } else {
             return title;
@@ -138,7 +159,7 @@ public class DownloadMissionEntity
      * */
     @Mysplash.DownloadFormatRule
     public String getFormat() {
-        if (downloadType == DownloaderService.COLLECTION_TYPE) {
+        if (downloadType == COLLECTION_TYPE) {
             return Mysplash.DOWNLOAD_COLLECTION_FORMAT;
         } else {
             return Mysplash.DOWNLOAD_PHOTO_FORMAT;
@@ -193,7 +214,7 @@ public class DownloadMissionEntity
     }
 
     public static List<DownloadMissionEntity> readDownloadEntityList(SQLiteDatabase database,
-                                                                     @DownloaderService.DownloadTypeRule int result) {
+                                                                     @DownloadTypeRule int result) {
         return new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
@@ -203,7 +224,7 @@ public class DownloadMissionEntity
     }
 
     public static int readDownloadEntityCount(SQLiteDatabase database,
-                                              @DownloaderService.DownloadTypeRule int result) {
+                                              @DownloadTypeRule int result) {
         return (int) new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
@@ -235,8 +256,8 @@ public class DownloadMissionEntity
                 .queryBuilder()
                 .where(
                         DownloadMissionEntityDao.Properties.Title.eq(title),
-                        DownloadMissionEntityDao.Properties.Result.eq(DownloaderService.RESULT_DOWNLOADING))
-                .list();
+                        DownloadMissionEntityDao.Properties.Result.eq(RESULT_DOWNLOADING)
+                ).list();
         if (entityList != null && entityList.size() > 0) {
             return entityList.get(0);
         } else {
@@ -251,8 +272,8 @@ public class DownloadMissionEntity
                 .queryBuilder()
                 .where(
                         DownloadMissionEntityDao.Properties.Title.eq(photoId),
-                        DownloadMissionEntityDao.Properties.Result.eq(DownloaderService.RESULT_DOWNLOADING))
-                .count();
+                        DownloadMissionEntityDao.Properties.Result.eq(RESULT_DOWNLOADING)
+                ).count();
     }
 
     public long getMissionId() {

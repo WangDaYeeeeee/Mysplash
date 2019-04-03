@@ -18,16 +18,18 @@ import android.view.ViewGroup;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.vm.PagerManageViewModel;
-import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -39,6 +41,7 @@ import com.wangdaye.mysplash.main.collection.vm.CuratedCollectionsViewModel;
 import com.wangdaye.mysplash.main.collection.vm.FeaturedCollectionsViewModel;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -102,7 +105,8 @@ public class CollectionFragment extends MysplashFragment
             DisplayUtils.setNavigationBarStyle(
                     getActivity(),
                     pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
-                    true);
+                    true
+            );
         }
     }
 
@@ -173,31 +177,34 @@ public class CollectionFragment extends MysplashFragment
             adapters[i] = new CollectionAdapter(
                     getActivity(),
                     Objects.requireNonNull(pagerModels[i].getListResource().getValue()).dataList,
-                    DisplayUtils.getGirdColumnCount(getActivity()));
+                    DisplayUtils.getGirdColumnCount(getActivity())
+            ).setItemEventCallback(new CollectionItemEventHelper((MysplashActivity) getActivity()));
         }
 
-        List<View> pageList = new ArrayList<>();
-        pageList.add(
+        List<View> pageList = Arrays.asList(
                 new CollectionsView(
                         (MainActivity) getActivity(),
                         R.id.fragment_collection_page_featured,
                         adapters[featuredPage()],
                         getCurrentPagerPosition() == featuredPage(),
-                        featuredPage(), this));
-        pageList.add(
-                new CollectionsView(
+                        featuredPage(),
+                        this
+                ), new CollectionsView(
                         (MainActivity) getActivity(),
                         R.id.fragment_collection_page_all,
                         adapters[allPage()],
                         getCurrentPagerPosition() == allPage(),
-                        allPage(), this));
-        pageList.add(
-                new CollectionsView(
+                        allPage(),
+                        this
+                ), new CollectionsView(
                         (MainActivity) getActivity(),
                         R.id.fragment_collection_page_curated,
                         adapters[curatedPage()],
                         getCurrentPagerPosition() == curatedPage(),
-                        curatedPage(), this));
+                        curatedPage(),
+                        this
+                )
+        );
         for (int i = featuredPage(); i < pageCount(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);
         }
@@ -207,7 +214,7 @@ public class CollectionFragment extends MysplashFragment
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, homeTabs);
 
-        MyPagerAdapter adapter = new MyPagerAdapter(pageList, tabList);
+        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(getCurrentPagerPosition(), false);
@@ -228,7 +235,8 @@ public class CollectionFragment extends MysplashFragment
                 DisplayUtils.setNavigationBarStyle(
                         getActivity(),
                         pagers[position].getState() == PagerView.State.NORMAL,
-                        true);
+                        true
+                );
             }
             ListResource resource = pagerModels[position].getListResource().getValue();
             if (resource != null
@@ -243,17 +251,23 @@ public class CollectionFragment extends MysplashFragment
                 PagerViewManagePresenter.responsePagerListResourceChanged(
                         resource,
                         pagers[featuredPage()],
-                        adapters[featuredPage()]));
+                        adapters[featuredPage()]
+                )
+        );
         pagerModels[allPage()].getListResource().observe(this, resource ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
                         resource,
                         pagers[allPage()],
-                        adapters[allPage()]));
+                        adapters[allPage()]
+                )
+        );
         pagerModels[curatedPage()].getListResource().observe(this, resource ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
                         resource,
                         pagers[curatedPage()],
-                        adapters[curatedPage()]));
+                        adapters[curatedPage()]
+                )
+        );
     }
 
     // control.

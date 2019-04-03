@@ -35,7 +35,9 @@ public class CustomApiManager {
 
     private CustomApiManager(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
-                PREFERENCE_MYSPLASH_API_MANAGER, Context.MODE_PRIVATE);
+                PREFERENCE_MYSPLASH_API_MANAGER,
+                Context.MODE_PRIVATE
+        );
         this.customApiKey = sharedPreferences.getString(KEY_CUSTOM_API_KEY, null);
         this.customApiSecret = sharedPreferences.getString(KEY_CUSTOM_API_SECRET, null);
     }
@@ -49,8 +51,8 @@ public class CustomApiManager {
     }
 
     public boolean setCustomApi(Context context, String key, String secret) {
-        if ((TextUtils.isEmpty(customApiKey) && TextUtils.isEmpty(key))
-                && (TextUtils.isEmpty(customApiSecret) && TextUtils.isEmpty(secret))) {
+        if (TextUtils.isEmpty(customApiKey) && TextUtils.isEmpty(key)
+                && TextUtils.isEmpty(customApiSecret) && TextUtils.isEmpty(secret)) {
             return false;
         } else if (!TextUtils.equals(customApiKey, key)
                 || !TextUtils.equals(customApiSecret, secret)) {

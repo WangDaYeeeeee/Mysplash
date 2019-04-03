@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView;
+import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -88,28 +88,6 @@ public class SelectedAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
-    public void insertItem(Collection c, int position) {
-        if (position <= itemList.size()) {
-            itemList.add(position, c);
-            notifyItemInserted(position);
-        }
-    }
-
-    public void removeItem(Collection c) {
-        for (int i = 0; i < itemList.size(); i ++) {
-            if (itemList.get(i).id == c.id) {
-                itemList.remove(i);
-                notifyItemRemoved(i);
-                return;
-            }
-        }
-    }
-
-    public void clearItem() {
-        itemList.clear();
-        notifyDataSetChanged();
-    }
-
     public List<Collection> getItemList() {
         return itemList;
     }
@@ -133,21 +111,12 @@ public class SelectedAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             }
         }
     }
-
-    public void setCollectionData(List<Collection> list) {
-        itemList = list;
-        notifyDataSetChanged();
-    }
-
-    public List<Collection> getCollectionData() {
-        return itemList;
-    }
 }
 
 class SelectedHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_selected) CardView card;
-    @BindView(R.id.item_selected_cover) FreedomImageView image;
+    @BindView(R.id.item_selected_cover) CoverImageView image;
     @BindView(R.id.item_selected_title) TextView title;
     @BindView(R.id.item_selected_content) TextView content;
 

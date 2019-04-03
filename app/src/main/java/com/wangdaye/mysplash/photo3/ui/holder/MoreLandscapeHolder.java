@@ -8,9 +8,9 @@ import android.widget.LinearLayout;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.photo3.ui.MoreHorizontalAdapter3;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
-import com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout;
+import com.wangdaye.mysplash.photo3.ui.adapter.MoreHorizontalAdapter3;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.NavigationBarView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
@@ -41,7 +41,9 @@ public class MoreLandscapeHolder extends PhotoInfoAdapter3.ViewHolder {
                 new LinearLayoutManager(
                         a,
                         LinearLayoutManager.HORIZONTAL,
-                        false));
+                        false
+                )
+        );
     }
 
     @Override

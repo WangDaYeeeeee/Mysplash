@@ -1,31 +1,22 @@
 package com.wangdaye.mysplash.search.vm;
 
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.mysplash.search.repository.UserSearchPageViewRepository;
 
 import javax.inject.Inject;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
-
-public class UserSearchPageViewModel extends AbstractSearchPageViewModel<User>
-        implements Consumer<User> {
+public class UserSearchPageViewModel extends AbstractSearchPageViewModel<User, User> {
 
     private UserSearchPageViewRepository repository;
     private UserEventResponsePresenter presenter;
-    private Disposable disposable;
 
     @Inject
     public UserSearchPageViewModel(UserSearchPageViewRepository repository,
                                    UserEventResponsePresenter presenter) {
-        super();
+        super(User.class);
         this.repository = repository;
         this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
-                .toObservable(User.class)
-                .subscribe(this);
     }
 
     @Override
@@ -33,7 +24,6 @@ public class UserSearchPageViewModel extends AbstractSearchPageViewModel<User>
         super.onCleared();
         repository.cancel();
         presenter.clearResponse();
-        disposable.dispose();
     }
 
     @Override

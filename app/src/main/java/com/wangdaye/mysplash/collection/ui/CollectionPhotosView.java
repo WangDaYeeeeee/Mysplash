@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -71,13 +71,14 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16)));
+                (int) (navigationBarHeight + new DisplayUtils(getContext()).dpToPx(16))
+        );
 
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
@@ -87,7 +88,8 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
             recyclerView.setPadding(0, 0, 0, 0);
         }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+        );
         recyclerView.setAdapter(new MiniLoadingStateAdapter(), MultipleStateRecyclerView.STATE_LOADING);
         recyclerView.setAdapter(new MiniErrorStateAdapter(this), MultipleStateRecyclerView.STATE_ERROR);
 
@@ -104,8 +106,13 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        CollectionPhotosView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, 0, dy);
+                        CollectionPhotosView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        0,
+                        dy
+                );
             }
         });
     }
@@ -148,7 +155,7 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

@@ -38,8 +38,8 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.about.ui.AboutActivity;
 import com.wangdaye.mysplash.collection.ui.CollectionActivity;
 import com.wangdaye.mysplash.main.MainActivity;
-import com.wangdaye.mysplash.me.ui.MeActivity;
-import com.wangdaye.mysplash.me.ui.MyFollowActivity;
+import com.wangdaye.mysplash.me.ui.activity.MeActivity;
+import com.wangdaye.mysplash.me.ui.activity.MyFollowActivity;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.io.File;
@@ -85,14 +85,16 @@ public class IntentHelper {
                     .makeScaleUpAnimation(
                             background,
                             (int) background.getX(), (int) background.getY(),
-                            background.getMeasuredWidth(), background.getMeasuredHeight());
+                            background.getMeasuredWidth(), background.getMeasuredHeight()
+                    );
             ActivityCompat.startActivity(a, intent, options.toBundle());
         } else {
             ActivityOptionsCompat options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(
                             a,
                             Pair.create(image, a.getString(R.string.transition_photo_image)),
-                            Pair.create(background, a.getString(R.string.transition_photo_background)));
+                            Pair.create(background, a.getString(R.string.transition_photo_background))
+                    );
             ActivityCompat.startActivity(a, intent, options.toBundle());
         }
     }
@@ -131,13 +133,15 @@ public class IntentHelper {
                     .makeScaleUpAnimation(
                             background,
                             (int) background.getX(), (int) background.getY(),
-                            background.getMeasuredWidth(), background.getMeasuredHeight());
+                            background.getMeasuredWidth(), background.getMeasuredHeight()
+                    );
         } else {
             options = ActivityOptionsCompat
                     .makeSceneTransitionAnimation(
                             a,
                             Pair.create(avatar, a.getString(R.string.transition_collection_avatar)),
-                            Pair.create(background, a.getString(R.string.transition_collection_background)));
+                            Pair.create(background, a.getString(R.string.transition_collection_background))
+                    );
         }
 
         ActivityCompat.startActivity(a, intent, options.toBundle());
@@ -177,7 +181,8 @@ public class IntentHelper {
                         .makeSceneTransitionAnimation(
                                 a,
                                 Pair.create(avatar, a.getString(R.string.transition_user_avatar)),
-                                Pair.create(background, a.getString(R.string.transition_user_background)));
+                                Pair.create(background, a.getString(R.string.transition_user_background))
+                        );
                 ActivityCompat.startActivity(a, intent, options.toBundle());
             }
         }
@@ -209,7 +214,8 @@ public class IntentHelper {
                     .makeSceneTransitionAnimation(
                             a,
                             Pair.create(avatar, a.getString(R.string.transition_me_avatar)),
-                            Pair.create(background, a.getString(R.string.transition_me_background)));
+                            Pair.create(background, a.getString(R.string.transition_me_background))
+                    );
             ActivityCompat.startActivity(a, intent, options.toBundle());
         } else {
             Intent intent = new Intent(a, MeActivity.class);
@@ -282,7 +288,8 @@ public class IntentHelper {
                     c,
                     Environment.getExternalStorageDirectory()
                             + Mysplash.DOWNLOAD_PATH
-                            + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+                            + title + Mysplash.DOWNLOAD_PHOTO_FORMAT
+            );
             intent.setDataAndType(uri, "image/jpg");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -292,7 +299,8 @@ public class IntentHelper {
 
             Intent chooser = Intent.createChooser(
                     intent,
-                    c.getString(R.string.check));
+                    c.getString(R.string.check)
+            );
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -303,7 +311,8 @@ public class IntentHelper {
             File file = new File(
                     Environment.getExternalStorageDirectory()
                             + Mysplash.DOWNLOAD_PATH
-                            + title + Mysplash.DOWNLOAD_PHOTO_FORMAT);
+                            + title + Mysplash.DOWNLOAD_PHOTO_FORMAT
+            );
             Uri uri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID, file);
             intent.setDataAndType(uri, "image/jpg");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -314,7 +323,8 @@ public class IntentHelper {
 
             Intent chooser = Intent.createChooser(
                     intent,
-                    c.getString(R.string.check));
+                    c.getString(R.string.check)
+            );
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -330,7 +340,8 @@ public class IntentHelper {
                     + Environment.getExternalStorageDirectory()
                     + Mysplash.DOWNLOAD_PATH
                     + title
-                    + ".zip");
+                    + ".zip"
+            );
             intent.setDataAndType(uri, "application/x-zip-compressed");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -340,7 +351,8 @@ public class IntentHelper {
 
             Intent chooser = Intent.createChooser(
                     intent,
-                    c.getString(R.string.check));
+                    c.getString(R.string.check)
+            );
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -352,7 +364,8 @@ public class IntentHelper {
                     Environment.getExternalStorageDirectory()
                             + Mysplash.DOWNLOAD_PATH
                             + title
-                            + ".zip");
+                            + ".zip"
+            );
             Uri uri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID, file);
             intent.setDataAndType(uri, "application/x-zip-compressed");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -363,7 +376,8 @@ public class IntentHelper {
 
             Intent chooser = Intent.createChooser(
                     intent,
-                    c.getString(R.string.check));
+                    c.getString(R.string.check)
+            );
             chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             chooser.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
             chooser.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -376,8 +390,8 @@ public class IntentHelper {
         String packageName = "com.android.chrome";
         Intent browserIntent = new Intent();
         browserIntent.setPackage(packageName);
-        List<ResolveInfo> activitiesList = c.getPackageManager().queryIntentActivities(
-                browserIntent, -1);
+        List<ResolveInfo> activitiesList = c.getPackageManager()
+                .queryIntentActivities(browserIntent, -1);
         if (activitiesList.size() > 0) {
             CustomTabHelper.startCustomTabActivity(c, url);
         } else {

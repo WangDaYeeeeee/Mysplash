@@ -62,9 +62,12 @@ public class PagerViewManagePresenter {
             } else if (resource.event instanceof ListResource.ItemChanged) {
                 adapter.notifyItemChanged(
                         ((ListResource.ItemChanged) resource.event).index,
-                        FooterAdapter.PAYLOAD_UPDATE_ITEM);
+                        FooterAdapter.PAYLOAD_UPDATE_ITEM
+                );
             } else if (resource.event instanceof ListResource.ItemRemoved) {
-                adapter.notifyItemRemoved(((ListResource.ItemRemoved) resource.event).index);
+                adapter.notifyItemRemoved(
+                        ((ListResource.ItemRemoved) resource.event).index
+                );
             }
         }
     }

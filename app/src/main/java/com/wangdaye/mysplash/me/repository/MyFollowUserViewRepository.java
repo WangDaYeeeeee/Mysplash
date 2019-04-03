@@ -36,7 +36,8 @@ public class MyFollowUserViewRepository {
                 AuthManager.getInstance().getUsername(),
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new MyFollowUserObserver(current, refresh));
+                new MyFollowUserObserver(current, refresh)
+        );
     }
 
     public void getFollowing(@NonNull MutableLiveData<ListResource<User>> current,
@@ -53,7 +54,8 @@ public class MyFollowUserViewRepository {
                 AuthManager.getInstance().getUsername(),
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new MyFollowUserObserver(current, refresh));
+                new MyFollowUserObserver(current, refresh)
+        );
     }
 
     public void cancel() {

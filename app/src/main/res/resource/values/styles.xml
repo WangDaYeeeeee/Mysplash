@@ -76,13 +76,13 @@
         <item name="android:alertDialogTheme">@style/MysplashDialogTheme</item>
         <item name="android:listDivider">@color/colorLine</item>
     </style>
-    
+
     <!-- common activity theme. -->
-    
+
     <style name="MysplashTheme.Common" parent="MysplashTheme" />
-    
+
     <style name="MysplashTheme.Translucent.Common" parent="MysplashTheme.Translucent" />
-    
+
     <!-- set wallpaper activity. -->
 
     <style name="MysplashTheme.SetWallpaper" parent="MysplashTheme">
@@ -122,7 +122,7 @@
         <item name="android:colorBackground">?attr/root_color</item>
         <item name="android:textColor">?attr/content_color</item>
     </style>
-    
+
     <!-- Popup window. -->
     <style name="MysplashPopupWindowAnimation.Top.Left" parent="android:Animation">
         <item name="android:windowEnterAnimation">@anim/popup_show_top_left</item>

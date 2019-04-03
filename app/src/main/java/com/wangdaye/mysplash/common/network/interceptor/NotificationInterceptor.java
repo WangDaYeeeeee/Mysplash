@@ -3,8 +3,6 @@ package com.wangdaye.mysplash.common.network.interceptor;
 import com.wangdaye.mysplash.common.network.service.NotificationService;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
-import java.io.IOException;
-
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -17,10 +15,10 @@ import okhttp3.Response;
  *
  * */
 
-public class NotificationInterceptor implements Interceptor {
+public class NotificationInterceptor extends ReportExceptionInterceptor {
 
     @Override
-    public Response intercept(Interceptor.Chain chain) throws IOException {
+    public Response intercept(Interceptor.Chain chain) {
         Request request;
         if (AuthManager.getInstance().isAuthorized()) {
             request = chain.request()
@@ -38,6 +36,11 @@ public class NotificationInterceptor implements Interceptor {
                     .build();
         }
 
-        return chain.proceed(request);
+        try {
+            return chain.proceed(request);
+        } catch (Exception e) {
+            handleException(e);
+            return new Response.Builder().build();
+        }
     }
 }

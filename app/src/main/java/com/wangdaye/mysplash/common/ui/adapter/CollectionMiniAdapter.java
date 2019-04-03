@@ -1,28 +1,28 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
-import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
 import java.util.List;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Collection mini adapter.
@@ -60,7 +60,8 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniHo
                             .get(position - 1),
                     false,
                     photo,
-                    callback);
+                    callback
+            );
         }
     }
 
@@ -107,8 +108,9 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniHo
                                               int adapterPosition, boolean add);
     }
 
-    public void setItemEventCallback(@Nullable ItemEventCallback c) {
+    public CollectionMiniAdapter setItemEventCallback(@Nullable ItemEventCallback c) {
         this.callback = c;
+        return this;
     }
 }
 
@@ -145,12 +147,20 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
                     if (collection.id == photo.current_user_collections.get(i).id) {
                         // delete photo.
                         callback.onAddPhotoToCollectionOrRemoveIt(
-                                collection, photo, getAdapterPosition(), false);
+                                collection,
+                                photo,
+                                getAdapterPosition(),
+                                false
+                        );
                         return;
                     }
                 }
                 callback.onAddPhotoToCollectionOrRemoveIt(
-                        collection, photo, getAdapterPosition(), true);
+                        collection,
+                        photo,
+                        getAdapterPosition(),
+                        true
+                );
             }
         });
 
@@ -169,7 +179,8 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
         title.setText(collection.title.toUpperCase());
         subtitle.setText(
                 collection.total_photos
-                        + " " + context.getResources().getStringArray(R.array.user_tabs)[0]);
+                        + " " + context.getResources().getStringArray(R.array.user_tabs)[0]
+        );
 
         if (collection.cover_photo != null) {
             ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
@@ -209,3 +220,4 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
         ImageHelper.releaseImageView(image);
     }
 }
+

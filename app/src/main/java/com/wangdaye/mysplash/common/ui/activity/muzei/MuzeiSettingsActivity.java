@@ -67,7 +67,8 @@ public class MuzeiSettingsActivity extends MysplashActivity
 
         Toolbar toolbar = findViewById(R.id.activity_settings_toolbar);
         ThemeManager.setNavigationIcon(
-                toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
+                toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark
+        );
         toolbar.setTitle(getString(R.string.action_muzei_settings));
         toolbar.setNavigationOnClickListener(v -> finishSelf(true));
     }
@@ -77,7 +78,7 @@ public class MuzeiSettingsActivity extends MysplashActivity
     // on swipe back listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return true;
     }
 
@@ -88,7 +89,7 @@ public class MuzeiSettingsActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
     }
 }

@@ -110,7 +110,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     // init.
 
     private void initData() {
-        this.adapter = new WallpaperSourceAdapter(new ArrayList<>());
+        this.adapter = new WallpaperSourceAdapter(this, new ArrayList<>());
     }
 
     private void initWidget() {
@@ -120,11 +120,16 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
 
         Toolbar toolbar = findViewById(R.id.activity_muzei_collection_source_config_toolbar);
         ThemeManager.setNavigationIcon(
-                toolbar, R.drawable.ic_toolbar_close_light, R.drawable.ic_toolbar_close_dark);
+                toolbar, R.drawable.ic_toolbar_close_light, R.drawable.ic_toolbar_close_dark
+        );
         toolbar.setNavigationOnClickListener(v -> finishSelf(true));
 
         RecyclerView collectionList = findViewById(R.id.activity_muzei_collection_source_config_collectionList);
-        collectionList.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        collectionList.setLayoutManager(
+                new LinearLayoutManager(
+                        this, LinearLayoutManager.HORIZONTAL, false
+                )
+        );
         collectionList.setAdapter(adapter);
     }
 
@@ -145,7 +150,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     // on swipe listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return SwipeBackCoordinatorLayout.canSwipeBack(scrollView, dir);
     }
 
@@ -156,7 +161,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
     }
 }

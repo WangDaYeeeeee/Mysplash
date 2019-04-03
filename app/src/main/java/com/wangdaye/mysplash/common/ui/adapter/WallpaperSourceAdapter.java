@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.db.WallpaperSource;
@@ -32,9 +31,27 @@ import butterknife.OnClick;
 
 public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSourceAdapter.ViewHolder> {
 
+    public MysplashActivity activity;
     public List<WallpaperSource> itemList;
 
     public class ViewHolder extends RecyclerView.ViewHolder {
+
+        @OnClick(R.id.item_wallpaper_source) void clickItem() {
+            IntentHelper.startCollectionActivity(
+                     activity,
+                    String.valueOf(itemList.get(getAdapterPosition()).collectionId)
+            );
+        }
+
+        @OnClick(R.id.item_wallpaper_source_deleteBtn) void deleteItem() {
+            itemList.remove(getAdapterPosition());
+            notifyItemRemoved(getAdapterPosition());
+
+            if (itemList.size() == 0) {
+                itemList.add(WallpaperSource.mysplashSource());
+                notifyItemInserted(0);
+            }
+        }
 
         @BindView(R.id.item_wallpaper_source_cover) ImageView cover;
         @BindView(R.id.item_wallpaper_source_title) TextView title;
@@ -56,28 +73,10 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
         void onRecycled() {
             ImageHelper.releaseImageView(cover);
         }
-
-        @OnClick(R.id.item_wallpaper_source) void clickItem() {
-            MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-            if (activity != null) {
-                IntentHelper.startCollectionActivity(
-                        activity,
-                        String.valueOf(itemList.get(getAdapterPosition()).collectionId));
-            }
-        }
-
-        @OnClick(R.id.item_wallpaper_source_deleteBtn) void deleteItem() {
-            itemList.remove(getAdapterPosition());
-            notifyItemRemoved(getAdapterPosition());
-
-            if (itemList.size() == 0) {
-                itemList.add(WallpaperSource.mysplashSource());
-                notifyItemInserted(0);
-            }
-        }
     }
 
-    public WallpaperSourceAdapter(List<WallpaperSource> list) {
+    public WallpaperSourceAdapter(MysplashActivity activity, List<WallpaperSource> list) {
+        this.activity = activity;
         this.itemList = list;
     }
 

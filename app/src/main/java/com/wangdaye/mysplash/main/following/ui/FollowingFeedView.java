@@ -24,7 +24,6 @@ import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdap
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollFrameLayout;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
@@ -33,6 +32,7 @@ import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
+import com.wangdaye.mysplash.main.following.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import butterknife.BindView;
@@ -47,7 +47,7 @@ import butterknife.OnClick;
  *
  * */
 
-public class FollowingFeedView extends NestedScrollFrameLayout
+public class FollowingFeedView extends FrameLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         LargeErrorStateAdapter.OnRetryListener {
 
@@ -69,7 +69,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         avatar,
                         avatarBackground,
                         user,
-                        UserActivity.PAGE_PHOTO);
+                        UserActivity.PAGE_PHOTO
+                );
             }
         }
     }
@@ -146,13 +147,14 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         refreshLayout.setOnRefreshAndLoadListener(this);
-        refreshLayout.setPermitRefresh(false);
-        refreshLayout.setPermitLoad(false);
+        refreshLayout.setRefreshEnabled(false);
+        refreshLayout.setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         refreshLayout.setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
@@ -162,18 +164,21 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             recyclerView.setPadding(0, 0, 0, 0);
         }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+        );
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 56),
-                MultipleStateRecyclerView.STATE_LOADING);
+                MultipleStateRecyclerView.STATE_LOADING
+        );
         recyclerView.setAdapter(
                 new LargeErrorStateAdapter(
                         getContext(), 56,
                         R.drawable.feedback_no_photos,
                         getContext().getString(R.string.feedback_load_failed_tv),
                         getContext().getString(R.string.feedback_click_retry),
-                        this),
-                MultipleStateRecyclerView.STATE_ERROR);
+                        this
+                ), MultipleStateRecyclerView.STATE_ERROR
+        );
         avatarScrollListener = new AvatarScrollListener(columnCount);
         recyclerView.addOnScrollListener(avatarScrollListener);
 
@@ -192,15 +197,11 @@ public class FollowingFeedView extends NestedScrollFrameLayout
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
                         refreshLayout, recyclerView,
-                        followingAdapter.getRealItemCount(), pagerManageView, 0, dy);
+                        followingAdapter.getRealItemCount(), pagerManageView, 0, dy
+                );
             }
         });
         pagerManageView = view;
-    }
-
-    @Override
-    public boolean isParentOffset() {
-        return false;
     }
 
     /**
@@ -218,17 +219,13 @@ public class FollowingFeedView extends NestedScrollFrameLayout
         }
     }
 
-    public float getOffsetY() {
-        return offsetY;
-    }
-
     /**
      * Get the effective offset value. --> top of this view - bottom of status bar.
-     * 
+     *
      * @return The effective offset value.
      * */
-    private float getRealOffset() {
-        return Math.max(getOffsetY() - avatarSize, 0);
+    private float getAvatarFitStatusBarMarginTop() {
+        return Math.max(-offsetY - avatarSize, 0);
     }
 
     // interface.
@@ -275,12 +272,12 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
     @Override
     public void setPermitSwipeRefreshing(boolean permit) {
-        refreshLayout.setPermitRefresh(permit);
+        refreshLayout.setRefreshEnabled(permit);
     }
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        refreshLayout.setPermitLoad(permit);
+        refreshLayout.setLoadEnabled(permit);
     }
 
     @Override
@@ -370,7 +367,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                     float footerBottom = firstVisibleView.getY() + firstVisibleView.getMeasuredHeight();
                     float headerTop = secondVisibleView.getY();
 
-                    if (footerBottom < avatarSize + getRealOffset() && headerTop > getRealOffset()) {
+                    if (footerBottom < avatarSize + getAvatarFitStatusBarMarginTop()
+                            && headerTop > getAvatarFitStatusBarMarginTop()) {
                         // the footer item is moving out of the screen, and the header item has
                         // not yet reached the trigger position.
                         // --> the avatar needs to move with footer item.
@@ -382,16 +380,16 @@ public class FollowingFeedView extends NestedScrollFrameLayout
                         // the footer item is moving out of the screen, and the header item has
                         // already reached the trigger position.
                         // --> the avatar needs to move with header item.
-                        avatarContainer.setTranslationY(-statusBarHeight + getRealOffset());
+                        avatarContainer.setTranslationY(-statusBarHeight + getAvatarFitStatusBarMarginTop());
                         lastAvatarPosition = avatarPosition;
-                        avatarPosition = firstVisibleItemPosition + (headerTop <= getRealOffset() ? 1 : 0);
+                        avatarPosition = firstVisibleItemPosition + (headerTop <= getAvatarFitStatusBarMarginTop() ? 1 : 0);
                         setAvatarAppearance(recyclerView);
                     }
                 }
             } else {
                 // the first item is not a footer item.
                 // --> avatar needs to stay on the trigger position.
-                avatarContainer.setTranslationY(-statusBarHeight + getRealOffset());
+                avatarContainer.setTranslationY(-statusBarHeight + getAvatarFitStatusBarMarginTop());
                 lastAvatarPosition = avatarPosition;
                 avatarPosition = firstVisibleItemPosition;
                 setAvatarAppearance(recyclerView);
@@ -417,7 +415,8 @@ public class FollowingFeedView extends NestedScrollFrameLayout
 
             followingAdapter.setTitleAvatarVisibility(
                     recyclerView.findViewHolderForAdapterPosition(lastAvatarPosition),
-                    recyclerView.findViewHolderForAdapterPosition(avatarPosition));
+                    recyclerView.findViewHolderForAdapterPosition(avatarPosition)
+            );
         }
 
         private void setAvatarImage(int position) {

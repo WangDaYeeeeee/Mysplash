@@ -63,7 +63,7 @@ public class FileDownloaderService extends DownloaderService {
             downloadFinish(context, id, true);
             unregisterDownloadListener(id);
             if (outsideListener != null) {
-                outsideListener.onComplete(RESULT_SUCCEED);
+                outsideListener.onComplete(DownloadMissionEntity.RESULT_SUCCEED);
                 outsideListener = null;
             }
         }
@@ -78,7 +78,7 @@ public class FileDownloaderService extends DownloaderService {
             downloadFinish(context, id, false);
             unregisterDownloadListener(id);
             if (outsideListener != null) {
-                outsideListener.onComplete(RESULT_FAILED);
+                outsideListener.onComplete(DownloadMissionEntity.RESULT_FAILED);
                 outsideListener = null;
             }
         }
@@ -132,7 +132,7 @@ public class FileDownloaderService extends DownloaderService {
         FileDownloader.setGlobalPost2UIInterval(50);
 
         List<DownloadMissionEntity> downloadingList = DatabaseHelper.getInstance(context)
-                .readDownloadEntityList(RESULT_DOWNLOADING);
+                .readDownloadEntityList(DownloadMissionEntity.RESULT_DOWNLOADING);
         for (DownloadMissionEntity e : downloadingList) {
             downloadFinish(context, e, false);
         }
@@ -149,7 +149,7 @@ public class FileDownloaderService extends DownloaderService {
                 .setForceReDownload(true)
                 .setListener(listener)
                 .start();
-        entity.result = RESULT_DOWNLOADING;
+        entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
         registerDownloadListener(entity.missionId, listener);
 
         DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
@@ -175,7 +175,7 @@ public class FileDownloaderService extends DownloaderService {
 
     @Override
     public void removeMission(Context c, @NonNull DownloadMissionEntity entity, boolean deleteEntity) {
-        if (entity.result != RESULT_SUCCEED) {
+        if (entity.result != DownloadMissionEntity.RESULT_SUCCEED) {
             unregisterDownloadListener(entity.missionId);
             FileDownloader.getImpl().clear((int) entity.missionId, "");
             FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
@@ -226,20 +226,22 @@ public class FileDownloaderService extends DownloaderService {
 
     private void downloadFinish(Context context, @NonNull DownloadMissionEntity entity, boolean complete) {
         if (complete) {
-            updateMissionResult(context, entity, DownloaderService.RESULT_SUCCEED);
+            updateMissionResult(context, entity, DownloadMissionEntity.RESULT_SUCCEED);
             context.sendBroadcast(
                     new Intent(
                             Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                            Uri.parse(entity.getFilePath())));
-            if (entity.downloadType != DownloaderService.COLLECTION_TYPE) {
+                            Uri.parse(entity.getFilePath())
+                    )
+            );
+            if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
                 downloadPhotoSuccess(context, entity);
             } else {
                 downloadCollectionSuccess(context, entity);
             }
         } else {
             FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
-            updateMissionResult(context, entity, DownloaderService.RESULT_FAILED);
-            if (entity.downloadType != DownloaderService.COLLECTION_TYPE) {
+            updateMissionResult(context, entity, DownloadMissionEntity.RESULT_FAILED);
+            if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
                 downloadPhotoFailed(context, entity);
             } else {
                 downloadCollectionFailed(context, entity);
@@ -253,9 +255,11 @@ public class FileDownloaderService extends DownloaderService {
         if (runnable == null) {
             NotificationCompat.Builder builder = getInitDownloadingNotificationBuilder(context);
 
-            FileDownloader.getImpl().startForeground(
-                    NotificationHelper.NOTIFICATION_DOWNLOADING_ID,
-                    builder.build());
+            FileDownloader.getImpl()
+                    .startForeground(
+                            NotificationHelper.NOTIFICATION_DOWNLOADING_ID,
+                            builder.build()
+                    );
 
             runnable = new NotificationRunnable(builder);
             ThreadManager.getInstance().execute(runnable);

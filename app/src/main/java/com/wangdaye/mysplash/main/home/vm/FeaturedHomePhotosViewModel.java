@@ -19,14 +19,24 @@ public class FeaturedHomePhotosViewModel extends AbstractHomePhotosViewModel {
     @Override
     void getPhotosOrderly(boolean refresh) {
         getRepository().getPhotos(
-                getListResource(), getPageList(), getPhotosOrder().getValue(),
-                true, false, refresh);
+                getListResource(),
+                getPageList(),
+                getPhotosOrder().getValue(),
+                true,
+                false,
+                refresh
+        );
     }
 
     @Override
     void getPhotosRandom(boolean refresh) {
         getRepository().getPhotos(
-                getListResource(), getPageList(), getPhotosOrder().getValue(),
-                true, true, refresh);
+                getListResource(),
+                getPageList(),
+                getPhotosOrder().getValue(),
+                true,
+                true,
+                refresh
+        );
     }
 }

@@ -3,9 +3,6 @@ package com.wangdaye.mysplash.common.network.interceptor;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
-import java.io.IOException;
-
-import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -17,10 +14,10 @@ import okhttp3.Response;
  *
  * */
 
-public class AuthInterceptor implements Interceptor {
+public class AuthInterceptor extends ReportExceptionInterceptor {
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) {
         Request request;
         if (AuthManager.getInstance().isAuthorized()) {
             request = chain.request()
@@ -33,6 +30,11 @@ public class AuthInterceptor implements Interceptor {
                     .addHeader("Authorization", "Client-ID " + Mysplash.getAppId(Mysplash.getInstance(), false))
                     .build();
         }
-        return chain.proceed(request);
+        try {
+            return chain.proceed(request);
+        } catch (Exception e) {
+            handleException(e);
+            return new Response.Builder().build();
+        }
     }
 }

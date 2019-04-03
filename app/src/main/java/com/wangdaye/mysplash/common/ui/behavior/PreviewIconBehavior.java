@@ -5,6 +5,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.util.AttributeSet;
 import android.view.View;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Preview icon behavior.
  *
@@ -21,12 +23,13 @@ public class PreviewIconBehavior<V extends View> extends CoordinatorLayout.Behav
     }
 
     @Override
-    public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
+    public boolean onLayoutChild(@NotNull CoordinatorLayout parent, @NotNull V child, int layoutDirection) {
         child.layout(
                 0,
                 parent.getMeasuredHeight(),
                 child.getMeasuredWidth(),
-                parent.getMeasuredHeight() + child.getMeasuredHeight());
+                parent.getMeasuredHeight() + child.getMeasuredHeight()
+        );
         return true;
     }
 }

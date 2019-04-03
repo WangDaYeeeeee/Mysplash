@@ -37,7 +37,8 @@ public class MeCollectionsViewRepository {
                     AuthManager.getInstance().getUsername(),
                     current.getValue().getRequestPage(),
                     current.getValue().perPage,
-                    new ListResourceObserver<>(current, refresh));
+                    new ListResourceObserver<>(current, refresh)
+            );
         }
     }
 

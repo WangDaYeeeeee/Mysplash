@@ -151,7 +151,8 @@ public class RippleButton extends CardView
 
         container.measure(
                 MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(height, MeasureSpec.UNSPECIFIED));
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.UNSPECIFIED)
+        );
 
         // width.
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -183,20 +184,23 @@ public class RippleButton extends CardView
             case MeasureSpec.AT_MOST:
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(
                         Math.min(container.getMeasuredHeight(), height),
-                        MeasureSpec.EXACTLY);
+                        MeasureSpec.EXACTLY
+                );
                 break;
 
             case MeasureSpec.UNSPECIFIED:
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec(
                         container.getMeasuredHeight(),
-                        MeasureSpec.EXACTLY);
+                        MeasureSpec.EXACTLY
+                );
                 break;
         }
 
         container.measure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(
                 MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
+                MeasureSpec.getSize(heightMeasureSpec)
+        );
 
         setRadius((float) (MeasureSpec.getSize(heightMeasureSpec) * 0.5));
 

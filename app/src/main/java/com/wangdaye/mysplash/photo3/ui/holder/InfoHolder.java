@@ -5,7 +5,7 @@ import android.widget.LinearLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.ui.widget.NumberAnimTextView;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
@@ -28,19 +28,22 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
     @OnClick(R.id.item_photo_3_info_viewsContainer)
     void clickViews() {
         NotificationHelper.showSnackbar(
-                a.getString(R.string.feedback_views) + " : " + views.getText());
+                a.getString(R.string.feedback_views) + " : " + views.getText()
+        );
     }
 
     @OnClick(R.id.item_photo_3_info_downloadsContainer)
     void clickDownloads() {
         NotificationHelper.showSnackbar(
-                a.getString(R.string.feedback_downloads) + " : " + downloads.getText());
+                a.getString(R.string.feedback_downloads) + " : " + downloads.getText()
+        );
     }
 
     @OnClick(R.id.item_photo_3_info_likesContainer)
     void clickLikes() {
         NotificationHelper.showSnackbar(
-                a.getString(R.string.feedback_likes) + " : " + likes.getText());
+                a.getString(R.string.feedback_likes) + " : " + likes.getText()
+        );
     }
 
     private PhotoActivity3 a;

@@ -80,8 +80,10 @@ public class CollectionMenuPopupWindow extends MysplashPopupWindow
     public static boolean isUsable(Context c, Collection collection) {
         return isMyCollection(collection)
                 || isCurate(collection)
-                || (MuzeiOptionManager.isInstalledMuzei(c)
-                && MuzeiOptionManager.getInstance(c).getSource().equals("collection"));
+                || (
+                        MuzeiOptionManager.isInstalledMuzei(c)
+                                && MuzeiOptionManager.getInstance(c).getSource().equals("collection")
+                );
     }
 
     private static boolean isMyCollection(Collection collection) {

@@ -47,7 +47,8 @@ public class RippleView extends View {
             setDrawData(
                     startX,
                     startY,
-                    (int) (endRadius * interpolatedTime));
+                    (int) (endRadius * interpolatedTime)
+            );
             invalidate();
         }
 
@@ -58,7 +59,8 @@ public class RippleView extends View {
                     (int) Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5) + 1,
                     (int) Math.pow(Math.pow(getMeasuredWidth() - x, 2) + Math.pow(y, 2), 0.5) + 1,
                     (int) Math.pow(Math.pow(x, 2) + Math.pow(getMeasuredHeight() - y, 2), 0.5) + 1,
-                    (int) Math.pow(Math.pow(getMeasuredWidth() - x, 2) + Math.pow(getMeasuredHeight() - y, 2), 0.5) + 1};
+                    (int) Math.pow(Math.pow(getMeasuredWidth() - x, 2) + Math.pow(getMeasuredHeight() - y, 2), 0.5) + 1
+            };
             endRadius = radius[0];
             for (int i = 1; i < radius.length; i ++) {
                 if (radius[i] > endRadius) {
@@ -98,7 +100,8 @@ public class RippleView extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         setMeasuredDimension(
                 MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec));
+                MeasureSpec.getSize(heightMeasureSpec)
+        );
     }
 
     @Override

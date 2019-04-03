@@ -175,8 +175,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         this.state = State.SHOW_COLLECTIONS;
         this.page = 0;
 
-        this.adapter = new CollectionMiniAdapter(photo);
-        adapter.setItemEventCallback(this);
+        this.adapter = new CollectionMiniAdapter(photo).setItemEventCallback(this);
 
         this.usable = true;
         this.waitingAuthInformation = false;
@@ -198,8 +197,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getActivity()));
         refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getActivity()));
-        refreshLayout.setPermitRefresh(false);
-        refreshLayout.setPermitLoad(false);
+        refreshLayout.setRefreshEnabled(false);
+        refreshLayout.setLoadEnabled(false);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
@@ -273,7 +272,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                 title,
                 description,
                 privateX,
-                new OnRequestACollectionObserver());
+                new OnRequestACollectionObserver()
+        );
         setState(State.CREATE_COLLECTION);
     }
 
@@ -463,9 +463,10 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         public void onFailed() {
             setLoading(false);
             Observable.create(Emitter::onComplete)
-                    .compose(RxLifecycleCompact.bind(SelectCollectionDialog.this)
-                            .disposeObservableWhen(LifecycleEvent.DESTROY))
-                    .delay(Mysplash.DEFAULT_REQUEST_INTERVAL_SECOND, TimeUnit.SECONDS)
+                    .compose(
+                            RxLifecycleCompact.bind(SelectCollectionDialog.this)
+                                    .disposeObservableWhen(LifecycleEvent.DESTROY)
+                    ).delay(Mysplash.DEFAULT_REQUEST_INTERVAL_SECOND, TimeUnit.SECONDS)
                     .doOnComplete(() -> requestCollections(AuthManager.getInstance().getUser().username))
                     .subscribe();
         }
@@ -510,7 +511,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                     listener.onUpdateCollection(
                             changeCollectionPhotoResult.collection,
                             changeCollectionPhotoResult.user,
-                            changeCollectionPhotoResult.photo);
+                            changeCollectionPhotoResult.photo
+                    );
                 }
                 // update collection.
                 changeCollectionPhotoResult.collection.editing = false;

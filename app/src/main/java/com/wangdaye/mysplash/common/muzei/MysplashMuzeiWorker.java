@@ -6,7 +6,7 @@ import android.net.Uri;
 import com.google.android.apps.muzei.api.provider.Artwork;
 import com.google.android.apps.muzei.api.provider.ProviderContract;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerNetworkServiceComponent;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
 import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
@@ -31,7 +31,7 @@ public class MysplashMuzeiWorker extends Worker
 
     public MysplashMuzeiWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
-        DaggerApplicationComponent.create().inject(this);
+        DaggerNetworkServiceComponent.create().inject(this);
     }
 
     static void enqueue() {

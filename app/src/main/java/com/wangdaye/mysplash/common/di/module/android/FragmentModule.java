@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.di.module.android;
 
-import com.wangdaye.mysplash.common.di.module.NetworkModule;
+import com.wangdaye.mysplash.common.di.module.NetworkServiceModule;
 import com.wangdaye.mysplash.common.ui.dialog.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
@@ -26,57 +26,57 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class FragmentModule {
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract HomeFragment contributeHomeFragmentInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract CollectionFragment contributeCollectionFragmentInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract FollowingFeedFragment contributeFollowingFeedFragmentInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract MultiFilterFragment contributeMultiFilterFragmentInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract SelectedFragment contributeSelectedFragmentInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract ConfirmExitWithoutSaveDialog contributeConfirmExitWithoutSaveDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract DeleteCollectionPhotoDialog contributeDeleteCollectionPhotoDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract DownloadRepeatDialog contributeDownloadRepeatDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract DownloadTypeDialog contributeDownloadTypeDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract PathDialog contributePathDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract ProfileDialog contributeProfileDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract RequestBrowsableDataDialog contributeRequestBrowsableDataDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract SelectCollectionDialog contributeSelectCollectionDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract TimePickerDialog contributeTimePickerDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract TotalDialog contributeTotalDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract UpdateCollectionDialog contributeUpdateCollectionDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract WallpaperWhereDialog contributeWallpaperWhereDialogInjector();
 
-    @ContributesAndroidInjector(modules = NetworkModule.class)
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract RetryDialog contributeRetryDialogInjector();
 }

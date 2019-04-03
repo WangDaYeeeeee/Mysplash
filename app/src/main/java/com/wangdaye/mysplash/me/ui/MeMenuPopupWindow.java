@@ -8,6 +8,7 @@ import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
+import com.wangdaye.mysplash.me.ui.activity.MeActivity;
 
 /**
  * Me menu popup window.

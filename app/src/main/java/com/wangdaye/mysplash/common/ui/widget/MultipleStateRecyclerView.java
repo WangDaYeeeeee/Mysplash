@@ -35,10 +35,7 @@ public class MultipleStateRecyclerView extends RecyclerView {
     public static final int STATE_NORMALLY = 0;
     public static final int STATE_LOADING = 1;
     public static final int STATE_ERROR = 2;
-    @IntDef({
-            STATE_NORMALLY,
-            STATE_LOADING,
-            STATE_ERROR})
+    @IntDef({STATE_NORMALLY, STATE_LOADING, STATE_ERROR})
     public @interface StateRule {}
 
     public MultipleStateRecyclerView(@NonNull Context context) {
@@ -61,7 +58,8 @@ public class MultipleStateRecyclerView extends RecyclerView {
         multipleLayouts = new LayoutManager[] {
                 null,
                 new LinearLayoutManager(context),
-                new LinearLayoutManager(context)};
+                new LinearLayoutManager(context)
+        };
         onScrollListenerList = new ArrayList<>();
 
         paddingStart = paddingEnd = paddingTop = paddingBottom = 0;
@@ -206,9 +204,9 @@ public class MultipleStateRecyclerView extends RecyclerView {
         if (animator != null) {
             animator.cancel();
         }
-        animator = ObjectAnimator
-                .ofFloat(this, "alpha", 0, 1F)
-                .setDuration(150);
+        animator = ObjectAnimator.ofFloat(
+                this, "alpha", 0, 1F
+        ).setDuration(150);
         animator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {

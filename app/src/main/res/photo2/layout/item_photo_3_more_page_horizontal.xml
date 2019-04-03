@@ -20,13 +20,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
+        <com.wangdaye.mysplash.common.ui.widget.CoverImageView
             android:id="@+id/item_photo_3_more_page_horizontal_cover"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop"
-            app:fiv_not_free="true"
-            app:fiv_shadow_position="both"
+            app:civ_dynamic_size="false"
+            app:civ_shadow_position="both"
             tools:src="?attr/title_color" />
 
         <RelativeLayout

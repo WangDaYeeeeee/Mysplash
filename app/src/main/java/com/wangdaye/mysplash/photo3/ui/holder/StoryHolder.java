@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
@@ -38,7 +38,8 @@ public class StoryHolder extends PhotoInfoAdapter3.ViewHolder {
                 && !TextUtils.isEmpty(photo.location.title))
             IntentHelper.startSearchActivity(
                     Mysplash.getInstance().getTopActivity(),
-                    photo.location.title);
+                    photo.location.title
+            );
     }
     @BindView(R.id.item_photo_3_story_content) TextView content;
     @BindView(R.id.item_photo_3_story_avatar) CircleImageView avatar;
@@ -48,7 +49,8 @@ public class StoryHolder extends PhotoInfoAdapter3.ViewHolder {
                 avatar,
                 itemView,
                 photo.user,
-                UserActivity.PAGE_PHOTO);
+                UserActivity.PAGE_PHOTO
+        );
     }
 
     private Photo photo;
@@ -102,11 +104,13 @@ public class StoryHolder extends PhotoInfoAdapter3.ViewHolder {
         StringBuffer capBuffer = new StringBuffer();
         Matcher capMatcher = Pattern.compile(
                 "([a-z])([a-z]*)",
-                Pattern.CASE_INSENSITIVE).matcher(str);
+                Pattern.CASE_INSENSITIVE
+        ).matcher(str);
         while (capMatcher.find()){
             capMatcher.appendReplacement(
                     capBuffer,
-                    capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase());
+                    capMatcher.group(1).toUpperCase() + capMatcher.group(2).toLowerCase()
+            );
         }
 
         return capMatcher.appendTail(capBuffer).toString();

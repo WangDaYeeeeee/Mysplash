@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
@@ -124,49 +124,57 @@ public class ExifHolder extends PhotoInfoAdapter3.ViewHolder {
             case 0:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_camera_make),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 1:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_camera_model),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 2:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_size),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 3:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_focal),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 4:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_aperture),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 5:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_exposure),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 6:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_iso),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
 
             case 7:
                 showExifDescription(
                         itemView.getContext().getString(R.string.feedback_color),
-                        content.getText().toString());
+                        content.getText().toString()
+                );
                 break;
         }
     }

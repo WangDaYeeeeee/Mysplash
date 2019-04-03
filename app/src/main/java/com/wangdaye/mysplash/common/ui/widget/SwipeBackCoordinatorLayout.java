@@ -54,48 +54,6 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         }
     }
 
-    private static class ResetAlphaAnimation extends Animation {
-
-        private View view;
-        private boolean showing;
-
-        ResetAlphaAnimation(View v, boolean showing) {
-            this.view = v;
-            this.showing = showing;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            if (showing) {
-                view.setAlpha((float) (0.5 * interpolatedTime));
-            } else {
-                view.setAlpha((float) (0.5 * (1 - interpolatedTime)));
-            }
-        }
-    }
-
-    private static class RecolorAnimation extends Animation {
-
-        private View view;
-        private boolean showing;
-
-        RecolorAnimation(View v, boolean showing) {
-            this.view = v;
-            this.showing = showing;
-        }
-
-        @Override
-        protected void applyTransformation(float interpolatedTime, Transformation t) {
-            super.applyTransformation(interpolatedTime, t);
-            if (showing) {
-                view.setBackgroundColor(Color.argb((int) (255 * 0.5 * interpolatedTime), 0, 0, 0));
-            } else {
-                view.setBackgroundColor(Color.argb((int) (255 * 0.5 * (1 - interpolatedTime)), 0, 0, 0));
-            }
-        }
-    }
-
     private Animation.AnimationListener resetAnimListener = new Animation.AnimationListener() {
 
         @Override
@@ -230,13 +188,19 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     private void setSwipeTranslation() {
         int dir = swipeDistance > 0 ? UP_DIR : DOWN_DIR;
         setTranslationY(
-                (float) (dir * SWIPE_RADIO * swipeTrigger
-                        * Math.log10(1 + 9.0 * Math.abs(swipeDistance) / swipeTrigger)));
+                (float) (
+                        dir * SWIPE_RADIO
+                                * swipeTrigger
+                                * Math.log10(1 + 9.0 * Math.abs(swipeDistance) / swipeTrigger)
+                )
+        );
         if (swipeListener != null) {
             swipeListener.onSwipeProcess(
                     (float) Math.min(
                             1,
-                            Math.abs(1.0 * swipeDistance / swipeTrigger)));
+                            Math.abs(1.0 * swipeDistance / swipeTrigger)
+                    )
+            );
         }
     }
 
@@ -273,37 +237,14 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         return Color.argb((int) (255 * getBackgroundAlpha(percent)), 0, 0, 0);
     }
 
-    /**
-     * Execute alpha animation to hide background.
-     *
-     * @param background The view to show shadow background.
-     * */
-
-    public static void hideBackgroundWithAlphaAnim(View background) {
-        ResetAlphaAnimation a = new ResetAlphaAnimation(background, false);
-        a.setDuration(200);
-        background.startAnimation(a);
-    }
-
-    /**
-     * Execute color animation to hide background.
-     *
-     * @param background The view to show shadow background.
-     * */
-    public static void hideBackgroundWithColorAnim(View background) {
-        RecolorAnimation a = new RecolorAnimation(background, false);
-        a.setDuration(200);
-        background.startAnimation(a);
-    }
-
     // interface.
 
     // on swipe listener.
 
     public interface OnSwipeListener {
-        boolean canSwipeBack(int dir);
+        boolean canSwipeBack(@DirectionRule int dir);
         void onSwipeProcess(float percent);
-        void onSwipeFinish(int dir);
+        void onSwipeFinish(@DirectionRule int dir);
     }
 
     public void setOnSwipeListener(OnSwipeListener l) {

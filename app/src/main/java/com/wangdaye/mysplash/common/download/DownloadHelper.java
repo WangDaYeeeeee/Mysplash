@@ -5,7 +5,7 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerNetworkServiceComponent;
 import com.wangdaye.mysplash.common.download.imp.AndroidDownloaderService;
 import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.download.imp.FileDownloaderService;
@@ -48,7 +48,7 @@ public class DownloadHelper {
 
     private DownloadHelper(Context context) {
         bindDownloader(context, SettingsOptionManager.getInstance(context).getDownloader());
-        DaggerApplicationComponent.create().inject(this);
+        DaggerNetworkServiceComponent.create().inject(this);
     }
 
     private void bindDownloader(Context context, String downloader) {
@@ -65,14 +65,14 @@ public class DownloadHelper {
 
     public boolean switchDownloader(Context context, String downloader) {
         if (DatabaseHelper.getInstance(context)
-                .readDownloadEntityCount(DownloaderService.RESULT_DOWNLOADING) > 0) {
+                .readDownloadEntityCount(DownloadMissionEntity.RESULT_DOWNLOADING) > 0) {
             return false;
         }
         bindDownloader(context, downloader);
         return true;
     }
 
-    public void addMission(Context c, Photo p, @DownloaderService.DownloadTypeRule int type) {
+    public void addMission(Context c, Photo p, @DownloadMissionEntity.DownloadTypeRule int type) {
         if (FileUtils.createDownloadPath(c)) {
             downloaderService.addMission(c, new DownloadMissionEntity(c, p, type), true);
             photoService.downloadPhoto(p.links.download_location);
@@ -93,7 +93,7 @@ public class DownloadHelper {
         } else {
             DownloadMission mission = new DownloadMission(entity);
             mission.entity.missionId = downloaderService.restartMission(c, entity);
-            mission.entity.result = DownloaderService.RESULT_DOWNLOADING;
+            mission.entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
             mission.process = 0;
             return mission.entity.missionId == -1 ? null : mission;
         }
@@ -111,7 +111,7 @@ public class DownloadHelper {
 
     public void updateMissionResult(Context c,
                                     @NonNull DownloadMissionEntity entity,
-                                    @DownloaderService.DownloadResultRule int result) {
+                                    @DownloadMissionEntity.DownloadResultRule int result) {
         downloaderService.updateMissionResult(c, entity, result);
     }
 

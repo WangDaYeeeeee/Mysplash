@@ -28,7 +28,9 @@ public class Info {
 
     ImageView.ScaleType mScaleType;
 
-    public Info(RectF rect, RectF img, RectF widget, RectF base, PointF screenCenter, float scale, float degrees, ImageView.ScaleType scaleType) {
+    public Info(RectF rect, RectF img, RectF widget, RectF base,
+                PointF screenCenter, float scale, float degrees,
+                ImageView.ScaleType scaleType) {
         mRect.set(rect);
         mImgRect.set(img);
         mWidgetRect.set(widget);

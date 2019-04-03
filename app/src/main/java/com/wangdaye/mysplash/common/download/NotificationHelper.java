@@ -50,9 +50,19 @@ public class NotificationHelper {
             createNotificationChannel(c, manager);
             manager.notify(
                     getNotificationId(c),
-                    buildSingleNotification(c, "Photo", entity.getNotificationTitle(), true, true));
+                    buildSingleNotification(
+                            c,
+                            "Photo",
+                            entity.getNotificationTitle(),
+                            true,
+                            true
+                    )
+            );
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                manager.notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, true, true));
+                manager.notify(
+                        NOTIFICATION_GROUP_SUMMARY_ID,
+                        buildGroupSummaryNotification(c, true, true)
+                );
             }
         }
     }
@@ -63,9 +73,19 @@ public class NotificationHelper {
             createNotificationChannel(c, manager);
             manager.notify(
                     getNotificationId(c),
-                    buildSingleNotification(c, "Collection", entity.getNotificationTitle(), false, true));
+                    buildSingleNotification(
+                            c,
+                            "Collection",
+                            entity.getNotificationTitle(),
+                            false,
+                            true
+                    )
+            );
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                manager.notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, false, true));
+                manager.notify(
+                        NOTIFICATION_GROUP_SUMMARY_ID,
+                        buildGroupSummaryNotification(c, false, true)
+                );
             }
         }
     }
@@ -76,9 +96,19 @@ public class NotificationHelper {
             createNotificationChannel(c, manager);
             manager.notify(
                     getNotificationId(c),
-                    buildSingleNotification(c, "Photo", entity.getNotificationTitle(), true, false));
+                    buildSingleNotification(
+                            c,
+                            "Photo",
+                            entity.getNotificationTitle(),
+                            true,
+                            false
+                    )
+            );
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                manager.notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, true, false));
+                manager.notify(
+                        NOTIFICATION_GROUP_SUMMARY_ID,
+                        buildGroupSummaryNotification(c, true, false)
+                );
             }
         }
     }
@@ -90,10 +120,19 @@ public class NotificationHelper {
             manager.notify(
                     getNotificationId(c),
                     buildSingleNotification(
-                            c, "Collection", entity.getNotificationTitle(), false, false));
+                            c,
+                            "Collection",
+                            entity.getNotificationTitle(),
+                            false,
+                            false
+                    )
+            );
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                manager.notify(NOTIFICATION_GROUP_SUMMARY_ID, buildGroupSummaryNotification(c, false, false));
+                manager.notify(
+                        NOTIFICATION_GROUP_SUMMARY_ID,
+                        buildGroupSummaryNotification(c, false, false)
+                );
             }
         }
     }

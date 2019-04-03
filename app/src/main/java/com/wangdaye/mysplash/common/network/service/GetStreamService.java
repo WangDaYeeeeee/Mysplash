@@ -2,14 +2,11 @@ package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
 import com.wangdaye.mysplash.common.network.NullResponseBody;
 import com.wangdaye.mysplash.common.network.api.GetStreamApi;
 import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-
-import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
@@ -31,13 +28,12 @@ public class GetStreamService {
     private GetStreamApi api;
     private CompositeDisposable compositeDisposable;
 
-    @Inject
-    public GetStreamService(@ApplicationInstace OkHttpClient client,
-                            @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public GetStreamService(OkHttpClient client,
+                            RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                             CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.STREAM_API_BASE_URL)
-                .client(client)
+                .client(client.newBuilder().build())
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((GetStreamApi.class));

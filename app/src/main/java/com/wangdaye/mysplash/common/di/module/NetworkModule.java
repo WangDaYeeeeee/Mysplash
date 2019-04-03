@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.di.module;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
+import com.wangdaye.mysplash.common.di.annotation.ApplicationInstance;
 import com.wangdaye.mysplash.common.network.TLSCompactHelper;
 
 import dagger.Module;
@@ -18,7 +18,7 @@ public class NetworkModule {
         return TLSCompactHelper.getOKHttpClient();
     }
 
-    @ApplicationInstace
+    @ApplicationInstance
     @Provides
     public OkHttpClient getApplicationOkHttpClient() {
         return Mysplash.getInstance().getHttpClient();
@@ -29,7 +29,7 @@ public class NetworkModule {
         return GsonConverterFactory.create();
     }
 
-    @ApplicationInstace
+    @ApplicationInstance
     @Provides
     public GsonConverterFactory getApplicationGsonConverterFactory() {
         return Mysplash.getInstance().getGsonConverterFactory();
@@ -40,7 +40,7 @@ public class NetworkModule {
         return RxJava2CallAdapterFactory.create();
     }
 
-    @ApplicationInstace
+    @ApplicationInstance
     @Provides
     public RxJava2CallAdapterFactory getApplicationRxJava2CallAdapterFactory() {
         return Mysplash.getInstance().getRxJava2CallAdapterFactory();

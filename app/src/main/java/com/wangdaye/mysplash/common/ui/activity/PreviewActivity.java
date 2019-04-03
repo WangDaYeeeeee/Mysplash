@@ -14,7 +14,7 @@ import com.wangdaye.mysplash.common.basic.model.Previewable;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollPhotoView;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollPhotoView;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 
 import butterknife.BindView;
@@ -116,7 +116,8 @@ public class PreviewActivity extends MysplashActivity
     private void showIcons() {
         TranslateAnimation show = new TranslateAnimation(
                 0, 0,
-                0, -iconContainer.getMeasuredHeight());
+                0, -iconContainer.getMeasuredHeight()
+        );
         show.setFillEnabled(true);
         show.setFillAfter(true);
         show.setDuration(200);
@@ -127,7 +128,8 @@ public class PreviewActivity extends MysplashActivity
     private void hideIcons() {
         TranslateAnimation hide = new TranslateAnimation(
                 0, 0,
-                -iconContainer.getMeasuredHeight(), 0);
+                -iconContainer.getMeasuredHeight(), 0
+        );
         hide.setFillEnabled(true);
         hide.setFillAfter(true);
         hide.setDuration(200);
@@ -138,7 +140,8 @@ public class PreviewActivity extends MysplashActivity
     private void showWidget() {
         TranslateAnimation show = new TranslateAnimation(
                 0, 0,
-                0, widgetContainer.getMeasuredHeight());
+                0, widgetContainer.getMeasuredHeight()
+        );
         show.setFillEnabled(true);
         show.setFillAfter(true);
         show.setDuration(200);
@@ -149,7 +152,8 @@ public class PreviewActivity extends MysplashActivity
     private void hideWidget() {
         TranslateAnimation hide = new TranslateAnimation(
                 0, 0,
-                widgetContainer.getMeasuredHeight(), 0);
+                widgetContainer.getMeasuredHeight(), 0
+        );
         hide.setFillEnabled(true);
         hide.setFillAfter(true);
         hide.setDuration(200);
@@ -160,18 +164,19 @@ public class PreviewActivity extends MysplashActivity
     private float getMaxiScale(boolean fullSize) {
         if (previewable instanceof Photo) {
             if (fullSize) {
-                double scaleRatio = 0.7
-                        * Math.max(
+                double scaleRatio = 0.7 * Math.max(
                         getResources().getDisplayMetrics().widthPixels,
-                        getResources().getDisplayMetrics().heightPixels)
-                        / Math.min(previewable.getWidth(), previewable.getHeight());
+                        getResources().getDisplayMetrics().heightPixels
+                ) / Math.min(previewable.getWidth(), previewable.getHeight());
                 return getMaxiScale(
                         (int) (scaleRatio * previewable.getWidth()),
-                        (int) (scaleRatio * previewable.getHeight()));
+                        (int) (scaleRatio * previewable.getHeight())
+                );
             } else {
                 return getMaxiScale(
                         1080,
-                        (int) (1080.0 * previewable.getHeight() / previewable.getWidth()));
+                        (int) (1080.0 * previewable.getHeight() / previewable.getWidth())
+                );
             }
         } else {
             return getMaxiScale(previewable.getWidth(), previewable.getHeight());
@@ -229,20 +234,19 @@ public class PreviewActivity extends MysplashActivity
     // on swipe listener.
 
     @Override
-    public boolean canSwipeBack(int dir) {
+    public boolean canSwipeBack(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         return true;
     }
 
     @Override
     public void onSwipeProcess(float percent) {
         container.setBackgroundColor(
-                Color.argb(
-                        (int) (255 * 0.5 * (2 - percent)),
-                        0, 0, 0));
+                Color.argb((int) (255 * 0.5 * (2 - percent)), 0, 0, 0)
+        );
     }
 
     @Override
-    public void onSwipeFinish(int dir) {
+    public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
         finishSelf(false);
     }
 }

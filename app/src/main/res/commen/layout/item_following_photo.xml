@@ -21,12 +21,12 @@
         android:layout_height="wrap_content"
         tools:ignore="UselessParent">
 
-        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
+        <com.wangdaye.mysplash.common.ui.widget.CoverImageView
             android:id="@+id/item_following_photo_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            app:fiv_shadow_position="bottom"
+            app:civ_shadow_position="bottom"
             tools:background="@color/colorPrimary_dark" />
 
         <RelativeLayout

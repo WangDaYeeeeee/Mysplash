@@ -44,6 +44,7 @@ public abstract class MysplashActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState == null) {
             Mysplash.getInstance().addActivity(this);
         } else {

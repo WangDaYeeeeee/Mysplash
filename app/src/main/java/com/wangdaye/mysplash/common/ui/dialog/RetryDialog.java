@@ -53,8 +53,7 @@ public class RetryDialog extends MysplashDialogFragment {
                         }
                     }
                     return false;
-                })
-                .create();
+                }).create();
         dialog.setCanceledOnTouchOutside(true);
         return dialog;
     }

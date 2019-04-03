@@ -16,13 +16,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
+        <com.wangdaye.mysplash.common.ui.widget.CoverImageView
             android:id="@+id/item_selected_cover"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
             android:alpha="0.5"
-            app:fiv_shadow_position="none"
+            app:civ_shadow_position="none"
             tools:src="?attr/title_color" />
 
         <RelativeLayout

@@ -70,13 +70,14 @@ public class SelectedView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
@@ -86,18 +87,21 @@ public class SelectedView extends BothWaySwipeRefreshLayout
             recyclerView.setPadding(0, 0, 0, 0);
         }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+        );
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 56),
-                MultipleStateRecyclerView.STATE_LOADING);
+                MultipleStateRecyclerView.STATE_LOADING
+        );
         recyclerView.setAdapter(
                 new LargeErrorStateAdapter(
                         getContext(), 56,
                         R.drawable.feedback_no_photos,
                         getContext().getString(R.string.feedback_load_failed_tv),
                         getContext().getString(R.string.feedback_click_retry),
-                        this),
-                MultipleStateRecyclerView.STATE_ERROR);
+                        this
+                ), MultipleStateRecyclerView.STATE_ERROR
+        );
         recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
 
         stateManagePresenter = new PagerStateManagePresenter(recyclerView);
@@ -111,8 +115,13 @@ public class SelectedView extends BothWaySwipeRefreshLayout
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        SelectedView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, 0, dy);
+                        SelectedView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        0,
+                        dy
+                );
             }
         });
     }
@@ -152,12 +161,12 @@ public class SelectedView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeRefreshing(boolean permit) {
-        setPermitRefresh(permit);
+        setRefreshEnabled(permit);
     }
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

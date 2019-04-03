@@ -28,7 +28,8 @@ public class PhotoSearchPageView extends AbstractSearchPageView {
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
         return new StaggeredGridLayoutManager(
-                DisplayUtils.getGirdColumnCount(getContext()), StaggeredGridLayoutManager.VERTICAL);
+                DisplayUtils.getGirdColumnCount(getContext()), StaggeredGridLayoutManager.VERTICAL
+        );
     }
 
     @Override

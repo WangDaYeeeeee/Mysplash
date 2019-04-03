@@ -33,7 +33,8 @@ public class CollectionPhotosViewRepository {
                 collectionId,
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void getCuratedCollectionPhotos(@NonNull MutableLiveData<ListResource<Photo>> current,
@@ -50,7 +51,8 @@ public class CollectionPhotosViewRepository {
                 collectionId,
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void cancel() {

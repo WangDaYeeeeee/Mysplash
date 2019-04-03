@@ -29,19 +29,16 @@ import butterknife.ButterKnife;
 
 public class CircularProgressIcon extends FrameLayout {
 
-    @BindView(R.id.container_circular_progress_icon_image)
-    AppCompatImageView image;
+    @BindView(R.id.container_circular_progress_icon_image) AppCompatImageView image;
 
-    @BindView(R.id.container_circular_progress_icon_progress)
-    CircularProgressView progress;
+    @BindView(R.id.container_circular_progress_icon_progress) CircularProgressView progress;
 
     private ShowAnimation showAnimation;
     private HideAnimation hideAnimation;
 
     private boolean animating;
 
-    @StateRule
-    private int state;
+    @StateRule private int state;
 
     public static final int STATE_PROGRESS = -1;
     public static final int STATE_RESULT = 1;
@@ -166,7 +163,6 @@ public class CircularProgressIcon extends FrameLayout {
             hideAnimation = new HideAnimation(image);
             image.startAnimation(hideAnimation);
         }
-        // else forceSetProgressState();
     }
 
     public void setResultState(@DrawableRes int imageId) {

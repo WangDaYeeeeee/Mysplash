@@ -55,12 +55,12 @@ public class MysplashPopupWindow extends PopupWindow {
 
         int[] screenSizes = new int[] {
                 anchor.getContext().getResources().getDisplayMetrics().widthPixels,
-                anchor.getContext().getResources().getDisplayMetrics().heightPixels};
+                anchor.getContext().getResources().getDisplayMetrics().heightPixels
+        };
         int[] triggers = new int[] {
-                screenSizes[1]
-                        - 6 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin),
-                screenSizes[1]
-                        - 6 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin)};
+                screenSizes[1] - 6 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin),
+                screenSizes[1] - 6 * anchor.getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        };
 
         if (locations[0] <= triggers[0]) {
             if (locations[1] <= triggers[1]) {

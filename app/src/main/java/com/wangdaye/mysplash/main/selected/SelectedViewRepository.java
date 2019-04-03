@@ -33,7 +33,8 @@ public class SelectedViewRepository {
                 "unsplash",
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void cancel() {

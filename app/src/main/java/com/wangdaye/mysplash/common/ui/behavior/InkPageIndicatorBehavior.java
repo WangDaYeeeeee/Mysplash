@@ -8,6 +8,8 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
  * Ink page indicator behavior.
  *
@@ -23,14 +25,15 @@ public class InkPageIndicatorBehavior<V extends InkPageIndicator> extends Coordi
     }
 
     @Override
-    public boolean onLayoutChild(CoordinatorLayout parent, V child, int layoutDirection) {
+    public boolean onLayoutChild(@NotNull CoordinatorLayout parent, @NotNull V child, int layoutDirection) {
         int marginTop = parent.getResources().getDimensionPixelSize(R.dimen.normal_margin);
         int statusBarHeight = DisplayUtils.getStatusBarHeight(parent.getContext().getResources());
         child.layout(
                 (int) (0.5 * (parent.getMeasuredWidth() - child.getMeasuredWidth())),
                 marginTop + statusBarHeight,
                 (int) (0.5 * (parent.getMeasuredWidth() + child.getMeasuredWidth())),
-                marginTop + statusBarHeight + child.getMeasuredHeight());
+                marginTop + statusBarHeight + child.getMeasuredHeight()
+        );
         return true;
     }
 }

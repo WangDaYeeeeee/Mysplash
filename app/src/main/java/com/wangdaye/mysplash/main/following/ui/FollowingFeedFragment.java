@@ -13,21 +13,28 @@ import android.view.animation.Transformation;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
+import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.following.FollowingFeedViewManagePresenter;
 import com.wangdaye.mysplash.main.following.FollowingFeedViewModel;
+import com.wangdaye.mysplash.main.following.ui.adapter.FollowingAdapter;
+import com.wangdaye.mysplash.main.following.ui.adapter.FollowingItemEventHelper;
+import com.wangdaye.mysplash.main.following.ui.adapter.PhotoFeedHolder;
+import com.wangdaye.mysplash.main.following.ui.adapter.TitleFeedHolder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,6 +63,7 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
     private FollowingAdapter followingAdapter;
 
     private PagerLoadablePresenter loadablePresenter;
+    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
 
     private FollowingFeedViewModel feedViewModel;
     @Inject DaggerViewModelFactory viewModelFactory;
@@ -89,7 +97,7 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
             feedView.setY(contentStartY + (contentEndY - contentStartY) * interpolatedTime);
-            feedView.setOffsetY(-appBar.getY());
+            feedView.setOffsetY(appBar.getY());
         }
     }
 
@@ -140,7 +148,8 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
             DisplayUtils.setNavigationBarStyle(
                     getActivity(),
                     feedView.getState() == PagerView.State.NORMAL,
-                    true);
+                    true
+            );
         }
     }
 
@@ -174,7 +183,8 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
         return loadablePresenter.loadMore(
                 list, headIndex, headDirection,
                 feedView, feedView.getRecyclerView(), followingAdapter,
-                this, 0);
+                this, 0
+        );
     }
 
     // init.
@@ -200,11 +210,28 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
             }
         });
 
+        FollowingItemEventHelper itemEventHelper = new FollowingItemEventHelper(
+                (MysplashActivity) getActivity(),
+                Objects.requireNonNull(feedViewModel.getListResource().getValue()).dataList,
+                likeOrDislikePhotoPresenter) {
+            @Override
+            public void downloadPhoto(Photo photo) {
+                ((MainActivity) Objects.requireNonNull(getActivity())).downloadPhoto(photo);
+            }
+        };
         followingAdapter = new FollowingAdapter(
                 getActivity(),
                 Objects.requireNonNull(feedViewModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(getActivity()));
-        followingAdapter.setItemEventCallback((MainActivity) getActivity());
+                Arrays.asList(
+                        new TitleFeedHolder.Factory(
+                                DisplayUtils.getGirdColumnCount(getActivity()),
+                                itemEventHelper
+                        ), new PhotoFeedHolder.Factory(
+                                DisplayUtils.getGirdColumnCount(getActivity()),
+                                itemEventHelper
+                        )
+                )
+        );
         feedView.setAdapterAndMangeView(followingAdapter, this);
 
         loadablePresenter = new PagerLoadablePresenter() {
@@ -216,7 +243,11 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
 
         feedViewModel.getListResource().observe(this, resource ->
                 FollowingFeedViewManagePresenter.responsePagerListResourceChanged(
-                        resource, feedView, followingAdapter));
+                        resource,
+                        feedView,
+                        followingAdapter
+                )
+        );
     }
 
     // control.
@@ -275,7 +306,7 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
 
     @Override
     public void onNestedScrolling() {
-        feedView.setOffsetY(-appBar.getY());
+        feedView.setOffsetY(appBar.getY());
         if (getActivity() != null) {
             if (needSetDarkStatusBar()) {
                 if (statusBar.isInitState()) {

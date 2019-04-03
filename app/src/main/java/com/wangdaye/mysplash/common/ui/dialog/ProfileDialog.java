@@ -91,7 +91,8 @@ public class ProfileDialog extends MysplashDialogFragment {
                             + user.total_collections + " " + getResources().getStringArray(R.array.user_tabs)[1] + "\n"
                             + user.total_likes + " " + getResources().getStringArray(R.array.user_tabs)[2] + "\n"
                             + user.followers_count + " " + getResources().getStringArray(R.array.my_follow_tabs)[0] + "\n"
-                            + user.following_count + " " + getResources().getStringArray(R.array.my_follow_tabs)[1]);
+                            + user.following_count + " " + getResources().getStringArray(R.array.my_follow_tabs)[1]
+            );
 
             AnimUtils.animShow(scrollView);
             AnimUtils.animHide(progressView);

@@ -31,6 +31,7 @@ public class MainActivityModel extends ViewModel
             drawerSelectedId.setValue(defaultId);
             init = true;
         }
+
         if (userResource == null) {
             userResource = new MutableLiveData<>();
             userResource.setValue(resource);
@@ -61,7 +62,10 @@ public class MainActivityModel extends ViewModel
     }
 
     void selectDrawerItem(int id) {
-        drawerSelectedId.setValue(id);
+        Integer currentId = drawerSelectedId.getValue();
+        if (currentId != null && currentId != id) {
+            drawerSelectedId.setValue(id);
+        }
     }
 
     MutableLiveData<Resource<User>> getUserResource() {

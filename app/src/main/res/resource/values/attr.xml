@@ -28,9 +28,9 @@
     </declare-styleable>
 
     <!-- FreedomImageView -->
-    <declare-styleable name="FreedomImageView">
-        <attr name="fiv_not_free" format="boolean" />
-        <attr name="fiv_shadow_position">
+    <declare-styleable name="CoverImageView">
+        <attr name="civ_dynamic_size" format="boolean" />
+        <attr name="civ_shadow_position">
             <enum name="top" value="1" />
             <enum name="bottom" value="-1" />
             <enum name="both" value="2" />
@@ -56,7 +56,7 @@
     </declare-styleable>
     
     <!-- CoverMaskLayout -->
-    <declare-styleable name="CoverMaskLayout">
+    <declare-styleable name="CoverMaskImageView">
         <attr name="cml_gradient_angle" format="float" />
         <attr name="cml_from_alpha" format="float" />
         <attr name="cml_to_alpha" format="float" />

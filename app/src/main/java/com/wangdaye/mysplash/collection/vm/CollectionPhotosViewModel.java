@@ -104,7 +104,12 @@ public class CollectionPhotosViewModel extends PagerViewModel<Photo>
                 && photoEvent.collection.id == collectionId) {
             // this photo was been added to this collection.
             getListResource().setValue(
-                    ListResource.insertItem(getListResource().getValue(), photoEvent.photo, 0));
+                    ListResource.insertItem(
+                            getListResource().getValue(),
+                            photoEvent.photo,
+                            0
+                    )
+            );
             return;
         }
 

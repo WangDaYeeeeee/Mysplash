@@ -17,8 +17,8 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.ui.activity.DownloadManageActivity;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
-import com.wangdaye.mysplash.main.MainActivity;
-import com.wangdaye.mysplash.me.ui.MeActivity;
+import com.wangdaye.mysplash.me.ui.activity.MeActivity;
+import com.wangdaye.mysplash.search.ui.SearchActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +51,9 @@ public class ShortcutsManager {
 
     private static boolean needRefresh(Context context) {
         SharedPreferences sharedPreferences = context.getSharedPreferences(
-                PREFERENCE_NAME, Context.MODE_PRIVATE);
+                PREFERENCE_NAME,
+                Context.MODE_PRIVATE
+        );
         int versionCode = sharedPreferences.getInt(KEY_VERSION_CODE, 0);
         boolean authorized = sharedPreferences.getBoolean(KEY_AUTHORIZED, false);
         String avatarUrl = sharedPreferences.getString(KEY_AVATAR_URL, "");
@@ -103,24 +105,28 @@ public class ShortcutsManager {
                                 getShortcutsIcon(
                                         context,
                                         R.drawable.ic_shortcut_search,
-                                        R.drawable.ic_shortcut_search_foreground))
-                        .setShortLabel(context.getString(R.string.action_search))
+                                        R.drawable.ic_shortcut_search_foreground
+                                )
+                        ).setShortLabel(context.getString(R.string.action_search))
                         .setLongLabel(context.getString(R.string.action_search))
-                        .setIntent(new Intent(MainActivity.ACTION_SEARCH))
+                        .setIntent(new Intent(SearchActivity.ACTION_SEARCH))
                         .setRank(2)
-                        .build());
+                        .build()
+        );
         shortcutList.add(
                 new ShortcutInfo.Builder(context, context.getString(R.string.action_download_manage))
                         .setIcon(
                                 getShortcutsIcon(
                                         context,
                                         R.drawable.ic_shortcut_download,
-                                        R.drawable.ic_shortcut_download_foreground))
-                        .setShortLabel(context.getString(R.string.action_download_manage))
+                                        R.drawable.ic_shortcut_download_foreground
+                                )
+                        ).setShortLabel(context.getString(R.string.action_download_manage))
                         .setLongLabel(context.getString(R.string.action_download_manage))
                         .setIntent(new Intent(DownloadManageActivity.ACTION_DOWNLOAD_MANAGER))
                         .setRank(3)
-                        .build());
+                        .build()
+        );
 
         if (AuthManager.getInstance().isAuthorized() && AuthManager.getInstance().getUser() != null) {
 
@@ -133,7 +139,9 @@ public class ShortcutsManager {
                             ImageHelper.loadBitmap(
                                     context,
                                     R.drawable.default_avatar_foreground,
-                                    size, size));
+                                    size, size
+                            )
+                    );
                 } catch (ExecutionException | InterruptedException e) {
                     icon = Icon.createWithResource(context, R.drawable.default_avatar_round);
                 }
@@ -148,7 +156,8 @@ public class ShortcutsManager {
                             .setLongLabel(AuthManager.getInstance().getUser().username)
                             .setIntent(
                                     new Intent("com.wangdaye.mysplash.Me")
-                                            .putExtra(MeActivity.EXTRA_BROWSABLE, true))
+                                            .putExtra(MeActivity.EXTRA_BROWSABLE, true)
+                            )
                             .setRank(1)
                             .build());
         }

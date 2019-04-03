@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -30,8 +30,7 @@ import butterknife.ButterKnife;
 /**
  * Home photos view.
  *
- * This view is used to show {@link Photo} for
- * {@link HomeFragment}.
+ * This view is used to show {@link Photo} for {@link HomeFragment}.
  *
  * */
 
@@ -77,14 +76,14 @@ public class HomePhotosView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
-
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         recyclerView.setAdapter(adapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
@@ -95,24 +94,32 @@ public class HomePhotosView extends BothWaySwipeRefreshLayout
             recyclerView.setPadding(0, 0, 0, 0);
         }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+        );
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 98),
-                MultipleStateRecyclerView.STATE_LOADING);
+                MultipleStateRecyclerView.STATE_LOADING
+        );
         recyclerView.setAdapter(
                 new LargeErrorStateAdapter(
                         getContext(), 98,
                         R.drawable.feedback_no_photos,
                         getContext().getString(R.string.feedback_load_failed_tv),
                         getContext().getString(R.string.feedback_click_retry),
-                        this),
-                MultipleStateRecyclerView.STATE_ERROR);
+                        this
+                ), MultipleStateRecyclerView.STATE_ERROR
+        );
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        HomePhotosView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, index, dy);
+                        HomePhotosView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        index,
+                        dy
+                );
             }
         });
         recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
@@ -151,12 +158,12 @@ public class HomePhotosView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeRefreshing(boolean permit) {
-        setPermitRefresh(permit);
+        setRefreshEnabled(permit);
     }
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

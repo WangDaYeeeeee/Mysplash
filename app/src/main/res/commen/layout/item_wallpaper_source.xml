@@ -20,13 +20,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
-        <com.wangdaye.mysplash.common.ui.widget.freedomSizeView.FreedomImageView
+        <com.wangdaye.mysplash.common.ui.widget.CoverImageView
             android:id="@+id/item_wallpaper_source_cover"
             android:layout_width="172dp"
             android:layout_height="128dp"
             android:scaleType="centerCrop"
-            app:fiv_not_free="true"
-            app:fiv_shadow_position="top"
+            app:civ_dynamic_size="false"
+            app:civ_shadow_position="top"
             tools:src="?attr/title_color" />
 
         <androidx.appcompat.widget.AppCompatImageButton

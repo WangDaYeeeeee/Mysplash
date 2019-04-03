@@ -23,52 +23,52 @@ import java.util.List;
 
 public class AndroidDownloaderService extends DownloaderService {
 
-    @Nullable
-    private DownloadManager downloadManager;
-    private Handler handler;
+    @Nullable private DownloadManager downloadManager;
 
-    @Nullable
-    private PollingRunnable runnable;
+    private Handler handler;
+    private final Object listenerLock = new Object();
+
+    @Nullable private PollingRunnable runnable;
     private class PollingRunnable extends FlagRunnable {
+
         @Override
         public void run() {
             while (isRunning() && listenerList != null) {
-                for (int i = 0; isRunning() && i < listenerList.size(); i ++) {
-                    if (listenerList.get(i).result != RESULT_DOWNLOADING) {
-                        listenerList.remove(i);
-                        i --;
-                        if (listenerList.size() == 0) {
-                            setRunning(false);
-                            runnable = null;
-                            return;
-                        }
-                    } else {
-                        final PollingResult targetResult = getDownloadInformation(listenerList.get(i).missionId);
-                        final OnDownloadListener targetListener = listenerList.get(i);
-                        handler.post(() -> {
-                            targetListener.result = targetResult.result;
-                            if (targetResult.result == RESULT_DOWNLOADING) {
-                                targetListener.onProcess(targetResult.process);
-                            } else {
-                                targetListener.onComplete(targetResult.result);
+                synchronized (listenerLock) {
+                    for (int i = 0; isRunning() && i < listenerList.size(); i ++) {
+                        if (listenerList.get(i).result != DownloadMissionEntity.RESULT_DOWNLOADING) {
+                            listenerList.remove(i);
+                            i --;
+                            if (listenerList.size() == 0) {
+                                setRunning(false);
+                                runnable = null;
+                                return;
                             }
-                        });
-                        SystemClock.sleep(50);
+                        } else {
+                            final PollingResult targetResult = getDownloadInformation(listenerList.get(i).missionId);
+                            final OnDownloadListener targetListener = listenerList.get(i);
+                            handler.post(() -> {
+                                targetListener.result = targetResult.result;
+                                if (targetResult.result == DownloadMissionEntity.RESULT_DOWNLOADING) {
+                                    targetListener.onProcess(targetResult.process);
+                                } else {
+                                    targetListener.onComplete(targetResult.result);
+                                }
+                            });
+                        }
                     }
                 }
-                SystemClock.sleep(50);
+                SystemClock.sleep(100);
             }
         }
     }
 
     private class PollingResult {
 
-        @DownloadResultRule
-        int result;
-
+        @DownloadMissionEntity.DownloadResultRule int result;
         float process;
 
-        PollingResult(@DownloadResultRule int result, float process) {
+        PollingResult(@DownloadMissionEntity.DownloadResultRule int result, float process) {
             this.result = result;
             this.process = process;
         }
@@ -93,11 +93,12 @@ public class AndroidDownloaderService extends DownloaderService {
                 .setDescription(c.getString(R.string.feedback_downloading))
                 .setDestinationInExternalPublicDir(
                         Mysplash.DOWNLOAD_PATH,
-                        entity.title + entity.getFormat());
+                        entity.title + entity.getFormat()
+                );
         request.allowScanningByMediaScanner();
 
         entity.missionId = downloadManager.enqueue(request);
-        entity.result = RESULT_DOWNLOADING;
+        entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
         DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
 
         if (showSnackbar) {
@@ -126,7 +127,7 @@ public class AndroidDownloaderService extends DownloaderService {
             return;
         }
 
-        if (entity.result != RESULT_SUCCEED) {
+        if (entity.result != DownloadMissionEntity.RESULT_SUCCEED) {
             downloadManager.remove(entity.missionId);
         }
         if (deleteEntity) {
@@ -142,7 +143,7 @@ public class AndroidDownloaderService extends DownloaderService {
         }
 
         for (int i = 0; i < entityList.size(); i ++) {
-            if (entityList.get(i).result != RESULT_SUCCEED) {
+            if (entityList.get(i).result != DownloadMissionEntity.RESULT_SUCCEED) {
                 downloadManager.remove(entityList.get(i).missionId);
             }
         }
@@ -169,7 +170,9 @@ public class AndroidDownloaderService extends DownloaderService {
 
     @Override
     public void addOnDownloadListener(@NonNull OnDownloadListener l) {
-        super.addOnDownloadListener(l);
+        synchronized (listenerLock) {
+            super.addOnDownloadListener(l);
+        }
         if (runnable == null || !runnable.isRunning()) {
             runnable = new PollingRunnable();
             ThreadManager.getInstance().execute(runnable);
@@ -178,7 +181,9 @@ public class AndroidDownloaderService extends DownloaderService {
 
     @Override
     public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
-        super.removeOnDownloadListener(l);
+        synchronized (listenerLock) {
+            super.removeOnDownloadListener(l);
+        }
         if (listenerList != null && listenerList.size() == 0
                 && runnable != null && runnable.isRunning()) {
             runnable.setRunning(false);
@@ -194,19 +199,19 @@ public class AndroidDownloaderService extends DownloaderService {
         DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(missionId);
         if (entity != null) {
             if (isMissionSuccess(missionId)) {
-                if (entity.downloadType != COLLECTION_TYPE) {
+                if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
                     downloadPhotoSuccess(c, entity);
                 } else {
                     downloadCollectionSuccess(c, entity);
                 }
-                updateMissionResult(c, entity, RESULT_SUCCEED);
+                updateMissionResult(c, entity, DownloadMissionEntity.RESULT_SUCCEED);
             } else {
-                if (entity.downloadType != COLLECTION_TYPE) {
+                if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
                     downloadPhotoFailed(c, entity);
                 } else {
                     downloadCollectionFailed(c, entity);
                 }
-                updateMissionResult(c, entity, RESULT_FAILED);
+                updateMissionResult(c, entity, DownloadMissionEntity.RESULT_FAILED);
             }
         }
     }
@@ -216,24 +221,24 @@ public class AndroidDownloaderService extends DownloaderService {
         if (cursor != null) {
             int result = getDownloadResult(cursor);
             cursor.close();
-            return result == RESULT_SUCCEED;
+            return result == DownloadMissionEntity.RESULT_SUCCEED;
         } else {
             return true;
         }
     }
 
-    @DownloadResultRule
+    @DownloadMissionEntity.DownloadResultRule
     private int getDownloadResult(@NonNull Cursor cursor) {
         switch (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
             case DownloadManager.STATUS_SUCCESSFUL:
-                return RESULT_SUCCEED;
+                return DownloadMissionEntity.RESULT_SUCCEED;
 
             case DownloadManager.STATUS_FAILED:
             case DownloadManager.STATUS_PAUSED:
-                return RESULT_FAILED;
+                return DownloadMissionEntity.RESULT_FAILED;
 
             default:
-                return RESULT_DOWNLOADING;
+                return DownloadMissionEntity.RESULT_DOWNLOADING;
         }
     }
 
@@ -264,9 +269,7 @@ public class AndroidDownloaderService extends DownloaderService {
             cursor.close();
             return result;
         }
-        return new PollingResult(
-                RESULT_SUCCEED,
-                100);
+        return new PollingResult(DownloadMissionEntity.RESULT_SUCCEED, 100);
     }
 
     private float getMissionProcess(@NonNull Cursor cursor) {

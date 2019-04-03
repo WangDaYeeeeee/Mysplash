@@ -14,6 +14,8 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import androidx.annotation.Nullable;
+
 /**
  * Anim utils.
  *
@@ -166,16 +168,16 @@ public class AnimUtils {
         }
     }
 
-    public static void animScale(final View v, int duration, int delay, float to) {
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(v, "scaleX", v.getScaleX(), to);
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(v, "scaleY", v.getScaleY(), to);
+    public static void animScale(final View v, int duration, int delay, float scaleTo) {
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(v, "scaleX", v.getScaleX(), scaleTo);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(v, "scaleY", v.getScaleY(), scaleTo);
 
         AnimatorSet set = new AnimatorSet();
         set.setDuration(duration);
-        set.setInterpolator(new DecelerateInterpolator());
         if (delay > 0) {
             set.setStartDelay(delay);
         }
+        set.setInterpolator(new DecelerateInterpolator());
 
         set.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -186,6 +188,7 @@ public class AnimUtils {
                 }
             }
         });
+
         set.play(scaleX).with(scaleY);
         set.start();
     }
@@ -193,8 +196,7 @@ public class AnimUtils {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public static Interpolator getFastOutSlowInInterpolator(Context context) {
         if (fastOutSlowIn == null) {
-            fastOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_slow_in);
+            fastOutSlowIn = AnimationUtils.loadInterpolator(context, android.R.interpolator.fast_out_slow_in);
         }
         return fastOutSlowIn;
     }

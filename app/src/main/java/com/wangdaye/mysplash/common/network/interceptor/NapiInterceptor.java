@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.common.network.interceptor;
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.Protocol;
 import okhttp3.Request;
@@ -21,12 +20,12 @@ import okio.GzipSource;
  *
  * */
 
-public class NapiInterceptor implements Interceptor {
+public class NapiInterceptor extends ReportExceptionInterceptor {
 
     private static final Charset UTF8 = Charset.forName("UTF-8");
 
     @Override
-    public Response intercept(Chain chain) throws IOException {
+    public Response intercept(Chain chain) {
         Request request = chain.request()
                 .newBuilder()
                 .addHeader("authority", "unsplash.com")
@@ -39,10 +38,51 @@ public class NapiInterceptor implements Interceptor {
                 .addHeader("upgrade-insecure-requests", "1")
                 .addHeader("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
                 .build();
-        return buildResponse(request, chain.proceed(request));
+        try {
+            return buildResponse(request, chain.proceed(request));
+        } catch (Exception e) {
+            handleException(e);
+            return new Response.Builder().build();
+        }
     }
 
     private Response buildResponse(Request request, Response response) throws IOException {
-        return response;
+        // return response;
+
+        ResponseBody body = response.body();
+        if (body == null) {
+            return response;
+        }
+
+        BufferedSource source = body.source();
+        source.request(Long.MAX_VALUE); // Buffer the entire body.
+        Buffer buffer = source.buffer();
+
+        if ("gzip".equalsIgnoreCase(response.headers().get("Content-Encoding"))) {
+            try (GzipSource gzippedResponseBody = new GzipSource(buffer.clone())) {
+                buffer = new Buffer();
+                buffer.writeAll(gzippedResponseBody);
+            }
+        }
+
+        Charset charset = UTF8;
+        MediaType contentType = body.contentType();
+        if (contentType != null) {
+            charset = contentType.charset(UTF8);
+        }
+
+        String bodyString = "";
+        if (charset != null) {
+            bodyString = buffer.clone().readString(charset);
+        }
+
+        return new Response.Builder()
+                .addHeader("Content-Type", "application/json")
+                .code(response.code())
+                .body(ResponseBody.create(body.contentType(), bodyString))
+                .message(response.message())
+                .request(request)
+                .protocol(Protocol.HTTP_2)
+                .build();
     }
 }

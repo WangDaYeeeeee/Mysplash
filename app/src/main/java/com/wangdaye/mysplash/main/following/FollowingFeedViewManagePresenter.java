@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.main.following;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.main.following.ui.FollowingAdapter;
+import com.wangdaye.mysplash.main.following.ui.adapter.FollowingAdapter;
 
 public class FollowingFeedViewManagePresenter {
 
@@ -48,16 +48,24 @@ public class FollowingFeedViewManagePresenter {
                 adapter.buildTypeList(0);
                 adapter.notifyDataSetChanged();
             } else if (resource.event instanceof ListResource.ItemRangeInserted) {
+
                 int increase = ((ListResource.ItemRangeInserted) resource.event).increase;
                 int positionPhotoStart = adapter.getRealItemCount() - increase;
                 int positionTypeStart = adapter.getTypeItemCount();
+
                 adapter.buildTypeList(positionPhotoStart);
                 adapter.notifyItemRangeInserted(
-                        positionTypeStart, adapter.getTypeItemCount() - positionTypeStart);
+                        positionTypeStart,
+                        adapter.getTypeItemCount() - positionTypeStart
+                );
             } else if (resource.event instanceof ListResource.ItemChanged) {
                 int position = adapter.getPhotoHolderAdapterPosition(
-                        ((ListResource.ItemChanged) resource.event).index);
-                adapter.notifyItemChanged(position, FollowingAdapter.PAYLOAD_UPDATE_ITEM);
+                        ((ListResource.ItemChanged) resource.event).index
+                );
+                adapter.notifyItemChanged(
+                        position,
+                        FollowingAdapter.PAYLOAD_UPDATE_ITEM
+                );
             }
         }
     }

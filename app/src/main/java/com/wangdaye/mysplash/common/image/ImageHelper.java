@@ -13,6 +13,7 @@ import android.os.Build;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.Size;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -210,15 +211,6 @@ public class ImageHelper {
                 .into(view);
     }
 
-    public static void loadResourceCircularImage(Context context, ImageView view, int resId) {
-        Glide.with(checkContextNull(context))
-                .load(resId)
-                .dontAnimate()
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .transform(new CircleTransformation(context))
-                .into(view);
-    }
-
     // bitmap.
 
     public static void loadBitmap(Context context, Target<Bitmap> target, Uri uri) {
@@ -235,14 +227,11 @@ public class ImageHelper {
                 .into(view);
     }
 
-    public static Bitmap loadBitmap(Context context, @NonNull Photo photo)
+    public static Bitmap loadBitmap(Context context, Uri uri, @Size(2) int[] size)
             throws ExecutionException, InterruptedException {
-        context = checkContextNull(context);
-        int[] size = photo.getWallpaperSize(context);
-        return Glide.with(context)
-                .load(photo.getWallpaperSizeUrl(context))
+        return Glide.with(checkContextNull(context))
+                .load(uri)
                 .asBitmap()
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(size[0], size[1])
                 .get();
     }
@@ -271,25 +260,6 @@ public class ImageHelper {
             request.listener(new BaseRequestListener<>(l));
         }
         request.into(view);
-    }
-
-    public static void loadImageFromUrl(Context context,
-                                         Target<Bitmap> target, String url, boolean clipWithCircle) {
-        context = checkContextNull(context);
-        if (clipWithCircle) {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .transform(new CircleTransformation(context))
-                    .into(target);
-        } else {
-            Glide.with(context)
-                    .load(url)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .into(target);
-        }
     }
 
     // animation.

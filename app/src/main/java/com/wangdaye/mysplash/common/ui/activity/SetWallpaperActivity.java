@@ -10,10 +10,10 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import android.os.ParcelFileDescriptor;
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -33,8 +33,6 @@ import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash.common.basic.SafeHandler;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,10 +41,16 @@ import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.RxLifecycle;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Set wallpaper activity.
@@ -58,16 +62,35 @@ import butterknife.OnClick;
 public class SetWallpaperActivity extends ReadWriteActivity
         implements WallpaperClipPopupWindow.OnClipTypeChangedListener,
         WallpaperAlignPopupWindow.OnAlignTypeChangedListener,
-        WallpaperWhereDialog.OnWhereSelectedListener, SafeHandler.HandlerContainer {
+        WallpaperWhereDialog.OnWhereSelectedListener {
 
     @BindView(R.id.activity_set_wallpaper_container) CoordinatorLayout container;
-    @BindView(R.id.activity_set_wallpaper_closeBtn) AppCompatImageButton closeBtn;
-    @BindView(R.id.activity_set_wallpaper_typeBtn) AppCompatImageView typeBtn;
-    @BindView(R.id.activity_set_wallpaper_alignBtn) AppCompatImageView alignBtn;
-    @BindView(R.id.activity_set_wallpaper_setBtn) Button setBtn;
-    @BindView(R.id.activity_set_wallpaper_photoView) PhotoView photoView;
 
-    private SafeHandler<SetWallpaperActivity> handler;
+    @BindView(R.id.activity_set_wallpaper_closeBtn) AppCompatImageButton closeBtn;
+    @OnClick(R.id.activity_set_wallpaper_closeBtn) void close() {
+        finishSelf(true);
+    }
+
+    @BindView(R.id.activity_set_wallpaper_typeBtn) AppCompatImageView typeBtn;
+    @OnClick(R.id.activity_set_wallpaper_typeBtn) void showTypePopup() {
+        WallpaperClipPopupWindow popup = new WallpaperClipPopupWindow(this, typeBtn, clipType);
+        popup.setOnClipTypeChangedListener(this);
+    }
+
+    @BindView(R.id.activity_set_wallpaper_alignBtn) AppCompatImageView alignBtn;
+    @OnClick(R.id.activity_set_wallpaper_alignBtn) void showAlignPopup() {
+        WallpaperAlignPopupWindow popup = new WallpaperAlignPopupWindow(this, alignBtn, alignType);
+        popup.setAlignTypeChangedListener(this);
+    }
+
+    @BindView(R.id.activity_set_wallpaper_setBtn) Button setBtn;
+    @OnClick(R.id.activity_set_wallpaper_setBtn) void set() {
+        WallpaperWhereDialog dialog = new WallpaperWhereDialog();
+        dialog.setOnWhereSelectedListener(this);
+        dialog.show(getSupportFragmentManager(), null);
+    }
+
+    @BindView(R.id.activity_set_wallpaper_photoView) PhotoView photoView;
 
     private boolean light;
 
@@ -107,8 +130,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @Override
     protected void setTheme() {
-        getWindow().getDecorView().setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         }
@@ -160,8 +182,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
     }
 
     private void initWidget() {
-        this.handler = new SafeHandler<>(this);
-
         setTypeIcon(clipType);
         setAlignIcon(alignType);
 
@@ -181,7 +201,8 @@ public class SetWallpaperActivity extends ReadWriteActivity
                         setStyle();
                     }
                 },
-                getIntent().getData());
+                getIntent().getData()
+        );
     }
 
     // control.
@@ -192,17 +213,16 @@ public class SetWallpaperActivity extends ReadWriteActivity
     private void setStyle() {
         if (light) {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+                getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             } else {
                 getWindow().getDecorView().setSystemUiVisibility(
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                );
             }
             closeBtn.setImageResource(R.drawable.ic_toolbar_close_light);
             setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextDark2nd));
         } else {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
             closeBtn.setImageResource(R.drawable.ic_toolbar_close_dark);
             setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextLight2nd));
         }
@@ -312,10 +332,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
         return null;
     }
 
-    private void loadSourceBitmap(final OnLoadSourceListener l) {
+    @WorkerThread
+    @Nullable
+    private Bitmap loadSourceBitmap() {
         InputStream stream = getPhotoStream();
         if (stream == null) {
-            return;
+            return null;
         }
 
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -339,17 +361,18 @@ public class SetWallpaperActivity extends ReadWriteActivity
             width = manager.getDesiredMinimumWidth();
             height = (int) (1.0 * options.outHeight / options.outWidth * manager.getDesiredMinimumWidth());
         }
-        ImageHelper.loadBitmap(
-                this,
-                new SimpleTarget<Bitmap>(width, height) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        if (l != null) {
-                            l.onLoadSourceBitmap(resource);
-                        }
-                    }
-                },
-                getIntent().getData());
+        try {
+            return ImageHelper.loadBitmap(
+                    this,
+                    getIntent().getData(),
+                    new int[] {width, height}
+            );
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -471,32 +494,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     // interface.
 
-    private interface OnLoadSourceListener {
-        void onLoadSourceBitmap(Bitmap source);
-    }
-
-    // on click listener.
-
-    @OnClick(R.id.activity_set_wallpaper_closeBtn) void close() {
-        finishSelf(true);
-    }
-
-    @OnClick(R.id.activity_set_wallpaper_typeBtn) void showTypePopup() {
-        WallpaperClipPopupWindow popup = new WallpaperClipPopupWindow(this, typeBtn, clipType);
-        popup.setOnClipTypeChangedListener(this);
-    }
-
-    @OnClick(R.id.activity_set_wallpaper_alignBtn) void showAlignPopup() {
-        WallpaperAlignPopupWindow popup = new WallpaperAlignPopupWindow(this, alignBtn, alignType);
-        popup.setAlignTypeChangedListener(this);
-    }
-
-    @OnClick(R.id.activity_set_wallpaper_setBtn) void set() {
-        WallpaperWhereDialog dialog = new WallpaperWhereDialog();
-        dialog.setOnWhereSelectedListener(this);
-        dialog.show(getSupportFragmentManager(), null);
-    }
-
     // on clip type changed listener.
 
     @Override
@@ -517,42 +514,33 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @Override
     public void onWhereSelected(int where) {
-        switch (where) {
-            case WHERE_WALLPAPER:
-                loadSourceBitmap(source -> ThreadManager.getInstance().execute(() -> {
-                    setWallpaper(source, true);
-                    handler.obtainMessage(WHERE_WALLPAPER).sendToTarget();
-                }));
-                break;
+        Observable.create(emitter -> {
+            Bitmap b = loadSourceBitmap();
+            if (b == null) {
+                emitter.onError(new NullPointerException());
+                return;
+            }
+            switch (where) {
+                case WHERE_WALLPAPER:
+                    setWallpaper(b, true);
+                    break;
 
-            case WHERE_LOCKSCREEN:
-                loadSourceBitmap(source -> ThreadManager.getInstance().execute(() -> {
-                    setWallpaper(source, false);
-                    handler.obtainMessage(WHERE_LOCKSCREEN).sendToTarget();
-                }));
-                break;
+                case WHERE_LOCKSCREEN:
+                    setWallpaper(b, false);
+                    break;
 
-            case WHERE_WALL_LOCK:
-                loadSourceBitmap(source -> ThreadManager.getInstance().execute(() -> {
-                    setWallpaper(source, true);
-                    setWallpaper(source, false);
-                    handler.obtainMessage(WHERE_WALL_LOCK).sendToTarget();
-                }));
-                break;
-        }
-    }
-
-    // handler container.
-
-    @Override
-    public void handleMessage(Message message) {
-        switch (message.what) {
-            case WHERE_WALLPAPER:
-            case WHERE_LOCKSCREEN:
-            case WHERE_WALL_LOCK:
-                IntentHelper.backToHome(this);
-                finishSelf(true);
-                break;
-        }
+                case WHERE_WALL_LOCK:
+                    setWallpaper(b, true);
+                    setWallpaper(b, false);
+                    break;
+            }
+            emitter.onComplete();
+        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> {
+                    IntentHelper.backToHome(this);
+                    finishSelf(true);
+                }).subscribe();
     }
 }

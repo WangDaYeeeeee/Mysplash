@@ -31,7 +31,8 @@ public class MultiFilterPhotoViewRepository {
         service.cancel();
         service.requestRandomPhotos(
                 null, featured, username, query, orientation,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void cancel() {

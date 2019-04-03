@@ -84,8 +84,8 @@ public class PhotoButtonBar extends RelativeLayout {
     private void initialize() {
         addView(
                 LayoutInflater.from(getContext())
-                        .inflate(R.layout.container_photo_2_button_bar, null));
-
+                        .inflate(R.layout.container_photo_2_button_bar, null)
+        );
         ButterKnife.bind(this, this);
         initData();
         initWidget();
@@ -159,7 +159,9 @@ public class PhotoButtonBar extends RelativeLayout {
                 collectButton.setImageResource(
                         getCollectIcon(
                                 photo.current_user_collections != null
-                                        && photo.current_user_collections.size() != 0));
+                                        && photo.current_user_collections.size() != 0
+                        )
+                );
             }
         }
     }

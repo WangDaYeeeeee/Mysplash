@@ -1,7 +1,6 @@
 package com.wangdaye.mysplash.common.network.service;
 
 import com.wangdaye.mysplash.Mysplash;
-import com.wangdaye.mysplash.common.di.annotation.ApplicationInstace;
 import com.wangdaye.mysplash.common.network.NullResponseBody;
 import com.wangdaye.mysplash.common.network.SchedulerTransformer;
 import com.wangdaye.mysplash.common.network.api.FollowApi;
@@ -10,11 +9,7 @@ import com.wangdaye.mysplash.common.network.interceptor.NapiInterceptor;
 import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.observer.ObserverContainer;
 
-import javax.inject.Inject;
-
 import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.disposables.CompositeDisposable;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -31,10 +26,9 @@ public class FollowService {
     private FollowApi api;
     private CompositeDisposable compositeDisposable;
 
-    @Inject
-    public FollowService(@ApplicationInstace OkHttpClient client,
-                         @ApplicationInstace GsonConverterFactory gsonConverterFactory,
-                         @ApplicationInstace RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
+    public FollowService(OkHttpClient client,
+                         GsonConverterFactory gsonConverterFactory,
+                         RxJava2CallAdapterFactory rxJava2CallAdapterFactory,
                          CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)

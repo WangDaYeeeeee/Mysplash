@@ -128,7 +128,8 @@ public class GravityArcMotion extends ArcMotion {
                 ex = endX + eDistX;
                 ey = endY;
 
-                minimumArcDist2 = midDist2 * mMinimumHorizontalTangent
+                minimumArcDist2 = midDist2
+                        * mMinimumHorizontalTangent
                         * mMinimumHorizontalTangent;
             }
             float arcDistX = dx - ex;

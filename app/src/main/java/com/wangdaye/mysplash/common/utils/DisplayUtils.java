@@ -6,7 +6,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
@@ -76,14 +75,16 @@ public class DisplayUtils {
         if (DisplayUtils.isLandscape(context)) {
             return new int[] {
                     context.getResources().getDisplayMetrics().widthPixels,
-                    context.getResources().getDisplayMetrics().heightPixels};
+                    context.getResources().getDisplayMetrics().heightPixels
+            };
         } else {
             WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
             if (manager == null) {
                 return new int[] {
                         context.getResources().getDisplayMetrics().widthPixels,
                         context.getResources().getDisplayMetrics().heightPixels
-                                + DisplayUtils.getNavigationBarHeight(context.getResources())};
+                                + DisplayUtils.getNavigationBarHeight(context.getResources())
+                };
             } else {
                 Point size = new Point();
                 Display display = manager.getDefaultDisplay();
@@ -108,15 +109,22 @@ public class DisplayUtils {
     }
 
     public static void setWindowTop(Activity activity) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Bitmap icon = BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher);
-            ActivityManager.TaskDescription taskDescription
-                    = new ActivityManager.TaskDescription(
-                    activity.getString(R.string.app_name),
-                    icon,
-                    ThemeManager.getPrimaryColor(activity));
-            activity.setTaskDescription(taskDescription);
-            icon.recycle();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            activity.setTaskDescription(
+                    new ActivityManager.TaskDescription(
+                            activity.getString(R.string.app_name),
+                            R.mipmap.ic_launcher,
+                            ThemeManager.getPrimaryColor(activity)
+                    )
+            );
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            activity.setTaskDescription(
+                    new ActivityManager.TaskDescription(
+                            activity.getString(R.string.app_name),
+                            BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_launcher),
+                            ThemeManager.getPrimaryColor(activity)
+                    )
+            );
         }
     }
 
@@ -146,17 +154,23 @@ public class DisplayUtils {
             if (!onlyDarkNavigationBar && ThemeManager.getInstance(activity).isLightTheme()) {
                 if (translucent) {
                     activity.getWindow().setNavigationBarColor(
-                            Color.argb((int) (0.03 * 255), 0, 0, 0));
+                            Color.argb((int) (0.03 * 255), 0, 0, 0)
+                    );
                 } else {
-                    activity.getWindow().setNavigationBarColor(Color.rgb(241, 241, 241));
+                    activity.getWindow().setNavigationBarColor(
+                            Color.rgb(241, 241, 241)
+                    );
                 }
             } else {
                 flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
                 if (translucent) {
                     activity.getWindow().setNavigationBarColor(
-                            Color.argb((int) (0.2 * 255), 0, 0, 0));
+                            Color.argb((int) (0.2 * 255), 0, 0, 0)
+                    );
                 } else {
-                    activity.getWindow().setNavigationBarColor(Color.rgb(26, 26, 26));
+                    activity.getWindow().setNavigationBarColor(
+                            Color.rgb(26, 26, 26)
+                    );
                 }
             }
             activity.getWindow().getDecorView().setSystemUiVisibility(flags);
@@ -168,10 +182,7 @@ public class DisplayUtils {
     }
 
     public static void changeTheme(Context c) {
-        ThemeManager.getInstance(c)
-                .setLightTheme(
-                        c,
-                        !ThemeManager.getInstance(c).isLightTheme());
+        ThemeManager.getInstance(c).setLightTheme(c, !ThemeManager.getInstance(c).isLightTheme());
     }
 
     public static String abridgeNumber(int num) {
@@ -228,7 +239,8 @@ public class DisplayUtils {
             try {
                 return new SimpleDateFormat(
                         context.getString(R.string.date_format),
-                        LanguageUtils.getLocale(context)).format(date);
+                        LanguageUtils.getLocale(context)
+                ).format(date);
             } catch (Exception ignored) {
 
             }

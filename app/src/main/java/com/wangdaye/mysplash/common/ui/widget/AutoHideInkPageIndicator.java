@@ -38,12 +38,14 @@ public class AutoHideInkPageIndicator extends InkPageIndicator {
             if (showAnimator != null) {
                 showAnimator.cancel();
             }
-            showAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), 0.7F)
-                    .setDuration(100);
+            showAnimator = ObjectAnimator.ofFloat(
+                    this, "alpha", getAlpha(), 0.7F
+            ).setDuration(100);
             showAnimator.start();
         } else {
-            dismissAnimator = ObjectAnimator.ofFloat(this, "alpha", getAlpha(), 0)
-                    .setDuration(200);
+            dismissAnimator = ObjectAnimator.ofFloat(
+                    this, "alpha", getAlpha(), 0
+            ).setDuration(200);
             dismissAnimator.setStartDelay(600);
             dismissAnimator.start();
         }

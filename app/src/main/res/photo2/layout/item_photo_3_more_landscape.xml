@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:gravity="center_horizontal">
 
-    <view class="com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout$RecyclerView"
+    <view class="com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout$RecyclerView"
         android:id="@+id/item_photo_3_more_landscape_recyclerView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

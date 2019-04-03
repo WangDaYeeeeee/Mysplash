@@ -224,6 +224,10 @@ public static java.lang.String TABLENAME;
 }
 -dontnote rx.internal.util.PlatformDependent
 
-## RxLifeCycle
+# RxLifeCycle
 -keep class com.trello.rxlifecycle2.** { *; }
 -keep interface com.trello.rxlifecycle2.** { *; }
+
+# Bugly
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}

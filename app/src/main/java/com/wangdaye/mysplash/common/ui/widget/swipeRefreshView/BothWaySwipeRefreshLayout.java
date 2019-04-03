@@ -7,7 +7,6 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.view.MotionEventCompat;
 import androidx.core.view.NestedScrollingChild;
 import androidx.core.view.NestedScrollingChildHelper;
 import androidx.core.view.NestedScrollingParent;
@@ -69,8 +68,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     private OnRefreshAndLoadListener mListener;
     private boolean mRefreshing = false;
     private boolean mLoading = false;
-    private boolean mPermitRefresh = true;
-    private boolean mPermitLoad = true;
+    private boolean mRefreshEnabled = true;
+    private boolean mLoadEnabled = true;
     private int mTouchSlop;
     private float[] mDragTriggerDistances = new float[] {-1, -1};
 
@@ -134,8 +133,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
-        mMediumAnimationDuration = getResources().getInteger(
-                android.R.integer.config_mediumAnimTime);
+        mMediumAnimationDuration = getResources().getInteger(android.R.integer.config_mediumAnimTime);
 
         setWillNotDraw(false);
         mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
@@ -218,16 +216,19 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mTarget.measure(
                     View.MeasureSpec.makeMeasureSpec(
                             getMeasuredWidth() - getPaddingLeft() - getPaddingRight(),
-                            View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(
+                            View.MeasureSpec.EXACTLY
+                    ), View.MeasureSpec.makeMeasureSpec(
                             getMeasuredHeight() - getPaddingTop() - getPaddingBottom(),
-                            View.MeasureSpec.EXACTLY));
+                            View.MeasureSpec.EXACTLY
+                    )
+            );
         }
 
         for (int i = 0; i < 2; i ++) {
             mCircleViews[i].measure(
                     View.MeasureSpec.makeMeasureSpec(mCircleWidth, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(mCircleHeight, View.MeasureSpec.EXACTLY));
+                    View.MeasureSpec.makeMeasureSpec(mCircleHeight, View.MeasureSpec.EXACTLY)
+            );
         }
         if (!mOriginalOffsetCalculated) {
             mOriginalOffsetCalculated = true;
@@ -258,34 +259,40 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
                     (width / 2 - mCircleWidth / 2),
                     -mCircleHeight,
                     (width / 2 + mCircleWidth / 2),
-                    0);
+                    0
+            );
             mCircleViews[1].layout(
                     (width / 2 - mCircleWidth / 2),
                     getMeasuredHeight(),
                     (width / 2 + mCircleWidth / 2),
-                    getMeasuredHeight() + mCircleHeight);
+                    getMeasuredHeight() + mCircleHeight
+            );
         } else if (mDragOffsetDistance > 0) {
             mCircleViews[0].layout(
                     (width / 2 - mCircleWidth / 2),
                     mDragOffsetDistance - mCircleHeight,
                     (width / 2 + mCircleWidth / 2),
-                    mDragOffsetDistance);
+                    mDragOffsetDistance
+            );
             mCircleViews[1].layout(
                     (width / 2 - mCircleWidth / 2),
                     getMeasuredHeight(),
                     (width / 2 + mCircleWidth / 2),
-                    getMeasuredHeight() + mCircleHeight);
+                    getMeasuredHeight() + mCircleHeight
+            );
         } else if (mDragOffsetDistance < 0) {
             mCircleViews[0].layout(
                     (width / 2 - mCircleWidth / 2),
                     -mCircleHeight,
                     (width / 2 + mCircleWidth / 2),
-                    0);
+                    0
+            );
             mCircleViews[1].layout(
                     (width / 2 - mCircleWidth / 2),
                     getMeasuredHeight() + mDragOffsetDistance,
                     (width / 2 + mCircleWidth / 2),
-                    getMeasuredHeight() + mCircleHeight + mDragOffsetDistance);
+                    getMeasuredHeight() + mCircleHeight + mDragOffsetDistance
+            );
         }
     }
 
@@ -295,14 +302,13 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         ensureTarget();
 
-        final int action = MotionEventCompat.getActionMasked(ev);
+        final int action = ev.getActionMasked();
 
         if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
             mReturningToStart = false;
         }
 
-        if (!isEnabled() || mReturningToStart
-                || mNestedScrollInProgress || mRefreshing || mLoading) {
+        if (!isEnabled() || mReturningToStart || mNestedScrollInProgress || mRefreshing || mLoading) {
             return false;
         }
 
@@ -323,10 +329,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
 
             case MotionEvent.ACTION_MOVE:
                 final float yDiff = ev.getY() - mInitialDownY;
-                if (yDiff > mTouchSlop && !mIsBeingDragged && !canChildScrollUp() && mPermitRefresh) {
+                if (yDiff > mTouchSlop && !mIsBeingDragged && !canChildScrollUp() && mRefreshEnabled) {
                     mIsBeingDragged = true;
                     mProgress[DIRECTION_TOP].setAlpha(STARTING_PROGRESS_ALPHA);
-                } else if (yDiff < -mTouchSlop && !mIsBeingDragged && !canChildScrollDown() && mPermitLoad) {
+                } else if (yDiff < -mTouchSlop && !mIsBeingDragged && !canChildScrollDown() && mLoadEnabled) {
                     mIsBeingDragged = true;
                     mProgress[DIRECTION_BOTTOM].setAlpha(STARTING_PROGRESS_ALPHA);
                 }
@@ -344,7 +350,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        final int action = MotionEventCompat.getActionMasked(ev);
+        final int action = ev.getActionMasked();
 
         if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
             mReturningToStart = false;
@@ -398,11 +404,18 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
         float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
         float extraOS = Math.abs(dragDistance) - mDragTriggerDistances[dir];
-        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, mDragTriggerDistances[dir] * 2) / mDragTriggerDistances[dir]);
-        float tensionPercent = (float) ((tensionSlingshotPercent / 4) - Math.pow((tensionSlingshotPercent / 4), 2)) * 2f;
+        float tensionSlingshotPercent = Math.max(
+                0,
+                Math.min(extraOS, mDragTriggerDistances[dir] * 2) / mDragTriggerDistances[dir]
+        );
+        float tensionPercent = (float) (
+                (tensionSlingshotPercent / 4) - Math.pow((tensionSlingshotPercent / 4), 2)
+        ) * 2f;
         float extraMove = (mDragTriggerDistances[dir]) * tensionPercent * 2;
 
-        int offset = (int) ((mDragTriggerDistances[dir] * dragPercent) + extraMove) * (dir == DIRECTION_TOP ? 1 : -1);
+        int offset = (int) (
+                (mDragTriggerDistances[dir] * dragPercent) + extraMove
+        ) * (dir == DIRECTION_TOP ? 1 : -1);
 
         // where 1.0f is a full circle
         if (mCircleViews[dir].getVisibility() != View.VISIBLE) {
@@ -415,7 +428,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
 
         if (mScale) {
-            setAnimationProgress(dir, Math.min(1f, Math.abs(dragDistance / mDragTriggerDistances[dir])));
+            setAnimationProgress(
+                    dir,
+                    Math.min(Math.abs(dragDistance / mDragTriggerDistances[dir]), 1f)
+            );
         }
         if (Math.abs(dragDistance) < mDragTriggerDistances[dir]) {
             if (mProgress[dir].getAlpha() > STARTING_PROGRESS_ALPHA
@@ -525,7 +541,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mCircleViews[DIRECTION_BOTTOM].setVisibility(GONE);
             // scale and show
             mRefreshing = true;
-            setTargetOffsetTopAndBottom(DIRECTION_TOP, (int) (mDragTriggerDistances[DIRECTION_TOP] - mDragOffsetDistance));
+            setTargetOffsetTopAndBottom(
+                    DIRECTION_TOP,
+                    (int) (mDragTriggerDistances[DIRECTION_TOP] - mDragOffsetDistance)
+            );
             mNotify = false;
             startScaleUpAnimation(DIRECTION_TOP, mRefreshListener);
         } else {
@@ -547,7 +566,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             mCircleViews[DIRECTION_TOP].setVisibility(GONE);
             // scale and show
             mLoading = true;
-            setTargetOffsetTopAndBottom(DIRECTION_BOTTOM, (int) (-mDragTriggerDistances[DIRECTION_BOTTOM] - mDragOffsetDistance));
+            setTargetOffsetTopAndBottom(
+                    DIRECTION_BOTTOM,
+                    (int) (-mDragTriggerDistances[DIRECTION_BOTTOM] - mDragOffsetDistance)
+            );
             mNotify = false;
             startScaleUpAnimation(DIRECTION_BOTTOM, mLoadListener);
         } else {
@@ -606,33 +628,19 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     /**
      * Set the BothWaySwipeRefreshLayoutWidget is allowed to refresh.
      *
-     * @param permit Whether it is allowed to refresh.
+     * @param enabled Whether it is allowed to refresh.
      * */
-    public void setPermitRefresh(boolean permit) {
-        mPermitRefresh = permit;
-        // TODO: 2018/11/18 check the relationship between permit refresh flag and enabled flag.
-        /*
-        if (!mPermitRefresh && !mPermitLoad) {
-            setEnabled(false);
-        } else {
-            setEnabled(true);
-        }*/
+    public void setRefreshEnabled(boolean enabled) {
+        mRefreshEnabled = enabled;
     }
 
     /**
      * Set the BothWaySwipeRefreshLayoutWidget is allowed to load.
      *
-     * @param permit Whether it is allowed to load.
+     * @param enabled Whether it is allowed to load.
      * */
-    public void setPermitLoad(boolean permit) {
-        mPermitLoad = permit;
-        // TODO: 2018/11/18 check the relationship between permit load flag and enabled flag.
-        /*
-        if (!mPermitRefresh && !mPermitLoad) {
-            setEnabled(false);
-        } else {
-            setEnabled(true);
-        }*/
+    public void setLoadEnabled(boolean enabled) {
+        mLoadEnabled = enabled;
     }
 
     // position.
@@ -744,7 +752,9 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         }
         mCircleViews[dir].clearAnimation();
         mCircleViews[dir].startAnimation(
-                dir == DIRECTION_TOP ? mAnimateToTopCorrectPosition : mAnimateToBottomCorrectPosition);
+                dir == DIRECTION_TOP
+                        ? mAnimateToTopCorrectPosition : mAnimateToBottomCorrectPosition
+        );
     }
 
     private final Animation mAnimateToTopCorrectPosition = new Animation() {
@@ -752,7 +762,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         public void applyTransformation(float interpolatedTime, Transformation t) {
             setTargetOffsetTopAndBottom(
                     DIRECTION_TOP,
-                    (int) (mFrom + (mDragTriggerDistances[DIRECTION_TOP] - mFrom) * interpolatedTime - mDragOffsetDistance));
+                    (int) (mFrom + (mDragTriggerDistances[DIRECTION_TOP] - mFrom) * interpolatedTime - mDragOffsetDistance)
+            );
             mProgress[DIRECTION_TOP].setArrowScale(1 - interpolatedTime);
         }
     };
@@ -762,7 +773,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         public void applyTransformation(float interpolatedTime, Transformation t) {
             setTargetOffsetTopAndBottom(
                     DIRECTION_BOTTOM,
-                    (int) (mFrom + (-mDragTriggerDistances[DIRECTION_BOTTOM] - mFrom) * interpolatedTime - mDragOffsetDistance));
+                    (int) (mFrom + (-mDragTriggerDistances[DIRECTION_BOTTOM] - mFrom) * interpolatedTime - mDragOffsetDistance)
+            );
             mProgress[DIRECTION_BOTTOM].setArrowScale(1 - interpolatedTime);
         }
     };
@@ -793,7 +805,8 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
             }
             mCircleViews[dir].clearAnimation();
             mCircleViews[dir].startAnimation(
-                    dir == DIRECTION_TOP ? mAnimateToTopStartPosition : mAnimateToBottomStartPosition);
+                    dir == DIRECTION_TOP ? mAnimateToTopStartPosition : mAnimateToBottomStartPosition
+            );
         }
     }
 
@@ -931,7 +944,7 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
     public boolean onStartNestedScroll(@NonNull View child, @NonNull View target, int nestedScrollAxes) {
         return isEnabled()
                 && !mReturningToStart && !mRefreshing && !mLoading
-                && (mPermitRefresh || mPermitLoad)
+                && (mRefreshEnabled || mLoadEnabled)
                 && (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
     }
 
@@ -995,10 +1008,10 @@ public class BothWaySwipeRefreshLayout extends ViewGroup
         // 'offset in window 'functionality to see if we have been moved from the event.
         // This is a decent indication of whether we should take over the event stream or not.
         final int dy = dyUnconsumed + mParentOffsetInWindow[1];
-        if (dy < 0 && !canChildScrollUp() && !mRefreshing && mPermitRefresh) {
+        if (dy < 0 && !canChildScrollUp() && !mRefreshing && mRefreshEnabled) {
             mTotalUnconsumed -= dy;
             moveSpinner(DIRECTION_TOP, mTotalUnconsumed);
-        } else if (dy > 0 && !canChildScrollDown() && !mLoading && mPermitLoad) {
+        } else if (dy > 0 && !canChildScrollDown() && !mLoading && mLoadEnabled) {
             mTotalUnconsumed -= dy;
             moveSpinner(DIRECTION_BOTTOM, mTotalUnconsumed);
         }

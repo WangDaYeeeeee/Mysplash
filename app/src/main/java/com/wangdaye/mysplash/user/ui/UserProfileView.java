@@ -18,17 +18,18 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.ui.adapter.MiniTagAdapter;
-import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.tag.MiniTagAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.tag.TagItemEventHelper;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +62,7 @@ public class UserProfileView extends FrameLayout {
     @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
     @BindView(R.id.container_user_profile_followBtn) RippleButton rippleButton;
 
-    private MyPagerAdapter adapter;
+    private PagerAdapter adapter;
 
     private OnRippleButtonSwitchedListener listener;
 
@@ -101,7 +102,12 @@ public class UserProfileView extends FrameLayout {
         profileContainer.setVisibility(GONE);
 
         tagList.setLayoutManager(
-                new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                new LinearLayoutManager(
+                        getContext(),
+                        LinearLayoutManager.HORIZONTAL,
+                        false
+                )
+        );
 
         if (AuthManager.getInstance().isAuthorized() && Mysplash.hasNode()) {
             rippleButton.setOnSwitchListener(current -> {
@@ -118,7 +124,7 @@ public class UserProfileView extends FrameLayout {
 
     // control.
 
-    public void setAdapter(MyPagerAdapter adapter) {
+    public void setAdapter(PagerAdapter adapter) {
         this.adapter = adapter;
     }
 
@@ -133,11 +139,14 @@ public class UserProfileView extends FrameLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    public void drawUserInfo(User u) {
+    public void drawUserInfo(MysplashActivity activity, User u) {
         if (u.tags == null || u.tags.custom == null || u.tags.custom.size() == 0) {
             tagList.setVisibility(GONE);
         } else {
-            tagList.setAdapter(new MiniTagAdapter(u.tags.custom));
+            tagList.setAdapter(new MiniTagAdapter(
+                    u.tags.custom,
+                    new TagItemEventHelper(activity)
+            ));
         }
 
         if (!TextUtils.isEmpty(u.bio)) {
@@ -154,17 +163,14 @@ public class UserProfileView extends FrameLayout {
 
         setRippleButtonState(u);
 
-        List<String> titleList = new ArrayList<>();
-        titleList.add(
+        adapter.titleList = Arrays.asList(
                 DisplayUtils.abridgeNumber(u.total_photos)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[0]);
-        titleList.add(
+                        + " " + getResources().getStringArray(R.array.user_tabs)[0],
                 DisplayUtils.abridgeNumber(u.total_likes)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[1]);
-        titleList.add(
+                        + " " + getResources().getStringArray(R.array.user_tabs)[1],
                 DisplayUtils.abridgeNumber(u.total_collections)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[2]);
-        adapter.titleList = titleList;
+                        + " " + getResources().getStringArray(R.array.user_tabs)[2]
+        );
         adapter.notifyDataSetChanged();
 
         setState(STATE_NORMAL);

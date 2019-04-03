@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Message;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -21,20 +20,22 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.ui.adapter.MyPagerAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.download.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.basic.SafeHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.RxLifecycle;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
 
 /**
  * Introduce activity.
@@ -44,7 +45,7 @@ import butterknife.OnClick;
  * */
 
 public class IntroduceActivity extends MysplashActivity
-        implements ViewPager.OnPageChangeListener, SafeHandler.HandlerContainer {
+        implements ViewPager.OnPageChangeListener {
 
     @BindView(R.id.activity_introduce_container) CoordinatorLayout container;
     @BindView(R.id.activity_introduce_viewPager) ViewPager viewPager;
@@ -58,8 +59,6 @@ public class IntroduceActivity extends MysplashActivity
             viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
         }
     }
-
-    private SafeHandler<IntroduceActivity> handler;
 
     private boolean backPressed = false; // mark the first click action.
 
@@ -107,7 +106,8 @@ public class IntroduceActivity extends MysplashActivity
     public static void watchAllIntroduce(MysplashActivity a) {
         SharedPreferences.Editor editor = a.getSharedPreferences(
                 PREFERENCE_NAME,
-                Context.MODE_PRIVATE).edit();
+                Context.MODE_PRIVATE
+        ).edit();
         editor.putInt(KEY_INTRODUCE_VERSION, FIRST_VERSION);
         editor.apply();
 
@@ -124,12 +124,6 @@ public class IntroduceActivity extends MysplashActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler.removeCallbacksAndMessages(null);
-    }
-
-    @Override
     public void handleBackPressed() {
         // double click to exit.
         if (backPressed) {
@@ -138,12 +132,11 @@ public class IntroduceActivity extends MysplashActivity
             backPressed = true;
             NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
 
-            new Timer().schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    handler.obtainMessage(1).sendToTarget();
-                }
-            }, 2000);
+            Observable.create(Emitter::onComplete)
+                    .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                    .delay(2, TimeUnit.SECONDS)
+                    .doOnComplete(() -> backPressed = false)
+                    .subscribe();
         }
     }
 
@@ -170,9 +163,7 @@ public class IntroduceActivity extends MysplashActivity
     // init.
 
     private void initData() {
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                PREFERENCE_NAME,
-                Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
         int versionCode = sharedPreferences.getInt(KEY_INTRODUCE_VERSION, FIRST_VERSION);
 
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -186,14 +177,14 @@ public class IntroduceActivity extends MysplashActivity
                         new IntroduceModel(
                                 R.string.introduce_title_back_top,
                                 R.drawable.illustration_back_top,
-                                R.string.introduce_description_back_top));
+                                R.string.introduce_description_back_top
+                        )
+                );
                 break;
         }
     }
 
     private void initWidget() {
-        this.handler = new SafeHandler<>(this);
-
         AppCompatImageButton backBtn = findViewById(R.id.activity_introduce_backBtn);
         backBtn.setOnClickListener(v -> finishSelf(true));
 
@@ -235,7 +226,7 @@ public class IntroduceActivity extends MysplashActivity
             titleList.add(introduceModelList.get(i).title);
         }
 
-        MyPagerAdapter adapter = new MyPagerAdapter(pageList, titleList);
+        PagerAdapter adapter = new PagerAdapter(pageList, titleList);
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);
@@ -267,7 +258,8 @@ public class IntroduceActivity extends MysplashActivity
             case R.drawable.illustration_back_top:
                 b.setText(getString(R.string.set));
                 b.setOnClickListener(v -> {
-                    if (introduceModelList.get(viewPager.getCurrentItem()).imageRes == R.drawable.illustration_back_top) {
+                    if (introduceModelList.get(viewPager.getCurrentItem()).imageRes
+                            == R.drawable.illustration_back_top) {
                         Intent s = new Intent(this, SettingsActivity.class);
                         startActivity(s);
                         overridePendingTransition(R.anim.activity_slide_in, 0);
@@ -298,16 +290,5 @@ public class IntroduceActivity extends MysplashActivity
     @Override
     public void onPageScrollStateChanged(int state) {
         // do nothing.
-    }
-
-    // handler.
-
-    @Override
-    public void handleMessage(Message message) {
-        switch (message.what) {
-            case 1:
-                backPressed = false;
-                break;
-        }
     }
 }

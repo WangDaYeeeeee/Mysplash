@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
-import com.wangdaye.mysplash.common.ui.adapter.CollectionAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -77,13 +77,14 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         recyclerView.setAdapter(adapter);
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
@@ -94,24 +95,32 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
             recyclerView.setPadding(0, 0, 0, 0);
         }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+        );
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 98),
-                MultipleStateRecyclerView.STATE_LOADING);
+                MultipleStateRecyclerView.STATE_LOADING
+        );
         recyclerView.setAdapter(
                 new LargeErrorStateAdapter(
                         getContext(), 98,
                         R.drawable.feedback_no_photos,
                         getContext().getString(R.string.feedback_load_failed_tv),
                         getContext().getString(R.string.feedback_click_retry),
-                        this),
-                MultipleStateRecyclerView.STATE_ERROR);
+                        this
+                ), MultipleStateRecyclerView.STATE_ERROR
+        );
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        CollectionsView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, index, dy);
+                        CollectionsView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        index,
+                        dy
+                );
             }
         });
         recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
@@ -150,12 +159,12 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeRefreshing(boolean permit) {
-        setPermitRefresh(permit);
+        setRefreshEnabled(permit);
     }
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerNetworkServiceComponent;
 import com.wangdaye.mysplash.common.network.json.NotificationFeed;
 import com.wangdaye.mysplash.common.network.json.NotificationResult;
 import com.wangdaye.mysplash.common.network.json.NotificationStream;
@@ -73,7 +73,7 @@ public class UserNotificationManager {
 
     @SuppressLint("SimpleDateFormat")
     UserNotificationManager() {
-        DaggerApplicationComponent.create().inject(this);
+        DaggerNetworkServiceComponent.create().inject(this);
 
         gson = new Gson();
         format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -88,8 +88,8 @@ public class UserNotificationManager {
         loadFinish = false;
         requesting = false;
 
-        SharedPreferences sharedPreferences = Mysplash.getInstance().getSharedPreferences(
-                PREFERENCE_TIME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = Mysplash.getInstance()
+                .getSharedPreferences(PREFERENCE_TIME, Context.MODE_PRIVATE);
         latestSeenTime = sharedPreferences.getString(KEY_LATEST_SEEN_TIME, "");
         latestRefreshTime = -1;
     }
@@ -218,8 +218,9 @@ public class UserNotificationManager {
         } else {
             latestSeenTime = notificationList.get(0).time;
         }
-        SharedPreferences.Editor editor = Mysplash.getInstance().getSharedPreferences(
-                PREFERENCE_TIME, Context.MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = Mysplash.getInstance()
+                .getSharedPreferences(PREFERENCE_TIME, Context.MODE_PRIVATE)
+                .edit();
         editor.putString(KEY_LATEST_SEEN_TIME, latestSeenTime);
         editor.apply();
         for (int i = 0; i < listenerList.size(); i ++) {
@@ -295,12 +296,12 @@ public class UserNotificationManager {
                 requestNotificationObserver = new OnRequestNotificationObserver(refresh);
                 notificationService.requestNotificationFeed(
                         streamService.getStreamUsablePart(json),
-                        requestNotificationObserver);
+                        requestNotificationObserver
+                );
             } else {
                 requesting = false;
                 for (int j = 0; j < listenerList.size(); j ++) {
-                    listenerList.get(j).onRequestNotificationSucceed(
-                            new ArrayList<>());
+                    listenerList.get(j).onRequestNotificationSucceed(new ArrayList<>());
                 }
             }
         }

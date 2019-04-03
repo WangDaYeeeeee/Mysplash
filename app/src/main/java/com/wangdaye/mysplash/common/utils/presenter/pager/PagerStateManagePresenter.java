@@ -31,10 +31,16 @@ public class PagerStateManagePresenter {
             if (activity != null && selected) {
                 if (state == PagerView.State.ERROR || state == PagerView.State.LOADING) {
                     DisplayUtils.setNavigationBarStyle(
-                            activity, false, activity.hasTranslucentNavigationBar());
+                            activity,
+                            false,
+                            activity.hasTranslucentNavigationBar()
+                    );
                 } else {
                     DisplayUtils.setNavigationBarStyle(
-                            activity, true, activity.hasTranslucentNavigationBar());
+                            activity,
+                            true,
+                            activity.hasTranslucentNavigationBar()
+                    );
                 }
             }
             switch (state) {

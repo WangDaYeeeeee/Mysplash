@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:background="?attr/root_color">
 
-            <com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout
+            <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:theme="@style/MysplashToolbarTheme">
@@ -37,7 +37,7 @@
                     app:popupTheme="@style/MysplashPopupMenuTheme"
                     tools:ignore="UnusedAttribute" />
 
-            </com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout>
+            </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
 
             <FrameLayout
                 android:id="@+id/activity_settings_preferenceContainer"

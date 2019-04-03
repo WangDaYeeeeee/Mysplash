@@ -9,9 +9,10 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.Tag;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.photo3.ui.PhotoInfoAdapter3;
-import com.wangdaye.mysplash.common.ui.adapter.TagAdapter;
-import com.wangdaye.mysplash.common.ui.widget.horizontalScrollView.SwipeSwitchLayout;
+import com.wangdaye.mysplash.common.ui.adapter.tag.TagItemEventHelper;
+import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
+import com.wangdaye.mysplash.common.ui.adapter.tag.TagAdapter;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
 import java.util.ArrayList;
@@ -39,7 +40,9 @@ public class TagHolder extends PhotoInfoAdapter3.ViewHolder {
                 new LinearLayoutManager(
                         a,
                         LinearLayoutManager.HORIZONTAL,
-                        false));
+                        false
+                )
+        );
     }
 
     @Override
@@ -48,7 +51,7 @@ public class TagHolder extends PhotoInfoAdapter3.ViewHolder {
         if (photo.tags != null) {
             tagList.addAll(photo.tags);
         }
-        recyclerView.setAdapter(new TagAdapter(tagList));
+        recyclerView.setAdapter(new TagAdapter(tagList, new TagItemEventHelper(a)));
     }
 
     @Override

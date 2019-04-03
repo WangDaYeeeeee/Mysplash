@@ -34,7 +34,6 @@ public class PhotoSearchPageViewRepository {
                 query,
                 current.getValue().getRequestPage(),
                 new BaseObserver<SearchPhotosResult>() {
-
                     @Override
                     public void onSucceed(SearchPhotosResult searchPhotosResult) {
                         if (searchPhotosResult.results == null) {
@@ -45,17 +44,23 @@ public class PhotoSearchPageViewRepository {
                             current.setValue(
                                     ListResource.refreshSuccess(
                                             current.getValue(),
-                                            searchPhotosResult.results));
+                                            searchPhotosResult.results
+                                    )
+                            );
                         } else if (searchPhotosResult.results.size() == current.getValue().perPage) {
                             current.setValue(
                                     ListResource.loadSuccess(
                                             current.getValue(),
-                                            searchPhotosResult.results));
+                                            searchPhotosResult.results
+                                    )
+                            );
                         } else {
                             current.setValue(
                                     ListResource.allLoaded(
                                             current.getValue(),
-                                            searchPhotosResult.results));
+                                            searchPhotosResult.results
+                                    )
+                            );
                         }
                     }
 
@@ -63,7 +68,8 @@ public class PhotoSearchPageViewRepository {
                     public void onFailed() {
                         current.setValue(ListResource.error(current.getValue()));
                     }
-                });
+                }
+        );
     }
 
     public void cancel() {

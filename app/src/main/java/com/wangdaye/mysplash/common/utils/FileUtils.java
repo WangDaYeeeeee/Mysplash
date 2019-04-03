@@ -114,7 +114,8 @@ public class FileUtils {
                 null,
                 MediaStore.Images.Media.DISPLAY_NAME + "= ?",
                 new String[] {filePath.substring(filePath.lastIndexOf("/") + 1)},
-                null);
+                null
+        );
 
         Uri uri = Uri.parse("file://" + filePath);
         if (cursor != null) {

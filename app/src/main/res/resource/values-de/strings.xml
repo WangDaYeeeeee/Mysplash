@@ -12,7 +12,7 @@
     <string name="translators">ÜBERSETZER</string>
     <string name="libraries">BIBLIOTHEKEN</string>
     <string name="enter">ENTER</string>
-    <string name="copy">KOPIEREN</string>
+    <string name="copy" tools:ignore="PrivateResource">KOPIEREN</string>
     <string name="next">VOR</string>
     <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
     <string name="backstage">BACKSTAGE</string>
@@ -38,7 +38,7 @@
     <string name="liked">Favoriten</string>
     <string name="collect">Sammeln</string>
     <string name="collected">Gesammelt</string>
-    <string name="download">Herunterkaden</string>
+    <string name="download">Herunterladen</string>
     <string name="followed">Gefolgt</string>
     <string name="released">Veröffentlicht</string>
     <string name="published">Publiziert</string>

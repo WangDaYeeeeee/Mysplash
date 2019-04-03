@@ -28,16 +28,14 @@ public class HeaderHolder extends AboutAdapter.ViewHolder {
     @BindView(R.id.item_about_header_appIcon) AppCompatImageView appIcon;
 
     @OnClick(R.id.item_about_header_backButton) void close() {
-        MysplashActivity activity = Mysplash.getInstance()
-                .getTopActivity();
+        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
         if (activity != null) {
             activity.finishSelf(true);
         }
     }
 
     @OnClick(R.id.item_about_header_unsplashContainer) void checkTotal() {
-        MysplashActivity activity = Mysplash.getInstance()
-                .getTopActivity();
+        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
         if (activity != null) {
             TotalDialog dialog = new TotalDialog();
             dialog.show(activity.getSupportFragmentManager(), null);

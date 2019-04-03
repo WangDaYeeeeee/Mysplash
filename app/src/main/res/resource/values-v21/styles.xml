@@ -158,6 +158,7 @@
     </style>
 
     <!-- dialog. -->
+
     <style name="MysplashDialogTheme" parent="Theme.AppCompat.DayNight.Dialog.Alert">
         <item name="android:background">@color/colorRoot</item>
         <item name="android:textStyle">bold</item>

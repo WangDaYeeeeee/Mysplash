@@ -1,12 +1,10 @@
 package com.wangdaye.mysplash.me.vm;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
-import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.me.repository.MeCollectionsViewRepository;
 
@@ -15,29 +13,21 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
-public class MeCollectionsViewModel extends PagerViewModel<Collection>
-        implements Consumer<CollectionEvent> {
+/**
+ * Me collections view model.
+ * */
+public class MeCollectionsViewModel extends AbstractMePagerViewModel<Collection, CollectionEvent> {
 
     private MeCollectionsViewRepository repository;
     private CollectionEventResponsePresenter presenter;
-    private Disposable disposable;
-
-    @Nullable private String username;
 
     @Inject
     public MeCollectionsViewModel(MeCollectionsViewRepository repository,
                                   CollectionEventResponsePresenter presenter) {
-        super();
+        super(CollectionEvent.class);
         this.repository = repository;
         this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
-                .toObservable(CollectionEvent.class)
-                .subscribe(this);
-        this.username = null;
     }
 
     @Override
@@ -54,7 +44,6 @@ public class MeCollectionsViewModel extends PagerViewModel<Collection>
         super.onCleared();
         getRepository().cancel();
         presenter.clearResponse();
-        disposable.dispose();
     }
 
     @Override
@@ -71,15 +60,6 @@ public class MeCollectionsViewModel extends PagerViewModel<Collection>
 
     MeCollectionsViewRepository getRepository() {
         return repository;
-    }
-
-    @Nullable
-    public String getUsername() {
-        return username;
-    }
-
-    protected void setUsername(@Nullable String username) {
-        this.username = username;
     }
 
     // interface.

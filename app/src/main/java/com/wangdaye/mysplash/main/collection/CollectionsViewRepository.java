@@ -32,7 +32,8 @@ public class CollectionsViewRepository {
         service.requestAllCollections(
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void getCuratedCollections(@NonNull MutableLiveData<ListResource<Collection>> current,
@@ -48,7 +49,8 @@ public class CollectionsViewRepository {
         service.requestCuratedCollections(
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void getFeaturedCollections(@NonNull MutableLiveData<ListResource<Collection>> current,
@@ -64,7 +66,8 @@ public class CollectionsViewRepository {
         service.requestFeaturedCollections(
                 current.getValue().getRequestPage(),
                 current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh));
+                new ListResourceObserver<>(current, refresh)
+        );
     }
 
     public void cancel() {

@@ -20,16 +20,19 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoItemEventHelper;
+import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.nestedScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
@@ -67,7 +70,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     @BindView(R.id.fragment_multi_filter_appBar) NestedScrollAppBarLayout appBar;
     @BindViews({
             R.id.fragment_multi_filter_photos_editText,
-            R.id.fragment_multi_filter_users_editText}) EditText[] editTexts;
+            R.id.fragment_multi_filter_users_editText
+    }) EditText[] editTexts;
     @OnClick(R.id.fragment_multi_filter_searchBtn) void clickSearchButton() {
         injectSearchParameters();
         PagerViewManagePresenter.initRefresh(photoViewModel, photoAdapter);
@@ -75,14 +79,17 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @BindViews({
             R.id.fragment_multi_filter_orientationTxt,
-            R.id.fragment_multi_filter_featuredTxt}) TextView[] menuTexts;
+            R.id.fragment_multi_filter_featuredTxt
+    }) TextView[] menuTexts;
     @BindViews({
             R.id.fragment_multi_filter_orientationBtn,
-            R.id.fragment_multi_filter_featuredBtn}) AppCompatImageButton[] menuIcons;
+            R.id.fragment_multi_filter_featuredBtn
+    }) AppCompatImageButton[] menuIcons;
 
     @OnClick({
             R.id.fragment_multi_filter_orientationBtn,
-            R.id.fragment_multi_filter_orientationContainer}) void showOrientationList() {
+            R.id.fragment_multi_filter_orientationContainer
+    }) void showOrientationList() {
         SearchOrientationPopupWindow orientation = new SearchOrientationPopupWindow(
                 getActivity(),
                 menuIcons[0],
@@ -93,7 +100,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
     @OnClick({
             R.id.fragment_multi_filter_featuredBtn,
-            R.id.fragment_multi_filter_featuredContainer}) void showFeaturedList() {
+            R.id.fragment_multi_filter_featuredContainer
+    }) void showFeaturedList() {
         SearchFeaturedPopupWindow featured = new SearchFeaturedPopupWindow(
                 getActivity(),
                 menuIcons[1],
@@ -106,6 +114,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
     private PhotoAdapter photoAdapter;
 
     private PagerLoadablePresenter loadablePresenter;
+    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
 
     private MultiFilterFragmentModel multiFilterFragmentModel;
     private MultiFilterPhotoViewModel photoViewModel;
@@ -153,7 +162,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
             DisplayUtils.setNavigationBarStyle(
                     getActivity(), 
                     photosView.getState() == PagerView.State.NORMAL,
-                    true);
+                    true
+            );
         }
     }
 
@@ -187,7 +197,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         return loadablePresenter.loadMore(
                 list, headIndex, headDirection,
                 photosView, photosView.getRecyclerView(), photoAdapter,
-                this, 0);
+                this, 0
+        );
     }
 
     // init.
@@ -196,7 +207,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         multiFilterFragmentModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(MultiFilterFragmentModel.class);
         multiFilterFragmentModel.init(
-                "", "", "", false);
+                "", "", "", false
+        );
         
         photoViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(MultiFilterPhotoViewModel.class);
@@ -224,8 +236,16 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         photoAdapter = new PhotoAdapter(
                 getActivity(),
                 Objects.requireNonNull(photoViewModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(getActivity()));
-        photoAdapter.setItemEventCallback((MainActivity) getActivity());
+                DisplayUtils.getGirdColumnCount(getActivity())
+        ).setItemEventCallback(new PhotoItemEventHelper(
+                (MysplashActivity) getActivity(),
+                photoViewModel.getListResource().getValue().dataList,
+                likeOrDislikePhotoPresenter) {
+            @Override
+            public void downloadPhoto(Photo photo) {
+                ((MainActivity) Objects.requireNonNull(getActivity())).downloadPhoto(photo);
+            }
+        });
         photosView.setAdapter(photoAdapter);
         photosView.setPagerManageView(this);
         photosView.setClickListenerForFeedbackView(v13 -> hideKeyboard());
@@ -268,7 +288,8 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
         photoViewModel.setUsername(multiFilterFragmentModel.getSearchUser().getValue());
         photoViewModel.setOrientation(multiFilterFragmentModel.getSearchOrientation().getValue());
         photoViewModel.setFeatured(
-                Objects.requireNonNull(multiFilterFragmentModel.getSearchFeatured().getValue()));
+                Objects.requireNonNull(multiFilterFragmentModel.getSearchFeatured().getValue())
+        );
     }
 
     private void showKeyboard() {

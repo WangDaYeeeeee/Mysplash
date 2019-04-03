@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
-import com.wangdaye.mysplash.common.ui.adapter.PhotoAdapter;
+import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
@@ -72,13 +72,14 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
-        setPermitRefresh(false);
-        setPermitLoad(false);
+        setRefreshEnabled(false);
+        setLoadEnabled(false);
 
         int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin));
+                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
 
         int columnCount = DisplayUtils.getGirdColumnCount(getContext());
         if (columnCount > 1) {
@@ -88,11 +89,15 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
             recyclerView.setPadding(0, 0, 0, 0);
         }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL));
+                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+        );
         recyclerView.setAdapter(
-                new LargeLoadingStateAdapter(getContext(), 160,
-                        v -> {if (hideKeyboardListener != null) hideKeyboardListener.onClick(v);}),
-                MultipleStateRecyclerView.STATE_LOADING);
+                new LargeLoadingStateAdapter(getContext(), 160, v -> {
+                    if (hideKeyboardListener != null) {
+                        hideKeyboardListener.onClick(v);
+                    }
+                }), MultipleStateRecyclerView.STATE_LOADING
+        );
         recyclerView.setAdapter(
                 new LargeErrorStateAdapter(
                         getContext(), 160,
@@ -101,9 +106,13 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
                         getContext().getString(R.string.search),
                         false,
                         true,
-                        v -> {if (hideKeyboardListener != null) hideKeyboardListener.onClick(v);},
-                        this),
-                MultipleStateRecyclerView.STATE_ERROR);
+                        v -> {
+                            if (hideKeyboardListener != null) {
+                                hideKeyboardListener.onClick(v);
+                            }
+                        }, this
+                ), MultipleStateRecyclerView.STATE_ERROR
+        );
         recyclerView.setState(MultipleStateRecyclerView.STATE_ERROR);
 
         stateManagePresenter = new PagerStateManagePresenter(recyclerView);
@@ -117,8 +126,13 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 PagerScrollablePresenter.onScrolled(
-                        MultiFilterPhotosView.this, recyclerView,
-                        adapter.getRealItemCount(), pagerManageView, 0, dy);
+                        MultiFilterPhotosView.this,
+                        recyclerView,
+                        adapter.getRealItemCount(),
+                        pagerManageView,
+                        0,
+                        dy
+                );
             }
         });
     }
@@ -152,9 +166,13 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
                             getContext().getString(R.string.feedback_click_retry),
                             true,
                             true,
-                            v -> {if (hideKeyboardListener != null) hideKeyboardListener.onClick(v);},
-                            this),
-                    MultipleStateRecyclerView.STATE_ERROR);
+                            v -> {
+                                if (hideKeyboardListener != null) {
+                                    hideKeyboardListener.onClick(v);
+                                }
+                            }, this
+                    ), MultipleStateRecyclerView.STATE_ERROR
+            );
             return true;
         }
         return stateChanged;
@@ -177,12 +195,12 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
 
     @Override
     public void setPermitSwipeRefreshing(boolean permit) {
-        setPermitRefresh(permit);
+        setRefreshEnabled(permit);
     }
 
     @Override
     public void setPermitSwipeLoading(boolean permit) {
-        setPermitLoad(permit);
+        setLoadEnabled(permit);
     }
 
     @Override

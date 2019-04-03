@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
-import com.wangdaye.mysplash.common.download.imp.DownloaderService;
+import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,10 +22,10 @@ import butterknife.OnClick;
  * Download type dialog.
  *
  * This dialog is used to select download type.
- * {@link DownloaderService#DOWNLOAD_TYPE}
- * {@link DownloaderService#SHARE_TYPE}
- * {@link DownloaderService#WALLPAPER_TYPE}
- * {@link DownloaderService.DownloadTypeRule}
+ * {@link DownloadMissionEntity#DOWNLOAD_TYPE}
+ * {@link DownloadMissionEntity#SHARE_TYPE}
+ * {@link DownloadMissionEntity#WALLPAPER_TYPE}
+ * {@link DownloadMissionEntity.DownloadTypeRule}
  *
  * */
 
@@ -36,7 +36,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @OnClick(R.id.dialog_download_type_download)
     void download() {
         if (listener != null) {
-            listener.onSelectType(DownloaderService.DOWNLOAD_TYPE);
+            listener.onSelectType(DownloadMissionEntity.DOWNLOAD_TYPE);
         }
         dismiss();
     }
@@ -44,7 +44,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @OnClick(R.id.dialog_download_type_share)
     void share() {
         if (listener != null) {
-            listener.onSelectType(DownloaderService.SHARE_TYPE);
+            listener.onSelectType(DownloadMissionEntity.SHARE_TYPE);
         }
         dismiss();
     }
@@ -52,7 +52,7 @@ public class DownloadTypeDialog extends MysplashDialogFragment {
     @OnClick(R.id.dialog_download_type_wallpaper)
     void wallpaper() {
         if (listener != null) {
-            listener.onSelectType(DownloaderService.WALLPAPER_TYPE);
+            listener.onSelectType(DownloadMissionEntity.WALLPAPER_TYPE);
         }
         dismiss();
     }

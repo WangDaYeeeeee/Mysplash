@@ -6,7 +6,7 @@ import android.text.TextUtils;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.di.component.DaggerApplicationComponent;
+import com.wangdaye.mysplash.common.di.component.DaggerNetworkServiceComponent;
 import com.wangdaye.mysplash.common.network.json.AccessToken;
 import com.wangdaye.mysplash.common.network.json.Me;
 import com.wangdaye.mysplash.common.network.json.User;
@@ -76,7 +76,7 @@ public class AuthManager {
     private static final int VERSION_CODE = 8;
 
     private AuthManager() {
-        DaggerApplicationComponent.create().inject(this);
+        DaggerNetworkServiceComponent.create().inject(this);
 
         SharedPreferences sharedPreferences = Mysplash.getInstance()
                 .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE);
@@ -125,7 +125,10 @@ public class AuthManager {
         service.cancel();
 
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(
+                        PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER,
+                        Context.MODE_PRIVATE
+                ).edit();
         editor.putString(KEY_ACCESS_TOKEN, null);
         editor.putString(KEY_USERNAME, null);
         editor.putString(KEY_FIRST_NAME, null);
@@ -238,7 +241,10 @@ public class AuthManager {
 
     public void updateAccessToken(AccessToken token) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(
+                        PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER,
+                        Context.MODE_PRIVATE
+                ).edit();
         editor.putString(KEY_ACCESS_TOKEN, token.access_token);
         editor.apply();
 
@@ -282,7 +288,10 @@ public class AuthManager {
 
     private void writeUser(User user) {
         SharedPreferences.Editor editor = Mysplash.getInstance()
-                .getSharedPreferences(PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER, Context.MODE_PRIVATE).edit();
+                .getSharedPreferences(
+                        PREFERENCE_MYSPLASH_AUTHORIZE_MANAGER,
+                        Context.MODE_PRIVATE
+                ).edit();
         editor.putString(KEY_USERNAME, user.username);
         editor.putString(KEY_FIRST_NAME, user.first_name);
         editor.putString(KEY_LAST_NAME, user.last_name);

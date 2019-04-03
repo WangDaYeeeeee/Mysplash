@@ -162,7 +162,8 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
                 title,
                 description,
                 privateX,
-                onRequestCollectionObserver);
+                onRequestCollectionObserver
+        );
         setState(UPDATE_STATE);
     }
 

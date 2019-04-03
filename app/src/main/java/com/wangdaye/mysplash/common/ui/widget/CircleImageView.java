@@ -44,7 +44,8 @@ public class CircleImageView extends AppCompatImageView {
                             view.getPaddingLeft(),
                             view.getPaddingTop(),
                             view.getWidth() - view.getPaddingRight(),
-                            view.getHeight() - view.getPaddingBottom());
+                            view.getHeight() - view.getPaddingBottom()
+                    );
                 }
             });
             setClipToOutline(true);
