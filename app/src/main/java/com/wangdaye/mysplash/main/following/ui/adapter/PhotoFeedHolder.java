@@ -50,12 +50,12 @@ public class PhotoFeedHolder extends FollowingHolder {
     public static class Factory implements FollowingHolder.Factory {
 
         private int columnCount;
+        private int viewType;
         private FollowingAdapter.ItemEventCallback callback;
 
-        private static final int VIEW_TYPE_PHOTO = 1;
-
-        public Factory(int columnCount, FollowingAdapter.ItemEventCallback callback) {
+        public Factory(int columnCount, int viewType, FollowingAdapter.ItemEventCallback callback) {
             this.columnCount = columnCount;
+            this.viewType = viewType;
             this.callback = callback;
         }
 
@@ -76,7 +76,7 @@ public class PhotoFeedHolder extends FollowingHolder {
 
         @Override
         public int getType() {
-            return VIEW_TYPE_PHOTO;
+            return viewType;
         }
     }
 

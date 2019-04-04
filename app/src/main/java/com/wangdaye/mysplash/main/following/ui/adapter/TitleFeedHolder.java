@@ -56,12 +56,12 @@ public class TitleFeedHolder extends FollowingHolder {
     public static class Factory implements FollowingHolder.Factory {
 
         private int columnCount;
+        private int viewType;
         @Nullable FollowingAdapter.ItemEventCallback callback;
 
-        private static final int VIEW_TYPE_TITLE = 0;
-
-        public Factory(int columnCount, @Nullable FollowingAdapter.ItemEventCallback callback) {
+        public Factory(int columnCount, int viewType, @Nullable FollowingAdapter.ItemEventCallback callback) {
             this.columnCount = columnCount;
+            this.viewType = viewType;
             this.callback = callback;
         }
 
@@ -83,7 +83,7 @@ public class TitleFeedHolder extends FollowingHolder {
 
         @Override
         public int getType() {
-            return VIEW_TYPE_TITLE;
+            return viewType;
         }
     }
 

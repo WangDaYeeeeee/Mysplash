@@ -225,9 +225,11 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
                 Arrays.asList(
                         new TitleFeedHolder.Factory(
                                 DisplayUtils.getGirdColumnCount(getActivity()),
+                                0,
                                 itemEventHelper
                         ), new PhotoFeedHolder.Factory(
                                 DisplayUtils.getGirdColumnCount(getActivity()),
+                                1,
                                 itemEventHelper
                         )
                 )

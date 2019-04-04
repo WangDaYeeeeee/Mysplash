@@ -65,19 +65,13 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        if (isFooter(position)) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == -1) {
             // footer.
             return FooterHolder.buildInstance(parent);
-        } else {
-            ItemData itemData = itemList.get(position);
-            for (int i = 0; i < factoryList.size(); i ++) {
-                if (factoryList.get(i).isMatch(itemData.data)) {
-                    return factoryList.get(i).createHolder(parent);
-                }
-            }
-            throw new RuntimeException("Invalid type of ViewHolder.");
         }
+
+        return factoryList.get(viewType).createHolder(parent);
     }
 
     @Override
@@ -119,7 +113,16 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        if (isFooter(position)) {
+            return -1;
+        }
+
+        for (int i = 0; i < factoryList.size(); i ++) {
+            if (factoryList.get(i).isMatch(itemList.get(position).data)) {
+                return factoryList.get(i).getType();
+            }
+        }
+        throw new RuntimeException("Invalid type of ViewHolder.");
     }
 
     @Override

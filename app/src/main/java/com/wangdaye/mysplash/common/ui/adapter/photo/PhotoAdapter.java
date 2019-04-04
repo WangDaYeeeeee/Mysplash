@@ -42,8 +42,8 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int position) {
-        if (isFooter(position)) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == -1) {
             // footer.
             return FooterHolder.buildInstance(parent);
         } else {
@@ -97,7 +97,7 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return isFooter(position) ? -1 : 1;
     }
 
     @Override
