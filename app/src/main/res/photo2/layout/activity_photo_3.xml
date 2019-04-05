@@ -45,7 +45,9 @@
                     android:id="@+id/activity_photo_3_scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbars="vertical">
+                    android:scrollbars="vertical"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
 
                     <RelativeLayout
                         android:layout_width="match_parent"

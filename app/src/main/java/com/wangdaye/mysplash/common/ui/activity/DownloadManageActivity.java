@@ -34,7 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.nekocode.rxlifecycle.LifecycleEvent;
-import cn.nekocode.rxlifecycle.compact.RxLifecycleCompact;
+import cn.nekocode.rxlifecycle.RxLifecycle;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
@@ -65,6 +65,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     private boolean readListCompleted;
 
     private List<OnDownloadListener> listenerList;
+    private boolean destroyed;
 
     public static final String ACTION_DOWNLOAD_MANAGER = "com.wangdaye.mysplash.DownloadManager";
 
@@ -80,7 +81,15 @@ public class DownloadManageActivity extends ReadWriteActivity
 
         @Override
         public void onProcess(float process) {
+            if (destroyed) {
+                return;
+            }
+
             findProgressingHolderAndUpdateIt(index -> {
+                if (index < 0 || index >= missionList.size()) {
+                    return;
+                }
+
                 DownloadMission mission = missionList.get(index);
                 float oldProcess = mission.process;
                 mission.process = process;
@@ -100,8 +109,17 @@ public class DownloadManageActivity extends ReadWriteActivity
 
         @Override
         public void onComplete(int result) {
+            if (destroyed) {
+                return;
+            }
+
             listenerList.remove(this);
+
             findProgressingHolderAndUpdateIt(index -> {
+                if (index < 0 || index >= missionList.size()) {
+                    return;
+                }
+
                 DownloadMission mission = missionList.get(index);
                 int oldResult = mission.entity.result;
                 mission.entity.result = result;
@@ -149,6 +167,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        destroyed = true;
         if (listenerList != null) {
             for (int i = listenerList.size() - 1; i >= 0; i --) {
                 DownloadHelper.getInstance(this).removeOnDownloadListener(listenerList.get(i));
@@ -216,6 +235,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                 return;
             }
         }
+        destroyed = false;
 
         adapter = new DownloadAdapter(missionList).setItemEventCallback(this);
 
@@ -230,7 +250,7 @@ public class DownloadManageActivity extends ReadWriteActivity
 
             emitter.onNext(failedList);
             emitter.onComplete();
-        }).compose(RxLifecycleCompact.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new DisposableObserver<List<DownloadMission>>() {
@@ -291,8 +311,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                     return;
                 }
             }
-        }).compose(RxLifecycleCompact.bind(DownloadManageActivity.this)
-                .disposeObservableWhen(LifecycleEvent.DESTROY))
+        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(consumer)
@@ -365,8 +384,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                     return;
                 }
             }
-        }).compose(RxLifecycleCompact.bind(DownloadManageActivity.this)
-                .disposeObservableWhen(LifecycleEvent.DESTROY))
+        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(i -> {
