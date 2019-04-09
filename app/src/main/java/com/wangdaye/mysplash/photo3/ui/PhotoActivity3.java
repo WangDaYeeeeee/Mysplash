@@ -19,7 +19,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -139,6 +139,7 @@ public class PhotoActivity3 extends ReadWriteActivity
     public static final String KEY_PHOTO_ACTIVITY_2_PHOTO_HEAD_INDEX = "photo_activity_2_photo_head_index";
     public static final String KEY_PHOTO_ACTIVITY_2_ID = "photo_activity_2_id";
 
+    private boolean hasCardMargin;
     private static final int LANDSCAPE_MAX_WIDTH_DP = 580;
 
     @Nullable private String imagePhotoId;
@@ -298,7 +299,8 @@ public class PhotoActivity3 extends ReadWriteActivity
 
         OnScrollListener listener = new OnScrollListener();
         scrollView.setOnScrollChangeListener(listener);
-        listener.onScrollChange(scrollView, 0, 0, 0, 0);
+        listener.onScrollChange(
+                scrollView, scrollView.getScrollX(), scrollView.getScrollY(), 0, 0);
 
         int marginHorizontal = 0;
         if (DisplayUtils.isLandscape(this)) {
@@ -309,8 +311,9 @@ public class PhotoActivity3 extends ReadWriteActivity
                 marginHorizontal = (int) utils.dpToPx((int) ((widthDp - LANDSCAPE_MAX_WIDTH_DP) * 0.5));
             }
         }
+        hasCardMargin = marginHorizontal > 0;
         if (marginHorizontal > 0) {
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) cardBackground.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) cardBackground.getLayoutParams();
             params.setMarginStart(marginHorizontal);
             params.setMarginEnd(marginHorizontal);
             cardBackground.setLayoutParams(params);
@@ -692,11 +695,15 @@ public class PhotoActivity3 extends ReadWriteActivity
             regularImage.setTranslationY(scrollY);
 
             // base holder.
-            if (!landscape && scrollY < navigationBarHeight) {
+            if (hasCardMargin) {
                 actorContainer.setTranslationY(scrollY + cardMargin);
             } else {
-                if (actorContainer.getTranslationY() != navigationBarHeight + cardMargin) {
-                    actorContainer.setTranslationY(navigationBarHeight + cardMargin);
+                if (scrollY < navigationBarHeight) {
+                    actorContainer.setTranslationY(scrollY + cardMargin);
+                } else {
+                    if (actorContainer.getTranslationY() != navigationBarHeight + cardMargin) {
+                        actorContainer.setTranslationY(navigationBarHeight + cardMargin);
+                    }
                 }
             }
 

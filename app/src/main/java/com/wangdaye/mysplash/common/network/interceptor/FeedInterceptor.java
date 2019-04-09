@@ -27,7 +27,7 @@ public class FeedInterceptor extends ReportExceptionInterceptor {
             return chain.proceed(request);
         } catch (Exception e) {
             handleException(e);
-            return new Response.Builder().build();
+            return nullResponse(request);
         }
     }
 }

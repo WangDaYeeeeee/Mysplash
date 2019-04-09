@@ -193,10 +193,10 @@ public class IntroduceActivity extends MysplashActivity
         initPage();
 
         InkPageIndicator indicator = findViewById(R.id.activity_introduce_indicator);
-        indicator.setViewPager(viewPager);
         if (introduceModelList.size() <= 1) {
             indicator.setAlpha(0f);
         } else {
+            indicator.setViewPager(viewPager);
             indicator.setAlpha(1f);
         }
     }
