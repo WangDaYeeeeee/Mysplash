@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
 import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 
 /**

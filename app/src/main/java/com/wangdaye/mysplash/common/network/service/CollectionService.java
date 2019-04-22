@@ -44,10 +44,11 @@ public class CollectionService {
                              CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((CollectionApi.class));
@@ -55,11 +56,12 @@ public class CollectionService {
                 ? null
                 : new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .addInterceptor(new NapiInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .addInterceptor(new NapiInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((CollectionNodeApi.class));
@@ -145,7 +147,7 @@ public class CollectionService {
 
     public void createCollection(String title, @Nullable String description, boolean privateX,
                                  BaseObserver<Collection> observer) {
-        Observable<Collection> observable = description == null
+        Observable<Collection> observable = (description == null)
                 ? api.createCollection(title, privateX)
                 : api.createCollection(title, description, privateX);
         observable.compose(SchedulerTransformer.create())

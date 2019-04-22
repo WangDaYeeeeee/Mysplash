@@ -18,7 +18,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.FlagRunnable;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 
 import java.util.ArrayList;

@@ -41,10 +41,11 @@ public class PhotoService {
                         CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((PhotoApi.class));
@@ -52,11 +53,12 @@ public class PhotoService {
                 ? null
                 : new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .addInterceptor(new NapiInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .addInterceptor(new NapiInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((PhotoNodeApi.class));
@@ -180,19 +182,18 @@ public class PhotoService {
 
         try {
             return api.callRandomPhotos(
-                    collections.toString(), featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE)
-                    .execute()
-                    .body();
+                    collections.toString(), featured, username, query, orientation, Mysplash.DEFAULT_PER_PAGE
+            ).execute().body();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public void downloadPhoto(String url) {
-        api.downloadPhoto(url)
+    public void downloadPhoto(String id) {
+        api.downloadPhoto(id)
                 .compose(SchedulerTransformer.create())
-                .subscribe();
+                .subscribe(new ObserverContainer<>(compositeDisposable, null));
     }
 
     public void cancel() {

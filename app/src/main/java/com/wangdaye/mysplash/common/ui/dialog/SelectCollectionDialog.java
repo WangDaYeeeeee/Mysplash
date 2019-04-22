@@ -35,7 +35,7 @@ import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.adapter.CollectionMiniAdapter;
 import com.wangdaye.mysplash.common.utils.AnimUtils;

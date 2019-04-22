@@ -21,7 +21,7 @@ import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 

@@ -5,8 +5,8 @@
         <shape android:shape="rectangle">
             <solid android:color="@color/colorAccent" />
             <corners
-                android:topRightRadius="?attr/listPreferredItemHeightSmall"
-                android:bottomRightRadius="?attr/listPreferredItemHeightSmall" />
+                android:topRightRadius="56dp"
+                android:bottomRightRadius="56dp" />
         </shape>
     </item>
 

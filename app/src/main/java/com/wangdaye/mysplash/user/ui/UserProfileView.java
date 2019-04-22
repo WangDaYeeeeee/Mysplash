@@ -29,6 +29,7 @@ import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import butterknife.BindView;
@@ -163,13 +164,15 @@ public class UserProfileView extends FrameLayout {
 
         setRippleButtonState(u);
 
-        adapter.titleList = Arrays.asList(
-                DisplayUtils.abridgeNumber(u.total_photos)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[0],
-                DisplayUtils.abridgeNumber(u.total_likes)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[1],
-                DisplayUtils.abridgeNumber(u.total_collections)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[2]
+        adapter.titleList = new ArrayList<>(
+                Arrays.asList(
+                        DisplayUtils.abridgeNumber(u.total_photos)
+                                + " " + getResources().getStringArray(R.array.user_tabs)[0],
+                        DisplayUtils.abridgeNumber(u.total_likes)
+                                + " " + getResources().getStringArray(R.array.user_tabs)[1],
+                        DisplayUtils.abridgeNumber(u.total_collections)
+                                + " " + getResources().getStringArray(R.array.user_tabs)[2]
+                )
         );
         adapter.notifyDataSetChanged();
 

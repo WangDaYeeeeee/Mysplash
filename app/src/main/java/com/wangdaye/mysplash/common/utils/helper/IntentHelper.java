@@ -313,7 +313,7 @@ public class IntentHelper {
                             + Mysplash.DOWNLOAD_PATH
                             + title + Mysplash.DOWNLOAD_PHOTO_FORMAT
             );
-            Uri uri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID, file);
+            Uri uri = FileProvider.getUriForFile(c, FileUtils.getFileProviderAuthorities(), file);
             intent.setDataAndType(uri, "image/jpg");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -366,7 +366,7 @@ public class IntentHelper {
                             + title
                             + ".zip"
             );
-            Uri uri = FileProvider.getUriForFile(c, BuildConfig.APPLICATION_ID, file);
+            Uri uri = FileProvider.getUriForFile(c, FileUtils.getFileProviderAuthorities(), file);
             intent.setDataAndType(uri, "application/x-zip-compressed");
             intent.addCategory(Intent.CATEGORY_DEFAULT);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -20,7 +20,7 @@ import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.CollectionService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import javax.inject.Inject;
 

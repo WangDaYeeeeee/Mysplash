@@ -4,8 +4,6 @@ import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.network.json.Photo;
 
 import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import javax.inject.Inject;
 

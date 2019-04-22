@@ -44,8 +44,8 @@ public class AuthorizeService {
                 Mysplash.getSecret(c),
                 "mysplash://" + Mysplash.UNSPLASH_LOGIN_CALLBACK,
                 code,
-                "authorization_code")
-                .compose(SchedulerTransformer.create())
+                "authorization_code"
+        ).compose(SchedulerTransformer.create())
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 

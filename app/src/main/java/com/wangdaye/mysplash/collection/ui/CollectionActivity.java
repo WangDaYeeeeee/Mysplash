@@ -44,7 +44,7 @@ import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.ShareUtils;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;

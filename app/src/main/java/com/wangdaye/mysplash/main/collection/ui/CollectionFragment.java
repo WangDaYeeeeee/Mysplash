@@ -181,28 +181,30 @@ public class CollectionFragment extends MysplashFragment
             ).setItemEventCallback(new CollectionItemEventHelper((MysplashActivity) getActivity()));
         }
 
-        List<View> pageList = Arrays.asList(
-                new CollectionsView(
-                        (MainActivity) getActivity(),
-                        R.id.fragment_collection_page_featured,
-                        adapters[featuredPage()],
-                        getCurrentPagerPosition() == featuredPage(),
-                        featuredPage(),
-                        this
-                ), new CollectionsView(
-                        (MainActivity) getActivity(),
-                        R.id.fragment_collection_page_all,
-                        adapters[allPage()],
-                        getCurrentPagerPosition() == allPage(),
-                        allPage(),
-                        this
-                ), new CollectionsView(
-                        (MainActivity) getActivity(),
-                        R.id.fragment_collection_page_curated,
-                        adapters[curatedPage()],
-                        getCurrentPagerPosition() == curatedPage(),
-                        curatedPage(),
-                        this
+        List<View> pageList = new ArrayList<>(
+                Arrays.asList(
+                        new CollectionsView(
+                                (MainActivity) getActivity(),
+                                R.id.fragment_collection_page_featured,
+                                adapters[featuredPage()],
+                                getCurrentPagerPosition() == featuredPage(),
+                                featuredPage(),
+                                this
+                        ), new CollectionsView(
+                                (MainActivity) getActivity(),
+                                R.id.fragment_collection_page_all,
+                                adapters[allPage()],
+                                getCurrentPagerPosition() == allPage(),
+                                allPage(),
+                                this
+                        ), new CollectionsView(
+                                (MainActivity) getActivity(),
+                                R.id.fragment_collection_page_curated,
+                                adapters[curatedPage()],
+                                getCurrentPagerPosition() == curatedPage(),
+                                curatedPage(),
+                                this
+                        )
                 )
         );
         for (int i = featuredPage(); i < pageCount(); i ++) {

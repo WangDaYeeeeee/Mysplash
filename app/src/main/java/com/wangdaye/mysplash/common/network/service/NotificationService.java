@@ -31,10 +31,11 @@ public class NotificationService {
                                CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new NotificationInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new NotificationInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((NotificationApi.class));

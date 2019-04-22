@@ -122,6 +122,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 return factoryList.get(i).getType();
             }
         }
+
         throw new RuntimeException("Invalid type of ViewHolder.");
     }
 
@@ -145,9 +146,8 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             } else {
                 int lastTypeIndex = itemList.size() - 1;
                 if (!(itemList.get(lastTypeIndex).data instanceof Photo)
-                        || !(
-                                (Photo) itemList.get(lastTypeIndex).data
-                        ).user.username.equals(photoList.get(i).user.username)) {
+                        || !((Photo) itemList.get(lastTypeIndex).data).user.username
+                        .equals(photoList.get(i).user.username)) {
                     itemList.add(new ItemData(i, itemList.size(), photoList.get(i).user));
                     itemList.add(new ItemData(i, itemList.size(), photoList.get(i)));
                 } else {
@@ -163,9 +163,7 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         if (itemList.get(adapterPosition).data instanceof User) {
             return (User) itemList.get(adapterPosition).data;
         }
-        return photoList.get(
-                itemList.get(adapterPosition).photoPosition
-        ).user;
+        return photoList.get(itemList.get(adapterPosition).photoPosition).user;
     }
 
     public int getPhotoHolderAdapterPosition(int photoPosition) {
@@ -174,10 +172,8 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
 
     public boolean isFooterView(int adapterPosition) {
         return itemList.size() > adapterPosition
-                && (
-                        adapterPosition + 1 == itemList.size()
-                                || itemList.get(adapterPosition + 1).data instanceof User
-                );
+                && (adapterPosition + 1 == itemList.size()
+                || itemList.get(adapterPosition + 1).data instanceof User);
     }
 
     public void setTitleAvatarVisibility(RecyclerView.ViewHolder lastHolder,
@@ -188,6 +184,15 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         if (newHolder instanceof TitleFeedHolder) {
             ((TitleFeedHolder) newHolder).setAvatarVisibility(false);
         }
+    }
+
+    public void updateItem(int position, Object payload) {
+        ItemData item = itemList.get(position);
+        item.data = photoList.get(item.photoPosition);
+
+        photoItemList.get(item.photoPosition).data = photoList.get(item.photoPosition);
+
+        notifyItemChanged(position, payload);
     }
 
     // interface.

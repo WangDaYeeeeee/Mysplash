@@ -47,7 +47,7 @@ import com.wangdaye.mysplash.common.utils.ShareUtils;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -395,28 +395,30 @@ public class UserActivity extends LoadableActivity<Photo>
                 DisplayUtils.getGirdColumnCount(this)
         ).setItemEventCallback(new CollectionItemEventHelper(this));
 
-        List<View> pageList = Arrays.asList(
-                new UserPhotosView(
-                        this,
-                        R.id.activity_user_page_photo,
-                        (PhotoAdapter) adapters[PAGE_PHOTO],
-                        getCurrentPagerPosition() == PAGE_PHOTO,
-                        PAGE_PHOTO,
-                        this
-                ), new UserPhotosView(
-                        this,
-                        R.id.activity_user_page_like,
-                        (PhotoAdapter) adapters[PAGE_LIKE],
-                        getCurrentPagerPosition() == PAGE_LIKE,
-                        PAGE_LIKE,
-                        this
-                ), new UserCollectionsView(
-                        this,
-                        R.id.activity_user_page_collection,
-                        (CollectionAdapter) adapters[PAGE_COLLECTION],
-                        getCurrentPagerPosition() == PAGE_COLLECTION,
-                        PAGE_COLLECTION,
-                        this
+        List<View> pageList = new ArrayList<>(
+                Arrays.asList(
+                        new UserPhotosView(
+                                this,
+                                R.id.activity_user_page_photo,
+                                (PhotoAdapter) adapters[PAGE_PHOTO],
+                                getCurrentPagerPosition() == PAGE_PHOTO,
+                                PAGE_PHOTO,
+                                this
+                        ), new UserPhotosView(
+                                this,
+                                R.id.activity_user_page_like,
+                                (PhotoAdapter) adapters[PAGE_LIKE],
+                                getCurrentPagerPosition() == PAGE_LIKE,
+                                PAGE_LIKE,
+                                this
+                        ), new UserCollectionsView(
+                                this,
+                                R.id.activity_user_page_collection,
+                                (CollectionAdapter) adapters[PAGE_COLLECTION],
+                                getCurrentPagerPosition() == PAGE_COLLECTION,
+                                PAGE_COLLECTION,
+                                this
+                        )
                 )
         );
         for (int i = 0; i < pageList.size(); i ++) {

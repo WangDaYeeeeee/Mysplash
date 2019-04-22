@@ -75,7 +75,7 @@ public class DownloadHelper {
     public void addMission(Context c, Photo p, @DownloadMissionEntity.DownloadTypeRule int type) {
         if (FileUtils.createDownloadPath(c)) {
             downloaderService.addMission(c, new DownloadMissionEntity(c, p, type), true);
-            photoService.downloadPhoto(p.links.download_location);
+            photoService.downloadPhoto(p.id);
         }
     }
 

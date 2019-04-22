@@ -13,7 +13,6 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 /**
  * Photo api.
@@ -82,6 +81,6 @@ public interface PhotoApi {
                                        @Query("orientation") String orientation,
                                        @Query("count") int count);
 
-    @GET
-    Observable<ResponseBody> downloadPhoto(@Url String url);
+    @GET("photos/{id}/download")
+    Observable<ResponseBody> downloadPhoto(@Path("id") String id);
 }

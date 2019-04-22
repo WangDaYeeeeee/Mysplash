@@ -9,10 +9,11 @@ import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import java.io.File;
 
@@ -128,5 +129,9 @@ public class FileUtils {
             cursor.close();
         }
         return uri;
+    }
+
+    public static String getFileProviderAuthorities() {
+        return BuildConfig.APPLICATION_ID + ".fileprovider";
     }
 }

@@ -1,15 +1,10 @@
 package com.wangdaye.mysplash.muzei;
 
+import android.text.TextUtils;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
-
-/**
- * Source collection test.
- *
- * Java unit test class for read source collections of Muzei Live Wallpaper.
- *
- * */
 
 public class SourceCollectionTest {
 
@@ -19,7 +14,7 @@ public class SourceCollectionTest {
         ArrayList<Integer> collectionIdList = new ArrayList<>();
         String[] ids = idText.replaceAll("[^0-9,]", "").split(",");
         for (String id : ids) {
-            if (id != null && !id.equals("")) {
+            if (!TextUtils.isEmpty(id)) {
                 collectionIdList.add(Integer.parseInt(id));
             }
         }

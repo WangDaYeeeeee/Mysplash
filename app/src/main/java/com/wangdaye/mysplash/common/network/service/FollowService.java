@@ -32,11 +32,12 @@ public class FollowService {
                          CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .addInterceptor(new NapiInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .addInterceptor(new NapiInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((FollowApi.class));

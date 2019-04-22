@@ -46,7 +46,7 @@ import com.wangdaye.mysplash.common.utils.ShareUtils;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
@@ -366,24 +366,26 @@ public class MeActivity extends LoadableActivity<Photo>
                 DisplayUtils.getGirdColumnCount(this)
         ).setItemEventCallback(new CollectionItemEventHelper(this));
 
-        List<View> pageList = Arrays.asList(
-                new MePhotosView(
-                        this, R.id.activity_me_page_photo,
-                        (PhotoAdapter) adapters[photosPage()],
-                        getCurrentPagerPosition() == photosPage(),
-                        photosPage(),
-                        this
-                ), new MePhotosView(
-                        this, R.id.activity_me_page_like,
-                        (PhotoAdapter) adapters[likesPage()],
-                        getCurrentPagerPosition() == likesPage(),
-                        likesPage(),
-                        this
-                ), new MeCollectionsView(
-                        this, R.id.activity_me_page_collection,
-                        (CollectionAdapter) adapters[collectionsPage()],
-                        getCurrentPagerPosition() == collectionsPage(),
-                        collectionsPage(), this
+        List<View> pageList = new ArrayList<>(
+                Arrays.asList(
+                        new MePhotosView(
+                                this, R.id.activity_me_page_photo,
+                                (PhotoAdapter) adapters[photosPage()],
+                                getCurrentPagerPosition() == photosPage(),
+                                photosPage(),
+                                this
+                        ), new MePhotosView(
+                                this, R.id.activity_me_page_like,
+                                (PhotoAdapter) adapters[likesPage()],
+                                getCurrentPagerPosition() == likesPage(),
+                                likesPage(),
+                                this
+                        ), new MeCollectionsView(
+                                this, R.id.activity_me_page_collection,
+                                (CollectionAdapter) adapters[collectionsPage()],
+                                getCurrentPagerPosition() == collectionsPage(),
+                                collectionsPage(), this
+                        )
                 )
         );
         for (int i = 0; i < pageList.size(); i ++) {
@@ -419,6 +421,7 @@ public class MeActivity extends LoadableActivity<Photo>
 
             ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
             if (pagerModels[getCurrentPagerPosition()].getListResource().getValue() != null
+                    && resource != null
                     && resource.dataList.size() == 0
                     && resource.state != ListResource.State.REFRESHING
                     && resource.state != ListResource.State.LOADING) {
@@ -465,13 +468,15 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     private void drawTabTitles(@NonNull User user) {
-        adapter.titleList = Arrays.asList(
-                DisplayUtils.abridgeNumber(user.total_photos)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[0],
-                DisplayUtils.abridgeNumber(user.total_likes)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[1],
-                DisplayUtils.abridgeNumber(user.total_collections)
-                        + " " + getResources().getStringArray(R.array.user_tabs)[2]
+        adapter.titleList = new ArrayList<>(
+                Arrays.asList(
+                        DisplayUtils.abridgeNumber(user.total_photos)
+                                + " " + getResources().getStringArray(R.array.user_tabs)[0],
+                        DisplayUtils.abridgeNumber(user.total_likes)
+                                + " " + getResources().getStringArray(R.array.user_tabs)[1],
+                        DisplayUtils.abridgeNumber(user.total_collections)
+                                + " " + getResources().getStringArray(R.array.user_tabs)[2]
+                )
         );
         adapter.notifyDataSetChanged();
     }

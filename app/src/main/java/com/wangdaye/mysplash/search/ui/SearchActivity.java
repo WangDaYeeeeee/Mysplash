@@ -299,28 +299,30 @@ public class SearchActivity extends LoadableActivity<Photo>
                 ).dataList
         ).setItemEventCallback(new UserItemEventHelper(this));
 
-        List<View> pageList = Arrays.asList(
-                new PhotoSearchPageView(
-                        this, R.id.activity_search_page_photo,
-                        adapters[photoPage()],
-                        getCurrentPagerPosition() == photoPage(),
-                        photoPage(),
-                        this
-                ).setOnClickListenerForFeedbackView(v -> hideKeyboard()),
-                new CollectionSearchPageView(
-                        this, R.id.activity_search_page_collection,
-                        adapters[collectionPage()],
-                        getCurrentPagerPosition() == collectionPage(),
-                        collectionPage(),
-                        this
-                ).setOnClickListenerForFeedbackView(v -> hideKeyboard()),
-                new UserSearchPageView(
-                        this, R.id.activity_search_page_user,
-                        adapters[userPage()],
-                        getCurrentPagerPosition() == userPage(),
-                        userPage(),
-                        this
-                ).setOnClickListenerForFeedbackView(v -> hideKeyboard())
+        List<View> pageList = new ArrayList<>(
+                Arrays.asList(
+                        new PhotoSearchPageView(
+                                this, R.id.activity_search_page_photo,
+                                adapters[photoPage()],
+                                getCurrentPagerPosition() == photoPage(),
+                                photoPage(),
+                                this
+                        ).setOnClickListenerForFeedbackView(v -> hideKeyboard()),
+                        new CollectionSearchPageView(
+                                this, R.id.activity_search_page_collection,
+                                adapters[collectionPage()],
+                                getCurrentPagerPosition() == collectionPage(),
+                                collectionPage(),
+                                this
+                        ).setOnClickListenerForFeedbackView(v -> hideKeyboard()),
+                        new UserSearchPageView(
+                                this, R.id.activity_search_page_user,
+                                adapters[userPage()],
+                                getCurrentPagerPosition() == userPage(),
+                                userPage(),
+                                this
+                        ).setOnClickListenerForFeedbackView(v -> hideKeyboard())
+                )
         );
         for (int i = 0; i < pageList.size(); i ++) {
             pagers[i] = (PagerView) pageList.get(i);

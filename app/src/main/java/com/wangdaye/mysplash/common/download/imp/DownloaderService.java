@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.BuildConfig;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
@@ -112,7 +112,10 @@ public abstract class DownloaderService {
             e.printStackTrace();
             try {
                 Uri uri = FileProvider.getUriForFile(
-                        c, BuildConfig.APPLICATION_ID + ".fileprovider", new File(entity.getFilePath()));
+                        c,
+                        FileUtils.getFileProviderAuthorities(),
+                        new File(entity.getFilePath())
+                );
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra(Intent.EXTRA_STREAM, uri);
                 intent.setType("image/*");
@@ -160,7 +163,10 @@ public abstract class DownloaderService {
             e.printStackTrace();
             try {
                 Uri uri = FileProvider.getUriForFile(
-                        c, BuildConfig.APPLICATION_ID + ".fileprovider", new File(entity.getFilePath()));
+                        c,
+                        FileUtils.getFileProviderAuthorities(),
+                        new File(entity.getFilePath())
+                );
                 Intent intent = new Intent(Intent.ACTION_ATTACH_DATA);
                 intent.setDataAndType(uri, "image/jpg");
                 intent.putExtra("mimeType", "image/jpg");

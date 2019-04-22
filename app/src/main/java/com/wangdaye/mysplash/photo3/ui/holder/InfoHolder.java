@@ -7,7 +7,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.ui.widget.NumberAnimTextView;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
 import butterknife.BindView;

@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.common.network.json.AccessToken;
 import com.wangdaye.mysplash.common.network.json.Me;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.network.service.UserService;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import java.util.ArrayList;
 import java.util.List;

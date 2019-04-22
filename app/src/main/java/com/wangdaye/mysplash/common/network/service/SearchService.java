@@ -36,10 +36,11 @@ public class SearchService {
                          CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((SearchApi.class));
@@ -47,11 +48,12 @@ public class SearchService {
                 ? null
                 : new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .addInterceptor(new NapiInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .addInterceptor(new NapiInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((SearchNodeApi.class));

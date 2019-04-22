@@ -49,8 +49,8 @@ public class GetStreamService {
                     numericId,
                     Mysplash.DEFAULT_PER_PAGE,
                     BuildConfig.GET_STREAM_KEY,
-                    "unspecified")
-                    .subscribeOn(Schedulers.io())
+                    "unspecified"
+            ).subscribeOn(Schedulers.io())
                     .observeOn(Schedulers.io())
                     .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                     .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody ->
@@ -58,8 +58,9 @@ public class GetStreamService {
                                     numericId,
                                     Mysplash.DEFAULT_PER_PAGE,
                                     BuildConfig.GET_STREAM_KEY,
-                                    "unspecified"))
-                    .observeOn(AndroidSchedulers.mainThread())
+                                    "unspecified"
+                            )
+                    ).observeOn(AndroidSchedulers.mainThread())
                     .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                     .subscribe(new ObserverContainer<>(compositeDisposable, observer));
         } else {
@@ -73,8 +74,8 @@ public class GetStreamService {
                 .observeOn(Schedulers.io())
                 .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .flatMap((Function<ResponseBody, ObservableSource<ResponseBody>>) responseBody ->
-                        api.getNextPageStream(nextPage))
-                .observeOn(AndroidSchedulers.mainThread())
+                        api.getNextPageStream(nextPage)
+                ).observeOn(AndroidSchedulers.mainThread())
                 .onExceptionResumeNext(Observable.create(emitter -> emitter.onNext(new NullResponseBody())))
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
@@ -83,8 +84,9 @@ public class GetStreamService {
         String result = "\"results\": ";
         return "stream_feed="
                 + stream.substring(
-                stream.indexOf(result) + result.length(),
-                stream.lastIndexOf("]") + 1);
+                        stream.indexOf(result) + result.length(),
+                        stream.lastIndexOf("]") + 1
+                );
     }
 
     public void cancel() {

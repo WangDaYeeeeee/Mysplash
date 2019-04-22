@@ -34,6 +34,7 @@ import com.wangdaye.mysplash.main.following.ui.adapter.FollowingItemEventHelper;
 import com.wangdaye.mysplash.main.following.ui.adapter.PhotoFeedHolder;
 import com.wangdaye.mysplash.main.following.ui.adapter.TitleFeedHolder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -222,15 +223,17 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
         followingAdapter = new FollowingAdapter(
                 getActivity(),
                 Objects.requireNonNull(feedViewModel.getListResource().getValue()).dataList,
-                Arrays.asList(
-                        new TitleFeedHolder.Factory(
-                                DisplayUtils.getGirdColumnCount(getActivity()),
-                                0,
-                                itemEventHelper
-                        ), new PhotoFeedHolder.Factory(
-                                DisplayUtils.getGirdColumnCount(getActivity()),
-                                1,
-                                itemEventHelper
+                new ArrayList<>(
+                        Arrays.asList(
+                                new TitleFeedHolder.Factory(
+                                        DisplayUtils.getGirdColumnCount(getActivity()),
+                                        0,
+                                        itemEventHelper
+                                ), new PhotoFeedHolder.Factory(
+                                        DisplayUtils.getGirdColumnCount(getActivity()),
+                                        1,
+                                        itemEventHelper
+                                )
                         )
                 )
         );

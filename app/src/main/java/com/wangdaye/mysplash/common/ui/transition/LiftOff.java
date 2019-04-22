@@ -59,6 +59,10 @@ public class LiftOff extends Transition {
     @Override
     public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
+        if (endValues == null || endValues.view == null) {
+            return null;
+        }
+
         return ObjectAnimator.ofFloat(
                 endValues.view,
                 View.TRANSLATION_Z,

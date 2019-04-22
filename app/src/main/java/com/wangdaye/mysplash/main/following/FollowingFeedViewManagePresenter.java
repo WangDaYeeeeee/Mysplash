@@ -48,7 +48,6 @@ public class FollowingFeedViewManagePresenter {
                 adapter.buildTypeList(0);
                 adapter.notifyDataSetChanged();
             } else if (resource.event instanceof ListResource.ItemRangeInserted) {
-
                 int increase = ((ListResource.ItemRangeInserted) resource.event).increase;
                 int positionPhotoStart = adapter.getRealItemCount() - increase;
                 int positionTypeStart = adapter.getTypeItemCount();
@@ -62,7 +61,7 @@ public class FollowingFeedViewManagePresenter {
                 int position = adapter.getPhotoHolderAdapterPosition(
                         ((ListResource.ItemChanged) resource.event).index
                 );
-                adapter.notifyItemChanged(
+                adapter.updateItem(
                         position,
                         FollowingAdapter.PAYLOAD_UPDATE_ITEM
                 );

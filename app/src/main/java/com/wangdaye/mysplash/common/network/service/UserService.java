@@ -45,10 +45,11 @@ public class UserService {
                        CompositeDisposable disposable) {
         api = new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_API_BASE_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((UserApi.class));
@@ -56,11 +57,12 @@ public class UserService {
                 ? null
                 : new Retrofit.Builder()
                 .baseUrl(Mysplash.UNSPLASH_URL)
-                .client(client.newBuilder()
-                        .addInterceptor(new AuthInterceptor())
-                        .addInterceptor(new NapiInterceptor())
-                        .build())
-                .addConverterFactory(gsonConverterFactory)
+                .client(
+                        client.newBuilder()
+                                .addInterceptor(new AuthInterceptor())
+                                .addInterceptor(new NapiInterceptor())
+                                .build()
+                ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
                 .build()
                 .create((UserNodeApi.class));
@@ -104,8 +106,8 @@ public class UserService {
                 .flatMap((Function<Me, ObservableSource<User>>) me1 ->
                         nodeApi == null
                                 ? api.getUserProfile(me1.username, 256, 256)
-                                : nodeApi.getUserProfile(me1.username, 256, 256))
-                .observeOn(AndroidSchedulers.mainThread())
+                                : nodeApi.getUserProfile(me1.username, 256, 256)
+                ).observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(callback::onRequestUserCompleted)
                 .doOnError(throwable -> callback.onError())
                 .doOnComplete(callback::onComplete)

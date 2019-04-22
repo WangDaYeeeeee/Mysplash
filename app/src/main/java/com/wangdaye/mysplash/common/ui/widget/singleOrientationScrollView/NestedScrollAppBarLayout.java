@@ -41,7 +41,7 @@ public class NestedScrollAppBarLayout extends AppBarLayout
     private int enterAlwaysHeight;
     private int staticHeight;
 
-    private static final String TAG = "NestedScrollAppBarLayout";
+    private static final String TAG = "NestedScrollAppBar";
 
     public static class Behavior extends AppBarLayout.Behavior {
 
@@ -83,7 +83,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                     lastY = ev.getY();
                     isBeingDragged = false;
 
-                    appBarLayout.startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL);
+                    appBarLayout.startNestedScroll(
+                            ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_TOUCH);
                     break;
 
                 case MotionEvent.ACTION_POINTER_DOWN: {
@@ -111,12 +112,13 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                         int dy = (int) (lastY - y);
 
                         scrollConsumed[0] = scrollConsumed[1] = 0;
-                        appBarLayout.dispatchNestedPreScroll(0, dy, scrollConsumed, null);
+                        appBarLayout.dispatchNestedPreScroll(
+                                0, dy, scrollConsumed, null, ViewCompat.TYPE_TOUCH);
 
                         appBarLayout.dispatchNestedScroll(
                                 0, scrollConsumed[1],
                                 0, dy - scrollConsumed[1],
-                                null
+                                null, ViewCompat.TYPE_TOUCH
                         );
                     }
 
@@ -136,7 +138,7 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                 }
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
-                    appBarLayout.stopNestedScroll();
+                    appBarLayout.stopNestedScroll(ViewCompat.TYPE_TOUCH);
                     if (isBeingDragged) {
                         isBeingDragged = false;
                         return true;
@@ -258,10 +260,14 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         this.initialize();
     }
 
+    public NestedScrollAppBarLayout(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        this.initialize();
+    }
+
     private void initialize() {
         this.nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
         this.nestedScrollingChildHelper.setNestedScrollingEnabled(true);
-        setNestedScrollingEnabled(true);
 
         this.touchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }

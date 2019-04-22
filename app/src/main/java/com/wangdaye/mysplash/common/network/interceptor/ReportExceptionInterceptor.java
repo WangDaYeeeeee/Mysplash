@@ -20,6 +20,7 @@ abstract class ReportExceptionInterceptor implements Interceptor {
                 .protocol(Protocol.HTTP_2)
                 .code(400)
                 .message("Handle an error in Mysplash client.")
+                .body(null)
                 .build();
     }
 }

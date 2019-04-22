@@ -6,7 +6,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.ui.CollectionActivity;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;

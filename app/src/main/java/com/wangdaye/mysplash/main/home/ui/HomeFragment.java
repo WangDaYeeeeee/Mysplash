@@ -239,21 +239,23 @@ public class HomeFragment extends LoadableFragment<Photo>
             }
         });
 
-        List<View> pageList = Arrays.asList(
-                new HomePhotosView(
-                        (MainActivity) getActivity(),
-                        R.id.fragment_home_page_new,
-                        adapters[newPage()],
-                        getCurrentPagerPosition() == newPage(),
-                        newPage(),
-                        this
-                ), new HomePhotosView(
-                        (MainActivity) getActivity(),
-                        R.id.fragment_home_page_featured,
-                        adapters[featuredPage()],
-                        getCurrentPagerPosition() == featuredPage(),
-                        featuredPage(),
-                        this
+        List<View> pageList = new ArrayList<>(
+                Arrays.asList(
+                        new HomePhotosView(
+                                (MainActivity) getActivity(),
+                                R.id.fragment_home_page_new,
+                                adapters[newPage()],
+                                getCurrentPagerPosition() == newPage(),
+                                newPage(),
+                                this
+                        ), new HomePhotosView(
+                                (MainActivity) getActivity(),
+                                R.id.fragment_home_page_featured,
+                                adapters[featuredPage()],
+                                getCurrentPagerPosition() == featuredPage(),
+                                featuredPage(),
+                                this
+                        )
                 )
         );
         for (int i = newPage(); i < pageCount(); i ++) {

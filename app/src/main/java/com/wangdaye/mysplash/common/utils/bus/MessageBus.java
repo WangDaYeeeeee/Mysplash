@@ -10,6 +10,7 @@ import io.reactivex.subjects.Subject;
 public class MessageBus {
 
     private static MessageBus instance;
+
     public static MessageBus getInstance() {
         if (instance == null) {
             synchronized (MessageBus.class) {

@@ -165,21 +165,23 @@ public class MyFollowActivity extends MysplashActivity
                 new MyFollowItemEventHelper(this, followOrCancelFollowPresenter)
         );
         
-        List<View> pageList = Arrays.asList(
-                new MyFollowUserView(
-                        this,
-                        R.id.activity_my_follower,
-                        adapters[followerPage()],
-                        getCurrentPagerPosition() == followerPage(),
-                        followerPage(),
-                        this
-                ), new MyFollowUserView(
-                        this,
-                        R.id.activity_my_following,
-                        adapters[followingPage()],
-                        getCurrentPagerPosition() == followingPage(),
-                        followingPage(),
-                        this
+        List<View> pageList = new ArrayList<>(
+                Arrays.asList(
+                        new MyFollowUserView(
+                                this,
+                                R.id.activity_my_follower,
+                                adapters[followerPage()],
+                                getCurrentPagerPosition() == followerPage(),
+                                followerPage(),
+                                this
+                        ), new MyFollowUserView(
+                                this,
+                                R.id.activity_my_following,
+                                adapters[followingPage()],
+                                getCurrentPagerPosition() == followingPage(),
+                                followingPage(),
+                                this
+                        )
                 )
         );
         for (int i = 0; i < pageList.size(); i ++) {

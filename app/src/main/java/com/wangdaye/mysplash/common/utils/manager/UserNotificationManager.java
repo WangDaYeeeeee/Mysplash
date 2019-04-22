@@ -16,7 +16,7 @@ import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.service.GetStreamService;
 import com.wangdaye.mysplash.common.network.service.NotificationService;
-import com.wangdaye.mysplash.common.download.NotificationHelper;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

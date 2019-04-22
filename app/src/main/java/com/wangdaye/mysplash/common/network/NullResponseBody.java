@@ -5,6 +5,7 @@ import okhttp3.ResponseBody;
 import okio.BufferedSource;
 
 public class NullResponseBody extends ResponseBody {
+
     @Override
     public MediaType contentType() {
         return null;

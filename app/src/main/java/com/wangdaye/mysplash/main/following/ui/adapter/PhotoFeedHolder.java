@@ -66,7 +66,8 @@ public class PhotoFeedHolder extends FollowingHolder {
                     LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_following_photo, parent, false),
                     columnCount,
-                    callback);
+                    callback
+            );
         }
 
         @Override
@@ -109,7 +110,11 @@ public class PhotoFeedHolder extends FollowingHolder {
             card.setLayoutParams(params);
         } else {
             params.setMargins(
-                    context.getResources().getDimensionPixelSize(R.dimen.large_icon_size), 0, margin, margin);
+                    context.getResources().getDimensionPixelSize(R.dimen.large_icon_size),
+                    0,
+                    margin,
+                    margin
+            );
             card.setLayoutParams(params);
         }
 
@@ -143,11 +148,15 @@ public class PhotoFeedHolder extends FollowingHolder {
             likeButton.setProgressState();
         } else {
             likeButton.setResultState(
-                    photo.liked_by_user ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                    photo.liked_by_user
+                            ? R.drawable.ic_item_heart_red
+                            : R.drawable.ic_item_heart_outline
+            );
         }
 
         card.setCardBackgroundColor(
-                ImageHelper.computeCardBackgroundColor(card.getContext(), photo.color));
+                ImageHelper.computeCardBackgroundColor(card.getContext(), photo.color)
+        );
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image.setTransitionName(photo.id + "-cover");
