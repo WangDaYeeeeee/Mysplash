@@ -52,6 +52,8 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         private boolean isBeingDragged;
 
         private int[] scrollConsumed;
+        private int[] scrollOffsetInWindow;
+        private int nestedScrollingOffsetY;
 
         public Behavior() {
             super();
@@ -65,6 +67,7 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
         private void init() {
             scrollConsumed = new int[2];
+            scrollOffsetInWindow = new int[2];
         }
 
         private void bindAppBar(AppBarLayout child) {
@@ -76,6 +79,11 @@ public class NestedScrollAppBarLayout extends AppBarLayout
         @Override
         public boolean onTouchEvent(CoordinatorLayout parent, AppBarLayout child, MotionEvent ev) {
             bindAppBar(child);
+
+            if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+                nestedScrollingOffsetY = 0;
+            }
+            ev.offsetLocation(0, Math.max(0, nestedScrollingOffsetY));
 
             switch (ev.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
@@ -113,13 +121,15 @@ public class NestedScrollAppBarLayout extends AppBarLayout
 
                         scrollConsumed[0] = scrollConsumed[1] = 0;
                         appBarLayout.dispatchNestedPreScroll(
-                                0, dy, scrollConsumed, null, ViewCompat.TYPE_TOUCH);
+                                0, dy, scrollConsumed, scrollOffsetInWindow, ViewCompat.TYPE_TOUCH);
+                        dy -= scrollConsumed[1];
+                        nestedScrollingOffsetY += scrollOffsetInWindow[1];
 
                         appBarLayout.dispatchNestedScroll(
-                                0, scrollConsumed[1],
-                                0, dy - scrollConsumed[1],
-                                null, ViewCompat.TYPE_TOUCH
+                                0, scrollConsumed[1], 0, dy,
+                                scrollOffsetInWindow, ViewCompat.TYPE_TOUCH
                         );
+                        nestedScrollingOffsetY += scrollOffsetInWindow[1];
                     }
 
                     lastY = y;
