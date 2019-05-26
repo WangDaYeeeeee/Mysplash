@@ -21,24 +21,35 @@ import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 
 import java.util.List;
 
-public class AndroidDownloaderService extends DownloaderService {
+public class AndroidDownloaderService extends AbstractDownloaderService {
+
+    private static AndroidDownloaderService instance;
+
+    public static AndroidDownloaderService getInstance(@NonNull Context context) {
+        if (instance == null) {
+            synchronized (AndroidDownloaderService.class) {
+                if (instance == null) {
+                    instance = new AndroidDownloaderService(context);
+                }
+            }
+        }
+        return instance;
+    }
 
     @Nullable private DownloadManager downloadManager;
 
     private Handler handler;
-    private final Object listenerLock = new Object();
 
     @Nullable private PollingRunnable runnable;
     private class PollingRunnable extends FlagRunnable {
 
         @Override
         public void run() {
-            while (isRunning() && listenerList != null) {
-                synchronized (listenerLock) {
-                    for (int i = 0; isRunning() && i < listenerList.size(); i ++) {
+            while (isRunning()) {
+                synchronizedExecuteRunnable(listenerList -> {
+                    for (int i = listenerList.size() - 1; i >= 0; i --) {
                         if (listenerList.get(i).result != DownloadMissionEntity.RESULT_DOWNLOADING) {
                             listenerList.remove(i);
-                            i --;
                             if (listenerList.size() == 0) {
                                 setRunning(false);
                                 runnable = null;
@@ -57,8 +68,8 @@ public class AndroidDownloaderService extends DownloaderService {
                             });
                         }
                     }
-                }
-                SystemClock.sleep(100);
+                });
+                SystemClock.sleep(300);
             }
         }
     }
@@ -74,7 +85,9 @@ public class AndroidDownloaderService extends DownloaderService {
         }
     }
 
-    public AndroidDownloaderService(Context context) {
+    private AndroidDownloaderService(Context context) {
+        super();
+
         this.downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         this.handler = new Handler(Looper.getMainLooper());
     }
@@ -86,20 +99,22 @@ public class AndroidDownloaderService extends DownloaderService {
             return -1;
         }
 
-        FileUtils.deleteFile(entity);
+        synchronizedExecuteRunnable(listenerList -> {
+            FileUtils.deleteFile(entity);
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
-                .setTitle(entity.getNotificationTitle())
-                .setDescription(c.getString(R.string.feedback_downloading))
-                .setDestinationInExternalPublicDir(
-                        Mysplash.DOWNLOAD_PATH,
-                        entity.title + entity.getFormat()
-                );
-        request.allowScanningByMediaScanner();
+            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(entity.downloadUrl))
+                    .setTitle(entity.getNotificationTitle())
+                    .setDescription(c.getString(R.string.feedback_downloading))
+                    .setDestinationInExternalPublicDir(
+                            Mysplash.DOWNLOAD_PATH,
+                            entity.title + entity.getFormat()
+                    );
+            request.allowScanningByMediaScanner();
 
-        entity.missionId = downloadManager.enqueue(request);
-        entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
-        DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+            entity.missionId = downloadManager.enqueue(request);
+            entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
+            DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+        });
 
         if (showSnackbar) {
             NotificationHelper.showSnackbar(c.getString(R.string.feedback_download_start));
@@ -115,9 +130,31 @@ public class AndroidDownloaderService extends DownloaderService {
             return -1;
         }
 
-        downloadManager.remove(entity.missionId);
-        DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+        synchronizedExecuteRunnable(listenerList -> {
+            downloadManager.remove(entity.missionId);
+            DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+        });
+
         return addMission(c, entity, true);
+    }
+
+    @Override
+    public void completeMission(Context c, @NonNull DownloadMissionEntity entity) {
+        if (isMissionSuccess(entity.missionId)) {
+            if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
+                downloadPhotoSuccess(c, entity);
+            } else {
+                downloadCollectionSuccess(c, entity);
+            }
+            updateMissionResult(c, entity, DownloadMissionEntity.RESULT_SUCCEED);
+        } else {
+            if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
+                downloadPhotoFailed(c, entity);
+            } else {
+                downloadCollectionFailed(c, entity);
+            }
+            updateMissionResult(c, entity, DownloadMissionEntity.RESULT_FAILED);
+        }
     }
 
     @Override
@@ -127,12 +164,14 @@ public class AndroidDownloaderService extends DownloaderService {
             return;
         }
 
-        if (entity.result != DownloadMissionEntity.RESULT_SUCCEED) {
-            downloadManager.remove(entity.missionId);
-        }
-        if (deleteEntity) {
-            DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
-        }
+        synchronizedExecuteRunnable(listenerList -> {
+            if (entity.result != DownloadMissionEntity.RESULT_SUCCEED) {
+                downloadManager.remove(entity.missionId);
+            }
+            if (deleteEntity) {
+                DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+            }
+        });
     }
 
     @Override
@@ -142,19 +181,23 @@ public class AndroidDownloaderService extends DownloaderService {
             return;
         }
 
-        for (int i = 0; i < entityList.size(); i ++) {
-            if (entityList.get(i).result != DownloadMissionEntity.RESULT_SUCCEED) {
-                downloadManager.remove(entityList.get(i).missionId);
+        synchronizedExecuteRunnable(listenerList -> {
+            for (int i = 0; i < entityList.size(); i ++) {
+                if (entityList.get(i).result != DownloadMissionEntity.RESULT_SUCCEED) {
+                    downloadManager.remove(entityList.get(i).missionId);
+                }
             }
-        }
 
-        DatabaseHelper.getInstance(c).clearDownloadEntity();
+            DatabaseHelper.getInstance(c).clearDownloadEntity();
+        });
     }
 
     @Override
     public void updateMissionResult(Context c, @NonNull DownloadMissionEntity entity, int result) {
         entity.result = result;
-        DatabaseHelper.getInstance(c).updateDownloadEntity(entity);
+        synchronizedExecuteRunnable(listenerList ->
+                DatabaseHelper.getInstance(c).updateDownloadEntity(entity)
+        );
     }
 
     @Override
@@ -170,50 +213,46 @@ public class AndroidDownloaderService extends DownloaderService {
 
     @Override
     public void addOnDownloadListener(@NonNull OnDownloadListener l) {
-        synchronized (listenerLock) {
-            super.addOnDownloadListener(l);
-        }
-        if (runnable == null || !runnable.isRunning()) {
-            runnable = new PollingRunnable();
-            ThreadManager.getInstance().execute(runnable);
-        }
+        super.addOnDownloadListener(l, listenerList -> {
+            if (runnable == null || !runnable.isRunning()) {
+                runnable = new PollingRunnable();
+                ThreadManager.getInstance().execute(runnable);
+            }
+        });
+    }
+
+    @Override
+    public void addOnDownloadListener(@NonNull List<OnDownloadListener> list) {
+        super.addOnDownloadListener(list, listenerList -> {
+            if (runnable == null || !runnable.isRunning()) {
+                runnable = new PollingRunnable();
+                ThreadManager.getInstance().execute(runnable);
+            }
+        });
     }
 
     @Override
     public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
-        synchronized (listenerLock) {
-            super.removeOnDownloadListener(l);
-        }
-        if (listenerList != null && listenerList.size() == 0
-                && runnable != null && runnable.isRunning()) {
-            runnable.setRunning(false);
-            runnable = null;
-        }
+        super.removeOnDownloadListener(l, listenerList -> {
+            if (listenerList.size() == 0 && runnable != null && runnable.isRunning()) {
+                runnable.setRunning(false);
+                runnable = null;
+            }
+        });
+    }
+
+    @Override
+    public void removeOnDownloadListener(@NonNull List<OnDownloadListener> list) {
+        super.removeOnDownloadListener(list, listenerList -> {
+            if (listenerList.size() == 0 && runnable != null && runnable.isRunning()) {
+                runnable.setRunning(false);
+                runnable = null;
+            }
+        });
     }
 
     private void showErrorNotification() {
         NotificationHelper.showSnackbar("Cannot get DownloadManager.");
-    }
-
-    public void downloadFinish(Context c, long missionId) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(missionId);
-        if (entity != null) {
-            if (isMissionSuccess(missionId)) {
-                if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
-                    downloadPhotoSuccess(c, entity);
-                } else {
-                    downloadCollectionSuccess(c, entity);
-                }
-                updateMissionResult(c, entity, DownloadMissionEntity.RESULT_SUCCEED);
-            } else {
-                if (entity.downloadType != DownloadMissionEntity.COLLECTION_TYPE) {
-                    downloadPhotoFailed(c, entity);
-                } else {
-                    downloadCollectionFailed(c, entity);
-                }
-                updateMissionResult(c, entity, DownloadMissionEntity.RESULT_FAILED);
-            }
-        }
     }
 
     private boolean isMissionSuccess(long id) {
@@ -265,7 +304,8 @@ public class AndroidDownloaderService extends DownloaderService {
         if (cursor != null) {
             PollingResult result = new PollingResult(
                     getDownloadResult(cursor),
-                    getMissionProcess(cursor));
+                    getMissionProcess(cursor)
+            );
             cursor.close();
             return result;
         }

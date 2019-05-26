@@ -20,11 +20,17 @@ import com.wangdaye.mysplash.common.network.service.UserService;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.nekocode.rxlifecycle.LifecycleEvent;
+import cn.nekocode.rxlifecycle.compact.RxLifecycleCompact;
+import io.reactivex.Emitter;
+import io.reactivex.Observable;
 
 /**
  * Profile dialog.
@@ -56,7 +62,7 @@ public class ProfileDialog extends MysplashDialogFragment {
                 .inflate(R.layout.dialog_profile, null, false);
         ButterKnife.bind(this, view);
         initWidget();
-        service.requestUserProfile(username, onRequestUserCallback);
+        service.requestUserProfile(username, new ProfileCallback());
         return new AlertDialog.Builder(getActivity())
                 .setView(view)
                 .create();
@@ -79,11 +85,15 @@ public class ProfileDialog extends MysplashDialogFragment {
 
     // on request user profile listener.
 
-    private BaseObserver<User> onRequestUserCallback = new BaseObserver<User>() {
+    private class ProfileCallback extends BaseObserver<User> {
 
         @SuppressLint("SetTextI18n")
         @Override
         public void onSucceed(User user) {
+            if (getActivity() == null) {
+                return;
+            }
+
             contentTxt.setText(
                     user.name + "\n\n"
                             + user.bio + "\n\n"
@@ -100,9 +110,19 @@ public class ProfileDialog extends MysplashDialogFragment {
 
         @Override
         public void onFailed() {
+            if (getActivity() == null) {
+                return;
+            }
+
             if (!TextUtils.isEmpty(username)) {
-                service.requestUserProfile(username, this);
+                Observable.create(Emitter::onComplete)
+                        .compose(
+                                RxLifecycleCompact.bind(ProfileDialog.this)
+                                        .disposeObservableWhen(LifecycleEvent.DESTROY)
+                        ).delay(2, TimeUnit.SECONDS)
+                        .doOnComplete(() -> service.requestUserProfile(username, new ProfileCallback()))
+                        .subscribe();
             }
         }
-    };
+    }
 }

@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
@@ -51,8 +50,8 @@ public class UserProfileView extends FrameLayout {
     @BindView(R.id.container_user_profile_tagList) RecyclerView tagList;
     @BindView(R.id.container_user_profile_bio) TextView bioTxt;
 
-    @BindView(R.id.container_user_profile_locationContainer) RelativeLayout locationContainer;
-    @OnClick(R.id.container_user_profile_locationContainer) void clickLocation() {
+    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
+    @OnClick(R.id.container_user_profile_locationTxt) void clickLocation() {
         if (!TextUtils.isEmpty(locationTxt.getText())) {
             IntentHelper.startSearchActivity(
                     Mysplash.getInstance().getTopActivity(),
@@ -60,7 +59,6 @@ public class UserProfileView extends FrameLayout {
         }
     }
 
-    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
     @BindView(R.id.container_user_profile_followBtn) RippleButton rippleButton;
 
     private PagerAdapter adapter;
@@ -157,7 +155,7 @@ public class UserProfileView extends FrameLayout {
         }
 
         if (TextUtils.isEmpty(u.location)) {
-            locationContainer.setVisibility(GONE);
+            locationTxt.setVisibility(GONE);
         } else {
             locationTxt.setText(u.location);
         }

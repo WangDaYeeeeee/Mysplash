@@ -4,8 +4,8 @@ import android.text.TextUtils;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
+import com.wangdaye.mysplash.common.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.user.repository.UserCollectionsViewRepository;
 
 import java.util.Objects;

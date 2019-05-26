@@ -18,12 +18,12 @@ import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
+import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.main.MainActivity;
@@ -31,8 +31,8 @@ import com.wangdaye.mysplash.main.following.FollowingFeedViewManagePresenter;
 import com.wangdaye.mysplash.main.following.FollowingFeedViewModel;
 import com.wangdaye.mysplash.main.following.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash.main.following.ui.adapter.FollowingItemEventHelper;
-import com.wangdaye.mysplash.main.following.ui.adapter.PhotoFeedHolder;
-import com.wangdaye.mysplash.main.following.ui.adapter.TitleFeedHolder;
+import com.wangdaye.mysplash.main.following.ui.adapter.holder.PhotoFeedHolder;
+import com.wangdaye.mysplash.main.following.ui.adapter.holder.TitleFeedHolder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -223,19 +223,10 @@ public class FollowingFeedFragment extends LoadableFragment<Photo>
         followingAdapter = new FollowingAdapter(
                 getActivity(),
                 Objects.requireNonNull(feedViewModel.getListResource().getValue()).dataList,
-                new ArrayList<>(
-                        Arrays.asList(
-                                new TitleFeedHolder.Factory(
-                                        DisplayUtils.getGirdColumnCount(getActivity()),
-                                        0,
-                                        itemEventHelper
-                                ), new PhotoFeedHolder.Factory(
-                                        DisplayUtils.getGirdColumnCount(getActivity()),
-                                        1,
-                                        itemEventHelper
-                                )
-                        )
-                )
+                new ArrayList<>(Arrays.asList(
+                        new TitleFeedHolder.Factory(0, itemEventHelper),
+                        new PhotoFeedHolder.Factory(1, itemEventHelper)
+                ))
         );
         feedView.setAdapterAndMangeView(followingAdapter, this);
 

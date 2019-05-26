@@ -214,7 +214,7 @@ public class DownloadMissionEntity
     }
 
     public static List<DownloadMissionEntity> readDownloadEntityList(SQLiteDatabase database,
-                                                                     @DownloadTypeRule int result) {
+                                                                     @DownloadResultRule int result) {
         return new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()
@@ -224,7 +224,7 @@ public class DownloadMissionEntity
     }
 
     public static int readDownloadEntityCount(SQLiteDatabase database,
-                                              @DownloadTypeRule int result) {
+                                              @DownloadResultRule int result) {
         return (int) new DaoMaster(database)
                 .newSession()
                 .getDownloadMissionEntityDao()

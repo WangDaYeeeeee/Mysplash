@@ -5,7 +5,7 @@ import android.annotation.SuppressLint;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,7 +20,10 @@ public class UserSearchPageView extends AbstractSearchPageView {
 
     @Override
     protected RecyclerView.LayoutManager getLayoutManager() {
-        return new GridLayoutManager(getContext(), DisplayUtils.getGirdColumnCount(getContext()));
+        return new GridLayoutManager(
+                getContext(),
+                RecyclerViewHelper.getGirdColumnCount(getContext())
+        );
     }
 
     @Override

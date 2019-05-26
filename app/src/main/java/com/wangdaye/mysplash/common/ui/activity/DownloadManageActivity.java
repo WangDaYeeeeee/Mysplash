@@ -12,20 +12,19 @@ import android.view.View;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.ReadWriteActivity;
-import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.download.DownloadMission;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
-import com.wangdaye.mysplash.common.download.imp.DownloaderService;
+import com.wangdaye.mysplash.common.download.imp.AbstractDownloaderService;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.ui.adapter.DownloadAdapter;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import java.util.ArrayList;
@@ -37,10 +36,8 @@ import cn.nekocode.rxlifecycle.LifecycleEvent;
 import cn.nekocode.rxlifecycle.RxLifecycle;
 import io.reactivex.Observable;
 import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
@@ -62,10 +59,12 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     private DownloadAdapter adapter;
     private List<DownloadMission> missionList;
-    private boolean readListCompleted;
+    private List<AbstractDownloaderService.OnDownloadListener> listenerList;
 
-    private List<OnDownloadListener> listenerList;
-    private boolean destroyed;
+    private boolean readListCompleted = false;
+    private boolean destroyed = false;
+
+    public final Object synchronizedLocker = new Object();
 
     public static final String ACTION_DOWNLOAD_MANAGER = "com.wangdaye.mysplash.DownloadManager";
 
@@ -73,7 +72,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     // If is true, that means this activity was opened by click downloading notification.
     public static final String EXTRA_NOTIFICATION = "notification";
 
-    private class OnDownloadListener extends DownloaderService.OnDownloadListener {
+    private class OnDownloadListener extends AbstractDownloaderService.OnDownloadListener {
 
         OnDownloadListener(DownloadMission mission) {
             super(mission.entity.missionId, mission.entity.getNotificationTitle(), mission.entity.result);
@@ -90,19 +89,20 @@ public class DownloadManageActivity extends ReadWriteActivity
                     return;
                 }
 
-                DownloadMission mission = missionList.get(index);
-                float oldProcess = mission.process;
-                mission.process = process;
-                if (mission.entity.result != DownloadMissionEntity.RESULT_DOWNLOADING) {
-                    DownloadHelper.getInstance(DownloadManageActivity.this)
-                            .updateMissionResult(
-                                    DownloadManageActivity.this,
-                                    mission.entity,
-                                    DownloadMissionEntity.RESULT_DOWNLOADING
-                            );
-                    drawRecyclerItemProcess(index, mission);
-                } else if (mission.process != oldProcess) {
-                    drawRecyclerItemProcess(index, mission);
+                synchronized (synchronizedLocker) {
+                    DownloadMission mission = missionList.get(index);
+                    float oldProcess = mission.process;
+                    mission.process = process;
+                    if (mission.entity.result != DownloadMissionEntity.RESULT_DOWNLOADING) {
+                        DownloadHelper.getInstance(DownloadManageActivity.this).updateMissionResult(
+                                DownloadManageActivity.this,
+                                mission.entity,
+                                DownloadMissionEntity.RESULT_DOWNLOADING
+                        );
+                        drawRecyclerItemProcess(index, mission);
+                    } else if (mission.process != oldProcess) {
+                        drawRecyclerItemProcess(index, mission);
+                    }
                 }
             }, missionId);
         }
@@ -120,36 +120,36 @@ public class DownloadManageActivity extends ReadWriteActivity
                     return;
                 }
 
-                DownloadMission mission = missionList.get(index);
-                int oldResult = mission.entity.result;
-                mission.entity.result = result;
-                switch (result) {
-                    case DownloadMissionEntity.RESULT_SUCCEED:
-                        if (oldResult != DownloadMissionEntity.RESULT_SUCCEED) {
-                            DownloadHelper.getInstance(DownloadManageActivity.this)
-                                    .updateMissionResult(
-                                            DownloadManageActivity.this,
-                                            mission.entity,
-                                            DownloadMissionEntity.RESULT_SUCCEED
-                                    );
-                            drawRecyclerItemSucceed(index, mission);
-                        }
-                        break;
+                synchronized (synchronizedLocker) {
+                    DownloadMission mission = missionList.get(index);
+                    int oldResult = mission.entity.result;
+                    mission.entity.result = result;
+                    switch (result) {
+                        case DownloadMissionEntity.RESULT_SUCCEED:
+                            if (oldResult != DownloadMissionEntity.RESULT_SUCCEED) {
+                                DownloadHelper.getInstance(DownloadManageActivity.this).updateMissionResult(
+                                        DownloadManageActivity.this,
+                                        mission.entity,
+                                        DownloadMissionEntity.RESULT_SUCCEED
+                                );
+                                drawRecyclerItemSucceed(index, mission);
+                            }
+                            break;
 
-                    case DownloadMissionEntity.RESULT_FAILED:
-                        if (oldResult != DownloadMissionEntity.RESULT_FAILED) {
-                            DownloadHelper.getInstance(DownloadManageActivity.this)
-                                    .updateMissionResult(
-                                            DownloadManageActivity.this,
-                                            mission.entity,
-                                            DownloadMissionEntity.RESULT_FAILED
-                                    );
-                            drawRecyclerItemFailed(index, mission);
-                        }
-                        break;
+                        case DownloadMissionEntity.RESULT_FAILED:
+                            if (oldResult != DownloadMissionEntity.RESULT_FAILED) {
+                                DownloadHelper.getInstance(DownloadManageActivity.this).updateMissionResult(
+                                        DownloadManageActivity.this,
+                                        mission.entity,
+                                        DownloadMissionEntity.RESULT_FAILED
+                                );
+                                drawRecyclerItemFailed(index, mission);
+                            }
+                            break;
 
-                    case DownloadMissionEntity.RESULT_DOWNLOADING:
-                        break;
+                        case DownloadMissionEntity.RESULT_DOWNLOADING:
+                            break;
+                    }
                 }
             }, missionId);
         }
@@ -169,10 +169,8 @@ public class DownloadManageActivity extends ReadWriteActivity
         super.onDestroy();
         destroyed = true;
         if (listenerList != null) {
-            for (int i = listenerList.size() - 1; i >= 0; i --) {
-                DownloadHelper.getInstance(this).removeOnDownloadListener(listenerList.get(i));
-                listenerList.remove(i);
-            }
+            DownloadHelper.getInstance(this).removeOnDownloadListener(listenerList);
+            listenerList.clear();
         }
     }
 
@@ -206,43 +204,36 @@ public class DownloadManageActivity extends ReadWriteActivity
     private void initData() {
         missionList = new ArrayList<>();
         readListCompleted = false;
+        destroyed = false;
 
         List<DownloadMissionEntity> entityList;
         // read failed tasks.
-        entityList = DatabaseHelper.getInstance(this)
-                .readDownloadEntityList(DownloadMissionEntity.RESULT_FAILED);
+        entityList = DownloadHelper.getInstance(this)
+                .readDownloadEntityList(this, DownloadMissionEntity.RESULT_FAILED);
         for (int i = 0; i < entityList.size(); i ++) {
             missionList.add(new DownloadMission(entityList.get(i)));
         }
 
         // read downloading tasks.
-        entityList = DatabaseHelper.getInstance(this)
-                .readDownloadEntityList(DownloadMissionEntity.RESULT_DOWNLOADING);
-        for (int i = 0; i < entityList.size(); i ++) {
-            missionList.add(DownloadHelper.getInstance(this)
-                    .getDownloadMission(this, entityList.get(i)));
-        }
-
-        // build listener list.
+        entityList = DownloadHelper.getInstance(this)
+                .readDownloadEntityList(this, DownloadMissionEntity.RESULT_DOWNLOADING);
         listenerList = new ArrayList<>();
-        for (int i = 0; i < missionList.size(); i ++) {
-            if (missionList.get(i).entity.result == DownloadMissionEntity.RESULT_DOWNLOADING) {
-                OnDownloadListener listener = new OnDownloadListener(missionList.get(i));
-                listenerList.add(listener);
-                DownloadHelper.getInstance(DownloadManageActivity.this)
-                        .addOnDownloadListener(listener);
-            } else if (missionList.get(i).entity.result == DownloadMissionEntity.RESULT_SUCCEED) {
-                return;
-            }
+        DownloadMission mission;
+        for (int i = 0; i < entityList.size(); i ++) {
+             mission = DownloadHelper.getInstance(this)
+                    .getDownloadMission(this, entityList.get(i));
+            missionList.add(mission);
+            listenerList.add(new OnDownloadListener(mission));
         }
-        destroyed = false;
 
-        adapter = new DownloadAdapter(missionList).setItemEventCallback(this);
+        adapter = new DownloadAdapter(this, missionList).setItemEventCallback(this);
+
+        DownloadHelper.getInstance(this).addOnDownloadListener(listenerList);
 
         // read completed tasks.
         Observable.create((ObservableOnSubscribe<List<DownloadMission>>) emitter -> {
-            List<DownloadMissionEntity> list = DatabaseHelper.getInstance(this)
-                    .readDownloadEntityList(DownloadMissionEntity.RESULT_SUCCEED);
+            List<DownloadMissionEntity> list = DownloadHelper.getInstance(this)
+                    .readDownloadEntityList(this, DownloadMissionEntity.RESULT_SUCCEED);
             List<DownloadMission> failedList = new ArrayList<>();
             for (int i = 0; i < list.size(); i ++) {
                 failedList.add(new DownloadMission(list.get(i)));
@@ -256,9 +247,14 @@ public class DownloadManageActivity extends ReadWriteActivity
                 .subscribe(new DisposableObserver<List<DownloadMission>>() {
                     @Override
                     public void onNext(List<DownloadMission> list) {
-                        int size = missionList.size();
-                        missionList.addAll(list);
-                        adapter.notifyItemRangeInserted(size, missionList.size() - size);
+                        synchronized (synchronizedLocker) {
+                            int size = missionList.size();
+                            missionList.addAll(list);
+                            adapter.notifyItemRangeInserted(
+                                    size,
+                                    missionList.size() - size
+                            );
+                        }
                     }
 
                     @Override
@@ -293,8 +289,15 @@ public class DownloadManageActivity extends ReadWriteActivity
         });
         toolbar.setOnMenuItemClickListener(this);
 
+        int margin = getResources().getDimensionPixelSize(R.dimen.little_margin);
+        adapter.setSingleColumnMarginPixel(recyclerView, margin);
+        adapter.setGridMarginPixel(recyclerView, margin);
+        adapter.setColumnCount(recyclerView, RecyclerViewHelper.getGirdColumnCount(this));
         recyclerView.setLayoutManager(
-                new GridLayoutManager(this, DisplayUtils.getGirdColumnCount(this))
+                new GridLayoutManager(
+                        this,
+                        RecyclerViewHelper.getGirdColumnCount(this)
+                )
         );
         recyclerView.setAdapter(adapter);
     }
@@ -303,12 +306,14 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     private void findProgressingHolderAndUpdateIt(Consumer<Integer> consumer, long missionId) {
         Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            for (int i = 0; i < missionList.size(); i ++) {
-                if (missionList.get(i).entity.missionId == missionId) {
-                    emitter.onNext(i);
-                    return;
-                } else if (missionList.get(i).entity.result == DownloadMissionEntity.RESULT_SUCCEED) {
-                    return;
+            synchronized (synchronizedLocker) {
+                for (int i = 0; i < missionList.size(); i ++) {
+                    if (missionList.get(i).entity.missionId == missionId) {
+                        emitter.onNext(i);
+                        return;
+                    } else if (missionList.get(i).entity.result == DownloadMissionEntity.RESULT_SUCCEED) {
+                        return;
+                    }
                 }
             }
         }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
@@ -376,40 +381,32 @@ public class DownloadManageActivity extends ReadWriteActivity
         listenerList.add(listener);
         DownloadHelper.getInstance(this).addOnDownloadListener(listener);
 
-        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            // remove the old item.
+        synchronized (synchronizedLocker) {
+            // remove old item.
+            int index = -1;
             for (int i = 0; i < missionList.size(); i ++) {
                 if (missionList.get(i).entity.missionId == entity.missionId) {
-                    emitter.onNext(i);
-                    return;
+                    index = i;
+                    break;
                 }
             }
-        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(i -> {
-                    missionList.remove((int) i);
-                    adapter.notifyItemRemoved(i);
-                }).observeOn(Schedulers.computation())
-                .flatMap((Function<Integer, ObservableSource<Integer>>) integer -> Observable.create(emitter -> {
-                    // add the new item.
-                    if (missionList.size() > 0) {
-                        // if the list's size > 0, we need find the last failed mission item and add the new item after it.
-                        for (int i = 0; i < missionList.size(); i ++) {
-                            if (missionList.get(i).entity.result != DownloadMissionEntity.RESULT_FAILED) {
-                                emitter.onNext(i);
-                                return;
-                            }
-                        }
-                        emitter.onNext(missionList.size());
-                    } else {
-                        emitter.onNext(0);
-                    }
-                })).observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(i -> {
-                    missionList.add(i, mission);
-                    adapter.notifyItemInserted(i);
-                }).subscribe();
+            if (index < 0) {
+                return;
+            }
+            missionList.remove(index);
+            adapter.notifyItemRemoved(index);
+
+            // add new item.
+            index = 0;
+            for (int i = 0; i < missionList.size(); i ++) {
+                if (missionList.get(i).entity.result != DownloadMissionEntity.RESULT_FAILED) {
+                    index = i;
+                    break;
+                }
+            }
+            missionList.add(index, mission);
+            adapter.notifyItemInserted(index);
+        }
     }
 
     private void checkDownloadResult(DownloadMissionEntity entity) {
@@ -486,10 +483,12 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @Override
     public void onDelete(DownloadMissionEntity entity, int adapterPosition) {
-        if (readListCompleted) {
-            DownloadHelper.getInstance(this).removeMission(this, entity);
-            missionList.remove(adapterPosition);
-            adapter.notifyItemRemoved(adapterPosition);
+        if (readListCompleted && adapterPosition >= 0) {
+            synchronized (synchronizedLocker) {
+                DownloadHelper.getInstance(this).removeMission(this, entity);
+                missionList.remove(adapterPosition);
+                adapter.notifyItemRemoved(adapterPosition);
+            }
         }
     }
 
@@ -503,7 +502,8 @@ public class DownloadManageActivity extends ReadWriteActivity
         // If there is another mission that is downloading the same thing, we cannot restart
         // this mission.
         int limitCount = entity.result == DownloadMissionEntity.RESULT_DOWNLOADING ? 1 : 0;
-        if (DatabaseHelper.getInstance(this).readDownloadingEntityCount(entity.title) > limitCount) {
+        if (DownloadHelper.getInstance(this)
+                .readDownloadingEntityCount(this, entity.title) > limitCount) {
             NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isPhotoExists(this, entity.title)
                 || FileUtils.isCollectionExists(this, entity.title)) {

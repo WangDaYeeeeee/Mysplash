@@ -36,7 +36,7 @@
                         android:id="@+id/activity_login_closeBtn"
                         android:src="@drawable/ic_close"
                         style="@style/material_image_button"
-                        tools:ignore="ContentDescription" />
+                        tools:ignore="ContentDescription,VectorDrawableCompat" />
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -126,6 +126,7 @@
                                 app:cpv_color="?attr/title_color"
                                 app:cpv_indeterminate="true"
                                 app:cpv_animAutostart="true" />
+
 
                         </RelativeLayout>
 

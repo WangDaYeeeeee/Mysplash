@@ -14,7 +14,7 @@
             android:id="@+id/container_update_me_closeBtn"
             android:src="@drawable/ic_close"
             style="@style/material_image_button"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription,VectorDrawableCompat" />
 
         <TextView
             android:text="@string/action_edit"

@@ -30,29 +30,27 @@ import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.DaggerViewModelFactory;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.download.imp.DownloaderService;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.VerticalNestedScrollView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.ScalableImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
+import com.wangdaye.mysplash.common.ui.widget.VerticalNestedScrollView;
+import com.wangdaye.mysplash.common.ui.widget.HorizontalScrollableImageView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.ShareUtils;
-import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.BrowsableDialogMangePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.DispatchCollectionsChangedPresenter;
+import com.wangdaye.mysplash.common.presenter.BrowsableDialogMangePresenter;
+import com.wangdaye.mysplash.common.presenter.DispatchCollectionsChangedPresenter;
 import com.wangdaye.mysplash.photo3.PhotoActivityModel;
 import com.wangdaye.mysplash.photo3.PhotoListManagePresenter;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
@@ -89,7 +87,7 @@ public class PhotoActivity3 extends ReadWriteActivity
     @BindView(R.id.activity_photo_3_swipeSwitchView) SwipeSwitchLayout swipeSwitchView;
     @BindView(R.id.activity_photo_3_switchBackground) AppCompatImageView switchBackground;
 
-    @BindView(R.id.activity_photo_3_regularImage) ScalableImageView regularImage;
+    @BindView(R.id.activity_photo_3_regularImage) HorizontalScrollableImageView regularImage;
     @OnClick(R.id.activity_photo_3_regularImage)
     void clickTouchView() {
         if (activityModel.getResource().getValue() != null
@@ -101,7 +99,7 @@ public class PhotoActivity3 extends ReadWriteActivity
 
     @BindView(R.id.container_photo_3_actor_container) LinearLayout actorContainer;
     @BindView(R.id.container_photo_3_actor_controlBar) LinearLayout actorControlBar;
-    @BindView(R.id.container_photo_3_actor_avatar) CircleImageView avatar;
+    @BindView(R.id.container_photo_3_actor_avatar) CircularImageView avatar;
     @OnClick(R.id.container_photo_3_actor_avatar)
     void clickAvatar() {
         if (activityModel.getResource().getValue() != null
@@ -140,31 +138,10 @@ public class PhotoActivity3 extends ReadWriteActivity
     public static final String KEY_PHOTO_ACTIVITY_2_ID = "photo_activity_2_id";
 
     private boolean hasCardMargin;
+    private int cardRadius;
     private static final int LANDSCAPE_MAX_WIDTH_DP = 580;
 
     @Nullable private String imagePhotoId;
-    private OnDownloadListener listener;
-
-    private class OnDownloadListener extends DownloaderService.OnDownloadListener {
-
-        OnDownloadListener(DownloadMissionEntity entity) {
-            super(entity.missionId, entity.getNotificationTitle(), entity.result);
-        }
-
-        @Override
-        public void onProcess(float process) {
-            buttonBar.setDownloadState(
-                    true,
-                    (int) Math.max(0, Math.min(process, 100))
-            );
-        }
-
-        @Override
-        public void onComplete(int result) {
-            listener = null;
-            buttonBar.setDownloadState(false, -1);
-        }
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -185,10 +162,6 @@ public class PhotoActivity3 extends ReadWriteActivity
     protected void onDestroy() {
         super.onDestroy();
         ImageHelper.releaseImageView(regularImage);
-        if (listener != null) {
-            DownloadHelper.getInstance(this).removeOnDownloadListener(listener);
-            listener = null;
-        }
     }
 
     @Override
@@ -292,15 +265,9 @@ public class PhotoActivity3 extends ReadWriteActivity
             );
         }
 
-        if (DatabaseHelper.getInstance(this).readDownloadingEntityCount(activityModel.getPhotoId()) > 0) {
-            this.setOnDownloadListener();
-        }
         buttonBar.setOnClickButtonListener(this);
 
-        OnScrollListener listener = new OnScrollListener();
-        scrollView.setOnScrollChangeListener(listener);
-        listener.onScrollChange(
-                scrollView, scrollView.getScrollX(), scrollView.getScrollY(), 0, 0);
+        scrollView.setOnScrollChangeListener(new OnScrollListener());
 
         int marginHorizontal = 0;
         if (DisplayUtils.isLandscape(this)) {
@@ -318,6 +285,11 @@ public class PhotoActivity3 extends ReadWriteActivity
             params.setMarginEnd(marginHorizontal);
             cardBackground.setLayoutParams(params);
         }
+
+        cardRadius = getResources().getDimensionPixelSize(R.dimen.material_card_radius_large);
+        findViewById(R.id.container_photo_3_actor_navigationBar)
+                .setVisibility(hasCardMargin ? View.GONE : View.VISIBLE);
+        actorContainer.setTranslationY(hasCardMargin ? 0 : cardRadius);
 
         toolbar.setTitle("");
         if (isTheLowestLevel()) {
@@ -414,6 +386,7 @@ public class PhotoActivity3 extends ReadWriteActivity
         AnimUtils.animScale(avatar, 300, 350, 1);
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void resetPhotoImage(@NonNull Photo photo) {
         if (imagePhotoId == null || !imagePhotoId.equals(photo.id)) {
             imagePhotoId = photo.id;
@@ -495,8 +468,8 @@ public class PhotoActivity3 extends ReadWriteActivity
                 DownloadTypeDialog dialog = new DownloadTypeDialog();
                 dialog.setOnSelectTypeListener(this);
                 dialog.show(getSupportFragmentManager(), null);
-            } else if (DatabaseHelper.getInstance(this)
-                    .readDownloadingEntityCount(photo.id) > 0) {
+            } else if (DownloadHelper.getInstance(this)
+                    .readDownloadingEntityCount(this, photo.id) > 0) {
                 NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
             } else if (FileUtils.isPhotoExists(this, photo.id)) {
                 DownloadRepeatDialog dialog = new DownloadRepeatDialog();
@@ -511,22 +484,6 @@ public class PhotoActivity3 extends ReadWriteActivity
 
     public void downloadByType(Photo photo, int type) {
         DownloadHelper.getInstance(this).addMission(this, photo, type);
-        buttonBar.setDownloadState(true, -1);
-        setOnDownloadListener();
-    }
-
-    public void setOnDownloadListener() {
-        if (listener == null) {
-            Photo photo = Objects.requireNonNull(activityModel.getResource().getValue()).data;
-            if (photo != null) {
-                DownloadMissionEntity entity = DatabaseHelper.getInstance(PhotoActivity3.this)
-                        .readDownloadingEntity(photo.id);
-                if (entity != null) {
-                    listener = new OnDownloadListener(entity);
-                    DownloadHelper.getInstance(this).addOnDownloadListener(listener);
-                }
-            }
-        }
     }
 
     // interface.
@@ -659,7 +616,6 @@ public class PhotoActivity3 extends ReadWriteActivity
 
         boolean landscape;
         private int navigationBarHeight;
-        private int cardMargin;
 
         float verticalFooterHeight;
         float showFlowStatusBarTrigger;
@@ -672,7 +628,6 @@ public class PhotoActivity3 extends ReadWriteActivity
         OnScrollListener() {
             landscape = DisplayUtils.isLandscape(PhotoActivity3.this);
             navigationBarHeight = DisplayUtils.getNavigationBarHeight(PhotoActivity3.this.getResources());
-            cardMargin = getResources().getDimensionPixelSize(R.dimen.material_card_radius_large);
 
             verticalFooterHeight = getResources().getDimensionPixelSize(R.dimen.item_photo_3_more_vertical_height)
                     + DisplayUtils.getNavigationBarHeight(getResources());
@@ -696,15 +651,11 @@ public class PhotoActivity3 extends ReadWriteActivity
 
             // base holder.
             if (hasCardMargin) {
-                actorContainer.setTranslationY(scrollY + cardMargin);
-            } else {
-                if (scrollY < navigationBarHeight) {
-                    actorContainer.setTranslationY(scrollY + cardMargin);
-                } else {
-                    if (actorContainer.getTranslationY() != navigationBarHeight + cardMargin) {
-                        actorContainer.setTranslationY(navigationBarHeight + cardMargin);
-                    }
-                }
+                actorContainer.setTranslationY(scrollY);
+            } else if (scrollY < navigationBarHeight) {
+                actorContainer.setTranslationY(scrollY + cardRadius);
+            } else if (actorContainer.getTranslationY() != navigationBarHeight + cardRadius) {
+                actorContainer.setTranslationY(navigationBarHeight + cardRadius);
             }
 
             // toolbar.
@@ -730,14 +681,12 @@ public class PhotoActivity3 extends ReadWriteActivity
                     if (!onlyDark) {
                         onlyDark = true;
                         DisplayUtils.setNavigationBarStyle(
-                                PhotoActivity3.this, true, true
-                        );
+                                PhotoActivity3.this, true, true);
                     }
                 } else if (onlyDark) {
                     onlyDark = false;
                     DisplayUtils.setNavigationBarStyle(
-                            PhotoActivity3.this, false, true
-                    );
+                            PhotoActivity3.this, false, true);
                 }
             }
         }

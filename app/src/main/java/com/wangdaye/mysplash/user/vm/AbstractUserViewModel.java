@@ -2,7 +2,7 @@ package com.wangdaye.mysplash.user.vm;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;

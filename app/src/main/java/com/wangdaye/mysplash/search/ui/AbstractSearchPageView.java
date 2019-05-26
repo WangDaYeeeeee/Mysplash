@@ -8,9 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
@@ -19,8 +20,9 @@ import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerStateManagePresenter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -83,6 +85,12 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
         );
 
+        if (adapter instanceof MultiColumnAdapter) {
+            ((MultiColumnAdapter) adapter).setColumnCount(
+                    recyclerView,
+                    RecyclerViewHelper.getGirdColumnCount(getContext())
+            );
+        }
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(getLayoutManager());
         recyclerView.setAdapter(

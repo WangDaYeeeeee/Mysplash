@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,9 @@ public class MultipleStateRecyclerView extends RecyclerView {
 
     private ObjectAnimator animator;
 
-    private int paddingStart;
+    private int paddingLeft;
     private int paddingTop;
-    private int paddingEnd;
+    private int paddingRight;
     private int paddingBottom;
 
     private boolean layoutFinished;
@@ -62,7 +63,10 @@ public class MultipleStateRecyclerView extends RecyclerView {
         };
         onScrollListenerList = new ArrayList<>();
 
-        paddingStart = paddingEnd = paddingTop = paddingBottom = 0;
+        paddingLeft = getPaddingLeft();
+        paddingTop = getPaddingTop();
+        paddingRight = getPaddingRight();
+        paddingBottom = getPaddingBottom();
 
         state = STATE_LOADING;
         setLayoutManager(multipleLayouts[STATE_LOADING], STATE_LOADING);
@@ -76,7 +80,13 @@ public class MultipleStateRecyclerView extends RecyclerView {
 
     @Override
     public void setPadding(int left, int top, int right, int bottom) {
-        this.setPaddingRelative(left, top, right, bottom);
+        if (state == STATE_NORMALLY) {
+            super.setPadding(left, top, right, bottom);
+        }
+        paddingLeft = left;
+        paddingTop = top;
+        paddingRight = right;
+        paddingBottom = bottom;
     }
 
     @Override
@@ -84,10 +94,20 @@ public class MultipleStateRecyclerView extends RecyclerView {
         if (state == STATE_NORMALLY) {
             super.setPaddingRelative(start, top, end, bottom);
         }
-        paddingStart = start;
+
         paddingTop = top;
-        paddingEnd = end;
         paddingBottom = bottom;
+        switch (getLayoutDirection()) {
+            case View.LAYOUT_DIRECTION_LTR:
+                paddingLeft = start;
+                paddingRight = end;
+                break;
+
+            case View.LAYOUT_DIRECTION_RTL:
+                paddingLeft = end;
+                paddingRight = start;
+                break;
+        }
     }
 
     @Override
@@ -192,10 +212,10 @@ public class MultipleStateRecyclerView extends RecyclerView {
             for (OnScrollListener l : onScrollListenerList) {
                 super.addOnScrollListener(l);
             }
-            super.setPaddingRelative(paddingStart, paddingTop, paddingEnd, paddingBottom);
+            super.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
         } else {
             super.clearOnScrollListeners();
-            super.setPaddingRelative(0, 0, 0, 0);
+            super.setPadding(0, 0, 0, 0);
         }
     }
 

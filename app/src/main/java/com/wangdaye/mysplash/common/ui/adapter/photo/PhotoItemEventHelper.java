@@ -5,7 +5,7 @@ import android.view.View;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.collection.ui.CollectionActivity;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.db.DatabaseHelper;
+import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
@@ -13,13 +13,13 @@ import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.utils.FileUtils;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.presenter.DispatchCollectionsChangedPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.presenter.DispatchCollectionsChangedPresenter;
+import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.util.ArrayList;
@@ -105,7 +105,8 @@ public abstract class PhotoItemEventHelper implements PhotoAdapter.ItemEventCall
 
     @Override
     public void onDownloadButtonClicked(Photo photo, int adapterPosition) {
-        if (DatabaseHelper.getInstance(activity).readDownloadingEntityCount(photo.id) > 0) {
+        if (DownloadHelper.getInstance(activity)
+                .readDownloadingEntityCount(activity, photo.id) > 0) {
             NotificationHelper.showSnackbar(activity.getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isPhotoExists(activity, photo.id)) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();

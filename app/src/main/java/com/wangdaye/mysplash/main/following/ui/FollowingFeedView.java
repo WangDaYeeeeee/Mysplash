@@ -16,13 +16,13 @@ import android.widget.RelativeLayout;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
@@ -30,9 +30,11 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
+import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerStateManagePresenter;
 import com.wangdaye.mysplash.main.following.ui.adapter.FollowingAdapter;
+import com.wangdaye.mysplash.main.following.ui.adapter.holder.TitleFeedHolder;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import butterknife.BindView;
@@ -57,7 +59,7 @@ public class FollowingFeedView extends FrameLayout
 
     @BindView(R.id.container_following_avatar_avatarContainer) RelativeLayout avatarContainer;
     @BindView(R.id.container_following_avatar_background) FrameLayout avatarBackground;
-    @BindView(R.id.container_following_avatar_avatar) CircleImageView avatar;
+    @BindView(R.id.container_following_avatar_avatar) CircularImageView avatar;
     @OnClick(R.id.container_following_avatar_avatar) void clickAvatar() {
         if (recyclerView.getLayoutManager() != null) {
             int adapterPosition = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager())
@@ -85,6 +87,7 @@ public class FollowingFeedView extends FrameLayout
     private float offsetY = 0;
     private float avatarSize;
     private float statusBarHeight;
+    private int columnCount;
 
     public FollowingFeedView(Context context) {
         super(context);
@@ -121,6 +124,7 @@ public class FollowingFeedView extends FrameLayout
     private void initData() {
         this.avatarSize = new DisplayUtils(getContext()).dpToPx(56);
         this.statusBarHeight = DisplayUtils.getStatusBarHeight(getResources());
+        this.columnCount = RecyclerViewHelper.getGirdColumnCount(getContext());
     }
 
     private void initView() {
@@ -136,7 +140,7 @@ public class FollowingFeedView extends FrameLayout
         avatarContainer.setLayoutParams(containerParams);
         avatarContainer.setOnClickListener(v -> {});
 
-        if (DisplayUtils.getGirdColumnCount(getContext()) > 1) {
+        if (columnCount > 1) {
             avatarContainer.setVisibility(GONE);
         } else {
             avatarContainer.setVisibility(VISIBLE);
@@ -156,13 +160,6 @@ public class FollowingFeedView extends FrameLayout
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
         );
 
-        int columnCount = DisplayUtils.getGirdColumnCount(getContext());
-        if (columnCount > 1) {
-            int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
-            recyclerView.setPadding(margin, 0, 0, 0);
-        } else {
-            recyclerView.setPadding(0, 0, 0, 0);
-        }
         recyclerView.setLayoutManager(
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
         );
@@ -191,6 +188,8 @@ public class FollowingFeedView extends FrameLayout
 
     public void setAdapterAndMangeView(@NonNull FollowingAdapter adapter, PagerManageView view) {
         followingAdapter = adapter;
+        followingAdapter.setColumnCount(recyclerView, RecyclerViewHelper.getGirdColumnCount(getContext()));
+
         recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -201,6 +200,7 @@ public class FollowingFeedView extends FrameLayout
                 );
             }
         });
+
         pagerManageView = view;
     }
 
@@ -242,7 +242,7 @@ public class FollowingFeedView extends FrameLayout
         boolean stateChanged = stateManagePresenter.setState(state, true);
         if (stateChanged) {
             MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-            if (activity != null && DisplayUtils.getGirdColumnCount(getContext()) == 1) {
+            if (activity != null && columnCount == 1) {
                 if (state == State.ERROR || state == State.LOADING) {
                     AnimUtils.animHide(avatarContainer);
                 } else {
@@ -413,10 +413,17 @@ public class FollowingFeedView extends FrameLayout
                 setAvatarImage(avatarPosition);
             }
 
-            followingAdapter.setTitleAvatarVisibility(
-                    recyclerView.findViewHolderForAdapterPosition(lastAvatarPosition),
-                    recyclerView.findViewHolderForAdapterPosition(avatarPosition)
-            );
+            RecyclerView.ViewHolder lastHolder
+                    = recyclerView.findViewHolderForAdapterPosition(lastAvatarPosition);
+            if (lastHolder instanceof TitleFeedHolder) {
+                ((TitleFeedHolder) lastHolder).setAvatarVisibility(true);
+            }
+
+            RecyclerView.ViewHolder newHolder
+                    = recyclerView.findViewHolderForAdapterPosition(avatarPosition);
+            if (newHolder instanceof TitleFeedHolder) {
+                ((TitleFeedHolder) newHolder).setAvatarVisibility(false);
+            }
         }
 
         private void setAvatarImage(int position) {

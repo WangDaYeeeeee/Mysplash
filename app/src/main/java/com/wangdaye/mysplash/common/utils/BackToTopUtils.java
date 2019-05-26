@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.common.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -15,7 +15,7 @@ import android.view.animation.Transformation;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.ui.activity.SettingsActivity;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 

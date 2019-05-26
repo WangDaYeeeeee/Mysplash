@@ -3,7 +3,8 @@ package com.wangdaye.mysplash.common.utils.manager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.db.WallpaperSource;

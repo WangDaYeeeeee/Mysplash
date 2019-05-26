@@ -22,7 +22,7 @@
         android:transitionName="@string/transition_collection_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout
             android:id="@+id/activity_collection_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -115,7 +115,7 @@
                     android:layout_centerHorizontal="true"
                     android:background="?attr/selectableItemBackground">
 
-                    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+                    <com.wangdaye.mysplash.common.ui.widget.CircularImageView
                         android:id="@+id/activity_collection_avatar"
                         android:layout_width="@dimen/little_icon_size"
                         android:layout_height="@dimen/little_icon_size"
@@ -141,7 +141,7 @@
 
             </RelativeLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout>
 
         <com.wangdaye.mysplash.collection.ui.CollectionPhotosView
             android:id="@+id/activity_collection_photosView"

@@ -8,6 +8,8 @@ android {
         targetSdkVersion 28
         versionCode 369
         versionName "3.6.9"
+
+        vectorDrawables.useSupportLibrary = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -103,10 +105,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     testImplementation 'junit:junit:4.12'
 
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
+    implementation 'androidx.appcompat:appcompat:1.1.0-alpha05'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'androidx.preference:preference:1.1.0-alpha04'
-    implementation 'com.google.android.material:material:1.1.0-alpha05'
+    implementation 'androidx.preference:preference:1.1.0-alpha05'
+    implementation 'com.google.android.material:material:1.1.0-alpha06'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.browser:browser:1.0.0'
 
@@ -143,4 +145,6 @@ dependencies {
     implementation 'com.github.nekocode.rxlifecycle:rxlifecycle-compact:2.0'
 
     implementation 'com.tencent.bugly:crashreport:2.8.6.0'
+
+    implementation 'com.github.aakira:compound-icon-textview:1.2.1@aar'
 }

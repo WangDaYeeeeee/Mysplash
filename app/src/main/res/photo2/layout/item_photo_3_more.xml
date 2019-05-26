@@ -7,25 +7,36 @@
     android:background="?attr/root_color"
     tools:background="?attr/title_color">
 
-    <view class="com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout$ViewPager2"
+    <view class="com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout$ViewPager2"
         android:id="@+id/item_photo_3_more_viewPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_height="@dimen/item_photo_3_more_vertical_height" />
 
-    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.NavigationBarView
-        android:id="@+id/item_photo_3_more_navigationBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/item_photo_3_more_viewPager" />
+    <TextView
+        android:id="@+id/item_photo_3_more_fakeTitle"
+        android:text=" "
+        android:textColor="@android:color/transparent"
+        android:textSize="@dimen/subtitle_text_size"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:shadowColor="@android:color/transparent"
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        style="@style/title_text"
+        tools:ignore="HardcodedText" />
 
     <com.pixelcan.inkpageindicator.InkPageIndicator
         android:id="@+id/item_photo_3_more_indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/normal_margin"
-        android:layout_above="@id/item_photo_3_more_navigationBar"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/item_photo_3_more_fakeTitle"
+        android:paddingBottom="@dimen/normal_margin"
         app:animationDuration="300"
         app:pageIndicatorColor="@color/colorTextGrey"
         app:currentPageIndicatorColor="@android:color/white"

@@ -3,8 +3,8 @@ package com.wangdaye.mysplash.me.vm;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
-import com.wangdaye.mysplash.common.utils.presenter.event.UserEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.mysplash.me.repository.MyFollowUserViewRepository;
 
 import javax.inject.Inject;

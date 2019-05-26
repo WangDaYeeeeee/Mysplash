@@ -69,13 +69,13 @@ public class TimePickerDialog extends MysplashDialogFragment {
             String minuteText;
 
             if (hour < 10) {
-                hourText = "0" + Integer.toString(hour);
+                hourText = "0" + hour;
             } else {
                 hourText = Integer.toString(hour);
             }
 
             if (minute < 10) {
-                minuteText = "0" + Integer.toString(minute);
+                minuteText = "0" + minute;
             } else {
                 minuteText = Integer.toString(minute);
             }

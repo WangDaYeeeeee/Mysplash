@@ -3,15 +3,14 @@ package com.wangdaye.mysplash.photo3.ui.holder;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.photo3.ui.adapter.MoreHorizontalAdapter3;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.NavigationBarView;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
@@ -27,9 +26,8 @@ import butterknife.ButterKnife;
 
 public class MoreLandscapeHolder extends PhotoInfoAdapter3.ViewHolder {
 
-    @BindView(R.id.item_photo_3_more_landscape_container) LinearLayout container;
+    @BindView(R.id.item_photo_3_more_landscape_container) FrameLayout container;
     @BindView(R.id.item_photo_3_more_landscape_recyclerView) SwipeSwitchLayout.RecyclerView recyclerView;
-    @BindView(R.id.item_photo_3_more_landscape_navigationBar) NavigationBarView navigationBar;
 
     public static final int TYPE_MORE_LANDSCAPE = 8;
 
@@ -54,10 +52,12 @@ public class MoreLandscapeHolder extends PhotoInfoAdapter3.ViewHolder {
         }
         recyclerView.setAdapter(new MoreHorizontalAdapter3(collectionList));
 
+        int margin = a.getResources().getDimensionPixelSize(R.dimen.normal_margin);
         if (DisplayUtils.isLandscape(a)) {
-            navigationBar.setVisibility(View.GONE);
+            container.setPadding(0, 0, 0, margin);
         } else {
-            navigationBar.setVisibility(View.VISIBLE);
+            container.setPadding(0, 0, 0,
+                    margin + DisplayUtils.getNavigationBarHeight(a.getResources()));
         }
     }
 

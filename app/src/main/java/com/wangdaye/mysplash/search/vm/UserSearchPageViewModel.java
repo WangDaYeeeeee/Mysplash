@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.search.vm;
 
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.presenter.event.UserEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.mysplash.search.repository.UserSearchPageViewRepository;
 
 import javax.inject.Inject;

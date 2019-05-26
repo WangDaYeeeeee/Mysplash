@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.tag.TagItemEventHelper;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.ui.adapter.tag.TagAdapter;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
 import java.util.ArrayList;

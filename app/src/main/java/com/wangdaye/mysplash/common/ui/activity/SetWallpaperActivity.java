@@ -3,17 +3,12 @@ package com.wangdaye.mysplash.common.ui.activity;
 import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.ParcelFileDescriptor;
 import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -30,18 +25,12 @@ import com.wangdaye.mysplash.common.ui.popup.WallpaperAlignPopupWindow;
 import com.wangdaye.mysplash.common.ui.popup.WallpaperClipPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.photoView.Info;
 import com.wangdaye.mysplash.common.ui.widget.photoView.PhotoView;
-import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.io.FileDescriptor;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -200,8 +189,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                         light = isLightColor(color);
                         setStyle();
                     }
-                },
-                getIntent().getData()
+                }, getIntent().getData()
         );
     }
 
@@ -298,81 +286,6 @@ public class SetWallpaperActivity extends ReadWriteActivity
         grey = (int) (red * 0.3 + green * 0.59 + blue * 0.11);
         grey = alpha | (grey << 16) | (grey << 8) | grey;
         return grey > ContextCompat.getColor(this, R.color.colorTextGrey);
-    }
-
-    @Nullable
-    private InputStream getPhotoStream() {
-        Uri uri = getIntent().getData();
-        if (uri != null && uri.getScheme() != null && uri.getScheme().equals("file")) {
-            File file = new File(uri.getSchemeSpecificPart());
-            if (file.exists()) {
-                String path = FileUtils.uriToFilePath(this, uri);
-                if (path != null) {
-                    file = new File(path);
-                    try {
-                        return new FileInputStream(file);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        } else if (uri != null && uri.getScheme() != null && uri.getScheme().equals("content")) {
-            try {
-                ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(uri, "r");
-                if (parcelFileDescriptor != null) {
-                    FileDescriptor fileDescriptor = parcelFileDescriptor.getFileDescriptor();
-                    if (fileDescriptor != null) {
-                        return new FileInputStream(fileDescriptor);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    @WorkerThread
-    @Nullable
-    private Bitmap loadSourceBitmap() {
-        InputStream stream = getPhotoStream();
-        if (stream == null) {
-            return null;
-        }
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(stream, new Rect(0, 0, 0, 0), options);
-
-        try {
-            stream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        WallpaperManager manager = WallpaperManager.getInstance(this);
-        int width;
-        int height;
-        if (1.0 * options.outWidth / options.outHeight
-                > 1.0 * manager.getDesiredMinimumWidth() / manager.getDesiredMinimumHeight()) {
-            width = (int) (1.0 * options.outWidth / options.outHeight * manager.getDesiredMinimumHeight());
-            height = manager.getDesiredMinimumHeight();
-        } else {
-            width = manager.getDesiredMinimumWidth();
-            height = (int) (1.0 * options.outHeight / options.outWidth * manager.getDesiredMinimumWidth());
-        }
-        try {
-            return ImageHelper.loadBitmap(
-                    this,
-                    getIntent().getData(),
-                    new int[] {width, height}
-            );
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     /**
@@ -515,7 +428,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
     @Override
     public void onWhereSelected(int where) {
         Observable.create(emitter -> {
-            Bitmap b = loadSourceBitmap();
+            Bitmap b = ImageHelper.loadBitmap(this, getIntent().getData());
             if (b == null) {
                 emitter.onError(new NullPointerException());
                 return;
@@ -541,6 +454,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
                 .doOnComplete(() -> {
                     IntentHelper.backToHome(this);
                     finishSelf(true);
-                }).subscribe();
+                }).doOnError(throwable -> finish())
+                .subscribe();
     }
 }

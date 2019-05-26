@@ -26,7 +26,7 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashFragment;
 import com.wangdaye.mysplash.common.ui.activity.IntroduceActivity;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -70,7 +70,7 @@ public class MainActivity extends LoadableActivity<Photo> {
     @BindView(R.id.activity_main_navView) NavigationView nav;
 
     private AppCompatImageView appIcon;
-    private CircleImageView navAvatar;
+    private CircularImageView navAvatar;
     private TextView navTitle;
     private TextView navSubtitle;
     private AppCompatImageButton navButton;

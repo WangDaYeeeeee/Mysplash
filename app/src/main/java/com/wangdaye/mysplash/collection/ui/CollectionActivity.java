@@ -35,8 +35,8 @@ import com.wangdaye.mysplash.common.ui.adapter.tag.MiniTagAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.tag.TagItemEventHelper;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -46,19 +46,19 @@ import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.dialog.UpdateCollectionDialog;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.utils.presenter.BrowsableDialogMangePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.presenter.BrowsableDialogMangePresenter;
+import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerLoadablePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import org.jetbrains.annotations.Nullable;
@@ -95,7 +95,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @BindView(R.id.activity_collection_title) TextView title;
     @BindView(R.id.activity_collection_tagList) RecyclerView tagList;
     @BindView(R.id.activity_collection_description) TextView description;
-    @BindView(R.id.activity_collection_avatar) CircleImageView avatar;
+    @BindView(R.id.activity_collection_avatar) CircularImageView avatar;
     @BindView(R.id.activity_collection_subtitle) TextView subtitle;
 
     @OnClick(R.id.activity_collection_touchBar) void checkAuthor() {
@@ -252,8 +252,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
         photoAdapter = new PhotoAdapter(
                 this,
-                Objects.requireNonNull(photosViewModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(this)
+                Objects.requireNonNull(photosViewModel.getListResource().getValue()).dataList
         ).setItemEventCallback(new PhotoItemEventHelper(
                 this,
                 photosViewModel.getListResource().getValue().dataList,
@@ -354,7 +353,8 @@ public class CollectionActivity extends LoadableActivity<Photo>
         if (getCollection() == null) {
             return;
         }
-        if (DatabaseHelper.getInstance(this).readDownloadingEntityCount(String.valueOf(getCollection().id)) > 0) {
+        if (DownloadHelper.getInstance(this)
+                .readDownloadingEntityCount(this, String.valueOf(getCollection().id)) > 0) {
             NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isCollectionExists(this, String.valueOf(getCollection().id))) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();

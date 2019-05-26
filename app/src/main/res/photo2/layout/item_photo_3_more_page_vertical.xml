@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
     android:background="@color/colorDarkCardBackground"
-    tools:layout_height="72dp"
+    tools:layout_height="@dimen/item_photo_3_more_vertical_height"
     tools:ignore="RtlHardcoded,UnusedAttribute">
 
     <com.wangdaye.mysplash.common.ui.widget.CoverImageView

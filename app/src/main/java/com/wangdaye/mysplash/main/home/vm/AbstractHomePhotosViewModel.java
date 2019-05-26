@@ -2,14 +2,15 @@ package com.wangdaye.mysplash.main.home.vm;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
+import com.wangdaye.mysplash.common.bus.event.DownloadEvent;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
-import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
+import com.wangdaye.mysplash.common.presenter.event.DownloadEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.mysplash.main.home.HomePhotosViewRepository;
 
 import java.util.List;
-import java.util.Objects;
 
 import androidx.lifecycle.MutableLiveData;
 import io.reactivex.disposables.Disposable;
@@ -18,12 +19,20 @@ import io.reactivex.functions.Consumer;
 /**
  * Home pager model.
  * */
-public abstract class AbstractHomePhotosViewModel extends PagerViewModel<Photo>
-        implements Consumer<PhotoEvent> {
+public abstract class AbstractHomePhotosViewModel extends PagerViewModel<Photo> {
 
     private HomePhotosViewRepository repository;
-    private PhotoEventResponsePresenter presenter;
-    private Disposable disposable;
+    private PhotoEventResponsePresenter photoEventResponsePresenter;
+    private DownloadEventResponsePresenter downloadEventResponsePresenter;
+
+    private Disposable photoEventDisposable;
+    private Disposable downloadEventDisposable;
+
+    private Consumer<PhotoEvent> photoEventConsumer = photoEvent ->
+            photoEventResponsePresenter.updatePhoto(getListResource(), photoEvent.photo, false);
+
+    private Consumer<DownloadEvent> downloadEventConsumer = event ->
+            downloadEventResponsePresenter.updatePhoto(getListResource(), event, false);
 
     private MutableLiveData<String> photosOrder;
 
@@ -32,13 +41,21 @@ public abstract class AbstractHomePhotosViewModel extends PagerViewModel<Photo>
     private String randomTxt;
 
     public AbstractHomePhotosViewModel(HomePhotosViewRepository repository,
-                                       PhotoEventResponsePresenter presenter) {
+                                       PhotoEventResponsePresenter photoEventResponsePresenter,
+                                       DownloadEventResponsePresenter downloadEventResponsePresenter) {
         super();
+
         this.repository = repository;
-        this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
+        this.photoEventResponsePresenter = photoEventResponsePresenter;
+        this.downloadEventResponsePresenter = downloadEventResponsePresenter;
+
+        this.photoEventDisposable = MessageBus.getInstance()
                 .toObservable(PhotoEvent.class)
-                .subscribe(this);
+                .subscribe(photoEventConsumer);
+        this.downloadEventDisposable = MessageBus.getInstance()
+                .toObservable(DownloadEvent.class)
+                .subscribe(downloadEventConsumer);
+
         this.photosOrder = null;
         this.pageList = null;
         this.latestOrder = null;
@@ -69,9 +86,13 @@ public abstract class AbstractHomePhotosViewModel extends PagerViewModel<Photo>
     @Override
     protected void onCleared() {
         super.onCleared();
+        
         repository.cancel();
-        presenter.clearResponse();
-        disposable.dispose();
+        photoEventResponsePresenter.clearResponse();
+        downloadEventResponsePresenter.clearResponse();
+
+        photoEventDisposable.dispose();
+        downloadEventDisposable.dispose();
     }
 
     @Override
@@ -85,7 +106,8 @@ public abstract class AbstractHomePhotosViewModel extends PagerViewModel<Photo>
     }
 
     private void getPhotos(boolean refresh) {
-        if (Objects.equals(photosOrder.getValue(), randomTxt)) {
+        if (photosOrder.getValue() != null && randomTxt != null
+                && photosOrder.getValue().equals(randomTxt)) {
             getPhotosRandom(refresh);
         } else {
             getPhotosOrderly(refresh);
@@ -118,12 +140,5 @@ public abstract class AbstractHomePhotosViewModel extends PagerViewModel<Photo>
 
     public void setLatestOrder(String latestOrder) {
         this.latestOrder = latestOrder;
-    }
-
-    // interface.
-
-    @Override
-    public void accept(PhotoEvent photoEvent) {
-        presenter.updatePhoto(getListResource(), photoEvent.photo, true);
     }
 }

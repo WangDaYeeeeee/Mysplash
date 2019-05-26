@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.SwipeSwitchLayout;
+import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;

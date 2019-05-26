@@ -1,10 +1,13 @@
 package com.wangdaye.mysplash.me.vm;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.DownloadEvent;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.DownloadEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.mysplash.me.repository.MePhotosViewRepository;
 
 import org.jetbrains.annotations.NotNull;
@@ -14,19 +17,36 @@ import javax.inject.Inject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import io.reactivex.disposables.Disposable;
+
 public class MePhotosViewModel extends AbstractMePagerViewModel<Photo, PhotoEvent> {
 
     private MePhotosViewRepository repository;
-    private PhotoEventResponsePresenter presenter;
+    private PhotoEventResponsePresenter photoEventResponsePresenter;
+    private DownloadEventResponsePresenter downloadEventResponsePresenter;
+
+    private Disposable downloadEventDisposable;
 
     private MutableLiveData<String> photosOrder;
 
     @Inject
     public MePhotosViewModel(MePhotosViewRepository repository,
-                             PhotoEventResponsePresenter presenter) {
+                             PhotoEventResponsePresenter photoEventResponsePresenter,
+                             DownloadEventResponsePresenter downloadEventResponsePresenter) {
         super(PhotoEvent.class);
+
         this.repository = repository;
-        this.presenter = presenter;
+        this.photoEventResponsePresenter = photoEventResponsePresenter;
+        this.downloadEventResponsePresenter = downloadEventResponsePresenter;
+
+        this.downloadEventDisposable = MessageBus.getInstance()
+                .toObservable(DownloadEvent.class)
+                .subscribe(event -> this.downloadEventResponsePresenter.updatePhoto(
+                        getListResource(),
+                        event,
+                        false
+                ));
+
         this.photosOrder = null;
     }
 
@@ -46,8 +66,12 @@ public class MePhotosViewModel extends AbstractMePagerViewModel<Photo, PhotoEven
     @Override
     protected void onCleared() {
         super.onCleared();
+
         getRepository().cancel();
-        presenter.clearResponse();
+        photoEventResponsePresenter.clearResponse();
+        downloadEventResponsePresenter.clearResponse();
+
+        downloadEventDisposable.dispose();
     }
 
     @Override
@@ -78,6 +102,6 @@ public class MePhotosViewModel extends AbstractMePagerViewModel<Photo, PhotoEven
 
     @Override
     public void accept(PhotoEvent photoEvent) {
-        presenter.updatePhoto(getListResource(), photoEvent.photo, false);
+        photoEventResponsePresenter.updatePhoto(getListResource(), photoEvent.photo, false);
     }
 }

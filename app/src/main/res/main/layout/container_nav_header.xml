@@ -23,7 +23,7 @@
         android:layout_margin="@dimen/normal_margin"
         tools:ignore="RtlHardcoded">
 
-        <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+        <com.wangdaye.mysplash.common.ui.widget.CircularImageView
             android:id="@+id/container_nav_header_avatar"
             android:layout_width="@dimen/large_icon_size"
             android:layout_height="@dimen/large_icon_size"

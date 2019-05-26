@@ -12,16 +12,16 @@ import android.view.View;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerStateManagePresenter;
 import com.wangdaye.mysplash.me.ui.activity.MyFollowActivity;
 import com.wangdaye.mysplash.me.ui.adapter.MyFollowAdapter;
 
@@ -86,7 +86,7 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
         recyclerView.setLayoutManager(
                 new GridLayoutManager(
                         getContext(),
-                        DisplayUtils.getGirdColumnCount(getContext())
+                        RecyclerViewHelper.getGirdColumnCount(getContext())
                 )
         );
         recyclerView.setAdapter(

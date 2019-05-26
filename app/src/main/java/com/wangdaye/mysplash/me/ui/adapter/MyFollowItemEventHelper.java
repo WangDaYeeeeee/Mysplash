@@ -4,9 +4,9 @@ import android.view.View;
 
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.presenter.list.FollowOrCancelFollowPresenter;
+import com.wangdaye.mysplash.common.presenter.list.FollowOrCancelFollowPresenter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 public class MyFollowItemEventHelper implements MyFollowAdapter.ItemEventCallback {

@@ -6,9 +6,9 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 
 import javax.inject.Inject;
 

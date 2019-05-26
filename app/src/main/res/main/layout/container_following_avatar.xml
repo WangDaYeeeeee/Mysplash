@@ -18,7 +18,7 @@
         android:layout_alignParentBottom="true"
         android:background="@android:color/transparent" />
 
-    <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+    <com.wangdaye.mysplash.common.ui.widget.CircularImageView
         android:id="@+id/container_following_avatar_avatar"
         android:layout_width="@dimen/mini_icon_size"
         android:layout_height="@dimen/mini_icon_size"

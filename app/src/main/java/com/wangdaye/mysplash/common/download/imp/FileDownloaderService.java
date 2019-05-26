@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.common.download.imp;
 
 import android.app.NotificationManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -13,21 +14,38 @@ import androidx.core.content.ContextCompat;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.liulishuo.filedownloader.util.FileDownloadUtils;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.FlagRunnable;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
+import com.wangdaye.mysplash.common.download.DownloadReceiver;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileDownloaderService extends DownloaderService {
+public class FileDownloaderService extends AbstractDownloaderService {
+
+    private static FileDownloaderService instance;
+
+    public static FileDownloaderService getInstance(@NonNull Context context) {
+        if (instance == null) {
+            synchronized (FileDownloaderService.class) {
+                if (instance == null) {
+                    instance = new FileDownloaderService(context);
+                }
+            }
+        }
+        return instance;
+    }
 
     private Context context;
     private List<TaskDownloadListener> listenerList;
+
+    private final Object synchronizedLocker;
 
     private class TaskDownloadListener extends FileDownloadListener {
 
@@ -36,12 +54,11 @@ public class FileDownloaderService extends DownloaderService {
         long soFar;
         long total;
 
-        @Nullable
-        private OnDownloadListener outsideListener;
+        private List<OnDownloadListener> outsideListeners;
 
-        TaskDownloadListener(String title, @Nullable OnDownloadListener l) {
+        TaskDownloadListener(String title) {
             this.title = title;
-            this.outsideListener = l;
+            this.outsideListeners = new ArrayList<>();
         }
 
         @Override
@@ -53,34 +70,42 @@ public class FileDownloaderService extends DownloaderService {
         protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
             this.soFar = soFarBytes;
             this.total = totalBytes;
-            if (outsideListener != null) {
-                outsideListener.onProcess((float) Math.max(0, Math.min(100, 100.0 * soFarBytes / totalBytes)));
+
+            synchronized (synchronizedLocker) {
+                for (OnDownloadListener l : outsideListeners) {
+                    l.onProcess(
+                            (float) Math.max(
+                                    0,
+                                    Math.min(100, 100.0 * soFarBytes / totalBytes)
+                            )
+                    );
+                }
             }
         }
 
         @Override
         protected void completed(BaseDownloadTask task) {
-            downloadFinish(context, id, true);
-            unregisterDownloadListener(id);
-            if (outsideListener != null) {
-                outsideListener.onComplete(DownloadMissionEntity.RESULT_SUCCEED);
-                outsideListener = null;
-            }
+            context.sendBroadcast(
+                    new Intent(AbstractDownloaderService.ACTION_DOWNLOAD_COMPLETE)
+                            .putExtra(AbstractDownloaderService.EXTRA_DOWNLOAD_ID, id)
+                            .setComponent(new ComponentName(context, DownloadReceiver.class))
+            );
         }
 
         @Override
         protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            outsideListener = null;
+            synchronized (synchronizedLocker) {
+                outsideListeners.clear();
+            }
         }
 
         @Override
         protected void error(BaseDownloadTask task, Throwable e) {
-            downloadFinish(context, id, false);
-            unregisterDownloadListener(id);
-            if (outsideListener != null) {
-                outsideListener.onComplete(DownloadMissionEntity.RESULT_FAILED);
-                outsideListener = null;
-            }
+            context.sendBroadcast(
+                    new Intent(AbstractDownloaderService.ACTION_DOWNLOAD_COMPLETE)
+                            .putExtra(AbstractDownloaderService.EXTRA_DOWNLOAD_ID, id)
+                            .setComponent(new ComponentName(context, DownloadReceiver.class))
+            );
         }
 
         @Override
@@ -101,16 +126,35 @@ public class FileDownloaderService extends DownloaderService {
 
         @Override
         public void run() {
-            while (isRunning() && listenerList.size() > 0) {
-                List<String> titleList = new ArrayList<>(listenerList.size());
-                long total = 0;
-                long soFar = 0;
-                for (TaskDownloadListener l : listenerList) {
-                    titleList.add(l.title);
-                    total += l.total;
-                    soFar += l.soFar;
+            List<String> titleList = new ArrayList<>();
+            long total;
+            long soFar;
+            int process;
+
+            int size;
+
+            while (isRunning()) {
+                titleList.clear();
+                total = 0;
+                soFar = 0;
+
+                synchronized (synchronizedLocker) {
+                    size = listenerList.size();
+
+                    if (size != 0) {
+                        for (TaskDownloadListener l : listenerList) {
+                            titleList.add(l.title);
+                            total += l.total;
+                            soFar += l.soFar;
+                        }
+                    }
                 }
-                int process = (int) Math.max(0, Math.min(100, 100.0 * soFar / total));
+
+                if (size == 0) {
+                    break;
+                }
+
+                process = (int) Math.max(0, Math.min(100, 100.0 * soFar / total));
 
                 NotificationCompat.InboxStyle inboxStyle = buildInboxStyle(titleList, process);
 
@@ -124,35 +168,43 @@ public class FileDownloaderService extends DownloaderService {
         }
     }
 
-    public FileDownloaderService(Context context) {
+    private FileDownloaderService(Context context) {
+        super();
+
         this.context = context.getApplicationContext();
         this.listenerList = new ArrayList<>();
+
+        this.synchronizedLocker = new Object();
 
         FileDownloader.setup(context);
         FileDownloader.setGlobalPost2UIInterval(50);
 
-        List<DownloadMissionEntity> downloadingList = DatabaseHelper.getInstance(context)
-                .readDownloadEntityList(DownloadMissionEntity.RESULT_DOWNLOADING);
-        for (DownloadMissionEntity e : downloadingList) {
-            downloadFinish(context, e, false);
+        synchronized (synchronizedLocker) {
+            List<DownloadMissionEntity> downloadingList = DatabaseHelper.getInstance(context)
+                    .readDownloadEntityList(DownloadMissionEntity.RESULT_DOWNLOADING);
+            for (DownloadMissionEntity e : downloadingList) {
+                downloadFinish(context, e);
+            }
         }
     }
 
     @Override
     public long addMission(Context c, @NonNull DownloadMissionEntity entity, boolean showSnackbar) {
-        TaskDownloadListener listener = new TaskDownloadListener(entity.getNotificationTitle(), null);
+        TaskDownloadListener listener = new TaskDownloadListener(entity.getNotificationTitle());
 
-        entity.missionId = FileDownloader.getImpl()
-                .create(entity.downloadUrl)
-                .setPath(entity.getFilePath())
-                .setCallbackProgressMinInterval(50)
-                .setForceReDownload(true)
-                .setListener(listener)
-                .start();
-        entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
-        registerDownloadListener(entity.missionId, listener);
+        synchronized (synchronizedLocker) {
+            entity.missionId = FileDownloader.getImpl()
+                    .create(entity.downloadUrl)
+                    .setPath(entity.getFilePath())
+                    .setCallbackProgressMinInterval(50)
+                    .setForceReDownload(true)
+                    .setListener(listener)
+                    .start();
+            entity.result = DownloadMissionEntity.RESULT_DOWNLOADING;
+            registerDownloadListener(entity.missionId, listener);
 
-        DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+            DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+        }
 
         if (showSnackbar) {
             NotificationHelper.showSnackbar(c.getString(R.string.feedback_download_start));
@@ -163,38 +215,60 @@ public class FileDownloaderService extends DownloaderService {
 
     @Override
     public long restartMission(Context c, @NonNull DownloadMissionEntity entity) {
-        unregisterDownloadListener(entity.missionId);
+        synchronized (synchronizedLocker) {
+            unregisterDownloadListener(entity.missionId);
 
-        FileDownloader.getImpl().clear((int) entity.missionId, "");
-        FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
+            FileDownloader.getImpl().clear((int) entity.missionId, "");
+            FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
 
-        DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+            DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+        }
 
         return addMission(c, entity, true);
     }
 
     @Override
-    public void removeMission(Context c, @NonNull DownloadMissionEntity entity, boolean deleteEntity) {
-        if (entity.result != DownloadMissionEntity.RESULT_SUCCEED) {
-            unregisterDownloadListener(entity.missionId);
-            FileDownloader.getImpl().clear((int) entity.missionId, "");
-            FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
+    public void completeMission(Context c, @NonNull DownloadMissionEntity entity) {
+        synchronized (synchronizedLocker) {
+            downloadFinish(context, entity);
+            TaskDownloadListener listener = unregisterDownloadListener(entity.missionId);
+            if (listener != null) {
+                for (OnDownloadListener ol : listener.outsideListeners) {
+                    ol.onComplete(entity.result);
+                }
+                listener.outsideListeners.clear();
+            }
         }
-        if (deleteEntity) {
-            DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+    }
+
+    @Override
+    public void removeMission(Context c, @NonNull DownloadMissionEntity entity, boolean deleteEntity) {
+        synchronized (synchronizedLocker) {
+            if (entity.result != DownloadMissionEntity.RESULT_SUCCEED) {
+                unregisterDownloadListener(entity.missionId);
+                FileDownloader.getImpl().clear((int) entity.missionId, "");
+                FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(entity.getFilePath()));
+            }
+            if (deleteEntity) {
+                DatabaseHelper.getInstance(c).deleteDownloadEntity(entity.missionId);
+            }
         }
     }
 
     @Override
     public void clearMission(Context c, @NonNull List<DownloadMissionEntity> entityList) {
-        FileDownloader.getImpl().clearAllTaskData();
-        DatabaseHelper.getInstance(c).clearDownloadEntity();
+        synchronized (synchronizedLocker) {
+            FileDownloader.getImpl().clearAllTaskData();
+            DatabaseHelper.getInstance(c).clearDownloadEntity();
+        }
     }
 
     @Override
     public void updateMissionResult(Context c, @NonNull DownloadMissionEntity entity, int result) {
         entity.result = result;
-        DatabaseHelper.getInstance(c).updateDownloadEntity(entity);
+        synchronized (synchronizedLocker) {
+            DatabaseHelper.getInstance(c).updateDownloadEntity(entity);
+        }
     }
 
     @Override
@@ -208,23 +282,90 @@ public class FileDownloaderService extends DownloaderService {
     }
 
     @Override
+    public List<DownloadMissionEntity> readDownloadEntityList(Context c) {
+        synchronized (synchronizedLocker) {
+            return DatabaseHelper.getInstance(c).readDownloadEntityList();
+        }
+    }
+
+    @Override
+    public List<DownloadMissionEntity> readDownloadEntityList(Context c,
+                                                              @DownloadMissionEntity.DownloadResultRule int result) {
+        synchronized (synchronizedLocker) {
+            return DatabaseHelper.getInstance(c).readDownloadEntityList(result);
+        }
+    }
+
+    @Nullable
+    @Override
+    public DownloadMissionEntity readDownloadMissionEntity(Context c, String title) {
+        synchronized (synchronizedLocker) {
+            return DatabaseHelper.getInstance(c).readDownloadingEntity(title);
+        }
+    }
+
+    @Override
+    public int readDownloadingEntityCount(Context c, String title) {
+        synchronized (synchronizedLocker) {
+            return DatabaseHelper.getInstance(c).readDownloadingEntityCount(title);
+        }
+    }
+
+    @Override
     public void addOnDownloadListener(@NonNull OnDownloadListener l) {
-        updateDownloadListener(l.missionId, l);
+        synchronized (synchronizedLocker) {
+            for (int i = 0; i < listenerList.size(); i ++) {
+                if (listenerList.get(i).id == l.missionId) {
+                    listenerList.get(i).outsideListeners.add(l);
+                    break;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void addOnDownloadListener(@NonNull List<OnDownloadListener> list) {
+        synchronized (synchronizedLocker) {
+            for (OnDownloadListener l : list) {
+                for (int i = 0; i < listenerList.size(); i ++) {
+                    if (listenerList.get(i).id == l.missionId) {
+                        listenerList.get(i).outsideListeners.add(l);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
-        updateDownloadListener(l.missionId, null);
-    }
-
-    private void downloadFinish(Context context, long missionId, boolean complete) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadEntity(missionId);
-        if (entity != null) {
-            downloadFinish(context, entity, complete);
+        synchronized (synchronizedLocker) {
+            for (int i = 0; i < listenerList.size(); i ++) {
+                if (listenerList.get(i).id == l.missionId) {
+                    listenerList.get(i).outsideListeners.remove(l);
+                    break;
+                }
+            }
         }
     }
 
-    private void downloadFinish(Context context, @NonNull DownloadMissionEntity entity, boolean complete) {
+    @Override
+    public void removeOnDownloadListener(@NonNull List<OnDownloadListener> list) {
+        synchronized (synchronizedLocker) {
+            for (OnDownloadListener l : list) {
+                for (int i = 0; i < listenerList.size(); i ++) {
+                    if (listenerList.get(i).id == l.missionId) {
+                        listenerList.get(i).outsideListeners.remove(l);
+                        break;
+                    }
+                }
+            }
+        }
+    }
+
+    private void downloadFinish(Context context, @NonNull DownloadMissionEntity entity) {
+        boolean complete = FileDownloader.getImpl()
+                .getStatus((int) entity.missionId, entity.getFilePath()) == FileDownloadStatus.completed;
         if (complete) {
             updateMissionResult(context, entity, DownloadMissionEntity.RESULT_SUCCEED);
             context.sendBroadcast(
@@ -252,44 +393,40 @@ public class FileDownloaderService extends DownloaderService {
     private void registerDownloadListener(long missionId, @NonNull TaskDownloadListener l) {
         l.id = missionId;
         listenerList.add(l);
+
         if (runnable == null) {
             NotificationCompat.Builder builder = getInitDownloadingNotificationBuilder(context);
 
-            FileDownloader.getImpl()
-                    .startForeground(
-                            NotificationHelper.NOTIFICATION_DOWNLOADING_ID,
-                            builder.build()
-                    );
+            FileDownloader.getImpl().startForeground(
+                    NotificationHelper.NOTIFICATION_DOWNLOADING_ID,
+                    builder.build()
+            );
 
             runnable = new NotificationRunnable(builder);
             ThreadManager.getInstance().execute(runnable);
         }
     }
 
-    private void updateDownloadListener(long missionId, @Nullable OnDownloadListener l) {
-        for (int i = 0; i < listenerList.size(); i ++) {
-            if (listenerList.get(i).id == missionId) {
-                listenerList.get(i).outsideListener = l;
-                break;
-            }
-        }
-    }
+    @Nullable
+    private TaskDownloadListener unregisterDownloadListener(long missionId) {
+        TaskDownloadListener result = null;
 
-    private void unregisterDownloadListener(long missionId) {
         for (int i = 0; i < listenerList.size(); i ++) {
             if (listenerList.get(i).id == missionId) {
-                listenerList.remove(i);
+                result = listenerList.remove(i);
                 break;
             }
         }
-        if (listenerList.size() == 0
-                && runnable != null && runnable.isRunning()) {
+
+        if (listenerList.size() == 0 && runnable != null && runnable.isRunning()) {
             runnable.setRunning(false);
             runnable = null;
 
             FileDownloader.getImpl().stopForeground(true);
             NotificationHelper.removeDownloadingNotification(context);
         }
+
+        return result;
     }
 
     private NotificationCompat.Builder getInitDownloadingNotificationBuilder(Context context) {
@@ -307,6 +444,7 @@ public class FileDownloaderService extends DownloaderService {
                 .setShowWhen(false)
                 .setProgress(0, 0, true)
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
+                .setOngoing(true)
                 .setContentIntent(NotificationHelper.buildIntent(context));
     }
 

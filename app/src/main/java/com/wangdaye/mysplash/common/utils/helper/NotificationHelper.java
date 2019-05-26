@@ -19,7 +19,6 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 /**
@@ -154,6 +153,7 @@ public class NotificationHelper {
                 .setContentTitle(title)
                 .setSubText(subText)
                 .setContentText(contentText)
+                .setAutoCancel(true)
                 .setContentIntent(buildIntent(c));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -179,6 +179,7 @@ public class NotificationHelper {
                 .setGroup(NOTIFICATION_GROUP_KEY)
                 .setGroupSummary(true)
                 .setContentIntent(buildIntent(c))
+                .setAutoCancel(true)
                 .build();
     }
 

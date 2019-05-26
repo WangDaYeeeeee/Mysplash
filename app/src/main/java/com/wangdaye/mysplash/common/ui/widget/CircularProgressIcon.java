@@ -4,10 +4,14 @@ import android.content.Context;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatImageView;
+
+import android.graphics.Color;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -15,10 +19,7 @@ import android.widget.FrameLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.image.ImageHelper;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 /**
  * Circular progress button.
@@ -29,12 +30,11 @@ import butterknife.ButterKnife;
 
 public class CircularProgressIcon extends FrameLayout {
 
-    @BindView(R.id.container_circular_progress_icon_image) AppCompatImageView image;
+    private AppCompatImageView image;
+    private CircularProgressView progress;
 
-    @BindView(R.id.container_circular_progress_icon_progress) CircularProgressView progress;
-
-    private ShowAnimation showAnimation;
-    private HideAnimation hideAnimation;
+    @Nullable private ShowAnimation showAnimation;
+    @Nullable private HideAnimation hideAnimation;
 
     private boolean animating;
 
@@ -87,6 +87,7 @@ public class CircularProgressIcon extends FrameLayout {
     }
 
     private Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+
         @Override
         public void onAnimationStart(Animation animation) {
             setAnimating(true);
@@ -119,15 +120,46 @@ public class CircularProgressIcon extends FrameLayout {
     }
 
     private void initialize() {
-        initWidget();
+        image = new AppCompatImageView(getContext());
+        image.setBackgroundColor(Color.TRANSPARENT);
+        CircularProgressIcon.LayoutParams imageParams = new CircularProgressIcon.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        int imageMargin = getResources().getDimensionPixelSize(R.dimen.little_margin);
+        imageParams.setMargins(imageMargin, imageMargin, imageMargin, imageMargin);
+        image.setLayoutParams(imageParams);
+        addView(image);
+
+        progress = new CircularProgressView(getContext());
+        progress.setIndeterminate(true);
+        progress.setColor(Color.WHITE);
+        CircularProgressIcon.LayoutParams progressParams = new CircularProgressIcon.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        int progressMargin = (int) new DisplayUtils(getContext()).dpToPx(5);
+        progressParams.setMargins(progressMargin, progressMargin, progressMargin, progressMargin);
+        progress.setLayoutParams(progressParams);
+        addView(progress);
+
         forceSetResultState(android.R.color.transparent);
     }
 
-    private void initWidget() {
-        View v = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_circular_progress_icon, this, false);
-        addView(v);
-        ButterKnife.bind(this, this);
+
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (state == STATE_PROGRESS) {
+            progress.startAnimation();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        progress.stopAnimation();
     }
 
     // control.
@@ -148,30 +180,34 @@ public class CircularProgressIcon extends FrameLayout {
         return state;
     }
 
-    public void setState(@StateRule int state) {
-        this.state = state;
-    }
-
     // anim.
 
     public void setProgressState() {
-        if (getState() == STATE_RESULT) {
-            setState(STATE_PROGRESS);
+        if (state == STATE_RESULT) {
+            state = STATE_PROGRESS;
+
             cancelAllAnimation();
+            progress.startAnimation();
+
             showAnimation = new ShowAnimation(progress);
             progress.startAnimation(showAnimation);
+
             hideAnimation = new HideAnimation(image);
             image.startAnimation(hideAnimation);
         }
     }
 
-    public void setResultState(@DrawableRes int imageId) {
-        if (getState() == STATE_PROGRESS) {
-            setState(STATE_RESULT);
+    public void setResultState(@DrawableRes @XmlRes int imageId) {
+        if (state == STATE_PROGRESS) {
+            state = STATE_RESULT;
+
             cancelAllAnimation();
-            ImageHelper.loadResourceImage(getContext(), image, imageId);
+            progress.stopAnimation();
+            image.setImageResource(imageId);
+
             showAnimation = new ShowAnimation(image);
             image.startAnimation(showAnimation);
+
             hideAnimation = new HideAnimation(progress);
             progress.startAnimation(hideAnimation);
         } else {
@@ -190,11 +226,13 @@ public class CircularProgressIcon extends FrameLayout {
 
     // force.
 
-    private void forceSetResultState(@DrawableRes int imageId) {
+    private void forceSetResultState(@DrawableRes @XmlRes int imageId) {
+        state = STATE_RESULT;
+
         cancelAllAnimation();
-        setState(STATE_RESULT);
         setAnimating(false);
-        ImageHelper.loadResourceImage(getContext(), image, imageId);
+
+        image.setImageResource(imageId);
 
         image.setAlpha(1f);
         image.setScaleX(1f);
@@ -213,11 +251,5 @@ public class CircularProgressIcon extends FrameLayout {
 
     public void setAnimating(boolean animating) {
         this.animating = animating;
-    }
-
-    // image.
-
-    public void recycleImageView() {
-        ImageHelper.releaseImageView(image);
     }
 }

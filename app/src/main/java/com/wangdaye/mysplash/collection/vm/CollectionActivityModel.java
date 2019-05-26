@@ -4,8 +4,8 @@ import com.wangdaye.mysplash.collection.repository.CollectionActivityRepository;
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 
 import javax.inject.Inject;
 

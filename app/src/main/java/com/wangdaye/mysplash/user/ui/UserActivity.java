@@ -28,9 +28,9 @@ import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoItemEventHelper;
-import com.wangdaye.mysplash.common.utils.presenter.BrowsableDialogMangePresenter;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
+import com.wangdaye.mysplash.common.presenter.BrowsableDialogMangePresenter;
+import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -39,8 +39,8 @@ import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.ShareUtils;
@@ -55,7 +55,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.user.vm.AbstractUserViewModel;
 import com.wangdaye.mysplash.user.vm.UserActivityModel;
 import com.wangdaye.mysplash.user.vm.UserCollectionsViewModel;
@@ -93,7 +93,7 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @BindView(R.id.activity_user_appBar) NestedScrollAppBarLayout appBar;
     @BindView(R.id.activity_user_toolbar) Toolbar toolbar;
-    @BindView(R.id.activity_user_avatar) CircleImageView avatar;
+    @BindView(R.id.activity_user_avatar) CircularImageView avatar;
     @BindView(R.id.activity_user_title) TextView title;
     @OnClick(R.id.activity_user_title) void clickTitle() {
         if (AuthManager.getInstance().isAuthorized()) {
@@ -312,10 +312,11 @@ public class UserActivity extends LoadableActivity<Photo>
         userProfileView.setAdapter(adapter);
 
         handler = new Handler();
-        handler.postDelayed(
-                () -> activityModel.getResource().observe(
-                        this, userResource -> drawProfile(userResource.data)),
-                1000);
+        handler.postDelayed(() ->
+                activityModel.getResource().observe(
+                        this, userResource -> drawProfile(userResource.data)
+                ), 1000
+        );
         activityModel.getResource().observe(this, resource -> {
             if (resource.data == null) {
                 if (resource.status == Resource.Status.LOADING) {
@@ -363,8 +364,7 @@ public class UserActivity extends LoadableActivity<Photo>
     private void initPages() {
         adapters[PAGE_PHOTO] = new PhotoAdapter(
                 this,
-                Objects.requireNonNull(photoPagerModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(this)
+                Objects.requireNonNull(photoPagerModel.getListResource().getValue()).dataList
         ).setItemEventCallback(new PhotoItemEventHelper(
                 this,
                 photoPagerModel.getListResource().getValue().dataList,
@@ -377,8 +377,7 @@ public class UserActivity extends LoadableActivity<Photo>
 
         adapters[PAGE_LIKE] = new PhotoAdapter(
                 this,
-                Objects.requireNonNull(likesPagerModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(this)
+                Objects.requireNonNull(likesPagerModel.getListResource().getValue()).dataList
         ).setItemEventCallback(new PhotoItemEventHelper(
                 this,
                 likesPagerModel.getListResource().getValue().dataList,
@@ -391,8 +390,7 @@ public class UserActivity extends LoadableActivity<Photo>
 
         adapters[PAGE_COLLECTION] = new CollectionAdapter(
                 this,
-                Objects.requireNonNull(collectionsPagerModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(this)
+                Objects.requireNonNull(collectionsPagerModel.getListResource().getValue()).dataList
         ).setItemEventCallback(new CollectionItemEventHelper(this));
 
         List<View> pageList = new ArrayList<>(

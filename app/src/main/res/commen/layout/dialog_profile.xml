@@ -22,9 +22,9 @@
                 android:layout_height="@dimen/circular_progress_height"
                 android:layout_margin="@dimen/mini_icon_size"
                 android:layout_centerHorizontal="true"
-                app:cpv_animAutostart="true"
                 app:cpv_color="?attr/title_color"
-                app:cpv_indeterminate="true" />
+                app:cpv_indeterminate="true"
+                app:cpv_animAutostart="true" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/dialog_profile_scrollView"

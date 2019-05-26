@@ -27,17 +27,17 @@ import com.wangdaye.mysplash.common.basic.fragment.LoadableFragment;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoItemEventHelper;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
+import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.multiFilter.vm.MultiFilterFragmentModel;
 import com.wangdaye.mysplash.main.multiFilter.vm.MultiFilterPhotoViewModel;
@@ -235,8 +235,7 @@ public class MultiFilterFragment extends LoadableFragment<Photo>
 
         photoAdapter = new PhotoAdapter(
                 getActivity(),
-                Objects.requireNonNull(photoViewModel.getListResource().getValue()).dataList,
-                DisplayUtils.getGirdColumnCount(getActivity())
+                Objects.requireNonNull(photoViewModel.getListResource().getValue()).dataList
         ).setItemEventCallback(new PhotoItemEventHelper(
                 (MysplashActivity) getActivity(),
                 photoViewModel.getListResource().getValue().dataList,

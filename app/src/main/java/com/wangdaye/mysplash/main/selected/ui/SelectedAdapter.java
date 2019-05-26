@@ -13,8 +13,8 @@ import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
+import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -33,15 +33,13 @@ import butterknife.ButterKnife;
  *
  * */
 
-public class SelectedAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
+public class SelectedAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder> {
 
     private List<Collection> itemList;
-    private int columnCount;
 
-    public SelectedAdapter(Context context, List<Collection> list, int columnCount) {
+    public SelectedAdapter(Context context, List<Collection> list) {
         super(context);
         this.itemList = list;
-        this.columnCount = columnCount;
     }
 
     @NonNull
@@ -51,16 +49,20 @@ public class SelectedAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             // footer.
             return FooterHolder.buildInstance(parent);
         } else {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_selected, parent, false);
-            return new SelectedHolder(v);
+            return new SelectedHolder(
+                    LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.item_selected, parent, false)
+            );
         }
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof SelectedHolder && position < itemList.size()) {
-            ((SelectedHolder) holder).onBindView(itemList.get(position), columnCount);
+            ((SelectedHolder) holder).onBindView(
+                    itemList.get(position),
+                    getColumnCount(), getGridMarginPixel(), getSingleColumnMarginPixel()
+            );
         }
     }
 
@@ -113,7 +115,7 @@ public class SelectedAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     }
 }
 
-class SelectedHolder extends RecyclerView.ViewHolder {
+class SelectedHolder extends MultiColumnAdapter.ViewHolder {
 
     @BindView(R.id.item_selected) CardView card;
     @BindView(R.id.item_selected_cover) CoverImageView image;
@@ -125,19 +127,22 @@ class SelectedHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
+    @Override
+    protected void onBindView(View container, int columnCount,
+                              int gridMarginPixel, int singleColumnMarginPixel) {
+        setLayoutParamsForGridItemMargin(container, columnCount, gridMarginPixel, singleColumnMarginPixel);
+    }
+
     @SuppressLint("SetTextI18n")
-    void onBindView(Collection collection, int columnCount) {
+    void onBindView(Collection collection,
+                    int columnCount, int gridMarginPixel, int singleColumnMarginPixel) {
+        onBindView(card, columnCount, gridMarginPixel, singleColumnMarginPixel);
+
         Context context = itemView.getContext();
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
         if (columnCount > 1) {
-            int margin = context.getResources().getDimensionPixelSize(R.dimen.normal_margin);
-            params.setMargins(0, 0, margin, margin);
-            card.setLayoutParams(params);
             card.setRadius(context.getResources().getDimensionPixelSize(R.dimen.material_card_radius));
         } else {
-            params.setMargins(0, 0, 0, 0);
-            card.setLayoutParams(params);
             card.setRadius(0);
         }
         card.setOnClickListener(v -> {

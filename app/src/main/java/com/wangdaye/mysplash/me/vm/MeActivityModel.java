@@ -5,7 +5,7 @@ import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 
 import java.util.concurrent.TimeUnit;
 

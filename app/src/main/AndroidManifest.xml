@@ -231,7 +231,7 @@
             android:name=".common.download.DownloadReceiver">
             <intent-filter android:priority="1000">
                 <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
-                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED"/>
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
             </intent-filter>
         </receiver>
 

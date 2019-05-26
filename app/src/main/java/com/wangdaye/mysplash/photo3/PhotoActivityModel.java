@@ -2,34 +2,49 @@ package com.wangdaye.mysplash.photo3;
 
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
+import com.wangdaye.mysplash.common.bus.event.DownloadEvent;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * Photo activity model.
  * */
-public class PhotoActivityModel extends BrowsableViewModel<Photo>
-        implements Consumer<PhotoEvent> {
+public class PhotoActivityModel extends BrowsableViewModel<Photo> {
 
     private PhotoActivityRepository repository;
-    private Disposable disposable;
+
+    private Disposable photoEventDisposable;
+    private Disposable downloadEventDisposable;
 
     private String photoId;
 
     @Inject
     public PhotoActivityModel(PhotoActivityRepository repository) {
         super();
+
         this.repository = repository;
-        this.disposable = MessageBus.getInstance()
+
+        this.photoEventDisposable = MessageBus.getInstance()
                 .toObservable(PhotoEvent.class)
-                .subscribe(this);
+                .subscribe(photoEvent -> {
+                    if (photoEvent.photo.id.equals(photoId)) {
+                        setPhoto(photoEvent.photo);
+                    }
+                });
+        this.downloadEventDisposable = MessageBus.getInstance()
+                .toObservable(DownloadEvent.class)
+                .subscribe(event -> {
+                    if (event.title.equals(photoId)) {
+                        setClonePhoto();
+                    }
+                });
+
         this.photoId = null;
     }
 
@@ -48,8 +63,10 @@ public class PhotoActivityModel extends BrowsableViewModel<Photo>
     @Override
     protected void onCleared() {
         super.onCleared();
+
         repository.cancel();
-        disposable.dispose();
+        photoEventDisposable.dispose();
+        downloadEventDisposable.dispose();
     }
 
     public void checkToRequestPhoto() {
@@ -69,16 +86,9 @@ public class PhotoActivityModel extends BrowsableViewModel<Photo>
         checkToRequestPhoto();
     }
 
-    public String getPhotoId() {
-        return photoId;
-    }
-
-    // interface.
-
-    @Override
-    public void accept(PhotoEvent photoEvent) {
-        if (photoEvent.photo.id.equals(photoId)) {
-            setPhoto(photoEvent.photo);
+    private void setClonePhoto() {
+        if (getResource().getValue() != null) {
+            setResource(new Resource<>(getResource().getValue()));
         }
     }
 }

@@ -13,7 +13,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -42,7 +42,7 @@ public class MoreHorizontalAdapter3 extends RecyclerView.Adapter<MoreHorizontalA
         @BindView(R.id.item_photo_3_more_page_horizontal_cover) CoverImageView image;
         @BindView(R.id.item_photo_3_more_page_horizontal_title) TextView title;
         @BindView(R.id.item_photo_3_more_page_horizontal_subtitle) TextView subtitle;
-        @BindView(R.id.item_photo_3_more_page_horizontal_avatar) CircleImageView avatar;
+        @BindView(R.id.item_photo_3_more_page_horizontal_avatar) CircularImageView avatar;
 
         ViewHolder(View itemView) {
             super(itemView);

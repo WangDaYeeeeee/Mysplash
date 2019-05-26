@@ -2,7 +2,8 @@ package com.wangdaye.mysplash.common.utils.manager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 import com.wangdaye.mysplash.R;
 

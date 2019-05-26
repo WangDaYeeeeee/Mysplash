@@ -71,12 +71,10 @@
                 android:layout_toStartOf="@id/item_photo_likeButton"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
-            <androidx.appcompat.widget.AppCompatImageButton
+            <com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon
                 android:id="@+id/item_photo_downloadButton"
-                android:src="@drawable/ic_item_download"
                 android:layout_width="34dp"
                 android:layout_height="34dp"
-                android:padding="@dimen/little_margin"
                 android:layout_marginTop="@dimen/little_margin"
                 android:layout_marginEnd="@dimen/little_margin"
                 android:layout_marginBottom="@dimen/little_margin"
@@ -86,7 +84,7 @@
                 android:layout_toStartOf="@id/item_photo_collectionButton"
                 tools:ignore="ContentDescription,RtlHardcoded" />
 
-            <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+            <com.wangdaye.mysplash.common.ui.widget.CircularImageView
                 android:id="@+id/item_photo_avatar"
                 android:layout_width="@dimen/mini_icon_size"
                 android:layout_height="@dimen/mini_icon_size"

@@ -31,8 +31,8 @@ import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionItemEventHel
 import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.mysplash.common.ui.adapter.user.UserItemEventHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
-import com.wangdaye.mysplash.common.utils.presenter.list.LikeOrDislikePhotoPresenter;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerLoadablePresenter;
+import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.basic.activity.LoadableActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -41,12 +41,12 @@ import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.search.vm.AbstractSearchPageViewModel;
 import com.wangdaye.mysplash.search.vm.CollectionSearchPageViewModel;
 import com.wangdaye.mysplash.search.vm.PhotoSearchPageViewModel;
@@ -264,8 +264,7 @@ public class SearchActivity extends LoadableActivity<Photo>
                 this,
                 Objects.requireNonNull(
                         ((PhotoSearchPageViewModel) pagerModels[photoPage()]).getListResource().getValue()
-                ).dataList,
-                DisplayUtils.getGirdColumnCount(this)
+                ).dataList
         ).setItemEventCallback(new PhotoItemEventHelper(
                 this,
                 Objects.requireNonNull(
@@ -288,8 +287,7 @@ public class SearchActivity extends LoadableActivity<Photo>
                 this,
                 Objects.requireNonNull(
                         ((CollectionSearchPageViewModel) pagerModels[collectionPage()]).getListResource().getValue()
-                ).dataList,
-                DisplayUtils.getGirdColumnCount(this)
+                ).dataList
         ).setItemEventCallback(new CollectionItemEventHelper(this));
 
         adapters[userPage()] = new UserAdapter(

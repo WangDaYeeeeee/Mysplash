@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollPhotoView
+        <com.wangdaye.mysplash.common.ui.widget.NestedScrollPhotoView
             android:id="@+id/activity_preview_photoView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

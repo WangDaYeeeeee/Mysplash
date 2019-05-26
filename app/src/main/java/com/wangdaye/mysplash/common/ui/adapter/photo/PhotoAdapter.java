@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
+import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -24,19 +24,17 @@ import java.util.List;
  *
  * */
 
-public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
+public class PhotoAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder> {
 
     private List<Photo> itemList;
 
-    private int columnCount;
     private boolean showDeleteButton;
 
     @Nullable private ItemEventCallback callback;
 
-    public PhotoAdapter(Context context, List<Photo> list, int columnCount) {
+    public PhotoAdapter(Context context, List<Photo> list) {
         super(context);
         this.itemList = list;
-        this.columnCount = columnCount;
         this.showDeleteButton = false;
     }
 
@@ -57,11 +55,9 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof PhotoHolder && position < getRealItemCount()) {
             ((PhotoHolder) holder).onBindView(
-                    itemList.get(position),
-                    showDeleteButton,
-                    columnCount,
-                    false,
-                    callback
+                    itemList.get(position), showDeleteButton,
+                    getColumnCount(), getGridMarginPixel(), getSingleColumnMarginPixel(),
+                    false, callback
             );
         }
     }
@@ -73,11 +69,9 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
             onBindViewHolder(holder, position);
         } else {
             ((PhotoHolder) holder).onBindView(
-                    itemList.get(position),
-                    showDeleteButton,
-                    columnCount,
-                    true,
-                    callback
+                    itemList.get(position), showDeleteButton,
+                    getColumnCount(), getGridMarginPixel(), getSingleColumnMarginPixel(),
+                    true, callback
             );
         }
     }

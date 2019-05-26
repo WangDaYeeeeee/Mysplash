@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.common.basic.model;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class Resource<T> {
+public class Resource<T> implements Cloneable {
 
     @Nullable public final T data;
     @NonNull public final Status status;
@@ -15,6 +15,11 @@ public class Resource<T> {
     private Resource(@Nullable T data, @NonNull Status status) {
         this.data = data;
         this.status = status;
+    }
+
+    public Resource(@NonNull Resource<T> resource) {
+        this.data = resource.data;
+        this.status = resource.status;
     }
 
     public static <T> Resource<T> success(@NonNull T data) {

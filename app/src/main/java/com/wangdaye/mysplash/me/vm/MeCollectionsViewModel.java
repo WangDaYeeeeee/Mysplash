@@ -3,9 +3,9 @@ package com.wangdaye.mysplash.me.vm;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.me.repository.MeCollectionsViewRepository;
 
 import java.util.Objects;

@@ -11,7 +11,7 @@ import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
@@ -42,7 +42,7 @@ public class StoryHolder extends PhotoInfoAdapter3.ViewHolder {
             );
     }
     @BindView(R.id.item_photo_3_story_content) TextView content;
-    @BindView(R.id.item_photo_3_story_avatar) CircleImageView avatar;
+    @BindView(R.id.item_photo_3_story_avatar) CircularImageView avatar;
     @OnClick(R.id.item_photo_3_story_avatar) void checkAuthor() {
         IntentHelper.startUserActivity(
                 Mysplash.getInstance().getTopActivity(),

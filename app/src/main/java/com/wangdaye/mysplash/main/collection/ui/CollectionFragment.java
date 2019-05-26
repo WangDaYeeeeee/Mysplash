@@ -29,11 +29,11 @@ import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.collection.vm.AllCollectionsViewModel;
 import com.wangdaye.mysplash.main.collection.vm.AbstractCollectionsViewModel;
@@ -176,8 +176,7 @@ public class CollectionFragment extends MysplashFragment
         for (int i = featuredPage(); i < pageCount(); i ++) {
             adapters[i] = new CollectionAdapter(
                     getActivity(),
-                    Objects.requireNonNull(pagerModels[i].getListResource().getValue()).dataList,
-                    DisplayUtils.getGirdColumnCount(getActivity())
+                    Objects.requireNonNull(pagerModels[i].getListResource().getValue()).dataList
             ).setItemEventCallback(new CollectionItemEventHelper((MysplashActivity) getActivity()));
         }
 

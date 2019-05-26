@@ -31,7 +31,7 @@
             android:background="?attr/root_color"
             tools:ignore="UnusedAttribute">
 
-            <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
+            <com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout
                 android:id="@+id/activity_notification_appBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
                     app:title="@string/action_notification"
                     app:popupTheme="@style/MysplashPopupMenuTheme" />
 
-            </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
+            </com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout>
 
             <com.wangdaye.mysplash.main._old.view.NotificationsView
                 android:id="@+id/activity_notification_notificationsView"

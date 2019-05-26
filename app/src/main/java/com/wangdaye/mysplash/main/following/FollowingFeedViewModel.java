@@ -2,10 +2,12 @@ package com.wangdaye.mysplash.main.following;
 
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
+import com.wangdaye.mysplash.common.bus.event.DownloadEvent;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
-import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
+import com.wangdaye.mysplash.common.presenter.event.DownloadEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.PhotoEventResponsePresenter;
 
 import javax.inject.Inject;
 
@@ -16,22 +18,37 @@ import io.reactivex.functions.Consumer;
 /**
  * Following feed view model.
  * */
-public class FollowingFeedViewModel extends PagerViewModel<Photo>
-        implements Consumer<PhotoEvent> {
+public class FollowingFeedViewModel extends PagerViewModel<Photo> {
 
     private FollowingFeedViewRepository repository;
-    private PhotoEventResponsePresenter presenter;
-    private Disposable disposable;
+    private PhotoEventResponsePresenter photoEventResponsePresenter;
+    private DownloadEventResponsePresenter downloadEventResponsePresenter;
+
+    private Disposable photoEventDisposable;
+    private Disposable downloadEventDisposable;
+
+    private Consumer<PhotoEvent> photoEventConsumer = photoEvent ->
+            photoEventResponsePresenter.updatePhoto(getListResource(), photoEvent.photo, true);
+
+    private Consumer<DownloadEvent> downloadEventConsumer = event ->
+            downloadEventResponsePresenter.updatePhoto(getListResource(), event, true);
 
     @Inject
     public FollowingFeedViewModel(FollowingFeedViewRepository repository,
-                                  PhotoEventResponsePresenter presenter) {
+                                  PhotoEventResponsePresenter photoEventResponsePresenter,
+                                  DownloadEventResponsePresenter downloadEventResponsePresenter) {
         super();
+
         this.repository = repository;
-        this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
+        this.photoEventResponsePresenter = photoEventResponsePresenter;
+        this.downloadEventResponsePresenter = downloadEventResponsePresenter;
+
+        this.photoEventDisposable = MessageBus.getInstance()
                 .toObservable(PhotoEvent.class)
-                .subscribe(this);
+                .subscribe(photoEventConsumer);
+        this.downloadEventDisposable = MessageBus.getInstance()
+                .toObservable(DownloadEvent.class)
+                .subscribe(downloadEventConsumer);
     }
 
     @Override
@@ -46,9 +63,13 @@ public class FollowingFeedViewModel extends PagerViewModel<Photo>
     @Override
     protected void onCleared() {
         super.onCleared();
+
         repository.cancel();
-        presenter.clearResponse();
-        disposable.dispose();
+        photoEventResponsePresenter.clearResponse();
+        downloadEventResponsePresenter.clearResponse();
+
+        photoEventDisposable.dispose();
+        downloadEventDisposable.dispose();
     }
 
     @Override
@@ -59,12 +80,5 @@ public class FollowingFeedViewModel extends PagerViewModel<Photo>
     @Override
     public void load() {
         repository.getFollowingFeeds(getListResource(), false);
-    }
-
-    // interface.
-
-    @Override
-    public void accept(PhotoEvent photoEvent) {
-        presenter.updatePhoto(getListResource(), photoEvent.photo, true);
     }
 }

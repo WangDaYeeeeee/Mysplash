@@ -6,7 +6,7 @@ import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
 import com.wangdaye.mysplash.common.network.service.FollowService;
 import com.wangdaye.mysplash.common.network.service.UserService;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 
 import javax.inject.Inject;
 

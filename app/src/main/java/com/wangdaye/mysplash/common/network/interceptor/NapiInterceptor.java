@@ -1,6 +1,5 @@
 package com.wangdaye.mysplash.common.network.interceptor;
 
-import java.io.IOException;
 import java.nio.charset.Charset;
 
 import okhttp3.MediaType;
@@ -46,7 +45,7 @@ public class NapiInterceptor extends ReportExceptionInterceptor {
         }
     }
 
-    private Response buildResponse(Request request, Response response) throws IOException {
+    private Response buildResponse(Request request, Response response) throws Exception {
         return response;
     }
 }

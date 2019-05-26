@@ -2,7 +2,8 @@ package com.wangdaye.mysplash.user.vm;
 
 import android.text.TextUtils;
 
-import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.DownloadEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.mysplash.user.repository.UserPhotosViewRepository;
 
 import javax.inject.Inject;
@@ -11,8 +12,9 @@ public class UserLikesViewModel extends UserPhotosViewModel {
 
     @Inject
     public UserLikesViewModel(UserPhotosViewRepository repository,
-                              PhotoEventResponsePresenter presenter) {
-        super(repository, presenter);
+                              PhotoEventResponsePresenter photoEventResponsePresenter,
+                              DownloadEventResponsePresenter downloadEventResponsePresenter) {
+        super(repository, photoEventResponsePresenter, downloadEventResponsePresenter);
     }
 
     @Override

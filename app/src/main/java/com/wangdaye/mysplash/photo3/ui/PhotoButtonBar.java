@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Color;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -11,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -61,7 +65,6 @@ public class PhotoButtonBar extends RelativeLayout {
 
     private int likeIconId;
     private int collectIconId;
-    private int progress;
 
     private OnClickButtonListener listener;
 
@@ -94,7 +97,6 @@ public class PhotoButtonBar extends RelativeLayout {
     private void initData() {
         likeIconId = getLikeIcon(false);
         collectIconId = getCollectIcon(false);
-        progress = -1;
     }
 
     private void initWidget() {
@@ -130,6 +132,7 @@ public class PhotoButtonBar extends RelativeLayout {
     public void setState(Photo photo) {
         setLikeState(photo);
         setCollectState(photo);
+        setDownloadState(photo);
     }
 
     public void setLikeState(Photo photo) {
@@ -167,30 +170,26 @@ public class PhotoButtonBar extends RelativeLayout {
     }
 
     @SuppressLint("SetTextI18n")
-    public void setDownloadState(boolean downloading, int progress) {
+    public void setDownloadState(Photo photo) {
+        boolean downloading = DownloadHelper.getInstance(getContext())
+                .readDownloadingEntityCount(getContext(), photo.id) > 0;
         if (downloading && downloadButton.getState() == CircularProgressIcon.STATE_RESULT) {
-            this.progress = -1;
             downloadButton.setProgressState();
         } else if (!downloading && downloadButton.getState() == CircularProgressIcon.STATE_PROGRESS) {
-            this.progress = -1;
             downloadButton.setResultState(getDownloadIcon());
         }
-
-        if (downloadButton.getState() == CircularProgressIcon.STATE_PROGRESS
-                && progress != this.progress
-                && progress >= 0) {
-            this.progress = progress;
-        }
     }
 
+    @DrawableRes @XmlRes
     private int getLikeIcon(boolean liked) {
         if (liked) {
-            return R.drawable.ic_item_heart_red;
+            return R.drawable.ic_heart_red;
         } else {
-            return R.drawable.ic_item_heart_outline;
+            return R.drawable.ic_heart_outline_white;
         }
     }
 
+    @DrawableRes @XmlRes
     private int getCollectIcon(boolean collected) {
         if (collected) {
             return R.drawable.ic_item_collected;
@@ -199,8 +198,9 @@ public class PhotoButtonBar extends RelativeLayout {
         }
     }
 
+    @DrawableRes @XmlRes
     private int getDownloadIcon() {
-        return R.drawable.ic_download_png_dark;
+        return R.drawable.ic_download_white;
     }
 
     // interface.

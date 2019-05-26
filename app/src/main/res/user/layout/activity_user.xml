@@ -22,7 +22,7 @@
         android:transitionName="@string/transition_user_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout
             android:id="@+id/activity_user_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -48,7 +48,7 @@
                     android:background="@android:color/transparent"
                     app:popupTheme="@style/MysplashPopupMenuTheme"/>
 
-                <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+                <com.wangdaye.mysplash.common.ui.widget.CircularImageView
                     android:id="@+id/activity_user_avatar"
                     android:layout_width="@dimen/design_icon_size"
                     android:layout_height="@dimen/design_icon_size"
@@ -102,7 +102,7 @@
 
             </LinearLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/activity_user_viewPager"

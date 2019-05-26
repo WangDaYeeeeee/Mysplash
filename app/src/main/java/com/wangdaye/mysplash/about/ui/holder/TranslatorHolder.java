@@ -8,7 +8,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.about.model.AboutModel;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.about.ui.AboutAdapter;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.about.model.TranslatorObject;
@@ -38,7 +38,7 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder {
                 matcher.matches() ? "mailto:" + url : url);
     }
 
-    @BindView(R.id.item_about_translator_avatar) CircleImageView avatar;
+    @BindView(R.id.item_about_translator_avatar) CircularImageView avatar;
     @BindView(R.id.item_about_translator_flag) AppCompatImageView flag;
     @BindView(R.id.item_about_translator_title) TextView title;
     @BindView(R.id.item_about_translator_subtitle) TextView subtitle;

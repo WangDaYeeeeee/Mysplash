@@ -5,9 +5,6 @@
     android:id="@+id/item_download_card"
     android:layout_width="match_parent"
     android:layout_height="@dimen/design_icon_size"
-    android:layout_marginStart="@dimen/little_margin"
-    android:layout_marginEnd="@dimen/little_margin"
-    android:layout_marginBottom="@dimen/little_margin"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
     app:cardElevation="@dimen/low_elevation"
@@ -30,7 +27,6 @@
 
         <androidx.appcompat.widget.AppCompatImageButton
             android:id="@+id/item_download_closeBtn"
-            android:src="@drawable/ic_item_close"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:padding="@dimen/little_margin"
@@ -39,6 +35,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
+            app:srcCompat="@drawable/ic_item_close"
             tools:ignore="ContentDescription,RtlHardcoded" />
 
         <androidx.appcompat.widget.AppCompatImageButton

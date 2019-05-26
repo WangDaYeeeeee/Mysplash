@@ -14,7 +14,7 @@ import com.wangdaye.mysplash.common.basic.model.Previewable;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollPhotoView;
+import com.wangdaye.mysplash.common.ui.widget.NestedScrollPhotoView;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 
 import butterknife.BindView;

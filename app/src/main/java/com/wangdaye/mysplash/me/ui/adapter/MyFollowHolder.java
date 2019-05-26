@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton;
 
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 class MyFollowHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_my_follow_user_background) RelativeLayout background;
-    @BindView(R.id.item_my_follow_user_avatar) CircleImageView avatar;
+    @BindView(R.id.item_my_follow_user_avatar) CircularImageView avatar;
     @BindView(R.id.item_my_follow_user_title) TextView title;
     @BindView(R.id.item_my_follow_user_button) RippleButton rippleButton;
 
@@ -48,11 +48,13 @@ class MyFollowHolder extends RecyclerView.ViewHolder {
             );
         } else {
             rippleButton.setState(
-                    user.followed_by_user ? RippleButton.State.ON : RippleButton.State.OFF
+                    user.followed_by_user
+                            ? RippleButton.State.ON
+                            : RippleButton.State.OFF
             );
         }
         rippleButton.setOnSwitchListener(current -> {
-            if (callback != null) {
+            if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
                 callback.onFollowUserOrCancel(user, getAdapterPosition(), !user.followed_by_user);
             }
         });

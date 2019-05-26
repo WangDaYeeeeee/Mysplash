@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true">
 
-            <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+            <com.wangdaye.mysplash.common.ui.widget.CircularImageView
                 android:id="@+id/item_photo_3_more_page_horizontal_avatar"
                 android:layout_width="@dimen/mini_icon_size"
                 android:layout_height="@dimen/mini_icon_size"

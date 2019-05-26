@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import androidx.annotation.Nullable;
@@ -24,7 +24,7 @@ import butterknife.OnClick;
 class UserHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_user_background) RelativeLayout background;
-    @BindView(R.id.item_user_avatar) CircleImageView avatar;
+    @BindView(R.id.item_user_avatar) CircularImageView avatar;
     @BindView(R.id.item_user_portfolio) AppCompatImageButton portfolioBtn;
     @BindView(R.id.item_user_title) TextView title;
     @BindView(R.id.item_user_subtitle) TextView subtitle;

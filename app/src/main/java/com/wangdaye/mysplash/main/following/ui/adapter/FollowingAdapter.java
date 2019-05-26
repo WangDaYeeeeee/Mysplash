@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
+import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.main.following.ui.adapter.holder.FollowingHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
  *
  * */
 
-public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
+public class FollowingAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder> {
 
     private List<Photo> photoList; // this list is used to save the feed data.
     private List<ItemData> itemList; // this list is used to save the display information of view holder.
@@ -36,14 +37,14 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     /**
      * This class is used to save the view holder's information.
      * */
-    class ItemData {
+    public class ItemData {
 
-        int photoPosition;
-        int adapterPosition;
+        public int photoPosition;
+        public int adapterPosition;
 
-        Object data;
+        public Object data;
 
-        ItemData(int photoPosition, int adapterPosition, Object data) {
+        public ItemData(int photoPosition, int adapterPosition, Object data) {
             this.photoPosition = photoPosition;
             this.adapterPosition = adapterPosition;
             this.data = data;
@@ -77,7 +78,10 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (!isFooter(position)) {
-            ((FollowingHolder) holder).onBindView(itemList.get(position), false);
+            ((FollowingHolder) holder).onBindView(
+                    itemList.get(position), false,
+                    getColumnCount(), getGridMarginPixel(), getSingleColumnMarginPixel()
+            );
         }
     }
 
@@ -87,17 +91,18 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         if (payloads.isEmpty() || isFooter(position)) {
             onBindViewHolder(holder, position);
         } else {
-            ((FollowingHolder) holder).onBindView(itemList.get(position), true);
+            ((FollowingHolder) holder).onBindView(
+                    itemList.get(position), true,
+                    getColumnCount(), getGridMarginPixel(), getSingleColumnMarginPixel()
+            );
         }
     }
 
     @Override
     public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder instanceof TitleFeedHolder) {
-            ((TitleFeedHolder) holder).onRecycled();
-        } else if (holder instanceof PhotoFeedHolder) {
-            ((PhotoFeedHolder) holder).onRecycled();
+        if (holder instanceof FollowingHolder) {
+            ((FollowingHolder) holder).onRecycled();
         }
     }
 
@@ -132,6 +137,15 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
+    @Override
+    protected void setGridRecyclerViewPadding(RecyclerView view) {
+        if (getColumnCount() > 1) {
+            view.setPaddingRelative(getGridMarginPixel(), 0, 0, 0);
+        } else {
+            view.setPaddingRelative(0, 0, 0, 0);
+        }
+    }
+
     public int getTypeItemCount() {
         return itemList.size();
     }
@@ -144,10 +158,10 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
                 itemList.add(new ItemData(i, itemList.size(), photoList.get(i).user));
                 itemList.add(new ItemData(i, itemList.size(), photoList.get(i)));
             } else {
-                int lastTypeIndex = itemList.size() - 1;
-                if (!(itemList.get(lastTypeIndex).data instanceof Photo)
-                        || !((Photo) itemList.get(lastTypeIndex).data).user.username
-                        .equals(photoList.get(i).user.username)) {
+                int lastIndex = itemList.size() - 1;
+                Object data = itemList.get(lastIndex).data;
+                if (!(data instanceof Photo)
+                        || !((Photo) data).user.username.equals(photoList.get(i).user.username)) {
                     itemList.add(new ItemData(i, itemList.size(), photoList.get(i).user));
                     itemList.add(new ItemData(i, itemList.size(), photoList.get(i)));
                 } else {
@@ -174,16 +188,6 @@ public class FollowingAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         return itemList.size() > adapterPosition
                 && (adapterPosition + 1 == itemList.size()
                 || itemList.get(adapterPosition + 1).data instanceof User);
-    }
-
-    public void setTitleAvatarVisibility(RecyclerView.ViewHolder lastHolder,
-                                         RecyclerView.ViewHolder newHolder) {
-        if (lastHolder instanceof TitleFeedHolder) {
-            ((TitleFeedHolder) lastHolder).setAvatarVisibility(true);
-        }
-        if (newHolder instanceof TitleFeedHolder) {
-            ((TitleFeedHolder) newHolder).setAvatarVisibility(false);
-        }
     }
 
     public void updateItem(int position, Object payload) {

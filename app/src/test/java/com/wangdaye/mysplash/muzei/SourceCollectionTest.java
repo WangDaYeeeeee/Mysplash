@@ -22,7 +22,7 @@ public class SourceCollectionTest {
             collectionIdList.add(864380);
         }
         for (int id : collectionIdList) {
-            System.out.println(String.valueOf(id));
+            System.out.println(id);
         }
     }
 }

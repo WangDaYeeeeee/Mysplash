@@ -7,42 +7,48 @@ import android.content.res.TypedArray;
 import androidx.annotation.ColorInt;
 import androidx.core.content.ContextCompat;
 import androidx.cardview.widget.CardView;
+import androidx.transition.ChangeBounds;
+import androidx.transition.TransitionManager;
+
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
 
 /**
  * Ripple button.
  * */
-
 public class RippleButton extends CardView
         implements View.OnClickListener {
 
-    @BindView(R.id.container_ripple_button) RelativeLayout container;
-    @BindView(R.id.container_ripple_button_text) TextView text;
-    @BindView(R.id.container_ripple_button_ripple) RippleView ripple;
-    @BindView(R.id.container_ripple_button_progress) CircularProgressView progress;
+    private DisplayUtils utils;
+
+    private TextView text;
+    private RippleView ripple;
+    private CircularProgressView progress;
 
     private ProgressAlphaAnimation progressAlphaAnimation;
     private OnSwitchListener listener;
 
     private State state;
     public enum State {
-        OFF, TRANSFORM_TO_ON, ON, TRANSFORM_TO_OFF
+        OFF,
+        TRANSFORM_TO_ON,
+        ON,
+        TRANSFORM_TO_OFF
     }
 
     private String titleOff;
@@ -52,6 +58,9 @@ public class RippleButton extends CardView
     @ColorInt private int colorDark;
 
     private int fingerX, fingerY;
+
+    private static final int TEXT_MARGIN_HORIZONTAL_DIP = 32;
+    private static final int TEXT_MARGIN_VERTICAL_DIP = 8;
 
     private Animation rippleAlphaShow = new Animation() {
         @Override
@@ -102,16 +111,47 @@ public class RippleButton extends CardView
     }
 
     private void initialize(AttributeSet attrs, int defStyleAttr) {
-        View v = LayoutInflater.from(getContext())
-                .inflate(R.layout.container_ripple_button, this, false);
-        addView(v);
-        ButterKnife.bind(this, this);
+        utils = new DisplayUtils(getContext());
+
+        text = new TextView(getContext());
+        text.setTypeface(Typeface.DEFAULT_BOLD);
+        text.setGravity(Gravity.CENTER);
+        text.setLines(1);
+        RippleButton.LayoutParams textParams = new RippleButton.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        textParams.gravity = Gravity.CENTER;
+        text.setLayoutParams(textParams);
+        addView(text);
+
+        ripple = new RippleView(getContext());
+        RippleButton.LayoutParams rippleParams = new RippleButton.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+        );
+        rippleParams.gravity = Gravity.CENTER;
+        ripple.setLayoutParams(rippleParams);
+        addView(ripple);
+
+        progress = new CircularProgressView(getContext());
+        progress.setIndeterminate(true);
+        progress.setColor(Color.DKGRAY);
+        RippleButton.LayoutParams progressParams = new RippleButton.LayoutParams(
+                getResources().getDimensionPixelSize(R.dimen.mini_icon_size),
+                getResources().getDimensionPixelSize(R.dimen.mini_icon_size)
+        );
+        progressParams.gravity = Gravity.CENTER;
+        progress.setLayoutParams(progressParams);
+        addView(progress);
+
         initData(attrs, defStyleAttr);
         initWidget();
     }
 
     private void initData(AttributeSet attrs, int defStyleAttr) {
-        TypedArray a = getContext().obtainStyledAttributes(attrs, R.styleable.RippleButton, defStyleAttr, 0);
+        TypedArray a = getContext().obtainStyledAttributes(
+                attrs, R.styleable.RippleButton, defStyleAttr, 0);
         String titleOn = a.getString(R.styleable.RippleButton_rb_title_on);
         String titleOff = a.getString(R.styleable.RippleButton_rb_title_off);
         a.recycle();
@@ -147,65 +187,84 @@ public class RippleButton extends CardView
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        int height = MeasureSpec.getSize(heightMeasureSpec);
-
-        container.measure(
-                MeasureSpec.makeMeasureSpec(width, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(height, MeasureSpec.UNSPECIFIED)
-        );
-
-        // width.
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
-        switch (widthMode) {
-            case MeasureSpec.EXACTLY:
-                // do nothing.
-                break;
 
-            case MeasureSpec.AT_MOST:
-                widthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        Math.min(container.getMeasuredWidth(), width),
-                        MeasureSpec.EXACTLY);
-                break;
-
-            case MeasureSpec.UNSPECIFIED:
-                widthMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        container.getMeasuredWidth(),
-                        MeasureSpec.EXACTLY);
-                break;
-        }
-
-        // height.
+        int height = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
-        switch (heightMode) {
-            case MeasureSpec.EXACTLY:
-                // do nothing.
-                break;
 
-            case MeasureSpec.AT_MOST:
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        Math.min(container.getMeasuredHeight(), height),
-                        MeasureSpec.EXACTLY
-                );
-                break;
+        int textMarginHorizontal = (int) utils.dpToPx(TEXT_MARGIN_HORIZONTAL_DIP);
+        int textMarginVertical = (int) utils.dpToPx(TEXT_MARGIN_VERTICAL_DIP);
 
-            case MeasureSpec.UNSPECIFIED:
-                heightMeasureSpec = MeasureSpec.makeMeasureSpec(
-                        container.getMeasuredHeight(),
-                        MeasureSpec.EXACTLY
-                );
-                break;
-        }
+        text.measure(widthMeasureSpec, heightMeasureSpec);
 
-        container.measure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(
-                MeasureSpec.getSize(widthMeasureSpec),
-                MeasureSpec.getSize(heightMeasureSpec)
+        RippleButton.LayoutParams progressParams = (LayoutParams) progress.getLayoutParams();
+        progress.measure(
+                MeasureSpec.makeMeasureSpec(progressParams.width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(progressParams.height, MeasureSpec.EXACTLY)
         );
 
-        setRadius((float) (MeasureSpec.getSize(heightMeasureSpec) * 0.5));
+        switch (widthMode) {
+            case MeasureSpec.UNSPECIFIED:
+                width = Math.max(
+                        text.getMeasuredWidth() + textMarginHorizontal * 2,
+                        progress.getMeasuredWidth()
+                );
+                break;
+
+            case MeasureSpec.EXACTLY:
+                // do nothing.
+                break;
+
+            case MeasureSpec.AT_MOST:
+                width = Math.min(
+                        width,
+                        Math.max(
+                                text.getMeasuredWidth() + textMarginHorizontal * 2,
+                                progress.getMeasuredWidth()
+                        )
+                );
+                break;
+        }
+        switch (heightMode) {
+            case MeasureSpec.UNSPECIFIED:
+                height = Math.max(
+                        text.getMeasuredHeight() + textMarginVertical * 2,
+                        progress.getMeasuredHeight()
+                );
+                break;
+
+            case MeasureSpec.EXACTLY:
+                // do nothing.
+                break;
+
+            case MeasureSpec.AT_MOST:
+                height = Math.min(
+                        height,
+                        Math.max(
+                                text.getMeasuredHeight() + textMarginVertical * 2,
+                                progress.getMeasuredHeight()
+                        )
+                );
+                break;
+        }
+
+        ripple.measure(
+                MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY)
+        );
+
+        setMeasuredDimension(width, height);
+
+        setRadius(height / 2f);
 
         fingerX = getMeasuredWidth() / 2;
         fingerY = getMeasuredHeight() / 2;
+    }
+
+    @Override
+    public void requestLayout() {
+        super.requestLayout();
+        TransitionManager.beginDelayedTransition(this, new ChangeBounds());
     }
 
     // touch.
@@ -214,14 +273,12 @@ public class RippleButton extends CardView
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_UP:
-                if (state == State.ON || state == State.OFF || listener != null) {
-                    fingerX = (int) event.getX();
-                    fingerY = (int) event.getY();
-                    listener.onSwitch(state);
-                }
-                break;
+        if (event.getAction() == MotionEvent.ACTION_UP) {
+            if (state == State.ON || state == State.OFF || listener != null) {
+                fingerX = (int) event.getX();
+                fingerY = (int) event.getY();
+                listener.onSwitch(state);
+            }
         }
         return true;
     }
@@ -238,6 +295,7 @@ public class RippleButton extends CardView
             controlColor(state);
             controlTitle(state);
             controlAnimation(state);
+            controlProgress(state);
         }
     }
 
@@ -285,6 +343,7 @@ public class RippleButton extends CardView
                 text.setText(titleOn);
                 break;
         }
+
     }
 
     private void controlAnimation(State state) {
@@ -318,6 +377,20 @@ public class RippleButton extends CardView
         }
     }
 
+    private void controlProgress(State state) {
+        switch (state) {
+            case OFF:
+            case ON:
+                progress.stopAnimation();
+                break;
+
+            case TRANSFORM_TO_ON:
+            case TRANSFORM_TO_OFF:
+                progress.startAnimation();
+                break;
+        }
+    }
+
     public void setButtonTitles(String off, String on) {
         titleOff = off;
         titleOn = on;
@@ -328,6 +401,7 @@ public class RippleButton extends CardView
         if (progressAlphaAnimation != null) {
             progressAlphaAnimation.cancel();
         }
+
         progressAlphaAnimation = new ProgressAlphaAnimation(from, to);
         progressAlphaAnimation.setDuration(150);
         progressAlphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -339,7 +413,6 @@ public class RippleButton extends CardView
     // on switch swipeListener.
 
     public interface OnSwitchListener {
-
         void onSwitch(State current);
     }
 

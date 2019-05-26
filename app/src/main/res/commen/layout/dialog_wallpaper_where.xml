@@ -17,9 +17,9 @@
             android:layout_height="@dimen/circular_progress_height"
             android:layout_margin="@dimen/normal_margin"
             android:layout_centerInParent="true"
-            app:cpv_animAutostart="true"
             app:cpv_color="@color/colorTextTitle"
-            app:cpv_indeterminate="true"/>
+            app:cpv_indeterminate="true"
+            app:cpv_animAutostart="true" />
 
         <LinearLayout
             android:id="@+id/dialog_wallpaper_where_selector"

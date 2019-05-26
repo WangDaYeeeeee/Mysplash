@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerScrollablePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeErrorStateAdapter;
@@ -19,8 +19,9 @@ import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
+import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
-import com.wangdaye.mysplash.common.utils.presenter.pager.PagerStateManagePresenter;
+import com.wangdaye.mysplash.common.presenter.pager.PagerStateManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.home.ui.HomeFragment;
 
@@ -86,16 +87,13 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
                 navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
         );
 
+        adapter.setColumnCount(recyclerView, RecyclerViewHelper.getGirdColumnCount(getContext()));
         recyclerView.setAdapter(adapter);
-        int columnCount = DisplayUtils.getGirdColumnCount(getContext());
-        if (columnCount > 1) {
-            int margin = getResources().getDimensionPixelSize(R.dimen.normal_margin);
-            recyclerView.setPadding(margin, margin, 0, 0);
-        } else {
-            recyclerView.setPadding(0, 0, 0, 0);
-        }
         recyclerView.setLayoutManager(
-                new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL)
+                new StaggeredGridLayoutManager(
+                        RecyclerViewHelper.getGirdColumnCount(getContext()),
+                        StaggeredGridLayoutManager.VERTICAL
+                )
         );
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 98),

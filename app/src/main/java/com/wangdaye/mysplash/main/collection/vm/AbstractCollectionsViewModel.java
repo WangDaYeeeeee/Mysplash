@@ -3,9 +3,9 @@ package com.wangdaye.mysplash.main.collection.vm;
 import com.wangdaye.mysplash.common.basic.model.ListResource;
 import com.wangdaye.mysplash.common.basic.vm.PagerViewModel;
 import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
-import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.main.collection.CollectionsViewRepository;
 
 import androidx.annotation.NonNull;

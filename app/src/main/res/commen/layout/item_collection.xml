@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/item_collection_cover">
 
-            <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+            <com.wangdaye.mysplash.common.ui.widget.CircularImageView
                 android:id="@+id/item_collection_avatar"
                 android:layout_width="@dimen/mini_icon_size"
                 android:layout_height="@dimen/mini_icon_size"

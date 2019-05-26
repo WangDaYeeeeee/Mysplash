@@ -20,7 +20,6 @@ import android.view.WindowManager;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import java.text.ParseException;
@@ -197,27 +196,6 @@ public class DisplayUtils {
     public static boolean isTabletDevice(Context context) {
         return (context.getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    public static int getGirdColumnCount(Context context) {
-        if (isLandscape(context)) {
-            if (SettingsOptionManager.getInstance(context).isShowGridInLand()) {
-                if (isTabletDevice(context)) {
-                    return 3;
-                } else {
-                    return 2;
-                }
-            } else {
-                return 1;
-            }
-        } else  {
-            if (SettingsOptionManager.getInstance(context).isShowGridInPort()
-                    && isTabletDevice(context)) {
-                return 2;
-            } else {
-                return 1;
-            }
-        }
     }
 
     public static boolean isLandscape(Context context) {

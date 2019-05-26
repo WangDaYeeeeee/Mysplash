@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/item_photo_3_story_content">
 
-        <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+        <com.wangdaye.mysplash.common.ui.widget.CircularImageView
             android:id="@+id/item_photo_3_story_avatar"
             android:layout_width="@dimen/little_icon_size"
             android:layout_height="@dimen/little_icon_size"

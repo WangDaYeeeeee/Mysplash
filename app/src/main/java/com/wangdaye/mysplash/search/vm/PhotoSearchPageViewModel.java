@@ -1,30 +1,53 @@
 package com.wangdaye.mysplash.search.vm;
 
+import com.wangdaye.mysplash.common.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.event.DownloadEvent;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.utils.bus.PhotoEvent;
-import com.wangdaye.mysplash.common.utils.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.event.PhotoEvent;
+import com.wangdaye.mysplash.common.presenter.event.DownloadEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.mysplash.search.repository.PhotoSearchPageViewRepository;
 
 import javax.inject.Inject;
 
+import io.reactivex.disposables.Disposable;
+
 public class PhotoSearchPageViewModel extends AbstractSearchPageViewModel<Photo, PhotoEvent> {
 
     private PhotoSearchPageViewRepository repository;
-    private PhotoEventResponsePresenter presenter;
+    private PhotoEventResponsePresenter photoEventResponsePresenter;
+    private DownloadEventResponsePresenter downloadEventResponsePresenter;
+
+    private Disposable downloadEventDisposable;
 
     @Inject
     public PhotoSearchPageViewModel(PhotoSearchPageViewRepository repository,
-                                    PhotoEventResponsePresenter presenter) {
+                                    PhotoEventResponsePresenter photoEventResponsePresenter,
+                                    DownloadEventResponsePresenter downloadEventResponsePresenter) {
         super(PhotoEvent.class);
+
         this.repository = repository;
-        this.presenter = presenter;
+        this.photoEventResponsePresenter = photoEventResponsePresenter;
+        this.downloadEventResponsePresenter = downloadEventResponsePresenter;
+
+        this.downloadEventDisposable = MessageBus.getInstance()
+                .toObservable(DownloadEvent.class)
+                .subscribe(event -> this.downloadEventResponsePresenter.updatePhoto(
+                        getListResource(),
+                        event,
+                        false
+                ));
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
+
         repository.cancel();
-        presenter.clearResponse();
+        photoEventResponsePresenter.clearResponse();
+        downloadEventResponsePresenter.clearResponse();
+
+        downloadEventDisposable.dispose();
     }
 
     @Override
@@ -41,6 +64,6 @@ public class PhotoSearchPageViewModel extends AbstractSearchPageViewModel<Photo,
 
     @Override
     public void accept(PhotoEvent photoEvent) {
-        presenter.updatePhoto(getListResource(), photoEvent.photo, false);
+        photoEventResponsePresenter.updatePhoto(getListResource(), photoEvent.photo, false);
     }
 }

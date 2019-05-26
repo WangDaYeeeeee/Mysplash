@@ -3,7 +3,7 @@ package com.wangdaye.mysplash.user.vm;
 import com.wangdaye.mysplash.common.basic.model.Resource;
 import com.wangdaye.mysplash.common.basic.vm.BrowsableViewModel;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.bus.MessageBus;
+import com.wangdaye.mysplash.common.bus.MessageBus;
 import com.wangdaye.mysplash.user.repository.UserActivityRepository;
 
 import javax.inject.Inject;

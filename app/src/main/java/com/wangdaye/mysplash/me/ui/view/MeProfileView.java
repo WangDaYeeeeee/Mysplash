@@ -6,13 +6,13 @@ import android.content.Context;
 import androidx.annotation.IntDef;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
@@ -49,15 +49,15 @@ public class MeProfileView extends FrameLayout {
     @BindView(R.id.container_user_profile_tagList) RecyclerView tagList;
     @BindView(R.id.container_user_profile_bio) TextView bioTxt;
 
-    @BindView(R.id.container_user_profile_locationContainer) RelativeLayout locationContainer;
-    @OnClick(R.id.container_user_profile_locationContainer) void clickLocation() {
+    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
+    @OnClick(R.id.container_user_profile_locationTxt) void clickLocation() {
         if (!TextUtils.isEmpty(locationTxt.getText())) {
             IntentHelper.startSearchActivity(
                     Mysplash.getInstance().getTopActivity(),
                     locationTxt.getText().toString());
         }
     }
-    @BindView(R.id.container_user_profile_locationTxt) TextView locationTxt;
+
     @BindView(R.id.container_user_profile_followBtn) RippleButton rippleButton;
 
     private List<Tag> tags;
@@ -132,7 +132,7 @@ public class MeProfileView extends FrameLayout {
         }
 
         if (TextUtils.isEmpty(u.location)) {
-            locationContainer.setVisibility(GONE);
+            locationTxt.setVisibility(GONE);
         } else {
             locationTxt.setText(u.location);
         }

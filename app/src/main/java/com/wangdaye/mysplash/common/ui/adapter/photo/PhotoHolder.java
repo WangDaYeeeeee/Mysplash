@@ -4,13 +4,14 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
+import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.Photo;
-import com.wangdaye.mysplash.common.ui.widget.CircleImageView;
+import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
 import com.wangdaye.mysplash.user.ui.UserActivity;
@@ -19,20 +20,22 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-class PhotoHolder extends RecyclerView.ViewHolder {
+class PhotoHolder extends MultiColumnAdapter.ViewHolder {
 
     @BindView(R.id.item_photo) CardView card;
     @BindView(R.id.item_photo_image) CoverImageView image;
 
-    @BindView(R.id.item_photo_avatar) CircleImageView avatar;
+    @BindView(R.id.item_photo_avatar) CircularImageView avatar;
     @BindView(R.id.item_photo_title) TextView title;
 
     @BindView(R.id.item_photo_deleteButton) AppCompatImageButton deleteButton;
 
+    @BindView(R.id.item_photo_downloadButton) CircularProgressIcon downloadButton;
     @BindView(R.id.item_photo_collectionButton) AppCompatImageButton collectionButton;
     @BindView(R.id.item_photo_likeButton) CircularProgressIcon likeButton;
 
@@ -44,22 +47,25 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    void onBindView(Photo photo, boolean showDeleteButton, int columnCount, boolean update,
-                    @Nullable PhotoAdapter.ItemEventCallback callback) {
+    @Override
+    protected void onBindView(View container, int columnCount,
+                              int gridMarginPixel, int singleColumnMarginPixel) {
+        setLayoutParamsForGridItemMargin(container, columnCount, gridMarginPixel, singleColumnMarginPixel);
+    }
+
+    void onBindView(Photo photo, boolean showDeleteButton,
+                    int columnCount, int gridMarginPixel, int singleColumnMarginPixel,
+                    boolean update, @Nullable PhotoAdapter.ItemEventCallback callback) {
+        onBindView(card, columnCount, gridMarginPixel, singleColumnMarginPixel);
+
         Context context = itemView.getContext();
 
         this.photo = photo;
         this.callback = callback;
 
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
         if (columnCount > 1) {
-            int margin = context.getResources().getDimensionPixelSize(R.dimen.normal_margin);
-            params.setMargins(0, 0, margin, margin);
-            card.setLayoutParams(params);
             card.setRadius(context.getResources().getDimensionPixelSize(R.dimen.material_card_radius));
         } else {
-            params.setMargins(0, 0, 0, 0);
-            card.setLayoutParams(params);
             card.setRadius(0);
         }
 
@@ -88,6 +94,13 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             deleteButton.setVisibility(View.GONE);
         }
 
+        downloadButton.setProgressColor(Color.WHITE);
+        if (DownloadHelper.getInstance(context).readDownloadingEntityCount(context, photo.id) > 0) {
+            downloadButton.setProgressState();
+        } else {
+            downloadButton.setResultState(R.drawable.ic_download_white);
+        }
+
         if (photo.current_user_collections != null && photo.current_user_collections.size() != 0) {
             collectionButton.setImageResource(R.drawable.ic_item_collected);
         } else {
@@ -100,7 +113,9 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         } else {
             likeButton.setResultState(
                     photo.liked_by_user
-                            ? R.drawable.ic_item_heart_red : R.drawable.ic_item_heart_outline);
+                            ? R.drawable.ic_heart_red
+                            : R.drawable.ic_heart_outline_white
+            );
         }
 
         card.setCardBackgroundColor(
@@ -114,43 +129,44 @@ class PhotoHolder extends RecyclerView.ViewHolder {
 
     void onRecycled() {
         ImageHelper.releaseImageView(image);
-        likeButton.recycleImageView();
     }
 
     // interface.
 
     @OnClick(R.id.item_photo) void clickItem() {
-        if (callback != null) {
+        if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
             callback.onStartPhotoActivity(image, card, getAdapterPosition());
         }
     }
 
     @OnClick(R.id.item_photo_deleteButton) void deletePhoto() {
-        if (callback != null) {
+        if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
             callback.onDeleteButtonClicked(photo, getAdapterPosition());
         }
     }
 
     @OnClick(R.id.item_photo_avatar) void checkAuthor() {
-        if (callback != null) {
+        if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
             callback.onStartUserActivity(avatar, card, photo.user, UserActivity.PAGE_PHOTO);
         }
     }
 
     @OnClick(R.id.item_photo_likeButton) void likePhoto() {
-        if (likeButton.isUsable() && callback != null) {
+        if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
             callback.onLikeButtonClicked(photo, getAdapterPosition(), !photo.liked_by_user);
         }
     }
 
     @OnClick(R.id.item_photo_collectionButton) void collectPhoto() {
-        if (callback != null) {
+        if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
             callback.onCollectButtonClicked(photo, getAdapterPosition());
         }
     }
 
     @OnClick(R.id.item_photo_downloadButton) void downloadPhoto() {
-        if (callback != null) {
+        if (downloadButton.isUsable()
+                && callback != null
+                && getAdapterPosition() != RecyclerView.NO_POSITION) {
             callback.onDownloadButtonClicked(photo, getAdapterPosition());
         }
     }

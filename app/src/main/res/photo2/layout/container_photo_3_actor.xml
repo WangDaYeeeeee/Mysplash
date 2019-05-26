@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
-        <com.wangdaye.mysplash.common.ui.widget.CircleImageView
+        <com.wangdaye.mysplash.common.ui.widget.CircularImageView
             android:id="@+id/container_photo_3_actor_avatar"
             android:layout_width="@dimen/little_icon_size"
             android:layout_height="@dimen/little_icon_size"
@@ -77,6 +77,7 @@
     </LinearLayout>
 
     <com.wangdaye.mysplash.common.ui.widget.coordinatorView.NavigationBarView
+        android:id="@+id/container_photo_3_actor_navigationBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp" />

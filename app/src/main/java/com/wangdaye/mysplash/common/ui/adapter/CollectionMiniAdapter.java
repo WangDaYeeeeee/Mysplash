@@ -133,9 +133,10 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
         Context context = itemView.getContext();
 
         itemView.findViewById(R.id.item_collection_mini_card).setOnClickListener(v -> {
-            if (callback == null) {
+            if (callback == null || getAdapterPosition() == RecyclerView.NO_POSITION) {
                 return;
             }
+
             if (header) {
                 callback.onCreateCollection();
             } else if (stateIcon.isUsable()) {
@@ -208,7 +209,7 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
                  photo.current_user_collections != null && i < photo.current_user_collections.size();
                  i ++) {
                 if (collection.id == photo.current_user_collections.get(i).id) {
-                    stateIcon.setResultState(R.drawable.ic_item_state_succeed);
+                    stateIcon.setResultState(R.drawable.ic_state_succeed);
                     return;
                 }
             }

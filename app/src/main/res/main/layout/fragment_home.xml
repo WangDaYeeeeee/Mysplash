@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout
+        <com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout
             android:id="@+id/fragment_home_appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
 
             </LinearLayout>
 
-        </com.wangdaye.mysplash.common.ui.widget.singleOrientationScrollView.NestedScrollAppBarLayout>
+        </com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout>
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/fragment_home_viewPager"

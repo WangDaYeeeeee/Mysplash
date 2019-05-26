@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.collection.vm;
 
-import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.mysplash.common.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.main.collection.CollectionsViewRepository;
 
 import javax.inject.Inject;

@@ -37,6 +37,9 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         @OnClick(R.id.item_wallpaper_source) void clickItem() {
+            if (getAdapterPosition() == RecyclerView.NO_POSITION) {
+                return;
+            }
             IntentHelper.startCollectionActivity(
                      activity,
                     String.valueOf(itemList.get(getAdapterPosition()).collectionId)
@@ -44,6 +47,10 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
         }
 
         @OnClick(R.id.item_wallpaper_source_deleteBtn) void deleteItem() {
+            if (getAdapterPosition() == RecyclerView.NO_POSITION) {
+                return;
+            }
+
             itemList.remove(getAdapterPosition());
             notifyItemRemoved(getAdapterPosition());
 

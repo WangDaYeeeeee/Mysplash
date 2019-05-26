@@ -61,11 +61,11 @@ public class DatabaseHelper {
         return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase());
     }
 
-    public List<DownloadMissionEntity> readDownloadEntityList(int result) {
+    public List<DownloadMissionEntity> readDownloadEntityList(@DownloadMissionEntity.DownloadResultRule int result) {
         return DownloadMissionEntity.readDownloadEntityList(openHelper.getReadableDatabase(), result);
     }
 
-    public int readDownloadEntityCount(int result) {
+    public int readDownloadEntityCount(@DownloadMissionEntity.DownloadResultRule int result) {
         return DownloadMissionEntity.readDownloadEntityCount(openHelper.getReadableDatabase(), result);
     }
 

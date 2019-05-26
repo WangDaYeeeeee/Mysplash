@@ -1,8 +1,8 @@
 package com.wangdaye.mysplash.search.vm;
 
 import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.utils.bus.CollectionEvent;
-import com.wangdaye.mysplash.common.utils.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.mysplash.common.bus.event.CollectionEvent;
+import com.wangdaye.mysplash.common.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.mysplash.search.repository.CollectionSearchPageViewRepository;
 
 import javax.inject.Inject;

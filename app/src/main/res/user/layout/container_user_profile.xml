@@ -11,9 +11,9 @@
         android:layout_height="@dimen/circular_progress_height"
         android:layout_centerInParent="true"
         android:layout_margin="24dp"
-        app:cpv_animAutostart="true"
         app:cpv_color="?attr/line_color"
-        app:cpv_indeterminate="true" />
+        app:cpv_indeterminate="true"
+        app:cpv_animAutostart="true" />
 
     <LinearLayout
         android:id="@+id/container_user_profile_profileContainer"
@@ -44,43 +44,27 @@
             style="@style/body_text"
             tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
 
-        <RelativeLayout
-            android:id="@+id/container_user_profile_locationContainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/normal_icon_size"
-            android:layout_marginEnd="@dimen/normal_icon_size">
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/container_user_profile_locationIcon"
-                android:src="@drawable/ic_location"
-                android:tint="?attr/content_color"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/normal_margin"
-                android:layout_marginBottom="@dimen/normal_margin"
-                android:layout_marginStart="@dimen/normal_margin"
-                tools:ignore="ContentDescription,RtlHardcoded" />
-
-            <TextView
-                android:id="@+id/container_user_profile_locationTxt"
-                android:textColor="?attr/content_color"
-                android:textStyle="bold"
-                android:layout_toEndOf="@id/container_user_profile_locationIcon"
-                android:layout_centerVertical="true"
-                android:layout_marginEnd="@dimen/normal_margin"
-                android:layout_marginStart="@dimen/mini_margin"
-                android:maxLines="2"
-                style="@style/subtitle_text"
-                tools:text="Bermuda// Durham"
-                tools:ignore="RtlHardcoded" />
-
-        </RelativeLayout>
+        <com.github.aakira.compoundicontextview.CompoundIconTextView
+            android:id="@+id/container_user_profile_locationTxt"
+            android:textColor="?attr/content_color"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/normal_margin"
+            android:gravity="center_vertical"
+            android:paddingEnd="2dp"
+            android:maxLines="2"
+            android:drawablePadding="@dimen/mini_margin"
+            style="@style/subtitle_text"
+            app:cit_drawableStart="@drawable/ic_location"
+            app:cit_iconColor="?attr/content_color"
+            app:cit_iconWidth="@dimen/mini_icon_size"
+            app:cit_iconHeight="@dimen/mini_icon_size"
+            tools:text="Bermuda// Durham"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
 
         <com.wangdaye.mysplash.common.ui.widget.rippleButton.RippleButton
             android:id="@+id/container_user_profile_followBtn"
-            android:layout_width="128dp"
-            android:layout_height="@dimen/little_icon_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/normal_margin"
             android:layout_marginBottom="@dimen/little_margin"
             android:foreground="?attr/selectableItemBackground"
