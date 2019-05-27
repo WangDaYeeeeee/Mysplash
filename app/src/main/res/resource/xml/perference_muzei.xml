@@ -8,8 +8,13 @@
         android:entryValues="@array/muzei_source_values"
         android:defaultValue="collection" />
 
+    <SwitchPreference
+        android:title="@string/muzei_settings_title_screen_size_image"
+        android:key="@string/key_muzei_screen_size_image"
+        android:defaultValue="false" />
+
     <ListPreference
-        android:title="@string/muzei_settings_cache_mode"
+        android:title="@string/muzei_settings_title_cache_mode"
         android:key="@string/key_muzei_cache_mode"
         android:entries="@array/muzei_cache_modes"
         android:entryValues="@array/muzei_cache_mode_values"

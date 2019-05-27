@@ -10,7 +10,6 @@ import com.google.android.apps.muzei.api.UserCommand;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
-import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 import com.wangdaye.mysplash.photo3.ui.PhotoActivity3;
 
 import java.util.ArrayList;

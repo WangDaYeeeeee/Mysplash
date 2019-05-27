@@ -12,7 +12,7 @@ import com.wangdaye.mysplash.common.db.WallpaperSource;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
+import com.wangdaye.mysplash.common.muzei.MuzeiOptionManager;
 
 /**
  * Collection menu popup window.

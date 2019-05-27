@@ -208,7 +208,7 @@ public class Photo
                 + "?q=75&fm=jpg"
                 + "&w=" + size[0]
                 + "&h=" + size[1]
-                + "&fit=max";
+                + "&fit=crop";
     }
 
     // parcel.

@@ -3,12 +3,15 @@ package com.wangdaye.mysplash.common.muzei;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Size;
 
 import com.wangdaye.mysplash.common.db.WallpaperSource;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
-import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +64,15 @@ public class MuzeiUpdateHelper {
             callback.onUpdateFailed();
             return false;
         }
+    }
+
+    @Size(2) /* width, height. */
+    public static int[] getScreenSize(Context context) {
+        DisplayMetrics metrics = new DisplayMetrics();
+        WindowManager manager = (WindowManager) context.getApplicationContext()
+                .getSystemService(Context.WINDOW_SERVICE);
+        manager.getDefaultDisplay().getRealMetrics(metrics);
+        return new int[] {metrics.widthPixels, metrics.heightPixels};
     }
 
     public static boolean isWifi(Context context) {

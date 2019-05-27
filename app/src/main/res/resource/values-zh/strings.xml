@@ -277,7 +277,9 @@
     <string name="settings_title_grid_list_in_land">横屏时以网格显示图片</string>
 
     <string name="muzei_settings_title_source">壁纸源</string>
-    <string name="muzei_settings_cache_mode">缓存模式</string>
+    <string name="muzei_settings_title_screen_size_image">下载屏幕尺寸的照片</string>
+    <string name="muzei_settings_title_screen_size_image_summary_off">原始尺寸</string>
+    <string name="muzei_settings_title_cache_mode">缓存模式</string>
     <string name="muzei_settings_title_collection_source">收藏集壁纸源</string>
 
 </resources>

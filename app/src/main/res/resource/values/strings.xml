@@ -330,7 +330,9 @@
     <string name="settings_title_grid_list_in_land">Show Image Grid In Horizontal Orientation</string>
 
     <string name="muzei_settings_title_source">Source</string>
-    <string name="muzei_settings_cache_mode">Cache Mode</string>
+    <string name="muzei_settings_title_screen_size_image">Screen Size Image</string>
+    <string name="muzei_settings_title_screen_size_image_summary_off">Original Size</string>
+    <string name="muzei_settings_title_cache_mode">Cache Mode</string>
     <string name="muzei_settings_title_collection_source">Collection Source</string>
 
     <!-- share preferences. -->
@@ -351,6 +353,7 @@
     <string name="key_grid_list_in_land">grid_list_in_land</string>
 
     <string name="key_muzei_source">muzei_source</string>
+    <string name="key_muzei_screen_size_image">muzei_screen_size_image</string>
     <string name="key_muzei_cache_mode">muzei_cache_mode</string>
     <string name="key_muzei_collection_source">muzei_collection_source</string>
 

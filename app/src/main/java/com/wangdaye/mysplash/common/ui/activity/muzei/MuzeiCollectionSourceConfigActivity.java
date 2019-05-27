@@ -15,7 +15,7 @@ import com.wangdaye.mysplash.common.ui.dialog.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
-import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
+import com.wangdaye.mysplash.common.muzei.MuzeiOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import java.util.ArrayList;

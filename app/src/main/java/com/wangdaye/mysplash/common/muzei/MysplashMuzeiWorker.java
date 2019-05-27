@@ -9,7 +9,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.di.component.DaggerNetworkServiceComponent;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.service.PhotoService;
-import com.wangdaye.mysplash.common.utils.manager.MuzeiOptionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +34,14 @@ public class MysplashMuzeiWorker extends Worker
     }
 
     static void enqueue() {
-        WorkManager.getInstance()
-                .enqueue(new OneTimeWorkRequest.Builder(MysplashMuzeiWorker.class)
-                        .setConstraints(new Constraints.Builder()
-                                .setRequiredNetworkType(NetworkType.CONNECTED)
-                                .build())
-                        .build());
+        WorkManager.getInstance().enqueue(
+                new OneTimeWorkRequest.Builder(MysplashMuzeiWorker.class)
+                        .setConstraints(
+                                new Constraints.Builder()
+                                        .setRequiredNetworkType(NetworkType.CONNECTED)
+                                        .build()
+                        ).build()
+        );
     }
 
     @NonNull
@@ -55,13 +56,20 @@ public class MysplashMuzeiWorker extends Worker
 
     @Override
     public void onUpdateSucceed(@NonNull List<Photo> photoList) {
+        boolean screenSizeImage = MuzeiOptionManager.getInstance(getApplicationContext())
+                .isScreenSizeImage();
+        Context context = getApplicationContext();
+
         List<Artwork> artworkList = new ArrayList<>(photoList.size());
         for (Photo p : photoList) {
             artworkList.add(new Artwork.Builder()
                     .title(getApplicationContext().getString(R.string.by) + " " + p.user.name)
                     .byline(getApplicationContext().getString(R.string.on) + " " + p.created_at.split("T")[0])
-                    .persistentUri(Uri.parse(p.getDownloadUrl()))
-                    .token(p.id)
+                    .persistentUri(Uri.parse(
+                            screenSizeImage
+                                    ? p.getRegularSizeUrl(MuzeiUpdateHelper.getScreenSize(context))
+                                    : p.getDownloadUrl()
+                    )).token(p.id)
                     .webUri(Uri.parse(p.links.html))
                     .build());
         }
