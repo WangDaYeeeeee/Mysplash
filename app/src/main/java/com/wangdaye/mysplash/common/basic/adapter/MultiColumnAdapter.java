@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.basic.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -37,18 +37,18 @@ public abstract class MultiColumnAdapter<VH extends RecyclerView.ViewHolder> ext
         }
     }
 
-    public MultiColumnAdapter(Context context) {
-        this(context, 1);
+    public MultiColumnAdapter(Activity activity) {
+        this(activity, 1);
     }
 
-    protected MultiColumnAdapter(Context context, int columnCount) {
-        this(context, columnCount, context.getResources().getDimensionPixelSize(R.dimen.normal_margin),
+    protected MultiColumnAdapter(Activity activity, int columnCount) {
+        this(activity, columnCount, activity.getResources().getDimensionPixelSize(R.dimen.normal_margin),
                 0);
     }
 
-    protected MultiColumnAdapter(Context context, int columnCount,
+    protected MultiColumnAdapter(Activity activity, int columnCount,
                                  int gridMarginPixel, int singleColumnMarginPixel) {
-        super(context);
+        super(activity);
         this.columnCount = columnCount;
         this.gridMarginPixel = gridMarginPixel;
         this.singleColumnMarginPixel = singleColumnMarginPixel;

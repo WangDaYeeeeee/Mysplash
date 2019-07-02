@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
+import android.app.Activity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -193,9 +193,8 @@ public class PhotoInfoAdapter3 extends FooterAdapter<RecyclerView.ViewHolder> {
     }
 
     @Override
-    protected boolean hasFooter(Context context) {
-        return !DisplayUtils.isLandscape(context)
-                && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0
+    protected boolean hasFooter(Activity activity) {
+        return super.hasFooter(activity)
                 && photo != null
                 && (!photo.complete
                 || photo.related_collections == null

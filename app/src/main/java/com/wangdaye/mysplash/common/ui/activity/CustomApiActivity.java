@@ -9,7 +9,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.mysplash.common.utils.manager.CustomApiManager;
@@ -88,7 +88,8 @@ public class CustomApiActivity extends MysplashActivity
             finishSelf(true);
         } else {
             backPressed = true;
-            NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
+            NotificationHelper.showSnackbar(
+                    this, getString(R.string.feedback_click_again_to_exit));
 
             Observable.create(Emitter::onComplete)
                     .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))

@@ -1,7 +1,10 @@
 package com.wangdaye.mysplash.common.basic.activity;
 
 import android.os.Bundle;
+import android.view.ViewGroup;
+
 import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,6 +16,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.fragment.MysplashDialogFragment;
 import com.wangdaye.mysplash.common.basic.MysplashPopupWindow;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.ApplyWindowInsetsLayout;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.LanguageUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -33,6 +37,7 @@ public abstract class MysplashActivity extends AppCompatActivity
         implements HasSupportFragmentInjector {
 
     @Inject DispatchingAndroidInjector<Fragment> fragmentInjector;
+    @Nullable private ApplyWindowInsetsLayout applyWindowInsetsLayout;
 
     private boolean foreground;
 
@@ -51,15 +56,12 @@ public abstract class MysplashActivity extends AppCompatActivity
             Mysplash.getInstance().addActivityToFirstPosition(this);
         }
 
-        setTheme();
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
-        if (!operateStatusBarBySelf()) {
-            DisplayUtils.setStatusBarStyle(this, false);
-        }
-        if (hasTranslucentNavigationBar()) {
-            DisplayUtils.setNavigationBarStyle(this, false, hasTranslucentNavigationBar());
-        }
+    }
+
+    public boolean hasTranslucentNavigationBar() {
+        return false;
     }
 
     @CallSuper
@@ -71,6 +73,34 @@ public abstract class MysplashActivity extends AppCompatActivity
                     .setLightTheme(this, !ThemeManager.getInstance(this).isLightTheme());
             Mysplash.getInstance().dispatchRecreate();
         }
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        bindApplyWindowInsetsLayout();
+    }
+
+    protected void bindApplyWindowInsetsLayout() {
+        applyWindowInsetsLayout = new ApplyWindowInsetsLayout(this);
+        applyWindowInsetsLayout.setOnApplyWindowInsetsListener(() -> {
+            DisplayUtils.setStatusBarStyle(this, false);
+            DisplayUtils.setNavigationBarStyle(
+                    this, false, hasTranslucentNavigationBar());
+        });
+
+        ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
+        ViewGroup contentView = (ViewGroup) decorView.getChildAt(0);
+
+        decorView.removeView(contentView);
+        applyWindowInsetsLayout.addView(contentView);
+
+        decorView.addView(applyWindowInsetsLayout, 0);
+    }
+
+    @Nullable
+    protected ApplyWindowInsetsLayout getApplyWindowInsetsLayout() {
+        return applyWindowInsetsLayout;
     }
 
     @CallSuper
@@ -92,22 +122,6 @@ public abstract class MysplashActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         Mysplash.getInstance().removeActivity(this);
-    }
-
-    protected void setTheme() {
-        // do nothing.
-    }
-
-    /**
-     * If return true, child class will be responsible for the operation of the status bar.
-     * Otherwise, MysplashActivity class will deal with it.
-     * */
-    protected boolean operateStatusBarBySelf() {
-        return false;
-    }
-
-    public boolean hasTranslucentNavigationBar() {
-        return false;
     }
 
     @Override

@@ -218,7 +218,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
                 String downloader = ValueUtils.getDownloaderName(getActivity(), (String) o);
                 preference.setSummary(getString(R.string.now) + " : " + downloader);
             } else {
-                NotificationHelper.showSnackbar(getString(R.string.feedback_task_in_process));
+                NotificationHelper.showSnackbar(
+                        (MysplashActivity) getActivity(), getString(R.string.feedback_task_in_process));
                 return false;
             }
         } else if (preference.getKey().equals(getString(R.string.key_download_scale))) {

@@ -5,6 +5,7 @@ import com.wangdaye.mysplash.common.ui.dialog.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DeleteCollectionPhotoDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
+import com.wangdaye.mysplash.common.ui.dialog.MuzeiQueryDialog;
 import com.wangdaye.mysplash.common.ui.dialog.PathDialog;
 import com.wangdaye.mysplash.common.ui.dialog.ProfileDialog;
 import com.wangdaye.mysplash.common.ui.dialog.RequestBrowsableDataDialog;
@@ -79,4 +80,7 @@ public abstract class FragmentModule {
 
     @ContributesAndroidInjector(modules = NetworkServiceModule.class)
     abstract RetryDialog contributeRetryDialogInjector();
+
+    @ContributesAndroidInjector(modules = NetworkServiceModule.class)
+    abstract MuzeiQueryDialog contributeMuzeiQueryDialogInjector();
 }

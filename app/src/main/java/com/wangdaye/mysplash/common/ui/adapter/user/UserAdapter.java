@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.ui.adapter.user;
 
-import android.content.Context;
+import android.app.Activity;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.FooterAdapter;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -30,8 +29,8 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     private List<User> itemList;
     @Nullable private ItemEventCallback callback;
 
-    public UserAdapter(Context context, List<User> list) {
-        super(context);
+    public UserAdapter(Activity activity, List<User> list) {
+        super(activity);
         this.itemList = list;
     }
 
@@ -74,12 +73,6 @@ public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return isFooter(position) ? -1 : 1;
-    }
-
-    @Override
-    protected boolean hasFooter(Context context) {
-        return !DisplayUtils.isLandscape(context)
-                && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
     public interface ItemEventCallback {

@@ -76,7 +76,7 @@
 
     </LinearLayout>
 
-    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.NavigationBarView
+    <com.wangdaye.mysplash.common.ui.widget.windowInsets.NavigationBarView
         android:id="@+id/container_photo_3_actor_navigationBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

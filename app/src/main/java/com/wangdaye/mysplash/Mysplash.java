@@ -16,6 +16,7 @@ import okhttp3.OkHttpClient;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import android.graphics.Rect;
 import android.text.TextUtils;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -56,6 +57,7 @@ public class Mysplash extends Application
     @Inject RxJava2CallAdapterFactory rxJava2CallAdapterFactory;
 
     private List<MysplashActivity> activityList;
+    private Rect windowInsets;
 
     public static final String UNSPLASH_API_BASE_URL = "https://api.unsplash.com/";
     public static final String STREAM_API_BASE_URL = "https://api.getstream.io/";
@@ -94,6 +96,7 @@ public class Mysplash extends Application
         DaggerApplicationComponent.create().inject(this);
 
         activityList = new ArrayList<>();
+        windowInsets = new Rect(0, 0, 0, 0);
 
         DownloadHelper.getInstance(this);
         CrashReport.initCrashReport(getApplicationContext(), "c8ad99bd5d", false);
@@ -240,6 +243,17 @@ public class Mysplash extends Application
         for (int i = activityList.size() - 1; i >= 0; i --) {
             activityList.get(i).recreate();
         }
+    }
+
+    public void setWindowInsets(int left, int top, int right, int bottom) {
+        if (left != windowInsets.left || top != windowInsets.top
+                || right != windowInsets.right || bottom != windowInsets.bottom) {
+            windowInsets.set(left, top, right, bottom);
+        }
+    }
+
+    public Rect getWindowInsets() {
+        return windowInsets;
     }
 
     // interface.

@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.common.basic.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 
 import org.jetbrains.annotations.NotNull;
@@ -25,9 +26,9 @@ public abstract class MysplashFragment extends Fragment {
 
     // style.
 
-    public abstract void initStatusBarStyle();
+    public abstract void initStatusBarStyle(Activity activity, boolean newInstance);
 
-    public abstract void initNavigationBarStyle();
+    public abstract void initNavigationBarStyle(Activity activity, boolean newInstance);
 
     /**
      * This method can tell you if we need set dark status bar style.

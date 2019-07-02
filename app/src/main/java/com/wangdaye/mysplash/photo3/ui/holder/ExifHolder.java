@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.photo3.ui.adapter.PhotoInfoAdapter3;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
@@ -35,6 +36,7 @@ public class ExifHolder extends PhotoInfoAdapter3.ViewHolder {
     @BindView(R.id.item_photo_3_exif_content) TextView content;
     @BindView(R.id.item_photo_3_exif_color) FrameLayout color;
 
+    private MysplashActivity a;
     private int position;
     public static final int TYPE_EXIF = 50;
 
@@ -45,7 +47,7 @@ public class ExifHolder extends PhotoInfoAdapter3.ViewHolder {
 
     @Override
     protected void onBindView(PhotoActivity3 a, Photo photo) {
-        // do nothing.
+        this.a = a;
     }
 
     @Override
@@ -114,7 +116,7 @@ public class ExifHolder extends PhotoInfoAdapter3.ViewHolder {
     }
 
     private void showExifDescription(String title, String content) {
-        NotificationHelper.showSnackbar(title + " : " + content);
+        NotificationHelper.showSnackbar(a, title + " : " + content);
     }
 
     // interface.

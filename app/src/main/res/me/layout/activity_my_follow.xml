@@ -19,7 +19,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
             android:id="@+id/activity_my_follow_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

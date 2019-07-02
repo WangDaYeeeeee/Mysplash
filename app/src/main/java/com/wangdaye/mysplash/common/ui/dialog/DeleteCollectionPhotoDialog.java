@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -141,7 +142,12 @@ public class DeleteCollectionPhotoDialog extends MysplashDialogFragment {
     }
 
     private void notifyFailed() {
-        NotificationHelper.showSnackbar(getString(R.string.feedback_delete_photo_failed));
+        if (getActivity() != null) {
+            NotificationHelper.showSnackbar(
+                    (MysplashActivity) getActivity(),
+                    getString(R.string.feedback_delete_photo_failed)
+            );
+        }
     }
 
     // interface.

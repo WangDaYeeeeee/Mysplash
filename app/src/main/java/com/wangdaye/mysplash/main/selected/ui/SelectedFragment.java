@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.selected.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,10 +19,11 @@ import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.basic.model.PagerManageView;
 import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.selected.SelectedViewModel;
 
 import java.util.Objects;
@@ -76,21 +78,19 @@ public class SelectedFragment extends MysplashFragment
     }
 
     @Override
-    public void initStatusBarStyle() {
-        if (getActivity() != null) {
-            DisplayUtils.setStatusBarStyle(getActivity(), needSetDarkStatusBar());
-        }
+    public void initStatusBarStyle(Activity activity, boolean newInstance) {
+        DisplayUtils.setStatusBarStyle(
+                activity, !newInstance && needSetDarkStatusBar());
     }
 
     @Override
-    public void initNavigationBarStyle() {
-        if (getActivity() != null) {
-            DisplayUtils.setNavigationBarStyle(
-                    getActivity(), 
-                    selectedView.getState() == PagerView.State.NORMAL,
-                    true
-            );
-        }
+    public void initNavigationBarStyle(Activity activity, boolean newInstance) {
+        DisplayUtils.setNavigationBarStyle(
+                activity,
+                !newInstance
+                        && selectedView != null && selectedView.getState() == PagerView.State.NORMAL,
+                ((MainActivity) activity).hasTranslucentNavigationBar()
+        );
     }
 
     @Override
@@ -105,7 +105,7 @@ public class SelectedFragment extends MysplashFragment
 
     @Override
     public void backToTop() {
-        statusBar.animToInitAlpha();
+        statusBar.switchToInitAlpha();
         if (getActivity() != null) {
             DisplayUtils.setStatusBarStyle(getActivity(), false);
         }
@@ -193,12 +193,12 @@ public class SelectedFragment extends MysplashFragment
         if (getActivity() != null) {
             if (needSetDarkStatusBar()) {
                 if (statusBar.isInitState()) {
-                    statusBar.animToDarkerAlpha();
+                    statusBar.switchToDarkerAlpha();
                     DisplayUtils.setStatusBarStyle(getActivity(), true);
                 }
             } else {
                 if (!statusBar.isInitState()) {
-                    statusBar.animToInitAlpha();
+                    statusBar.switchToInitAlpha();
                     DisplayUtils.setStatusBarStyle(getActivity(), false);
                 }
             }

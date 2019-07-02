@@ -8,7 +8,7 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.fragment.MuzeiSettingsFragment;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import androidx.fragment.app.FragmentTransaction;

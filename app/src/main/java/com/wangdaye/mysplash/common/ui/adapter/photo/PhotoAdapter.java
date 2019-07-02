@@ -1,10 +1,10 @@
 package com.wangdaye.mysplash.common.ui.adapter.photo;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import java.util.List;
 
@@ -27,13 +26,12 @@ import java.util.List;
 public class PhotoAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder> {
 
     private List<Photo> itemList;
-
     private boolean showDeleteButton;
 
     @Nullable private ItemEventCallback callback;
 
-    public PhotoAdapter(Context context, List<Photo> list) {
-        super(context);
+    public PhotoAdapter(Activity activity, List<Photo> list) {
+        super(activity);
         this.itemList = list;
         this.showDeleteButton = false;
     }
@@ -92,12 +90,6 @@ public class PhotoAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder> {
     @Override
     public int getItemViewType(int position) {
         return isFooter(position) ? -1 : 1;
-    }
-
-    @Override
-    protected boolean hasFooter(Context context) {
-        return !DisplayUtils.isLandscape(context)
-                && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
     public void setShowDeleteButton(boolean showDeleteButton) {

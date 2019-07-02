@@ -130,7 +130,7 @@ public class IntroduceActivity extends MysplashActivity
             finishSelf(true);
         } else {
             backPressed = true;
-            NotificationHelper.showSnackbar(getString(R.string.feedback_click_again_to_exit));
+            NotificationHelper.showSnackbar(this, getString(R.string.feedback_click_again_to_exit));
 
             Observable.create(Emitter::onComplete)
                     .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
@@ -187,6 +187,10 @@ public class IntroduceActivity extends MysplashActivity
     private void initWidget() {
         AppCompatImageButton backBtn = findViewById(R.id.activity_introduce_backBtn);
         backBtn.setOnClickListener(v -> finishSelf(true));
+
+        if (introduceModelList.size() <= 1) {
+            findViewById(R.id.activity_introduce_buttonBar).setVisibility(View.GONE);
+        }
 
         setBottomButtonStyle(0);
 

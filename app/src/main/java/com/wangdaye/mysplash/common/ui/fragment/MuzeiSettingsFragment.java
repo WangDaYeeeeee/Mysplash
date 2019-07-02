@@ -12,6 +12,7 @@ import androidx.preference.SwitchPreference;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.muzei.MuzeiUpdateHelper;
+import com.wangdaye.mysplash.common.ui.dialog.MuzeiQueryDialog;
 import com.wangdaye.mysplash.common.utils.ValueUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.muzei.MuzeiOptionManager;
@@ -25,6 +26,7 @@ public class MuzeiSettingsFragment extends PreferenceFragmentCompat
         addPreferencesFromResource(R.xml.perference_muzei);
         if (getActivity() != null) {
             SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            MuzeiOptionManager manager = MuzeiOptionManager.getInstance(getActivity());
 
             ListPreference source = findPreference(getString(R.string.key_muzei_source));
             String sourceValue = sharedPreferences.getString(getString(R.string.key_muzei_source), "collection");
@@ -45,7 +47,10 @@ public class MuzeiSettingsFragment extends PreferenceFragmentCompat
             cacheMode.setOnPreferenceChangeListener(this);
 
             Preference collectionSource = findPreference(getString(R.string.key_muzei_collection_source));
-            collectionSource.setEnabled(MuzeiOptionManager.getInstance(getActivity()).getSource().equals("collection"));
+            collectionSource.setEnabled(manager.getSource().equals("collection"));
+
+            Preference query = findPreference(getString(R.string.key_muzei_query));
+            query.setSummary(manager.getQuery());
         }
     }
 
@@ -58,6 +63,14 @@ public class MuzeiSettingsFragment extends PreferenceFragmentCompat
     public boolean onPreferenceTreeClick(Preference preference) {
         if (preference.getKey().equals(getString(R.string.key_muzei_collection_source))) {
             IntentHelper.startMuzeiCollectionSourceConfigActivity((MysplashActivity) getActivity());
+        } else if (preference.getKey().equals(getString(R.string.key_muzei_query))) {
+            MuzeiQueryDialog dialog = new MuzeiQueryDialog();
+            dialog.setOnQueryChangedListener(query -> {
+                MuzeiOptionManager.updateQuery(getActivity(), query);
+                Preference q = findPreference(getString(R.string.key_muzei_query));
+                q.setSummary(MuzeiOptionManager.getInstance(getActivity()).getQuery());
+            });
+            dialog.show(getFragmentManager(), null);
         }
         return true;
     }
@@ -68,20 +81,22 @@ public class MuzeiSettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object o) {
+        MuzeiOptionManager manager = MuzeiOptionManager.getInstance(getActivity());
+
         if (preference.getKey().equals(getString(R.string.key_muzei_source))) {
             // muzei source.
-            MuzeiOptionManager.getInstance(getActivity()).setSource((String) o);
+            manager.setSource((String) o);
             String sourceName = ValueUtils.getMuzeiSourceName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + sourceName);
 
             Preference collectionSource = findPreference(getString(R.string.key_muzei_collection_source));
-            collectionSource.setEnabled(MuzeiOptionManager.getInstance(getActivity()).getSource().equals("collection"));
+            collectionSource.setEnabled(manager.getSource().equals("collection"));
         } else if (preference.getKey().equals(getString(R.string.key_muzei_screen_size_image))) {
             // screen size image.
-            MuzeiOptionManager.getInstance(getActivity()).setScreenSizeImage((Boolean) o);
+            manager.setScreenSizeImage((Boolean) o);
         } else if (preference.getKey().equals(getString(R.string.key_muzei_cache_mode))) {
             // cache mode.
-            MuzeiOptionManager.getInstance(getActivity()).setCacheMode((String) o);
+            manager.setCacheMode((String) o);
             String cacheModeName = ValueUtils.getMuzeiCacheModeName(getActivity(), (String) o);
             preference.setSummary(getString(R.string.now) + " : " + cacheModeName);
         }

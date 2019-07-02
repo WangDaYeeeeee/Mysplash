@@ -9,7 +9,7 @@
     android:foreground="?attr/selectableItemBackground"
     tools:ignore="UnusedAttribute">
 
-    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+    <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
         android:id="@+id/container_nav_header_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -74,6 +74,6 @@
         android:layout_alignBottom="@id/container_nav_header_subtitle"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:tint="?attr/content_color"
-        tools:ignore="ContentDescription,RtlHardcoded" />
+        tools:ignore="ContentDescription,RtlHardcoded,VectorDrawableCompat" />
 
 </RelativeLayout>

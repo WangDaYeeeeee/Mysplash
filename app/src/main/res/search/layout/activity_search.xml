@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:sbv_fill_in_mode="true" />
@@ -102,7 +102,7 @@
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
-    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+    <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
         android:id="@+id/activity_search_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -10,6 +10,7 @@ import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.AppCompatImageButton;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
@@ -201,6 +202,18 @@ public class PhotoButtonBar extends RelativeLayout {
     @DrawableRes @XmlRes
     private int getDownloadIcon() {
         return R.drawable.ic_download_white;
+    }
+
+    public View getLikeButton() {
+        return likeButton;
+    }
+
+    public View getCollectButton() {
+        return collectButton;
+    }
+
+    public View getDownloadButton() {
+        return downloadButton;
     }
 
     // interface.

@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.6.9</string>
+    <string name="version_code">3.7.0</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -224,9 +224,11 @@
 
     <string name="feedback_task_in_process">Cannot switch downloader when downloading.</string>
 
+    <string name="feedback_separated_by_comma">Separated by \",\" (like \"space, ocean\").</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">Scroll To Top</string>
-    <string name="introduce_description_back_top">Click top bar or back button, the photo list view will scroll back to the top.</string>
+    <string name="introduce_description_back_top">Click top bar or back button, the photo list parent will scroll back to the top.</string>
 
     <string name="muzei_description">Featured Photos from Unsplash</string>
 
@@ -334,6 +336,7 @@
     <string name="muzei_settings_title_screen_size_image_summary_off">Original Size</string>
     <string name="muzei_settings_title_cache_mode">Cache Mode</string>
     <string name="muzei_settings_title_collection_source">Collection Source</string>
+    <string name="muzei_settings_title_query">Query</string>
 
     <!-- share preferences. -->
     <string name="key_back_to_top">back_to_top</string>
@@ -356,6 +359,7 @@
     <string name="key_muzei_screen_size_image">muzei_screen_size_image</string>
     <string name="key_muzei_cache_mode">muzei_cache_mode</string>
     <string name="key_muzei_collection_source">muzei_collection_source</string>
+    <string name="key_muzei_query">muzei_query</string>
 
     <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
 

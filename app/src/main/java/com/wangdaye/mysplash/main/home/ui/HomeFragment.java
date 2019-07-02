@@ -1,5 +1,6 @@
 package com.wangdaye.mysplash.main.home.ui;
 
+import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,7 +42,7 @@ import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.mysplash.main.MainActivity;
 import com.wangdaye.mysplash.main.home.vm.FeaturedHomePhotosViewModel;
@@ -104,21 +105,20 @@ public class HomeFragment extends LoadableFragment<Photo>
     }
 
     @Override
-    public void initStatusBarStyle() {
-        if (getActivity() != null) {
-            DisplayUtils.setStatusBarStyle(getActivity(), needSetDarkStatusBar());
-        }
+    public void initStatusBarStyle(Activity activity, boolean newInstance) {
+        DisplayUtils.setStatusBarStyle(
+                activity, !newInstance && needSetDarkStatusBar());
     }
 
     @Override
-    public void initNavigationBarStyle() {
-        if (getActivity() != null) {
-            DisplayUtils.setNavigationBarStyle(
-                    getActivity(),
-                    pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
-                    true
-            );
-        }
+    public void initNavigationBarStyle(Activity activity, boolean newInstance) {
+        DisplayUtils.setNavigationBarStyle(
+                activity,
+                !newInstance
+                        && pagers[getCurrentPagerPosition()] != null
+                        && pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
+                ((MainActivity) activity).hasTranslucentNavigationBar()
+        );
     }
 
     @Override
@@ -133,7 +133,7 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void backToTop() {
-        statusBar.animToInitAlpha();
+        statusBar.switchToInitAlpha();
         if (getActivity() != null) {
             DisplayUtils.setStatusBarStyle(getActivity(), false);
         }
@@ -286,7 +286,7 @@ public class HomeFragment extends LoadableFragment<Photo>
                 DisplayUtils.setNavigationBarStyle(
                         getActivity(),
                         pagers[position].getState() == PagerView.State.NORMAL,
-                        true
+                        ((MainActivity) getActivity()).hasTranslucentNavigationBar()
                 );
             }
             ListResource resource = pagerModels[position].getListResource().getValue();
@@ -438,12 +438,12 @@ public class HomeFragment extends LoadableFragment<Photo>
         if (getActivity() != null) {
             if (needSetDarkStatusBar()) {
                 if (statusBar.isInitState()) {
-                    statusBar.animToDarkerAlpha();
+                    statusBar.switchToDarkerAlpha();
                     DisplayUtils.setStatusBarStyle(getActivity(), true);
                 }
             } else {
                 if (!statusBar.isInitState()) {
-                    statusBar.animToInitAlpha();
+                    statusBar.switchToInitAlpha();
                     DisplayUtils.setStatusBarStyle(getActivity(), false);
                 }
             }

@@ -54,7 +54,7 @@ import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.bus.MessageBus;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.network.json.Collection;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.presenter.BrowsableDialogMangePresenter;
 import com.wangdaye.mysplash.common.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.mysplash.common.presenter.pager.PagerLoadablePresenter;
@@ -136,13 +136,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    protected void setTheme() {
-        if (DisplayUtils.isLandscape(this)) {
-            DisplayUtils.cancelTranslucentNavigation(this);
-        }
-    }
-
-    @Override
     public boolean hasTranslucentNavigationBar() {
         return true;
     }
@@ -159,7 +152,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
     @Override
     public void backToTop() {
-        statusBar.animToInitAlpha();
+        statusBar.switchToInitAlpha();
         DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, photosView);
         photosView.scrollToPageTop();
@@ -355,7 +348,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
         }
         if (DownloadHelper.getInstance(this)
                 .readDownloadingEntityCount(this, String.valueOf(getCollection().id)) > 0) {
-            NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
+            NotificationHelper.showSnackbar(this, getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isCollectionExists(this, String.valueOf(getCollection().id))) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();
             dialog.setDownloadKey(getCollection());
@@ -479,13 +472,13 @@ public class CollectionActivity extends LoadableActivity<Photo>
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
             // the app bar layout can be seen.
             if (!statusBar.isInitState()) {
-                statusBar.animToInitAlpha();
+                statusBar.switchToInitAlpha();
                 DisplayUtils.setStatusBarStyle(this, false);
             }
         } else {
             // the app bar layout has been hidden.
             if (statusBar.isInitState()) {
-                statusBar.animToDarkerAlpha();
+                statusBar.switchToDarkerAlpha();
                 DisplayUtils.setStatusBarStyle(this, true);
             }
         }

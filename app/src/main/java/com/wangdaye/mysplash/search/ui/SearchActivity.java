@@ -40,7 +40,7 @@ import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.mysplash.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -131,13 +131,6 @@ public class SearchActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    protected void setTheme() {
-        if (DisplayUtils.isLandscape(this)) {
-            DisplayUtils.cancelTranslucentNavigation(this);
-        }
-    }
-
-    @Override
     public boolean hasTranslucentNavigationBar() {
         return true;
     }
@@ -154,7 +147,7 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
-        statusBar.animToInitAlpha();
+        statusBar.switchToInitAlpha();
         DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagers[getCurrentPagerPosition()].scrollToPageTop();
@@ -350,7 +343,8 @@ public class SearchActivity extends LoadableActivity<Photo>
             DisplayUtils.setNavigationBarStyle(
                     this,
                     pagers[position].getState() == PagerView.State.NORMAL,
-                    true);
+                    hasTranslucentNavigationBar()
+            );
             ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
             if (resource != null
                     && resource.dataList.size() == 0
@@ -525,12 +519,12 @@ public class SearchActivity extends LoadableActivity<Photo>
         }
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
             if (!statusBar.isInitState()) {
-                statusBar.animToInitAlpha();
+                statusBar.switchToInitAlpha();
                 DisplayUtils.setStatusBarStyle(this, false);
             }
         } else {
             if (statusBar.isInitState()) {
-                statusBar.animToDarkerAlpha();
+                statusBar.switchToDarkerAlpha();
                 DisplayUtils.setStatusBarStyle(this, true);
             }
         }

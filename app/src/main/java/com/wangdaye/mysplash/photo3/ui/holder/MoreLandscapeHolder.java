@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -53,12 +54,8 @@ public class MoreLandscapeHolder extends PhotoInfoAdapter3.ViewHolder {
         recyclerView.setAdapter(new MoreHorizontalAdapter3(collectionList));
 
         int margin = a.getResources().getDimensionPixelSize(R.dimen.normal_margin);
-        if (DisplayUtils.isLandscape(a)) {
-            container.setPadding(0, 0, 0, margin);
-        } else {
-            container.setPadding(0, 0, 0,
-                    margin + DisplayUtils.getNavigationBarHeight(a.getResources()));
-        }
+        container.setPadding(0, 0, 0,
+                margin + Mysplash.getInstance().getWindowInsets().bottom);
     }
 
     @Override

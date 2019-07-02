@@ -109,6 +109,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+
         setContentView(R.layout.activity_set_wallpaper);
         ButterKnife.bind(this);
         requestReadWritePermission(null, downloadable -> {
@@ -117,23 +123,10 @@ public class SetWallpaperActivity extends ReadWriteActivity
         });
     }
 
-    @Override
-    protected void setTheme() {
-        getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
-    }
-
     @SuppressLint("MissingSuperCall")
     @Override
     protected void onSaveInstanceState(@NotNull Bundle outState) {
         // do nothing.
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return true;
     }
 
     @Override

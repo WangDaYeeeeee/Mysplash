@@ -28,6 +28,7 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
     @OnClick(R.id.item_photo_3_info_viewsContainer)
     void clickViews() {
         NotificationHelper.showSnackbar(
+                a,
                 a.getString(R.string.feedback_views) + " : " + views.getText()
         );
     }
@@ -35,6 +36,7 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
     @OnClick(R.id.item_photo_3_info_downloadsContainer)
     void clickDownloads() {
         NotificationHelper.showSnackbar(
+                a,
                 a.getString(R.string.feedback_downloads) + " : " + downloads.getText()
         );
     }
@@ -42,6 +44,7 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
     @OnClick(R.id.item_photo_3_info_likesContainer)
     void clickLikes() {
         NotificationHelper.showSnackbar(
+                a,
                 a.getString(R.string.feedback_likes) + " : " + likes.getText()
         );
     }

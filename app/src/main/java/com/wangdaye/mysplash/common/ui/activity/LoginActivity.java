@@ -20,9 +20,10 @@ import com.wangdaye.mysplash.common.network.service.AuthorizeService;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.image.ImageHelper;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
@@ -76,6 +77,8 @@ public class LoginActivity extends MysplashActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
+        DisplayUtils.setNavigationBarStyle(this, false, false);
+
         initData();
         initWidget();
     }
@@ -102,11 +105,6 @@ public class LoginActivity extends MysplashActivity
     }
 
     @Override
-    protected boolean operateStatusBarBySelf() {
-        return false;
-    }
-
-    @Override
     public void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         if (intent != null
@@ -127,7 +125,10 @@ public class LoginActivity extends MysplashActivity
 
                         @Override
                         public void onFailed() {
-                            NotificationHelper.showSnackbar(getString(R.string.feedback_request_token_failed));
+                            NotificationHelper.showSnackbar(
+                                    LoginActivity.this,
+                                    getString(R.string.feedback_request_token_failed)
+                            );
                             setState(NORMAL_STATE);
                         }
                     }

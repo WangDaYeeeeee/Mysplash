@@ -1,10 +1,10 @@
 package com.wangdaye.mysplash.common.ui.adapter.collection;
 
-import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.network.json.Collection;
 
 import org.jetbrains.annotations.NotNull;
@@ -32,8 +31,8 @@ public class CollectionAdapter extends MultiColumnAdapter<RecyclerView.ViewHolde
 
     @Nullable private ItemEventCallback callback;
 
-    public CollectionAdapter(Context context, List<Collection> list) {
-        super(context);
+    public CollectionAdapter(Activity activity, List<Collection> list) {
+        super(activity);
         this.itemList = list;
     }
 
@@ -82,12 +81,6 @@ public class CollectionAdapter extends MultiColumnAdapter<RecyclerView.ViewHolde
         } else {
             return 1;
         }
-    }
-
-    @Override
-    protected boolean hasFooter(Context context) {
-        return !DisplayUtils.isLandscape(context)
-                && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
     public List<Collection> getItemList() {

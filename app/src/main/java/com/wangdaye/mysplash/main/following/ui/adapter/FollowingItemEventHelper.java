@@ -102,7 +102,7 @@ public abstract class FollowingItemEventHelper implements FollowingAdapter.ItemE
     public void onDownloadButtonClicked(Photo photo, int adapterPosition) {
         if (DownloadHelper.getInstance(activity)
                 .readDownloadingEntityCount(activity, photo.id) > 0) {
-            NotificationHelper.showSnackbar(activity.getString(R.string.feedback_download_repeat));
+            NotificationHelper.showSnackbar(activity, activity.getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isPhotoExists(activity, photo.id)) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();
             dialog.setDownloadKey(photo);

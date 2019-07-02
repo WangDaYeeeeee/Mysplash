@@ -15,14 +15,16 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
+import com.wangdaye.mysplash.common.ui.widget.longPressDrag.LongPressDragCardView;
 import com.wangdaye.mysplash.main.following.ui.adapter.FollowingAdapter;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +38,7 @@ import butterknife.OnClick;
  * */
 public class PhotoFeedHolder extends FollowingHolder {
 
-    @BindView(R.id.item_following_photo_card) CardView card;
+    @BindView(R.id.item_following_photo_card) LongPressDragCardView card;
     @BindView(R.id.item_following_photo_image) CoverImageView image;
 
     @BindView(R.id.item_following_photo_avatar) CircularImageView avatar;
@@ -120,6 +122,10 @@ public class PhotoFeedHolder extends FollowingHolder {
         this.photo = (Photo) data.data;
         this.photoPosition = data.photoPosition;
 
+
+        card.setLongPressDragChildList(
+                Arrays.asList(avatar, downloadButton, collectionButton, likeButton)
+        );
         image.setSize(photo.width, photo.height);
 
         if (!update) {

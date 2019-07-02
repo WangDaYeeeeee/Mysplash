@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.main.following.ui.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.network.json.User;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.main.following.ui.adapter.holder.FollowingHolder;
 
 import java.util.ArrayList;
@@ -51,9 +50,9 @@ public class FollowingAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder
         }
     }
 
-    public FollowingAdapter(Context context, List<Photo> list,
+    public FollowingAdapter(Activity activity, List<Photo> list,
                             List<FollowingHolder.Factory> factoryList) {
-        super(context);
+        super(activity);
         this.photoList = list;
         this.itemList = new ArrayList<>();
         this.photoItemList = new ArrayList<>();
@@ -61,7 +60,7 @@ public class FollowingAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder
 
         this.factoryList = factoryList;
 
-        this.hasFooter = hasFooter(context);
+        this.hasFooter = hasFooter(activity);
     }
 
     @NonNull
@@ -129,12 +128,6 @@ public class FollowingAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder
         }
 
         throw new RuntimeException("Invalid type of ViewHolder.");
-    }
-
-    @Override
-    protected boolean hasFooter(Context context) {
-        return !DisplayUtils.isLandscape(context)
-                && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
     @Override

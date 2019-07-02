@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
             android:id="@+id/activity_notification_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
@@ -48,7 +48,7 @@
 
             </com.wangdaye.mysplash.common.ui.widget.NestedScrollAppBarLayout>
 
-            <com.wangdaye.mysplash.main._old.view.NotificationsView
+            <com.wangdaye.mysplash.main._old.parent.NotificationsView
                 android:id="@+id/activity_notification_notificationsView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

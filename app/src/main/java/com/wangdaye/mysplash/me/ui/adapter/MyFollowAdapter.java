@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.me.ui.adapter;
 
-import android.content.Context;
+import android.app.Activity;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,8 +28,8 @@ public class MyFollowAdapter extends FooterAdapter<MyFollowHolder> {
     private List<User> itemList;
     @Nullable private ItemEventCallback callback;
 
-    public MyFollowAdapter(Context context, List<User> list) {
-        super(context);
+    public MyFollowAdapter(Activity activity, List<User> list) {
+        super(activity);
         this.itemList = list;
     }
 
@@ -52,7 +52,7 @@ public class MyFollowAdapter extends FooterAdapter<MyFollowHolder> {
     }
 
     @Override
-    protected boolean hasFooter(Context context) {
+    protected boolean hasFooter(Activity activity) {
         return false;
     }
 

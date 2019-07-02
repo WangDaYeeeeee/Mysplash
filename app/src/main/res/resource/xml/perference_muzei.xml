@@ -24,4 +24,8 @@
         android:title="@string/muzei_settings_title_collection_source"
         android:key="@string/key_muzei_collection_source" />
 
+    <Preference
+        android:title="@string/muzei_settings_title_query"
+        android:key="@string/key_muzei_query" />
+
 </PreferenceScreen>

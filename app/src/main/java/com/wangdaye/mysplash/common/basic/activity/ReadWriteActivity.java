@@ -49,7 +49,7 @@ public abstract class ReadWriteActivity extends MysplashActivity {
     }
 
     protected void requestReadWritePermissionFailed() {
-        NotificationHelper.showSnackbar(getString(R.string.feedback_need_permission));
+        NotificationHelper.showSnackbar(this, getString(R.string.feedback_need_permission));
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

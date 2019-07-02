@@ -4,11 +4,12 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
+import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 
 /**
@@ -25,8 +26,8 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
 
     public static final int PAYLOAD_UPDATE_ITEM = 1;
 
-    public FooterAdapter(Context context) {
-        hasFooter = hasFooter(context);
+    public FooterAdapter(Activity activity) {
+        hasFooter = hasFooter(activity);
     }
 
     /**
@@ -55,7 +56,9 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
         }
     }
 
-    protected abstract boolean hasFooter(Context context);
+    protected boolean hasFooter(Activity activity) {
+        return Mysplash.getInstance().getWindowInsets().bottom != 0;
+    }
 
     protected boolean isFooter(int position) {
         return hasFooter && position == getItemCount() - 1;

@@ -52,7 +52,7 @@ import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.manager.SettingsOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.presenter.pager.PagerViewManagePresenter;
@@ -98,9 +98,11 @@ public class UserActivity extends LoadableActivity<Photo>
     @OnClick(R.id.activity_user_title) void clickTitle() {
         if (AuthManager.getInstance().isAuthorized()) {
             User user = getIntent().getParcelableExtra(KEY_USER_ACTIVITY_USER);
-            ProfileDialog dialog = new ProfileDialog();
-            dialog.setUsername(user.username);
-            dialog.show(getSupportFragmentManager(), null);
+            if (user != null) {
+                ProfileDialog dialog = new ProfileDialog();
+                dialog.setUsername(user.username);
+                dialog.show(getSupportFragmentManager(), null);
+            }
         }
     }
     @BindView(R.id.activity_user_profileView) UserProfileView userProfileView;
@@ -157,13 +159,6 @@ public class UserActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    protected void setTheme() {
-        if (DisplayUtils.isLandscape(this)) {
-            DisplayUtils.cancelTranslucentNavigation(this);
-        }
-    }
-
-    @Override
     public boolean hasTranslucentNavigationBar() {
         return true;
     }
@@ -183,7 +178,7 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
-        statusBar.animToInitAlpha();
+        statusBar.switchToInitAlpha();
         DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagers[getCurrentPagerPosition()].scrollToPageTop();
@@ -447,7 +442,7 @@ public class UserActivity extends LoadableActivity<Photo>
             DisplayUtils.setNavigationBarStyle(
                     this,
                     pagers[position].getState() == PagerView.State.NORMAL,
-                    true
+                    hasTranslucentNavigationBar()
             );
 
             ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
@@ -651,12 +646,12 @@ public class UserActivity extends LoadableActivity<Photo>
     public void onNestedScrolling() {
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
             if (!statusBar.isInitState()) {
-                statusBar.animToInitAlpha();
+                statusBar.switchToInitAlpha();
                 DisplayUtils.setStatusBarStyle(this, false);
             }
         } else {
             if (statusBar.isInitState()) {
-                statusBar.animToDarkerAlpha();
+                statusBar.switchToDarkerAlpha();
                 DisplayUtils.setStatusBarStyle(this, true);
             }
         }

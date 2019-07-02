@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+        <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
             android:id="@+id/activity_custom_api_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

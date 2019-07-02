@@ -1,6 +1,6 @@
 package com.wangdaye.mysplash.common.basic.fragment;
 
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
@@ -8,10 +8,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.DialogFragment;
 import dagger.android.support.AndroidSupportInjection;
 
-import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Mysplash dialog fragment.
@@ -23,9 +20,13 @@ import org.jetbrains.annotations.NotNull;
 public abstract class MysplashDialogFragment extends DialogFragment {
 
     @Override
-    public void onAttach(@NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         AndroidSupportInjection.inject(this);
         super.onAttach(context);
+        Activity activity = getActivity();
+        if (activity instanceof MysplashActivity) {
+            ((MysplashActivity) activity).getDialogList().add(this);
+        }
     }
 
     @Override
@@ -34,22 +35,12 @@ public abstract class MysplashDialogFragment extends DialogFragment {
         setRetainInstance(true);
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-        if (activity != null) {
-            activity.getDialogList().add(this);
-        }
-        return super.onCreateDialog(savedInstanceState);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-        if (activity != null) {
-            activity.getDialogList().remove(this);
+        Activity activity = getActivity();
+        if (activity instanceof MysplashActivity) {
+            ((MysplashActivity) activity).getDialogList().remove(this);
         }
     }
 

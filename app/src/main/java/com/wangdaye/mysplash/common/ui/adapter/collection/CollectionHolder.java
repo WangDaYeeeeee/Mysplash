@@ -12,16 +12,20 @@ import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
+import com.wangdaye.mysplash.common.ui.widget.longPressDrag.LongPressDragCardView;
+import com.wangdaye.mysplash.common.utils.DisplayUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
+
+import java.util.Collections;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 class CollectionHolder extends MultiColumnAdapter.ViewHolder {
 
-    @BindView(R.id.item_collection) CardView card;
+    @BindView(R.id.item_collection) LongPressDragCardView card;
     @BindView(R.id.item_collection_cover) CoverImageView image;
 
     @BindView(R.id.item_collection_title) TextView title;
@@ -29,9 +33,12 @@ class CollectionHolder extends MultiColumnAdapter.ViewHolder {
     @BindView(R.id.item_collection_avatar) CircularImageView avatar;
     @BindView(R.id.item_collection_name) TextView name;
 
+    private int cancelFlagMarginTop;
+
     CollectionHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
+        cancelFlagMarginTop = (int) new DisplayUtils(itemView.getContext()).dpToPx(98);
     }
 
     @Override
@@ -53,6 +60,8 @@ class CollectionHolder extends MultiColumnAdapter.ViewHolder {
         } else {
             card.setRadius(0);
         }
+        card.setLongPressDragChildList(Collections.singletonList(avatar));
+        card.setCancelFlagMarginTop(cancelFlagMarginTop);
         card.setOnClickListener(v -> {
             if (callback != null) {
                 callback.onCollectionClicked(avatar, card, collection);

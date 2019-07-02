@@ -267,18 +267,22 @@ public class NotificationHelper {
     public static void showSnackbar(String content) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
-            View container = a.provideSnackbarContainer();
-            if (container != null) {
-                Snackbar snackbar = Snackbar.make(container, content, Snackbar.LENGTH_SHORT);
+            showSnackbar(a, content);
+        }
+    }
 
-                Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-                snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
+    public static void showSnackbar(@NonNull MysplashActivity activity, String content) {
+        View container = activity.provideSnackbarContainer();
+        if (container != null) {
+            Snackbar snackbar = Snackbar.make(container, content, Snackbar.LENGTH_SHORT);
 
-                TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
-                contentTxt.setTextColor(ThemeManager.getContentColor(a));
+            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+            snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(activity));
 
-                snackbar.show();
-            }
+            TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
+            contentTxt.setTextColor(ThemeManager.getContentColor(activity));
+
+            snackbar.show();
         }
     }
 
@@ -286,23 +290,28 @@ public class NotificationHelper {
                                            View.OnClickListener l) {
         MysplashActivity a = Mysplash.getInstance().getTopActivity();
         if (a != null) {
-            View container = a.provideSnackbarContainer();
-            if (container != null) {
-                Snackbar snackbar = Snackbar
-                        .make(container, content, Snackbar.LENGTH_LONG)
-                        .setAction(action, l);
+            showActionSnackbar(a, content, action, l);
+        }
+    }
 
-                Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-                snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(a));
+    public static void showActionSnackbar(@NonNull MysplashActivity activity,
+                                          String content, String action, View.OnClickListener l) {
+        View container = activity.provideSnackbarContainer();
+        if (container != null) {
+            Snackbar snackbar = Snackbar
+                    .make(container, content, Snackbar.LENGTH_LONG)
+                    .setAction(action, l);
 
-                TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
-                contentTxt.setTextColor(ThemeManager.getContentColor(a));
+            Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+            snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(activity));
 
-                Button actionBtn = snackbarLayout.findViewById(R.id.snackbar_action);
-                actionBtn.setTextColor(ThemeManager.getTitleColor(a));
+            TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
+            contentTxt.setTextColor(ThemeManager.getContentColor(activity));
 
-                snackbar.show();
-            }
+            Button actionBtn = snackbarLayout.findViewById(R.id.snackbar_action);
+            actionBtn.setTextColor(ThemeManager.getTitleColor(activity));
+
+            snackbar.show();
         }
     }
 }

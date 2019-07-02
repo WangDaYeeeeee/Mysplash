@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main;
 
 import android.annotation.SuppressLint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -43,6 +44,7 @@ import com.wangdaye.mysplash.main.selected.ui.SelectedFragment;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -98,13 +100,6 @@ public class MainActivity extends LoadableActivity<Photo> {
     }
 
     @Override
-    protected void setTheme() {
-        if (DisplayUtils.isLandscape(this)) {
-            DisplayUtils.cancelTranslucentNavigation(this);
-        }
-    }
-
-    @Override
     public boolean hasTranslucentNavigationBar() {
         return true;
     }
@@ -116,8 +111,7 @@ public class MainActivity extends LoadableActivity<Photo> {
             drawer.closeDrawer(GravityCompat.START);
         } else {
             MysplashFragment f = getTopFragment();
-            if (f != null
-                    && f.needBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
+            if (f != null && f.needBackToTop() && BackToTopUtils.isSetBackToTop(true)) {
                 f.backToTop();
             } else if (f instanceof HomeFragment) {
                 finishSelf(true);
@@ -221,11 +215,7 @@ public class MainActivity extends LoadableActivity<Photo> {
             return true;
         });
 
-        if (DisplayUtils.getNavigationBarHeight(getResources()) > 0) {
-            nav.getMenu().getItem(9).setVisible(true);
-        } else {
-            nav.getMenu().getItem(9).setVisible(false);
-        }
+        nav.getMenu().getItem(9).setVisible(Mysplash.getInstance().getWindowInsets().bottom != 0);
         nav.getMenu().getItem(9).setEnabled(false);
 
         View header = nav.getHeaderView(0);
@@ -291,6 +281,16 @@ public class MainActivity extends LoadableActivity<Photo> {
                 ShortcutsManager.refreshShortcuts(Mysplash.getInstance());
             }
         });
+
+        // TODO: 2019/6/20 doesn't work.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            int[] size = DisplayUtils.getScreenSize(this);
+            List<Rect> rectList = Collections.singletonList(
+                    new Rect(0, 0, size[0] / 2, size[1])
+            );
+            drawer.post(() -> drawer.setSystemGestureExclusionRects(rectList));
+            nav.post(() -> nav.setSystemGestureExclusionRects(rectList));
+        }
     }
 
     // control.
@@ -371,7 +371,7 @@ public class MainActivity extends LoadableActivity<Photo> {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .replace(R.id.activity_main_fragment, f)
                 .commit();
-        initFragmentStatusBarAndNavigationBar(f);
+        initFragmentSystemBar(f, true);
     }
 
     private void showAndHideFragment(MysplashFragment newF, MysplashFragment oldF) {
@@ -381,7 +381,7 @@ public class MainActivity extends LoadableActivity<Photo> {
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .show(newF)
                 .commit();
-        initFragmentStatusBarAndNavigationBar(newF);
+        initFragmentSystemBar(newF, false);
     }
 
     private void showAndHideNewFragment(MysplashFragment newF, MysplashFragment oldF) {
@@ -392,18 +392,12 @@ public class MainActivity extends LoadableActivity<Photo> {
                 .add(R.id.activity_main_fragment, newF)
                 .show(newF)
                 .commit();
-        initFragmentStatusBarAndNavigationBar(newF);
+        initFragmentSystemBar(newF, true);
     }
 
-    private void initFragmentStatusBarAndNavigationBar(MysplashFragment f) {
-        Observable.create(Emitter::onComplete)
-                .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
-                .delay(300, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnComplete(() -> {
-                    f.initStatusBarStyle();
-                    f.initNavigationBarStyle();
-                }).subscribe();
+    private void initFragmentSystemBar(MysplashFragment f, boolean newInstance) {
+        f.initStatusBarStyle(this, newInstance);
+        f.initNavigationBarStyle(this, newInstance);
     }
 
     private MysplashFragment buildFragmentByCode(int code) {

@@ -1,6 +1,7 @@
 package com.wangdaye.mysplash.main.selected.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -17,7 +18,6 @@ import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.basic.adapter.MultiColumnAdapter;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 
@@ -37,8 +37,8 @@ public class SelectedAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder>
 
     private List<Collection> itemList;
 
-    public SelectedAdapter(Context context, List<Collection> list) {
-        super(context);
+    public SelectedAdapter(Activity activity, List<Collection> list) {
+        super(activity);
         this.itemList = list;
     }
 
@@ -82,12 +82,6 @@ public class SelectedAdapter extends MultiColumnAdapter<RecyclerView.ViewHolder>
     @Override
     public int getItemViewType(int position) {
         return isFooter(position) ? -1 : 1;
-    }
-
-    @Override
-    protected boolean hasFooter(Context context) {
-        return !DisplayUtils.isLandscape(context)
-                && DisplayUtils.getNavigationBarHeight(context.getResources()) != 0;
     }
 
     public List<Collection> getItemList() {

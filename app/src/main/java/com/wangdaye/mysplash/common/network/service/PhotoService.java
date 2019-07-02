@@ -44,6 +44,7 @@ public class PhotoService {
                 .client(
                         client.newBuilder()
                                 .addInterceptor(new AuthInterceptor())
+                                // .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                                 .build()
                 ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)
@@ -170,8 +171,8 @@ public class PhotoService {
 
     @WorkerThread
     @Nullable
-    public List<Photo> requestRandomPhotos(@Nullable List<Integer> collectionIdList,
-                                           Boolean featured, String username, String query, String orientation) {
+    public List<Photo> requestRandomPhotos(@Nullable List<Integer> collectionIdList, Boolean featured,
+                                           String username, String query, String orientation) {
         StringBuilder collections = new StringBuilder();
         if (collectionIdList != null && collectionIdList.size() > 0) {
             collections.append(collectionIdList.get(0));

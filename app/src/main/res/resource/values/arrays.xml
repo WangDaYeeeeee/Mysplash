@@ -85,7 +85,7 @@
 
     <!-- back to top. -->
     <string-array name="back_to_top_types">
-        <item>All of the list view</item>
+        <item>All of the list parent</item>
         <item>Only Home</item>
         <item>None</item>
     </string-array>

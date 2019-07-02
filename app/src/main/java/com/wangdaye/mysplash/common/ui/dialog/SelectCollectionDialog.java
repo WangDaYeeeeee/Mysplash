@@ -25,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.ChangeCollectionPhotoResult;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.json.Photo;
@@ -328,7 +329,12 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     }
 
     private void notifyCreateFailed() {
-        NotificationHelper.showSnackbar(getString(R.string.feedback_create_collection_failed));
+        if (getActivity() != null) {
+            NotificationHelper.showSnackbar(
+                    (MysplashActivity) getActivity(),
+                    getString(R.string.feedback_create_collection_failed)
+            );
+        }
     }
 
     // interface.

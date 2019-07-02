@@ -45,7 +45,7 @@
                     app:cml_to_alpha="0.75"
                     app:cml_mask_color="?attr/colorPrimary" />
 
-                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
                     android:id="@+id/activity_collection_appBarStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 tools:ignore="UselessParent">
 
-                <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+                <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
                     android:id="@+id/activity_collection_creatorBarStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -152,7 +152,7 @@
 
     </com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout>
 
-    <com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView
+    <com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView
         android:id="@+id/activity_collection_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

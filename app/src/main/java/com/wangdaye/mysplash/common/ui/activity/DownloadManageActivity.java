@@ -23,7 +23,7 @@ import com.wangdaye.mysplash.common.utils.helper.IntentHelper;
 import com.wangdaye.mysplash.common.download.DownloadHelper;
 import com.wangdaye.mysplash.common.db.DownloadMissionEntity;
 import com.wangdaye.mysplash.common.ui.adapter.DownloadAdapter;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
@@ -421,7 +421,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                 return;
             }
         }
-        NotificationHelper.showSnackbar(getString(R.string.feedback_file_does_not_exist));
+        NotificationHelper.showSnackbar(this, getString(R.string.feedback_file_does_not_exist));
     }
 
     // interface.
@@ -504,7 +504,7 @@ public class DownloadManageActivity extends ReadWriteActivity
         int limitCount = entity.result == DownloadMissionEntity.RESULT_DOWNLOADING ? 1 : 0;
         if (DownloadHelper.getInstance(this)
                 .readDownloadingEntityCount(this, entity.title) > limitCount) {
-            NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
+            NotificationHelper.showSnackbar(this, getString(R.string.feedback_download_repeat));
         } else if (FileUtils.isPhotoExists(this, entity.title)
                 || FileUtils.isCollectionExists(this, entity.title)) {
             DownloadRepeatDialog dialog = new DownloadRepeatDialog();

@@ -19,7 +19,6 @@ import android.view.WindowManager;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import java.text.ParseException;
@@ -57,54 +56,46 @@ public class DisplayUtils {
         return result;
     }
 
-    public static int getNavigationBarHeight(Resources r) {
-        if (!isNavigationBarShow()){
+    public static int getNavigationBarHeight(Context context) {
+        if (!isNavigationBarShow(context)){
             return 0;
         }
         int result = 0;
-        int resourceId = r.getIdentifier("navigation_bar_height", "dimen", "android");
+        int resourceId = context.getResources()
+                .getIdentifier("navigation_bar_height", "dimen", "android");
         if (resourceId > 0) {
-            result = r.getDimensionPixelSize(resourceId);
+            result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
     }
 
     @Size(2)
     public static int[] getScreenSize(Context context) {
-        if (DisplayUtils.isLandscape(context)) {
-            return new int[] {
-                    context.getResources().getDisplayMetrics().widthPixels,
-                    context.getResources().getDisplayMetrics().heightPixels
-            };
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Resources r = context.getResources();
+
+        if (manager == null) {
+            return new int[] {r.getDisplayMetrics().widthPixels, r.getDisplayMetrics().heightPixels};
         } else {
-            WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-            if (manager == null) {
-                return new int[] {
-                        context.getResources().getDisplayMetrics().widthPixels,
-                        context.getResources().getDisplayMetrics().heightPixels
-                                + DisplayUtils.getNavigationBarHeight(context.getResources())
-                };
-            } else {
-                Point size = new Point();
-                Display display = manager.getDefaultDisplay();
-                display.getRealSize(size);
-                return new int[] {size.x, size.y};
-            }
+            Point size = new Point();
+            Display display = manager.getDefaultDisplay();
+            display.getRealSize(size);
+            return new int[] {size.x, size.y};
         }
     }
 
-    private static boolean isNavigationBarShow(){
-        MysplashActivity activity = Mysplash.getInstance().getTopActivity();
-        if (activity != null) {
-            Display display = activity.getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            Point realSize = new Point();
-            display.getSize(size);
-            display.getRealSize(realSize);
-            return realSize.y != size.y;
-        } else {
+    private static boolean isNavigationBarShow(Context context){
+        WindowManager manager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        if (manager == null) {
             return false;
         }
+
+        Display display = manager.getDefaultDisplay();
+        Point size = new Point();
+        Point realSize = new Point();
+        display.getSize(size);
+        display.getRealSize(realSize);
+        return realSize.y != size.y;
     }
 
     public static void setWindowTop(Activity activity) {
@@ -140,44 +131,53 @@ public class DisplayUtils {
         activity.getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
+    @SuppressLint("InlinedApi")
     public static void setNavigationBarStyle(@NonNull Activity activity,
                                              boolean onlyDarkNavigationBar, boolean translucent) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !isLandscape(activity)) {
-            int flags = activity.getWindow().getDecorView().getSystemUiVisibility()
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        int flags = activity.getWindow().getDecorView().getSystemUiVisibility()
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
+        if (translucent) {
+            flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+        } else {
+            flags ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            int navigationBarColor;
             if (translucent) {
-                flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-            }
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-            if (!onlyDarkNavigationBar && ThemeManager.getInstance(activity).isLightTheme()) {
-                if (translucent) {
-                    activity.getWindow().setNavigationBarColor(
-                            Color.argb((int) (0.03 * 255), 0, 0, 0)
-                    );
+                if (Mysplash.getInstance().getWindowInsets().bottom == 0) {
+                    if (ThemeManager.getInstance(activity).isLightTheme()) {
+                        flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+                        navigationBarColor = Color.argb((int) (0.03 * 255), 0, 0, 0);
+                    } else {
+                        flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+                        navigationBarColor = Color.argb((int) (0.2 * 255), 0, 0, 0);
+                    }
                 } else {
-                    activity.getWindow().setNavigationBarColor(
-                            Color.rgb(241, 241, 241)
-                    );
+                    if (!onlyDarkNavigationBar && ThemeManager.getInstance(activity).isLightTheme()) {
+                        flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+                        navigationBarColor = Color.argb((int) (0.03 * 255), 0, 0, 0);
+                    } else {
+                        flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+                        navigationBarColor = Color.argb((int) (0.2 * 255), 0, 0, 0);
+                    }
+                }
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                if (ThemeManager.getInstance(activity).isLightTheme()) {
+                    flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+                    navigationBarColor = Color.rgb(241, 241, 241);
+                } else {
+                    flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+                    navigationBarColor = Color.rgb(26, 26, 26);
                 }
             } else {
-                flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-                if (translucent) {
-                    activity.getWindow().setNavigationBarColor(
-                            Color.argb((int) (0.2 * 255), 0, 0, 0)
-                    );
-                } else {
-                    activity.getWindow().setNavigationBarColor(
-                            Color.rgb(26, 26, 26)
-                    );
-                }
+                navigationBarColor = Color.BLACK;
             }
-            activity.getWindow().getDecorView().setSystemUiVisibility(flags);
+            activity.getWindow().setNavigationBarColor(navigationBarColor);
         }
-    }
 
-    public static void cancelTranslucentNavigation(Activity a) {
-        a.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        activity.getWindow().getDecorView().setSystemUiVisibility(flags);
     }
 
     public static void changeTheme(Context c) {

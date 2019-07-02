@@ -3,7 +3,6 @@ package com.wangdaye.mysplash.common.muzei;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 
 import androidx.preference.PreferenceManager;
 
@@ -11,7 +10,6 @@ import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.db.WallpaperSource;
 import com.wangdaye.mysplash.common.db.DatabaseHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +40,7 @@ public class MuzeiOptionManager {
     private String source;
     private String cacheMode;
     private List<WallpaperSource> collectionSourceList;
+    private String query;
 
     private static final int DEFAULT_INTERVAL = 1;
     private static final boolean DEFAULT_UPDATE_ONLY_IN_WIFI = true;
@@ -63,6 +62,9 @@ public class MuzeiOptionManager {
         setCollectionSourceList(
                 DatabaseHelper.getInstance(context).readWallpaperSourceList()
         );
+        setQuery(
+                sharedPreferences.getString(context.getString(R.string.key_muzei_query), "")
+        );
     }
 
     public static void updateCollectionSource(Context context, List<WallpaperSource> sourceList) {
@@ -70,13 +72,20 @@ public class MuzeiOptionManager {
         getInstance(context).setCollectionSourceList(sourceList);
     }
 
+    public static void updateQuery(Context context, String query) {
+        PreferenceManager.getDefaultSharedPreferences(context)
+                .edit()
+                .putString(context.getString(R.string.key_muzei_query), query)
+                .apply();
+        getInstance(context).setQuery(query);
+    }
+
     public static boolean isInstalledMuzei(Context c) {
         PackageInfo packageInfo;
         try {
             packageInfo = c.getPackageManager().getPackageInfo("net.nurik.roman.muzei", 0);
-        } catch (PackageManager.NameNotFoundException e) {
+        } catch (Exception e) {
             packageInfo = null;
-            e.printStackTrace();
         }
         return packageInfo != null;
     }
@@ -118,11 +127,14 @@ public class MuzeiOptionManager {
     }
 
     private void setCollectionSourceList(List<WallpaperSource> list) {
-        if (collectionSourceList == null) {
-            collectionSourceList = new ArrayList<>();
-        } else {
-            collectionSourceList.clear();
-        }
-        collectionSourceList.addAll(list);
+        collectionSourceList = list;
+    }
+
+    public String getQuery() {
+        return query;
+    }
+
+    private void setQuery(String q) {
+        query = q;
     }
 }

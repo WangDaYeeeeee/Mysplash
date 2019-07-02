@@ -46,22 +46,15 @@ public class PreviewActivity extends MysplashActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+
         setContentView(R.layout.activity_preview);
         ButterKnife.bind(this);
         initData();
         initWidget();
-    }
-
-    @Override
-    protected void setTheme() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-        }
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
-        return true;
     }
 
     @Override

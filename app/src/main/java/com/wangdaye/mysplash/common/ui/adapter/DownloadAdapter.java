@@ -1,7 +1,7 @@
 package com.wangdaye.mysplash.common.ui.adapter;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Color;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -40,8 +40,8 @@ public class DownloadAdapter extends MultiColumnAdapter<DownloadHolder> {
 
     @Nullable private ItemEventCallback callback;
 
-    public DownloadAdapter(Context context, List<DownloadMission> itemList) {
-        super(context);
+    public DownloadAdapter(Activity activity, List<DownloadMission> itemList) {
+        super(activity);
         this.itemList = itemList;
     }
 
@@ -84,7 +84,7 @@ public class DownloadAdapter extends MultiColumnAdapter<DownloadHolder> {
     }
 
     @Override
-    protected boolean hasFooter(Context context) {
+    protected boolean hasFooter(Activity activity) {
         return false;
     }
 

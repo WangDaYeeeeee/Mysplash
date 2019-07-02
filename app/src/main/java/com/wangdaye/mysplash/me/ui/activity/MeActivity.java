@@ -49,7 +49,7 @@ import com.wangdaye.mysplash.common.image.ImageHelper;
 import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.AuthManager;
 import com.wangdaye.mysplash.common.ui.adapter.PagerAdapter;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
@@ -136,7 +136,6 @@ public class MeActivity extends LoadableActivity<Photo>
         if (savedInstanceState == null) {
             Mysplash.getInstance().finishSameActivity(getClass());
         }
-
         setContentView(R.layout.activity_me);
         ButterKnife.bind(this);
         initModel();
@@ -162,13 +161,6 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    protected void setTheme() {
-        if (DisplayUtils.isLandscape(this)) {
-            DisplayUtils.cancelTranslucentNavigation(this);
-        }
-    }
-
-    @Override
     public boolean hasTranslucentNavigationBar() {
         return true;
     }
@@ -185,7 +177,7 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
-        statusBar.animToInitAlpha();
+        statusBar.switchToInitAlpha();
         DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagers[getCurrentPagerPosition()].scrollToPageTop();
@@ -413,7 +405,7 @@ public class MeActivity extends LoadableActivity<Photo>
             DisplayUtils.setNavigationBarStyle(
                     this,
                     pagers[position].getState() == PagerView.State.NORMAL,
-                    true
+                    hasTranslucentNavigationBar()
             );
 
             ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
@@ -587,7 +579,7 @@ public class MeActivity extends LoadableActivity<Photo>
                                 likesPagerModel.setPhotosOrder(orderValue)
                         );
                     } else {
-                        NotificationHelper.showSnackbar(getString(R.string.feedback_no_filter));
+                        NotificationHelper.showSnackbar(this, getString(R.string.feedback_no_filter));
                     }
                 }
                 break;
@@ -618,7 +610,7 @@ public class MeActivity extends LoadableActivity<Photo>
                     if (!TextUtils.isEmpty(url)) {
                         IntentHelper.startWebActivity(this, url);
                     } else {
-                        NotificationHelper.showSnackbar(getString(R.string.feedback_portfolio_is_null));
+                        NotificationHelper.showSnackbar(this, getString(R.string.feedback_portfolio_is_null));
                     }
                 }
                 break;
@@ -670,12 +662,12 @@ public class MeActivity extends LoadableActivity<Photo>
     public void onNestedScrolling() {
         if (appBar.getY() > -appBar.getMeasuredHeight()) {
             if (!statusBar.isInitState()) {
-                statusBar.animToInitAlpha();
+                statusBar.switchToInitAlpha();
                 DisplayUtils.setStatusBarStyle(this, false);
             }
         } else {
             if (statusBar.isInitState()) {
-                statusBar.animToDarkerAlpha();
+                statusBar.switchToDarkerAlpha();
                 DisplayUtils.setStatusBarStyle(this, true);
             }
         }

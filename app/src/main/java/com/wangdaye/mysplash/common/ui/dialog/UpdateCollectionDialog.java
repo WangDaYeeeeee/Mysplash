@@ -20,6 +20,7 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.mysplash.R;
+import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.network.json.Collection;
 import com.wangdaye.mysplash.common.network.observer.BaseObserver;
 import com.wangdaye.mysplash.common.network.observer.NoBodyObserver;
@@ -172,11 +173,21 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
     }
 
     private void notifyUpdateFailed() {
-        NotificationHelper.showSnackbar(getString(R.string.feedback_update_collection_failed));
+        if (getActivity() != null) {
+            NotificationHelper.showSnackbar(
+                    (MysplashActivity) getActivity(),
+                    getString(R.string.feedback_update_collection_failed)
+            );
+        }
     }
 
     private void notifyDeleteFailed() {
-        NotificationHelper.showSnackbar(getString(R.string.feedback_delete_collection_failed));
+        if (getActivity() != null) {
+            NotificationHelper.showSnackbar(
+                    (MysplashActivity) getActivity(),
+                    getString(R.string.feedback_delete_collection_failed)
+            );
+        }
     }
 
     private void setState(@StateRule int newState) {
@@ -222,8 +233,10 @@ public class UpdateCollectionDialog extends MysplashDialogFragment {
     private void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) Objects.requireNonNull(getActivity())
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(nameTxt.getWindowToken(), 0);
-        manager.hideSoftInputFromWindow(descriptionTxt.getWindowToken(), 0);
+        if (manager != null) {
+            manager.hideSoftInputFromWindow(nameTxt.getWindowToken(), 0);
+            manager.hideSoftInputFromWindow(descriptionTxt.getWindowToken(), 0);
+        }
     }
 
     // interface.

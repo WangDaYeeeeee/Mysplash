@@ -2,6 +2,7 @@ package com.wangdaye.mysplash.photo3.ui;
 
 import android.annotation.SuppressLint;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -35,10 +36,11 @@ import com.wangdaye.mysplash.common.ui.dialog.DownloadTypeDialog;
 import com.wangdaye.mysplash.common.ui.dialog.SelectCollectionDialog;
 import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.VerticalNestedScrollView;
-import com.wangdaye.mysplash.common.ui.widget.HorizontalScrollableImageView;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
 import com.wangdaye.mysplash.common.ui.widget.SwipeSwitchLayout;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.longPressDrag.LongPressDragHorizontalScrollableImageView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.ApplyWindowInsetsLayout;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.mysplash.common.utils.AnimUtils;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.FileUtils;
@@ -58,9 +60,8 @@ import com.wangdaye.mysplash.photo3.ui.holder.MoreHolder;
 import com.wangdaye.mysplash.photo3.ui.holder.ProgressHolder;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -87,7 +88,7 @@ public class PhotoActivity3 extends ReadWriteActivity
     @BindView(R.id.activity_photo_3_swipeSwitchView) SwipeSwitchLayout swipeSwitchView;
     @BindView(R.id.activity_photo_3_switchBackground) AppCompatImageView switchBackground;
 
-    @BindView(R.id.activity_photo_3_regularImage) HorizontalScrollableImageView regularImage;
+    @BindView(R.id.activity_photo_3_regularImage) LongPressDragHorizontalScrollableImageView regularImage;
     @OnClick(R.id.activity_photo_3_regularImage)
     void clickTouchView() {
         if (activityModel.getResource().getValue() != null
@@ -96,6 +97,9 @@ public class PhotoActivity3 extends ReadWriteActivity
                     this, activityModel.getResource().getValue().data, true);
         }
     }
+
+    @BindView(R.id.activity_photo_3_touchEventTransmitter)
+    TouchEventTransmitterView touchEventTransmitter;
 
     @BindView(R.id.container_photo_3_actor_container) LinearLayout actorContainer;
     @BindView(R.id.container_photo_3_actor_controlBar) LinearLayout actorControlBar;
@@ -146,16 +150,30 @@ public class PhotoActivity3 extends ReadWriteActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         if (savedInstanceState == null) {
             Mysplash.getInstance().finishSameActivity(getClass());
         }
+
         imagePhotoId = null;
 
-        DisplayUtils.setStatusBarStyle(this, true);
         setContentView(R.layout.activity_photo_3);
         ButterKnife.bind(this);
         initModel();
         initView();
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        ApplyWindowInsetsLayout applyWindowInsetsLayout = getApplyWindowInsetsLayout();
+        if (applyWindowInsetsLayout != null) {
+            applyWindowInsetsLayout.setOnApplyWindowInsetsListener(() -> {
+                DisplayUtils.setStatusBarStyle(this, true);
+                DisplayUtils.setNavigationBarStyle(
+                        this, true, hasTranslucentNavigationBar());
+            });
+        }
     }
 
     @Override
@@ -165,21 +183,13 @@ public class PhotoActivity3 extends ReadWriteActivity
     }
 
     @Override
-    protected void setTheme() {
-        if (DisplayUtils.isLandscape(this)) {
-            DisplayUtils.cancelTranslucentNavigation(this);
-        }
-        DisplayUtils.setNavigationBarStyle(this, true, true);
-    }
-
-    @Override
-    protected boolean operateStatusBarBySelf() {
+    public boolean hasTranslucentNavigationBar() {
         return true;
     }
 
     @SuppressLint("MissingSuperCall")
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         // do nothing.
     }
 
@@ -265,6 +275,20 @@ public class PhotoActivity3 extends ReadWriteActivity
             );
         }
 
+        regularImage.setLongPressDragChildList(
+                Arrays.asList(
+                        avatar,
+                        buttonBar.getDownloadButton(),
+                        buttonBar.getCollectButton(),
+                        buttonBar.getLikeButton()
+                )
+        );
+        regularImage.setCancelFlagMarginTop(
+                Mysplash.getInstance().getWindowInsets().top
+                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+        );
+        touchEventTransmitter.setTarget(regularImage);
+
         buttonBar.setOnClickButtonListener(this);
 
         scrollView.setOnScrollChangeListener(new OnScrollListener());
@@ -287,8 +311,6 @@ public class PhotoActivity3 extends ReadWriteActivity
         }
 
         cardRadius = getResources().getDimensionPixelSize(R.dimen.material_card_radius_large);
-        findViewById(R.id.container_photo_3_actor_navigationBar)
-                .setVisibility(hasCardMargin ? View.GONE : View.VISIBLE);
         actorContainer.setTranslationY(hasCardMargin ? 0 : cardRadius);
 
         toolbar.setTitle("");
@@ -349,9 +371,10 @@ public class PhotoActivity3 extends ReadWriteActivity
             if (photoInfoAdapter != null
                     && !photoInfoAdapter.getPhoto().id.equals(resource.data.id)) {
                 // switch photo.
-                DisplayUtils.setStatusBarStyle(PhotoActivity3.this, true);
-                DisplayUtils.setNavigationBarStyle(PhotoActivity3.this, true, true);
-                statusBar.animToInitAlpha();
+                DisplayUtils.setStatusBarStyle(this, true);
+                DisplayUtils.setNavigationBarStyle(
+                        this, true, hasTranslucentNavigationBar());
+                statusBar.switchToInitAlpha();
 
                 scrollView.scrollTo(0, 0);
                 scrollView.setOnScrollChangeListener(new OnScrollListener());
@@ -470,7 +493,7 @@ public class PhotoActivity3 extends ReadWriteActivity
                 dialog.show(getSupportFragmentManager(), null);
             } else if (DownloadHelper.getInstance(this)
                     .readDownloadingEntityCount(this, photo.id) > 0) {
-                NotificationHelper.showSnackbar(getString(R.string.feedback_download_repeat));
+                NotificationHelper.showSnackbar(this, getString(R.string.feedback_download_repeat));
             } else if (FileUtils.isPhotoExists(this, photo.id)) {
                 DownloadRepeatDialog dialog = new DownloadRepeatDialog();
                 dialog.setDownloadKey(type);
@@ -521,11 +544,11 @@ public class PhotoActivity3 extends ReadWriteActivity
             case PhotoMenuPopupWindow.ITEM_STORY_PAGE:
                 Photo photo = Objects.requireNonNull(activityModel.getResource().getValue()).data;
                 if (photo == null) {
-                    NotificationHelper.showSnackbar(getString(R.string.feedback_story_is_null) + " - 1");
+                    NotificationHelper.showSnackbar(this, getString(R.string.feedback_story_is_null) + " - 1");
                 } else if (photo.story == null) {
-                    NotificationHelper.showSnackbar(getString(R.string.feedback_story_is_null) + " - 2");
+                    NotificationHelper.showSnackbar(this, getString(R.string.feedback_story_is_null) + " - 2");
                 } else if (TextUtils.isEmpty(photo.story.image_url)) {
-                    NotificationHelper.showSnackbar(getString(R.string.feedback_story_is_null) + " - 3");
+                    NotificationHelper.showSnackbar(this, getString(R.string.feedback_story_is_null) + " - 3");
                 } else {
                     IntentHelper.startWebActivity(this, photo.story.image_url);
                 }
@@ -614,7 +637,6 @@ public class PhotoActivity3 extends ReadWriteActivity
      */
     private class OnScrollListener implements NestedScrollView.OnScrollChangeListener {
 
-        boolean landscape;
         private int navigationBarHeight;
 
         float verticalFooterHeight;
@@ -626,18 +648,22 @@ public class PhotoActivity3 extends ReadWriteActivity
         // life cycle.
 
         OnScrollListener() {
-            landscape = DisplayUtils.isLandscape(PhotoActivity3.this);
-            navigationBarHeight = DisplayUtils.getNavigationBarHeight(PhotoActivity3.this.getResources());
+            Rect windowInsets = Mysplash.getInstance().getWindowInsets();
+
+            navigationBarHeight = Mysplash.getInstance().getWindowInsets().bottom;
 
             verticalFooterHeight = getResources().getDimensionPixelSize(R.dimen.item_photo_3_more_vertical_height)
-                    + DisplayUtils.getNavigationBarHeight(getResources());
+                    + windowInsets.bottom;
+
             showFlowStatusBarTrigger = DisplayUtils.getScreenSize(PhotoActivity3.this)[1]
-                    - DisplayUtils.getStatusBarHeight(getResources());
+                    - windowInsets.top;
+
             toolbarTranslationTrigger = DisplayUtils.getScreenSize(PhotoActivity3.this)[1]
-                    - DisplayUtils.getStatusBarHeight(getResources())
+                    - windowInsets.top
                     - new DisplayUtils(PhotoActivity3.this).dpToPx(56)
                     - getResources().getDimensionPixelSize(R.dimen.little_icon_size)
                     - 2 * getResources().getDimensionPixelSize(R.dimen.normal_margin);
+
             onlyDark = true;
         }
 
@@ -647,7 +673,7 @@ public class PhotoActivity3 extends ReadWriteActivity
         public void onScrollChange(NestedScrollView nestedScrollView,
                                    int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
             // photo.
-            regularImage.setTranslationY(scrollY);
+            // regularImage.setTranslationY(scrollY);
 
             // base holder.
             if (hasCardMargin) {
@@ -667,9 +693,9 @@ public class PhotoActivity3 extends ReadWriteActivity
 
             // status bar & navigation bar.
             if (oldScrollY < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
-                statusBar.animToDarkerAlpha();
+                statusBar.switchToDarkerAlpha();
             } else if (oldScrollY >= showFlowStatusBarTrigger && scrollY < showFlowStatusBarTrigger) {
-                statusBar.animToInitAlpha();
+                statusBar.switchToInitAlpha();
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (oldScrollY < showFlowStatusBarTrigger && scrollY >= showFlowStatusBarTrigger) {
@@ -681,12 +707,12 @@ public class PhotoActivity3 extends ReadWriteActivity
                     if (!onlyDark) {
                         onlyDark = true;
                         DisplayUtils.setNavigationBarStyle(
-                                PhotoActivity3.this, true, true);
+                                PhotoActivity3.this, true, hasTranslucentNavigationBar());
                     }
                 } else if (onlyDark) {
                     onlyDark = false;
                     DisplayUtils.setNavigationBarStyle(
-                            PhotoActivity3.this, false, true);
+                            PhotoActivity3.this, false, hasTranslucentNavigationBar());
                 }
             }
         }

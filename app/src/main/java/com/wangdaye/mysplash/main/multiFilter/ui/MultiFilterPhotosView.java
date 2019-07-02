@@ -11,6 +11,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.model.PagerView;
 import com.wangdaye.mysplash.common.presenter.pager.PagerScrollablePresenter;
@@ -21,7 +22,6 @@ import com.wangdaye.mysplash.common.ui.adapter.multipleState.LargeLoadingStateAd
 import com.wangdaye.mysplash.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.mysplash.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.mysplash.common.utils.BackToTopUtils;
-import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 import com.wangdaye.mysplash.common.presenter.pager.PagerStateManagePresenter;
@@ -76,10 +76,10 @@ public class MultiFilterPhotosView extends BothWaySwipeRefreshLayout
         setRefreshEnabled(false);
         setLoadEnabled(false);
 
-        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+                Mysplash.getInstance().getWindowInsets().bottom
+                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
         );
 
         recyclerView.setLayoutManager(

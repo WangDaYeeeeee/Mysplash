@@ -3,17 +3,15 @@ package com.wangdaye.mysplash.common.ui.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.widget.Toolbar;
-import android.view.View;
-import android.widget.TextView;
 
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.basic.activity.MysplashActivity;
 import com.wangdaye.mysplash.common.ui.fragment.SettingsFragment;
 import com.wangdaye.mysplash.common.ui.widget.SwipeBackCoordinatorLayout;
-import com.wangdaye.mysplash.common.ui.widget.coordinatorView.StatusBarView;
+import com.wangdaye.mysplash.common.ui.widget.windowInsets.StatusBarView;
+import com.wangdaye.mysplash.common.utils.helper.NotificationHelper;
 import com.wangdaye.mysplash.common.utils.manager.ThemeManager;
 
 import androidx.fragment.app.FragmentTransaction;
@@ -52,9 +50,8 @@ public class SettingsActivity extends MysplashActivity
         switch (requestCode) {
             case Mysplash.ACTIVITY_REQUEST_CODE_CUSTOM_API:
                 if (resultCode == RESULT_OK) {
-                    showSnackbar(
-                            getString(R.string.feedback_please_login),
-                            Snackbar.LENGTH_LONG);
+                    NotificationHelper.showSnackbar(
+                            this, getString(R.string.feedback_please_login));
                 }
                 break;
         }
@@ -95,23 +92,6 @@ public class SettingsActivity extends MysplashActivity
         ThemeManager.setNavigationIcon(
                 toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         toolbar.setNavigationOnClickListener(v -> finishSelf(true));
-    }
-
-    // control.
-
-    private void showSnackbar(String content, int duration) {
-        View container = provideSnackbarContainer();
-
-        Snackbar snackbar = Snackbar
-                .make(container, content, duration);
-
-        Snackbar.SnackbarLayout snackbarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
-        snackbarLayout.setBackgroundColor(ThemeManager.getRootColor(this));
-
-        TextView contentTxt = snackbarLayout.findViewById(R.id.snackbar_text);
-        contentTxt.setTextColor(ThemeManager.getContentColor(this));
-
-        snackbar.show();
     }
 
     // interface.

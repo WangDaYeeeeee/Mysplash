@@ -14,12 +14,14 @@ import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.ui.widget.CircularImageView;
 import com.wangdaye.mysplash.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.mysplash.common.ui.widget.CoverImageView;
+import com.wangdaye.mysplash.common.ui.widget.longPressDrag.LongPressDragCardView;
 import com.wangdaye.mysplash.user.ui.UserActivity;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,7 +29,7 @@ import butterknife.OnClick;
 
 class PhotoHolder extends MultiColumnAdapter.ViewHolder {
 
-    @BindView(R.id.item_photo) CardView card;
+    @BindView(R.id.item_photo) LongPressDragCardView card;
     @BindView(R.id.item_photo_image) CoverImageView image;
 
     @BindView(R.id.item_photo_avatar) CircularImageView avatar;
@@ -68,6 +70,9 @@ class PhotoHolder extends MultiColumnAdapter.ViewHolder {
         } else {
             card.setRadius(0);
         }
+        card.setLongPressDragChildList(
+                Arrays.asList(avatar, downloadButton, collectionButton, likeButton)
+        );
 
         image.setSize(photo.width, photo.height);
 

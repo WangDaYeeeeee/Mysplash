@@ -123,7 +123,7 @@ public class FollowingFeedView extends FrameLayout
 
     private void initData() {
         this.avatarSize = new DisplayUtils(getContext()).dpToPx(56);
-        this.statusBarHeight = DisplayUtils.getStatusBarHeight(getResources());
+        this.statusBarHeight = Mysplash.getInstance().getWindowInsets().top;
         this.columnCount = RecyclerViewHelper.getGirdColumnCount(getContext());
     }
 
@@ -136,7 +136,7 @@ public class FollowingFeedView extends FrameLayout
         FrameLayout.LayoutParams containerParams = (FrameLayout.LayoutParams) avatarContainer.getLayoutParams();
         int size = getResources().getDimensionPixelSize(R.dimen.large_icon_size);
         containerParams.width = size;
-        containerParams.height = size + DisplayUtils.getStatusBarHeight(getResources());
+        containerParams.height = size + Mysplash.getInstance().getWindowInsets().top;
         avatarContainer.setLayoutParams(containerParams);
         avatarContainer.setOnClickListener(v -> {});
 
@@ -154,10 +154,10 @@ public class FollowingFeedView extends FrameLayout
         refreshLayout.setRefreshEnabled(false);
         refreshLayout.setLoadEnabled(false);
 
-        int navigationBarHeight = DisplayUtils.getNavigationBarHeight(getResources());
         refreshLayout.setDragTriggerDistance(
                 BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                navigationBarHeight + getResources().getDimensionPixelSize(R.dimen.normal_margin)
+                Mysplash.getInstance().getWindowInsets().bottom
+                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
         );
 
         recyclerView.setLayoutManager(

@@ -3,6 +3,7 @@ package com.wangdaye.mysplash.common.muzei;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
@@ -22,10 +23,10 @@ public class MuzeiUpdateHelper {
                                  @NonNull OnUpdateCallback callback) {
         switch (MuzeiOptionManager.getInstance(context).getSource()) {
             case "all":
-                return updateFromPhotos(service, false, callback);
+                return updateFromPhotos(context, service, false, callback);
 
             case "featured":
-                return updateFromPhotos(service, true, callback);
+                return updateFromPhotos(context, service, true, callback);
 
             case "collection":
                 return updateFromCollection(context, service, callback);
@@ -33,10 +34,15 @@ public class MuzeiUpdateHelper {
         return false;
     }
 
-    private static boolean updateFromPhotos(PhotoService service, boolean featured,
+    private static boolean updateFromPhotos(Context context, PhotoService service, boolean featured,
                                             @NonNull OnUpdateCallback callback) {
+        String query = MuzeiOptionManager.getInstance(context).getQuery();
+        if (TextUtils.isEmpty(query)) {
+            query = null;
+        }
+
         List<Photo> photoList = service.requestRandomPhotos(
-                null, featured, null, null, null);
+                null, featured, null, query, null);
         if (photoList != null && photoList.size() > 1) {
             callback.onUpdateSucceed(photoList);
             return true;
