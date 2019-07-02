@@ -100,6 +100,26 @@ public class CreateAboutModelPresenter {
                 "Saksham Barsaiyan",
                 R.drawable.flag_hi,
                 "https://plus.google.com/+SakshamBarsaiyan"));
+        modelList.add(new TranslatorObject(
+                "https://avatars1.githubusercontent.com/u/33607846?s=400&v=4",
+                "Valeyard1",
+                R.drawable.flag_br,
+                "https://github.com/Valeyard1"));
+        modelList.add(new TranslatorObject(
+                "https://avatars1.githubusercontent.com/u/5024238?s=400&v=4",
+                "wolkenschieber",
+                R.drawable.flag_de,
+                "https://github.com/wolkenschieber"));
+        modelList.add(new TranslatorObject(
+                "https://avatars3.githubusercontent.com/u/14994565?s=400&v=4",
+                "NikiHard",
+                R.drawable.flag_ru,
+                "https://github.com/NikiHard"));
+        modelList.add(new TranslatorObject(
+                "https://avatars1.githubusercontent.com/u/8256809?s=400&v=4",
+                "relan",
+                R.drawable.flag_ru,
+                "https://github.com/relan"));
 
         // library.
         modelList.add(new CategoryObject(c.getString(R.string.libraries)));

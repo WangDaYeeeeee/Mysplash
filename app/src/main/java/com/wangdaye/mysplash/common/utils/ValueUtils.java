@@ -168,6 +168,9 @@ public class ValueUtils {
             case "french":
                 return c.getResources().getStringArray(R.array.languages)[11];
 
+            case "portuguese_brazil":
+                return c.getResources().getStringArray(R.array.languages)[12];
+
             default:
                 return null;
         }

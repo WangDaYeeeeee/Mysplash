@@ -71,6 +71,9 @@ public class LanguageUtils {
             case "french":
                 return new Locale("fr");
 
+            case "portuguese_brazil":
+                return new Locale("pt", "BR");
+
             default:
                 return new Locale("en");
         }

@@ -36,7 +36,7 @@
 
     <!-- download option. -->
     <string-array name="download_options">
-        <item>HERUNTERKADEN</item>
+        <item>HERUNTERLADEN</item>
         <item>TEILEN</item>
         <item>HINTERGRUNDBILD</item>
     </string-array>
@@ -51,7 +51,7 @@
 
     <!-- download type. -->
     <string-array name="download_types">
-        <item>Tiny</item>
+        <item>Winzig</item>
         <item>Kompakt</item>
         <item>Roh</item>
     </string-array>

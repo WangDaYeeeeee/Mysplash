@@ -133,6 +133,7 @@
         <item>Español</item>
         <item>日本語</item>
         <item>Français</item>
+        <item>Português (Brasil)</item>
     </string-array>
     <string-array name="language_values">
         <item>follow_system</item>
@@ -147,6 +148,7 @@
         <item>spanish</item>
         <item>japanese</item>
         <item>french</item>
+        <item>portuguese_brazil</item>
     </string-array>
 
     <!-- search orientation. -->
