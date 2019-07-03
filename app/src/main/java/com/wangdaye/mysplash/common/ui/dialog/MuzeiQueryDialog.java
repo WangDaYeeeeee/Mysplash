@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +32,7 @@ public class MuzeiQueryDialog extends MysplashDialogFragment {
     @BindView(R.id.dialog_muzei_query_container) CoordinatorLayout container;
     @BindView(R.id.dialog_muzei_query_text) TextInputEditText query;
 
+    @BindView(R.id.dialog_muzei_query_enterBtn) Button enterBtn;
     @OnClick(R.id.dialog_muzei_query_enterBtn) void enter() {
         if (listener != null) {
             Editable e = query.getText();
@@ -66,6 +69,22 @@ public class MuzeiQueryDialog extends MysplashDialogFragment {
     private void initWidget() {
         setCancelable(false);
         query.setText(MuzeiOptionManager.getInstance(getActivity()).getQuery());
+        query.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                // do nothing.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                enterBtn.setEnabled(charSequence.length() <= 50);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                // do nothing.
+            }
+        });
     }
 
     public interface OnQueryChangedListener {

@@ -282,14 +282,13 @@ public class MainActivity extends LoadableActivity<Photo> {
             }
         });
 
-        // TODO: 2019/6/20 doesn't work.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             int[] size = DisplayUtils.getScreenSize(this);
-            List<Rect> rectList = Collections.singletonList(
-                    new Rect(0, 0, size[0] / 2, size[1])
+            drawer.setSystemGestureExclusionRects(
+                    Collections.singletonList(
+                            new Rect(0, 0, size[0] / 8, size[1])
+                    )
             );
-            drawer.post(() -> drawer.setSystemGestureExclusionRects(rectList));
-            nav.post(() -> nav.setSystemGestureExclusionRects(rectList));
         }
     }
 

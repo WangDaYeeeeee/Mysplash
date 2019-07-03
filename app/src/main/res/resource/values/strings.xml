@@ -224,7 +224,7 @@
 
     <string name="feedback_task_in_process">Cannot switch downloader when downloading.</string>
 
-    <string name="feedback_separated_by_comma">Separated by \",\" (like \"space, ocean\").</string>
+    <string name="feedback_separated_by_comma">Separated by \",\" (like \"space,ocean\").</string>
 
     <!-- introduce. -->
     <string name="introduce_title_back_top">Scroll To Top</string>

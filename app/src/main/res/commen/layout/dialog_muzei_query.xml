@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dialog_muzei_query_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -27,7 +27,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/dialog_muzei_query_title"
-            android:layout_margin="@dimen/normal_margin">
+            android:layout_margin="@dimen/normal_margin"
+            app:counterEnabled="true"
+            app:counterMaxLength="50">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/dialog_muzei_query_text"
