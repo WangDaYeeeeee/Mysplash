@@ -143,12 +143,13 @@ public class DisplayUtils {
             flags ^= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         }
 
+        flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int navigationBarColor;
             if (translucent) {
                 if (Mysplash.getInstance().getWindowInsets().bottom == 0) {
                     if (ThemeManager.getInstance(activity).isLightTheme()) {
-                        flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
                         navigationBarColor = Color.argb((int) (0.03 * 255), 0, 0, 0);
                     } else {
                         flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
@@ -156,7 +157,6 @@ public class DisplayUtils {
                     }
                 } else {
                     if (!onlyDarkNavigationBar && ThemeManager.getInstance(activity).isLightTheme()) {
-                        flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
                         navigationBarColor = Color.argb((int) (0.03 * 255), 0, 0, 0);
                     } else {
                         flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
@@ -165,7 +165,6 @@ public class DisplayUtils {
                 }
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 if (ThemeManager.getInstance(activity).isLightTheme()) {
-                    flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).
                     navigationBarColor = Color.rgb(241, 241, 241);
                 } else {
                     flags ^= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR; // android O (API 26).

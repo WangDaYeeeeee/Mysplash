@@ -55,9 +55,7 @@
                     android:id="@+id/activity_photo_3_scrollView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scrollbars="vertical"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true">
+                    android:scrollbars="vertical">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -68,6 +66,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:foreground="?attr/selectableItemBackground"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
                             tools:ignore="UnusedAttribute" />
 
                         <include layout="@layout/container_photo_3_actor"
