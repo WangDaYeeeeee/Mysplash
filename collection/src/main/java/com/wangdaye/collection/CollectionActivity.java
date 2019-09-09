@@ -27,7 +27,6 @@ import com.wangdaye.collection.ui.UpdateCollectionDialog;
 import com.wangdaye.collection.vm.CollectionActivityModel;
 import com.wangdaye.collection.vm.CollectionPhotosViewModel;
 import com.wangdaye.common.base.activity.LoadableActivity;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.pager.ListPager;
@@ -51,7 +50,7 @@ import com.wangdaye.common.ui.adapter.tag.MiniTagAdapter;
 import com.wangdaye.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.BackToTopUtils;
@@ -132,9 +131,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     protected void onCreate(Bundle savedInstanceState) {
         DaggerApplicationComponent.create().inject(this);
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            MysplashApplication.getInstance().finishSameActivity(getClass());
-        }
         setContentView(R.layout.activity_collection);
         ButterKnife.bind(this);
 

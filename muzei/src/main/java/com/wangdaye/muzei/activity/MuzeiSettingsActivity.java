@@ -9,7 +9,7 @@ import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.muzei.R;
 import com.wangdaye.muzei.R2;
 import com.wangdaye.muzei.fragment.MuzeiSettingsFragment;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.manager.ThemeManager;
 

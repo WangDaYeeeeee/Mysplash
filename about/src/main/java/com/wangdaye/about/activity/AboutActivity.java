@@ -10,7 +10,7 @@ import com.wangdaye.about.R;
 import com.wangdaye.about.R2;
 import com.wangdaye.about.ui.AboutAdapter;
 import com.wangdaye.common.base.activity.MysplashActivity;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 
 import butterknife.BindView;

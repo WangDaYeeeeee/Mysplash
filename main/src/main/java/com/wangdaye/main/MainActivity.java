@@ -406,4 +406,21 @@ public class MainActivity extends LoadableActivity<Photo> {
             return R.id.action_selected;
         }
     }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return false;
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        // do nothing.
+    }
+
+    @Override
+    public void onSwipeFinish(int dir) {
+        // do nothing.
+    }
 }

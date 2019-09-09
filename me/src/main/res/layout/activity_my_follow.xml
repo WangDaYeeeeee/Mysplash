@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
             android:id="@+id/activity_my_follow_swipeBackView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -60,7 +60,7 @@
                 android:layout_height="match_parent"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-        </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
     </LinearLayout>
 

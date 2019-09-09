@@ -15,7 +15,7 @@ import com.wangdaye.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
 import com.wangdaye.common.base.adapter.footerAdapter.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.helper.RecyclerViewHelper;

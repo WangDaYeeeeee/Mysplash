@@ -61,21 +61,7 @@ public abstract class MysplashApplication extends MultiModulesApplication {
     }
 
     public void addActivity(@NonNull MysplashActivity a) {
-        for (MysplashActivity activity : activityList) {
-            if (activity.equals(a)) {
-                return;
-            }
-        }
         activityList.add(a);
-    }
-
-    public void addActivityToFirstPosition(@NonNull MysplashActivity a) {
-        for (MysplashActivity activity : activityList) {
-            if (activity.equals(a)) {
-                return;
-            }
-        }
-        activityList.add(0, a);
     }
 
     public void removeActivity(MysplashActivity a) {
@@ -86,6 +72,15 @@ public abstract class MysplashApplication extends MultiModulesApplication {
     public MysplashActivity getTopActivity() {
         if (activityList != null && activityList.size() > 0) {
             return activityList.get(activityList.size() - 1);
+        } else {
+            return null;
+        }
+    }
+
+    @Nullable
+    public MysplashActivity getSecondFloorActivity() {
+        if (activityList != null && activityList.size() > 1) {
+            return activityList.get(activityList.size() - 2);
         } else {
             return null;
         }
@@ -118,14 +113,6 @@ public abstract class MysplashApplication extends MultiModulesApplication {
             }
         }
         return new ArrayList<>();
-    }
-
-    public void finishSameActivity(Class c) {
-        for (int i = 0; i < activityList.size() - 3; i ++) {
-            if (c.isInstance(activityList.get(i))) {
-                activityList.get(i).finish();
-            }
-        }
     }
 
     public void dispatchRecreate() {

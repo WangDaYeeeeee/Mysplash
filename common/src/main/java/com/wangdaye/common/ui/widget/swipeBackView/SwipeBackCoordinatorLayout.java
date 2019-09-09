@@ -1,4 +1,4 @@
-package com.wangdaye.common.ui.widget;
+package com.wangdaye.common.ui.widget.swipeBackView;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,8 +11,11 @@ import android.view.animation.Transformation;
 import androidx.annotation.ColorInt;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.ViewCompat;
+
+import com.wangdaye.common.base.activity.MysplashActivity;
 
 /**
  * Swipe back coordinator layout.
@@ -23,7 +26,8 @@ import androidx.core.view.ViewCompat;
 
 public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
-    private OnSwipeListener swipeListener;
+    private SwipeBackHelper swipeBackHelper;
+    @Nullable private OnSwipeListener swipeListener;
 
     private int swipeDistance;
     private float swipeTrigger;
@@ -89,6 +93,8 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     private void initialize() {
+        this.swipeBackHelper = new SwipeBackHelper();
+
         this.swipeDistance = 0;
         this.swipeTrigger = (float) (getResources().getDisplayMetrics().heightPixels / 4.0);
     }
@@ -99,6 +105,9 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes, int type) {
         super.onStartNestedScroll(child, target, nestedScrollAxes, type);
         isVerticalDragged = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
+        if (isVerticalDragged && swipeListener != null) {
+            swipeBackHelper.prepareViews(swipeListener.provideActivity());
+        }
         return type == ViewCompat.TYPE_TOUCH;
     }
 
@@ -137,7 +146,10 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     @Override
     public void onStopNestedScroll(View child, int type) {
         super.onStopNestedScroll(child, type);
+
         if (isVerticalDragged) {
+            swipeBackHelper.clearViews();
+
             if (Math.abs(swipeDistance) >= swipeTrigger) {
                 swipeBack();
             } else {
@@ -246,9 +258,10 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         boolean canSwipeBack(@DirectionRule int dir);
         void onSwipeProcess(float percent);
         void onSwipeFinish(@DirectionRule int dir);
+        MysplashActivity provideActivity();
     }
 
-    public void setOnSwipeListener(OnSwipeListener l) {
+    public void setOnSwipeListener(@Nullable OnSwipeListener l) {
         this.swipeListener = l;
     }
 }

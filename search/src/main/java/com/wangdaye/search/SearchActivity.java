@@ -40,7 +40,7 @@ import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
@@ -119,7 +119,6 @@ public class SearchActivity extends LoadableActivity<Photo>
         DaggerApplicationComponent.create().inject(this);
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null) {
-            MysplashApplication.getInstance().finishSameActivity(getClass());
             executeTransition = getIntent().getBooleanExtra(KEY_EXECUTE_TRANSITION, false);
         } else {
             executeTransition = false;

@@ -298,4 +298,21 @@ public class IntroduceActivity extends MysplashActivity
     public void onPageScrollStateChanged(int state) {
         // do nothing.
     }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return false;
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        // do nothing.
+    }
+
+    @Override
+    public void onSwipeFinish(int dir) {
+        // do nothing.
+    }
 }

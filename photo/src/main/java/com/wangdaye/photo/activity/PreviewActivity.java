@@ -11,7 +11,7 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.wangdaye.base.i.Previewable;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.base.unsplash.Photo;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.NestedScrollPhotoView;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.utils.DisplayUtils;

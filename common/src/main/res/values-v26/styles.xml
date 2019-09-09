@@ -27,8 +27,6 @@
     <style name="MysplashTheme.Translucent" parent="MysplashTheme">
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="MysplashTheme.TranslucentNavigation"

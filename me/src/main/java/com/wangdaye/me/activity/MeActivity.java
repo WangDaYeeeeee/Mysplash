@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.wangdaye.base.i.Downloadable;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
 import com.wangdaye.common.network.UrlCollection;
@@ -59,7 +58,7 @@ import com.wangdaye.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.ShareUtils;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.utils.helper.NotificationHelper;
@@ -143,9 +142,6 @@ public class MeActivity extends LoadableActivity<Photo>
     protected void onCreate(Bundle savedInstanceState) {
         DaggerApplicationComponent.create().inject(this);
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-            MysplashApplication.getInstance().finishSameActivity(getClass());
-        }
         setContentView(R.layout.activity_me);
         ButterKnife.bind(this);
 

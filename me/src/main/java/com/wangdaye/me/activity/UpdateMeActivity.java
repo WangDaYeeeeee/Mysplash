@@ -21,7 +21,7 @@ import com.wangdaye.base.unsplash.Me;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.UserService;
 import com.wangdaye.common.base.activity.MysplashActivity;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;

@@ -27,7 +27,7 @@ import com.wangdaye.common.presenter.list.FollowOrCancelFollowPresenter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.utils.BackToTopUtils;

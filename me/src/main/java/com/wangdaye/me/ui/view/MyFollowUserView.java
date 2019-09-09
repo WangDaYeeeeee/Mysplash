@@ -14,7 +14,7 @@ import com.wangdaye.me.R2;
 import com.wangdaye.me.activity.MyFollowActivity;
 import com.wangdaye.me.ui.adapter.MyFollowAdapter;
 import com.wangdaye.base.i.PagerView;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.common.ui.adapter.multipleState.LargeErrorStateAdapter;

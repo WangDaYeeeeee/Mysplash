@@ -10,7 +10,7 @@ import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.settings.R;
 import com.wangdaye.settings.R2;
 import com.wangdaye.settings.fragment.SettingsFragment;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.ThemeManager;

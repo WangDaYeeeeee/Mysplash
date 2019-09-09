@@ -93,6 +93,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     public static final int CLIP_TYPE_SQUARE = 1;
     public static final int CLIP_TYPE_RECT = 2;
+
     @IntDef({CLIP_TYPE_SQUARE, CLIP_TYPE_RECT})
     private @interface ClipRule {}
 
@@ -457,5 +458,22 @@ public class SetWallpaperActivity extends ReadWriteActivity
                     finishSelf(true);
                 }).doOnError(throwable -> finish())
                 .subscribe();
+    }
+
+    // on swipe listener.
+
+    @Override
+    public boolean canSwipeBack(int dir) {
+        return false;
+    }
+
+    @Override
+    public void onSwipeProcess(float percent) {
+        // do nothing.
+    }
+
+    @Override
+    public void onSwipeFinish(int dir) {
+        // do nothing.
     }
 }

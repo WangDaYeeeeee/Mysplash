@@ -18,6 +18,7 @@ import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.base.dialog.MysplashDialogFragment;
 import com.wangdaye.common.base.popup.MysplashPopupWindow;
 import com.wangdaye.common.ui.transition.sharedElement.SharedElementTransition;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.ApplyWindowInsetsLayout;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.LanguageUtils;
@@ -33,7 +34,8 @@ import java.util.List;
  *
  * */
 
-public abstract class MysplashActivity extends AppCompatActivity {
+public abstract class MysplashActivity extends AppCompatActivity
+        implements SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @Nullable private ApplyWindowInsetsLayout applyWindowInsetsLayout;
     private Rect windowInsets;
@@ -51,12 +53,7 @@ public abstract class MysplashActivity extends AppCompatActivity {
         }
 
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            MysplashApplication.getInstance().addActivity(this);
-        } else {
-            MysplashApplication.getInstance().addActivityToFirstPosition(this);
-        }
+        MysplashApplication.getInstance().addActivity(this);
 
         LanguageUtils.setLanguage(this);
         DisplayUtils.setWindowTop(this);
@@ -252,5 +249,10 @@ public abstract class MysplashActivity extends AppCompatActivity {
 
     protected boolean isTheLowestLevel() {
         return MysplashApplication.getInstance().getActivityCount() == 1;
+    }
+
+    @Override
+    public MysplashActivity provideActivity() {
+        return this;
     }
 }

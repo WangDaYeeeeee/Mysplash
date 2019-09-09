@@ -15,7 +15,7 @@ import com.wangdaye.muzei.base.MuzeiOptionManager;
 import com.wangdaye.muzei.R;
 import com.wangdaye.muzei.ui.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.muzei.ui.WallpaperSourceAdapter;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.manager.ThemeManager;
 

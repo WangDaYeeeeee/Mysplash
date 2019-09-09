@@ -20,7 +20,7 @@ import com.wangdaye.downloader.DownloaderServiceIMP;
 import com.wangdaye.downloader.R;
 import com.wangdaye.common.utils.helper.RoutingHelper;
 import com.wangdaye.common.ui.dialog.DownloadRepeatDialog;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.FileUtils;
 import com.wangdaye.common.utils.helper.NotificationHelper;

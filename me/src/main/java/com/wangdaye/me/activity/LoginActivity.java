@@ -20,7 +20,7 @@ import com.wangdaye.base.unsplash.AccessToken;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.AuthorizeService;
 import com.wangdaye.common.base.activity.MysplashActivity;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.manager.AuthManager;

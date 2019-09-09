@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
         android:id="@+id/fragment_home_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -140,7 +140,7 @@
             app:dotDiameter="@dimen/little_margin"
             app:dotGap="@dimen/little_margin" />
 
-    </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
     <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
         android:id="@+id/fragment_home_statusBar"

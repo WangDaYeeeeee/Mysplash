@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-    <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
         android:id="@+id/activity_preview_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -235,6 +235,6 @@
 
         </LinearLayout>
 
-    </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

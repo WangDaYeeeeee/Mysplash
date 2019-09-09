@@ -39,7 +39,7 @@ import com.wangdaye.base.resource.Resource;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.VerticalNestedScrollView;
-import com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.SwipeSwitchLayout;
 import com.wangdaye.common.ui.widget.longPressDrag.LongPressDragHorizontalScrollableImageView;
 import com.wangdaye.common.ui.widget.windowInsets.ApplyWindowInsetsLayout;
@@ -160,10 +160,6 @@ public class PhotoActivity extends ReadWriteActivity
     protected void onCreate(Bundle savedInstanceState) {
         DaggerApplicationComponent.create().inject(this);
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState == null) {
-            MysplashApplication.getInstance().finishSameActivity(getClass());
-        }
 
         imagePhotoId = null;
 

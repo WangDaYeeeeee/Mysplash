@@ -14,7 +14,7 @@
         android:background="@android:color/black"
         android:alpha="0"/>
 
-    <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
         android:id="@+id/activity_me_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -123,7 +123,7 @@
             app:dotDiameter="@dimen/little_margin"
             app:dotGap="@dimen/little_margin" />
 
-    </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
     <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
         android:id="@+id/activity_me_statusBar"
