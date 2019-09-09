@@ -1,0 +1,28 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wangdaye.downloader">
+
+    <application>
+
+        <activity
+            android:name=".activity.DownloadManageActivity"
+            android:theme="@style/MysplashTheme.Translucent.Common"
+            android:screenOrientation="user"
+            android:launchMode="singleTask"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="com.wangdaye.mysplash.DownloadManager" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name=".executor.AbstractDownloaderExecutor$DownloadReceiver">
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+                <action android:name="android.intent.action.DOWNLOAD_NOTIFICATION_CLICKED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

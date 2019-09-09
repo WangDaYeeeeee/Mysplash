@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- user activity. -->
+
+    <style
+        name="MysplashTheme.Translucent.TranslucentNavigation.User"
+        parent="MysplashTheme.Translucent.TranslucentNavigation" />
+
+</resources>

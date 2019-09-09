@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_set_wallpaper_container"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.common.ui.widget.photoView.PhotoView
+            android:id="@+id/activity_set_wallpaper_photoView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+            android:id="@+id/activity_set_wallpaper_statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:sbv_fill_in_mode="true" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/activity_set_wallpaper_closeBtn"
+            android:src="@drawable/ic_toolbar_close_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            style="@style/material_image_button_without_tint"
+            tools:ignore="ContentDescription" />
+
+        <Button
+            android:id="@+id/activity_set_wallpaper_setBtn"
+            android:text="@string/set"
+            android:textStyle="bold"
+            android:textColor="@color/colorTextTitle"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="4dp"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/activity_set_wallpaper_alignBtn"
+            android:src="@drawable/ic_align_center_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            android:layout_toStartOf="@id/activity_set_wallpaper_setBtn"
+            style="@style/material_image_button_without_tint"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/activity_set_wallpaper_typeBtn"
+            android:src="@drawable/ic_orientation_squarish_dark"
+            android:layout_below="@id/activity_set_wallpaper_statusBar"
+            android:layout_toStartOf="@id/activity_set_wallpaper_alignBtn"
+            style="@style/material_image_button_without_tint"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

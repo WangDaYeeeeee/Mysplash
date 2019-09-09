@@ -20,10 +20,10 @@ import android.widget.TextView;
 import com.wangdaye.mysplash.Mysplash;
 import com.wangdaye.mysplash.R;
 import com.wangdaye.mysplash.common.data.table.DownloadMissionEntity;
-import com.wangdaye.mysplash.common.basic.MysplashActivity;
+import com.wangdaye.mysplash.common.base.MysplashActivity;
 import com.wangdaye.mysplash.common.utils.DisplayUtils;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
-import com.wangdaye.mysplash.common.basic.FlagRunnable;
+import com.wangdaye.mysplash.common.base.FlagRunnable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -119,7 +119,7 @@ public class DownloadHelper {
         FileDownloader.getImpl().start(listener, false);
 
         entity.result = DownloadHelper.RESULT_DOWNLOADING;
-        DatabaseHelper.getInstance(c).writeDownloadEntity(entity);
+        DatabaseHelper.getInstance(c).writeDownloadTask(entity);
 
         NotificationHelper.showSnackbar(
                 c.getString(R.string.feedback_download_start),
@@ -130,13 +130,13 @@ public class DownloadHelper {
 
     @Nullable
     public DownloadMission restartMission(Context c, long missionId) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(missionId);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadTask(missionId);
         if (entity == null) {
             return null;
         } else {
             FileDownloader.getImpl()
                     .clear((int) missionId, entity.getFilePath());
-            DatabaseHelper.getInstance(c).deleteDownloadEntity(missionId);
+            DatabaseHelper.getInstance(c).deleteDownloadTask(missionId);
 
             DownloadMission mission = new DownloadMission(entity);
             mission.entity.missionId = addMission(c, mission.entity);
@@ -149,12 +149,12 @@ public class DownloadHelper {
     // delete.
 
     public void removeMission(Context c, long id) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(id);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadTask(id);
         if (entity != null && entity.result != RESULT_SUCCEED) {
             FileDownloader.getImpl()
                     .clear((int) id, entity.getFilePath());
         }
-        DatabaseHelper.getInstance(c).deleteDownloadEntity(id);
+        DatabaseHelper.getInstance(c).deleteDownloadTask(id);
     }
 
     public void clearMission(Context c, List<DownloadMissionEntity> entityList, boolean clearDatabase) {
@@ -169,17 +169,17 @@ public class DownloadHelper {
         FileDownloader.getImpl().clearAllTaskData();
 
         if (clearDatabase) {
-            DatabaseHelper.getInstance(c).clearDownloadEntity();
+            DatabaseHelper.getInstance(c).clearDownloadTask();
         }
     }
 
     // update.
 
     public void updateMissionResult(Context c, long id, int result) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadEntity(id);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(c).readDownloadTask(id);
         if (entity != null) {
             entity.result = result;
-            DatabaseHelper.getInstance(c).updateDownloadEntity(entity);
+            DatabaseHelper.getInstance(c).updateDownloadTask(entity);
         }
     }
 
@@ -187,7 +187,7 @@ public class DownloadHelper {
 
     @Nullable
     public DownloadMission getDownloadMission(Context context, long id) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadEntity(id);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadTask(id);
         if (entity == null) {
             return null;
         } else {
@@ -219,7 +219,7 @@ public class DownloadHelper {
     }
 
     boolean isMissionSuccess(Context context, long id) {
-        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadEntity(id);
+        DownloadMissionEntity entity = DatabaseHelper.getInstance(context).readDownloadTask(id);
         return entity == null || getDownloadResult(entity) == RESULT_SUCCEED;
     }
 }
@@ -281,7 +281,7 @@ class OnDownloadListener extends FileDownloadListener {
 
     private void downloadFinish(int missionId) {
         DownloadMissionEntity entity = DatabaseHelper.getInstance(context)
-                .readDownloadEntity(missionId);
+                .readDownloadTask(missionId);
 
         if (DownloadHelper.getInstance().isMissionSuccess(context, missionId)) {
             if (entity != null) {

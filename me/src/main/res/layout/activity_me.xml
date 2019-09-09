@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_me_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/activity_me_shadow"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black"
+        android:alpha="0"/>
+
+    <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_me_swipeBackView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/root_color"
+        android:transitionName="@string/transition_me_background"
+        tools:ignore="UnusedAttribute">
+
+        <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
+            android:id="@+id/activity_me_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll">
+
+                <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                    android:id="@+id/activity_me_fakeStatusBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true" />
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/activity_me_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_below="@id/activity_me_fakeStatusBar"
+                    android:background="@android:color/transparent"
+                    app:popupTheme="@style/MysplashPopupMenuTheme" />
+
+                <com.wangdaye.common.ui.widget.CircularImageView
+                    android:id="@+id/activity_me_avatar"
+                    android:layout_width="@dimen/design_icon_size"
+                    android:layout_height="@dimen/design_icon_size"
+                    android:src="?attr/line_color"
+                    android:layout_below="@id/activity_me_toolbar"
+                    android:layout_centerHorizontal="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:scaleType="centerCrop"
+                    android:transitionName="@string/transition_me_avatar"
+                    android:stateListAnimator="@animator/touch_rise_avatar"
+                    tools:ignore="ContentDescription,RtlHardcoded" />
+
+                <TextView
+                    android:id="@+id/activity_me_title"
+                    android:layout_below="@id/activity_me_avatar"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginStart="@dimen/normal_margin"
+                    android:layout_marginEnd="@dimen/normal_margin"
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/large_title_text_size"
+                    android:textColor="?attr/title_color"
+                    android:text="..."
+                    android:maxLines="1"
+                    style="@style/title_text"
+                    tools:ignore="HardcodedText,RtlHardcoded" />
+
+                <com.wangdaye.me.ui.view.MeProfileView
+                    android:id="@+id/activity_me_profileView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/activity_me_title" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true"/>
+
+                <com.google.android.material.tabs.TabLayout
+                    style="@style/MysplashTabLayoutTheme"
+                    android:id="@+id/activity_me_tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_layout_height" />
+
+            </LinearLayout>
+
+        </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/activity_me_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.wangdaye.common.ui.widget.AutoHideInkPageIndicator
+            android:id="@+id/activity_me_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_behavior="com.wangdaye.common.ui.behavior.InkPageIndicatorBehavior"
+            app:animationDuration="300"
+            app:pageIndicatorColor="?attr/subtitle_color"
+            app:currentPageIndicatorColor="?attr/title_color"
+            app:dotDiameter="@dimen/little_margin"
+            app:dotGap="@dimen/little_margin" />
+
+    </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+        android:id="@+id/activity_me_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

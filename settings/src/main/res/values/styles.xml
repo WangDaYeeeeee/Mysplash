@@ -1,0 +1,10 @@
+<resources>
+
+    <!-- settings activity. -->
+
+    <style name="MysplashTheme.Translucent.Settings" parent="MysplashTheme.Translucent">
+        <item name="android:alertDialogTheme">@style/MysplashDialogTheme</item>
+        <item name="android:listDivider">@color/colorLine</item>
+    </style>
+
+</resources>

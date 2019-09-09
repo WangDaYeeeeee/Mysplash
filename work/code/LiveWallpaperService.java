@@ -17,7 +17,7 @@ import android.text.TextUtils;
 import android.view.SurfaceHolder;
 
 import com.wangdaye.mysplash.R;
-import com.wangdaye.mysplash.common.basic.FlagRunnable;
+import com.wangdaye.mysplash.common.base.FlagRunnable;
 import com.wangdaye.mysplash.common.network.json.Photo;
 import com.wangdaye.mysplash.common.utils.FileUtils;
 import com.wangdaye.mysplash.common.utils.helper.ImageHelper;

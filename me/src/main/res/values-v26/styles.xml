@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- me activity. -->
+
+    <style name="MysplashTheme.Translucent.TranslucentNavigation.Me"
+        parent="MysplashTheme.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/me_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/me_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/me_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/me_activity_shared_return</item>
+    </style>
+
+</resources>

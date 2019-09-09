@@ -1,0 +1,41 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wangdaye.me">
+
+    <application>
+
+        <activity
+            android:name=".activity.MeActivity"
+            android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.Me"
+            android:screenOrientation="user"
+            android:label="@string/app_name" />
+
+        <activity
+            android:name=".activity.MyFollowActivity"
+            android:theme="@style/MysplashTheme.Translucent.Common"
+            android:screenOrientation="user"
+            android:label="@string/app_name" />
+
+        <activity android:name=".activity.UpdateMeActivity"
+            android:theme="@style/MysplashTheme.Translucent.Common"
+            android:screenOrientation="user"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity android:name=".activity.LoginActivity"
+            android:theme="@style/MysplashTheme.Translucent.Common"
+            android:screenOrientation="user"
+            android:label="@string/app_name"
+            android:launchMode="singleTask">
+            <intent-filter>
+                <data
+                    android:scheme="mysplash"
+                    android:host="unsplash-auth-callback" />
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>

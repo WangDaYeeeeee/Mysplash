@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- search activity. -->
+
+    <style
+        name="MysplashTheme.Translucent.TranslucentNavigation.Search"
+        parent="MysplashTheme.Translucent.TranslucentNavigation" />
+
+</resources>

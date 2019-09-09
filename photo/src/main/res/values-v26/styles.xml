@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- photo activity. -->
+
+    <style name="MysplashTheme.Translucent.TranslucentNavigation.Photo"
+        parent="MysplashTheme.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/photo_activity_3_enter</item>
+        <item name="android:windowReturnTransition">@transition/photo_activity_3_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/photo_activity_3_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/photo_activity_3_shared_return</item>
+    </style>
+
+    <!-- preview activity. -->
+
+    <style name="MysplashTheme.Translucent.TranslucentNavigation.Preview"
+        parent="MysplashTheme.Translucent.TranslucentNavigation">
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <!-- set wallpaper activity. -->
+
+    <style name="MysplashTheme.SetWallpaper" parent="MysplashTheme">
+        <item name="colorPrimary">@color/colorPrimary_dark</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark_dark</item>
+        <item name="colorAccent">@color/colorTextDark</item>
+        <item name="root_color">@color/colorPrimary_light</item>
+        <item name="line_color">@color/colorPrimaryDark_light</item>
+        <item name="title_color">@color/colorTextDark</item>
+        <item name="subtitle_color">@color/colorTextGrey</item>
+        <item name="content_color">@color/colorTextDark2nd</item>
+        <item name="search_bar_color">@color/colorSearchBar</item>
+        <item name="android:windowBackground">@color/colorPrimary_dark</item>
+        <item name="android:textColorPrimary">?attr/content_color</item>
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowAllowEnterTransitionOverlap">true</item>
+        <item name="android:windowAllowReturnTransitionOverlap">true</item>
+        <item name="android:popupMenuStyle">@style/material_popup_menu</item>
+        <item name="android:colorEdgeEffect">@color/colorAccent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+</resources>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+        android:id="@+id/fragment_home_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
+            android:id="@+id/fragment_home_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            app:theme="@style/MysplashToolbarTheme">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_scrollFlags="scroll|enterAlways">
+
+                <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:sbv_fill_in_mode="true" />
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/fragment_home_searchBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="@dimen/little_margin"
+                    android:layout_marginStart="@dimen/normal_margin"
+                    android:layout_marginEnd="@dimen/normal_margin"
+                    android:foreground="?attr/selectableItemBackground"
+                    app:cardBackgroundColor="?attr/search_bar_color"
+                    app:cardCornerRadius="@dimen/material_card_radius"
+                    app:cardElevation="3dp">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <ImageButton
+                            android:id="@+id/fragment_home_menuButton"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:src="@drawable/ic_toolbar_menu_light"
+                            android:padding="5dp"
+                            android:layout_marginStart="11dp"
+                            android:layout_marginEnd="11dp"
+                            android:tint="?attr/content_color"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:layout_centerVertical="true"
+                            tools:ignore="ContentDescription" />
+
+                        <com.wangdaye.common.ui.widget.CircularImageView
+                            android:id="@+id/fragment_home_avatar"
+                            android:layout_width="34dp"
+                            android:layout_height="34dp"
+                            android:layout_marginStart="@dimen/little_margin"
+                            android:layout_marginEnd="@dimen/little_margin"
+                            android:layout_alignParentEnd="true"
+                            android:layout_centerVertical="true"
+                            android:stateListAnimator="@animator/touch_rise_avatar"
+                            android:foreground="?attr/selectableItemBackground"
+                            tools:src="@drawable/default_avatar_round"
+                            tools:ignore="ContentDescription,UnusedAttribute" />
+
+                        <TextView
+                            android:id="@+id/fragment_home_searchHint"
+                            android:text="@string/feedback_search_bar"
+                            android:layout_toEndOf="@id/fragment_home_menuButton"
+                            android:layout_centerVertical="true"
+                            android:layout_centerInParent="true"
+                            android:maxLines="1"
+                            android:ellipsize="end"
+                            android:alpha="0"
+                            android:visibility="gone"
+                            style="@style/content_text"
+                            tools:ignore="UnusedAttribute" />
+
+                        <LinearLayout
+                            android:id="@+id/fragment_home_logo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:layout_centerInParent="true"
+                            tools:ignore="UseCompoundDrawables">
+
+                            <ImageView
+                                android:id="@+id/fragment_home_appIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="@dimen/little_margin"
+                                android:layout_gravity="center_vertical"
+                                tools:src="@drawable/ic_launcher"
+                                tools:ignore="ContentDescription,UnusedAttribute" />
+
+                            <TextView
+                                android:text="@string/app_name"
+                                android:layout_gravity="center_vertical"
+                                android:textStyle="bold"
+                                style="@style/title_text" />
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/fragment_home_tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_layout_height"
+                    style="@style/MysplashTabLayoutTheme" />
+
+            </LinearLayout>
+
+        </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/fragment_home_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <com.wangdaye.common.ui.widget.AutoHideInkPageIndicator
+            android:id="@+id/fragment_home_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            app:layout_behavior="com.wangdaye.common.ui.behavior.InkPageIndicatorBehavior"
+            app:animationDuration="300"
+            app:pageIndicatorColor="?attr/subtitle_color"
+            app:currentPageIndicatorColor="?attr/title_color"
+            app:dotDiameter="@dimen/little_margin"
+            app:dotGap="@dimen/little_margin" />
+
+    </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+        android:id="@+id/fragment_home_statusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:sbv_translucent_mode="true" />
+
+</FrameLayout>

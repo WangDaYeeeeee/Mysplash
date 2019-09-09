@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:interpolator="@android:interpolator/fast_out_slow_in"
+    android:transitionOrdering="together"
+    tools:ignore="NewApi">
+
+    <fade
+        android:duration="300"
+        android:interpolator="@android:interpolator/fast_out_slow_in">
+        <targets>
+            <target android:targetId="@android:id/navigationBarBackground" />
+            <target android:targetId="@android:id/statusBarBackground" />
+            <target android:targetId="@id/activity_search_statusBar" />
+            <target android:targetId="@id/activity_search_shadow" />
+        </targets>
+    </fade>
+
+</transitionSet>

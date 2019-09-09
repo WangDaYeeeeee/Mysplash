@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_following_title_background"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    tools:ignore="UnusedAttribute">
+
+    <com.wangdaye.common.ui.widget.CircularImageView
+        android:id="@+id/item_following_title_avatar"
+        android:layout_width="@dimen/mini_icon_size"
+        android:layout_height="@dimen/mini_icon_size"
+        android:layout_margin="@dimen/normal_margin"
+        android:stateListAnimator="@animator/touch_rise_avatar"
+        android:foreground="?attr/selectableItemBackground"
+        tools:src="@drawable/default_avatar_round"
+        tools:ignore="ContentDescription" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/item_following_title_avatar"
+        android:foreground="?attr/selectableItemBackground"
+        android:paddingTop="@dimen/normal_margin"
+        android:paddingBottom="@dimen/normal_margin"
+        tools:ignore="RtlHardcoded">
+
+        <TextView
+            android:id="@+id/item_following_title_actor"
+            android:layout_width="match_parent"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:gravity="bottom"
+            android:textAlignment="gravity"
+            style="@style/title_text"
+            tools:text="Wang Yueeeeee"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/item_following_title_verb"
+            android:layout_width="match_parent"
+            android:layout_below="@id/item_following_title_actor"
+            android:layout_marginEnd="@dimen/normal_margin"
+            style="@style/subtitle_text"
+            tools:text="added 3 photos to Unsplash Instant 2"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

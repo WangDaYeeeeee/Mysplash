@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_wallpaper_source"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/little_margin"
+    android:layout_marginEnd="@dimen/little_margin"
+    android:layout_marginBottom="@dimen/little_margin"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise_item"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
+    app:cardCornerRadius="@dimen/material_card_radius"
+    app:cardPreventCornerOverlap="false"
+    app:cardElevation="@dimen/low_elevation"
+    tools:ignore="RtlHardcoded,UnusedAttribute">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.wangdaye.common.ui.widget.CoverImageView
+            android:id="@+id/item_wallpaper_source_cover"
+            android:layout_width="172dp"
+            android:layout_height="128dp"
+            android:scaleType="centerCrop"
+            app:civ_dynamic_size="false"
+            app:civ_shadow_position="top"
+            tools:src="?attr/title_color" />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/item_wallpaper_source_deleteBtn"
+            android:src="@drawable/ic_item_close"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:padding="@dimen/little_margin"
+            android:foreground="?attr/selectableItemBackgroundBorderless"
+            android:background="@android:color/transparent"
+            android:layout_alignEnd="@id/item_wallpaper_source_cover"
+            tools:ignore="ContentDescription,RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/item_wallpaper_source_title"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:maxLines="4"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/colorTextDark2nd"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/normal_margin"
+            android:layout_alignBottom="@id/item_wallpaper_source_cover"
+            android:layout_alignEnd="@id/item_wallpaper_source_cover"
+            android:layout_alignStart="@id/item_wallpaper_source_cover"
+            style="@style/title_text"
+            tools:text="LET THE INSPIRATION BEGIN"/>
+
+    </RelativeLayout>
+
+</androidx.cardview.widget.CardView>

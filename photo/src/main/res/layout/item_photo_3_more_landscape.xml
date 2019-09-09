@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_photo_3_more_landscape_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    android:orientation="vertical">
+
+    <view class="com.wangdaye.common.ui.widget.SwipeSwitchLayout$RecyclerView"
+        android:id="@+id/item_photo_3_more_landscape_recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingStart="@dimen/normal_margin"
+        android:clipToPadding="false"
+        android:background="?attr/root_color"
+        tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+</FrameLayout>

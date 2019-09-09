@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_muzei_settings_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+            android:id="@+id/activity_muzei_settings_statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_muzei_settings_swipeBackView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/root_color">
+
+            <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:theme="@style/MysplashToolbarTheme">
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/activity_muzei_settings_toolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/colorPrimary"
+                    app:title="@string/action_settings"
+                    app:popupTheme="@style/MysplashPopupMenuTheme"
+                    tools:ignore="UnusedAttribute" />
+
+            </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+            <FrameLayout
+                android:id="@+id/activity_muzei_settings_preferenceContainer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        </com.wangdaye.common.ui.widget.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

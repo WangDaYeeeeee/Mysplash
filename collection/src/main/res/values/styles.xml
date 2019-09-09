@@ -1,0 +1,9 @@
+<resources>
+
+    <!-- collection activity. -->
+
+    <style
+        name="MysplashTheme.Translucent.TranslucentNavigation.Collection"
+        parent="MysplashTheme.Translucent.TranslucentNavigation" />
+
+</resources>

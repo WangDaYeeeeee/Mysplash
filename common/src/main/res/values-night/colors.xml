@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- theme -->
+    <color name="colorPrimary">@color/colorPrimary_dark</color>
+    <color name="colorPrimaryDark">@color/colorPrimaryDark_dark</color>
+    <color name="colorAccent">@color/colorTextTitle</color>
+
+    <!-- UI. -->
+    <color name="colorRoot">@color/colorPrimary</color>
+    <color name="colorLine">#292929</color>
+    <color name="colorSearchBar">#272727</color>
+
+    <!-- text color -->
+    <color name="colorTextTitle">@color/colorTextLight</color>
+    <color name="colorTextSubtitle">@color/colorTextGrey2nd</color>
+    <color name="colorTextContent">@color/colorTextLight2nd</color>
+
+    <color name="colorDarkCardBackground">#1a1a1a</color>
+    
+</resources>
