@@ -226,6 +226,8 @@
 
     <string name="feedback_separated_by_comma">Separated by \",\" (like \"space,ocean\").</string>
 
+    <string name="feedback_drag_to_back">DRAG TO BACK…</string>
+
     <!-- introduce. -->
     <string name="introduce_title_back_top">Scroll To Top</string>
     <string name="introduce_description_back_top">Click top bar or back button, the photo list parent will scroll back to the top.</string>

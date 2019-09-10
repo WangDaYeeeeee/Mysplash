@@ -1,9 +1,13 @@
 package com.wangdaye.common.ui.widget.swipeBackView;
 
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import androidx.annotation.Nullable;
+
+import com.wangdaye.common.R;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.base.application.MysplashApplication;
 
@@ -11,7 +15,7 @@ import java.lang.ref.WeakReference;
 
 class SwipeBackHelper {
 
-    private WeakReference<MysplashActivity> previousActivity;
+    @Nullable private WeakReference<MysplashActivity> previousActivity;
     private ViewGroup currentContentView;
     private View previousDisplayView;
     private boolean swiping;
@@ -32,21 +36,22 @@ class SwipeBackHelper {
         currentContentView = currentActivity.findViewById(Window.ID_ANDROID_CONTENT);
 
         MysplashActivity secondFloorActivity = MysplashApplication.getInstance().getSecondFloorActivity();
-        if (secondFloorActivity == null) {
-            return;
+        ViewGroup previousContentView = null;
+        if (secondFloorActivity != null) {
+            previousContentView = secondFloorActivity.findViewById(Window.ID_ANDROID_CONTENT);
+            previousDisplayView = previousContentView.getChildAt(0);
+        } else {
+            previousDisplayView = LayoutInflater.from(currentActivity).inflate(
+                    R.layout.container_null_previous_view, currentContentView, false);
         }
 
-        ViewGroup previousContentView = secondFloorActivity.findViewById(Window.ID_ANDROID_CONTENT);
-        previousDisplayView = previousContentView.getChildAt(0);
+        previousActivity = secondFloorActivity == null
+                ? null
+                : new WeakReference<>(secondFloorActivity);
 
-        if (previousDisplayView == null) {
-            currentContentView = null;
-            return;
+        if (previousContentView != null) {
+            previousContentView.removeView(previousDisplayView);
         }
-
-        previousActivity = new WeakReference<>(secondFloorActivity);
-
-        previousContentView.removeView(previousDisplayView);
         currentContentView.addView(previousDisplayView, 0);
     }
 
@@ -62,7 +67,8 @@ class SwipeBackHelper {
 
         ViewGroup previewContentView = null;
         if (previousActivity != null
-                && previousActivity.get() != null) {
+                && previousActivity.get() != null
+                && !previousActivity.get().isFinishing()) {
             previewContentView = previousActivity.get().findViewById(Window.ID_ANDROID_CONTENT);
         }
 

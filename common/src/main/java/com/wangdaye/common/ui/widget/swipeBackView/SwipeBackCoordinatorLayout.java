@@ -69,6 +69,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         @Override
         public void onAnimationEnd(Animation animation) {
             setEnabled(true);
+            swipeBackHelper.clearViews();
         }
 
         @Override
@@ -105,16 +106,14 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     public boolean onStartNestedScroll(View child, View target, int nestedScrollAxes, int type) {
         super.onStartNestedScroll(child, target, nestedScrollAxes, type);
         isVerticalDragged = (nestedScrollAxes & ViewCompat.SCROLL_AXIS_VERTICAL) != 0;
-        if (isVerticalDragged && swipeListener != null) {
-            swipeBackHelper.prepareViews(swipeListener.provideActivity());
-        }
         return type == ViewCompat.TYPE_TOUCH;
     }
 
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed, int type) {
         int dyConsumed = 0;
-        if (isVerticalDragged && swipeDistance != 0) {
+        if (isVerticalDragged && swipeDistance != 0 && swipeListener != null) {
+            swipeBackHelper.prepareViews(swipeListener.provideActivity());
             dyConsumed = onVerticalPreScroll(dy);
         }
 
@@ -134,22 +133,21 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         if (isVerticalDragged && swipeDistance == 0) {
             int dir = dyUnconsumed < 0 ? DOWN_DIR : UP_DIR;
             if (swipeListener != null && swipeListener.canSwipeBack(dir)) {
+                swipeBackHelper.prepareViews(swipeListener.provideActivity());
                 onVerticalScroll(dyUnconsumed);
                 newDyConsumed = dyConsumed + dyUnconsumed;
                 newDyUnconsumed = 0;
             }
         }
 
-        super.onNestedScroll(target, dxConsumed, newDyConsumed, dxUnconsumed, newDyUnconsumed, type, consumed);
+        super.onNestedScroll(
+                target, dxConsumed, newDyConsumed, dxUnconsumed, newDyUnconsumed, type, consumed);
     }
 
     @Override
     public void onStopNestedScroll(View child, int type) {
         super.onStopNestedScroll(child, type);
-
         if (isVerticalDragged) {
-            swipeBackHelper.clearViews();
-
             if (Math.abs(swipeDistance) >= swipeTrigger) {
                 swipeBack();
             } else {
@@ -182,6 +180,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     }
 
     private void swipeBack() {
+        swipeBackHelper.clearViews();
         if (swipeListener != null) {
             swipeListener.onSwipeFinish(swipeDir);
         }

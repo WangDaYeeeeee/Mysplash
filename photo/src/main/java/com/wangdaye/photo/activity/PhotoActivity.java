@@ -803,7 +803,9 @@ public class PhotoActivity extends ReadWriteActivity
 
         @Override
         public boolean canSwitch(int direction) {
-            int newIndex = photoListManagePresenter.getCurrentIndex() - photoListManagePresenter.getHeadIndex() + direction;
+            int newIndex = photoListManagePresenter.getCurrentIndex()
+                    - photoListManagePresenter.getHeadIndex()
+                    + direction;
             return 0 <= newIndex && newIndex < photoListManagePresenter.getPhotoList().size();
         }
 

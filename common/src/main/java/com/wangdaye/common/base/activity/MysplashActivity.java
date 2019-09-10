@@ -68,13 +68,11 @@ public abstract class MysplashActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void registerSharedElementTransitionCallback() {
         setEnterSharedElementCallback(new SharedElementCallback() {
-
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames,
                                            List<View> sharedElements,
                                            List<View> sharedElementSnapshots) {
                 super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-
                 Intent intent = getIntent();
                 for (int i = 0; i < sharedElementNames.size(); i++) {
                     String name = sharedElementNames.get(i);
