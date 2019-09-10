@@ -12,7 +12,6 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.wangdaye.collection.CollectionActivity;
 import com.wangdaye.collection.R;
 import com.wangdaye.base.unsplash.Collection;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.ui.transition.sharedElement.Recolor;
 import com.wangdaye.common.ui.transition.sharedElement.RoundCornerTransition;
 
@@ -30,7 +29,6 @@ public class RoutingHelper {
         } else {
             Recolor.addExtraProperties(background, b);
             RoundCornerTransition.addExtraProperties(background, b);
-            MysplashApplication.getInstance().setSharedElementTransitionExtraProperties(b);
 
             optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
                     a,

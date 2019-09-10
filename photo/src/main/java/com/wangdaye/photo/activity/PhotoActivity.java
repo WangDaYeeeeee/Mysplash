@@ -424,7 +424,7 @@ public class PhotoActivity extends ReadWriteActivity
     private void resetPhotoImage(@NonNull Photo photo) {
         if (imagePhotoId == null || !imagePhotoId.equals(photo.id)) {
             imagePhotoId = photo.id;
-            ImageHelper.loadRegularPhoto(this, regularImage, photo, null);
+            ImageHelper.loadRegularPhoto(this, regularImage, photo, false, null);
         }
     }
 

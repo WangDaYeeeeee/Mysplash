@@ -287,7 +287,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
             photosViewModel.setCollectionId(collection.id);
             photosViewModel.setCurated(collection.curated);
 
-            ImageHelper.loadCollectionCover(this, cover, collection, null);
+            ImageHelper.loadCollectionCover(this, cover, collection, false, null);
 
             title.setText(collection.title);
 

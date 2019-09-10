@@ -94,6 +94,7 @@ public class MoreHolder extends PhotoInfoAdapter3.ViewHolder
                     a,
                     covers[i],
                     photo.related_collections.results.get(i),
+                    false,
                     null
             );
 

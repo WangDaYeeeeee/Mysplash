@@ -106,7 +106,8 @@ public class PreviewActivity extends MysplashActivity
         photoView.setMaxScale(getMaxiScale(false));
         if (previewable instanceof Photo) {
             photoView.setScaleType(AppCompatImageView.ScaleType.FIT_CENTER);
-            ImageHelper.loadRegularPhoto(this, photoView, (Photo) previewable, null);
+            ImageHelper.loadRegularPhoto(
+                    this, photoView, (Photo) previewable, false, null);
         } else {
             ImageHelper.loadImageFromUrl(
                     this, photoView, previewable.getFullUrl(), false, null);

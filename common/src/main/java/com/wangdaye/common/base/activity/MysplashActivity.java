@@ -1,6 +1,5 @@
 package com.wangdaye.common.base.activity;
 
-import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Build;
@@ -13,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.app.SharedElementCallback;
 
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.base.dialog.MysplashDialogFragment;
@@ -68,18 +68,34 @@ public abstract class MysplashActivity extends AppCompatActivity
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     private void registerSharedElementTransitionCallback() {
         setEnterSharedElementCallback(new SharedElementCallback() {
+
+            @Override
+            public void onSharedElementStart(List<String> sharedElementNames,
+                                             List<View> sharedElements,
+                                             List<View> sharedElementSnapshots) {
+                super.onSharedElementStart(sharedElementNames, sharedElements, sharedElementSnapshots);
+                setExtraPropertiesForViews(sharedElementNames, sharedElements, true);
+            }
+
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames,
                                            List<View> sharedElements,
                                            List<View> sharedElementSnapshots) {
                 super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                setExtraPropertiesForViews(sharedElementNames, sharedElements, false);
+            }
+
+            private void setExtraPropertiesForViews(List<String> sharedElementNames,
+                                                    List<View> sharedElements,
+                                                    boolean start) {
                 Intent intent = getIntent();
                 for (int i = 0; i < sharedElementNames.size(); i++) {
                     String name = sharedElementNames.get(i);
                     if (intent.hasExtra(name)) {
                         SharedElementTransition.setExtraPropertiesForView(
                                 sharedElements.get(i),
-                                intent.getBundleExtra(name)
+                                intent.getBundleExtra(name),
+                                start
                         );
                     }
                 }

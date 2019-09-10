@@ -57,15 +57,7 @@ public class MoreHorizontalAdapter3 extends RecyclerView.Adapter<MoreHorizontalA
             image.setShowShadow(false);
 
             if (collection.cover_photo != null) {
-                ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
-                    collection.cover_photo.loadPhotoSuccess = true;
-                    if (!collection.cover_photo.hasFadedIn) {
-                        collection.cover_photo.hasFadedIn = true;
-                        long duration = Long.parseLong(
-                                ComponentFactory.getSettingsService().getSaturationAnimationDuration());
-                        ImageHelper.startSaturationAnimation(image.getContext(), image, duration);
-                    }
-
+                ImageHelper.loadCollectionCover(image.getContext(), image, collection, true, () -> {
                     title.setText(collection.title.toUpperCase());
                     subtitle.setText(collection.user.name);
                     image.setShowShadow(true);

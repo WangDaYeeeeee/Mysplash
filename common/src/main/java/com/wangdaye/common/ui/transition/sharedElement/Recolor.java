@@ -59,29 +59,24 @@ public class Recolor extends SharedElementTransition {
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        if (isEnter(transitionValues.view)) {
-            int initColor = getBackgroundColor(transitionValues.view);
-            Bundle b = getExtraPropertiesFromApplication();
-            if (b != null && b.containsKey(PROPNAME_COLOR)) {
-                initColor = b.getInt(PROPNAME_COLOR);
-            }
-            transitionValues.values.put(PROPNAME_COLOR, initColor);
-        } else {
-            transitionValues.values.put(PROPNAME_COLOR, getBackgroundColor(transitionValues.view));
-        }
+        captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        if (isEnter(transitionValues.view)) {
-            transitionValues.values.put(PROPNAME_COLOR, getBackgroundColor(transitionValues.view));
-        } else {
+        captureValues(transitionValues);
+    }
+
+    private void captureValues(TransitionValues transitionValues) {
+        if (isStart(transitionValues.view)) {
             int initColor = getBackgroundColor(transitionValues.view);
             Bundle b = getExtraPropertiesFromView(transitionValues.view);
             if (b != null && b.containsKey(PROPNAME_COLOR)) {
                 initColor = b.getInt(PROPNAME_COLOR);
             }
             transitionValues.values.put(PROPNAME_COLOR, initColor);
+        } else {
+            transitionValues.values.put(PROPNAME_COLOR, getBackgroundColor(transitionValues.view));
         }
     }
 

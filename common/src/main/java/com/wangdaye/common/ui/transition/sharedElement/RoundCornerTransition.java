@@ -16,8 +16,6 @@ import androidx.annotation.Px;
 import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 
-import com.wangdaye.common.base.application.MysplashApplication;
-
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class RoundCornerTransition extends SharedElementTransition {
 
@@ -48,31 +46,28 @@ public class RoundCornerTransition extends SharedElementTransition {
         return transitionProperties;
     }
 
+
+
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        if (isEnter(transitionValues.view)) {
+        captureValues(transitionValues);
+    }
+
+    @Override
+    public void captureEndValues(TransitionValues transitionValues) {
+        captureValues(transitionValues);
+    }
+
+    private void captureValues(TransitionValues transitionValues) {
+        if (isStart(transitionValues.view)) {
             float actualInitRadius = getRadius(transitionValues.view);
-            Bundle b = MysplashApplication.getInstance().getSharedElementTransitionExtraProperties();
+            Bundle b = getExtraPropertiesFromView(transitionValues.view);
             if (b != null && b.containsKey(PROPNAME_RADIUS)) {
                 actualInitRadius = b.getFloat(PROPNAME_RADIUS);
             }
             transitionValues.values.put(PROPNAME_RADIUS, actualInitRadius);
         } else {
             transitionValues.values.put(PROPNAME_RADIUS, getRadius(transitionValues.view));
-        }
-    }
-
-    @Override
-    public void captureEndValues(TransitionValues transitionValues) {
-        if (isEnter(transitionValues.view)) {
-            transitionValues.values.put(PROPNAME_RADIUS, getRadius(transitionValues.view));
-        } else {
-            float actualFinalRadius = getRadius(transitionValues.view);
-            Bundle b = getExtraPropertiesFromView(transitionValues.view);
-            if (b != null && b.containsKey(PROPNAME_RADIUS)) {
-                actualFinalRadius = b.getFloat(PROPNAME_RADIUS);
-            }
-            transitionValues.values.put(PROPNAME_RADIUS, actualFinalRadius);
         }
     }
 

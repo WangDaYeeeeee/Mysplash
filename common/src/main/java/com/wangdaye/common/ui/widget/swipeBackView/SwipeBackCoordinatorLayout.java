@@ -55,7 +55,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         @Override
         public void applyTransformation(float interpolatedTime, Transformation t) {
             swipeDistance = (int) (fromDistance * (1 - interpolatedTime));
-            setSwipeTranslation();
+            setSwipeTranslation(false);
         }
     }
 
@@ -112,8 +112,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
     @Override
     public void onNestedPreScroll(View target, int dx, int dy, int[] consumed, int type) {
         int dyConsumed = 0;
-        if (isVerticalDragged && swipeDistance != 0 && swipeListener != null) {
-            swipeBackHelper.prepareViews(swipeListener.provideActivity());
+        if (isVerticalDragged && swipeDistance != 0) {
             dyConsumed = onVerticalPreScroll(dy);
         }
 
@@ -133,7 +132,6 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         if (isVerticalDragged && swipeDistance == 0) {
             int dir = dyUnconsumed < 0 ? DOWN_DIR : UP_DIR;
             if (swipeListener != null && swipeListener.canSwipeBack(dir)) {
-                swipeBackHelper.prepareViews(swipeListener.provideActivity());
                 onVerticalScroll(dyUnconsumed);
                 newDyConsumed = dyConsumed + dyUnconsumed;
                 newDyUnconsumed = 0;
@@ -167,7 +165,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
             swipeDistance -= dy;
         }
 
-        setSwipeTranslation();
+        setSwipeTranslation(true);
 
         return consumed;
     }
@@ -176,7 +174,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         swipeDistance = -dy;
         swipeDir = swipeDistance > 0 ? DOWN_DIR : UP_DIR;
 
-        setSwipeTranslation();
+        setSwipeTranslation(true);
     }
 
     private void swipeBack() {
@@ -197,7 +195,11 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
         }
     }
 
-    private void setSwipeTranslation() {
+    private void setSwipeTranslation(boolean dragging) {
+        if (dragging && swipeDistance != 0 && swipeListener != null) {
+            swipeBackHelper.prepareViews(swipeListener.provideActivity());
+        }
+
         int dir = swipeDistance > 0 ? UP_DIR : DOWN_DIR;
         setTranslationY(
                 (float) (

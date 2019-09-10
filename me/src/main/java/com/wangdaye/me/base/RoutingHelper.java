@@ -11,7 +11,6 @@ import androidx.core.util.Pair;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.wangdaye.base.pager.ProfilePager;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.ui.transition.sharedElement.RoundCornerTransition;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.me.R;
@@ -29,7 +28,6 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bundle b = new Bundle();
             RoundCornerTransition.addExtraProperties(background, b);
-            MysplashApplication.getInstance().setSharedElementTransitionExtraProperties(b);
 
             ARouter.getInstance()
                     .build(MeActivity.ME_ACTIVITY)

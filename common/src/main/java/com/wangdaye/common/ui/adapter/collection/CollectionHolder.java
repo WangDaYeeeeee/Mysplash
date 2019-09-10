@@ -18,7 +18,6 @@ import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.CoverImageView;
 import com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView;
 import com.wangdaye.common.utils.DisplayUtils;
-import com.wangdaye.component.ComponentFactory;
 
 import java.util.Collections;
 
@@ -66,16 +65,8 @@ class CollectionHolder extends RecyclerView.ViewHolder {
 
         if (collection.cover_photo != null) {
             setCardText(context, collection, true);
-            ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
-                collection.cover_photo.loadPhotoSuccess = true;
-                if (!collection.cover_photo.hasFadedIn) {
-                    collection.cover_photo.hasFadedIn = true;
-                    long duration = Long.parseLong(
-                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
-                    ImageHelper.startSaturationAnimation(context, image, duration);
-                }
-                setCardText(context, collection, false);
-            });
+            ImageHelper.loadCollectionCover(image.getContext(), image, collection, true,
+                    () -> setCardText(context, collection, false));
             card.setCardBackgroundColor(
                     ImageHelper.computeCardBackgroundColor(
                             image.getContext(),

@@ -13,7 +13,6 @@ import androidx.core.util.Pair;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.wangdaye.common.base.application.MultiModulesApplication;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.ui.transition.sharedElement.Recolor;
 import com.wangdaye.common.ui.transition.sharedElement.RoundCornerTransition;
 import com.wangdaye.component.ComponentFactory;
@@ -30,7 +29,6 @@ public class SearchApplication extends MultiModulesApplication {
                 Bundle b = new Bundle();
                 Recolor.addExtraProperties(background, b);
                 RoundCornerTransition.addExtraProperties(background, b);
-                MysplashApplication.getInstance().setSharedElementTransitionExtraProperties(b);
 
                 ARouter.getInstance()
                         .build(SearchActivity.SEARCH_ACTIVITY)

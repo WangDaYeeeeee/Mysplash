@@ -187,15 +187,7 @@ class CollectionMiniHolder extends RecyclerView.ViewHolder {
         );
 
         if (collection.cover_photo != null) {
-            ImageHelper.loadCollectionCover(image.getContext(), image, collection, () -> {
-                collection.cover_photo.loadPhotoSuccess = true;
-                if (!collection.cover_photo.hasFadedIn) {
-                    collection.cover_photo.hasFadedIn = true;
-                    long duration = Long.parseLong(
-                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
-                    ImageHelper.startSaturationAnimation(image.getContext(), image, duration);
-                }
-            });
+            ImageHelper.loadCollectionCover(image.getContext(), image, collection, true, null);
         } else {
             ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
         }

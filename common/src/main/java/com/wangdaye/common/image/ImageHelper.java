@@ -35,6 +35,7 @@ import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.manager.ThemeManager;
+import com.wangdaye.component.ComponentFactory;
 
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
@@ -73,12 +74,44 @@ public class ImageHelper {
         }
     }
 
-    private static class SetEnableListener
+    private static class ExecuteSaturationAnimationListener
+            extends BaseRequestListener<String, GlideDrawable> {
+
+        private ImageView image;
+        private Photo photo;
+        private boolean executeAnimation;
+
+        ExecuteSaturationAnimationListener(ImageView image, Photo photo, boolean executeAnimation,
+                                           @Nullable OnLoadImageListener l) {
+            super(l);
+            this.image = image;
+            this.photo = photo;
+            this.executeAnimation = executeAnimation;
+        }
+
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
+                                       boolean isFromMemoryCache, boolean isFirstResource) {
+            super.onResourceReady(resource, model, target, isFromMemoryCache, isFirstResource);
+            photo.loadPhotoSuccess = true;
+            if (!photo.hasFadedIn) {
+                photo.hasFadedIn = true;
+                if (executeAnimation) {
+                    long duration = Long.parseLong(
+                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
+                    ImageHelper.startSaturationAnimation(image.getContext(), image, duration);
+                }
+            }
+            return false;
+        }
+    }
+
+    private static class CancelFadeInListener
             implements RequestListener<String, GlideDrawable> {
 
         private ImageView view;
 
-        SetEnableListener(ImageView view) {
+        CancelFadeInListener(ImageView view) {
             this.view = view;
         }
 
@@ -91,7 +124,7 @@ public class ImageHelper {
         @Override
         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target,
                                        boolean isFromMemoryCache, boolean isFirstResource) {
-            view.setEnabled(true);
+            view.setTag(R.id.tag_item_image_fade_in_flag, false);
             return false;
         }
     }
@@ -123,24 +156,27 @@ public class ImageHelper {
         loadRegularPhoto(context, view, photo, true, l);
     }
 
-    private static void loadRegularPhoto(Context context, ImageView view, Photo photo,
-                                         boolean saturation, @Nullable OnLoadImageListener l) {
+    public static void loadRegularPhoto(Context context, ImageView view, Photo photo,
+                                        boolean saturation, @Nullable OnLoadImageListener l) {
         context = getValidContext(context);
         if (photo != null && photo.urls != null
                 && photo.width != 0 && photo.height != 0) {
+            // set fade in flag.
+            // true --> execute fade in animation after loading.
+            view.setTag(R.id.tag_item_image_fade_in_flag, true);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
                     && !photo.hasFadedIn && saturation && l != null) {
                 AnimUtils.ObservableColorMatrix matrix = new AnimUtils.ObservableColorMatrix();
                 matrix.setSaturation(0);
                 view.setColorFilter(new ColorMatrixColorFilter(matrix));
             }
-            view.setEnabled(false);
 
             DrawableRequestBuilder<String> thumbnailRequest = Glide
                     .with(context)
                     .load(photo.urls.thumb)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                    .listener(new SetEnableListener(view));
+                    .listener(new CancelFadeInListener(view));
 
             int[] size = photo.getRegularSize(context);
             Glide.with(context)
@@ -149,7 +185,7 @@ public class ImageHelper {
                     .override(size[0], size[1])
                     .thumbnail(thumbnailRequest)
                     .animate(new FadeAnimator())
-                    .listener(new BaseRequestListener<>(l))
+                    .listener(new ExecuteSaturationAnimationListener(view, photo, saturation, l))
                     .into(view);
         }
     }
@@ -161,9 +197,9 @@ public class ImageHelper {
     // collection cover.
 
     public static void loadCollectionCover(Context context, ImageView view, Collection collection,
-                                           @Nullable OnLoadImageListener l) {
+                                           boolean saturation, @Nullable OnLoadImageListener l) {
         if (collection != null) {
-            loadRegularPhoto(context, view, collection.cover_photo, true, l);
+            loadRegularPhoto(context, view, collection.cover_photo, saturation, l);
         }
     }
 

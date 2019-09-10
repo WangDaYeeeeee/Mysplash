@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Rect;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,7 +31,6 @@ public abstract class MysplashApplication extends MultiModulesApplication {
 
     private List<MysplashActivity> activityList;
     private Rect windowInsets;
-    @Nullable private Bundle sharedElementTransitionExtraProperties;
 
     @Override
     public void onCreate() {
@@ -130,14 +128,5 @@ public abstract class MysplashApplication extends MultiModulesApplication {
 
     public Rect getWindowInsets() {
         return windowInsets;
-    }
-
-    @Nullable
-    public Bundle getSharedElementTransitionExtraProperties() {
-        return sharedElementTransitionExtraProperties;
-    }
-
-    public void setSharedElementTransitionExtraProperties(@Nullable Bundle b) {
-        sharedElementTransitionExtraProperties = b;
     }
 }

@@ -11,7 +11,6 @@ import androidx.core.util.Pair;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.ui.transition.sharedElement.Recolor;
 import com.wangdaye.common.ui.transition.sharedElement.RoundCornerTransition;
 import com.wangdaye.photo.R;
@@ -41,7 +40,6 @@ public class RoutingHelper {
 
             Recolor.addExtraProperties(background, b);
             RoundCornerTransition.addExtraProperties(background, b);
-            MysplashApplication.getInstance().setSharedElementTransitionExtraProperties(b);
         }
 
         ARouter.getInstance()

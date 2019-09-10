@@ -70,13 +70,6 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             image.setShowShadow(false);
 
             ImageHelper.loadRegularPhoto(image.getContext(), image, photo, () -> {
-                photo.loadPhotoSuccess = true;
-                if (!photo.hasFadedIn) {
-                    photo.hasFadedIn = true;
-                    long duration = Long.parseLong(
-                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
-                    ImageHelper.startSaturationAnimation(image.getContext(), image, duration);
-                }
                 title.setText(photo.user.name);
                 image.setShowShadow(true);
             });

@@ -199,7 +199,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         AppCompatImageView cover = v.findViewById(R.id.dialog_select_collection_cover);
         if (DisplayUtils.isTabletDevice(Objects.requireNonNull(getActivity()))) {
-            ImageHelper.loadRegularPhoto(getActivity(), cover, photo, null);
+            ImageHelper.loadRegularPhoto(getActivity(), cover, photo, false, null);
         } else {
             cover.setVisibility(View.GONE);
         }

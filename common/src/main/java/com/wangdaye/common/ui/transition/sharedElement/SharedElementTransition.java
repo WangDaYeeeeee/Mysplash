@@ -11,27 +11,19 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.wangdaye.common.R;
-import com.wangdaye.common.base.application.MysplashApplication;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public abstract class SharedElementTransition extends Transition {
 
-    @Nullable private Boolean enter;
+    private static final String KEY_START = "mysplash:sharedElementTransition:start";
 
     public SharedElementTransition(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    protected boolean isEnter(View view) {
-        if (enter == null) {
-            enter = (getExtraPropertiesFromView(view) == null);
-        }
-        return enter;
-    }
-
-    @Nullable
-    protected static Bundle getExtraPropertiesFromApplication() {
-        return MysplashApplication.getInstance().getSharedElementTransitionExtraProperties();
+    boolean isStart(View view) {
+        Bundle bundle = getExtraPropertiesFromView(view);
+        return bundle != null && bundle.getBoolean(KEY_START, false);
     }
 
     @Nullable
@@ -39,7 +31,10 @@ public abstract class SharedElementTransition extends Transition {
         return (Bundle) view.getTag(R.id.tag_transition_extra_properties);
     }
 
-    public static void setExtraPropertiesForView(View view, Bundle b) {
-        view.setTag(R.id.tag_transition_extra_properties, b);
+    public static void setExtraPropertiesForView(View view, @Nullable Bundle bundle, boolean start) {
+        if (bundle != null) {
+            bundle.putBoolean(KEY_START, start);
+            view.setTag(R.id.tag_transition_extra_properties, bundle);
+        }
     }
 }
