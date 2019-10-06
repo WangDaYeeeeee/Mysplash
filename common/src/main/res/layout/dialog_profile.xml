@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_profile_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/dialog_profile_contentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.github.rahatarmanahmed.cpv.CircularProgressView
+                android:id="@+id/dialog_profile_progress"
+                android:layout_width="@dimen/circular_progress_height"
+                android:layout_height="@dimen/circular_progress_height"
+                android:layout_margin="@dimen/mini_icon_size"
+                android:layout_centerHorizontal="true"
+                app:cpv_color="?attr/title_color"
+                app:cpv_indeterminate="true"
+                app:cpv_animAutostart="true" />
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/dialog_profile_scrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/dialog_profile_text"
+                    android:lineSpacingMultiplier="1.3"
+                    android:layout_marginTop="@dimen/normal_margin"
+                    android:layout_marginBottom="@dimen/normal_margin"
+                    android:layout_marginStart="@dimen/mini_icon_size"
+                    android:layout_marginEnd="@dimen/mini_icon_size"
+                    android:textIsSelectable="true"
+                    style="@style/content_text"
+                    tools:text="3 Likes\n565 Followers"
+                    tools:ignore="HardcodedText" />
+
+            </androidx.core.widget.NestedScrollView>
+
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/dialog_profile_enterBtn"
+            android:text="@string/enter"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/dialog_profile_contentContainer"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

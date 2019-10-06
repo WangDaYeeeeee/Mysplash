@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_multiple_state_error_large_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        tools:ignore="UselessParent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/item_multiple_state_error_large_feedbackImg"
+            android:layout_width="@dimen/feedback_icon_size"
+            android:layout_height="@dimen/feedback_icon_size"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_centerHorizontal="true"
+            tools:src="@drawable/feedback_no_photos"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/item_multiple_state_error_large_feedbackTxt"
+            android:text="@string/feedback_load_failed_tv"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/item_multiple_state_error_large_feedbackImg"
+            style="@style/subtitle_text" />
+
+        <Button
+            android:id="@+id/item_multiple_state_error_large_feedbackBtn"
+            android:text="@string/feedback_click_retry"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@id/item_multiple_state_error_large_feedbackTxt"
+            android:layout_marginBottom="@dimen/normal_icon_size"
+            style="@style/material_button" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- collection activity. -->
+
+    <style name="MysplashTheme.Translucent.TranslucentNavigation.Collection"
+        parent="MysplashTheme.Translucent.TranslucentNavigation">
+        <item name="android:windowEnterTransition">@transition/collection_activity_enter</item>
+        <item name="android:windowReturnTransition">@transition/collection_activity_return</item>
+        <item name="android:windowSharedElementEnterTransition">@transition/collection_activity_shared_enter</item>
+        <item name="android:windowSharedElementReturnTransition">@transition/collection_activity_shared_return</item>
+    </style>
+
+</resources>

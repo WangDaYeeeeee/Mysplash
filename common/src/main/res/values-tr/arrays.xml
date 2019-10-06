@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- home tab. -->
+    <string-array name="home_tabs">
+        <item>EDITORIAL</item>
+        <item>ÖNE ÇIKANLAR</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>ÖNE ÇIKANLAR</item>
+        <item>TÜMÜ</item>
+        <item>TASARIM</item>
+    </string-array>
+
+    <!-- search tab. -->
+    <string-array name="search_tabs">
+        <item>FOTOĞRAFLAR</item>
+        <item>KOLEKSİYONLAR</item>
+        <item>KULLANICILAR</item>
+    </string-array>
+
+    <!-- user tab. -->
+    <string-array name="user_tabs">
+        <item>FOTOĞRAFLAR</item>
+        <item>BEĞENİLER</item>
+        <item>KOLEKSİYONLAR</item>
+    </string-array>
+
+    <!-- download option. -->
+    <string-array name="download_options">
+        <item>İNDİR</item>
+        <item>PAYLAŞ</item>
+        <item>DUVARKAĞIDI</item>
+    </string-array>
+
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
+        <item>Yeniler</item>
+        <item>Eskiler</item>
+        <item>Popüler</item>
+        <item>Rastgele</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>Tiny</item>
+        <item>Kompakt</item>
+        <item>Raw</item>
+    </string-array>
+
+    <!-- back to top. -->
+    <string-array name="back_to_top_types">
+        <item>Liste görünümünün tamamı</item>
+        <item>Sadece giriş</item>
+        <item>Hiçbiri</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>Manzara</item>
+        <item>Portre</item>
+        <item>Kare</item>
+    </string-array>
+	
+</resources>

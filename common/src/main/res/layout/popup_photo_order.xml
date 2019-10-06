@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_order_latest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_photo_order_latestIcon"
+            android:src="@drawable/ic_timer"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_order_latestTxt"
+            android:text="LATEST"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_photo_order_latestIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_order_oldest"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_photo_order_oldestIcon"
+            android:src="@drawable/ic_timer_off"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_order_oldestTxt"
+            android:text="OLDEST"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_photo_order_oldestIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_order_popular"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_photo_order_popularIcon"
+            android:src="@drawable/ic_fire"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_order_popularTxt"
+            android:text="POPULAR"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_photo_order_popularIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_order_random"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_photo_order_randomIcon"
+            android:src="@drawable/ic_random"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_order_randomTxt"
+            android:text="RANDOM"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_photo_order_randomIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

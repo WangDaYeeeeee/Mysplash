@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_total_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/dialog_total_dataContainer"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/dialog_total_totalPhotosIcon"
+                    android:src="@drawable/ic_image_light"
+                    style="@style/material_icon"
+                    tools:ignore="ContentDescription,VectorDrawableCompat" />
+
+                <TextView
+                    android:id="@+id/dialog_total_totalPhotosNum"
+                    android:text="0 PHOTOS"
+                    android:textStyle="bold"
+                    android:textColor="?attr/content_color"
+                    android:layout_toEndOf="@id/dialog_total_totalPhotosIcon"
+                    android:layout_centerVertical="true"
+                    style="@style/title_text"
+                    tools:ignore="HardcodedText,RtlHardcoded" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/dialog_total_photoDownloadsIcon"
+                    android:src="@drawable/ic_download_light"
+                    style="@style/material_icon"
+                    tools:ignore="ContentDescription,VectorDrawableCompat" />
+
+                <TextView
+                    android:id="@+id/dialog_total_photoDownloadsNum"
+                    android:text="0 DOWNLOADS"
+                    android:textStyle="bold"
+                    android:textColor="?attr/content_color"
+                    android:layout_toEndOf="@id/dialog_total_photoDownloadsIcon"
+                    android:layout_centerVertical="true"
+                    style="@style/title_text"
+                    tools:ignore="HardcodedText,RtlHardcoded" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/dialog_total_progress"
+            android:layout_width="@dimen/circular_progress_height"
+            android:layout_height="@dimen/circular_progress_height"
+            android:layout_margin="24dp"
+            android:layout_centerInParent="true"
+            app:cpv_color="?attr/title_color"
+            app:cpv_indeterminate="true"
+            app:cpv_animAutostart="true" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

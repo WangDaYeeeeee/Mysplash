@@ -1,0 +1,77 @@
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_relative_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.base.ui.widget.coordinatorView.StatusBarView
+            android:id="@+id/activity_relative_statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.wangdaye.base.ui.widget.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_relative_swipeBackView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/root_color"
+            tools:ignore="UnusedAttribute">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/activity_relative_photoRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="360dp"
+                android:clipToPadding="false" />
+
+            <RelativeLayout
+                android:id="@+id/activity_relative_topBar"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:background="?attr/root_color">
+
+                <ImageButton
+                    android:id="@+id/activity_relative_closeBtn"
+                    android:src="@drawable/ic_close_light"
+                    style="@style/material_image_button"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/activity_relative_collectionTitle"
+                    android:layout_marginTop="?attr/actionBarSize"
+                    android:layout_marginLeft="@dimen/normal_margin"
+                    android:layout_marginRight="@dimen/normal_margin"
+                    android:layout_marginBottom="@dimen/normal_margin"
+                    style="@style/content_text"
+                    tools:text="144 relative collections" />
+
+                <TextView
+                    android:id="@+id/activity_relative_photoTitle"
+                    android:layout_margin="@dimen/normal_margin"
+                    android:layout_alignParentBottom="true"
+                    style="@style/content_text"
+                    tools:text="32 relative photos" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/activity_relative_collectionRecyclerView"
+                    android:layout_below="@id/activity_relative_collectionTitle"
+                    android:layout_above="@id/activity_relative_photoTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/little_margin"
+                    android:clipToPadding="false"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+            </RelativeLayout>
+
+        </com.wangdaye.base.ui.widget.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

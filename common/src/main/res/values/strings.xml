@@ -1,0 +1,380 @@
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+
+    <!-- application. -->
+    <string name="app_name">Mysplash</string>
+    <string name="powered">Powered by Unsplash.com</string>
+    <string name="version_code">3.7.7</string>
+
+    <!-- key words. -->
+    <string name="about_app">ABOUT APP</string>
+    <string name="introduce">INTRODUCE</string>
+    <string name="gitHub">GITHUB</string>
+    <string name="email">EMAIL</string>
+    <string name="source_code">SOURCE CODE</string>
+    <string name="donate">DONATE</string>
+    <string name="donate_alipay">ALIPAY</string>
+    <string name="donate_wechat">WECHAT</string>
+    <string name="translators">TRANSLATORS</string>
+    <string name="libraries">LIBRARIES</string>
+    <string name="enter">ENTER</string>
+    <string name="exit">EXIT</string>
+    <string name="copy" tools:ignore="PrivateResource">COPY</string>
+    <string name="next">NEXT</string>
+    <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="backstage">BACKSTAGE</string>
+    <string name="details">DETAILS</string>
+    <string name="restart">RESTART</string>
+    <string name="create">CREATE</string>
+    <string name="delete">DELETE</string>
+    <string name="save">SAVE</string>
+    <string name="check">CHECK</string>
+    <string name="set">SET</string>
+    <string name="reset">RESET</string>
+    <string name="search">SEARCH</string>
+    <string name="follow">FOLLOW</string>
+    <string name="following">FOLLOWING</string>
+    <string name="my_follow">My follow</string>
+    <string name="all">ALL</string>
+    <string name="stats">Stats</string>
+    <string name="by">By</string>
+    <string name="on">On</string>
+    <string name="from">From</string>
+    <string name="now">Now</string>
+
+    <string name="like">Like</string>
+    <string name="liked">Liked</string>
+    <string name="collect">Collect</string>
+    <string name="collected">Collected</string>
+    <string name="download">Download</string>
+    <string name="followed">Followed</string>
+    <string name="released">Released</string>
+    <string name="published">Published</string>
+    <string name="curated">Curated</string>
+    <string name="photos">photos</string>
+    <string name="users">users</string>
+    <string name="to">to</string>
+    <string name="your">your</string>
+    <string name="you">you</string>
+    <string name="photo">photo</string>
+    <string name="more">MORE</string>
+
+    <string name="year_ago">years ago</string>
+    <string name="month_ago">months ago</string>
+    <string name="day_ago">days ago</string>
+    <string name="hour_ago">hours ago</string>
+    <string name="minute_ago">minutes ago</string>
+    <string name="second_ago">seconds ago</string>
+
+    <string name="relative_photo">related photos</string>
+    <string name="relative_collection">related collections</string>
+
+    <string name="follow_system">Follow System</string>
+    <string name="date_format">MMM d, yyyy</string>
+
+    <!-- about. -->
+    <string name="unsplash">Unsplash.com</string>
+    <string name="about_unsplash">Beautiful, free photos.\nGifted by the world\'s most generous community of photographers.</string>
+    <string name="retrofit">Retrofit 2.0</string>
+    <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
+    <string name="glide">Glide</string>
+    <string name="about_glide">An image loading and caching library for Android focused on smooth scrolling.</string>
+    <string name="circular_progress_view">CircularProgressView</string>
+    <string name="about_circular_progress_view">Material style circular progress bar for Android.</string>
+    <string name="circle_image_view">CircleImageView</string>
+    <string name="about_circle_image_view">A circular ImageView for Android.</string>
+    <string name="photo_view">PhotoView</string>
+    <string name="about_photo_view">Implementation of ImageView for Android that supports zooming, by various touch gestures.</string>
+    <string name="page_indicator">InkPageIndicator</string>
+    <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
+    <string name="greendao_db">greenDAO</string>
+    <string name="about_greendao_db">greenDAO is activity light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="butter_knife">Butter Knife</string>
+    <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
+    <string name="number_anim_text_view">NumberAnimTextView</string>
+    <string name="about_number_anim_text_view">A TextView with animation when increase number.</string>
+    <string name="file_downloader">FileDownloader</string>
+    <string name="about_file_downloader">Multitask、MultiThread(MultiConnection)、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process</string>
+    <string name="dagger">Dagger2</string>
+    <string name="about_dagger">A fast dependency injector for Android and Java.</string>
+    <string name="rx_java">RxJava</string>
+    <string name="about_rx_java">RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.</string>
+    <string name="rx_android">RxAndroid</string>
+    <string name="about_rx_android">RxJava bindings for Android</string>
+    <string name="rx_lifecycle">RxLifecycle</string>
+    <string name="about_rx_lifecycle">Bind observables to the lifecycle of Activity or Fragment in a non-invasive way.</string>
+
+    <!-- feedback. -->
+    <string name="feedback_click_retry">CLICK TO RETRY</string>
+
+    <string name="feedback_load_failed_tv">FAILED TO LOAD</string>
+    <string name="feedback_load_failed_toast">Failed to load</string>
+    <string name="feedback_load_nothing_tv">LOAD NOTHING</string>
+    <string name="feedback_load_nothing_toast">Load nothing</string>
+
+    <string name="feedback_search_failed_tv">FAILED TO SEARCH</string>
+    <string name="feedback_search_failed_toast">Failed to search</string>
+    <string name="feedback_search_nothing_tv">SEARCH NOTHING</string>
+    <string name="feedback_search_nothing_toast">Search nothing</string>
+    <string name="feedback_search_bar">Search in unsplash.com…</string>
+    <string name="feedback_search_photos_bar">Key word of photos</string>
+    <string name="feedback_search_users_bar">Key word of users</string>
+    <string name="feedback_search_photos_tv">SEARCH PHOTOS</string>
+    <string name="feedback_search_collections_tv">SEARCH COLLECTIONS</string>
+    <string name="feedback_search_users_tv">SEARCH USERS</string>
+
+    <string name="feedback_notify_restart">Restart to work</string>
+
+    <string name="feedback_download_success">Download successfully</string>
+    <string name="feedback_download_photo_success">Download photo successfully</string>
+    <string name="feedback_download_photo_failed">Download photo failed</string>
+    <string name="feedback_download_collection_success">Download collection successfully</string>
+    <string name="feedback_download_collection_failed">Download collection failed</string>
+    <string name="feedback_downloading">DOWNLOADING</string>
+    <string name="feedback_download_start">Start download</string>
+    <string name="feedback_no_sd_card">Cannot found SD card</string>
+    <string name="feedback_create_file_failed">Create file failed</string>
+    <string name="feedback_need_permission">Failed to get permission</string>
+    <string name="feedback_choose_share_app">Share photo</string>
+    <string name="feedback_choose_wallpaper_app">Set as wallpaper</string>
+    <string name="feedback_download_repeat">Download repeat</string>
+    <string name="feedback_file_does_not_exist">File does not exist</string>
+
+    <string name="feedback_views">Views</string>
+    <string name="feedback_downloads">Downloads</string>
+    <string name="feedback_likes">Likes</string>
+    <string name="feedback_size">Size</string>
+    <string name="feedback_color">Color</string>
+    <string name="feedback_location">Location</string>
+    <string name="feedback_camera_make">Camera make</string>
+    <string name="feedback_camera_model">Camera model</string>
+    <string name="feedback_exposure">Exposure time</string>
+    <string name="feedback_aperture">Aperture</string>
+    <string name="feedback_focal">Focal length</string>
+    <string name="feedback_iso">Iso</string>
+
+    <string name="feedback_portfolio_is_null">Portfolio link is empty</string>
+    <string name="feedback_no_filter">No filter options</string>
+
+    <string name="feedback_request_token_failed">Request access token failed</string>
+    <string name="feedback_login_text">Login to your Unsplash account</string>
+    <string name="feedback_please_login">Please login</string>
+
+    <string name="feedback_edit_my_profile">Edit profile</string>
+    <string name="feedback_edit_username">Username (letters, numbers, underscores)</string>
+    <string name="feedback_edit_first_name">First name</string>
+    <string name="feedback_edit_last_name">Last name</string>
+    <string name="feedback_edit_email">Email address</string>
+    <string name="feedback_edit_portfolio">Personal site / portfolio</string>
+    <string name="feedback_edit_location">Location</string>
+    <string name="feedback_edit_bio">Bio</string>
+    <string name="feedback_update_profile_failed">Cannot edit profile</string>
+    
+    <string name="feedback_add_to_collection">Add to collection</string>
+    <string name="feedback_delete_from_collection">Delete from collection</string>
+    <string name="feedback_create_collection">Create new collection</string>
+    <string name="feedback_edit_collection">Edit collection</string>
+    <string name="feedback_name">Name</string>
+    <string name="feedback_description">Description (optional)</string>
+    <string name="feedback_collection_private">Make collection private</string>
+
+    <string name="feedback_name_is_required">Name is required</string>
+    <string name="feedback_sure">Are you sure?</string>
+
+    <string name="feedback_notify_set_back_to_top">You can set the effect of back pressed</string>
+
+    <string name="feedback_add_photo_failed">Add photo failed</string>
+    <string name="feedback_delete_photo_failed">Delete photo failed</string>
+    <string name="feedback_create_collection_failed">Create collection failed</string>
+    <string name="feedback_update_collection_failed">Update collection failed</string>
+    <string name="feedback_delete_collection_failed">Delete collection failed</string>
+
+    <string name="feedback_overload">Overload</string>
+    <string name="feedback_exceed_rate_limit">In this hour, the visits of Uysplash API exceed the rate limit, So we cannot load anything now.\n\nYou can try again in next hour.</string>
+
+    <string name="feedback_confirm_change_theme">Confirm Change Theme</string>
+    <string name="feedback_change_theme_warning">Switch theme now will cause download tasks to fail</string>
+    <string name="feedback_confirm_restart">Confirm Restart</string>
+    <string name="feedback_restart_warning">Restart app now will cause download tasks to fail</string>
+
+    <string name="feedback_click_again_to_exit">Click again to exit</string>
+
+    <string name="feedback_share_photo_title">A photo from Unsplash.com</string>
+    <string name="feedback_share_photo_extra">Taken by # on $\n</string>
+    <string name="feedback_share_collection_title">A Collection from Unsplash.com</string>
+    <string name="feedback_share_collection_extra">Created by # on $\n</string>
+    <string name="feedback_share_user_title">A user profile from Unsplash.com</string>
+    <string name="feedback_share_user_extra">#\n</string>
+
+    <string name="feedback_like_failed">Like photo failed</string>
+    <string name="feedback_unlike_failed">Unlike photo failed</string>
+
+    <string name="feedback_follow_failed">Follow failed</string>
+    <string name="feedback_cancel_follow_failed">Cancel follow failed</string>
+
+    <string name="feedback_story_is_null">Story does not exist or has not been loaded</string>
+
+    <string name="feedback_get_notification_failed">Failed to load notifications</string>
+
+    <string name="feedback_pick_update_interval">Update interval. (Hour)\nOnly work for versions prior to Muzei 3.0</string>
+    <string name="feedback_interval_bounds">The interval must ranges from 1 to 24</string>
+    <string name="feedback_update_only_in_wifi">Update only when device is connected to WIFI</string>
+    <string name="feedback_source_collection">Source collections</string>
+    <string name="feedback_set_as_source_succeed">Set as source successfully</string>
+    <string name="feedback_set_as_source_failed">This source is already exist</string>
+    <string name="feedback_confirm_exit_without_save">Do you want to exit without saving settings?</string>
+
+    <string name="feedback_task_in_process">Cannot switch downloader when downloading</string>
+
+    <string name="feedback_separated_by_comma">Separated by \",\" (like \"space,ocean\")</string>
+
+    <string name="feedback_drag_to_back">DRAG TO BACK…</string>
+
+    <!-- introduce. -->
+    <string name="introduce_title_back_top">Scroll To Top</string>
+    <string name="introduce_description_back_top">Click top bar or back button, the photo list parent will scroll back to the top.</string>
+
+    <string name="introduce_title_data_collection">@string/settings_title_data_collection</string>
+    <string name="introduce_description_data_collection">@string/settings_summary_data_collection</string>
+
+    <string name="muzei_description">Featured Photos from Unsplash</string>
+
+    <!-- menu. -->
+    <string name="action_home">Home</string>
+    <string name="action_following">Following</string>
+    <string name="action_collection">Collection</string>
+    <string name="action_category">Category</string>
+    <string name="action_selected">Selected</string>
+    <string name="action_multi_filter">Multi-Filter</string>
+    <string name="action_change_theme">Change Theme</string>
+    <string name="action_download_manage">Downloads</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
+
+    <string name="action_category_buildings">Buildings</string>
+    <string name="action_category_food_drink">Food &amp; Drink</string>
+    <string name="action_category_nature">Nature</string>
+    <string name="action_category_objects">Objects</string>
+    <string name="action_category_people">People</string>
+    <string name="action_category_technology">Technology</string>
+
+    <string name="action_search">Search</string>
+    <string name="action_filter">Filter</string>
+    <string name="action_notification">Notification</string>
+
+    <string name="action_refresh">Refresh</string>
+
+    <string name="action_clear_text">Clear text</string>
+
+    <string name="action_like">Like</string>
+    <string name="action_collect">Collect</string>
+    <string name="action_open_download_link">Open Download Web Page</string>
+    <string name="action_open_story_link">Open Story Image Page</string>
+    <string name="action_share">Share</string>
+    <string name="action_menu">Menu</string>
+
+    <string name="action_open_portfolio">Open Portfolio Link</string>
+    <string name="action_submit">Submit Photo</string>
+
+    <string name="action_edit">Edit</string>
+    <string name="action_download">Download</string>
+    <string name="action_set_as_source">Set As Wallpaper Source</string>
+    <string name="action_remove_source">Remove From Wallpaper Source</string>
+
+    <string name="action_path">Download Path</string>
+    <string name="action_cancel_all">Cancel All</string>
+
+    <string name="action_clip_with_square">Clip With Square</string>
+    <string name="action_clip_with_rectangle">Clip With Rectangle</string>
+
+    <string name="action_align_left">Align Left Side</string>
+    <string name="action_align_center">Align Center</string>
+    <string name="action_align_right">Align Right Side</string>
+    
+    <string name="action_wallpaper">Wallpaper</string>
+    <string name="action_lockscreen">LockScreen</string>
+    <string name="action_wallpaper_lockscreen">Wallpaper And LockScreen</string>
+
+    <string name="action_muzei_settings">Settings For Muzei</string>
+
+    <!-- transition name. -->
+    <string name="transition_activity_container">activity_container</string>
+
+    <string name="transition_search_background">search_background</string>
+
+    <string name="transition_photo_image">photo_image</string>
+    <string name="transition_photo_background">photo_background</string>
+
+    <string name="transition_user_avatar">user_avatar</string>
+    <string name="transition_user_background">user_background</string>
+
+    <string name="transition_me_avatar">me_avatar</string>
+    <string name="transition_me_background">me_background</string>
+
+    <string name="transition_collection_avatar">collection_avatar</string>
+    <string name="transition_collection_background">collection_background</string>
+
+    <!-- settings. -->
+    <string name="settings_category_basic">Basic</string>
+    <string name="settings_title_back_to_top">Press Back Button To Scroll To Top</string>
+    <string name="settings_title_auto_night_mode">Auto Night mode</string>
+    <string name="settings_title_night_start_time">Night Mode Start Time</string>
+    <string name="settings_title_night_end_time">Night Mode End Time</string>
+    <string name="settings_title_load_image_size">Select The Resolution Of Images To Load</string>
+    <string name="settings_title_custom_api_key">Custom API Key</string>
+    <string name="settings_summary_custom_api_key">Set your own API key and secret.</string>
+    <string name="settings_title_language">Language</string>
+    <string name="settings_title_live_wallpaper">Live Wallpaper</string>
+    <string name="settings_summary_live_wallpaper">Get images from Unsplash regularly and set them as wallpaper.</string>
+    <string name="settings_title_data_collection">Allow data collection</string>
+    <string name="settings_summary_data_collection">Allow Mysplash to send crash data to developers.</string>
+
+    <string name="settings_category_filter">Filter</string>
+    <string name="settings_title_default_order">Default Order</string>
+    <string name="settings_title_default_collection_type">Default Collection Type</string>
+
+    <string name="settings_category_download">Download</string>
+    <string name="settings_title_downloader">Downloader</string>
+    <string name="settings_title_download_scale">Download Scale</string>
+
+    <string name="settings_category_display">Display</string>
+    <string name="settings_title_saturation_animation_enabled">Saturation Animation Enabled</string>
+    <string name="settings_title_saturation_animation_duration">Saturation Animation Duration</string>
+    <string name="settings_title_grid_list_in_port">Show Image Grid In Vertical Orientation</string>
+    <string name="settings_title_grid_list_in_land">Show Image Grid In Horizontal Orientation</string>
+
+    <string name="muzei_settings_title_source">Source</string>
+    <string name="muzei_settings_title_screen_size_image">Screen Size Image</string>
+    <string name="muzei_settings_title_screen_size_image_summary_off">Original Size</string>
+    <string name="muzei_settings_title_cache_mode">Cache Mode</string>
+    <string name="muzei_settings_title_collection_source">Collection Source</string>
+    <string name="muzei_settings_title_query">Query</string>
+
+    <!-- share preferences. -->
+    <string name="key_back_to_top">back_to_top</string>
+    <string name="key_auto_night_mode">auto_night_mode</string>
+    <string name="key_night_start_time">night_start_time</string>
+    <string name="key_night_end_time">night_end_time</string>
+    <string name="key_load_image_size">load_image_size</string>
+    <string name="key_custom_api_key">custom_api_key</string>
+    <string name="key_language">language</string>
+    <string name="key_live_wallpaper">live_wallpaper</string>
+    <string name="key_live_wallpaper_settings">live_wallpaper_settings</string>
+    <string name="key_data_collection">data_collection</string>
+    <string name="key_default_photo_order">default_photo_order</string>
+    <string name="key_downloader">downloader</string>
+    <string name="key_download_scale">download_scale</string>
+    <string name="key_saturation_animation_enabled">saturation_animation_enabled</string>
+    <string name="key_saturation_animation_duration">saturation_animation_duration</string>
+    <string name="key_grid_list_in_port">grid_list_in_port</string>
+    <string name="key_grid_list_in_land">grid_list_in_land</string>
+
+    <string name="key_muzei_source">muzei_source</string>
+    <string name="key_muzei_screen_size_image">muzei_screen_size_image</string>
+    <string name="key_muzei_cache_mode">muzei_cache_mode</string>
+    <string name="key_muzei_collection_source">muzei_collection_source</string>
+    <string name="key_muzei_query">muzei_query</string>
+
+    <string name="key_notified_set_back_to_top">notified_set_back_to_top</string>
+
+</resources>

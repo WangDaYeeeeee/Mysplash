@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/popup_collection_menu_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_collection_menu_editIcon"
+            android:src="@drawable/ic_pencil_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_collection_menu_editTxt"
+            android:text="@string/action_edit"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_collection_menu_editIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_collection_menu_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_collection_menu_downloadIcon"
+            android:src="@drawable/ic_download_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_collection_menu_downloadTxt"
+            android:text="@string/action_download"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_collection_menu_downloadIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_collection_menu_setAsSource"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_collection_menu_setAsSourceIcon"
+            android:src="@drawable/ic_plus"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_collection_menu_setAsSourceTxt"
+            android:text="@string/action_set_as_source"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_collection_menu_setAsSourceIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_collection_menu_removeSource"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_collection_menu_removeSourceIcon"
+            android:src="@drawable/ic_close"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_collection_menu_removeSourceTxt"
+            android:text="@string/action_remove_source"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_collection_menu_removeSourceIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

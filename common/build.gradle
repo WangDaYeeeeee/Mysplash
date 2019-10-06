@@ -1,0 +1,66 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+
+android {
+    compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
+
+    defaultConfig {
+        minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+    buildTypes.each {
+        it.buildConfigField 'String', 'APP_ID_BETA', APP_ID_BETA
+        it.buildConfigField 'String', 'SECRET_BETA', SECRET_BETA
+        it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
+        it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
+
+        it.buildConfigField 'String', 'FEED_TOKEN', FEED_TOKEN
+
+        it.buildConfigField 'String', 'APP_ID_RELEASE_UNAUTH', APP_ID_RELEASE_UNAUTH
+        it.buildConfigField 'String', 'GET_STREAM_KEY', GET_STREAM_KEY
+        it.buildConfigField 'String', 'GET_STREAM_AUTH_CODE', GET_STREAM_AUTH_CODE
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven {
+            url "https://jitpack.io"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    api project (':component')
+
+    // test.
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    // butter knife.
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
+    // dagger.
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.21'
+
+    // arouter.
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.0'
+}

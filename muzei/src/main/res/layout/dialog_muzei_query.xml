@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_muzei_query_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dialog_muzei_query_title"
+            android:text="@string/muzei_settings_title_query"
+            android:textStyle="bold"
+            android:textSize="@dimen/large_title_text_size"
+            android:textColor="?attr/content_color"
+            android:layout_alignParentStart="true"
+            android:layout_margin="@dimen/normal_margin"
+            style="@style/title_text"
+            tools:ignore="RtlHardcoded" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/dialog_muzei_query_textContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dialog_muzei_query_title"
+            android:layout_margin="@dimen/normal_margin"
+            app:counterEnabled="true"
+            app:counterMaxLength="50">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/dialog_muzei_query_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textFilter"
+                android:lineSpacingMultiplier="1.3"
+                android:hint="@string/feedback_separated_by_comma"
+                android:textColorHint="?attr/subtitle_color"
+                android:textColorHighlight="?attr/subtitle_color"
+                android:textSize="@dimen/content_text_size"
+                android:textColor="?attr/content_color"
+                android:layout_margin="@dimen/little_margin"
+                android:maxLines="1" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/dialog_muzei_query_enterBtn"
+            android:text="@string/enter"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/dialog_muzei_query_textContainer"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+        <Button
+            android:id="@+id/dialog_muzei_query_cancelBtn"
+            android:text="@string/cancel"
+            android:textColor="?attr/subtitle_color"
+            android:layout_toStartOf="@id/dialog_muzei_query_enterBtn"
+            android:layout_below="@id/dialog_muzei_query_textContainer"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/settings_category_basic"
+        android:key="basic">
+
+        <ListPreference
+            android:title="@string/settings_title_back_to_top"
+            android:key="@string/key_back_to_top"
+            android:entries="@array/back_to_top_types"
+            android:entryValues="@array/back_to_top_type_values"
+            android:defaultValue="all" />
+
+        <ListPreference
+            android:title="@string/settings_title_auto_night_mode"
+            android:key="@string/key_auto_night_mode"
+            android:entries="@array/auto_night_mode_types"
+            android:entryValues="@array/auto_night_mode_type_values"
+            android:defaultValue="follow_system" />
+
+        <Preference
+            android:title="@string/settings_title_night_start_time"
+            android:key="@string/key_night_start_time" />
+
+        <Preference
+            android:title="@string/settings_title_night_end_time"
+            android:key="@string/key_night_end_time" />
+
+        <Preference
+            android:title="@string/settings_title_custom_api_key"
+            android:key="@string/key_custom_api_key"
+            android:summary="@string/settings_summary_custom_api_key" />
+
+        <ListPreference
+            android:title="@string/settings_title_language"
+            android:key="@string/key_language"
+            android:entries="@array/languages"
+            android:entryValues="@array/language_values"
+            android:defaultValue="follow_system" />
+
+        <Preference
+            android:title="@string/action_muzei_settings"
+            android:key="@string/key_live_wallpaper_settings" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_filter"
+        android:key="filter">
+
+        <ListPreference
+            android:title="@string/settings_title_default_order"
+            android:key="@string/key_default_photo_order"
+            android:entries="@array/photo_orders"
+            android:entryValues="@array/photo_order_values"
+            android:defaultValue="latest" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_download"
+        android:key="download">
+
+        <ListPreference
+            android:title="@string/settings_title_downloader"
+            android:key="@string/key_downloader"
+            android:entries="@array/downloader_types"
+            android:entryValues="@array/downloader_type_values"
+            android:defaultValue="mysplash" />
+
+        <ListPreference
+            android:title="@string/settings_title_download_scale"
+            android:key="@string/key_download_scale"
+            android:entries="@array/download_types"
+            android:entryValues="@array/download_type_values"
+            android:defaultValue="compact" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_category_display"
+        android:key="display">
+
+        <SwitchPreference
+            android:title="@string/settings_title_saturation_animation_enabled"
+            android:key="@string/key_saturation_animation_enabled"
+            android:defaultValue="true" />
+
+        <ListPreference
+            android:title="@string/settings_title_saturation_animation_duration"
+            android:key="@string/key_saturation_animation_duration"
+            android:entries="@array/saturation_animation_durations"
+            android:entryValues="@array/saturation_animation_duration_values"
+            android:defaultValue="2000" />
+
+        <SwitchPreference
+            android:title="@string/settings_title_grid_list_in_port"
+            android:key="@string/key_grid_list_in_port"
+            android:defaultValue="true" />
+
+        <SwitchPreference
+            android:title="@string/settings_title_grid_list_in_land"
+            android:key="@string/key_grid_list_in_land"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

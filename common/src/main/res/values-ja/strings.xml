@@ -1,0 +1,224 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- key words. -->
+    <string name="about_app">アプリについて</string>
+    <string name="introduce">はじめに</string>
+    <string name="gitHub">GITHUB</string>
+    <string name="email">メール</string>
+    <string name="source_code">ソースコード</string>
+    <string name="translators">翻訳者</string>
+    <string name="libraries">ライブラリー</string>
+    <string name="enter">入力</string>
+    <string name="copy">コピー</string>
+    <string name="next">次へ</string>
+    <string name="cancel" tools:ignore="ButtonCase">キャンセル</string>
+    <string name="backstage">バックステージ</string>
+    <string name="details">詳細</string>
+    <string name="restart">再起動</string>
+    <string name="create">作成</string>
+    <string name="delete">削除</string>
+    <string name="save">保存</string>
+    <string name="check">チェック</string>
+    <string name="set">設定</string>
+    <string name="search">検索</string>
+    <string name="follow">フォロー</string>
+    <string name="following">フォロー中</string>
+    <string name="my_follow">自分のフォロー</string>
+    <string name="all">すべて</string>
+    <string name="stats">統計情報</string>
+    <string name="by">作成</string>
+    <string name="on">日時</string>
+    <string name="from">から</string>
+    <string name="now">今</string>
+
+    <string name="like">好きな</string>
+    <string name="liked">いいね</string>
+    <string name="collect">集める</string>
+    <string name="collected">コレクション</string>
+    <string name="download">ダウンロード</string>
+    <string name="followed">フォロー</string>
+    <string name="released">リリース</string>
+    <string name="published">公開</string>
+    <string name="curated">Curated</string>
+    <string name="photos">写真</string>
+    <string name="users">ユーザー</string>
+    <string name="to">先</string>
+    <string name="more">さらに</string>
+
+    <string name="relative_photo">関連する写真</string>
+    <string name="relative_collection">関連するコレクション</string>
+
+    <string name="follow_system">システムをフォロー</string>
+    <string name="date_format">yyyy年M月d日</string>
+
+    <!-- feedback. -->
+    <string name="feedback_click_retry">クリックすると再試行</string>
+
+    <string name="feedback_load_failed_tv">読み込みに失敗</string>
+    <string name="feedback_load_failed_toast">読み込みに失敗しました。</string>
+    <string name="feedback_load_nothing_tv">読み込むものはありません</string>
+    <string name="feedback_load_nothing_toast">読み込むものはありません。</string>
+
+    <string name="feedback_search_failed_tv">検索に失敗</string>
+    <string name="feedback_search_failed_toast">検索に失敗しました。</string>
+    <string name="feedback_search_nothing_tv">見つかりません</string>
+    <string name="feedback_search_nothing_toast">何も見つかりません。</string>
+    <string name="feedback_search_bar">写真、コレクション、ユーザーを検索</string>
+    <string name="feedback_search_photos_bar">写真のキーワード</string>
+    <string name="feedback_search_users_bar">ユーザーのキーワード</string>
+    <string name="feedback_search_photos_tv">写真を検索</string>
+    <string name="feedback_search_collections_tv">コレクションを検索</string>
+    <string name="feedback_search_users_tv">ユーザーを検索</string>
+
+    <string name="feedback_notify_restart">再起動します。</string>
+
+    <string name="feedback_download_success">ダウンロードに成功しました。</string>
+    <string name="feedback_download_photo_success">写真のダウンロードに成功しました。</string>
+    <string name="feedback_download_photo_failed">写真のダウンロードに失敗しました。</string>
+    <string name="feedback_download_collection_success">コレクションのダウンロードに成功しました。</string>
+    <string name="feedback_download_collection_failed">コレクションのダウンロードに失敗しました。</string>
+    <string name="feedback_downloading">ダウンロード中</string>
+    <string name="feedback_download_start">ダウンロード開始。</string>
+    <string name="feedback_no_sd_card">SD カードが見つかりません。</string>
+    <string name="feedback_create_file_failed">ファイルの作成に失敗しました。</string>
+    <string name="feedback_need_permission">アクセス許可の取得に失敗しました。</string>
+    <string name="feedback_choose_share_app">写真を共有</string>
+    <string name="feedback_choose_wallpaper_app">壁紙として設定</string>
+    <string name="feedback_download_repeat">繰り返しダウンロード。</string>
+
+    <string name="feedback_size">サイズ</string>
+    <string name="feedback_color">色</string>
+    <string name="feedback_location">場所</string>
+    <string name="feedback_exposure">露出時間</string>
+    <string name="feedback_aperture">絞り</string>
+    <string name="feedback_focal">焦点距離</string>
+    <string name="feedback_iso">ISO</string>
+
+    <string name="feedback_portfolio_is_null">ポートフォリオリンクは空です。</string>
+    <string name="feedback_no_filter">フィルターオプションはありません。</string>
+
+    <string name="feedback_request_token_failed">アクセストークンのリクエストに失敗しました。</string>
+    <string name="feedback_login_text">Unsplash アカウントにログイン。</string>
+    <string name="feedback_please_login">ログインしてください。</string>
+
+    <string name="feedback_edit_my_profile">プロフィールを編集</string>
+    <string name="feedback_edit_username">ユーザー名 (文字、数字、アンダースコア)</string>
+    <string name="feedback_edit_first_name">名</string>
+    <string name="feedback_edit_last_name">姓</string>
+    <string name="feedback_edit_email">メールアドレス</string>
+    <string name="feedback_edit_portfolio">個人サイト / ポートフォリオ</string>
+    <string name="feedback_edit_location">場所</string>
+    <string name="feedback_edit_bio">バイオ</string>
+    <string name="feedback_update_profile_failed">プロフィールを編集できません。</string>
+
+    <string name="feedback_add_to_collection">コレクションに追加</string>
+    <string name="feedback_delete_from_collection">コレクションから削除</string>
+    <string name="feedback_create_collection">新しいコレクションを作成</string>
+    <string name="feedback_edit_collection">コレクションを編集</string>
+    <string name="feedback_name">名前</string>
+    <string name="feedback_description">説明 (オプション)</string>
+    <string name="feedback_collection_private">コレクションを非公開にする</string>
+
+    <string name="feedback_name_is_required">名前は必須です。</string>
+    <string name="feedback_sure">よろしいですか?</string>
+
+    <string name="feedback_notify_set_back_to_top">戻るを押したときの動作を設定できます。</string>
+
+    <string name="feedback_add_photo_failed">写真の追加に失敗しました。</string>
+    <string name="feedback_delete_photo_failed">写真の削除に失敗しました。</string>
+    <string name="feedback_create_collection_failed">コレクションの作成に失敗しました。</string>
+    <string name="feedback_update_collection_failed">コレクションの更新に失敗しました。</string>
+    <string name="feedback_delete_collection_failed">コレクションの削除に失敗しました。</string>
+
+    <string name="feedback_overload">過負荷</string>
+    <string name="feedback_exceed_rate_limit">この時間、Uysplash API の訪問者が制限に達しました。 そのため現在何も読み込みできません。\n\n1 時間後にもう一度やり直してください。</string>
+
+    <string name="feedback_confirm_change_theme">テーマの変更の確認</string>
+    <string name="feedback_change_theme_warning">今テーマを切り替えると、ダウンロードのタスクが失敗します。</string>
+    <string name="feedback_confirm_restart">再起動の確認</string>
+    <string name="feedback_restart_warning">アプリを再起動すると、ダウンロードのタスクが失敗します。</string>
+
+    <string name="feedback_click_again_to_exit">もう一度クリックすると終了します。</string>
+
+    <string name="feedback_share_photo_title">Unsplash.com からの写真</string>
+    <string name="feedback_share_photo_extra">撮影者 # 日時 $\n</string>
+    <string name="feedback_share_collection_title">Unsplash.com からのコレクション</string>
+    <string name="feedback_share_collection_extra">作成者 # 日時 $\n</string>
+    <string name="feedback_share_user_title">Unsplash.com からのユーザープロフィール</string>
+    <string name="feedback_share_user_extra">#\n</string>
+
+    <string name="feedback_like_failed">写真のいいね！に失敗しました。</string>
+    <string name="feedback_unlike_failed">写真のいいね！取り消しに失敗しました。</string>
+
+    <string name="feedback_follow_failed">フォローに失敗しました。</string>
+    <string name="feedback_cancel_follow_failed">フォローの取り消しに失敗しました。</string>
+
+    <string name="feedback_story_is_null">ストーリーが存在しないか、読み込まれていません。</string>
+
+    <!-- introduce. -->
+    <string name="introduce_title_back_top">先頭にスクロール</string>
+    <string name="introduce_description_back_top">上部バーまたは戻るボタンをクリックすると、写真のリスト表示が先頭にスクロールします。</string>
+
+    <!-- menu. -->
+    <string name="action_home">ホーム</string>
+    <string name="action_following">フォロー中</string>
+    <string name="action_collection">コレクション</string>
+    <string name="action_category">カテゴリー</string>
+    <string name="action_multi_filter">マルチフィルター</string>
+    <string name="action_change_theme">テーマを変更</string>
+    <string name="action_download_manage">ダウンロード</string>
+    <string name="action_settings">設定</string>
+    <string name="action_about">アプリについて</string>
+
+    <string name="action_category_buildings">建物</string>
+    <string name="action_category_food_drink">食品 &amp; 飲料</string>
+    <string name="action_category_nature">自然</string>
+    <string name="action_category_objects">物</string>
+    <string name="action_category_people">人</string>
+    <string name="action_category_technology">テクノロジー</string>
+
+    <string name="action_search">検索</string>
+    <string name="action_filter">フィルター</string>
+
+    <string name="action_clear_text">テキストをクリア</string>
+
+    <string name="action_open_download_link">ダウンロード Web ページを開く</string>
+    <string name="action_open_story_link">ストーリー画像ページを開く</string>
+    <string name="action_share">共有</string>
+    <string name="action_menu">メニュー</string>
+
+    <string name="action_open_portfolio">ポートフォリオリンクを開く</string>
+    <string name="action_submit">写真を送信</string>
+
+    <string name="action_edit">編集</string>
+    <string name="action_download">ダウンロード</string>
+
+    <string name="action_path">ダウンロードパス</string>
+    <string name="action_cancel_all">すべてキャンセル</string>
+
+    <string name="action_clip_with_square">正方形にクリップ</string>
+    <string name="action_clip_with_rectangle">四角形にクリップ</string>
+
+    <string name="action_align_left">左寄せ</string>
+    <string name="action_align_center">中央寄せ</string>
+    <string name="action_align_right">右寄せ</string>
+
+    <string name="action_wallpaper">壁紙</string>
+    <string name="action_lockscreen">ロック画面</string>
+    <string name="action_wallpaper_lockscreen">壁紙とロック画面</string>
+
+    <!-- settings. -->
+    <string name="settings_category_basic">基本</string>
+    <string name="settings_title_back_to_top">戻るボタンを押すと先頭にスクロールします</string>
+    <string name="settings_title_custom_api_key">カスタム API キー</string>
+    <string name="settings_summary_custom_api_key">あなた自身の API キーとシークレットを設定します。</string>
+    <string name="settings_title_language">言語</string>
+
+    <string name="settings_category_filter">フィルター</string>
+    <string name="settings_title_default_order">デフォルトの順序</string>
+    <string name="settings_title_default_collection_type">デフォルトのコレクション種類</string>
+
+    <string name="settings_category_download">ダウンロード</string>
+    <string name="settings_title_download_scale">ダウンロードのスケール</string>
+
+</resources>

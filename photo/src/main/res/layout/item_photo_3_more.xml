@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color"
+    tools:background="?attr/title_color">
+
+    <view class="com.wangdaye.common.ui.widget.SwipeSwitchLayout$ViewPager2"
+        android:id="@+id/item_photo_3_more_viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="@dimen/item_photo_3_more_vertical_height" />
+
+    <TextView
+        android:id="@+id/item_photo_3_more_fakeTitle"
+        android:text=" "
+        android:textColor="@android:color/transparent"
+        android:textSize="@dimen/subtitle_text_size"
+        android:textStyle="bold"
+        android:maxLines="1"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="1"
+        android:shadowColor="@android:color/transparent"
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_centerHorizontal="true"
+        android:gravity="center_horizontal"
+        style="@style/title_text"
+        tools:ignore="HardcodedText" />
+
+    <com.pixelcan.inkpageindicator.InkPageIndicator
+        android:id="@+id/item_photo_3_more_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/item_photo_3_more_fakeTitle"
+        android:paddingBottom="@dimen/normal_margin"
+        app:animationDuration="300"
+        app:pageIndicatorColor="@color/colorTextGrey"
+        app:currentPageIndicatorColor="@android:color/white"
+        app:dotDiameter="@dimen/little_margin"
+        app:dotGap="@dimen/little_margin" />
+
+</RelativeLayout>

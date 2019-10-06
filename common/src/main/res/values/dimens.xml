@@ -1,0 +1,44 @@
+<resources>
+
+    <!-- parent size. -->
+    <dimen name="circular_progress_height">42dp</dimen>
+    <dimen name="tab_layout_height">48dp</dimen>
+    <dimen name="mini_loading_view_height">80dp</dimen>
+    <dimen name="user_cover_view_height">240dp</dimen>
+    <dimen name="tablet_download_button_bar_width">386dp</dimen>
+    <dimen name="item_photo_3_more_vertical_height">96dp</dimen>
+    <dimen name="select_collection_dialog_height">320dp</dimen>
+
+    <!-- text -->
+    <dimen name="design_title_text_size">24sp</dimen>
+    <dimen name="large_title_text_size">20sp</dimen>
+    <dimen name="title_text_size">16sp</dimen>
+    <dimen name="subtitle_text_size">14sp</dimen>
+    <dimen name="content_text_size">16sp</dimen>
+
+    <!-- icon -->
+    <dimen name="feedback_icon_size">156dp</dimen>
+    <dimen name="design_icon_size">72dp</dimen>
+    <dimen name="large_icon_size">56dp</dimen>
+    <dimen name="normal_icon_size">48dp</dimen>
+    <dimen name="little_icon_size">36dp</dimen>
+    <dimen name="mini_icon_size">24dp</dimen>
+    <dimen name="nano_icon_size">18dp</dimen>
+
+    <!-- margin. -->
+    <dimen name="normal_margin">16dp</dimen>
+    <dimen name="little_margin">8dp</dimen>
+    <dimen name="mini_margin">4dp</dimen>
+    <dimen name="nano_margin">2dp</dimen>
+
+    <!-- elevation. -->
+    <dimen name="tiny_elevation">1dp</dimen>
+    <dimen name="low_elevation">2dp</dimen>
+    <dimen name="middle_elevation">4dp</dimen>
+    <dimen name="high_elevation">8dp</dimen>
+
+    <!-- radius. -->
+    <dimen name="material_card_radius">8dp</dimen>
+    <dimen name="material_card_radius_large">12dp</dimen>
+
+</resources>

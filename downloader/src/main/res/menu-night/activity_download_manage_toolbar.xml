@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_path"
+        android:orderInCategory="100"
+        android:title="@string/action_path"
+        android:icon="@drawable/ic_folder_dark"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/action_cancel_all"
+        android:orderInCategory="100"
+        android:title="@string/action_cancel_all"
+        android:icon="@drawable/ic_toolbar_list_remove_dark"
+        app:showAsAction="always" />
+
+</menu>

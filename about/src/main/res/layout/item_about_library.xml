@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_about_library_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/item_about_library_title"
+        android:textStyle="bold"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:layout_marginStart="@dimen/normal_margin"
+        style="@style/title_text"
+        tools:text="@string/unsplash"
+        tools:ignore="RtlHardcoded" />
+
+    <TextView
+        android:id="@+id/item_about_library_content"
+        android:layout_below="@id/item_about_library_title"
+        android:layout_marginTop="@dimen/mini_margin"
+        android:layout_marginStart="@dimen/normal_margin"
+        android:layout_marginEnd="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/normal_margin"
+        style="@style/body_text"
+        tools:text="@string/about_unsplash"
+        tools:ignore="RtlHardcoded" />
+
+</RelativeLayout>

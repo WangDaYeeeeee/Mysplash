@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="tag_activity_create_flag" type="id" />
+    <item name="tag_item_image_fade_in_flag" type="id" />
+    <item name="tag_transition_extra_properties" type="id" />
+    
+</resources>

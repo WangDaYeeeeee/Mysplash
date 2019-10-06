@@ -1,0 +1,248 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- application. -->
+    <string name="powered">Bilder von Unsplash.com</string>
+
+    <!-- key words. -->
+    <string name="about_app">ÜBER</string>
+    <string name="introduce">INTRODUKTION</string>
+    <string name="gitHub">GITHUB</string>
+    <string name="email">E-MAIL</string>
+    <string name="source_code">QUELLCODE</string>
+    <string name="translators">ÜBERSETZER</string>
+    <string name="libraries">BIBLIOTHEKEN</string>
+    <string name="enter">ENTER</string>
+    <string name="copy" tools:ignore="PrivateResource">KOPIEREN</string>
+    <string name="next">VOR</string>
+    <string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
+    <string name="backstage">BACKSTAGE</string>
+    <string name="details">DETAILS</string>
+    <string name="restart">NEUSTART</string>
+    <string name="create">ERSTELLEN</string>
+    <string name="delete">LÖSCHEN</string>
+    <string name="save">SPEICHERN</string>
+    <string name="check">ÜBERPRÜFEN</string>
+    <string name="set">SETZEN</string>
+    <string name="search">SUCHE</string>
+    <string name="follow">FOLGEN</string>
+    <string name="following">FOLGT</string>
+    <string name="my_follow">Meine Follower</string>
+    <string name="all">ALLES</string>
+    <string name="stats">Status</string>
+    <string name="by">Von</string>
+    <string name="on">An</string>
+    <string name="from">Aus</string>
+    <string name="now">Jetzt</string>
+
+    <string name="like">Favorit</string>
+    <string name="liked">Favoriten</string>
+    <string name="collect">Sammeln</string>
+    <string name="collected">Gesammelt</string>
+    <string name="download">Herunterladen</string>
+    <string name="followed">Gefolgt</string>
+    <string name="released">Veröffentlicht</string>
+    <string name="published">Publiziert</string>
+    <string name="curated">Kuratiert</string>
+    <string name="photos">Fotos</string>
+    <string name="users">Benutzer</string>
+    <string name="to">zu</string>
+    <string name="your">Ihre</string>
+    <string name="you">Sie</string>
+    <string name="photo">Foto</string>
+    <string name="more">MEHR</string>
+
+    <string name="relative_photo">Ähnliche Fotos</string>
+    <string name="relative_collection">Ähnliche Sammlungen</string>
+
+    <string name="follow_system">System folgen</string>
+    <string name="date_format">d. MMM yyyy</string>
+
+    <!-- about. -->
+    <string name="unsplash">Unsplash.com</string>
+    <string name="retrofit">Retrofit 2.0</string>
+    <string name="about_retrofit">Typensicherer HTTP-Client für Android und Java von Square, Inc.</string>
+    <string name="glide">Glide</string>
+    <string name="about_glide">Eine Bibliothek zum Laden und Cachen von Bildern mit Fokus auf ruckelloses Scrollen</string>
+    <string name="circular_progress_view">CircularProgressView</string>
+    <string name="about_circular_progress_view">Kreisförmige Fortschrittsanzeige im Material Design</string>
+    <string name="circle_image_view">CircleImageView</string>
+    <string name="about_circle_image_view">Runde Bilder für Android</string>
+    <string name="photo_view">PhotoView</string>
+    <string name="about_photo_view">Ein Widget zur Vorschau und Skalierung von Bildern</string>
+    <string name="page_indicator">InkPageIndicator</string>
+    <string name="about_page_indicator">InkPageIndicator erstellt von @nickbutcher für Plaid https://github.com/nickbutcher/plaid und gebackportet von David Pacioianu für API 14+ (4.0+).</string>
+    <string name="greendao_db">greenDAO</string>
+    <string name="about_greendao_db">greenDAO ist eine leichte und schnelle Lösung für Android, die Objekte zu SQLite Datenbanken abbildet.</string>
+    <string name="butter_knife">Butter Knife</string>
+    <string name="about_butter_knife">Verbinde Android-Views und -Callbacks mit Feldern und Methoden.</string>
+
+    <!-- feedback. -->
+    <string name="feedback_click_retry">ZUM WIEDERHOLEN DRÜCKEN</string>
+
+    <string name="feedback_load_failed_tv">LADEN FEHLGESCHLAGEN</string>
+    <string name="feedback_load_failed_toast">Laden fehlgeschlagen.</string>
+    <string name="feedback_load_nothing_tv">NICHTS GELADEN</string>
+    <string name="feedback_load_nothing_toast">Nichts geladen.</string>
+
+    <string name="feedback_search_failed_tv">SUCHE FEHLGESCHLAGEN</string>
+    <string name="feedback_search_failed_toast">Suche fehlgeschlagen.</string>
+    <string name="feedback_search_nothing_tv">NICHTS SUCHEN</string>
+    <string name="feedback_search_nothing_toast">Nichts suchen.</string>
+    <string name="feedback_search_photos_bar">Suchbegriff (Fotos)</string>
+    <string name="feedback_search_users_bar">Suchbegriff (Benutzer)</string>
+    <string name="feedback_search_photos_tv">FOTOS SUCHEN</string>
+    <string name="feedback_search_collections_tv">KOLLEKTIONEN SUCHEN</string>
+    <string name="feedback_search_users_tv">BENUTZER SUCHEN</string>
+
+    <string name="feedback_notify_restart">App neustarten, um Änderungen zu übernehmen</string>
+
+    <string name="feedback_download_success">Heruntergeladen</string>
+    <string name="feedback_download_photo_success">Foto heruntergeladen.</string>
+    <string name="feedback_download_photo_failed">Herunterladen des Fotos fehlgeschlagen.</string>
+    <string name="feedback_download_collection_success">Kollektion heruntergeladen.</string>
+    <string name="feedback_download_collection_failed">Herunterladen der Kollektion fehlgeschlagen.</string>
+    <string name="feedback_downloading">WIRD HERUNTERGELADEN</string>
+    <string name="feedback_download_start">Herunterladen gestartet.</string>
+    <string name="feedback_no_sd_card">Konnte keine SD Karte entdecken.</string>
+    <string name="feedback_create_file_failed">Dateierstellung fehlgeschlagen.</string>
+    <string name="feedback_need_permission">Berechtigung wurde nicht erteilt.</string>
+    <string name="feedback_choose_share_app">Foto teilen</string>
+    <string name="feedback_choose_wallpaper_app">Hintergrundbild setzen</string>
+    <string name="feedback_download_repeat">Herunterladen wiederholen.</string>
+
+    <string name="feedback_size">Größe</string>
+    <string name="feedback_color">Farbe</string>
+    <string name="feedback_location">Ort</string>
+    <string name="feedback_exposure">Belichtungszeit</string>
+    <string name="feedback_aperture">Blende</string>
+    <string name="feedback_focal">Brennweite</string>
+    <string name="feedback_iso">ISO</string>
+
+    <string name="feedback_portfolio_is_null">Portfoliolink ist ungültig.</string>
+    <string name="feedback_no_filter">Kein Filterelement.</string>
+
+    <string name="feedback_request_token_failed">Abfrage des Zugriffstoken gescheitert.</string>
+    <string name="feedback_login_text">Mit Ihrem Unsplash Account einloggen.</string>
+    <string name="feedback_please_login">Bite melden Sie sich an.</string>
+
+    <string name="feedback_edit_my_profile">Profil bearbeiten</string>
+    <string name="feedback_edit_username">Benutzername (Buchstaben, Zahlen, Unterstriche)</string>
+    <string name="feedback_edit_first_name">Name</string>
+    <string name="feedback_edit_last_name">Nachname</string>
+    <string name="feedback_edit_email">E-Mail-Adresse</string>
+    <string name="feedback_edit_portfolio">Persönliche Seite / Portfolio</string>
+    <string name="feedback_edit_location">Ort</string>
+    <string name="feedback_edit_bio">Bio</string>
+    <string name="feedback_update_profile_failed">Profil kann nicht bearbeitet werden.</string>
+
+    <string name="feedback_add_to_collection">Zur Kollektion hinzufügen</string>
+    <string name="feedback_delete_from_collection">Aus der Kollektion entfernen</string>
+    <string name="feedback_create_collection">Neue Kollektion erstellen</string>
+    <string name="feedback_edit_collection">Kollektion bearbeiten</string>
+    <string name="feedback_name">Name</string>
+    <string name="feedback_description">Beschreibung (optional)</string>
+    <string name="feedback_collection_private">Kollektion privat machen</string>
+
+    <string name="feedback_name_is_required">Name ist nötig</string>
+    <string name="feedback_sure">Sicher?</string>
+
+    <string name="feedback_notify_set_back_to_top">Sie können das Verhalten der "Zurück" Taste ändern.</string>
+
+    <string name="feedback_add_photo_failed">Hinzufügen des Fotos fehlgeschlagen.</string>
+    <string name="feedback_delete_photo_failed">Löschen des Fotos fehlgeschlagen.</string>
+    <string name="feedback_create_collection_failed">Kollektionserstellung fehlgeschlagen.</string>
+    <string name="feedback_update_collection_failed">Hochladen der Kollektion fehlgeschlagen.</string>
+    <string name="feedback_delete_collection_failed">Löschen der Kollektion fehlgeschlagen.</string>
+
+    <string name="feedback_overload">Überladung</string>
+    <string name="feedback_exceed_rate_limit">Ups! Es gab zu viele Besucher in dieser Stunde, bitte versuchen Sie in der nächsten Stunde erneut.</string>
+
+    <string name="feedback_confirm_change_theme">Themaänderung bestätigen</string>
+    <string name="feedback_change_theme_warning">Die Änderung des Themas wird alle aktuelle Downloads abbrechen.</string>
+    <string name="feedback_confirm_restart">Neustart bestätigen</string>
+    <string name="feedback_restart_warning">Der Neustart der App wird alle aktuellen Downloads abbrechen.</string>
+
+    <string name="feedback_click_again_to_exit">Zum Verlassen nochmal drücken.</string>
+
+    <string name="feedback_share_photo_title">Ein Foto von Unsplash.com</string>
+    <string name="feedback_share_photo_extra">Aufgenommen von # am $\n</string>
+    <string name="feedback_share_collection_title">Eine Kollektion von Unsplash.com</string>
+    <string name="feedback_share_collection_extra">Erstellt von # am $\n</string>
+    <string name="feedback_share_user_title">Ein Benutzerprofil von Unsplash.com</string>
+    <string name="feedback_share_user_extra">#\n</string>
+
+    <string name="feedback_like_failed">Favorisieren des Fotos fehlgeschlagen.</string>
+    <string name="feedback_unlike_failed">Als Favorit entfernen fehlgeschlagen.</string>
+
+    <string name="feedback_follow_failed">Folgen fehlgeschlagen.</string>
+    <string name="feedback_cancel_follow_failed">Entfolgen fehlgeschlagen.</string>
+
+    <string name="feedback_story_is_null">Geschichte existiert nicht oder wurde noch nicht geladen.</string>
+
+    <!-- introduce. -->
+    <string name="introduce_title_back_top">Nach oben scrollen</string>
+    <string name="introduce_description_back_top">Tippen Sie auf die obere Leiste oder auf Zurück, um in der Listenansicht nach oben zu scrollen.</string>
+
+    <!-- menu. -->
+    <string name="action_home">Start</string>
+    <string name="action_following">Follower</string>
+    <string name="action_collection">Kollektionen</string>
+    <string name="action_category">Kategorie</string>
+    <string name="action_multi_filter">Multi-Filter</string>
+    <string name="action_change_theme">Thema ändern</string>
+    <string name="action_download_manage">Downloads</string>
+    <string name="action_settings">Einstellungen</string>
+    <string name="action_about">Über</string>
+
+    <string name="action_category_buildings">Gebäude</string>
+    <string name="action_category_food_drink">Essen &amp; Trinken</string>
+    <string name="action_category_nature">Natur</string>
+    <string name="action_category_objects">Objekte</string>
+    <string name="action_category_people">Menschen</string>
+    <string name="action_category_technology">Technologie</string>
+
+    <string name="action_search">Suche</string>
+    <string name="action_filter">Filter</string>
+
+    <string name="action_clear_text">Text leeren</string>
+
+    <string name="action_open_download_link">Download-Website öffnen</string>
+    <string name="action_open_story_link">Geschichtenseite öffnen</string>
+    <string name="action_share">Teilen</string>
+    <string name="action_menu">Menü</string>
+
+    <string name="action_open_portfolio">Portfoliolink öffnen</string>
+    <string name="action_submit">Foto übermitteln</string>
+
+    <string name="action_edit">Bearbeiten</string>
+    <string name="action_download">Herunterladen</string>
+
+    <string name="action_path">Download-URL</string>
+    <string name="action_cancel_all">Alles abbrechen</string>
+
+    <string name="action_clip_with_square">Quadratisch zuschneiden</string>
+    <string name="action_clip_with_rectangle">Rechteckig zuschneiden</string>
+
+    <string name="action_align_left">Links anheften</string>
+    <string name="action_align_center">Zentrieren</string>
+    <string name="action_align_right">Rechts ausrichten</string>
+
+    <string name="action_wallpaper">Hintergrundbild</string>
+    <string name="action_lockscreen">Sperrbildschirm</string>
+    <string name="action_wallpaper_lockscreen">Hintergrundbild und Sperrbildschirm</string>
+
+    <!-- settings. -->
+    <string name="settings_category_basic">Haupteinstellungen</string>
+    <string name="settings_title_back_to_top">Drücken Sie den Zurück-Knopf um nach oben zurückzuscrollen</string>
+    <string name="settings_title_custom_api_key">Eigener API-Schlüssel</string>
+    <string name="settings_summary_custom_api_key">Legen Sie Ihren eigenen API-Schlüssel und Geheimnis fest.</string>
+    <string name="settings_title_language">Sprache</string>
+
+    <string name="settings_category_filter">Filter</string>
+    <string name="settings_title_default_order">Standardordnung</string>
+    <string name="settings_title_default_collection_type">Standardkollektionstyp</string>
+
+    <string name="settings_category_download">Herunterladen</string>
+    <string name="settings_title_download_scale">Skalierung beim Herunterladen</string>
+
+</resources>

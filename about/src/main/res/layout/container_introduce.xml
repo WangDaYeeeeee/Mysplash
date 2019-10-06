@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/container_introduce_image"
+        android:layout_width="@dimen/feedback_icon_size"
+        android:layout_height="@dimen/feedback_icon_size"
+        android:layout_centerInParent="true"
+        tools:src="@drawable/illustration_back_top"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/container_introduce_title"
+        android:textSize="@dimen/design_title_text_size"
+        android:textStyle="bold"
+        android:layout_centerHorizontal="true"
+        android:layout_above="@id/container_introduce_image"
+        android:layout_marginStart="@dimen/large_icon_size"
+        android:layout_marginEnd="@dimen/large_icon_size"
+        android:layout_marginBottom="@dimen/little_icon_size"
+        style="@style/large_title_text"
+        tools:text="@string/introduce_title_back_top" />
+
+    <TextView
+        android:id="@+id/container_introduce_description"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/container_introduce_image"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="@dimen/large_icon_size"
+        android:layout_marginEnd="@dimen/large_icon_size"
+        android:layout_marginTop="@dimen/normal_margin"
+        style="@style/content_text"
+        tools:text="@string/introduce_description_back_top" />
+
+    <Button
+        android:id="@+id/container_introduce_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/normal_margin"
+        android:layout_below="@id/container_introduce_description"
+        android:layout_centerHorizontal="true"
+        android:textColor="?attr/root_color"
+        tools:text="@string/set"/>
+
+</RelativeLayout>

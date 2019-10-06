@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dialog_path_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/dialog_path_text"
+            android:text="storage/emulated/0/Pictures/Mysplash"
+            android:lineSpacingMultiplier="1.3"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/normal_margin"
+            android:layout_marginStart="@dimen/mini_icon_size"
+            android:layout_marginEnd="@dimen/mini_icon_size"
+            android:textIsSelectable="true"
+            style="@style/content_text"
+            tools:ignore="HardcodedText" />
+
+        <Button
+            android:id="@+id/dialog_path_enterBtn"
+            android:text="@string/enter"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/dialog_path_text"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+        <Button
+            android:id="@+id/dialog_path_copyBtn"
+            android:text="@string/copy"
+            android:textColor="?attr/subtitle_color"
+            android:layout_toStartOf="@id/dialog_path_enterBtn"
+            android:layout_below="@id/dialog_path_text"
+            style="@style/material_button"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- main activity. -->
+
+    <style
+        name="MysplashTheme.TranslucentNavigation.Main"
+        parent="MysplashTheme.TranslucentNavigation" />
+
+</resources>

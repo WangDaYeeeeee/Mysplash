@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_about_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+            android:id="@+id/activity_about_statusBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary" />
+
+        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+            android:id="@+id/activity_about_swipeBackView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/root_color">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_about_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

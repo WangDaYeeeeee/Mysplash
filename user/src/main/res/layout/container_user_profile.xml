@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/container_user_profile_progressView"
+        android:layout_width="@dimen/circular_progress_height"
+        android:layout_height="@dimen/circular_progress_height"
+        android:layout_centerInParent="true"
+        android:layout_margin="24dp"
+        app:cpv_color="?attr/line_color"
+        app:cpv_indeterminate="true"
+        app:cpv_animAutostart="true" />
+
+    <LinearLayout
+        android:id="@+id/container_user_profile_profileContainer"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/container_user_profile_tagList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/little_margin"
+            android:clipToPadding="false"
+            android:layout_marginBottom="@dimen/normal_margin"
+            tools:layout_height="24dp"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <TextView
+            android:id="@+id/container_user_profile_bio"
+            android:layout_marginStart="@dimen/mini_icon_size"
+            android:layout_marginEnd="@dimen/mini_icon_size"
+            android:layout_marginBottom="@dimen/little_margin"
+            android:layout_width="wrap_content"
+            android:lineSpacingMultiplier="1.2"
+            android:textIsSelectable="false"
+            android:gravity="center_horizontal"
+            style="@style/body_text"
+            tools:text="Do not go gentle into that good night, Old age should burn and rave at close of day; Rage, rage against the dying of the light." />
+
+        <com.github.aakira.compoundicontextview.CompoundIconTextView
+            android:id="@+id/container_user_profile_locationTxt"
+            android:textColor="?attr/content_color"
+            android:textStyle="bold"
+            android:layout_margin="@dimen/normal_margin"
+            android:gravity="center_vertical"
+            android:paddingEnd="2dp"
+            android:maxLines="2"
+            android:drawablePadding="@dimen/mini_margin"
+            style="@style/subtitle_text"
+            app:cit_drawableStart="@drawable/ic_location"
+            app:cit_iconColor="?attr/content_color"
+            app:cit_iconWidth="@dimen/mini_icon_size"
+            app:cit_iconHeight="@dimen/mini_icon_size"
+            tools:text="Bermuda// Durham"
+            tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+        <com.wangdaye.common.ui.widget.rippleButton.RippleButton
+            android:id="@+id/container_user_profile_followBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/normal_margin"
+            android:layout_marginBottom="@dimen/little_margin"
+            android:foreground="?attr/selectableItemBackground"
+            android:stateListAnimator="@animator/touch_rise_tag"
+            app:rb_title_off="@string/follow"
+            app:rb_title_on="@string/following"
+            tools:ignore="UnusedAttribute" />
+
+    </LinearLayout>
+
+</RelativeLayout>

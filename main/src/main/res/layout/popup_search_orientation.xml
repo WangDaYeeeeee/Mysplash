@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/popup_search_orientation_all"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_search_orientation_allIcon"
+            android:src="@drawable/ic_infinity"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_orientation_allTxt"
+            android:text="ALL"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_search_orientation_allIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_search_orientation_landscape"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_search_orientation_landscapeIcon"
+            android:src="@drawable/ic_orientation_landscape"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_orientation_landscapeTxt"
+            android:text="LANDSCAPE"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_search_orientation_landscapeIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_search_orientation_portrait"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_search_orientation_portraitIcon"
+            android:src="@drawable/ic_orientation_portrait_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_orientation_portraitTxt"
+            android:text="PORTRAIT"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_search_orientation_portraitIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_search_orientation_squarish"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_search_orientation_squarishIcon"
+            android:src="@drawable/ic_orientation_squarish_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_search_orientation_squarishTxt"
+            android:text="SQUARISH"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_search_orientation_squarishIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

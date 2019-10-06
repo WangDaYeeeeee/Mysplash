@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_following_photo_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise_avatar"
+    app:cardBackgroundColor="?attr/root_color"
+    app:cardCornerRadius="@dimen/material_card_radius"
+    app:cardElevation="0dp"
+    tools:ignore="RtlHardcoded,UnusedAttribute">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="UselessParent">
+
+        <com.wangdaye.common.ui.widget.CoverImageView
+            android:id="@+id/item_following_photo_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:civ_shadow_position="bottom"
+            tools:background="@color/colorPrimary_dark" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/item_following_photo_image">
+
+            <com.wangdaye.common.ui.widget.CircularProgressIcon
+                android:id="@+id/item_following_photo_likeButton"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="@dimen/little_margin"
+                android:layout_marginEnd="@dimen/little_margin"
+                android:layout_marginBottom="@dimen/little_margin"
+                android:layout_centerVertical="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
+                android:layout_alignParentEnd="true"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/item_following_photo_collectionButton"
+                android:src="@drawable/ic_item_collected"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:padding="@dimen/little_margin"
+                android:layout_marginTop="@dimen/little_margin"
+                android:layout_marginEnd="@dimen/little_margin"
+                android:layout_marginBottom="@dimen/little_margin"
+                android:layout_centerVertical="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
+                android:layout_toStartOf="@id/item_following_photo_likeButton"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <com.wangdaye.common.ui.widget.CircularProgressIcon
+                android:id="@+id/item_following_photo_downloadButton"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
+                android:layout_marginTop="@dimen/little_margin"
+                android:layout_marginEnd="@dimen/little_margin"
+                android:layout_marginBottom="@dimen/little_margin"
+                android:layout_centerVertical="true"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:background="@android:color/transparent"
+                android:layout_toStartOf="@id/item_following_photo_collectionButton"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <com.wangdaye.common.ui.widget.CircularImageView
+                android:id="@+id/item_following_photo_avatar"
+                android:layout_width="@dimen/nano_icon_size"
+                android:layout_height="@dimen/nano_icon_size"
+                android:stateListAnimator="@animator/touch_rise_avatar"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/little_margin"
+                android:layout_marginTop="@dimen/little_margin"
+                android:layout_marginBottom="@dimen/little_margin"
+                android:layout_centerVertical="true"
+                android:layout_alignParentStart="true"
+                android:foreground="?attr/selectableItemBackground"
+                tools:src="@drawable/default_avatar"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+
+            <TextView
+                android:id="@+id/item_following_photo_title"
+                android:textColor="@color/colorTextLight"
+                android:textSize="@dimen/subtitle_text_size"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:shadowColor="@color/colorTextDark2nd"
+                android:layout_marginTop="@dimen/little_margin"
+                android:layout_marginEnd="@dimen/little_margin"
+                android:layout_marginBottom="@dimen/little_margin"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/item_following_photo_avatar"
+                android:layout_toStartOf="@id/item_following_photo_downloadButton"
+                android:maxLines="1"
+                style="@style/title_text"
+                tools:text="Alfredo Wong"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/popup_me_menu_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_me_menu_submitIcon"
+            android:src="@drawable/ic_plus"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_me_menu_submitTxt"
+            android:text="@string/action_submit"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_me_menu_submitIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_me_menu_portfolio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_me_menu_portfolioIcon"
+            android:src="@drawable/ic_earth_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_me_menu_portfolioTxt"
+            android:text="@string/action_open_portfolio"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_me_menu_portfolioIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_me_menu_share"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_me_menu_shareIcon"
+            android:src="@drawable/ic_share_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_me_menu_shareTxt"
+            android:text="@string/action_share"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_me_menu_shareIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

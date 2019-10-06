@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_delete_collection_photo_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:id="@+id/dialog_delete_collection_photo_confirmContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/dialog_delete_collection_photo_title"
+                android:text="@string/feedback_delete_from_collection"
+                android:textStyle="bold"
+                android:textSize="@dimen/design_title_text_size"
+                android:layout_margin="@dimen/normal_margin"
+                style="@style/title_text" />
+
+            <Button
+                android:id="@+id/dialog_delete_collection_photo_deleteBtn"
+                android:text="@string/delete"
+                android:textColor="@color/colorAccentRed"
+                android:layout_below="@id/dialog_delete_collection_photo_title"
+                android:layout_alignParentEnd="true"
+                style="@style/material_button"
+                tools:ignore="RtlHardcoded" />
+
+            <Button
+                android:id="@+id/dialog_delete_collection_photo_cancelBtn"
+                android:text="@string/cancel"
+                android:textColor="?attr/content_color"
+                android:layout_below="@id/dialog_delete_collection_photo_title"
+                android:layout_toStartOf="@id/dialog_delete_collection_photo_deleteBtn"
+                style="@style/material_button"
+                tools:ignore="RtlHardcoded" />
+
+        </RelativeLayout>
+
+        <com.github.rahatarmanahmed.cpv.CircularProgressView
+            android:id="@+id/dialog_delete_collection_photo_progress"
+            android:layout_width="@dimen/circular_progress_height"
+            android:layout_height="@dimen/circular_progress_height"
+            android:layout_centerInParent="true"
+            android:layout_margin="24dp"
+            app:cpv_color="?attr/title_color"
+            app:cpv_indeterminate="true"
+            app:cpv_animAutostart="true" />
+
+    </RelativeLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

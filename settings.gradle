@@ -1,0 +1,1 @@
+include ':app', ':base', ':component', ':downloader', ':muzei', ':db', ':about', ':main', ':search', ':collection', ':me', ':user', ':photo', ':settings', ':common'

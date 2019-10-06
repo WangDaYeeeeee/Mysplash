@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="?attr/root_color">
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_menu_downloadPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_photo_menu_downloadPageIcon"
+            android:src="@drawable/ic_image_light"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_menu_downloadPageTxt"
+            android:text="@string/action_open_download_link"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_photo_menu_downloadPageIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/popup_photo_menu_storyPage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackground">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/popup_photo_menu_storyPageIcon"
+            android:src="@drawable/ic_book"
+            style="@style/material_icon"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/popup_photo_menu_storyPageTxt"
+            android:text="@string/action_open_story_link"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@id/popup_photo_menu_storyPageIcon"
+            android:layout_width="wrap_content"
+            style="@style/content_text"
+            tools:ignore="HardcodedText,RtlHardcoded" />
+
+    </RelativeLayout>
+
+</LinearLayout>

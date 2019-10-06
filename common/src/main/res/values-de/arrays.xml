@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- home tab. -->
+    <string-array name="home_tabs">
+        <item>EDITORIAL</item>
+        <item>VORGESCHLAGEN</item>
+    </string-array>
+
+    <!-- collection tab. -->
+    <string-array name="collection_tabs">
+        <item>AUSGEZEICHNET</item>
+        <item>ALLES</item>
+        <item>CURATED</item>
+    </string-array>
+
+    <!-- search tab. -->
+    <string-array name="search_tabs">
+        <item>FOTOS</item>
+        <item>SAMMLUNGEN</item>
+        <item>BENUTZER</item>
+    </string-array>
+
+    <!-- user tab. -->
+    <string-array name="user_tabs">
+        <item>FOTOS</item>
+        <item>LIKES</item>
+        <item>SAMMLUNGEN</item>
+    </string-array>
+
+    <!-- my follow tab. -->
+    <string-array name="my_follow_tabs">
+        <item>VERFOLGER</item>
+        <item>FOLGEND</item>
+    </string-array>
+
+    <!-- download option. -->
+    <string-array name="download_options">
+        <item>HERUNTERLADEN</item>
+        <item>TEILEN</item>
+        <item>HINTERGRUNDBILD</item>
+    </string-array>
+
+    <!-- requestKey order. -->
+    <string-array name="photo_orders">
+        <item>Letzte</item>
+        <item>A</item>
+        <item>Populär</item>
+        <item>Zufällig</item>
+    </string-array>
+
+    <!-- download type. -->
+    <string-array name="download_types">
+        <item>Winzig</item>
+        <item>Kompakt</item>
+        <item>Roh</item>
+    </string-array>
+
+    <!-- back to top. -->
+    <string-array name="back_to_top_types">
+        <item>Alles aus der Listenabsicht</item>
+        <item>Nur Startseite</item>
+        <item>Nichts</item>
+    </string-array>
+
+    <!-- search orientation. -->
+    <string-array name="search_orientations">
+        <item>Landschaftsformat</item>
+        <item>Portrait</item>
+        <item>Quadratisch</item>
+    </string-array>
+
+</resources>

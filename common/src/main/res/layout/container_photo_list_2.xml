@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.wangdaye.common.ui.widget.MultipleStateRecyclerView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/container_photo_list_recyclerView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false" />

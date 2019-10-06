@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_photo_3_progress_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.github.rahatarmanahmed.cpv.CircularProgressView
+        android:id="@+id/item_photo_3_progress_progressView"
+        android:layout_width="@dimen/circular_progress_height"
+        android:layout_height="@dimen/circular_progress_height"
+        android:layout_centerInParent="true"
+        android:layout_margin="24dp"
+        app:cpv_color="?attr/title_color"
+        app:cpv_indeterminate="true"
+        app:cpv_animAutostart="true" />
+
+    <Button
+        android:id="@+id/item_photo_3_progress_button"
+        android:text="@string/feedback_click_retry"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        style="@style/material_button" />
+
+</RelativeLayout>

@@ -1,0 +1,108 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
+
+    defaultConfig {
+        applicationId "com.wangdaye.mysplash"
+        minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
+        targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
+        versionCode 377
+        versionName "3.7.7"
+        multiDexEnabled true
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility = '1.8'
+        targetCompatibility = '1.8'
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/AndroidManifest.xml'
+            java.srcDirs = ['src/main/java','.apt_generated']
+            aidl.srcDirs = ['src/main/aidl','.apt_generated']
+            assets.srcDirs = ['src/main/assets']
+            res.srcDirs = ['src/main/res']
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false // true
+            zipAlignEnabled false // true
+            shrinkResources false // true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            android.applicationVariants.all { variant ->
+                variant.outputs.all {
+                    outputFileName = "Mysplash ${variant.versionName}.apk"
+                }
+            }
+        }
+        buildTypes.each {
+            it.buildConfigField 'String', 'APP_ID_BETA', APP_ID_BETA
+            it.buildConfigField 'String', 'SECRET_BETA', SECRET_BETA
+            it.buildConfigField 'String', 'APP_ID_RELEASE', APP_ID_RELEASE
+            it.buildConfigField 'String', 'SECRET_RELEASE', SECRET_RELEASE
+
+            it.buildConfigField 'String', 'FEED_TOKEN', FEED_TOKEN
+
+            it.buildConfigField 'String', 'APP_ID_RELEASE_UNAUTH', APP_ID_RELEASE_UNAUTH
+            it.buildConfigField 'String', 'GET_STREAM_KEY', GET_STREAM_KEY
+            it.buildConfigField 'String', 'GET_STREAM_AUTH_CODE', GET_STREAM_AUTH_CODE
+        }
+    }
+    repositories {
+        mavenCentral()
+    }
+    signingConfigs {
+        release {
+            v2SigningEnabled false
+        }
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven {
+            url "https://jitpack.io"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation project (':common')
+    implementation project (':main')
+    runtimeOnly project (':downloader')
+    runtimeOnly project (':muzei')
+    runtimeOnly project (':db')
+    runtimeOnly project (':about')
+    runtimeOnly project (':search')
+    runtimeOnly project (':collection')
+    runtimeOnly project (':me')
+    runtimeOnly project (':user')
+    runtimeOnly project (':photo')
+    runtimeOnly project (':settings')
+    testImplementation 'junit:junit:4.12'
+
+    // arouter.
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.0'
+}

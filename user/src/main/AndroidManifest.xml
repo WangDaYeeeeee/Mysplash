@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.wangdaye.user">
+
+    <application>
+
+        <activity
+            android:name="com.wangdaye.user.UserActivity"
+            android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation.User"
+            android:screenOrientation="user"
+            android:label="@string/app_name" />
+
+    </application>
+
+</manifest>
