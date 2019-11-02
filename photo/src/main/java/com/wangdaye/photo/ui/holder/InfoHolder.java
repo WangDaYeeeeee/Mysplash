@@ -59,16 +59,12 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
         super(itemView);
         ButterKnife.bind(this, itemView);
 
-        views.setDuration(1000);
-        downloads.setDuration(1000);
-        likes.setDuration(1000);
-
         views.getPaint().setFakeBoldText(true);
         downloads.getPaint().setFakeBoldText(true);
         likes.getPaint().setFakeBoldText(true);
 
         this.a = a;
-        this.enableAnim = false;
+        this.enableAnim = true;
     }
 
     @Override
@@ -76,6 +72,10 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
         views.setEnableAnim(enableAnim);
         downloads.setEnableAnim(enableAnim);
         likes.setEnableAnim(enableAnim);
+
+        views.setDuration((long) (2000 * tanh(photo.views / 30000)));
+        downloads.setDuration((long) (2000 * tanh(photo.downloads / 3000)));
+        likes.setDuration((long) (2000 * tanh(photo.likes / 300)));
 
         views.setNumberString(String.valueOf(photo.views));
         downloads.setNumberString(String.valueOf(photo.downloads));
@@ -89,5 +89,9 @@ public class InfoHolder extends PhotoInfoAdapter3.ViewHolder {
     @Override
     protected void onRecycled() {
         // do nothing.
+    }
+
+    private static float tanh(float x) {
+        return (float) ((Math.exp(x) - Math.exp(-x)) / (Math.exp(x) + Math.exp(-x)));
     }
 }

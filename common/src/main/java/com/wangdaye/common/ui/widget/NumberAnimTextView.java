@@ -5,7 +5,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.TextView;
 
 import java.math.BigDecimal;
@@ -139,13 +139,10 @@ public class NumberAnimTextView extends TextView {
         updateTimes = 0;
         animator = ValueAnimator.ofObject(new BigDecimalEvaluator(), new BigDecimal(mNumStart), new BigDecimal(mNumEnd));
         animator.setDuration(mDuration);
-        animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                BigDecimal value = (BigDecimal) valueAnimator.getAnimatedValue();
-                setText(mPrefixString + format(value) + mPostfixString);
-            }
+        animator.setInterpolator(new DecelerateInterpolator(2f));
+        animator.addUpdateListener(valueAnimator -> {
+            BigDecimal value = (BigDecimal) valueAnimator.getAnimatedValue();
+            setText(mPrefixString + format(value) + mPostfixString);
         });
         animator.start();
     }

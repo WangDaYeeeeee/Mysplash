@@ -36,33 +36,15 @@
                     app:popupTheme="@style/MysplashPopupMenuTheme"
                     tools:ignore="UnusedAttribute" />
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/fragment_collection_tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/tab_layout_height"
-                    style="@style/MysplashTabLayoutTheme" />
-
             </LinearLayout>
 
         </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/fragment_collection_viewPager"
+        <com.wangdaye.main.collection.ui.CollectionsView
+            android:id="@+id/fragment_collection_collectionsView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <com.wangdaye.common.ui.widget.AutoHideInkPageIndicator
-            android:id="@+id/fragment_collection_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:layout_behavior="com.wangdaye.common.ui.behavior.InkPageIndicatorBehavior"
-            app:animationDuration="300"
-            app:pageIndicatorColor="?attr/subtitle_color"
-            app:currentPageIndicatorColor="?attr/title_color"
-            app:dotDiameter="@dimen/little_margin"
-            app:dotGap="@dimen/little_margin" />
 
     </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 

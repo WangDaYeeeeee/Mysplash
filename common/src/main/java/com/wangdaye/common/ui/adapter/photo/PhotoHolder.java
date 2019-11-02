@@ -19,7 +19,6 @@ import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.common.ui.widget.CoverImageView;
 import com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView;
-import com.wangdaye.component.ComponentFactory;
 
 import java.util.Arrays;
 
@@ -81,8 +80,11 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             deleteButton.setVisibility(View.GONE);
         }
 
+        if (callback != null) {
+            photo.downloading = callback.isDownloading(context, photo);
+        }
         downloadButton.setProgressColor(Color.WHITE);
-        if (callback != null && callback.isDownloading(context, photo)) {
+        if (photo.downloading) {
             downloadButton.setProgressState();
         } else {
             downloadButton.setResultState(R.drawable.ic_download_white);

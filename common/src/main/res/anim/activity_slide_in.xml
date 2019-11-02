@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shareInterpolator="@android:anim/decelerate_interpolator"
-    android:duration="150"
-    android:fillAfter="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:shareInterpolator="@android:interpolator/fast_out_slow_in"
+    android:duration="250"
+    android:fillAfter="true"
+    tools:ignore="NewApi">
 
     <alpha
         android:fromAlpha="0"
         android:toAlpha="1" />
 
     <translate
-        android:fromYDelta="5%p"
+        android:fromYDelta="7%p"
         android:fromXDelta="0"
         android:toYDelta="0"
         android:toXDelta="0"/>

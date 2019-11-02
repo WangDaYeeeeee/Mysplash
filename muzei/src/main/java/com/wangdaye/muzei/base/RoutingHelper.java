@@ -12,14 +12,14 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
     public static void startMuzeiSettingsActivity(Activity a) {
         ARouter.getInstance()
                 .build(MuzeiSettingsActivity.MUZEI_SETTINGS_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
     public static void startMuzeiCollectionSourceConfigActivity(Activity a) {
         ARouter.getInstance()
                 .build(MuzeiCollectionSourceConfigActivity.MUZEI_COLLECTION_SOURCE_CONFIG_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 }

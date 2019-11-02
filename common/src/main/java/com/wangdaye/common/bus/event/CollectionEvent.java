@@ -5,7 +5,6 @@ import com.wangdaye.base.unsplash.Collection;
 public class CollectionEvent {
 
     public Collection collection;
-
     public Event event;
 
     public enum Event {

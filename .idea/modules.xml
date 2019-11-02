@@ -2,22 +2,22 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MySplash.iml" filepath="$PROJECT_DIR$/MySplash.iml" />
-      <module fileurl="file://$PROJECT_DIR$/about/about.iml" filepath="$PROJECT_DIR$/about/about.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/base/base.iml" filepath="$PROJECT_DIR$/base/base.iml" />
-      <module fileurl="file://$PROJECT_DIR$/collection/collection.iml" filepath="$PROJECT_DIR$/collection/collection.iml" />
-      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/component/component.iml" filepath="$PROJECT_DIR$/component/component.iml" />
-      <module fileurl="file://$PROJECT_DIR$/db/db.iml" filepath="$PROJECT_DIR$/db/db.iml" />
-      <module fileurl="file://$PROJECT_DIR$/downloader/downloader.iml" filepath="$PROJECT_DIR$/downloader/downloader.iml" />
-      <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/me/me.iml" filepath="$PROJECT_DIR$/me/me.iml" />
-      <module fileurl="file://$PROJECT_DIR$/muzei/muzei.iml" filepath="$PROJECT_DIR$/muzei/muzei.iml" />
-      <module fileurl="file://$PROJECT_DIR$/photo/photo.iml" filepath="$PROJECT_DIR$/photo/photo.iml" />
-      <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" />
-      <module fileurl="file://$PROJECT_DIR$/settings/settings.iml" filepath="$PROJECT_DIR$/settings/settings.iml" />
-      <module fileurl="file://$PROJECT_DIR$/user/user.iml" filepath="$PROJECT_DIR$/user/user.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MySplash.iml" filepath="$PROJECT_DIR$/MySplash.iml" group="MySplash" />
+      <module fileurl="file://$PROJECT_DIR$/about/about.iml" filepath="$PROJECT_DIR$/about/about.iml" group="MySplash/about" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MySplash/app" />
+      <module fileurl="file://$PROJECT_DIR$/base/base.iml" filepath="$PROJECT_DIR$/base/base.iml" group="MySplash/base" />
+      <module fileurl="file://$PROJECT_DIR$/collection/collection.iml" filepath="$PROJECT_DIR$/collection/collection.iml" group="MySplash/collection" />
+      <module fileurl="file://$PROJECT_DIR$/common/common.iml" filepath="$PROJECT_DIR$/common/common.iml" group="MySplash/common" />
+      <module fileurl="file://$PROJECT_DIR$/component/component.iml" filepath="$PROJECT_DIR$/component/component.iml" group="MySplash/component" />
+      <module fileurl="file://$PROJECT_DIR$/db/db.iml" filepath="$PROJECT_DIR$/db/db.iml" group="MySplash/db" />
+      <module fileurl="file://$PROJECT_DIR$/downloader/downloader.iml" filepath="$PROJECT_DIR$/downloader/downloader.iml" group="MySplash/downloader" />
+      <module fileurl="file://$PROJECT_DIR$/main/main.iml" filepath="$PROJECT_DIR$/main/main.iml" group="MySplash/main" />
+      <module fileurl="file://$PROJECT_DIR$/me/me.iml" filepath="$PROJECT_DIR$/me/me.iml" group="MySplash/me" />
+      <module fileurl="file://$PROJECT_DIR$/muzei/muzei.iml" filepath="$PROJECT_DIR$/muzei/muzei.iml" group="MySplash/muzei" />
+      <module fileurl="file://$PROJECT_DIR$/photo/photo.iml" filepath="$PROJECT_DIR$/photo/photo.iml" group="MySplash/photo" />
+      <module fileurl="file://$PROJECT_DIR$/search/search.iml" filepath="$PROJECT_DIR$/search/search.iml" group="MySplash/search" />
+      <module fileurl="file://$PROJECT_DIR$/settings/settings.iml" filepath="$PROJECT_DIR$/settings/settings.iml" group="MySplash/settings" />
+      <module fileurl="file://$PROJECT_DIR$/user/user.iml" filepath="$PROJECT_DIR$/user/user.iml" group="MySplash/user" />
     </modules>
   </component>
 </project>

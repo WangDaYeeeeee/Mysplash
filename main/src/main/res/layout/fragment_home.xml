@@ -32,9 +32,7 @@
                     android:id="@+id/fragment_home_searchBar"
                     android:layout_width="match_parent"
                     android:layout_height="48dp"
-                    android:layout_marginTop="@dimen/little_margin"
-                    android:layout_marginStart="@dimen/normal_margin"
-                    android:layout_marginEnd="@dimen/normal_margin"
+                    android:layout_margin="@dimen/normal_margin"
                     android:foreground="?attr/selectableItemBackground"
                     app:cardBackgroundColor="?attr/search_bar_color"
                     app:cardCornerRadius="@dimen/material_card_radius"
@@ -113,33 +111,15 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <com.google.android.material.tabs.TabLayout
-                    android:id="@+id/fragment_home_tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/tab_layout_height"
-                    style="@style/MysplashTabLayoutTheme" />
-
             </LinearLayout>
 
         </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/fragment_home_viewPager"
+        <com.wangdaye.main.home.ui.HomePhotosView
+            android:id="@+id/fragment_home_photosView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        <com.wangdaye.common.ui.widget.AutoHideInkPageIndicator
-            android:id="@+id/fragment_home_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            app:layout_behavior="com.wangdaye.common.ui.behavior.InkPageIndicatorBehavior"
-            app:animationDuration="300"
-            app:pageIndicatorColor="?attr/subtitle_color"
-            app:currentPageIndicatorColor="?attr/title_color"
-            app:dotDiameter="@dimen/little_margin"
-            app:dotGap="@dimen/little_margin" />
 
     </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 

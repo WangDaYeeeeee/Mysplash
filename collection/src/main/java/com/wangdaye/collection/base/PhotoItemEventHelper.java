@@ -24,23 +24,23 @@ public class PhotoItemEventHelper extends com.wangdaye.common.ui.adapter.photo.P
     }
 
     @Override
-    public void downloadPhoto(Context context, Photo photo) {
-        activity.requestPermissionAndDownload(photo);
-    }
-
-    @Override
     public void onDeleteButtonClicked(Photo photo, int adapterPosition) {
         DeleteCollectionPhotoDialog dialog = new DeleteCollectionPhotoDialog();
         dialog.setDeleteInfo(activity.getCollection(), photo);
         dialog.setOnDeleteCollectionListener(result -> {
-            MessageBus.getInstance().post(new PhotoEvent(
-                    result.photo, result.collection, PhotoEvent.Event.REMOVE_FROM_COLLECTION));
+            MessageBus.getInstance().post(result.user);
 
             MessageBus.getInstance().post(new CollectionEvent(
                     result.collection, CollectionEvent.Event.UPDATE));
 
-            MessageBus.getInstance().post(result.user);
+            MessageBus.getInstance().post(new PhotoEvent(
+                    result.photo, result.collection, PhotoEvent.Event.REMOVE_FROM_COLLECTION));
         });
         dialog.show(activity.getSupportFragmentManager(), null);
+    }
+
+    @Override
+    public void downloadPhoto(Context context, Photo photo) {
+        activity.requestPermissionAndDownload(photo);
     }
 }

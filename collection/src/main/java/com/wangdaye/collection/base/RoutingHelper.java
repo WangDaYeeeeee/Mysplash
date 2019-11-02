@@ -49,7 +49,7 @@ public class RoutingHelper {
         ARouter.getInstance()
                 .build(CollectionActivity.COLLECTION_ACTIVITY)
                 .withParcelable(CollectionActivity.KEY_COLLECTION_ACTIVITY_COLLECTION, c)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
@@ -57,7 +57,7 @@ public class RoutingHelper {
         ARouter.getInstance()
                 .build(CollectionActivity.COLLECTION_ACTIVITY)
                 .withString(CollectionActivity.KEY_COLLECTION_ACTIVITY_ID, collectionId)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 }

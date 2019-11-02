@@ -44,7 +44,7 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
             ARouter.getInstance()
                     .build(MeActivity.ME_ACTIVITY)
                     .withInt(MeActivity.KEY_ME_ACTIVITY_PAGE_POSITION, page)
-                    .withTransition(R.anim.activity_slide_in, R.anim.none)
+                    // .withTransition(R.anim.activity_slide_in, R.anim.none)
                     .navigation(a);
         }
     }
@@ -57,7 +57,7 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
     public static void startLoginActivity(Activity a) {
         ARouter.getInstance()
                 .build(LoginActivity.LOGIN_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
@@ -67,7 +67,7 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
         } else {
             ARouter.getInstance()
                     .build(MyFollowActivity.MY_FOLLOW_ACTIVITY)
-                    .withTransition(R.anim.activity_slide_in, R.anim.none)
+                    // .withTransition(R.anim.activity_slide_in, R.anim.none)
                     .navigation(a);
         }
     }
@@ -75,7 +75,7 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
     public static void startUpdateMeActivity(Activity a) {
         ARouter.getInstance()
                 .build(UpdateMeActivity.UPDATE_ME_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 }

@@ -43,16 +43,20 @@ public class DownloadEventResponsePresenter extends BaseEventResponsePresenter {
 
         Observable.create((ObservableOnSubscribe<PhotoItem>) emitter -> {
             List<Photo> list = current.getValue().dataList;
-            for (int i = 0; i < list.size(); i ++) {
-                if (list.get(i).id.equals(event.title)) {
-                    emitter.onNext(
-                            new PhotoItem(list.get(i), i)
-                    );
-                    if (!duplicate) {
-                        emitter.onComplete();
-                        return;
+            try {
+                for (int i = 0; i < list.size(); i ++) {
+                    if (list.get(i).id.equals(event.title)) {
+                        PhotoItem item = new PhotoItem((Photo) list.get(i).clone(), i);
+                        item.photo.downloading = event.result == DownloadTask.RESULT_DOWNLOADING;
+                        emitter.onNext(item);
+                        if (!duplicate) {
+                            emitter.onComplete();
+                            return;
+                        }
                     }
                 }
+            } catch (Exception ignored) {
+                // do nothing.
             }
             emitter.onComplete();
         }).subscribeOn(Schedulers.from(getExecutor()))

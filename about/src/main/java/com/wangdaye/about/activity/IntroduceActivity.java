@@ -125,7 +125,7 @@ public class IntroduceActivity extends MysplashActivity
     public static void startIntroduceActivity(Activity a) {
         ARouter.getInstance()
                 .build(IntroduceActivity.INTRODUCE_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
@@ -164,7 +164,7 @@ public class IntroduceActivity extends MysplashActivity
     public void finishSelf(boolean backPressed) {
         finish();
         if (backPressed) {
-            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+            // overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
         } else {
             overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }

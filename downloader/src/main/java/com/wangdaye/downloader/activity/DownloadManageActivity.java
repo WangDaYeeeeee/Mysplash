@@ -14,7 +14,6 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.base.activity.ReadWriteActivity;
-import com.wangdaye.common.base.adapter.footerAdapter.GridMarginsItemDecoration;
 import com.wangdaye.base.DownloadTask;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.downloader.DownloaderServiceIMP;
@@ -29,6 +28,7 @@ import com.wangdaye.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.common.utils.manager.ThemeManager;
 import com.wangdaye.downloader.R2;
 import com.wangdaye.downloader.ui.DownloadAdapter;
+import com.wangdaye.downloader.ui.DownloadItemDecoration;
 import com.wangdaye.downloader.ui.PathDialog;
 
 import java.util.ArrayList;
@@ -194,7 +194,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     public void finishSelf(boolean backPressed) {
         finish();
         if (backPressed) {
-            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+            // overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
         } else {
             overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
@@ -302,14 +302,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                 )
         );
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(
-                new GridMarginsItemDecoration(
-                        getResources().getDimensionPixelSize(R.dimen.normal_margin),
-                        getResources().getDimensionPixelSize(R.dimen.normal_margin),
-                        getResources().getDimensionPixelSize(R.dimen.material_card_radius),
-                        getResources().getDimensionPixelSize(R.dimen.material_card_radius)
-                )
-        );
+        recyclerView.addItemDecoration(new DownloadItemDecoration(this));
     }
 
     // control.

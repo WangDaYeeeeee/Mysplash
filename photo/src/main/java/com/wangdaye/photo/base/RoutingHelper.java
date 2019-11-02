@@ -58,7 +58,7 @@ public class RoutingHelper {
         ARouter.getInstance()
                 .build(PhotoActivity.PHOTO_ACTIVITY)
                 .withString(PhotoActivity.KEY_PHOTO_ACTIVITY_ID, photoId)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
@@ -67,7 +67,7 @@ public class RoutingHelper {
                 .build(PreviewActivity.PREVIEW_ACTIVITY)
                 .withParcelable(PreviewActivity.KEY_PREVIEW_ACTIVITY_PREVIEW, photo)
                 .withBoolean(PreviewActivity.KEY_PREVIEW_ACTIVITY_SHOW_ICON, showIcon)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
@@ -76,7 +76,7 @@ public class RoutingHelper {
                 .build(PreviewActivity.PREVIEW_ACTIVITY)
                 .withParcelable(PreviewActivity.KEY_PREVIEW_ACTIVITY_PREVIEW, user)
                 .withBoolean(PreviewActivity.KEY_PREVIEW_ACTIVITY_SHOW_ICON, showIcon)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 }

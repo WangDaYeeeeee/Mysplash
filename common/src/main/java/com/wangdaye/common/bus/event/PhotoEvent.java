@@ -10,7 +10,6 @@ public class PhotoEvent {
 
     @NonNull public Photo photo;
     @Nullable public Collection collection;
-
     public Event event;
 
     public enum Event {

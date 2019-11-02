@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.common.R;
@@ -14,6 +15,7 @@ import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +31,10 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     private boolean showDeleteButton;
 
     @Nullable private ItemEventCallback callback;
+
+    public PhotoAdapter() {
+        this(new ArrayList<>());
+    }
 
     public PhotoAdapter(List<Photo> list) {
         super();
@@ -95,6 +101,19 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
     public void setShowDeleteButton(boolean showDeleteButton) {
         this.showDeleteButton = showDeleteButton;
         notifyDataSetChanged();
+    }
+
+    public List<Photo> getItemList() {
+        return itemList;
+    }
+
+    @Override
+    public void updateListByDiffUtil(List newList) {
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
+                new PhotoDiffCallback(itemList, newList), false);
+        itemList.clear();
+        itemList.addAll(newList);
+        diffResult.dispatchUpdatesTo(this);
     }
 
     // interface.

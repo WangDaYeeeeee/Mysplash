@@ -27,6 +27,7 @@ public class PhotoEventResponsePresenter extends BaseEventResponsePresenter {
         if (current.getValue() == null) {
             return;
         }
+
         Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
             List<Photo> list = current.getValue().dataList;
             for (int i = 0; i < list.size(); i ++) {
@@ -54,7 +55,7 @@ public class PhotoEventResponsePresenter extends BaseEventResponsePresenter {
     }
 
     public void removePhoto(@NonNull MutableLiveData<ListResource<Photo>> current,
-                                   Photo photo, boolean duplicate) {
+                            Photo photo, boolean duplicate) {
         if (current.getValue() == null) {
             return;
         }
@@ -71,7 +72,7 @@ public class PhotoEventResponsePresenter extends BaseEventResponsePresenter {
                 }
             }
             emitter.onComplete();
-        }).subscribeOn(Schedulers.computation())
+        }).subscribeOn(Schedulers.from(getExecutor()))
                 .observeOn(Schedulers.trampoline())
                 .subscribe(new SimpleDisposableObserver<Integer>() {
                     @Override

@@ -4,6 +4,7 @@ import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.common.base.vm.PagerViewModel;
+import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
 
 public class PagerViewManagePresenter {
 
@@ -69,6 +70,46 @@ public class PagerViewManagePresenter {
                 adapter.notifyItemRemoved(
                         ((ListResource.ItemRemoved) event).index
                 );
+            }
+        }
+    }
+
+    public static <T> void responsePagerListResourceChangedByDiffUtil(ListResource<T> resource,
+                                                                      PagerView view, PhotoAdapter adapter) {
+        adapter.updateListByDiffUtil(resource.dataList);
+
+        if (resource.dataList.size() == 0
+                && (resource.state == ListResource.State.REFRESHING
+                || resource.state == ListResource.State.LOADING)) {
+            // loading state.
+            view.setSwipeRefreshing(false);
+            view.setSwipeLoading(false);
+            view.setPermitSwipeRefreshing(false);
+            view.setPermitSwipeLoading(false);
+            view.setState(PagerView.State.LOADING);
+        } else if (resource.dataList.size() == 0
+                && resource.state == ListResource.State.ERROR) {
+            // error state.
+            view.setSwipeRefreshing(false);
+            view.setSwipeLoading(false);
+            view.setPermitSwipeRefreshing(false);
+            view.setPermitSwipeLoading(false);
+            view.setState(PagerView.State.ERROR);
+        } else if (view.getState() != PagerView.State.NORMAL) {
+            // error/loading state -> normal state.
+            view.setSwipeRefreshing(false);
+            view.setSwipeLoading(false);
+            view.setPermitSwipeRefreshing(true);
+            view.setPermitSwipeLoading(true);
+            view.setState(PagerView.State.NORMAL);
+        } else {
+            // normal state control.
+            view.setSwipeRefreshing(resource.state == ListResource.State.REFRESHING);
+            if (resource.state != ListResource.State.LOADING) {
+                view.setSwipeLoading(false);
+            }
+            if (resource.state == ListResource.State.ALL_LOADED) {
+                view.setPermitSwipeLoading(false);
             }
         }
     }

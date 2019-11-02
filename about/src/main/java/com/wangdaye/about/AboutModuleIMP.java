@@ -13,7 +13,7 @@ public class AboutModuleIMP implements AboutModule {
     public void startAboutActivity(Activity a) {
         ARouter.getInstance()
                 .build(AboutActivity.ABOUT_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 

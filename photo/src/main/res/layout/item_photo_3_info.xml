@@ -18,7 +18,8 @@
         android:paddingBottom="@dimen/normal_margin"
         android:paddingStart="@dimen/little_margin"
         android:paddingEnd="@dimen/little_margin"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        tools:ignore="UnusedAttribute">
 
         <TextView
             android:text="@string/feedback_views"
@@ -29,8 +30,9 @@
 
         <com.wangdaye.common.ui.widget.NumberAnimTextView
             android:id="@+id/item_photo_3_info_views"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:maxLines="1"
+            android:textAlignment="center"
             style="@style/title_text"
             tools:text="9,021,102"/>
 
@@ -47,7 +49,8 @@
         android:paddingBottom="@dimen/normal_margin"
         android:paddingStart="@dimen/little_margin"
         android:paddingEnd="@dimen/little_margin"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        tools:ignore="UnusedAttribute">
 
         <TextView
             android:text="@string/feedback_downloads"
@@ -58,8 +61,9 @@
 
         <com.wangdaye.common.ui.widget.NumberAnimTextView
             android:id="@+id/item_photo_3_info_downloads"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:maxLines="1"
+            android:textAlignment="center"
             style="@style/title_text"
             tools:text="75,905"/>
 
@@ -76,7 +80,8 @@
         android:paddingBottom="@dimen/normal_margin"
         android:paddingStart="@dimen/little_margin"
         android:paddingEnd="@dimen/little_margin"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?attr/selectableItemBackground"
+        tools:ignore="UnusedAttribute">
 
         <TextView
             android:text="@string/feedback_likes"
@@ -87,8 +92,9 @@
 
         <com.wangdaye.common.ui.widget.NumberAnimTextView
             android:id="@+id/item_photo_3_info_likes"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:maxLines="1"
+            android:textAlignment="center"
             style="@style/title_text"
             tools:text="2,454"/>
 

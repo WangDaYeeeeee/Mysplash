@@ -51,7 +51,7 @@ public class SearchApplication extends MultiModulesApplication {
             ARouter.getInstance()
                     .build(SearchActivity.SEARCH_ACTIVITY)
                     .withString(SearchActivity.KEY_SEARCH_ACTIVITY_QUERY, query)
-                    .withTransition(R.anim.activity_slide_in, R.anim.none)
+                    // .withTransition(R.anim.activity_slide_in, R.anim.none)
                     .navigation(a);
         }
 

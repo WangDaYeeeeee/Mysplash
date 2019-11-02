@@ -6,12 +6,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +22,6 @@ import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.main.MainActivity;
 import com.wangdaye.main.R;
 import com.wangdaye.main.R2;
-import com.wangdaye.main.collection.vm.AbstractCollectionsViewModel;
-import com.wangdaye.main.collection.vm.AllCollectionsViewModel;
-import com.wangdaye.main.collection.vm.CuratedCollectionsViewModel;
 import com.wangdaye.main.collection.vm.FeaturedCollectionsViewModel;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.base.fragment.MysplashFragment;
@@ -34,9 +29,6 @@ import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.base.i.PagerManageView;
-import com.wangdaye.common.base.vm.PagerManageViewModel;
-import com.wangdaye.common.ui.adapter.PagerAdapter;
-import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.utils.DisplayUtils;
@@ -44,11 +36,6 @@ import com.wangdaye.common.utils.manager.ThemeManager;
 import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.main.di.component.DaggerApplicationComponent;
 
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -64,8 +51,7 @@ import butterknife.ButterKnife;
  * */
 
 public class CollectionFragment extends MysplashFragment
-        implements PagerManageView, ViewPager.OnPageChangeListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener {
+        implements PagerManageView, NestedScrollAppBarLayout.OnNestedScrollingListener {
 
     @BindView(R2.id.fragment_collection_statusBar) StatusBarView statusBar;
     @BindView(R2.id.fragment_collection_container) CoordinatorLayout container;
@@ -73,14 +59,10 @@ public class CollectionFragment extends MysplashFragment
     @BindView(R2.id.fragment_collection_appBar) NestedScrollAppBarLayout appBar;
     @BindView(R2.id.fragment_collection_toolbar) Toolbar toolbar;
 
-    @BindView(R2.id.fragment_collection_viewPager) ViewPager viewPager;
-    @BindView(R2.id.fragment_collection_indicator) AutoHideInkPageIndicator indicator;
+    @BindView(R2.id.fragment_collection_collectionsView) CollectionsView collectionsView;
+    private CollectionAdapter collectionAdapter;
 
-    private PagerView[] pagers = new PagerView[pageCount()];
-    private CollectionAdapter[] adapters = new CollectionAdapter[pageCount()];
-
-    private PagerManageViewModel pagerManageModel;
-    private AbstractCollectionsViewModel[] pagerModels = new AbstractCollectionsViewModel[pageCount()];
+    private FeaturedCollectionsViewModel collectionsViewModel;
     @Inject ParamsViewModelFactory viewModelFactory;
 
     @Override
@@ -100,7 +82,7 @@ public class CollectionFragment extends MysplashFragment
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initModel();
-        initView(getView());
+        initView();
     }
 
     @Override
@@ -114,8 +96,8 @@ public class CollectionFragment extends MysplashFragment
         DisplayUtils.setNavigationBarStyle(
                 activity,
                 !newInstance
-                        && pagers[getCurrentPagerPosition()] != null
-                        && pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
+                        && collectionsView != null
+                        && collectionsView.getState() == PagerView.State.NORMAL,
                 ((MainActivity) activity).hasTranslucentNavigationBar()
         );
     }
@@ -127,7 +109,7 @@ public class CollectionFragment extends MysplashFragment
 
     @Override
     public boolean needBackToTop() {
-        return pagers[getCurrentPagerPosition()].checkNeedBackToTop();
+        return collectionsView.checkNeedBackToTop();
     }
 
     @Override
@@ -136,8 +118,8 @@ public class CollectionFragment extends MysplashFragment
         if (getActivity() != null) {
             DisplayUtils.setStatusBarStyle(getActivity(), false);
         }
-        BackToTopUtils.showTopBar(appBar, viewPager);
-        pagers[getCurrentPagerPosition()].scrollToPageTop();
+        BackToTopUtils.showTopBar(appBar, collectionsView);
+        collectionsView.scrollToPageTop();
     }
 
     @Override
@@ -148,24 +130,12 @@ public class CollectionFragment extends MysplashFragment
     // init.
 
     private void initModel() {
-        pagerManageModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(PagerManageViewModel.class);
-        pagerManageModel.init(featuredPage());
-
-        pagerModels[featuredPage()] = ViewModelProviders.of(this, viewModelFactory)
+        collectionsViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(FeaturedCollectionsViewModel.class);
-        pagerModels[featuredPage()].init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
-
-        pagerModels[allPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(AllCollectionsViewModel.class);
-        pagerModels[allPage()].init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
-
-        pagerModels[curatedPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(CuratedCollectionsViewModel.class);
-        pagerModels[curatedPage()].init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
+        collectionsViewModel.init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
     }
 
-    private void initView(View v) {
+    private void initView() {
         appBar.setOnNestedScrollingListener(this);
 
         toolbar.setTitle(R.string.action_collection);
@@ -179,128 +149,15 @@ public class CollectionFragment extends MysplashFragment
             }
         });
 
-        initPages(v);
-    }
+        collectionAdapter = new CollectionAdapter(
+                Objects.requireNonNull(collectionsViewModel.getListResource().getValue()).dataList
+        ).setItemEventCallback(new CollectionItemEventHelper((MysplashActivity) getActivity()));
+        collectionsView.setAdapterAndMangeView(collectionAdapter, this);
 
-    private void initPages(View v) {
-        for (int i = featuredPage(); i < pageCount(); i ++) {
-            adapters[i] = new CollectionAdapter(
-                    Objects.requireNonNull(pagerModels[i].getListResource().getValue()).dataList
-            ).setItemEventCallback(new CollectionItemEventHelper((MysplashActivity) getActivity()));
-        }
-
-        List<View> pageList = new ArrayList<>(
-                Arrays.asList(
-                        new CollectionsView(
-                                (MainActivity) getActivity(),
-                                adapters[featuredPage()],
-                                getCurrentPagerPosition() == featuredPage(),
-                                featuredPage(),
-                                this
-                        ), new CollectionsView(
-                                (MainActivity) getActivity(),
-                                adapters[allPage()],
-                                getCurrentPagerPosition() == allPage(),
-                                allPage(),
-                                this
-                        ), new CollectionsView(
-                                (MainActivity) getActivity(),
-                                adapters[curatedPage()],
-                                getCurrentPagerPosition() == curatedPage(),
-                                curatedPage(),
-                                this
-                        )
-                )
-        );
-        for (int i = featuredPage(); i < pageCount(); i ++) {
-            pagers[i] = (PagerView) pageList.get(i);
-        }
-
-        String[] homeTabs = getResources().getStringArray(R.array.collection_tabs);
-
-        List<String> tabList = new ArrayList<>();
-        Collections.addAll(tabList, homeTabs);
-
-        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
-
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(getCurrentPagerPosition(), false);
-        viewPager.addOnPageChangeListener(this);
-
-        TabLayout tabLayout = v.findViewById(R.id.fragment_collection_tabLayout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setupWithViewPager(viewPager);
-
-        indicator.setViewPager(viewPager);
-        indicator.setAlpha(0f);
-
-        pagerManageModel.getPagerPosition().observe(this, position -> {
-            for (int i = featuredPage(); i < pageCount(); i ++) {
-                pagers[i].setSelected(i == position);
-            }
-            if (getActivity() != null) {
-                DisplayUtils.setNavigationBarStyle(
-                        getActivity(),
-                        pagers[position].getState() == PagerView.State.NORMAL,
-                        ((MainActivity) getActivity()).hasTranslucentNavigationBar()
-                );
-            }
-            ListResource resource = pagerModels[position].getListResource().getValue();
-            if (resource != null
-                    && resource.dataList.size() == 0
-                    && resource.state != ListResource.State.REFRESHING
-                    && resource.state != ListResource.State.LOADING) {
-                PagerViewManagePresenter.initRefresh(pagerModels[position], adapters[position]);
-            }
-        });
-
-        pagerModels[featuredPage()].getListResource().observe(this, resource ->
+        collectionsViewModel.getListResource().observe(this, resource ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
-                        pagers[featuredPage()],
-                        adapters[featuredPage()]
-                )
+                        resource, collectionsView, collectionAdapter)
         );
-        pagerModels[allPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
-                        pagers[allPage()],
-                        adapters[allPage()]
-                )
-        );
-        pagerModels[curatedPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
-                        pagers[curatedPage()],
-                        adapters[curatedPage()]
-                )
-        );
-    }
-
-    // control.
-
-    private int getCurrentPagerPosition() {
-        if (pagerManageModel.getPagerPosition().getValue() == null) {
-            return featuredPage();
-        } else {
-            return pagerManageModel.getPagerPosition().getValue();
-        }
-    }
-
-    private static int featuredPage() {
-        return 0;
-    }
-
-    private static int allPage() {
-        return 1;
-    }
-
-    private static int curatedPage() {
-        return 2;
-    }
-
-    private static int pageCount() {
-        return 3;
     }
 
     // interface.
@@ -309,17 +166,17 @@ public class CollectionFragment extends MysplashFragment
 
     @Override
     public void onRefresh(int index) {
-        pagerModels[index].refresh();
+        collectionsViewModel.refresh();
     }
 
     @Override
     public void onLoad(int index) {
-        pagerModels[index].load();
+        collectionsViewModel.load();
     }
 
     @Override
     public boolean canLoadMore(int index) {
-        ListResource resource = pagerModels[index].getListResource().getValue();
+        ListResource resource = collectionsViewModel.getListResource().getValue();
         return resource != null
                 && resource.state != ListResource.State.REFRESHING
                 && resource.state != ListResource.State.LOADING
@@ -329,34 +186,7 @@ public class CollectionFragment extends MysplashFragment
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()).state == ListResource.State.LOADING;
-    }
-
-    // on page changed listener.
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        // do nothing.
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        pagerManageModel.setPagerPosition(position);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (appBar.getY() <= -appBar.getMeasuredHeight()) {
-            switch (state) {
-                case ViewPager.SCROLL_STATE_DRAGGING:
-                    indicator.setDisplayState(true);
-                    break;
-
-                case ViewPager.SCROLL_STATE_IDLE:
-                    indicator.setDisplayState(false);
-                    break;
-            }
-        }
+                collectionsViewModel.getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on nested scrolling listener.

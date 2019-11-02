@@ -53,7 +53,7 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     @NotNull
     @Override
     public AboutAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        switch (itemList.get(viewType).getType()) {
+        switch (viewType) {
             case AboutModel.TYPE_HEADER:
                 return new HeaderHolder(
                         LayoutInflater.from(parent.getContext())
@@ -101,6 +101,6 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
 
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return itemList.get(position).getType();
     }
 }

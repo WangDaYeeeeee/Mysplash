@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.wangdaye.common.R;
 import com.wangdaye.common.base.application.MysplashApplication;
 
+import java.util.List;
+
 /**
  * Footer adapter.
  *
@@ -79,5 +81,9 @@ public abstract class FooterAdapter<VH extends RecyclerView.ViewHolder> extends 
     }
 
     public abstract int getRealItemCount();
+
+    public void updateListByDiffUtil(List newList) {
+        // do nothing.
+    }
 }
 

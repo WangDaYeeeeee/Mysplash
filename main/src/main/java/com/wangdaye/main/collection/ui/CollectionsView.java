@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
+import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.utils.BackToTopUtils;
-import com.wangdaye.main.MainActivity;
 import com.wangdaye.main.R;
 import com.wangdaye.main.R2;
 import com.wangdaye.main.home.ui.HomeFragment;
@@ -32,8 +34,7 @@ import butterknife.ButterKnife;
 /**
  * Home collections view.
  * 
- * This view is used to show collections for 
- * {@link HomeFragment}.
+ * This view is used to show collections for {@link HomeFragment}.
  * 
  * */
 
@@ -46,36 +47,30 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
 
     private PagerStateManagePresenter stateManagePresenter;
 
-    private boolean selected;
-    private int index;
     private PagerManageView pagerManageView;
 
-    public CollectionsView(MainActivity a, CollectionAdapter adapter,
-                           boolean selected, int index, PagerManageView v) {
-        super(a);
-        this.init(adapter, selected, index, v);
+    public CollectionsView(Context context) {
+        super(context);
+        this.init();
+    }
+
+    public CollectionsView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.init();
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void init(CollectionAdapter adapter,
-                      boolean selected, int index, PagerManageView v) {
+    private void init() {
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
         ButterKnife.bind(this, this);
-        initData(selected, index, v);
-        initView(adapter);
+        initView();
     }
 
-    private void initData(boolean selected, int index, PagerManageView v) {
-        this.selected = selected;
-        this.index = index;
-        this.pagerManageView = v;
-    }
-
-    private void initView(CollectionAdapter adapter) {
+    private void initView() {
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
@@ -88,7 +83,6 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
                         + getResources().getDimensionPixelSize(R.dimen.normal_margin)
         ));
 
-        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
                 RecyclerViewHelper.getDefaultStaggeredGridLayoutManager(getContext())
         );
@@ -107,7 +101,15 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
                         this
                 ), MultipleStateRecyclerView.STATE_ERROR
         );
+        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
 
+        stateManagePresenter = new PagerStateManagePresenter(recyclerView);
+    }
+
+    // control.
+
+    public void setAdapterAndMangeView(@NonNull CollectionAdapter adapter, PagerManageView view) {
+        recyclerView.setAdapter(adapter);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -116,14 +118,14 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
                         recyclerView,
                         adapter.getRealItemCount(),
                         pagerManageView,
-                        index,
+                        0,
                         dy
                 );
             }
         });
-        recyclerView.setState(MultipleStateRecyclerView.STATE_LOADING);
+        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext()));
 
-        stateManagePresenter = new PagerStateManagePresenter(recyclerView);
+        pagerManageView = view;
     }
 
     // interface.
@@ -137,12 +139,12 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
 
     @Override
     public boolean setState(State state) {
-        return stateManagePresenter.setState(state, selected);
+        return stateManagePresenter.setState(state, true);
     }
 
     @Override
     public void setSelected(boolean selected) {
-        this.selected = selected;
+        // do nothing.
     }
 
     @Override
@@ -190,18 +192,18 @@ public class CollectionsView extends BothWaySwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        pagerManageView.onRefresh(index);
+        pagerManageView.onRefresh(0);
     }
 
     @Override
     public void onLoad() {
-        pagerManageView.onLoad(index);
+        pagerManageView.onLoad(0);
     }
 
     // on retry listener.
 
     @Override
     public void onRetry() {
-        pagerManageView.onRefresh(index);
+        pagerManageView.onRefresh(0);
     }
 }

@@ -70,10 +70,17 @@ public abstract class PhotoItemEventHelper implements PhotoAdapter.ItemEventCall
     @Override
     public void onLikeButtonClicked(Photo photo, int adapterPosition, boolean setToLike) {
         if (AuthManager.getInstance().isAuthorized()) {
-            photo.settingLike = true;
-            MessageBus.getInstance().post(new PhotoEvent(photo));
+            try {
+                Photo p1 = (Photo) photo.clone();
+                Photo p2 = (Photo) photo.clone();
+                p1.settingLike = true;
+                p2.settingLike = true;
+                MessageBus.getInstance().post(new PhotoEvent(p1));
 
-            likeOrDislikePhotoPresenter.likeOrDislikePhoto(photo, setToLike);
+                likeOrDislikePhotoPresenter.likeOrDislikePhoto(p2, setToLike);
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
         } else {
             ComponentFactory.getMeModule().startLoginActivity(activity);
         }

@@ -48,7 +48,7 @@ public class RoutingHelper {
                     .build(UserActivity.USER_ACTIVITY)
                     .withParcelable(UserActivity.KEY_USER_ACTIVITY_USER, u)
                     .withInt(UserActivity.KEY_USER_ACTIVITY_PAGE_POSITION, page)
-                    .withTransition(R.anim.activity_slide_in, R.anim.none)
+                    // .withTransition(R.anim.activity_slide_in, R.anim.none)
                     .navigation(a);
         }
     }
@@ -57,7 +57,7 @@ public class RoutingHelper {
         ARouter.getInstance()
                 .build(UserActivity.USER_ACTIVITY)
                 .withString(UserActivity.KEY_USER_ACTIVITY_USERNAME, username)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 }

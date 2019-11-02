@@ -172,7 +172,7 @@ public class UpdateMeActivity extends MysplashActivity
     public void finishSelf(boolean backPressed) {
         finish();
         if (backPressed) {
-            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+            // overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
         } else {
             overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }

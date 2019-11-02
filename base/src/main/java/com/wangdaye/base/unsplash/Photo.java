@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.Size;
 
@@ -17,7 +18,7 @@ import java.util.List;
  * */
 
 public class Photo
-        implements Parcelable, Previewable, Downloadable {
+        implements Parcelable, Cloneable, Previewable, Downloadable {
 
     public static final int TOTAL_NEW_PHOTOS_COUNT = 17444;
     public static final int TOTAL_FEATURED_PHOTOS_COUNT = 1192;
@@ -29,6 +30,7 @@ public class Photo
     public boolean loadPhotoSuccess = false;
     public boolean hasFadedIn = false;
     public boolean settingLike = false;
+    public boolean downloading = false;
     public boolean complete = false;
 
     /**
@@ -226,6 +228,7 @@ public class Photo
         dest.writeByte(this.loadPhotoSuccess ? (byte) 1 : (byte) 0);
         dest.writeByte(this.hasFadedIn ? (byte) 1 : (byte) 0);
         dest.writeByte(this.settingLike ? (byte) 1 : (byte) 0);
+        dest.writeByte(this.downloading ? (byte) 1 : (byte) 0);
         dest.writeByte(this.complete ? (byte) 1 : (byte) 0);
         dest.writeString(this.id);
         dest.writeString(this.created_at);
@@ -258,6 +261,7 @@ public class Photo
         this.loadPhotoSuccess = in.readByte() != 0;
         this.hasFadedIn = in.readByte() != 0;
         this.settingLike = in.readByte() != 0;
+        this.downloading = in.readByte() != 0;
         this.complete = in.readByte() != 0;
         this.id = in.readString();
         this.created_at = in.readString();
@@ -294,6 +298,12 @@ public class Photo
             return new Photo[size];
         }
     };
+
+    @NonNull
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 
     // interface.
 

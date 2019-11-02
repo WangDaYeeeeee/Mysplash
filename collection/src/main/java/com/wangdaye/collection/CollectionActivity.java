@@ -166,7 +166,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
     public void finishSelf(boolean backPressed) {
         finish();
         if (backPressed) {
-            overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+            // overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
         } else {
             overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
         }
@@ -252,12 +252,11 @@ public class CollectionActivity extends LoadableActivity<Photo>
         toolbar.inflateMenu(R.menu.activity_collection_toolbar);
         toolbar.setOnMenuItemClickListener(this);
 
-        photoAdapter = new PhotoAdapter(
-                Objects.requireNonNull(photosViewModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(
+        photoAdapter = new PhotoAdapter();
+        photoAdapter.setItemEventCallback(
                 new PhotoItemEventHelper(
                         this,
-                        photosViewModel.getListResource().getValue().dataList,
+                        photoAdapter.getItemList(),
                         likeOrDislikePhotoPresenter
                 )
         );
@@ -340,7 +339,9 @@ public class CollectionActivity extends LoadableActivity<Photo>
         });
 
         photosViewModel.getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(resource, photosView, photoAdapter)
+                PagerViewManagePresenter.responsePagerListResourceChangedByDiffUtil(
+                        resource, photosView, photoAdapter
+                )
         );
 
         AnimUtils.translationYInitShow(photosView, 400);

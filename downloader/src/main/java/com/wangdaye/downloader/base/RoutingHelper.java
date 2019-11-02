@@ -13,7 +13,7 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
     public static void startDownloadManageActivity(Activity a) {
         ARouter.getInstance()
                 .build(DownloadManageActivity.DOWNLOAD_MANAGE_ACTIVITY)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(a);
     }
 
@@ -22,7 +22,7 @@ public class RoutingHelper extends com.wangdaye.common.utils.helper.RoutingHelpe
                 .build(DownloadManageActivity.DOWNLOAD_MANAGE_ACTIVITY)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 .withBoolean(DownloadManageActivity.KEY_DOWNLOAD_MANAGE_ACTIVITY_FROM_NOTIFICATION, true)
-                .withTransition(R.anim.activity_slide_in, R.anim.none)
+                // .withTransition(R.anim.activity_slide_in, R.anim.none)
                 .navigation(context);
     }
 

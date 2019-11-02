@@ -7,8 +7,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
-        versionCode 377
-        versionName "3.7.7"
+        versionCode 378
+        versionName "3.7.8"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -79,7 +79,7 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
+        jcenter(){ url 'http://jcenter.bintray.com/'}
         google()
         maven {
             url "https://jitpack.io"

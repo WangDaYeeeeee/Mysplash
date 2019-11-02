@@ -8,12 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProviders;
-import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +34,6 @@ import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.main.R;
 import com.wangdaye.main.R2;
 import com.wangdaye.main.di.component.DaggerApplicationComponent;
-import com.wangdaye.main.home.vm.FeaturedHomePhotosViewModel;
 import com.wangdaye.main.home.vm.NewHomePhotosViewModel;
 import com.wangdaye.common.base.fragment.LoadableFragment;
 import com.wangdaye.base.resource.ListResource;
@@ -46,22 +43,15 @@ import com.wangdaye.common.utils.ValueUtils;
 import com.wangdaye.common.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.base.i.PagerManageView;
-import com.wangdaye.common.base.vm.PagerManageViewModel;
 import com.wangdaye.base.unsplash.Photo;
-import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.utils.DisplayUtils;
-import com.wangdaye.common.ui.adapter.PagerAdapter;
 import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.main.MainActivity;
 import com.wangdaye.main.base.PhotoItemEventHelper;
-import com.wangdaye.main.home.vm.AbstractHomePhotosViewModel;
 import com.wangdaye.main.home.vm.SearchBarViewModel;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -84,8 +74,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
  * */
 
 public class HomeFragment extends LoadableFragment<Photo>
-        implements PagerManageView, ViewPager.OnPageChangeListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener {
+        implements PagerManageView, NestedScrollAppBarLayout.OnNestedScrollingListener {
 
     @BindView(R2.id.fragment_home_statusBar) StatusBarView statusBar;
     @BindView(R2.id.fragment_home_container) CoordinatorLayout container;
@@ -110,18 +99,14 @@ public class HomeFragment extends LoadableFragment<Photo>
     @BindView(R2.id.fragment_home_logo) LinearLayout logo;
     @BindView(R2.id.fragment_home_appIcon) ImageView appIcon;
 
-    @BindView(R2.id.fragment_home_viewPager) ViewPager viewPager;
-    @BindView(R2.id.fragment_home_indicator) AutoHideInkPageIndicator indicator;
-
-    private PagerView[] pagers = new PagerView[pageCount()];
-    private PhotoAdapter[] adapters = new PhotoAdapter[pageCount()];
+    @BindView(R2.id.fragment_home_photosView) HomePhotosView photosView;
+    private PhotoAdapter photoAdapter;
 
     private PagerLoadablePresenter loadablePresenter;
     @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
 
     private SearchBarViewModel searchBarViewModel;
-    private PagerManageViewModel pagerManageModel;
-    private AbstractHomePhotosViewModel[] pagerModels = new AbstractHomePhotosViewModel[pageCount()];
+    private NewHomePhotosViewModel photosViewModel;
     @Inject ParamsViewModelFactory viewModelFactory;
 
     @Override
@@ -141,7 +126,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initModel();
-        initView(getView());
+        initView();
     }
 
     @Override
@@ -171,8 +156,7 @@ public class HomeFragment extends LoadableFragment<Photo>
         DisplayUtils.setNavigationBarStyle(
                 activity,
                 !newInstance
-                        && pagers[getCurrentPagerPosition()] != null
-                        && pagers[getCurrentPagerPosition()].getState() == PagerView.State.NORMAL,
+                        && photosView != null && photosView.getState() == PagerView.State.NORMAL,
                 ((MainActivity) activity).hasTranslucentNavigationBar()
         );
     }
@@ -184,7 +168,7 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public boolean needBackToTop() {
-        return pagers[getCurrentPagerPosition()].checkNeedBackToTop();
+        return photosView.checkNeedBackToTop();
     }
 
     @Override
@@ -193,8 +177,8 @@ public class HomeFragment extends LoadableFragment<Photo>
         if (getActivity() != null) {
             DisplayUtils.setStatusBarStyle(getActivity(), false);
         }
-        BackToTopUtils.showTopBar(appBar, viewPager);
-        pagers[getCurrentPagerPosition()].scrollToPageTop();
+        BackToTopUtils.showTopBar(appBar, photosView);
+        photosView.scrollToPageTop();
     }
 
     @Override
@@ -206,10 +190,10 @@ public class HomeFragment extends LoadableFragment<Photo>
     public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
         return loadablePresenter.loadMore(
                 list, headIndex, headDirection,
-                pagers[getCurrentPagerPosition()],
-                pagers[getCurrentPagerPosition()].getRecyclerView(),
-                adapters[getCurrentPagerPosition()],
-                this, getCurrentPagerPosition()
+                photosView,
+                photosView.getRecyclerView(),
+                photoAdapter,
+                this, 0
         );
     }
 
@@ -223,31 +207,18 @@ public class HomeFragment extends LoadableFragment<Photo>
         } else {
             searchBarViewModel.init(Resource.success(AuthManager.getInstance().getUser()));
         }
-
-        pagerManageModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(PagerManageViewModel.class);
-        pagerManageModel.init(newPage());
-
-        pagerModels[newPage()] = ViewModelProviders.of(this, viewModelFactory)
+        
+        photosViewModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(NewHomePhotosViewModel.class);
-        pagerModels[newPage()].init(
+        photosViewModel.init(
                 ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
                 ComponentFactory.getSettingsService().getDefaultPhotoOrder(),
                 ValueUtils.getRandomPageList(Photo.TOTAL_NEW_PHOTOS_COUNT, ListPager.DEFAULT_PER_PAGE),
                 getResources().getStringArray(R.array.photo_order_values)[3]
         );
-
-        pagerModels[featuredPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(FeaturedHomePhotosViewModel.class);
-        pagerModels[featuredPage()].init(
-                ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
-                ComponentFactory.getSettingsService().getDefaultPhotoOrder(),
-                ValueUtils.getRandomPageList(Photo.TOTAL_FEATURED_PHOTOS_COUNT, ListPager.DEFAULT_PER_PAGE),
-                getResources().getStringArray(R.array.photo_order_values)[3]
-        );
     }
 
-    private void initView(View v) {
+    private void initView() {
         appBar.setOnNestedScrollingListener(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -272,143 +243,40 @@ public class HomeFragment extends LoadableFragment<Photo>
 
         ImageHelper.loadResourceImage(requireActivity(), appIcon, R.drawable.ic_launcher);
 
-        initPages(v);
+        photoAdapter = new PhotoAdapter(
+                Objects.requireNonNull(photosViewModel.getListResource().getValue()).dataList
+        ).setItemEventCallback(
+                new PhotoItemEventHelper(
+                        (MainActivity) getActivity(),
+                        Objects.requireNonNull(photosViewModel.getListResource().getValue()).dataList,
+                        likeOrDislikePhotoPresenter
+                )
+        );
+        photosView.setAdapterAndMangeView(photoAdapter, this);
+
+        photosViewModel.getPhotosOrder().observe(this, s -> {
+            if (!photosViewModel.getLatestOrder().equals(s)) {
+                photosViewModel.setLatestOrder(s);
+                PagerViewManagePresenter.initRefresh(photosViewModel, photoAdapter);
+            }
+        });
+
+        photosViewModel.getListResource().observe(this, resource ->
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        resource,
+                        photosView,
+                        photoAdapter
+                )
+        );
+        
         loadablePresenter = new PagerLoadablePresenter() {
             @Override
             public List<Photo> subList(int fromIndex, int toIndex) {
                 return Objects.requireNonNull(
-                        pagerModels[getCurrentPagerPosition()].getListResource().getValue()
+                        photosViewModel.getListResource().getValue()
                 ).dataList.subList(fromIndex, toIndex);
             }
         };
-    }
-
-    private void initPages(View v) {
-        adapters[newPage()] = new PhotoAdapter(
-                Objects.requireNonNull(pagerModels[newPage()].getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        (MainActivity) getActivity(),
-                        Objects.requireNonNull(pagerModels[newPage()].getListResource().getValue()).dataList,
-                        likeOrDislikePhotoPresenter
-                )
-        );
-
-        adapters[featuredPage()] = new PhotoAdapter(
-                Objects.requireNonNull(pagerModels[featuredPage()].getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        (MainActivity) getActivity(),
-                        Objects.requireNonNull(pagerModels[featuredPage()].getListResource().getValue()).dataList,
-                        likeOrDislikePhotoPresenter
-                )
-        );
-
-        List<View> pageList = new ArrayList<>(
-                Arrays.asList(
-                        new HomePhotosView(
-                                (MainActivity) getActivity(),
-                                adapters[newPage()],
-                                getCurrentPagerPosition() == newPage(),
-                                newPage(),
-                                this
-                        ), new HomePhotosView(
-                                (MainActivity) getActivity(),
-                                adapters[featuredPage()],
-                                getCurrentPagerPosition() == featuredPage(),
-                                featuredPage(),
-                                this
-                        )
-                )
-        );
-        for (int i = newPage(); i < pageCount(); i ++) {
-            pagers[i] = (PagerView) pageList.get(i);
-        }
-
-        String[] homeTabs = getResources().getStringArray(R.array.home_tabs);
-
-        List<String> tabList = new ArrayList<>();
-        Collections.addAll(tabList, homeTabs);
-
-        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
-
-        viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(getCurrentPagerPosition(), false);
-        viewPager.addOnPageChangeListener(this);
-
-        TabLayout tabLayout = v.findViewById(R.id.fragment_home_tabLayout);
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
-        tabLayout.setupWithViewPager(viewPager);
-
-        indicator.setViewPager(viewPager);
-        indicator.setAlpha(0f);
-
-        pagerManageModel.getPagerPosition().observe(this, position -> {
-            for (int i = newPage(); i < pageCount(); i ++) {
-                pagers[i].setSelected(i == position);
-            }
-            if (getActivity() != null) {
-                DisplayUtils.setNavigationBarStyle(
-                        getActivity(),
-                        pagers[position].getState() == PagerView.State.NORMAL,
-                        ((MainActivity) getActivity()).hasTranslucentNavigationBar()
-                );
-            }
-            ListResource resource = pagerModels[position].getListResource().getValue();
-            if (resource != null
-                    && resource.dataList.size() == 0
-                    && resource.state != ListResource.State.REFRESHING
-                    && resource.state != ListResource.State.LOADING) {
-                PagerViewManagePresenter.initRefresh(pagerModels[position], adapters[position]);
-            }
-        });
-
-        pagerModels[newPage()].getPhotosOrder().observe(this, s -> {
-            if (!pagerModels[newPage()].getLatestOrder().equals(s)) {
-                pagerModels[newPage()].setLatestOrder(s);
-                PagerViewManagePresenter.initRefresh(pagerModels[newPage()], adapters[newPage()]);
-            }
-        });
-        pagerModels[featuredPage()].getPhotosOrder().observe(this, s ->{
-            if (!pagerModels[featuredPage()].getLatestOrder().equals(s)) {
-                pagerModels[featuredPage()].setLatestOrder(s);
-                PagerViewManagePresenter.initRefresh(pagerModels[featuredPage()], adapters[featuredPage()]);
-            }
-        });
-        pagerModels[newPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
-                        pagers[newPage()],
-                        adapters[newPage()]
-                )
-        );
-        pagerModels[featuredPage()].getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
-                        pagers[featuredPage()],
-                        adapters[featuredPage()]
-                )
-        );
-    }
-
-    private int getCurrentPagerPosition() {
-        if (pagerManageModel.getPagerPosition().getValue() == null) {
-            return newPage();
-        } else {
-            return pagerManageModel.getPagerPosition().getValue();
-        }
-    }
-
-    private static int newPage() {
-        return 0;
-    }
-
-    private static int featuredPage() {
-        return 1;
-    }
-
-    private static int pageCount() {
-        return 2;
     }
 
     // interface.
@@ -417,17 +285,17 @@ public class HomeFragment extends LoadableFragment<Photo>
 
     @Override
     public void onRefresh(int index) {
-        pagerModels[index].refresh();
+        photosViewModel.refresh();
     }
 
     @Override
     public void onLoad(int index) {
-        pagerModels[index].load();
+        photosViewModel.load();
     }
 
     @Override
     public boolean canLoadMore(int index) {
-        ListResource resource = pagerModels[index].getListResource().getValue();
+        ListResource resource = photosViewModel.getListResource().getValue();
         return resource != null
                 && resource.state != ListResource.State.REFRESHING
                 && resource.state != ListResource.State.LOADING
@@ -437,7 +305,7 @@ public class HomeFragment extends LoadableFragment<Photo>
     @Override
     public boolean isLoading(int index) {
         return Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()).state == ListResource.State.LOADING;
+                photosViewModel.getListResource().getValue()).state == ListResource.State.LOADING;
     }
 
     // on menu item click listener.
@@ -461,32 +329,6 @@ public class HomeFragment extends LoadableFragment<Photo>
         return true;
     }
 */
-    // on page changed listener.
-
-    @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        // do nothing.
-    }
-
-    @Override
-    public void onPageSelected(int position) {
-        pagerManageModel.setPagerPosition(position);
-    }
-
-    @Override
-    public void onPageScrollStateChanged(int state) {
-        if (appBar.getY() <= -appBar.getMeasuredHeight()) {
-            switch (state) {
-                case ViewPager.SCROLL_STATE_DRAGGING:
-                    indicator.setDisplayState(true);
-                    break;
-
-                case ViewPager.SCROLL_STATE_IDLE:
-                    indicator.setDisplayState(false);
-                    break;
-            }
-        }
-    }
 
     // on nested scrolling listener.
 

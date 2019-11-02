@@ -20,7 +20,6 @@ import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.common.utils.manager.AuthManager;
-import com.wangdaye.component.ComponentFactory;
 
 import java.util.List;
 
@@ -80,11 +79,6 @@ public class CollectionMiniAdapter extends RecyclerView.Adapter<CollectionMiniHo
                 .getCollectionsManager()
                 .getCollectionList()
                 .size() + 1;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return position;
     }
 
     public void setPhoto(Photo p) {

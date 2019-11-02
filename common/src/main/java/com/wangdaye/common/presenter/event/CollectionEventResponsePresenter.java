@@ -75,7 +75,7 @@ public class CollectionEventResponsePresenter extends BaseEventResponsePresenter
                 }
             }
             emitter.onComplete();
-        }).subscribeOn(Schedulers.computation())
+        }).subscribeOn(Schedulers.from(getExecutor()))
                 .observeOn(Schedulers.trampoline())
                 .subscribe(new SimpleDisposableObserver<Integer>() {
                     @Override

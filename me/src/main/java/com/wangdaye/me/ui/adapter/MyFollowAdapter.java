@@ -59,11 +59,6 @@ public class MyFollowAdapter extends FooterAdapter<MyFollowHolder> {
         return itemList.size();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
     public interface ItemEventCallback {
         void onFollowItemClicked(View avatar, View background, User user);
         void onFollowUserOrCancel(User user, int adapterPosition, boolean follow);

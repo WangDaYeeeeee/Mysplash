@@ -95,11 +95,6 @@ public class DownloadAdapter extends FooterAdapter<DownloadHolder> {
         return getItemCount();
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return position;
-    }
-
     public interface ItemEventCallback {
         void onPhotoItemClicked(String photoId);
         void onCollectionItemClicked(String collectionId);

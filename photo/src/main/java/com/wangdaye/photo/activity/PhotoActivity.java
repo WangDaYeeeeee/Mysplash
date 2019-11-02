@@ -230,7 +230,7 @@ public class PhotoActivity extends ReadWriteActivity
         } else {
             finish();
             if (backPressed) {
-                overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
+                // overridePendingTransition(R.anim.none, R.anim.activity_slide_out);
             } else {
                 overridePendingTransition(R.anim.none, R.anim.activity_fade_out);
             }
