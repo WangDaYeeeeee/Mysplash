@@ -25,7 +25,7 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter(){ url 'http://jcenter.bintray.com/'}
+        jcenter(){ url 'https://jcenter.bintray.com/'}
         google()
         maven {
             url "https://jitpack.io"
