@@ -10,7 +10,6 @@
         <targets>
             <target android:targetId="@android:id/navigationBarBackground" />
             <target android:targetId="@android:id/statusBarBackground" />
-            <target android:targetId="@id/activity_collection_statusBar" />
             <target android:targetId="@id/activity_collection_shadow" />
         </targets>
     </fade>

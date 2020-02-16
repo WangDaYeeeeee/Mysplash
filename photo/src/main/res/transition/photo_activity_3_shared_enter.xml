@@ -4,23 +4,22 @@
     android:duration="350"
     android:transitionOrdering="together">
 
-    <changeBounds
+    <changeImageTransform
         android:interpolator="@android:interpolator/fast_out_slow_in"
         android:duration="350"
         tools:ignore="NewApi">
         <targets>
-            <target android:targetId="@id/activity_photo_3_swipeBackView" />
+            <target android:targetId="@id/container_photo_pager" />
         </targets>
-    </changeBounds>
+    </changeImageTransform>
 
-    <transition
-        class="com.wangdaye.common.ui.transition.CoverChangeBound"
+    <changeBounds
         android:interpolator="@android:interpolator/fast_out_slow_in"
         tools:ignore="NewApi">
         <targets>
-            <target android:targetId="@id/activity_photo_3_regularImage" />
+            <target android:targetId="@id/container_photo_pager" />
         </targets>
-    </transition>
+    </changeBounds>
 
     <transition
         class="com.wangdaye.common.ui.transition.sharedElement.RoundCornerTransition"
@@ -28,18 +27,7 @@
         android:duration="350"
         tools:ignore="NewApi">
         <targets>
-            <target android:targetId="@id/activity_photo_3_swipeBackView" />
-            <target android:targetId="@id/activity_photo_3_regularImage" />
-        </targets>
-    </transition>
-
-    <transition
-        class="com.wangdaye.common.ui.transition.sharedElement.Recolor"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
-        android:duration="350"
-        tools:ignore="NewApi">
-        <targets>
-            <target android:targetId="@id/activity_photo_3_swipeBackView" />
+            <target android:targetId="@id/container_photo_pager" />
         </targets>
     </transition>
 

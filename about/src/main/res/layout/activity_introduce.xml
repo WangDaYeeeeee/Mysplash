@@ -4,13 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="?attr/root_color">
-
-    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-        android:id="@+id/activity_introduce_statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
 
     <RelativeLayout
         android:id="@+id/activity_introduce_buttonBar"
@@ -44,8 +39,7 @@
         android:id="@+id/activity_introduce_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/activity_introduce_buttonBar"
-        android:layout_below="@id/activity_introduce_statusBar">
+        android:layout_above="@id/activity_introduce_buttonBar">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/activity_introduce_viewPager"
@@ -57,7 +51,6 @@
     <androidx.appcompat.widget.AppCompatImageButton
         android:id="@+id/activity_introduce_backBtn"
         android:src="@drawable/ic_close"
-        android:layout_below="@id/activity_introduce_statusBar"
         style="@style/material_image_button"
         tools:ignore="ContentDescription" />
 

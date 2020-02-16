@@ -1,10 +1,12 @@
 package com.wangdaye.base.unsplash;
 
+import java.io.Serializable;
+
 /**
  * Photo stats.
  * */
 
-public class PhotoStats {
+public class PhotoStats implements Serializable {
 
     /**
      * downloads : 11068

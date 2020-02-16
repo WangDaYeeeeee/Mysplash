@@ -12,10 +12,11 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.SharedElementCallback;
+import androidx.fragment.app.DialogFragment;
 
 import com.wangdaye.common.base.application.MysplashApplication;
+import com.wangdaye.common.base.dialog.MysplashBottomSheetDialogFragment;
 import com.wangdaye.common.base.dialog.MysplashDialogFragment;
-import com.wangdaye.common.base.popup.MysplashPopupWindow;
 import com.wangdaye.common.ui.transition.sharedElement.SharedElementTransition;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackActivity;
 import com.wangdaye.common.ui.widget.windowInsets.ApplyWindowInsetsLayout;
@@ -40,8 +41,7 @@ public abstract class MysplashActivity extends SwipeBackActivity {
 
     private boolean foreground;
 
-    private List<MysplashDialogFragment> dialogList = new ArrayList<>();
-    private List<MysplashPopupWindow> popupList = new ArrayList<>();
+    private List<DialogFragment> dialogList = new ArrayList<>();
 
     @CallSuper
     @Override
@@ -54,13 +54,8 @@ public abstract class MysplashActivity extends SwipeBackActivity {
         MysplashApplication.getInstance().addActivity(this);
 
         LanguageUtils.setLanguage(this);
-        DisplayUtils.setWindowTop(this);
 
         windowInsets = new Rect(0, 0, 0, 0);
-    }
-
-    public boolean hasTranslucentNavigationBar() {
-        return false;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -106,8 +101,8 @@ public abstract class MysplashActivity extends SwipeBackActivity {
     protected void onStart() {
         super.onStart();
         if (ThemeManager.getInstance(this).isDayNightSwitchTime(this)) {
-            ThemeManager.getInstance(this)
-                    .setLightTheme(this, !ThemeManager.getInstance(this).isLightTheme());
+            ThemeManager.getInstance(this).setLightTheme(
+                    this, !ThemeManager.getInstance(this).isLightTheme());
             MysplashApplication.getInstance().dispatchRecreate();
         }
     }
@@ -144,9 +139,8 @@ public abstract class MysplashActivity extends SwipeBackActivity {
     }
 
     protected void initSystemBar() {
-        DisplayUtils.setStatusBarStyle(this, false);
-        DisplayUtils.setNavigationBarStyle(this, false,
-                hasTranslucentNavigationBar());
+        boolean lightTheme = ThemeManager.getInstance(this).isLightTheme();
+        DisplayUtils.setSystemBarStyle(this, true, lightTheme, true, lightTheme);
     }
 
     @CallSuper
@@ -175,9 +169,6 @@ public abstract class MysplashActivity extends SwipeBackActivity {
         if (dialogList.size() > 0) {
             // has dialogs. --> dismiss the dialog which on the top of task.
             dialogList.get(dialogList.size() - 1).dismiss();
-        } else if (popupList.size() > 0) {
-            // has popup windows.
-            popupList.get(popupList.size() - 1).dismiss();
         } else {
             // give the back pressed action to child class.
             handleBackPressed();
@@ -216,7 +207,13 @@ public abstract class MysplashActivity extends SwipeBackActivity {
     public CoordinatorLayout provideSnackbarContainer() {
         if (dialogList.size() > 0) {
             // has dialogs. --> return the top dialog's snack bar container.
-            return dialogList.get(dialogList.size() - 1).getSnackbarContainer();
+            DialogFragment f = dialogList.get(dialogList.size() - 1);
+            if (f instanceof MysplashBottomSheetDialogFragment) {
+                return ((MysplashBottomSheetDialogFragment) f).getSnackbarContainer();
+            } else if (f instanceof MysplashDialogFragment) {
+                return ((MysplashDialogFragment) f).getSnackbarContainer();
+            }
+            throw new RuntimeException("Invalid dialog fragment class.");
         } else {
             // return the snack bar container of activity.
             return getSnackbarContainer();
@@ -236,12 +233,8 @@ public abstract class MysplashActivity extends SwipeBackActivity {
         return foreground;
     }
 
-    public List<MysplashDialogFragment> getDialogList() {
+    public List<DialogFragment> getDialogList() {
         return dialogList;
-    }
-
-    public List<MysplashPopupWindow> getPopupList() {
-        return popupList;
     }
 
     // window insets.

@@ -4,14 +4,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>VORGESCHLAGEN</item>
-    </string-array>
-
-    <!-- collection tab. -->
-    <string-array name="collection_tabs">
-        <item>AUSGEZEICHNET</item>
-        <item>ALLES</item>
-        <item>CURATED</item>
+        <item>FOLLOWER</item>
+        <item>KOLLEKTIONEN</item>
     </string-array>
 
     <!-- search tab. -->

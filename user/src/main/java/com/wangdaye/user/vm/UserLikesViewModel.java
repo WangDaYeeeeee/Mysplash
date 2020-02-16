@@ -2,8 +2,6 @@ package com.wangdaye.user.vm;
 
 import android.text.TextUtils;
 
-import com.wangdaye.common.presenter.event.DownloadEventResponsePresenter;
-import com.wangdaye.common.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.user.repository.UserPhotosViewRepository;
 
 import javax.inject.Inject;
@@ -11,10 +9,8 @@ import javax.inject.Inject;
 public class UserLikesViewModel extends UserPhotosViewModel {
 
     @Inject
-    public UserLikesViewModel(UserPhotosViewRepository repository,
-                              PhotoEventResponsePresenter photoEventResponsePresenter,
-                              DownloadEventResponsePresenter downloadEventResponsePresenter) {
-        super(repository, photoEventResponsePresenter, downloadEventResponsePresenter);
+    public UserLikesViewModel(UserPhotosViewRepository repository) {
+        super(repository);
     }
 
     @Override
@@ -22,12 +18,7 @@ public class UserLikesViewModel extends UserPhotosViewModel {
         if (TextUtils.isEmpty(getUsername())) {
             return;
         }
-        getRepository().getUserLikes(
-                getListResource(),
-                getUsername(),
-                getPhotosOrder().getValue(),
-                true
-        );
+        getRepository().getUserLikes(this, getUsername(), true);
     }
 
     @Override
@@ -35,11 +26,6 @@ public class UserLikesViewModel extends UserPhotosViewModel {
         if (TextUtils.isEmpty(getUsername())) {
             return;
         }
-        getRepository().getUserLikes(
-                getListResource(),
-                getUsername(),
-                getPhotosOrder().getValue(),
-                false
-        );
+        getRepository().getUserLikes(this, getUsername(), false);
     }
 }

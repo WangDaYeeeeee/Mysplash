@@ -4,8 +4,6 @@ import android.app.Activity;
 
 import androidx.annotation.StringDef;
 
-import com.wangdaye.base.unsplash.Photo;
-
 public interface SettingsService {
 
     String BACK_TO_TOP_TYPE_ALL = "all";
@@ -43,9 +41,9 @@ public interface SettingsService {
             LANGUAGE_PORTUGUESE_BR
     }) @interface LanguageRule {}
 
-    String PHOTOS_ORDER_LATEST = Photo.ORDER_BY_LATEST;
-    String PHOTOS_ORDER_OLDEST = Photo.ORDER_BY_OLDEST;
-    String PHOTOS_ORDER_POPULAR = Photo.ORDER_BY_POPULAR;
+    String PHOTOS_ORDER_LATEST = "latest";
+    String PHOTOS_ORDER_OLDEST = "oldest";
+    String PHOTOS_ORDER_POPULAR = "popular";
     String PHOTOS_ORDER_RANDOM = "random";
     @StringDef({
             PHOTOS_ORDER_LATEST, PHOTOS_ORDER_OLDEST, PHOTOS_ORDER_POPULAR, PHOTOS_ORDER_RANDOM

@@ -4,22 +4,22 @@ import com.wangdaye.base.resource.Resource;
 import com.wangdaye.common.base.vm.BrowsableViewModel;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.bus.MessageBus;
+import com.wangdaye.common.bus.event.FollowEvent;
 import com.wangdaye.user.repository.UserActivityRepository;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 /**
  * User browsable view model.
  * */
-public class UserActivityModel extends BrowsableViewModel<User>
-        implements Consumer<User> {
+public class UserActivityModel extends BrowsableViewModel<User> {
 
     private UserActivityRepository repository;
-    private Disposable disposable;
+    private Disposable userEventDisposable;
+    private Disposable followEventDisposable;
 
     private String username;
 
@@ -27,9 +27,33 @@ public class UserActivityModel extends BrowsableViewModel<User>
     public UserActivityModel(UserActivityRepository repository) {
         super();
         this.repository = repository;
-        this.disposable = MessageBus.getInstance()
+        this.userEventDisposable = MessageBus.getInstance()
                 .toObservable(User.class)
-                .subscribe(this);
+                .subscribe(user -> {
+                    if (user.username.equals(username)) {
+                        getResource().setValue(Resource.success(user));
+                    }
+                });
+        this.followEventDisposable = MessageBus.getInstance()
+                .toObservable(FollowEvent.class)
+                .subscribe(followEvent -> {
+                    if (followEvent.target.username.equals(username) && getResource().getValue() != null) {
+                        Resource.Status status = getResource().getValue().status;
+                        switch (status) {
+                            case SUCCESS:
+                                getResource().setValue(Resource.success(followEvent.target));
+                                break;
+
+                            case ERROR:
+                                getResource().setValue(Resource.error(followEvent.target));
+                                break;
+
+                            case LOADING:
+                                getResource().setValue(Resource.loading(followEvent.target));
+                                break;
+                        }
+                    }
+                });
         this.username = null;
     }
 
@@ -42,7 +66,7 @@ public class UserActivityModel extends BrowsableViewModel<User>
 
         if (init && getResource().getValue() != null
                 && (getResource().getValue().data == null
-                || !getResource().getValue().data.complete)) {
+                || !getResource().getValue().data.isComplete())) {
             requestUser();
         }
     }
@@ -51,27 +75,19 @@ public class UserActivityModel extends BrowsableViewModel<User>
     protected void onCleared() {
         super.onCleared();
         repository.cancel();
-        disposable.dispose();
+        userEventDisposable.dispose();
+        followEventDisposable.dispose();
     }
 
     public void requestUser() {
-        repository.getUser(getResource(), username);
+        repository.getUser(this, username);
     }
 
     public void followOrCancelFollowUser(boolean setToFollow) {
-        repository.followOrCancelFollowUser(getResource(), username, setToFollow);
+        repository.followOrCancelFollowUser(this, username, setToFollow);
     }
 
     public String getUsername() {
         return username;
-    }
-
-    // interface.
-
-    @Override
-    public void accept(User user) {
-        if (user.username.equals(username)) {
-            getResource().setValue(Resource.success(user));
-        }
     }
 }

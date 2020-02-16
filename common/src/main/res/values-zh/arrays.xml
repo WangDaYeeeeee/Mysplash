@@ -4,14 +4,8 @@
     <!-- 主页标签 -->
     <string-array name="home_tabs">
         <item>社论</item>
-        <item>精选</item>
-    </string-array>
-
-    <!-- 收藏集标签 -->
-    <string-array name="collection_tabs">
-        <item>精选</item>
-        <item>所有</item>
-        <item>画展</item>
+        <item>动态</item>
+        <item>收藏集</item>
     </string-array>
 
     <!-- 搜索标签 -->

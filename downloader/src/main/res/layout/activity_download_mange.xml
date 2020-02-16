@@ -14,47 +14,36 @@
         android:background="@android:color/black"
         android:alpha="0" />
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_download_manage_swipeBackView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/root_color">
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-            android:id="@+id/activity_download_manage_statusBar"
+        <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:theme="@style/MysplashToolbarTheme">
 
-        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_download_manage_swipeBackView"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/activity_download_manage_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="@string/action_download_manage"
+                app:popupTheme="@style/MysplashPopupMenuTheme"
+                tools:ignore="UnusedAttribute" />
+
+        </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+        <com.wangdaye.downloader.ui.DownloadRecyclerView
+            android:id="@+id/activity_download_manage_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/root_color">
+            android:fitsSystemWindows="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-            <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:theme="@style/MysplashToolbarTheme">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/activity_download_manage_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:title="@string/action_download_manage"
-                    app:popupTheme="@style/MysplashPopupMenuTheme"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activity_download_manage_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:clipToPadding="false"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    </LinearLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

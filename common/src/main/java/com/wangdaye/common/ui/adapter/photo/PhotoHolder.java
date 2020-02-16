@@ -3,6 +3,7 @@ package com.wangdaye.common.ui.adapter.photo;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,15 +11,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.wangdaye.common.R;
 import com.wangdaye.common.R2;
 import com.wangdaye.base.pager.ProfilePager;
 import com.wangdaye.base.unsplash.Photo;
+import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.common.ui.widget.CoverImageView;
 import com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView;
+import com.wangdaye.component.ComponentFactory;
 
 import java.util.Arrays;
 
@@ -48,11 +52,11 @@ class PhotoHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    void onBindView(Photo photo, boolean showDeleteButton,
+    void onBindView(PhotoModel model, boolean showDeleteButton,
                     boolean update, @Nullable PhotoAdapter.ItemEventCallback callback) {
         Context context = itemView.getContext();
 
-        this.photo = photo;
+        this.photo = model.photo;
         this.callback = callback;
 
         card.setCoverImage(image);
@@ -60,19 +64,31 @@ class PhotoHolder extends RecyclerView.ViewHolder {
                 Arrays.asList(avatar, downloadButton, collectionButton, likeButton)
         );
 
-        image.setSize(photo.width, photo.height);
+        image.setSize(model.photoSize[0], model.photoSize[1]);
+        image.setShowShadow(true);
 
         if (!update) {
-            ImageHelper.loadAvatar(avatar.getContext(), avatar, photo.user, null);
-
-            title.setText("");
-            image.setShowShadow(false);
-
-            ImageHelper.loadRegularPhoto(image.getContext(), image, photo, () -> {
-                title.setText(photo.user.name);
-                image.setShowShadow(true);
+            ImageHelper.setImageViewSaturation(image, model.hasFadeIn ? 1 : 0);
+            ImageHelper.loadImage(context, image, model.photoUrl, model.thumbUrl, model.photoSize, null, () -> {
+                if (!model.hasFadeIn) {
+                    model.hasFadeIn = true;
+                    long duration = Long.parseLong(
+                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
+                    ImageHelper.startSaturationAnimation(context, image, duration);
+                }
             });
+            card.setCardBackgroundColor(model.photoColor);
+
+            if (TextUtils.isEmpty(model.authorAvatarUrl)) {
+                ImageHelper.loadImage(context, avatar, R.drawable.default_avatar,
+                        model.authorAvatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+            } else {
+                ImageHelper.loadImage(context, avatar, model.authorAvatarUrl, R.drawable.default_avatar_round,
+                        model.authorAvatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+            }
         }
+
+        title.setText(model.authorName);
 
         if (showDeleteButton) {
             deleteButton.setVisibility(View.VISIBLE);
@@ -80,35 +96,26 @@ class PhotoHolder extends RecyclerView.ViewHolder {
             deleteButton.setVisibility(View.GONE);
         }
 
-        if (callback != null) {
-            photo.downloading = callback.isDownloading(context, photo);
-        }
         downloadButton.setProgressColor(Color.WHITE);
-        if (photo.downloading) {
+        if (model.downloading) {
             downloadButton.setProgressState();
         } else {
             downloadButton.setResultState(R.drawable.ic_download_white);
         }
 
-        if (photo.current_user_collections != null && photo.current_user_collections.size() != 0) {
+        if (model.collected) {
             collectionButton.setImageResource(R.drawable.ic_item_collected);
         } else {
             collectionButton.setImageResource(R.drawable.ic_item_collect);
         }
 
         likeButton.setProgressColor(Color.WHITE);
-        if (photo.settingLike) {
+        if (model.likeProgressing) {
             likeButton.setProgressState();
         } else {
             likeButton.setResultState(
-                    photo.liked_by_user
-                            ? R.drawable.ic_heart_red
-                            : R.drawable.ic_heart_outline_white
-            );
+                    model.liked ? R.drawable.ic_heart_red : R.drawable.ic_heart_outline_white);
         }
-
-        card.setCardBackgroundColor(
-                ImageHelper.computeCardBackgroundColor(card.getContext(), photo.color));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             image.setTransitionName(photo.id + "-cover");

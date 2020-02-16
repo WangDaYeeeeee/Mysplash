@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Tag.
  * */
 
-public class Tag implements com.wangdaye.base.i.Tag, Parcelable {
+public class Tag implements com.wangdaye.base.i.Tag, Parcelable, Serializable {
 
     /**
      * title : frozen

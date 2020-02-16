@@ -5,7 +5,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>FEATURED</item>
+        <item>ПОДПИСАТЬСЯ</item>
+        <item>КОЛЛЕКЦИИ</item>
     </string-array>
 
     <!-- collection tab. -->

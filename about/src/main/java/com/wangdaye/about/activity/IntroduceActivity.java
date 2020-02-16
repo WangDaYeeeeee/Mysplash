@@ -237,7 +237,7 @@ public class IntroduceActivity extends MysplashActivity
             title.setText(introduceModelList.get(i).title);
 
             AppCompatImageView image = v.findViewById(R.id.container_introduce_image);
-            ImageHelper.loadResourceImage(this, image, introduceModelList.get(i).imageRes);
+            ImageHelper.loadImage(this, image, introduceModelList.get(i).imageRes);
 
             TextView description = v.findViewById(R.id.container_introduce_description);
             description.setText(introduceModelList.get(i).description);

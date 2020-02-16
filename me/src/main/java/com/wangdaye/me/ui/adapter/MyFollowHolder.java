@@ -1,12 +1,15 @@
 package com.wangdaye.me.ui.adapter;
 
+import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.image.ImageHelper;
-import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.me.R2;
@@ -29,39 +32,47 @@ class MyFollowHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    void onBindView(User user, @Nullable MyFollowAdapter.ItemEventCallback callback) {
+    void onBindView(MyFollowModel model, @Nullable MyFollowAdapter.ItemEventCallback callback) {
+        Context context = itemView.getContext();
+
         background.setOnClickListener(v -> {
             if (callback != null) {
-                callback.onFollowItemClicked(avatar, background, user);
+                callback.onFollowItemClicked(avatar, background, model.user);
             }
         });
 
-        ImageHelper.loadAvatar(avatar.getContext(), avatar, user, null);
+        if (TextUtils.isEmpty(model.avatarUrl)) {
+            ImageHelper.loadImage(context, avatar, com.wangdaye.common.R.drawable.default_avatar,
+                    model.avatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+        } else {
+            ImageHelper.loadImage(context, avatar, model.avatarUrl, com.wangdaye.common.R.drawable.default_avatar_round,
+                    model.avatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+        }
 
-        title.setText(user.name);
+        title.setText(model.title);
 
-        if (user.settingFollow) {
+        if (model.progressing) {
             rippleButton.setState(
-                    user.followed_by_user
+                    model.switchOn
                             ? RippleButton.State.TRANSFORM_TO_OFF
                             : RippleButton.State.TRANSFORM_TO_ON
             );
         } else {
             rippleButton.setState(
-                    user.followed_by_user
+                    model.switchOn
                             ? RippleButton.State.ON
                             : RippleButton.State.OFF
             );
         }
         rippleButton.setOnSwitchListener(current -> {
             if (callback != null && getAdapterPosition() != RecyclerView.NO_POSITION) {
-                callback.onFollowUserOrCancel(user, getAdapterPosition(), !user.followed_by_user);
+                callback.onFollowUserOrCancel(model.user, getAdapterPosition(), !model.user.followed_by_user);
             }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            avatar.setTransitionName(user.username + "-" + getAdapterPosition() + "-avatar");
-            background.setTransitionName(user.username + "-" + getAdapterPosition() + "-background");
+            avatar.setTransitionName(model.user.username + "-" + getAdapterPosition() + "-avatar");
+            background.setTransitionName(model.user.username + "-" + getAdapterPosition() + "-background");
         }
     }
 

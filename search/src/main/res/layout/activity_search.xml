@@ -36,8 +36,7 @@
 
                 <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true" />
+                    android:layout_height="wrap_content" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/activity_search_toolbar"
@@ -94,11 +93,5 @@
             app:dotGap="@dimen/little_margin" />
 
     </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-        android:id="@+id/activity_search_statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:sbv_translucent_mode="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

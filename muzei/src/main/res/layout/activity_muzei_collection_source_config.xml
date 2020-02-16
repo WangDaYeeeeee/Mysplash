@@ -7,91 +7,81 @@
     android:layout_height="match_parent"
     android:background="?attr/root_color">
 
-    <LinearLayout
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_muzei_collection_source_config_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="?attr/root_color">
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-            android:id="@+id/activity_muzei_collection_source_config_statusBar"
+        <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:theme="@style/MysplashToolbarTheme">
 
-        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_muzei_collection_source_config_swipeBackView"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/activity_muzei_collection_source_config_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:title="@string/muzei_settings_title_collection_source"
+                app:popupTheme="@style/MysplashPopupMenuTheme"
+                tools:ignore="UnusedAttribute" />
+
+        </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+        <com.wangdaye.common.ui.widget.windowInsets.FitBottomSystemBarNestedScrollView
+            android:id="@+id/activity_muzei_collection_source_config_scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/root_color">
+            android:fitsSystemWindows="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:theme="@style/MysplashToolbarTheme">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/activity_muzei_collection_source_config_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/colorPrimary"
-                    app:title="@string/muzei_settings_title_collection_source"
-                    app:popupTheme="@style/MysplashPopupMenuTheme"
-                    tools:ignore="UnusedAttribute" />
-
-            </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
-
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/activity_muzei_collection_source_config_scrollView"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/activity_muzei_collection_source_config_collectionList"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:paddingStart="@dimen/little_margin"
+                    android:clipToPadding="false"
+                    android:layout_marginTop="@dimen/normal_icon_size"
+                    android:layout_marginBottom="@dimen/normal_icon_size"
+                    android:background="?attr/root_color"
+                    tools:ignore="RtlHardcoded,RtlSymmetry" />
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/activity_muzei_collection_source_config_collectionList"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="@dimen/little_margin"
-                        android:clipToPadding="false"
-                        android:layout_marginTop="@dimen/normal_icon_size"
-                        android:layout_marginBottom="@dimen/normal_icon_size"
-                        android:background="?attr/root_color"
-                        tools:ignore="RtlHardcoded,RtlSymmetry" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
+                    <Button
+                        android:id="@+id/activity_muzei_collection_source_config_doneBtn"
+                        android:text="@string/save"
+                        android:textColor="@color/colorAccentRed"
+                        android:layout_centerVertical="true"
+                        android:layout_marginTop="@dimen/little_margin"
+                        android:layout_marginBottom="@dimen/little_margin"
+                        android:layout_marginEnd="@dimen/little_margin"
+                        android:layout_alignParentEnd="true"
+                        style="@style/material_button"
+                        tools:ignore="RtlHardcoded" />
 
-                        <Button
-                            android:id="@+id/activity_muzei_collection_source_config_doneBtn"
-                            android:text="@string/save"
-                            android:textColor="@color/colorAccentRed"
-                            android:layout_centerVertical="true"
-                            android:layout_marginTop="@dimen/little_margin"
-                            android:layout_marginBottom="@dimen/little_margin"
-                            android:layout_marginEnd="@dimen/little_margin"
-                            android:layout_alignParentEnd="true"
-                            style="@style/material_button"
-                            tools:ignore="RtlHardcoded" />
+                    <Button
+                        android:id="@+id/activity_muzei_collection_source_config_resetBtn"
+                        android:text="@string/reset"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@id/activity_muzei_collection_source_config_doneBtn"
+                        style="@style/material_button" />
 
-                        <Button
-                            android:id="@+id/activity_muzei_collection_source_config_resetBtn"
-                            android:text="@string/reset"
-                            android:layout_centerVertical="true"
-                            android:layout_toStartOf="@id/activity_muzei_collection_source_config_doneBtn"
-                            style="@style/material_button" />
+                </RelativeLayout>
 
-                    </RelativeLayout>
+            </LinearLayout>
 
-                </LinearLayout>
+        </com.wangdaye.common.ui.widget.windowInsets.FitBottomSystemBarNestedScrollView>
 
-            </androidx.core.widget.NestedScrollView>
-
-        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    </LinearLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

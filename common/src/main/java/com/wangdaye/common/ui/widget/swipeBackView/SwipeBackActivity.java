@@ -57,9 +57,13 @@ public abstract class SwipeBackActivity extends AppCompatActivity {
 
             Observable<Bitmap> snapshot = Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
                 ViewGroup previousContentView = secondFloorActivity.findViewById(Window.ID_ANDROID_CONTENT);
-                emitter.onNext(
-                        SwipeBackHelper.getViewSnapshot(previousContentView.getChildAt(0))
-                );
+                if (previousContentView != null) {
+                    emitter.onNext(
+                            SwipeBackHelper.getViewSnapshot(previousContentView.getChildAt(0))
+                    );
+                } else {
+                    view.prepareViews(this);
+                }
             }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.STOP))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())

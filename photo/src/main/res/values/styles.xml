@@ -4,7 +4,9 @@
 
     <style
         name="MysplashTheme.Translucent.TranslucentNavigation.Photo"
-        parent="MysplashTheme.Translucent.TranslucentNavigation" />
+        parent="MysplashTheme.Translucent.TranslucentNavigation">
+        <item name="android:windowBackground">@android:color/black</item>
+    </style>
 
     <!-- preview activity. -->
 

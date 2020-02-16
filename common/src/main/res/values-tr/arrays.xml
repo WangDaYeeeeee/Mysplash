@@ -4,14 +4,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>ÖNE ÇIKANLAR</item>
-    </string-array>
-
-    <!-- collection tab. -->
-    <string-array name="collection_tabs">
-        <item>ÖNE ÇIKANLAR</item>
-        <item>TÜMÜ</item>
-        <item>TASARIM</item>
+        <item>FOLLOWING</item>
+        <item>KOLEKSİYONLAR</item>
     </string-array>
 
     <!-- search tab. -->

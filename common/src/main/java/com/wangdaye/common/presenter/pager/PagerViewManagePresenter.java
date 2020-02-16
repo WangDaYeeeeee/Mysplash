@@ -1,115 +1,81 @@
 package com.wangdaye.common.presenter.pager;
 
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.common.base.vm.PagerViewModel;
-import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PagerViewManagePresenter {
 
-    public static <T> void initRefresh(PagerViewModel<T> model, FooterAdapter adapter) {
-        assert model.getListResource().getValue() != null;
-        model.setListResource(ListResource.initRefreshing(model.getListResource().getValue()));
-        adapter.notifyDataSetChanged();
-
+    public static <T> void initRefresh(PagerViewModel<T> model, BaseAdapter<T, ?, ?> adapter) {
+        model.writeListResource(ListResource::initRefreshing);
+        model.readDataList(adapter::update);
         model.refresh();
     }
 
-    public static <T> void responsePagerListResourceChanged(ListResource<T> resource,
-                                                            PagerView view, FooterAdapter adapter) {
-        if (resource.dataList.size() == 0
-                && (resource.state == ListResource.State.REFRESHING
-                || resource.state == ListResource.State.LOADING)) {
+    @SuppressWarnings("unchecked")
+    public static <T> void responsePagerListResourceChanged(PagerViewModel<T> model, PagerView view,
+                                                            BaseAdapter<T, ?, ?> adapter) {
+        ListResource.State listState = model.getListState();
+        int listSize = model.getListSize();
+
+        if ((listState == ListResource.State.REFRESHING || listState == ListResource.State.LOADING)
+                && listSize == 0) {
             // loading state.
             view.setSwipeRefreshing(false);
             view.setSwipeLoading(false);
             view.setPermitSwipeRefreshing(false);
             view.setPermitSwipeLoading(false);
             view.setState(PagerView.State.LOADING);
-        } else if (resource.dataList.size() == 0
-                && resource.state == ListResource.State.ERROR) {
+
+        } else if (listSize == 0 && listState == ListResource.State.ERROR) {
             // error state.
             view.setSwipeRefreshing(false);
             view.setSwipeLoading(false);
             view.setPermitSwipeRefreshing(false);
             view.setPermitSwipeLoading(false);
             view.setState(PagerView.State.ERROR);
+
         } else if (view.getState() != PagerView.State.NORMAL) {
             // error/loading state -> normal state.
             view.setSwipeRefreshing(false);
             view.setSwipeLoading(false);
             view.setPermitSwipeRefreshing(true);
             view.setPermitSwipeLoading(true);
-            adapter.notifyDataSetChanged();
+
             view.setState(PagerView.State.NORMAL);
+            model.readDataList(adapter::update);
+
         } else {
             // normal state control.
-            view.setSwipeRefreshing(resource.state == ListResource.State.REFRESHING);
-            if (resource.state != ListResource.State.LOADING) {
+            view.setSwipeRefreshing(listState == ListResource.State.REFRESHING);
+            if (listState != ListResource.State.LOADING) {
                 view.setSwipeLoading(false);
             }
-            if (resource.state == ListResource.State.ALL_LOADED) {
+            if (listState == ListResource.State.ALL_LOADED) {
                 view.setPermitSwipeLoading(false);
             }
 
-            ListResource.Event event = resource.consumeEvent();
+            ListResource.Event event = model.consumeListEvent();
             if (event instanceof ListResource.DataSetChanged) {
-                adapter.notifyDataSetChanged();
+                model.readDataList(adapter::update);
             } else if (event instanceof ListResource.ItemRangeInserted) {
                 int increase = ((ListResource.ItemRangeInserted) event).increase;
-                adapter.notifyItemRangeInserted(adapter.getRealItemCount() - increase, increase);
+                model.readDataList(list -> {
+                    List<T> appendList = new ArrayList<>(
+                            list.subList(listSize - increase, listSize));
+                    adapter.addItems(appendList);
+                });
             } else if (event instanceof ListResource.ItemInserted) {
-                adapter.notifyItemInserted(((ListResource.ItemInserted) event).index);
+                model.readDataList(list -> adapter.addItem(list.get(listSize - 1)));
             } else if (event instanceof ListResource.ItemChanged) {
-                adapter.notifyItemChanged(
-                        ((ListResource.ItemChanged) event).index,
-                        FooterAdapter.PAYLOAD_UPDATE_ITEM
-                );
+                int index = ((ListResource.ItemChanged) event).index;
+                model.readDataList(list -> adapter.updateItem(list.get(index)));
             } else if (event instanceof ListResource.ItemRemoved) {
-                adapter.notifyItemRemoved(
-                        ((ListResource.ItemRemoved) event).index
-                );
-            }
-        }
-    }
-
-    public static <T> void responsePagerListResourceChangedByDiffUtil(ListResource<T> resource,
-                                                                      PagerView view, PhotoAdapter adapter) {
-        adapter.updateListByDiffUtil(resource.dataList);
-
-        if (resource.dataList.size() == 0
-                && (resource.state == ListResource.State.REFRESHING
-                || resource.state == ListResource.State.LOADING)) {
-            // loading state.
-            view.setSwipeRefreshing(false);
-            view.setSwipeLoading(false);
-            view.setPermitSwipeRefreshing(false);
-            view.setPermitSwipeLoading(false);
-            view.setState(PagerView.State.LOADING);
-        } else if (resource.dataList.size() == 0
-                && resource.state == ListResource.State.ERROR) {
-            // error state.
-            view.setSwipeRefreshing(false);
-            view.setSwipeLoading(false);
-            view.setPermitSwipeRefreshing(false);
-            view.setPermitSwipeLoading(false);
-            view.setState(PagerView.State.ERROR);
-        } else if (view.getState() != PagerView.State.NORMAL) {
-            // error/loading state -> normal state.
-            view.setSwipeRefreshing(false);
-            view.setSwipeLoading(false);
-            view.setPermitSwipeRefreshing(true);
-            view.setPermitSwipeLoading(true);
-            view.setState(PagerView.State.NORMAL);
-        } else {
-            // normal state control.
-            view.setSwipeRefreshing(resource.state == ListResource.State.REFRESHING);
-            if (resource.state != ListResource.State.LOADING) {
-                view.setSwipeLoading(false);
-            }
-            if (resource.state == ListResource.State.ALL_LOADED) {
-                view.setPermitSwipeLoading(false);
+                model.readDataList(list -> adapter.removeItem((T) ((ListResource.ItemRemoved) event).item));
             }
         }
     }

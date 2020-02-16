@@ -16,7 +16,7 @@ import com.wangdaye.base.unsplash.Collection;
  * Download task.
  * */
 
-public class DownloadTask implements Downloadable {
+public class DownloadTask implements Downloadable, Cloneable {
 
     public long taskId;
     public String title;
@@ -58,10 +58,10 @@ public class DownloadTask implements Downloadable {
 
     public DownloadTask(Context context, @NonNull Photo p, @DownloadTypeRule int type, String downloadScale) {
         this.title = p.id;
-        this.photoUri = p.getRegularSizeUrl(context);
+        this.photoUri = p.getRegularUrl();
         switch (downloadScale) {
             case "tiny":
-                this.downloadUrl = p.getWallpaperSizeUrl(context);
+                this.downloadUrl = p.getTinyDownloadSizeUrl(context);
                 break;
 
             case "compact":
@@ -167,6 +167,17 @@ public class DownloadTask implements Downloadable {
             return DOWNLOAD_COLLECTION_FORMAT;
         } else {
             return DOWNLOAD_PHOTO_FORMAT;
+        }
+    }
+
+    @NonNull
+    @Override
+    public DownloadTask clone() {
+        try {
+            return (DownloadTask) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Clone failed.");
         }
     }
 }

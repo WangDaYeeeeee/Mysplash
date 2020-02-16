@@ -1,45 +1,60 @@
 package com.wangdaye.search.vm;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.unsplash.User;
-import com.wangdaye.common.presenter.event.UserEventResponsePresenter;
+import com.wangdaye.common.base.vm.pager.UsersPagerViewModel;
 import com.wangdaye.search.repository.UserSearchPageViewRepository;
 
 import javax.inject.Inject;
 
-public class UserSearchPageViewModel extends AbstractSearchPageViewModel<User, User> {
+public class UserSearchPageViewModel extends UsersPagerViewModel
+        implements SearchPagerViewModel<User> {
 
     private UserSearchPageViewRepository repository;
-    private UserEventResponsePresenter presenter;
+    private String query;
 
     @Inject
-    public UserSearchPageViewModel(UserSearchPageViewRepository repository,
-                                   UserEventResponsePresenter presenter) {
-        super(User.class);
+    public UserSearchPageViewModel(UserSearchPageViewRepository repository) {
+        super();
         this.repository = repository;
-        this.presenter = presenter;
+    }
+
+    @Override
+    public boolean init(@NonNull ListResource<User> defaultResource, String defaultQuery) {
+        if (super.init(defaultResource)) {
+            setQuery(defaultQuery);
+            return true;
+        }
+        return false;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
         repository.cancel();
-        presenter.clearResponse();
+    }
+
+    @Nullable
+    @Override
+    public String getQuery() {
+        return query;
+    }
+
+    @Override
+    public void setQuery(@Nullable String query) {
+        this.query = query;
     }
 
     @Override
     public void refresh() {
-        repository.getUsers(getListResource(), getQuery(), true);
+        repository.getUsers(this, getQuery(), true);
     }
 
     @Override
     public void load() {
-        repository.getUsers(getListResource(), getQuery(), false);
-    }
-
-    // interface.
-
-    @Override
-    public void accept(User user) {
-        presenter.updateUser(getListResource(), user, false);
+        repository.getUsers(this, getQuery(), false);
     }
 }

@@ -5,19 +5,15 @@ import android.view.View;
 import com.wangdaye.base.pager.ProfilePager;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.base.unsplash.User;
-import com.wangdaye.common.bus.MessageBus;
-import com.wangdaye.common.presenter.list.FollowOrCancelFollowPresenter;
+import com.wangdaye.common.presenter.FollowUserPresenter;
 import com.wangdaye.component.ComponentFactory;
 
 public class MyFollowItemEventHelper implements MyFollowAdapter.ItemEventCallback {
 
     private MysplashActivity activity;
-    private FollowOrCancelFollowPresenter followOrCancelFollowPresenter;
 
-    public MyFollowItemEventHelper(MysplashActivity activity,
-                                   FollowOrCancelFollowPresenter followOrCancelFollowPresenter) {
+    public MyFollowItemEventHelper(MysplashActivity activity) {
         this.activity = activity;
-        this.followOrCancelFollowPresenter = followOrCancelFollowPresenter;
     }
 
     @Override
@@ -28,8 +24,10 @@ public class MyFollowItemEventHelper implements MyFollowAdapter.ItemEventCallbac
 
     @Override
     public void onFollowUserOrCancel(User user, int adapterPosition, boolean follow) {
-        user.settingFollow = true;
-        MessageBus.getInstance().post(user);
-        followOrCancelFollowPresenter.followOrCancelFollowUser(user, follow);
+        if (follow) {
+            FollowUserPresenter.getInstance().follow(user);
+        } else {
+            FollowUserPresenter.getInstance().unfollow(user);
+        }
     }
 }

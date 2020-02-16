@@ -1,54 +1,60 @@
 package com.wangdaye.search.vm;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.unsplash.Collection;
-import com.wangdaye.common.bus.event.CollectionEvent;
-import com.wangdaye.common.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.common.base.vm.pager.CollectionsPagerViewModel;
 import com.wangdaye.search.repository.CollectionSearchPageViewRepository;
 
 import javax.inject.Inject;
 
-public class CollectionSearchPageViewModel extends AbstractSearchPageViewModel<Collection, CollectionEvent> {
+public class CollectionSearchPageViewModel extends CollectionsPagerViewModel
+        implements SearchPagerViewModel<Collection> {
     
     private CollectionSearchPageViewRepository repository;
-    private CollectionEventResponsePresenter presenter;
+    private String query;
 
     @Inject
-    public CollectionSearchPageViewModel(CollectionSearchPageViewRepository repository,
-                                         CollectionEventResponsePresenter presenter) {
-        super(CollectionEvent.class);
+    public CollectionSearchPageViewModel(CollectionSearchPageViewRepository repository) {
+        super();
         this.repository = repository;
-        this.presenter = presenter;
+    }
+
+    @Override
+    public boolean init(@NonNull ListResource<Collection> defaultResource, String defaultQuery) {
+        if (super.init(defaultResource)) {
+            setQuery(defaultQuery);
+            return true;
+        }
+        return false;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
         repository.cancel();
-        presenter.clearResponse();
+    }
+
+    @Nullable
+    @Override
+    public String getQuery() {
+        return query;
+    }
+
+    @Override
+    public void setQuery(@Nullable String query) {
+        this.query = query;
     }
 
     @Override
     public void refresh() {
-        repository.getCollections(getListResource(), getQuery(), true);
+        repository.getCollections(this, getQuery(), true);
     }
 
     @Override
     public void load() {
-        repository.getCollections(getListResource(), getQuery(), false);
-    }
-
-    // interface.
-
-    @Override
-    public void accept(CollectionEvent collectionEvent) {
-        switch (collectionEvent.event) {
-            case UPDATE:
-                presenter.updateCollection(getListResource(), collectionEvent.collection);
-                break;
-
-            case DELETE:
-                presenter.deleteCollection(getListResource(), collectionEvent.collection);
-                break;
-        }
+        repository.getCollections(this, getQuery(), false);
     }
 }

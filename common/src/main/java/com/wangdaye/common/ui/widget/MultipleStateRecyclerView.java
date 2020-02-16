@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -24,6 +25,8 @@ public class MultipleStateRecyclerView extends RecyclerView {
     private List<OnScrollListener> onScrollListenerList;
 
     private ObjectAnimator animator;
+
+    private int bottomInset;
 
     private int paddingLeft;
     private int paddingTop;
@@ -73,6 +76,14 @@ public class MultipleStateRecyclerView extends RecyclerView {
 
         state = STATE_LOADING;
         setLayoutManager(multipleLayouts[STATE_LOADING], STATE_LOADING);
+
+        setFitsSystemWindows(true);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        this.bottomInset = insets.bottom;
+        return false;
     }
 
     @Override
@@ -147,6 +158,11 @@ public class MultipleStateRecyclerView extends RecyclerView {
             super.setLayoutManager(layout);
         }
         multipleLayouts[state] = layout;
+    }
+
+    @Nullable
+    public LayoutManager getLayoutManager(@StateRule int state) {
+        return multipleLayouts[state];
     }
 
     @Override
@@ -301,5 +317,9 @@ public class MultipleStateRecyclerView extends RecyclerView {
             }
         });
         animator.start();
+    }
+
+    public int getBottomInset() {
+        return bottomInset;
     }
 }

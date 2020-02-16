@@ -20,13 +20,15 @@ import android.widget.TextView;
 import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.base.pager.ProfilePager;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
+import com.wangdaye.common.presenter.LoadImagePresenter;
+import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.common.ui.dialog.ProfileDialog;
-import com.wangdaye.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.common.utils.helper.RoutingHelper;
 import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.component.ComponentFactory;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.i.PagerView;
@@ -34,7 +36,6 @@ import com.wangdaye.base.resource.Resource;
 import com.wangdaye.common.base.vm.PagerManageViewModel;
 import com.wangdaye.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.common.presenter.BrowsableDialogMangePresenter;
-import com.wangdaye.common.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.common.base.activity.LoadableActivity;
@@ -47,21 +48,17 @@ import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.ShareUtils;
-import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.BackToTopUtils;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.manager.ThemeManager;
 import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
-import com.wangdaye.user.base.PhotoItemEventHelper;
 import com.wangdaye.user.di.component.DaggerApplicationComponent;
 import com.wangdaye.user.ui.UserCollectionsView;
 import com.wangdaye.user.ui.UserPhotosView;
 import com.wangdaye.user.ui.UserProfileView;
-import com.wangdaye.user.vm.AbstractUserViewModel;
 import com.wangdaye.user.vm.UserActivityModel;
 import com.wangdaye.user.vm.UserCollectionsViewModel;
 import com.wangdaye.user.vm.UserLikesViewModel;
@@ -73,7 +70,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -91,10 +87,9 @@ import butterknife.OnClick;
 @Route(path = UserActivity.USER_ACTIVITY)
 public class UserActivity extends LoadableActivity<Photo>
         implements PagerManageView, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener {
+        SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R2.id.activity_user_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
-    @BindView(R2.id.activity_user_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_user_container) CoordinatorLayout container;
     @BindView(R2.id.activity_user_shadow) View shadow;
 
@@ -119,19 +114,17 @@ public class UserActivity extends LoadableActivity<Photo>
     private PagerAdapter adapter;
 
     private PagerView[] pagers = new PagerView[pageCount()];
-    private FooterAdapter[] adapters = new FooterAdapter[pageCount()];
+    private BaseAdapter[] adapters = new BaseAdapter[pageCount()];
 
     private UserActivityModel activityModel;
     private PagerManageViewModel pagerManageModel;
-    private AbstractUserViewModel<?, ?>[] pagerModels = new AbstractUserViewModel<?, ?>[pageCount()];
+    private PagerViewModel[] pagerModels = new PagerViewModel[pageCount()];
     private UserPhotosViewModel photoPagerModel;
     private UserLikesViewModel likesPagerModel;
     private UserCollectionsViewModel collectionsPagerModel;
     @Inject ParamsViewModelFactory viewModelFactory;
 
-    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
     private BrowsableDialogMangePresenter browsableDialogMangePresenter;
-    private PagerLoadablePresenter loadablePresenter;
     private Handler handler;
 
     public static final String USER_ACTIVITY = "/user/UserActivity";
@@ -159,11 +152,6 @@ public class UserActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public boolean hasTranslucentNavigationBar() {
-        return true;
-    }
-
-    @Override
     public void handleBackPressed() {
         if (pagers[getCurrentPagerPosition()].checkNeedBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
@@ -178,8 +166,6 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
-        statusBar.switchToInitAlpha();
-        DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagers[getCurrentPagerPosition()].scrollToPageTop();
     }
@@ -205,19 +191,26 @@ public class UserActivity extends LoadableActivity<Photo>
         return container;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        if (getCurrentPagerPosition() == ProfilePager.PAGE_COLLECTION) {
-            return new ArrayList<>();
+    public List<Photo> loadMoreData(int currentCount) {
+        if (getCurrentPagerPosition() != ProfilePager.PAGE_COLLECTION) {
+            int page = getCurrentPagerPosition();
+            return PagerLoadablePresenter.loadMore(
+                    (PagerViewModel<Photo>) pagerModels[page],
+                    currentCount,
+                    pagers[page],
+                    pagers[page].getRecyclerView(),
+                    this,
+                    page
+            );
         }
-        return loadablePresenter.loadMore(
-                list, headIndex, headDirection,
-                pagers[getCurrentPagerPosition()],
-                pagers[getCurrentPagerPosition()].getRecyclerView(),
-                adapters[getCurrentPagerPosition()],
-                this,
-                getCurrentPagerPosition()
-        );
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean isValidProvider(Class clazz) {
+        return clazz == Photo.class;
     }
 
     // init.
@@ -243,7 +236,6 @@ public class UserActivity extends LoadableActivity<Photo>
                 .get(UserPhotosViewModel.class);
         photoPagerModel.init(
                 ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
-                ComponentFactory.getSettingsService().getDefaultPhotoOrder(),
                 activityModel.getUsername()
         );
         pagerModels[ProfilePager.PAGE_PHOTO] = photoPagerModel;
@@ -252,7 +244,6 @@ public class UserActivity extends LoadableActivity<Photo>
                 .get(UserLikesViewModel.class);
         likesPagerModel.init(
                 ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
-                ComponentFactory.getSettingsService().getDefaultPhotoOrder(),
                 activityModel.getUsername()
         );
         pagerModels[ProfilePager.PAGE_LIKE] = likesPagerModel;
@@ -269,8 +260,6 @@ public class UserActivity extends LoadableActivity<Photo>
     private void initView() {
         swipeBackView.setOnSwipeListener(this);
 
-        appBar.setOnNestedScrollingListener(this);
-
         if (isTheLowestLevel()) {
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_home_light, R.drawable.ic_toolbar_home_dark);
@@ -278,8 +267,7 @@ public class UserActivity extends LoadableActivity<Photo>
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         }
-        toolbar.inflateMenu(R.menu.activity_user_toolbar);
-        toolbar.setOnMenuItemClickListener(this);
+        DisplayUtils.inflateToolbarMenu(toolbar, R.menu.activity_user_toolbar, this);
         toolbar.setNavigationOnClickListener(v -> {
             if (isTheLowestLevel()) {
                 ComponentFactory.getMainModule().startMainActivity(this);
@@ -293,20 +281,6 @@ public class UserActivity extends LoadableActivity<Photo>
             @Override
             public void finishActivity() {
                 finishSelf(true);
-            }
-        };
-        loadablePresenter = new PagerLoadablePresenter() {
-            @Override
-            public List<Photo> subList(int fromIndex, int toIndex) {
-                if (getCurrentPagerPosition() == ProfilePager.PAGE_PHOTO) {
-                    return Objects.requireNonNull(photoPagerModel.getListResource().getValue())
-                            .dataList.subList(fromIndex, toIndex);
-                } else if (getCurrentPagerPosition() == ProfilePager.PAGE_LIKE) {
-                    return Objects.requireNonNull(likesPagerModel.getListResource().getValue())
-                            .dataList.subList(fromIndex, toIndex);
-                } else {
-                    return new ArrayList<>();
-                }
             }
         };
 
@@ -351,62 +325,51 @@ public class UserActivity extends LoadableActivity<Photo>
                 toolbar.getMenu().getItem(0).setVisible(true);
             }
 
-            avatar.setOnClickListener(v ->
-                    ComponentFactory.getPhotoModule().startPreviewActivity(
-                            UserActivity.this,
-                            resource.data,
-                            false
-                    )
-            );
-            ImageHelper.loadAvatar(this, avatar, resource.data, null);
+            LoadImagePresenter.loadUserAvatar(this, avatar, resource.data, null);
 
             title.setText(resource.data.name);
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void initPages() {
-        adapters[ProfilePager.PAGE_PHOTO] = new PhotoAdapter(
-                Objects.requireNonNull(photoPagerModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        this,
-                        photoPagerModel.getListResource().getValue().dataList,
-                        likeOrDislikePhotoPresenter
+        photoPagerModel.readDataList(list ->
+                adapters[ProfilePager.PAGE_PHOTO] = new PhotoAdapter(this, list).setItemEventCallback(
+                        new PhotoItemEventHelper(
+                                this, photoPagerModel, (context, photo) -> downloadPhoto(photo)
+                        )
                 )
         );
 
-        adapters[ProfilePager.PAGE_LIKE] = new PhotoAdapter(
-                Objects.requireNonNull(likesPagerModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        this,
-                        likesPagerModel.getListResource().getValue().dataList,
-                        likeOrDislikePhotoPresenter
+        likesPagerModel.readDataList(list ->
+                adapters[ProfilePager.PAGE_LIKE] = new PhotoAdapter(this, list).setItemEventCallback(
+                        new PhotoItemEventHelper(
+                                this, likesPagerModel, (context, photo) -> downloadPhoto(photo)
+                        )
                 )
         );
 
-        adapters[ProfilePager.PAGE_COLLECTION] = new CollectionAdapter(
-                Objects.requireNonNull(collectionsPagerModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(new CollectionItemEventHelper(this));
+        collectionsPagerModel.readDataList(list ->
+                adapters[ProfilePager.PAGE_COLLECTION] = new CollectionAdapter(this, list).setItemEventCallback(
+                        new CollectionItemEventHelper(this)
+                )
+        );
 
         List<View> pageList = new ArrayList<>(
                 Arrays.asList(
                         new UserPhotosView(
                                 this,
                                 (PhotoAdapter) adapters[ProfilePager.PAGE_PHOTO],
-                                getCurrentPagerPosition() == ProfilePager.PAGE_PHOTO,
                                 ProfilePager.PAGE_PHOTO,
                                 this
                         ), new UserPhotosView(
                                 this,
                                 (PhotoAdapter) adapters[ProfilePager.PAGE_LIKE],
-                                getCurrentPagerPosition() == ProfilePager.PAGE_LIKE,
                                 ProfilePager.PAGE_LIKE,
                                 this
                         ), new UserCollectionsView(
                                 this,
                                 (CollectionAdapter) adapters[ProfilePager.PAGE_COLLECTION],
-                                getCurrentPagerPosition() == ProfilePager.PAGE_COLLECTION,
                                 ProfilePager.PAGE_COLLECTION,
                                 this
                         )
@@ -437,19 +400,12 @@ public class UserActivity extends LoadableActivity<Photo>
             for (int i = ProfilePager.PAGE_PHOTO; i < pageCount(); i ++) {
                 pagers[i].setSelected(i == position);
             }
-            DisplayUtils.setNavigationBarStyle(
-                    this,
-                    pagers[position].getState() == PagerView.State.NORMAL,
-                    hasTranslucentNavigationBar()
-            );
 
-            ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
-            if (resource != null
-                    && resource.dataList.size() == 0
-                    && resource.state != ListResource.State.REFRESHING
-                    && resource.state != ListResource.State.LOADING) {
+            if (pagerModels[getCurrentPagerPosition()].getListSize() == 0
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.REFRESHING
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.LOADING) {
                 PagerViewManagePresenter.initRefresh(
-                        pagerModels[getCurrentPagerPosition()],
+                        (PagerViewModel<?>) pagerModels[getCurrentPagerPosition()],
                         adapters[getCurrentPagerPosition()]
                 );
             }
@@ -457,25 +413,12 @@ public class UserActivity extends LoadableActivity<Photo>
 
         for (int i = ProfilePager.PAGE_PHOTO; i < pageCount(); i ++) {
             int finalI = i;
-            pagerModels[i].getListResource().observe(this, resource ->
+            pagerModels[i].observeListResource(this, viewModel ->
                     PagerViewManagePresenter.responsePagerListResourceChanged(
-                            resource, pagers[finalI], adapters[finalI]
+                            viewModel, pagers[finalI], adapters[finalI]
                     )
             );
         }
-
-        photoPagerModel.getPhotosOrder().observe(this, s -> {
-            String original = photoPagerModel.getPhotosOrder().getValue();
-            if (original != null && !original.equals(s)) {
-                PagerViewManagePresenter.initRefresh(photoPagerModel, adapters[ProfilePager.PAGE_PHOTO]);
-            }
-        });
-        likesPagerModel.getPhotosOrder().observe(this, s -> {
-            String original = likesPagerModel.getPhotosOrder().getValue();
-            if (original != null && !original.equals(s)) {
-                PagerViewManagePresenter.initRefresh(likesPagerModel, adapters[ProfilePager.PAGE_LIKE]);
-            }
-        });
 
         AnimUtils.translationYInitShow(viewPager, 400);
     }
@@ -484,7 +427,7 @@ public class UserActivity extends LoadableActivity<Photo>
         if (user == null) {
             return;
         }
-        if (user.complete && userProfileView.getState() == UserProfileView.STATE_LOADING) {
+        if (user.isComplete() && userProfileView.getState() == UserProfileView.STATE_LOADING) {
             TransitionManager.beginDelayedTransition(container);
             userProfileView.drawUserInfo(this, user);
         } else if (userProfileView.getState() == UserProfileView.STATE_NORMAL) {
@@ -542,27 +485,14 @@ public class UserActivity extends LoadableActivity<Photo>
 
     @Override
     public boolean canLoadMore(int index) {
-        return pagerModels[index].getListResource().getValue() != null
-
-                && Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()
-        ).state != ListResource.State.REFRESHING
-
-                && Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()
-        ).state != ListResource.State.LOADING
-
-                && Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()
-        ).state != ListResource.State.ALL_LOADED;
+        return pagerModels[index].getListState() != ListResource.State.REFRESHING
+                && pagerModels[index].getListState() != ListResource.State.LOADING
+                && pagerModels[index].getListState() != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
-        return pagerModels[index].getListResource().getValue() != null
-                && Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()
-        ).state == ListResource.State.LOADING;
+        return pagerModels[index].getListState() == ListResource.State.LOADING;
     }
 
     // on menu item click listener.
@@ -584,28 +514,6 @@ public class UserActivity extends LoadableActivity<Photo>
             if (activityModel.getResource().getValue() != null
                     && activityModel.getResource().getValue().data != null) {
                 ShareUtils.shareUser(activityModel.getResource().getValue().data);
-            }
-        } else if (i == R.id.action_filter) {
-            if (getCurrentPagerPosition() == ProfilePager.PAGE_PHOTO) {
-                new PhotoOrderPopupWindow(
-                        this,
-                        toolbar,
-                        photoPagerModel.getPhotosOrder().getValue(),
-                        PhotoOrderPopupWindow.NO_RANDOM_TYPE
-                ).setOnPhotoOrderChangedListener(orderValue ->
-                        photoPagerModel.setPhotosOrder(orderValue)
-                );
-            } else if (getCurrentPagerPosition() == ProfilePager.PAGE_LIKE) {
-                new PhotoOrderPopupWindow(
-                        this,
-                        toolbar,
-                        likesPagerModel.getPhotosOrder().getValue(),
-                        PhotoOrderPopupWindow.NO_RANDOM_TYPE
-                ).setOnPhotoOrderChangedListener(orderValue ->
-                        likesPagerModel.setPhotosOrder(orderValue)
-                );
-            } else {
-                NotificationHelper.showSnackbar(getString(R.string.feedback_no_filter));
             }
         }
         return true;
@@ -636,33 +544,6 @@ public class UserActivity extends LoadableActivity<Photo>
                     break;
             }
         }
-    }
-
-    // on nested scrolling listener.
-
-    @Override
-    public void onStartNestedScroll() {
-        // do nothing.
-    }
-
-    @Override
-    public void onNestedScrolling() {
-        if (appBar.getY() > -appBar.getMeasuredHeight()) {
-            if (!statusBar.isInitState()) {
-                statusBar.switchToInitAlpha();
-                DisplayUtils.setStatusBarStyle(this, false);
-            }
-        } else {
-            if (statusBar.isInitState()) {
-                statusBar.switchToDarkerAlpha();
-                DisplayUtils.setStatusBarStyle(this, true);
-            }
-        }
-    }
-
-    @Override
-    public void onStopNestedScroll() {
-        // do nothing.
     }
 
     // on swipe listener. (swipe back listener)

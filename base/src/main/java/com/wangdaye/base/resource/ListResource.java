@@ -215,11 +215,11 @@ public class ListResource<T> {
 
     public static <T> ListResource<T> removeItem(@NonNull ListResource<T> current, int index) {
         List<T> list = current.dataList;
-        list.remove(index);
+        T t = list.remove(index);
 
         Event event = current.event;
         if (event instanceof None) {
-            event = new ItemRemoved(index);
+            event = new ItemRemoved<>(t, index);
         } else {
             event = new DataSetChanged();
         }
@@ -267,11 +267,13 @@ public class ListResource<T> {
         }
     }
 
-    public static class ItemRemoved implements Event {
+    public static class ItemRemoved<T> implements Event {
 
+        public T item;
         public int index;
 
-        public ItemRemoved(int index) {
+        public ItemRemoved(T item, int index) {
+            this.item = item;
             this.index = index;
         }
     }

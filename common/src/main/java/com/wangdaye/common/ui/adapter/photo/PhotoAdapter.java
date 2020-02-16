@@ -7,15 +7,13 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.common.R;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,95 +23,53 @@ import java.util.List;
  *
  * */
 
-public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
+public class PhotoAdapter extends BaseAdapter<Photo, PhotoModel, PhotoHolder> {
 
-    private List<Photo> itemList;
     private boolean showDeleteButton;
-
     @Nullable private ItemEventCallback callback;
 
-    public PhotoAdapter() {
-        this(new ArrayList<>());
+    public PhotoAdapter(Context context, List<Photo> list) {
+        this(context, list, false);
     }
 
-    public PhotoAdapter(List<Photo> list) {
-        super();
-        this.itemList = list;
-        this.showDeleteButton = false;
+    public PhotoAdapter(Context context, List<Photo> list, boolean showDeleteButton) {
+        super(context, list);
+        this.showDeleteButton = showDeleteButton;
     }
 
     @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            // footer.
-            return new FooterHolder(parent);
-        } else {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_photo, parent, false);
-            return new PhotoHolder(v);
-        }
+    public PhotoHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new PhotoHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_photo, parent, false)
+        );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof PhotoHolder && position < getRealItemCount()) {
-            ((PhotoHolder) holder).onBindView(
-                    itemList.get(position), showDeleteButton,
-                    false, callback
-            );
-        } else if (holder instanceof FooterHolder) {
-            ((FooterHolder) holder).onBindView();
-        }
+    protected void onBindViewHolder(@NonNull PhotoHolder holder, PhotoModel model) {
+        holder.onBindView(model, showDeleteButton, false, callback);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position,
-                                 @NonNull List<Object> payloads) {
-        if (payloads.isEmpty()) {
-            onBindViewHolder(holder, position);
-        } else {
-            ((PhotoHolder) holder).onBindView(
-                    itemList.get(position), showDeleteButton,
-                    true, callback
-            );
-        }
+    protected void onBindViewHolder(@NonNull PhotoHolder holder, PhotoModel model,
+                                    @NonNull List<Object> payloads) {
+        holder.onBindView(model, showDeleteButton, !payloads.isEmpty(), callback);
     }
 
     @Override
-    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof PhotoHolder) {
-            ((PhotoHolder) holder).onRecycled();
-        }
+    public void onViewRecycled(@NonNull PhotoHolder holder) {
+        holder.onRecycled();
     }
 
     @Override
-    public int getRealItemCount() {
-        return itemList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return isFooter(position) ? -1 : 1;
+    protected PhotoModel getViewModel(Photo model) {
+        return new PhotoModel(getContext(), model);
     }
 
     public void setShowDeleteButton(boolean showDeleteButton) {
         this.showDeleteButton = showDeleteButton;
         notifyDataSetChanged();
-    }
-
-    public List<Photo> getItemList() {
-        return itemList;
-    }
-
-    @Override
-    public void updateListByDiffUtil(List newList) {
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(
-                new PhotoDiffCallback(itemList, newList), false);
-        itemList.clear();
-        itemList.addAll(newList);
-        diffResult.dispatchUpdatesTo(this);
     }
 
     // interface.
@@ -125,7 +81,6 @@ public class PhotoAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
         void onLikeButtonClicked(Photo photo, int adapterPosition, boolean setToLike);
         void onCollectButtonClicked(Photo photo, int adapterPosition);
         void onDownloadButtonClicked(Photo photo, int adapterPosition);
-        boolean isDownloading(Context context, Photo photo);
     }
 
     public PhotoAdapter setItemEventCallback(@Nullable ItemEventCallback c) {

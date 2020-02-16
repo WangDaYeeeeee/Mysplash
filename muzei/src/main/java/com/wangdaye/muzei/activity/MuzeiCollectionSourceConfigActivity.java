@@ -18,7 +18,6 @@ import com.wangdaye.muzei.R;
 import com.wangdaye.muzei.ui.ConfirmExitWithoutSaveDialog;
 import com.wangdaye.muzei.ui.WallpaperSourceAdapter;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.manager.ThemeManager;
 
 import java.util.ArrayList;
@@ -41,12 +40,12 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
 
     @BindView(R2.id.activity_muzei_collection_source_config_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_muzei_collection_source_config_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_muzei_collection_source_config_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_muzei_collection_source_config_scrollView) NestedScrollView scrollView;
 
     @OnClick(R2.id.activity_muzei_collection_source_config_doneBtn)
     void submit() {
-        MuzeiOptionManager.updateCollectionSource(this, adapter.itemList);
+        MuzeiOptionManager.updateCollectionSource(
+                this, MuzeiOptionManager.getInstance(this).getCollectionSourceList());
         finishSelf(true);
     }
 
@@ -55,7 +54,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
         List<MuzeiWallpaperSource> list = new ArrayList<>();
         list.add(MuzeiWallpaperSource.unsplashSource());
         list.add(MuzeiWallpaperSource.mysplashSource());
-        refreshSourceList(list);
+        adapter.update(list);
     }
 
     private WallpaperSourceAdapter adapter;
@@ -75,17 +74,7 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
     @Override
     protected void onResume() {
         super.onResume();
-        List<MuzeiWallpaperSource> sourceList = MuzeiOptionManager.getInstance(this).getCollectionSourceList();
-        if (sourceList.size() != adapter.itemList.size()) {
-            refreshSourceList(sourceList);
-        } else {
-            for (int i = 0; i < sourceList.size(); i ++) {
-                if (sourceList.get(i).collectionId != adapter.itemList.get(i).collectionId) {
-                    refreshSourceList(sourceList);
-                    return;
-                }
-            }
-        }
+        adapter.update(MuzeiOptionManager.getInstance(this).getCollectionSourceList());
     }
 
     @Override
@@ -146,11 +135,6 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
 
     // control.
 
-    private void refreshSourceList(List<MuzeiWallpaperSource> newList) {
-        adapter.itemList = newList;
-        adapter.notifyDataSetChanged();
-    }
-
     public void saveConfiguration() {
         submit();
         finishSelf(true);
@@ -167,7 +151,6 @@ public class MuzeiCollectionSourceConfigActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

@@ -1,8 +1,8 @@
 package com.wangdaye.common.ui.adapter.collection;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,14 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.wangdaye.common.R;
 import com.wangdaye.common.R2;
-import com.wangdaye.base.unsplash.Collection;
+import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.CoverImageView;
 import com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView;
 import com.wangdaye.common.utils.DisplayUtils;
+import com.wangdaye.component.ComponentFactory;
 
 import java.util.Collections;
 
@@ -42,8 +44,7 @@ class CollectionHolder extends RecyclerView.ViewHolder {
         cancelFlagMarginTop = (int) new DisplayUtils(itemView.getContext()).dpToPx(98);
     }
 
-    void onBindView(Collection collection,
-                    @Nullable CollectionAdapter.ItemEventCallback callback) {
+    void onBindView(CollectionModel model, @Nullable CollectionAdapter.ItemEventCallback callback) {
         Context context = itemView.getContext();
 
         card.setCoverImage(image);
@@ -51,61 +52,48 @@ class CollectionHolder extends RecyclerView.ViewHolder {
         card.setCancelFlagMarginTop(cancelFlagMarginTop);
         card.setOnClickListener(v -> {
             if (callback != null) {
-                callback.onCollectionClicked(avatar, card, collection);
+                callback.onCollectionClicked(avatar, card, model.collection);
             }
         });
 
-        if (collection.cover_photo != null
-                && collection.cover_photo.width != 0
-                && collection.cover_photo.height != 0) {
-            image.setSize(
-                    collection.cover_photo.width,
-                    collection.cover_photo.height);
-        }
+        title.setText(model.title);
+        subtitle.setText(model.subtitle);
+        name.setText(model.authorName);
 
-        if (collection.cover_photo != null) {
-            setCardText(context, collection, true);
-            ImageHelper.loadCollectionCover(image.getContext(), image, collection, true,
-                    () -> setCardText(context, collection, false));
-            card.setCardBackgroundColor(
-                    ImageHelper.computeCardBackgroundColor(
-                            image.getContext(),
-                            collection.cover_photo.color));
+        if (TextUtils.isEmpty(model.coverUrl)) {
+            image.setShowShadow(false);
         } else {
-            setCardText(context, collection, false);
-            ImageHelper.loadResourceImage(image.getContext(), image, R.drawable.default_collection_cover);
+            image.setShowShadow(true);
+            image.setSize(model.coverSize[0], model.coverSize[1]);
+
+            ImageHelper.setImageViewSaturation(image, model.hasFadeIn ? 1 : 0);
+            ImageHelper.loadImage(context, image, model.coverUrl, model.thumbUrl, model.coverSize, null, () -> {
+                if (!model.hasFadeIn) {
+                    model.hasFadeIn = true;
+                    long duration = Long.parseLong(
+                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
+                    ImageHelper.startSaturationAnimation(context, image, duration);
+                }
+            });
+            card.setCardBackgroundColor(model.coverColor);
         }
 
-        ImageHelper.loadAvatar(avatar.getContext(), avatar, collection.user, null);
+        if (TextUtils.isEmpty(model.authorAvatarUrl)) {
+            ImageHelper.loadImage(context, avatar, R.drawable.default_avatar,
+                    model.authorAvatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+        } else {
+            ImageHelper.loadImage(context, avatar, model.authorAvatarUrl, R.drawable.default_avatar_round,
+                    model.authorAvatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+        }
         avatar.setOnClickListener(v -> {
             if (callback != null) {
-                callback.onUserClicked(avatar, card, collection.user);
+                callback.onUserClicked(avatar, card, model.collection.user);
             }
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            card.setTransitionName(collection.id + "-background");
-            avatar.setTransitionName(collection.user.username + "-avatar");
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    private void setCardText(Context context, Collection collection, boolean setNull) {
-        if (setNull) {
-            title.setText("");
-            subtitle.setText("");
-            name.setText("");
-            image.setShowShadow(false);
-        } else {
-            title.setText(collection.title.toUpperCase());
-            subtitle.setText(collection.total_photos
-                    + " " + context.getResources().getStringArray(R.array.user_tabs)[0]);
-            name.setText(collection.user.name);
-            if (collection.cover_photo == null) {
-                image.setShowShadow(false);
-            } else {
-                image.setShowShadow(true);
-            }
+            card.setTransitionName(model.collection.id + "-background");
+            avatar.setTransitionName(model.collection.user.username + "-avatar");
         }
     }
 

@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Story.
  * */
 
-public class Story implements Parcelable {
+public class Story implements Parcelable, Serializable {
 
     /**
      * title : Frozen Bubbles

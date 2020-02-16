@@ -13,7 +13,6 @@ import com.wangdaye.about.R2;
 import com.wangdaye.about.ui.AboutAdapter;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +30,6 @@ public class AboutActivity extends MysplashActivity
 
     @BindView(R2.id.activity_about_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_about_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_about_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_about_recyclerView) RecyclerView recyclerView;
 
     public static final String ABOUT_ACTIVITY = "/about/AboutActivity";
@@ -94,7 +92,6 @@ public class AboutActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

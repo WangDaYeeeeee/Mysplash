@@ -57,8 +57,9 @@ public class MysplashMuzeiWorker extends Worker
 
     @Override
     public void onUpdateSucceed(@NonNull List<Photo> photoList) {
-        boolean screenSizeImage = MuzeiOptionManager.getInstance(getApplicationContext())
-                .isScreenSizeImage();
+        MuzeiOptionManager manager = MuzeiOptionManager.getInstance(getApplicationContext());
+
+        boolean screenSizeImage = manager.isScreenSizeImage();
         Context context = getApplicationContext();
 
         List<Artwork> artworkList = new ArrayList<>(photoList.size());
@@ -68,18 +69,18 @@ public class MysplashMuzeiWorker extends Worker
                     .byline(getApplicationContext().getString(R.string.on) + " " + p.created_at.split("T")[0])
                     .persistentUri(Uri.parse(
                             screenSizeImage
-                                    ? p.getRegularSizeUrl(MuzeiUpdateHelper.getScreenSize(context))
+                                    ? p.getUrl(MuzeiUpdateHelper.getScreenSize(context))
                                     : p.getDownloadUrl()
                     )).token(p.id)
                     .webUri(Uri.parse(p.links.html))
                     .build());
         }
-        if (MuzeiOptionManager.getInstance(getApplicationContext()).getCacheMode().equals("keep")) {
-            ProviderContract.getProviderClient(getApplicationContext(), MysplashMuzeiArtProvider.class)
-                    .addArtwork(artworkList);
+        if (manager.getCacheMode().equals(MuzeiOptionManager.CACHE_MODE_KEEP)) {
+            ProviderContract.getProviderClient(
+                    getApplicationContext(), MysplashMuzeiArtProvider.class).addArtwork(artworkList);
         } else {
-            ProviderContract.getProviderClient(getApplicationContext(), MysplashMuzeiArtProvider.class)
-                    .setArtwork(artworkList);
+            ProviderContract.getProviderClient(
+                    getApplicationContext(), MysplashMuzeiArtProvider.class).setArtwork(artworkList);
         }
     }
 

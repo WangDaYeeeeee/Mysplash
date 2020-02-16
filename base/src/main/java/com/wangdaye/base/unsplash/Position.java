@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Position.
  * */
 
-public class Position implements Parcelable {
+public class Position implements Parcelable, Serializable {
 
     /**
      * latitude : 45.4732984

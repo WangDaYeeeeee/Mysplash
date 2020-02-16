@@ -7,12 +7,10 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 
 import com.wangdaye.common.R;
@@ -46,22 +44,10 @@ public class ApplyWindowInsetsLayout extends FrameLayout {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT_WATCH)
-    @Override
-    public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        consumeInsets(
-                insets.getSystemWindowInsetLeft(),
-                insets.getSystemWindowInsetTop(),
-                insets.getSystemWindowInsetRight(),
-                insets.getSystemWindowInsetBottom()
-        );
-        return super.onApplyWindowInsets(insets);
-    }
-
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         consumeInsets(insets.left, insets.top, insets.right, insets.bottom);
-        return super.fitSystemWindows(insets);
+        return false;
     }
 
     private void consumeInsets(int left, int top, int right, int bottom) {

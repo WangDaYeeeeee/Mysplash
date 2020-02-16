@@ -1,5 +1,6 @@
 package com.wangdaye.base.unsplash;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -8,7 +9,7 @@ import androidx.annotation.Nullable;
  * Notification result.
  * */
 
-public class NotificationResult {
+public class NotificationResult implements Serializable {
 
     /**
      * id : 6a05d000-f447-11e6-8080-8000693ad827

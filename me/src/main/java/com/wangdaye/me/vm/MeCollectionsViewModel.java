@@ -2,37 +2,34 @@ package com.wangdaye.me.vm;
 
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.unsplash.Collection;
-import com.wangdaye.base.unsplash.User;
-import com.wangdaye.common.bus.event.CollectionEvent;
+import com.wangdaye.common.base.vm.pager.CollectionsPagerViewModel;
 import com.wangdaye.common.utils.manager.AuthManager;
-import com.wangdaye.common.presenter.event.CollectionEventResponsePresenter;
 import com.wangdaye.me.repository.MeCollectionsViewRepository;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Me collections view model.
  * */
-public class MeCollectionsViewModel extends AbstractMePagerViewModel<Collection, CollectionEvent> {
+public class MeCollectionsViewModel extends CollectionsPagerViewModel
+        implements MePagerViewModel<Collection> {
 
     private MeCollectionsViewRepository repository;
-    private CollectionEventResponsePresenter presenter;
+    private String username;
 
     @Inject
-    public MeCollectionsViewModel(MeCollectionsViewRepository repository,
-                                  CollectionEventResponsePresenter presenter) {
-        super(CollectionEvent.class);
+    public MeCollectionsViewModel(MeCollectionsViewRepository repository) {
+        super();
         this.repository = repository;
-        this.presenter = presenter;
     }
 
     @Override
     public boolean init(@NonNull ListResource<Collection> resource) {
         if (super.init(resource)) {
+            setUsername(AuthManager.getInstance().getUsername());
             refresh();
             return true;
         }
@@ -42,48 +39,29 @@ public class MeCollectionsViewModel extends AbstractMePagerViewModel<Collection,
     @Override
     protected void onCleared() {
         super.onCleared();
-        getRepository().cancel();
-        presenter.clearResponse();
+        repository.cancel();
     }
 
     @Override
     public void refresh() {
         setUsername(AuthManager.getInstance().getUsername());
-        repository.getUserCollections(getListResource(), true);
+        repository.getUserCollections(this, true);
     }
 
     @Override
     public void load() {
         setUsername(AuthManager.getInstance().getUsername());
-        repository.getUserCollections(getListResource(), false);
+        repository.getUserCollections(this, false);
     }
 
-    MeCollectionsViewRepository getRepository() {
-        return repository;
+    @Nullable
+    @Override
+    public String getUsername() {
+        return username;
     }
-
-    // interface.
 
     @Override
-    public void accept(CollectionEvent collectionEvent) {
-        User user = AuthManager.getInstance().getUser();
-        if (user == null
-                || !user.username.equals(collectionEvent.collection.user.username)
-                || Objects.requireNonNull(getListResource().getValue()).state != ListResource.State.SUCCESS) {
-            return;
-        }
-        switch (collectionEvent.event) {
-            case CREATE:
-                presenter.createCollection(getListResource(), collectionEvent.collection);
-                break;
-
-            case UPDATE:
-                presenter.updateCollection(getListResource(), collectionEvent.collection);
-                break;
-
-            case DELETE:
-                presenter.deleteCollection(getListResource(), collectionEvent.collection);
-                break;
-        }
+    public void setUsername(@Nullable String username) {
+        this.username = username;
     }
 }

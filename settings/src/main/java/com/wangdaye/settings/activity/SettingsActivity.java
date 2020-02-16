@@ -13,7 +13,6 @@ import com.wangdaye.settings.R;
 import com.wangdaye.settings.R2;
 import com.wangdaye.settings.fragment.SettingsFragment;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.ThemeManager;
 
@@ -34,7 +33,6 @@ public class SettingsActivity extends MysplashActivity
 
     @BindView(R2.id.activity_settings_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_settings_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_settings_statusBar) StatusBarView statusBar;
 
     public static final String SETTINGS_ACTIVITY = "/settings/SettingsActivity";
 
@@ -119,7 +117,6 @@ public class SettingsActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

@@ -1,5 +1,6 @@
 package com.wangdaye.about.ui;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.wangdaye.about.presenter.CreateAboutModelPresenter;
 import com.wangdaye.about.ui.holder.CategoryHolder;
 import com.wangdaye.about.ui.holder.HeaderHolder;
 import com.wangdaye.about.ui.holder.LibraryHolder;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -26,10 +28,9 @@ import java.util.List;
  *
  * */
 
-public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> {
+public class AboutAdapter extends BaseAdapter<AboutModel, AboutModel, AboutAdapter.ViewHolder> {
 
     private MysplashActivity a;
-    private List<AboutModel> itemList;
 
     /**
      * Basic CollectionHolder class for {@link AboutAdapter}.
@@ -46,8 +47,13 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     }
 
     public AboutAdapter(MysplashActivity a) {
+        super(a, CreateAboutModelPresenter.createModelList(a));
         this.a = a;
-        this.itemList = CreateAboutModelPresenter.createModelList(a);
+    }
+
+    @Override
+    protected AboutModel getViewModel(AboutModel model) {
+        return model;
     }
 
     @NotNull
@@ -84,23 +90,22 @@ public class AboutAdapter extends RecyclerView.Adapter<AboutAdapter.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(@NotNull AboutAdapter.ViewHolder holder, int position) {
-        holder.onBindView(a, itemList.get(position));
+    protected void onBindViewHolder(@NonNull ViewHolder holder, AboutModel model) {
+        holder.onBindView(a, model);
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull ViewHolder holder, AboutModel model, @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, model);
     }
 
     @Override
     public void onViewRecycled(@NotNull ViewHolder holder) {
-        super.onViewRecycled(holder);
         holder.onRecycled();
     }
 
     @Override
-    public int getItemCount() {
-        return itemList.size();
-    }
-
-    @Override
     public int getItemViewType(int position) {
-        return itemList.get(position).getType();
+        return getItem(position).getType();
     }
 }

@@ -4,14 +4,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>SELEZIONATI</item>
-    </string-array>
-
-    <!-- collection tab. -->
-    <string-array name="collection_tabs">
-        <item>SELEZIONATE</item>
-        <item>TUTTE</item>
-        <item>CURATE</item>
+        <item>FOLLOWING</item>
+        <item>RACCOLTE</item>
     </string-array>
 
     <!-- search tab. -->

@@ -13,7 +13,7 @@ import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
-import com.wangdaye.common.base.adapter.footerAdapter.GridMarginsItemDecoration;
+import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -44,31 +44,29 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
 
     private PagerStateManagePresenter stateManagePresenter;
 
-    private boolean selected;
     private int index;
     private PagerManageView pagerManageView;
 
     public UserPhotosView(UserActivity a, PhotoAdapter adapter,
-                          boolean selected, int index, PagerManageView v) {
+                          int index, PagerManageView v) {
         super(a);
-        this.init(adapter, selected, index, v);
+        this.init(adapter, index, v);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void init(PhotoAdapter adapter, boolean selected, int index, PagerManageView v) {
+    private void init(PhotoAdapter adapter, int index, PagerManageView v) {
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
 
         ButterKnife.bind(this, this);
-        initData(selected, index, v);
+        initData(index, v);
         initView(adapter);
     }
 
-    private void initData(boolean selected, int index, PagerManageView v) {
-        this.selected = selected;
+    private void initData(int index, PagerManageView v) {
         this.index = index;
         this.pagerManageView = v;
     }
@@ -90,7 +88,7 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
         recyclerView.setLayoutManager(
                 RecyclerViewHelper.getDefaultStaggeredGridLayoutManager(getContext())
         );
-        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext()));
+        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext(), recyclerView));
 
         recyclerView.setAdapter(new MiniLoadingStateAdapter(), MultipleStateRecyclerView.STATE_LOADING);
         recyclerView.setAdapter(new MiniErrorStateAdapter(this), MultipleStateRecyclerView.STATE_ERROR);
@@ -101,7 +99,7 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
                 PagerScrollablePresenter.onScrolled(
                         UserPhotosView.this,
                         recyclerView,
-                        adapter.getRealItemCount(),
+                        adapter.getItemCount(),
                         pagerManageView,
                         index,
                         dy
@@ -124,12 +122,11 @@ public class UserPhotosView extends BothWaySwipeRefreshLayout
 
     @Override
     public boolean setState(State state) {
-        return stateManagePresenter.setState(state, selected);
+        return stateManagePresenter.setState(state);
     }
 
     @Override
     public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     @Override

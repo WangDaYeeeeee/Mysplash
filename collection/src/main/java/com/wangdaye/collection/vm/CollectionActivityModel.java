@@ -40,7 +40,7 @@ public class CollectionActivityModel extends BrowsableViewModel<Collection>
         this.curated = null;
     }
 
-    public boolean init(@NonNull Resource<Collection> resource, int collectionId, boolean curated) {
+    public void init(@NonNull Resource<Collection> resource, int collectionId, boolean curated) {
         boolean init = super.init(resource);
         if (this.deleted == null) {
             this.deleted = new MutableLiveData<>();
@@ -57,7 +57,6 @@ public class CollectionActivityModel extends BrowsableViewModel<Collection>
             requestACollection();
         }
 
-        return init;
     }
 
     @Override

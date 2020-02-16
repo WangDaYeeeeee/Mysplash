@@ -19,9 +19,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.collection.di.component.DaggerApplicationComponent;
-import com.wangdaye.collection.ui.CollectionMenuPopupWindow;
 import com.wangdaye.collection.ui.CollectionPhotosView;
 import com.wangdaye.collection.ui.UpdateCollectionDialog;
 import com.wangdaye.collection.vm.CollectionActivityModel;
@@ -39,9 +39,10 @@ import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.bus.MessageBus;
 import com.wangdaye.common.bus.event.CollectionEvent;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
+import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.presenter.BrowsableDialogMangePresenter;
-import com.wangdaye.common.presenter.list.LikeOrDislikePhotoPresenter;
+import com.wangdaye.common.presenter.LoadImagePresenter;
 import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.common.utils.helper.RoutingHelper;
@@ -51,17 +52,16 @@ import com.wangdaye.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.DisplayUtils;
-import com.wangdaye.common.utils.FileUtils;
 import com.wangdaye.common.utils.ShareUtils;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.utils.manager.ThemeManager;
 import com.wangdaye.component.ComponentFactory;
-import com.wangdaye.collection.base.PhotoItemEventHelper;
+import com.wangdaye.collection.base.CollectionPhotoItemEventHelper;
+import com.wangdaye.component.service.MuzeiService;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -83,12 +83,9 @@ import butterknife.OnClick;
 
 @Route(path = CollectionActivity.COLLECTION_ACTIVITY)
 public class CollectionActivity extends LoadableActivity<Photo>
-        implements PagerManageView, Toolbar.OnMenuItemClickListener,
-        CollectionMenuPopupWindow.OnSelectItemListener, NestedScrollAppBarLayout.OnNestedScrollingListener,
-        SwipeBackCoordinatorLayout.OnSwipeListener, UpdateCollectionDialog.OnCollectionChangedListener,
-        DownloadRepeatDialog.OnCheckOrDownloadListener {
+        implements PagerManageView, Toolbar.OnMenuItemClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
+        UpdateCollectionDialog.OnCollectionChangedListener, DownloadRepeatDialog.OnCheckOrDownloadListener {
 
-    @BindView(R2.id.activity_collection_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_collection_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_collection_container) CoordinatorLayout container;
     @BindView(R2.id.activity_collection_shadow) View shadow;
@@ -119,11 +116,9 @@ public class CollectionActivity extends LoadableActivity<Photo>
     private CollectionActivityModel activityModel;
     private CollectionPhotosViewModel photosViewModel;
     @Inject ParamsViewModelFactory viewModelFactory;
-
-    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
+    
     private BrowsableDialogMangePresenter browsableDialogMangePresenter;
-    private PagerLoadablePresenter loadMorePresenter;
-
+    
     public static final String COLLECTION_ACTIVITY = "/collection/CollectionActivity";
     public static final String KEY_COLLECTION_ACTIVITY_COLLECTION = "collection_activity_collection";
     public static final String KEY_COLLECTION_ACTIVITY_ID = "collection_activity_id";
@@ -140,11 +135,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public boolean hasTranslucentNavigationBar() {
-        return true;
-    }
-
-    @Override
     public void handleBackPressed() {
         if (photosView.checkNeedBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
@@ -156,8 +146,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
     @Override
     public void backToTop() {
-        statusBar.switchToInitAlpha();
-        DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, photosView);
         photosView.scrollToPageTop();
     }
@@ -184,12 +172,14 @@ public class CollectionActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        return loadMorePresenter.loadMore(
-                list, headIndex, headDirection,
-                photosView, photosView.getRecyclerView(), photoAdapter,
-                this, 0
-        );
+    public List<Photo> loadMoreData(int currentCount) {
+        return PagerLoadablePresenter.loadMore(photosViewModel, currentCount,
+                photosView, photosView.getRecyclerView(), this, 0);
+    }
+
+    @Override
+    public boolean isValidProvider(Class clazz) {
+        return clazz == Photo.class;
     }
 
     // init.
@@ -205,7 +195,8 @@ public class CollectionActivity extends LoadableActivity<Photo>
             photosViewModel.init(
                     ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
                     collection.id,
-                    collection.curated
+                    collection.curated,
+                    editVisible()
             );
         } else if (!TextUtils.isEmpty(collectionId)) {
             activityModel.init(
@@ -216,14 +207,16 @@ public class CollectionActivity extends LoadableActivity<Photo>
             photosViewModel.init(
                     ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
                     Integer.parseInt(collectionId),
-                    Integer.parseInt(collectionId) < 1000
+                    Integer.parseInt(collectionId) < 1000,
+                    editVisible()
             );
         } else {
             activityModel.init(Resource.loading(null), 1, true);
             photosViewModel.init(
                     ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
                     CollectionPhotosViewModel.INVALID_COLLECTION_ID,
-                    false
+                    false,
+                    editVisible()
             );
         }
     }
@@ -231,8 +224,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
     @SuppressLint("SetTextI18n")
     private void initView() {
         swipeBackView.setOnSwipeListener(this);
-
-        appBar.setOnNestedScrollingListener(this);
 
         if (isTheLowestLevel()) {
             ThemeManager.setNavigationIcon(
@@ -249,15 +240,18 @@ public class CollectionActivity extends LoadableActivity<Photo>
             }
             finishSelf(true);
         });
-        toolbar.inflateMenu(R.menu.activity_collection_toolbar);
-        toolbar.setOnMenuItemClickListener(this);
+        DisplayUtils.inflateToolbarMenu(toolbar, R.menu.activity_collection_toolbar, this);
+        toolbar.getMenu().getItem(0).setVisible(editVisible());
+        toolbar.getMenu().getItem(2).setVisible(setAsSourceVisible());
+        toolbar.getMenu().getItem(3).setVisible(removeSourceVisible());
 
-        photoAdapter = new PhotoAdapter();
-        photoAdapter.setItemEventCallback(
-                new PhotoItemEventHelper(
-                        this,
-                        photoAdapter.getItemList(),
-                        likeOrDislikePhotoPresenter
+        photosViewModel.readDataList(list ->
+                photoAdapter = new PhotoAdapter(this, list).setItemEventCallback(
+                        new CollectionPhotoItemEventHelper(
+                                this,
+                                photosViewModel,
+                                (context, photo) -> requestPermissionAndDownload(photo)
+                        )
                 )
         );
         photosView.setPhotoAdapter(photoAdapter);
@@ -267,12 +261,6 @@ public class CollectionActivity extends LoadableActivity<Photo>
             @Override
             public void finishActivity() {
                 finishSelf(true);
-            }
-        };
-        loadMorePresenter = new PagerLoadablePresenter() {
-            @Override
-            public List<Photo> subList(int fromIndex, int toIndex) {
-                return photosViewModel.getListResource().getValue().dataList.subList(fromIndex, toIndex);
             }
         };
 
@@ -292,7 +280,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
             photosViewModel.setCollectionId(collection.id);
             photosViewModel.setCurated(collection.curated);
 
-            ImageHelper.loadCollectionCover(this, cover, collection, false, null);
+            LoadImagePresenter.loadCollectionCover(this, cover, collection, null);
 
             title.setText(collection.title);
 
@@ -304,6 +292,7 @@ public class CollectionActivity extends LoadableActivity<Photo>
                                 this, LinearLayoutManager.HORIZONTAL, false)
                 );
                 tagList.setAdapter(new MiniTagAdapter(
+                        this,
                         collection.tags,
                         (view, tag) -> ComponentFactory.getSearchModule().startSearchActivity(this, view, tag)
                 ));
@@ -315,20 +304,19 @@ public class CollectionActivity extends LoadableActivity<Photo>
                 description.setText(collection.description);
             }
 
-            toolbar.getMenu()
-                    .getItem(1)
-                    .setVisible(CollectionMenuPopupWindow.isUsable(this, collection));
-
-            ImageHelper.loadAvatar(this, avatar, collection.user, null);
+            ImageHelper.loadImage(this, avatar, collection.user.profile_image.large, R.drawable.default_avatar_round, 
+                    new int[] {ImageHelper.AVATAR_SIZE, ImageHelper.AVATAR_SIZE}, 
+                    new BitmapTransformation[] {new CircleTransformation(this)}, null);
 
             subtitle.setText(getString(R.string.by) + " " + collection.user.name);
 
             boolean myCollection = !TextUtils.isEmpty(AuthManager.getInstance().getUsername())
                     && AuthManager.getInstance().getUsername().equals(collection.user.username);
             photoAdapter.setShowDeleteButton(myCollection);
-            if (photosViewModel.getListResource().getValue().dataList.size() == 0
-                    && photosViewModel.getListResource().getValue().state != ListResource.State.REFRESHING
-                    && photosViewModel.getListResource().getValue().state != ListResource.State.LOADING) {
+
+            if (photosViewModel.getListSize() == 0
+                    && photosViewModel.getListState() != ListResource.State.REFRESHING
+                    && photosViewModel.getListState() != ListResource.State.LOADING) {
                 PagerViewManagePresenter.initRefresh(photosViewModel, photoAdapter);
             }
         });
@@ -338,34 +326,43 @@ public class CollectionActivity extends LoadableActivity<Photo>
             }
         });
 
-        photosViewModel.getListResource().observe(this, resource ->
-                PagerViewManagePresenter.responsePagerListResourceChangedByDiffUtil(
-                        resource, photosView, photoAdapter
+        photosViewModel.observeListResource(this, viewModel ->
+                PagerViewManagePresenter.responsePagerListResourceChanged(
+                        viewModel, photosView, photoAdapter
                 )
         );
 
         AnimUtils.translationYInitShow(photosView, 400);
     }
 
-    // downloadTarget.
-
-    public void downloadCollection() {
-        if (getCollection() == null) {
-            return;
-        }
-
-        String title = String.valueOf(getCollection().id);
-        if (ComponentFactory.getDownloaderService().isDownloading(this, title)) {
-            NotificationHelper.showSnackbar(this, getString(R.string.feedback_download_repeat));
-        } else if (FileUtils.isCollectionExists(this, String.valueOf(getCollection().id))) {
-            DownloadRepeatDialog dialog = new DownloadRepeatDialog();
-            dialog.setDownloadKey(getCollection());
-            dialog.setOnCheckOrDownloadListener(this);
-            dialog.show(getSupportFragmentManager(), null);
-        } else {
-            requestPermissionAndDownload(getCollection());
-        }
+    private boolean editVisible() {
+        Collection collection = getCollection();
+        return collection == null
+                || (AuthManager.getInstance().getUsername() != null
+                && AuthManager.getInstance().getUsername().equals(collection.user.username));
     }
+
+    private boolean setAsSourceVisible() {
+        Collection collection = getCollection();
+        MuzeiService muzeiService = ComponentFactory.getMuzeiService();
+
+        return collection != null
+                && muzeiService.isMuzeiInstalled(this)
+                && muzeiService.getSource(this).equals(MuzeiService.SOURCE_COLLECTION)
+                && ComponentFactory.getMuzeiService().getMuzeiWallpaperSource(this, collection) == null;
+    }
+
+    private boolean removeSourceVisible() {
+        Collection collection = getCollection();
+        MuzeiService muzeiService = ComponentFactory.getMuzeiService();
+
+        return collection != null
+                && muzeiService.isMuzeiInstalled(this)
+                && muzeiService.getSource(this).equals(MuzeiService.SOURCE_COLLECTION)
+                && ComponentFactory.getMuzeiService().getMuzeiWallpaperSource(this, collection) != null;
+    }
+
+    // download.
 
     /**
      * @param target {@link Photo} or {@link Collection}.
@@ -418,17 +415,14 @@ public class CollectionActivity extends LoadableActivity<Photo>
 
     @Override
     public boolean canLoadMore(int index) {
-        return photosViewModel.getListResource().getValue() != null
-                && photosViewModel.getListResource().getValue().state != ListResource.State.REFRESHING
-                && photosViewModel.getListResource().getValue().state != ListResource.State.LOADING
-                && photosViewModel.getListResource().getValue().state != ListResource.State.ALL_LOADED;
+        return photosViewModel.getListState() != ListResource.State.REFRESHING
+                && photosViewModel.getListState() != ListResource.State.LOADING
+                && photosViewModel.getListState() != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
-        return Objects.requireNonNull(
-                photosViewModel.getListResource().getValue()
-        ).state == ListResource.State.LOADING;
+        return photosViewModel.getListState() == ListResource.State.LOADING;
     }
 
     // on menu item click listener.
@@ -440,69 +434,21 @@ public class CollectionActivity extends LoadableActivity<Photo>
             if (getCollection() != null) {
                 ShareUtils.shareCollection(getCollection());
             }
-        } else if (i == R.id.action_menu) {
-            new CollectionMenuPopupWindow(
-                    this, toolbar, getCollection()
-            ).setOnSelectItemListener(this);
+        } else if (i == R.id.action_edit) {
+            UpdateCollectionDialog dialog = new UpdateCollectionDialog();
+            dialog.setCollection(getCollection());
+            dialog.setOnCollectionChangedListener(this);
+            dialog.show(getSupportFragmentManager(), null);
+        } else if (i == R.id.action_set_as_source) {
+            if (getCollection() != null) {
+                ComponentFactory.getMuzeiService().setAsMuzeiSource(this, getCollection());
+            }
+        } else if (i == R.id.action_remove_source) {
+            if (getCollection() != null) {
+                ComponentFactory.getMuzeiService().removeFromMuzeiSource(this, getCollection());
+            }
         }
         return true;
-    }
-
-    @Override
-    public void onSelectItem(int id) {
-        switch (id) {
-            case CollectionMenuPopupWindow.ITEM_EDIT:
-                UpdateCollectionDialog dialog = new UpdateCollectionDialog();
-                dialog.setCollection(getCollection());
-                dialog.setOnCollectionChangedListener(this);
-                dialog.show(getSupportFragmentManager(), null);
-                break;
-
-            case CollectionMenuPopupWindow.ITEM_DOWNLOAD:
-                downloadCollection();
-                break;
-
-            case CollectionMenuPopupWindow.ITEM_SET_AS_SOURCE:
-                if (getCollection() != null) {
-                    ComponentFactory.getMuzeiService().setAsMuzeiSource(this, getCollection());
-                }
-                break;
-
-            case CollectionMenuPopupWindow.ITEM_REMOVE_SOURCE:
-                if (getCollection() != null) {
-                    ComponentFactory.getMuzeiService().removeFromMuzeiSource(this, getCollection());
-                }
-                break;
-        }
-    }
-
-    // on nested scrolling listener.
-
-    @Override
-    public void onStartNestedScroll() {
-        // do nothing.
-    }
-
-    @Override
-    public void onNestedScrolling() {
-        if (appBar.getY() > -appBar.getMeasuredHeight()) {
-            // the app bar layout can be seen.
-            if (!statusBar.isInitState()) {
-                statusBar.switchToInitAlpha();
-                DisplayUtils.setStatusBarStyle(this, false);
-            }
-        } else {
-            // the app bar layout has been hidden.
-            if (statusBar.isInitState()) {
-                statusBar.switchToDarkerAlpha();
-                DisplayUtils.setStatusBarStyle(this, true);
-            }
-        }
-    }
-
-    @Override
-    public void onStopNestedScroll() {
-        // do nothing.
     }
 
     // on swipe listener.

@@ -1,99 +1,41 @@
 package com.wangdaye.collection.vm;
 
 import com.wangdaye.base.resource.ListResource;
+import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.Photo;
-import com.wangdaye.common.base.vm.PagerViewModel;
-import com.wangdaye.common.bus.MessageBus;
-import com.wangdaye.common.bus.event.DownloadEvent;
-import com.wangdaye.common.bus.event.PhotoEvent;
-import com.wangdaye.common.presenter.event.DownloadEventResponsePresenter;
-import com.wangdaye.common.presenter.event.PhotoEventResponsePresenter;
+import com.wangdaye.common.base.vm.pager.PhotosPagerViewModel;
 import com.wangdaye.collection.repository.CollectionPhotosViewRepository;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import androidx.annotation.Nullable;
 
 /**
  * Collection photos view model.
  * */
-public class CollectionPhotosViewModel extends PagerViewModel<Photo> {
+public class CollectionPhotosViewModel extends PhotosPagerViewModel {
 
     private CollectionPhotosViewRepository repository;
-    private PhotoEventResponsePresenter photoEventResponsePresenter;
-    private DownloadEventResponsePresenter downloadEventResponsePresenter;
-
-    private Disposable photoEventDisposable;
-    private Disposable downloadEventDisposable;
 
     private Integer collectionId;
     private Boolean curated;
 
+    private boolean usersCollection;
+
     public static final int INVALID_COLLECTION_ID = -1;
 
-    private Consumer<PhotoEvent> photoEventConsumer = photoEvent -> {
-        assert getListResource().getValue() != null;
-
-        if (photoEvent.event == PhotoEvent.Event.ADD_TO_COLLECTION
-                && photoEvent.collection != null
-                && photoEvent.collection.id == collectionId) {
-            // this photo was been added to this collection.
-            getListResource().setValue(
-                    ListResource.insertItem(
-                            getListResource().getValue(),
-                            photoEvent.photo,
-                            0
-                    )
-            );
-            return;
-        }
-
-        if (photoEvent.event == PhotoEvent.Event.REMOVE_FROM_COLLECTION
-                && photoEvent.collection != null
-                && photoEvent.collection.id == collectionId) {
-            // remove this photo from this collection.
-            photoEventResponsePresenter.removePhoto(
-                    getListResource(),
-                    photoEvent.photo,
-                    false
-            );
-            return;
-        }
-
-        photoEventResponsePresenter.updatePhoto(
-                getListResource(),
-                photoEvent.photo,
-                false
-        );
-    };
-
-    private Consumer<DownloadEvent> downloadEventConsumer = downloadEvent ->
-            downloadEventResponsePresenter.updatePhoto(getListResource(), downloadEvent, false);
-
     @Inject
-    public CollectionPhotosViewModel(CollectionPhotosViewRepository repository,
-                                     PhotoEventResponsePresenter photoEventResponsePresenter,
-                                     DownloadEventResponsePresenter downloadEventResponsePresenter) {
+    public CollectionPhotosViewModel(CollectionPhotosViewRepository repository) {
         super();
-
         this.repository = repository;
-        this.photoEventResponsePresenter = photoEventResponsePresenter;
-        this.downloadEventResponsePresenter = downloadEventResponsePresenter;
-
-        this.photoEventDisposable = MessageBus.getInstance()
-                .toObservable(PhotoEvent.class)
-                .subscribe(photoEventConsumer);
-        this.downloadEventDisposable = MessageBus.getInstance()
-                .toObservable(DownloadEvent.class)
-                .subscribe(downloadEventConsumer);
-
         this.collectionId = null;
         this.curated = null;
+        this.usersCollection = false;
     }
 
-    public void init(@NonNull ListResource<Photo> resource, int collectionId, boolean curated) {
+    public void init(@NonNull ListResource<Photo> resource, int collectionId, boolean curated,
+                     boolean usersCollection) {
         boolean init = super.init(resource);
 
         if (this.collectionId == null) {
@@ -103,6 +45,8 @@ public class CollectionPhotosViewModel extends PagerViewModel<Photo> {
             this.curated = curated;
         }
 
+        this.usersCollection = usersCollection;
+
         if (init) {
             refresh();
         }
@@ -111,13 +55,7 @@ public class CollectionPhotosViewModel extends PagerViewModel<Photo> {
     @Override
     protected void onCleared() {
         super.onCleared();
-
         repository.cancel();
-        photoEventResponsePresenter.clearResponse();
-        downloadEventResponsePresenter.clearResponse();
-
-        photoEventDisposable.dispose();
-        downloadEventDisposable.dispose();
     }
 
     @Override
@@ -130,12 +68,37 @@ public class CollectionPhotosViewModel extends PagerViewModel<Photo> {
         getCollectionPhotos(false);
     }
 
+    @Override
+    protected void onAddPhotoToCollection(Photo photo, @Nullable Collection collection) {
+        if (usersCollection && collection != null && collection.id == collectionId) {
+            writeListResource(resource -> ListResource.insertItem(resource, photo, 0));
+        } else {
+            super.onAddPhotoToCollection(photo, collection);
+        }
+    }
+
+    @Override
+    protected void onRemovePhotoFromCollection(Photo photo, @Nullable Collection collection) {
+        if (usersCollection && collection != null && collection.id == collectionId) {
+            asynchronousWriteDataList((writer, resource) -> {
+                for (int i = 0; i < resource.dataList.size(); i ++) {
+                    if (resource.dataList.get(i).id.equals(photo.id)) {
+                        writer.postListResource(ListResource.removeItem(resource, i));
+                        break;
+                    }
+                }
+            });
+        } else {
+            super.onRemovePhotoFromCollection(photo, collection);
+        }
+    }
+
     private void getCollectionPhotos(boolean refresh) {
         if (collectionId != INVALID_COLLECTION_ID) {
             if (curated) {
-                repository.getCuratedCollectionPhotos(getListResource(), collectionId, refresh);
+                repository.getCuratedCollectionPhotos(this, collectionId, refresh);
             } else {
-                repository.getCollectionPhotos(getListResource(), collectionId, refresh);
+                repository.getCollectionPhotos(this, collectionId, refresh);
             }
         }
     }

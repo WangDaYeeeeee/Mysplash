@@ -7,13 +7,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.i.PagerView;
-import com.wangdaye.common.base.adapter.footerAdapter.GridMarginsItemDecoration;
+import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.base.i.PagerManageView;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
@@ -48,7 +48,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
     protected int index;
     protected PagerManageView pagerManageView;
 
-    public AbstractSearchPageView(SearchActivity a, FooterAdapter adapter,
+    public AbstractSearchPageView(SearchActivity a, BaseAdapter adapter,
                                   boolean selected, int index, PagerManageView v) {
         super(a);
         this.init(adapter, selected, index, v);
@@ -57,7 +57,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
     // init.
 
     @SuppressLint("InflateParams")
-    protected void init(FooterAdapter adapter, boolean selected, int index, PagerManageView v) {
+    protected void init(BaseAdapter adapter, boolean selected, int index, PagerManageView v) {
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
@@ -72,7 +72,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
         this.pagerManageView = v;
     }
 
-    protected void initView(FooterAdapter adapter) {
+    protected void initView(BaseAdapter adapter) {
         setColorSchemeColors(ThemeManager.getContentColor(getContext()));
         setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getContext()));
         setOnRefreshAndLoadListener(this);
@@ -87,7 +87,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(getLayoutManager());
-        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext()));
+        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext(), recyclerView));
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 98, v -> {
                     if (hideKeyboardListener != null) {
@@ -112,7 +112,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
                 PagerScrollablePresenter.onScrolled(
                         AbstractSearchPageView.this,
                         recyclerView,
-                        adapter.getRealItemCount(),
+                        adapter.getItemCount(),
                         pagerManageView,
                         index,
                         dy
@@ -146,7 +146,7 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
 
     @Override
     public boolean setState(State state) {
-        boolean stateChanged = stateManagePresenter.setState(state, true);
+        boolean stateChanged = stateManagePresenter.setState(state);
         if (stateChanged && state == State.ERROR) {
             recyclerView.setAdapter(
                     new LargeErrorStateAdapter(

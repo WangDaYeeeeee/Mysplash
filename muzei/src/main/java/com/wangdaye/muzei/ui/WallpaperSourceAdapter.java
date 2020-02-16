@@ -1,5 +1,6 @@
 package com.wangdaye.muzei.ui;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.base.MuzeiWallpaperSource;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.muzei.R;
@@ -17,6 +19,7 @@ import com.wangdaye.muzei.R2;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -30,12 +33,39 @@ import butterknife.OnClick;
  *
  * */
 
-public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSourceAdapter.ViewHolder> {
+public class WallpaperSourceAdapter
+        extends BaseAdapter<MuzeiWallpaperSource, WallpaperSourceAdapter.ViewModel, WallpaperSourceAdapter.ViewHolder> {
 
     public MysplashActivity activity;
-    public List<MuzeiWallpaperSource> itemList;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewModel implements BaseAdapter.ViewModel {
+
+        MuzeiWallpaperSource source;
+
+        ViewModel(MuzeiWallpaperSource source) {
+            this.source = source;
+        }
+
+        @Override
+        public boolean areItemsTheSame(BaseAdapter.ViewModel newModel) {
+            return newModel instanceof ViewModel
+                    && ((ViewModel) newModel).source.collectionId == source.collectionId;
+        }
+
+        @Override
+        public boolean areContentsTheSame(BaseAdapter.ViewModel newModel) {
+            return false;
+        }
+
+        @Override
+        public Object getChangePayload(BaseAdapter.ViewModel newModel) {
+            return null;
+        }
+    }
+
+    class ViewHolder extends RecyclerView.ViewHolder {
+
+        private ViewModel model;
 
         @OnClick(R2.id.item_wallpaper_source) void clickItem() {
             if (getAdapterPosition() == RecyclerView.NO_POSITION) {
@@ -43,7 +73,7 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
             }
             ComponentFactory.getCollectionModule().startCollectionActivity(
                      activity,
-                    String.valueOf(itemList.get(getAdapterPosition()).collectionId)
+                    String.valueOf(model.source.collectionId)
             );
         }
 
@@ -52,12 +82,12 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
                 return;
             }
 
-            itemList.remove(getAdapterPosition());
-            notifyItemRemoved(getAdapterPosition());
-
-            if (itemList.size() == 0) {
-                itemList.add(MuzeiWallpaperSource.mysplashSource());
-                notifyItemInserted(0);
+            if (getItemCount() > 1) {
+                removeItem(model.source);
+            } else {
+                List<MuzeiWallpaperSource> list = new ArrayList<>();
+                list.add(MuzeiWallpaperSource.mysplashSource());
+                update(list);
             }
         }
 
@@ -69,13 +99,15 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
             ButterKnife.bind(this, itemView);
         }
 
-        void onBindView(MuzeiWallpaperSource source) {
-            if (TextUtils.isEmpty(source.coverUrl)) {
-                ImageHelper.loadResourceImage(cover.getContext(), cover, R.drawable.default_collection_cover);
+        void onBindView(ViewModel model) {
+            this.model = model;
+
+            if (TextUtils.isEmpty(model.source.coverUrl)) {
+                ImageHelper.loadImage(cover.getContext(), cover, R.drawable.default_collection_cover);
             } else {
-                ImageHelper.loadImageFromUrl(cover.getContext(), cover, source.coverUrl, false, null);
+                ImageHelper.loadImage(cover.getContext(), cover, model.source.coverUrl);
             }
-            title.setText(source.title.toUpperCase());
+            title.setText(model.source.title.toUpperCase());
         }
 
         void onRecycled() {
@@ -84,8 +116,8 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
     }
 
     public WallpaperSourceAdapter(MysplashActivity activity, List<MuzeiWallpaperSource> list) {
+        super(activity, list);
         this.activity = activity;
-        this.itemList = list;
     }
 
     @NotNull
@@ -97,18 +129,23 @@ public class WallpaperSourceAdapter extends RecyclerView.Adapter<WallpaperSource
     }
 
     @Override
-    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
-        holder.onBindView(itemList.get(position));
+    protected void onBindViewHolder(@NonNull ViewHolder holder, ViewModel model) {
+        holder.onBindView(model);
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull ViewHolder holder, ViewModel model,
+                                    @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, model);
     }
 
     @Override
     public void onViewRecycled(@NotNull ViewHolder holder) {
-        super.onViewRecycled(holder);
         holder.onRecycled();
     }
 
     @Override
-    public int getItemCount() {
-        return itemList.size();
+    protected ViewModel getViewModel(MuzeiWallpaperSource model) {
+        return new ViewModel(model);
     }
 }

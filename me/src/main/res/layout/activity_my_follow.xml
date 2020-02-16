@@ -14,54 +14,43 @@
         android:background="@android:color/black"
         android:alpha="0"/>
 
-    <LinearLayout
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_my_follow_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="?attr/root_color"
+        tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-            android:id="@+id/activity_my_follow_statusBar"
+        <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
+            android:id="@+id/activity_my_follow_appBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true"
+            app:theme="@style/MysplashToolbarTheme">
 
-        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_my_follow_swipeBackView"
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/activity_my_follow_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/MysplashPopupMenuTheme"/>
+
+            <com.google.android.material.tabs.TabLayout
+                style="@style/MysplashTabLayoutTheme"
+                android:id="@+id/activity_my_follow_tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_layout_height"/>
+
+        </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/activity_my_follow_viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/root_color"
-            tools:ignore="UnusedAttribute">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
-            <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
-                android:id="@+id/activity_my_follow_appBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                app:theme="@style/MysplashToolbarTheme">
-
-                <androidx.appcompat.widget.Toolbar
-                    android:id="@+id/activity_my_follow_toolbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@android:color/transparent"
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    app:popupTheme="@style/MysplashPopupMenuTheme"/>
-
-                <com.google.android.material.tabs.TabLayout
-                    style="@style/MysplashTabLayoutTheme"
-                    android:id="@+id/activity_my_follow_tabLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/tab_layout_height"/>
-
-            </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
-
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/activity_my_follow_viewPager"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    </LinearLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

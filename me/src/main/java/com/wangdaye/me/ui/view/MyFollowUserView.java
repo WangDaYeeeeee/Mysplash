@@ -45,31 +45,28 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
 
     private PagerStateManagePresenter stateManagePresenter;
 
-    private boolean selected;
     private int index;
     private int userDeltaCount;
     private PagerManageView pagerManageView;
 
-    public MyFollowUserView(MyFollowActivity a, MyFollowAdapter adapter,
-                            boolean selected, int index, PagerManageView v) {
+    public MyFollowUserView(MyFollowActivity a, MyFollowAdapter adapter, int index, PagerManageView v) {
         super(a);
-        this.init(adapter, selected, index, v);
+        this.init(adapter, index, v);
     }
 
     // init.
 
     @SuppressLint("InflateParams")
-    private void init(MyFollowAdapter adapter, boolean selected, int index, PagerManageView v) {
+    private void init(MyFollowAdapter adapter, int index, PagerManageView v) {
         View contentView = LayoutInflater.from(getContext())
                 .inflate(R.layout.container_photo_list_2, null);
         addView(contentView);
         ButterKnife.bind(this, this);
-        initData(selected, index, v);
+        initData(index, v);
         initView(adapter);
     }
 
-    private void initData(boolean selected, int page, PagerManageView v) {
-        this.selected = selected;
+    private void initData(int page, PagerManageView v) {
         this.index = page;
         this.userDeltaCount = 0;
         this.pagerManageView = v;
@@ -135,12 +132,11 @@ public class MyFollowUserView extends BothWaySwipeRefreshLayout
 
     @Override
     public boolean setState(State state) {
-        return stateManagePresenter.setState(state, selected);
+        return stateManagePresenter.setState(state);
     }
 
     @Override
     public void setSelected(boolean selected) {
-        this.selected = selected;
     }
 
     @Override

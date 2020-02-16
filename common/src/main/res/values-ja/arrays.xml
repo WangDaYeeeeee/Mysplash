@@ -4,14 +4,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>注目</item>
-    </string-array>
-
-    <!-- collection tab. -->
-    <string-array name="collection_tabs">
-        <item>注目</item>
-        <item>すべて</item>
-        <item>収集済</item>
+        <item>フォロー中</item>
+        <item>コレクション</item>
     </string-array>
 
     <!-- search tab. -->

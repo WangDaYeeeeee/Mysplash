@@ -77,7 +77,7 @@ public class LargeErrorStateAdapter extends RecyclerView.Adapter<LargeErrorState
         }
 
         void onBindView(Context context) {
-            ImageHelper.loadResourceImage(context, feedbackImg, feedbackImageResId);
+            ImageHelper.loadImage(context, feedbackImg, feedbackImageResId);
             feedbackTxt.setText(feedbackText);
             feedbackBtn.setText(feedbackButton);
         }

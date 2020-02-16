@@ -35,16 +35,15 @@
                 app:layout_scrollFlags="scroll">
 
                 <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-                    android:id="@+id/activity_me_fakeStatusBar"
+                    android:id="@+id/activity_me_statusBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true" />
+                    android:layout_height="wrap_content" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/activity_me_toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:layout_below="@id/activity_me_fakeStatusBar"
+                    android:layout_below="@id/activity_me_statusBar"
                     android:background="@android:color/transparent"
                     app:popupTheme="@style/MysplashPopupMenuTheme" />
 
@@ -92,8 +91,7 @@
 
                 <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true"/>
+                    android:layout_height="wrap_content" />
 
                 <com.google.android.material.tabs.TabLayout
                     style="@style/MysplashTabLayoutTheme"
@@ -124,11 +122,5 @@
             app:dotGap="@dimen/little_margin" />
 
     </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-        android:id="@+id/activity_me_statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:sbv_translucent_mode="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

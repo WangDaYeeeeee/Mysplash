@@ -6,116 +6,105 @@
     android:layout_height="match_parent"
     android:background="?attr/root_color">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_custom_api_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-            android:id="@+id/activity_custom_api_statusBar"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:background="?attr/root_color">
 
-        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_custom_api_swipeBackView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <androidx.core.widget.NestedScrollView
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:fillViewport="true"
-                android:background="?attr/root_color">
+                android:fitsSystemWindows="true">
 
-                <RelativeLayout
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/activity_custom_api_closeBtn"
+                    android:src="@drawable/ic_close"
+                    style="@style/material_image_button"
+                    tools:ignore="ContentDescription" />
+
+                <LinearLayout
+                    android:id="@+id/activity_custom_api_inputContainer"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true">
 
-                    <androidx.appcompat.widget.AppCompatImageButton
-                        android:id="@+id/activity_custom_api_closeBtn"
-                        android:src="@drawable/ic_close"
-                        style="@style/material_image_button"
-                        tools:ignore="ContentDescription" />
-
-                    <LinearLayout
-                        android:id="@+id/activity_custom_api_inputContainer"
-                        android:orientation="vertical"
+                    <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true">
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_marginStart="@dimen/mini_icon_size"
+                        android:layout_marginEnd="@dimen/mini_icon_size">
 
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/normal_margin"
-                            android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_marginStart="@dimen/mini_icon_size"
-                            android:layout_marginEnd="@dimen/mini_icon_size">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/activity_custom_api_key"
-                                android:hint="api KEY"
-                                android:textColorHint="?attr/subtitle_color"
-                                android:maxLines="1"
-                                style="@style/content_text"
-                                tools:ignore="Autofill,HardcodedText,TextFields" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <com.google.android.material.textfield.TextInputLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/normal_margin"
-                            android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_marginStart="@dimen/mini_icon_size"
-                            android:layout_marginEnd="@dimen/mini_icon_size">
-
-                            <com.google.android.material.textfield.TextInputEditText
-                                android:id="@+id/activity_custom_api_secret"
-                                android:hint="Secret"
-                                android:textColorHint="?attr/subtitle_color"
-                                android:maxLines="1"
-                                style="@style/content_text"
-                                tools:ignore="Autofill,HardcodedText,TextFields" />
-
-                        </com.google.android.material.textfield.TextInputLayout>
-
-                        <TextView
-                            android:id="@+id/activity_custom_api_redirectUri"
-                            android:text="Redirect URI\nmysplash://unsplash-auth-callback"
-                            android:textIsSelectable="true"
-                            android:layout_marginTop="@dimen/normal_margin"
-                            android:layout_marginBottom="@dimen/normal_margin"
-                            android:layout_marginStart="@dimen/mini_icon_size"
-                            android:layout_marginEnd="@dimen/mini_icon_size"
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/activity_custom_api_key"
+                            android:hint="api KEY"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:maxLines="1"
                             style="@style/content_text"
-                            tools:ignore="HardcodedText" />
+                            tools:ignore="Autofill,HardcodedText,TextFields" />
 
-                    </LinearLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-                    <Button
-                        android:id="@+id/activity_custom_api_enterBtn"
-                        android:text="@string/enter"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@id/activity_custom_api_inputContainer"
-                        style="@style/material_button"
-                        tools:ignore="RtlHardcoded" />
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_marginStart="@dimen/mini_icon_size"
+                        android:layout_marginEnd="@dimen/mini_icon_size">
 
-                    <Button
-                        android:id="@+id/activity_custom_api_cancelBtn"
-                        android:text="@string/cancel"
-                        android:textColor="?attr/subtitle_color"
-                        android:layout_toStartOf="@id/activity_custom_api_enterBtn"
-                        android:layout_below="@id/activity_custom_api_inputContainer"
-                        style="@style/material_button"
-                        tools:ignore="RtlHardcoded" />
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/activity_custom_api_secret"
+                            android:hint="Secret"
+                            android:textColorHint="?attr/subtitle_color"
+                            android:maxLines="1"
+                            style="@style/content_text"
+                            tools:ignore="Autofill,HardcodedText,TextFields" />
 
-                </RelativeLayout>
+                    </com.google.android.material.textfield.TextInputLayout>
 
-            </androidx.core.widget.NestedScrollView>
+                    <TextView
+                        android:id="@+id/activity_custom_api_redirectUri"
+                        android:text="Redirect URI\nmysplash://unsplash-auth-callback"
+                        android:textIsSelectable="true"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_marginStart="@dimen/mini_icon_size"
+                        android:layout_marginEnd="@dimen/mini_icon_size"
+                        style="@style/content_text"
+                        tools:ignore="HardcodedText" />
 
-        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
+                </LinearLayout>
 
-    </LinearLayout>
+                <Button
+                    android:id="@+id/activity_custom_api_enterBtn"
+                    android:text="@string/enter"
+                    android:layout_alignParentEnd="true"
+                    android:layout_below="@id/activity_custom_api_inputContainer"
+                    style="@style/material_button"
+                    tools:ignore="RtlHardcoded" />
+
+                <Button
+                    android:id="@+id/activity_custom_api_cancelBtn"
+                    android:text="@string/cancel"
+                    android:textColor="?attr/subtitle_color"
+                    android:layout_toStartOf="@id/activity_custom_api_enterBtn"
+                    android:layout_below="@id/activity_custom_api_inputContainer"
+                    style="@style/material_button"
+                    tools:ignore="RtlHardcoded" />
+
+            </RelativeLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

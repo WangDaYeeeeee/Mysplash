@@ -1,14 +1,12 @@
 package com.wangdaye.user.repository;
 
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.network.observer.ListResourceObserver;
 import com.wangdaye.common.network.service.PhotoService;
+import com.wangdaye.component.service.SettingsService;
+import com.wangdaye.user.vm.UserPhotosViewModel;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 public class UserPhotosViewRepository {
 
@@ -19,41 +17,37 @@ public class UserPhotosViewRepository {
         this.service = service;
     }
 
-    public void getUserPhotos(@NonNull MutableLiveData<ListResource<Photo>> current,
-                              String username, String order, boolean refresh) {
-        assert current.getValue() != null;
+    public void getUserPhotos(UserPhotosViewModel viewModel, String username, boolean refresh) {
         if (refresh) {
-            current.setValue(ListResource.refreshing(current.getValue()));
+            viewModel.writeListResource(ListResource::refreshing);
         } else {
-            current.setValue(ListResource.loading(current.getValue()));
+            viewModel.writeListResource(ListResource::loading);
         }
 
         service.cancel();
         service.requestUserPhotos(
                 username,
-                current.getValue().getRequestPage(),
-                current.getValue().perPage,
-                order,
-                new ListResourceObserver<>(current, refresh)
+                viewModel.getListRequestPage(),
+                viewModel.getListPerPage(),
+                SettingsService.PHOTOS_ORDER_LATEST,
+                new ListResourceObserver<>(viewModel, refresh)
         );
     }
 
-    public void getUserLikes(@NonNull MutableLiveData<ListResource<Photo>> current,
-                             String username, String order, boolean refresh) {
-        assert current.getValue() != null;
+    public void getUserLikes(UserPhotosViewModel viewModel, String username, boolean refresh) {
         if (refresh) {
-            current.setValue(ListResource.refreshing(current.getValue()));
+            viewModel.writeListResource(ListResource::refreshing);
         } else {
-            current.setValue(ListResource.loading(current.getValue()));
+            viewModel.writeListResource(ListResource::loading);
         }
 
         service.cancel();
         service.requestUserLikes(
                 username,
-                current.getValue().getRequestPage(),
-                current.getValue().perPage,
-                order,
-                new ListResourceObserver<>(current, refresh)
+                viewModel.getListRequestPage(),
+                viewModel.getListPerPage(),
+                SettingsService.PHOTOS_ORDER_LATEST,
+                new ListResourceObserver<>(viewModel, refresh)
         );
     }
 

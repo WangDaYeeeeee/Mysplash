@@ -24,12 +24,10 @@ import com.wangdaye.me.vm.MyFollowingViewModel;
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.base.vm.PagerManageViewModel;
-import com.wangdaye.common.presenter.list.FollowOrCancelFollowPresenter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.manager.AuthManager;
@@ -43,7 +41,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -65,7 +62,6 @@ public class MyFollowActivity extends MysplashActivity
     @BindView(R2.id.activity_my_follow_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_my_follow_container) CoordinatorLayout container;
     @BindView(R2.id.activity_my_follow_shadow) View shadow;
-    @BindView(R2.id.activity_my_follow_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_my_follow_appBar) NestedScrollAppBarLayout appBar;
     @BindView(R2.id.activity_my_follow_viewPager) ViewPager viewPager;
 
@@ -75,8 +71,6 @@ public class MyFollowActivity extends MysplashActivity
     private PagerManageViewModel pagerManageModel;
     private MyFollowerViewModel[] pagerModels = new MyFollowerViewModel[pageCount()];
     @Inject ParamsViewModelFactory viewModelFactory;
-
-    @Inject FollowOrCancelFollowPresenter followOrCancelFollowPresenter;
 
     public static final String MY_FOLLOW_ACTIVITY = "/me/MyFollowActivity";
 
@@ -145,12 +139,10 @@ public class MyFollowActivity extends MysplashActivity
         pagerManageModel = ViewModelProviders.of(this, viewModelFactory).get(PagerManageViewModel.class);
         pagerManageModel.init(followerPage());
 
-        pagerModels[followerPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(MyFollowerViewModel.class);
+        pagerModels[followerPage()] = ViewModelProviders.of(this, viewModelFactory).get(MyFollowerViewModel.class);
         pagerModels[followerPage()].init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
 
-        pagerModels[followingPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(MyFollowingViewModel.class);
+        pagerModels[followingPage()] = ViewModelProviders.of(this, viewModelFactory).get(MyFollowingViewModel.class);
         pagerModels[followingPage()].init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
     }
 
@@ -167,30 +159,28 @@ public class MyFollowActivity extends MysplashActivity
     }
 
     private void initPages() {
-        adapters[followerPage()] = new MyFollowAdapter(
-                Objects.requireNonNull(pagerModels[followerPage()].getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new MyFollowItemEventHelper(this, followOrCancelFollowPresenter)
+        pagerModels[followerPage()].readDataList(list ->
+                adapters[followerPage()] = new MyFollowAdapter(this, list).setItemEventCallback(
+                        new MyFollowItemEventHelper(this)
+                )
         );
 
-        adapters[followingPage()] = new MyFollowAdapter(
-                Objects.requireNonNull(pagerModels[followingPage()].getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new MyFollowItemEventHelper(this, followOrCancelFollowPresenter)
+        pagerModels[followingPage()].readDataList(list ->
+                adapters[followingPage()] = new MyFollowAdapter(this, list).setItemEventCallback(
+                        new MyFollowItemEventHelper(this)
+                )
         );
-        
+
         List<View> pageList = new ArrayList<>(
                 Arrays.asList(
                         new MyFollowUserView(
                                 this,
                                 adapters[followerPage()],
-                                getCurrentPagerPosition() == followerPage(),
                                 followerPage(),
                                 this
                         ), new MyFollowUserView(
                                 this,
                                 adapters[followingPage()],
-                                getCurrentPagerPosition() == followingPage(),
                                 followingPage(),
                                 this
                         )
@@ -229,32 +219,23 @@ public class MyFollowActivity extends MysplashActivity
             for (int i = followerPage(); i < pageCount(); i ++) {
                 pagers[i].setSelected(i == position);
             }
-
-            int size = Objects.requireNonNull(
-                    pagerModels[position].getListResource().getValue()
-            ).dataList.size();
-
-            ListResource.State state = Objects.requireNonNull(
-                    pagerModels[position].getListResource().getValue()
-            ).state;
-
-            if (size == 0
-                    && state != ListResource.State.REFRESHING
-                    && state != ListResource.State.LOADING) {
+            if (pagerModels[position].getListSize() == 0
+                    && pagerModels[position].getListState() != ListResource.State.REFRESHING
+                    && pagerModels[position].getListState() != ListResource.State.LOADING) {
                 PagerViewManagePresenter.initRefresh(pagerModels[position], adapters[position]);
             }
         });
 
-        pagerModels[followerPage()].getListResource().observe(this, resource ->
+        pagerModels[followerPage()].observeListResource(this, viewModel ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
+                        viewModel,
                         pagers[followerPage()],
                         adapters[followerPage()]
                 )
         );
-        pagerModels[followingPage()].getListResource().observe(this, resource ->
+        pagerModels[followingPage()].observeListResource(this, viewModel ->
                 PagerViewManagePresenter.responsePagerListResourceChanged(
-                        resource,
+                        viewModel,
                         pagers[followingPage()],
                         adapters[followingPage()]
                 )
@@ -299,19 +280,14 @@ public class MyFollowActivity extends MysplashActivity
 
     @Override
     public boolean canLoadMore(int index) {
-        ListResource.State state = Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()
-        ).state;
-        return state != ListResource.State.REFRESHING
-                && state != ListResource.State.LOADING
-                && state != ListResource.State.ALL_LOADED;
+        return pagerModels[index].getListState() != ListResource.State.REFRESHING
+                && pagerModels[index].getListState() != ListResource.State.LOADING
+                && pagerModels[index].getListState() != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
-        return Objects.requireNonNull(
-                pagerModels[index].getListResource().getValue()
-        ).state == ListResource.State.LOADING;
+        return pagerModels[index].getListState() == ListResource.State.LOADING;
     }
 
     // on page change listener.
@@ -347,7 +323,6 @@ public class MyFollowActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 

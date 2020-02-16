@@ -5,19 +5,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>FEATURED</item>
-    </string-array>
-
-    <!-- collection tab. -->
-    <string-array name="collection_tabs">
-        <item>FEATURED</item>
-        <item>ALL</item>
-        <item>CURATED</item>
-    </string-array>
-    <string-array name="collection_type_values">
-        <item>featured</item>
-        <item>all</item>
-        <item>curated</item>
+        <item>FOLLOWING</item>
+        <item>COLLECTION</item>
     </string-array>
 
     <!-- search tab. -->

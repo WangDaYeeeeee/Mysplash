@@ -11,7 +11,6 @@ import com.alibaba.android.arouter.facade.annotation.Route;
 import com.google.android.material.textfield.TextInputEditText;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.common.utils.manager.CustomApiManager;
@@ -41,7 +40,6 @@ public class CustomApiActivity extends MysplashActivity
 
     @BindView(R2.id.activity_custom_api_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_custom_api_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_custom_api_statusBar) StatusBarView statusBar;
 
     @BindView(R2.id.activity_custom_api_key) TextInputEditText key;
     @BindView(R2.id.activity_custom_api_secret) TextInputEditText secret;
@@ -159,7 +157,6 @@ public class CustomApiActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.ViewParent;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
@@ -15,12 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.view.NestedScrollingParent3;
 import androidx.core.view.ViewCompat;
-
-import com.wangdaye.common.R;
-import com.wangdaye.common.base.application.MysplashApplication;
 
 /**
  * Swipe switch layout.
@@ -137,174 +132,6 @@ public class SwipeSwitchLayout extends FrameLayout
             // do nothing.
         }
     };
-
-    public static class RecyclerView extends androidx.recyclerview.widget.RecyclerView {
-
-        private SwipeSwitchLayout switchView;
-
-        public RecyclerView(Context context) {
-            super(context);
-            this.initialize();
-        }
-
-        public RecyclerView(Context context, @Nullable AttributeSet attrs) {
-            super(context, attrs);
-            this.initialize();
-        }
-
-        public RecyclerView(Context context, @Nullable AttributeSet attrs, int defStyle) {
-            super(context, attrs, defStyle);
-            this.initialize();
-        }
-
-        private void initialize() {
-            setNestedScrollingEnabled(false);
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(MotionEvent ev) {
-            ensureSwitchView(this);
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (switchView != null) {
-                        switchView.setEnabled(false);
-                    }
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (switchView != null) {
-                        switchView.setEnabled(true);
-                    }
-                    break;
-            }
-            return super.onInterceptTouchEvent(ev);
-        }
-
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public boolean onTouchEvent(MotionEvent ev) {
-            ensureSwitchView(this);
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (switchView != null) {
-                        switchView.setEnabled(false);
-                    }
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (switchView != null) {
-                        switchView.setEnabled(true);
-                    }
-                    break;
-            }
-            return super.onTouchEvent(ev);
-        }
-
-        private void ensureSwitchView(View v) {
-            if (switchView == null) {
-                ViewParent parent = v.getParent();
-                if (parent != null) {
-                    if (parent instanceof SwipeSwitchLayout) {
-                        switchView = (SwipeSwitchLayout) parent;
-                    } else {
-                        ensureSwitchView((View) parent);
-                    }
-                }
-            }
-        }
-    }
-
-    public static class ViewPager extends androidx.viewpager.widget.ViewPager {
-
-        private SwipeSwitchLayout switchView;
-
-        public ViewPager(Context context) {
-            super(context);
-        }
-
-        public ViewPager(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        @Override
-        public boolean onInterceptTouchEvent(MotionEvent ev) {
-            ensureSwitchView(this);
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (switchView != null) {
-                        switchView.setEnabled(false);
-                    }
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (switchView != null) {
-                        switchView.setEnabled(true);
-                    }
-                    break;
-            }
-            return super.onInterceptTouchEvent(ev);
-        }
-
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public boolean onTouchEvent(MotionEvent ev) {
-            ensureSwitchView(this);
-
-            switch (ev.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    if (switchView != null) {
-                        switchView.setEnabled(false);
-                    }
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                    if (switchView != null) {
-                        switchView.setEnabled(true);
-                    }
-                    break;
-            }
-            return super.onTouchEvent(ev);
-        }
-
-        private void ensureSwitchView(View v) {
-            if (switchView == null) {
-                ViewParent parent = v.getParent();
-                if (parent != null) {
-                    if (parent instanceof SwipeSwitchLayout) {
-                        switchView = (SwipeSwitchLayout) parent;
-                    } else {
-                        ensureSwitchView((View) parent);
-                    }
-                }
-            }
-        }
-    }
-
-    public static class ViewPager2 extends ViewPager {
-
-        public ViewPager2(Context context) {
-            super(context);
-        }
-
-        public ViewPager2(Context context, AttributeSet attrs) {
-            super(context, attrs);
-        }
-
-        @Override
-        protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-            int height = getResources().getDimensionPixelSize(R.dimen.item_photo_3_more_vertical_height)
-                    + MysplashApplication.getInstance().getWindowInsets().bottom;
-            super.onMeasure(widthMeasureSpec, MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY));
-            setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), height);
-        }
-    }
 
     public SwipeSwitchLayout(Context context) {
         super(context);

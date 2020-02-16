@@ -34,10 +34,10 @@ import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.di.component.DaggerNetworkServiceComponent;
-import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.CollectionService;
-import com.wangdaye.common.ui.adapter.CollectionMiniAdapter;
+import com.wangdaye.common.ui.adapter.collection.mini.CollectionMiniAdapter;
+import com.wangdaye.common.ui.adapter.collection.mini.ProgressCollection;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.DisplayUtils;
@@ -47,6 +47,7 @@ import com.wangdaye.common.utils.manager.ThemeManager;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -121,7 +122,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private boolean usable; // if set false, it means the dialog has been destroyed.
     private boolean waitingAuthInformation;
 
-    private int processingCount;
+    private List<Collection> editingList;
 
     private static final int DEFAULT_REQUEST_INTERVAL_SECOND = 5;
 
@@ -136,8 +137,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         super.onCreateDialog(savedInstanceState);
-        View view = LayoutInflater.from(getActivity())
-                .inflate(R.layout.dialog_select_collection, null, false);
+        View view = LayoutInflater.from(requireActivity()).inflate(
+                R.layout.dialog_select_collection, null, false);
         ButterKnife.bind(this, view);
         initData();
         initWidget(view);
@@ -146,7 +147,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
             AuthManager.getInstance().getCollectionsManager().clearCollections();
             initRefresh();
         }
-        return new AlertDialog.Builder(getActivity())
+        return new AlertDialog.Builder(requireActivity())
                 .setView(view)
                 .create();
     }
@@ -157,7 +158,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         Window window = Objects.requireNonNull(getDialog()).getWindow();
         if (window != null) {
             int height;
-            if (DisplayUtils.isLandscape(Objects.requireNonNull(getActivity()))) {
+            if (DisplayUtils.isLandscape(Objects.requireNonNull(requireActivity()))) {
                 height = (int) (getResources().getDisplayMetrics().heightPixels * 0.8);
             } else {
                 height = (int) (getResources().getDisplayMetrics().heightPixels * 0.6);
@@ -173,7 +174,6 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         collectionService.cancel();
         createService.cancel();
         AuthManager.getInstance().removeOnWriteDataListener(this);
-        AuthManager.getInstance().getCollectionsManager().finishEdit();
     }
 
     @Override
@@ -187,37 +187,43 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         this.state = State.SHOW_COLLECTIONS;
         this.page = 0;
 
-        this.adapter = new CollectionMiniAdapter(photo).setItemEventCallback(this);
+        this.editingList = new ArrayList<>();
+
+        List<ProgressCollection> collectionList = new ArrayList<>(
+                ProgressCollection.toProgressCollectionList(
+                        AuthManager.getInstance().getCollectionsManager().getCollectionList(),
+                        editingList
+                )
+        );
+        this.adapter = new CollectionMiniAdapter(requireActivity(), collectionList, photo);
+        adapter.setItemEventCallback(this);
 
         this.usable = true;
         this.waitingAuthInformation = false;
-        this.processingCount = 0;
     }
 
     private void initWidget(View v) {
         setCancelable(true);
 
         AppCompatImageView cover = v.findViewById(R.id.dialog_select_collection_cover);
-        if (DisplayUtils.isTabletDevice(Objects.requireNonNull(getActivity()))) {
-            ImageHelper.loadRegularPhoto(getActivity(), cover, photo, false, null);
-        } else {
-            cover.setVisibility(View.GONE);
-        }
+        cover.setVisibility(View.GONE);
 
         progressContainer.setVisibility(View.GONE);
         selectorContainer.setVisibility(View.VISIBLE);
 
-        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(getActivity()));
-        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(getActivity()));
+        refreshLayout.setColorSchemeColors(ThemeManager.getContentColor(requireActivity()));
+        refreshLayout.setProgressBackgroundColorSchemeColor(ThemeManager.getRootColor(requireActivity()));
         refreshLayout.setRefreshEnabled(false);
         refreshLayout.setLoadEnabled(false);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), RecyclerView.VERTICAL, false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireActivity(), RecyclerView.VERTICAL, false));
         recyclerView.setAdapter(adapter);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             recyclerView.addOnScrollListener(new ElevationScrollListener());
         }
         recyclerView.addOnScrollListener(new LoadScrollListener());
+
+        updatePhotoAdapter();
 
         creatorContainer.setVisibility(View.GONE);
 
@@ -241,7 +247,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
                         .size();
                 if (listSize > 0) {
                     AuthManager.getInstance().getCollectionsManager().clearCollections();
-                    adapter.notifyItemRangeRemoved(1, listSize);
+                    updatePhotoAdapter();
                 }
                 page = 0;
                 requestCollections(AuthManager.getInstance().getUser().username);
@@ -259,9 +265,37 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         collectionService.cancel();
         setLoading(true);
 
-        OnRequestCollectionListObserver serviceCallback = new OnRequestCollectionListObserver();
-        collectionService.requestUserCollections(
-                username, page + 1, ListPager.DEFAULT_PER_PAGE, serviceCallback);
+        int perPage = ListPager.DEFAULT_PER_PAGE;
+        collectionService.requestUserCollections(username, page + 1, perPage, new BaseObserver<List<Collection>>() {
+            @Override
+            public void onSucceed(List<Collection> collectionList) {
+                page ++;
+
+                setLoading(false);
+
+                if (collectionList.size() > 0) {
+                    AuthManager.getInstance()
+                            .getCollectionsManager()
+                            .addCollections(collectionList);
+                    updatePhotoAdapter();
+                }
+                if (collectionList.size() < ListPager.DEFAULT_PER_PAGE) {
+                    AuthManager.getInstance().getCollectionsManager().setLoadFinish(true);
+                }
+            }
+
+            @Override
+            public void onFailed() {
+                setLoading(false);
+                Observable.create(Emitter::onComplete)
+                        .compose(
+                                RxLifecycleCompact.bind(SelectCollectionDialog.this)
+                                        .disposeObservableWhen(LifecycleEvent.DESTROY)
+                        ).delay(DEFAULT_REQUEST_INTERVAL_SECOND, TimeUnit.SECONDS)
+                        .doOnComplete(() -> requestCollections(AuthManager.getInstance().getUser().username))
+                        .subscribe();
+            }
+        });
     }
 
     private void createCollection() {
@@ -281,12 +315,26 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
         boolean privateX = checkBox.isChecked();
 
-        createService.createCollection(
-                title,
-                description,
-                privateX,
-                new OnRequestACollectionObserver()
-        );
+        createService.createCollection(title, description, privateX, new BaseObserver<Collection>() {
+            @Override
+            public void onSucceed(Collection collection) {
+                AuthManager.getInstance().getCollectionsManager().addCollectionToFirst(collection);
+                updatePhotoAdapter();
+                setState(State.SHOW_COLLECTIONS);
+                nameTxt.setText("");
+                descriptionTxt.setText("");
+                checkBox.setSelected(false);
+                if (listener != null) {
+                    listener.onAddCollection(collection);
+                }
+            }
+
+            @Override
+            public void onFailed() {
+                setState(State.INPUT_COLLECTION);
+                notifyCreateFailed();
+            }
+        });
         setState(State.CREATE_COLLECTION);
     }
 
@@ -323,7 +371,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     // keyboard.
 
     private void hideKeyboard() {
-        InputMethodManager manager = (InputMethodManager) Objects.requireNonNull(getActivity())
+        InputMethodManager manager = (InputMethodManager) Objects.requireNonNull(requireActivity())
                 .getSystemService(Context.INPUT_METHOD_SERVICE);
         if (manager != null) {
             manager.hideSoftInputFromWindow(nameTxt.getWindowToken(), 0);
@@ -333,20 +381,36 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     // feedback.
 
-    private void notifySelectCollectionResult(Collection collection, Photo photo) {
-        if (-- processingCount == 0) {
+    private void updatePhotoAdapter() {
+        List<ProgressCollection> collectionList = new ArrayList<>(
+                ProgressCollection.toProgressCollectionList(
+                        AuthManager.getInstance().getCollectionsManager().getCollectionList(),
+                        editingList
+                )
+        );
+
+        adapter.update(photo, collectionList);
+    }
+
+    private void notifySelectCollectionResult(Collection collection) {
+        for (int i = 0; i < editingList.size(); i ++) {
+            if (editingList.get(i).id == collection.id) {
+                editingList.remove(i);
+                break;
+            }
+        }
+        if (editingList.size() == 0) {
             setCancelable(true);
         }
-        adapter.updateItem(collection, photo);
+
+        updatePhotoAdapter();
     }
 
     private void notifyCreateFailed() {
-        if (getActivity() != null) {
-            NotificationHelper.showSnackbar(
-                    (MysplashActivity) getActivity(),
-                    getString(R.string.feedback_create_collection_failed)
-            );
-        }
+        NotificationHelper.showSnackbar(
+                (MysplashActivity) requireActivity(),
+                getString(R.string.feedback_create_collection_failed)
+        );
     }
 
     // interface.
@@ -439,119 +503,87 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     @Override
     public void onAddPhotoToCollectionOrRemoveIt(Collection collection, Photo photo,
                                                  int adapterPosition, boolean add) {
-        processingCount ++;
+        for (int i = 0; i < editingList.size(); i ++) {
+            if (editingList.get(i).id == collection.id) {
+                return;
+            }
+        }
+
+        editingList.add(collection);
+        updatePhotoAdapter();
         setCancelable(false);
+
         if (add) {
             addRemoveService.addPhotoToCollection(
                     collection.id,
                     photo.id,
-                    new OnChangeCollectionPhotoObserver(collection, photo));
+                    new OnChangeCollectionPhotoObserver(collection, true)
+            );
         } else {
             addRemoveService.deletePhotoFromCollection(
                     collection.id,
                     photo.id,
-                    new OnChangeCollectionPhotoObserver(collection, photo));
-        }
-    }
-
-    private class OnRequestCollectionListObserver extends BaseObserver<List<Collection>> {
-
-        @Override
-        public void onSucceed(List<Collection> collectionList) {
-            page ++;
-
-            setLoading(false);
-
-            if (collectionList.size() > 0) {
-                int startPosition = AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .getCollectionList()
-                        .size() + 1;
-                AuthManager.getInstance()
-                        .getCollectionsManager()
-                        .addCollections(collectionList);
-                adapter.notifyItemRangeInserted(startPosition, collectionList.size());
-            }
-            if (collectionList.size() < ListPager.DEFAULT_PER_PAGE) {
-                AuthManager.getInstance().getCollectionsManager().setLoadFinish(true);
-            }
-        }
-
-        @Override
-        public void onFailed() {
-            setLoading(false);
-            Observable.create(Emitter::onComplete)
-                    .compose(
-                            RxLifecycleCompact.bind(SelectCollectionDialog.this)
-                                    .disposeObservableWhen(LifecycleEvent.DESTROY)
-                    ).delay(DEFAULT_REQUEST_INTERVAL_SECOND, TimeUnit.SECONDS)
-                    .doOnComplete(() -> requestCollections(AuthManager.getInstance().getUser().username))
-                    .subscribe();
-        }
-    }
-
-    private class OnRequestACollectionObserver extends BaseObserver<Collection> {
-
-        @Override
-        public void onSucceed(Collection collection) {
-            AuthManager.getInstance().getCollectionsManager().addCollectionToFirst(collection);
-            adapter.notifyItemInserted(1);
-            setState(State.SHOW_COLLECTIONS);
-            nameTxt.setText("");
-            descriptionTxt.setText("");
-            checkBox.setSelected(false);
-            if (listener != null) {
-                listener.onAddCollection(collection);
-            }
-        }
-
-        @Override
-        public void onFailed() {
-            setState(State.INPUT_COLLECTION);
-            notifyCreateFailed();
+                    new OnChangeCollectionPhotoObserver(collection, false)
+            );
         }
     }
 
     private class OnChangeCollectionPhotoObserver extends BaseObserver<ChangeCollectionPhotoResult> {
 
         private Collection collection;
-        private Photo photo;
+        private boolean add;
 
-        OnChangeCollectionPhotoObserver(Collection collection, Photo photo) {
+        OnChangeCollectionPhotoObserver(Collection collection, boolean add) {
             this.collection = collection;
-            this.photo = photo;
+            this.add = add;
         }
 
         @Override
         public void onSucceed(ChangeCollectionPhotoResult changeCollectionPhotoResult) {
             if (usable) {
+                if (photo.current_user_collections != null) {
+                    changeCollectionPhotoResult.photo.current_user_collections = new ArrayList<>(
+                            photo.current_user_collections);
+                } else {
+                    changeCollectionPhotoResult.photo.current_user_collections = new ArrayList<>();
+                }
+
+                photo = changeCollectionPhotoResult.photo;
+
+                if (add) {
+                    photo.current_user_collections.add(changeCollectionPhotoResult.collection);
+                } else {
+                    for (int i = 0; i < photo.current_user_collections.size(); i ++) {
+                        if (photo.current_user_collections.get(i).id == changeCollectionPhotoResult.collection.id) {
+                            photo.current_user_collections.remove(i);
+                            break;
+                        }
+                    }
+                }
+
                 if (listener != null) {
                     listener.onUpdateCollection(
                             changeCollectionPhotoResult.collection,
                             changeCollectionPhotoResult.user,
-                            changeCollectionPhotoResult.photo
+                            photo
                     );
                 }
                 // update collection.
-                changeCollectionPhotoResult.collection.editing = false;
                 AuthManager.getInstance()
                         .getCollectionsManager()
                         .updateCollection(changeCollectionPhotoResult.collection);
                 // update user.
                 AuthManager.getInstance().updateUser(changeCollectionPhotoResult.user);
+
                 // update view.
-                notifySelectCollectionResult(
-                        changeCollectionPhotoResult.collection,
-                        changeCollectionPhotoResult.photo
-                );
+                notifySelectCollectionResult(changeCollectionPhotoResult.collection);
             }
         }
 
         @Override
         public void onFailed() {
             if (usable) {
-                AuthManager.getInstance().getCollectionsManager().finishEdit(collection.id);
-                notifySelectCollectionResult(collection, photo);
+                notifySelectCollectionResult(collection);
             }
         }
     }

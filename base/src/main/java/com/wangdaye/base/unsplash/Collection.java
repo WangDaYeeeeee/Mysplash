@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.wangdaye.base.i.Downloadable;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -15,9 +16,8 @@ import androidx.annotation.Nullable;
  * */
 
 public class Collection
-        implements Parcelable, Downloadable {
+        implements Parcelable, Serializable, Downloadable {
 
-    public boolean editing = false;
     /**
      * id : 595970
      * title : Portrait Orientation
@@ -64,7 +64,6 @@ public class Collection
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.editing ? (byte) 1 : (byte) 0);
         dest.writeInt(this.id);
         dest.writeString(this.title);
         dest.writeString(this.description);
@@ -87,7 +86,6 @@ public class Collection
     }
 
     protected Collection(Parcel in) {
-        this.editing = in.readByte() != 0;
         this.id = in.readInt();
         this.title = in.readString();
         this.description = in.readString();

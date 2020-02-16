@@ -15,12 +15,11 @@ import androidx.annotation.Nullable;
 import io.reactivex.Emitter;
 import io.reactivex.Observable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
 public class MeActivityModel extends BrowsableViewModel<User>
-        implements AuthManager.OnAuthDataChangedListener, Consumer<User> {
+        implements AuthManager.OnAuthDataChangedListener {
 
-    @NonNull private Disposable busDisposable;
+    @NonNull private Disposable userEventDisposable;
     @Nullable private Disposable timerDisposable;
 
     private static final int DEFAULT_REQUEST_INTERVAL_SECOND = 5;
@@ -28,9 +27,14 @@ public class MeActivityModel extends BrowsableViewModel<User>
     @Inject
     public MeActivityModel() {
         super();
-        this.busDisposable = MessageBus.getInstance()
+        this.userEventDisposable = MessageBus.getInstance()
                 .toObservable(User.class)
-                .subscribe(this);
+                .subscribe(user -> {
+                    User current = AuthManager.getInstance().getUser();
+                    if (current != null && current.username.equals(user.username)) {
+                        AuthManager.getInstance().updateUser(user);
+                    }
+                });
     }
 
     public void init() {
@@ -48,7 +52,7 @@ public class MeActivityModel extends BrowsableViewModel<User>
     protected void onCleared() {
         super.onCleared();
         AuthManager.getInstance().removeOnWriteDataListener(this);
-        busDisposable.dispose();
+        userEventDisposable.dispose();
         if (timerDisposable != null) {
             timerDisposable.dispose();
         }
@@ -83,15 +87,5 @@ public class MeActivityModel extends BrowsableViewModel<User>
     @Override
     public void onLogout() {
         setResource(Resource.error(null));
-    }
-
-    // consumer.
-
-    @Override
-    public void accept(User user) {
-        if (AuthManager.getInstance().getUser() != null
-                && AuthManager.getInstance().getUser().username.equals(user.username)) {
-            AuthManager.getInstance().updateUser(user);
-        }
     }
 }

@@ -1,6 +1,7 @@
 package com.wangdaye.about.model;
 
 import com.wangdaye.about.ui.AboutAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 
 /**
  * Library object.
@@ -26,5 +27,20 @@ public class LibraryObject
     @Override
     public int getType() {
         return type;
+    }
+
+    @Override
+    public boolean areItemsTheSame(BaseAdapter.ViewModel newModel) {
+        return newModel instanceof LibraryObject && uri.equals(((LibraryObject) newModel).uri);
+    }
+
+    @Override
+    public boolean areContentsTheSame(BaseAdapter.ViewModel newModel) {
+        return false;
+    }
+
+    @Override
+    public Object getChangePayload(BaseAdapter.ViewModel newModel) {
+        return null;
     }
 }

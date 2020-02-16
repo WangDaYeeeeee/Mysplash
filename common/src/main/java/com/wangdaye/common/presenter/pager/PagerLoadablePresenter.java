@@ -2,25 +2,20 @@ package com.wangdaye.common.presenter.pager;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.base.unsplash.Photo;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PagerLoadablePresenter {
+public class PagerLoadablePresenter {
 
-    public List<Photo> loadMore(List<Photo> list, int headIndex, boolean headDirection,
-                                PagerView pagerView, RecyclerView recyclerView, FooterAdapter adapter,
-                                PagerManageView pagerManageView, int pagerIndex) {
-        if ((headDirection && adapter.getRealItemCount() < headIndex)
-                || (!headDirection && adapter.getRealItemCount() < headIndex + list.size())) {
-            return new ArrayList<>();
-        }
-
-        if (!headDirection && pagerManageView != null && pagerManageView.canLoadMore(pagerIndex)) {
+    public static List<Photo> loadMore(PagerViewModel<Photo> viewModel, int currentCount,
+                                       PagerView pagerView, RecyclerView recyclerView,
+                                       PagerManageView pagerManageView, int pagerIndex) {
+        if (pagerManageView != null && pagerManageView.canLoadMore(pagerIndex)) {
             pagerManageView.onLoad(pagerIndex);
         }
         if (!recyclerView.canScrollVertically(1)
@@ -28,20 +23,16 @@ public abstract class PagerLoadablePresenter {
             pagerView.setSwipeLoading(true);
         }
 
-        if (headDirection) {
-            if (headIndex == 0) {
-                return new ArrayList<>();
-            } else {
-                return subList(0, headIndex - 1);
-            }
-        } else {
-            if (adapter.getRealItemCount() == headIndex + list.size()) {
-                return new ArrayList<>();
-            } else {
-                return subList(headIndex + list.size(), adapter.getRealItemCount() - 1);
-            }
+        if (currentCount >= viewModel.getListSize()) {
+            return new ArrayList<>();
         }
+
+        return subList(viewModel, currentCount, viewModel.getListSize());
     }
 
-    public abstract List<Photo> subList(int fromIndex, int toIndex);
+    private static List<Photo> subList(PagerViewModel<Photo> viewModel, int from, int to) {
+        List<Photo> result = new ArrayList<>();
+        viewModel.readDataList(list -> result.addAll(list.subList(from, to)));
+        return result;
+    }
 }

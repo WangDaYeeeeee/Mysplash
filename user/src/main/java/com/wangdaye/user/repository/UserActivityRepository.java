@@ -2,39 +2,37 @@ package com.wangdaye.user.repository;
 
 import com.wangdaye.base.resource.Resource;
 import com.wangdaye.base.unsplash.User;
+import com.wangdaye.common.bus.event.FollowEvent;
 import com.wangdaye.common.network.observer.BaseObserver;
-import com.wangdaye.common.network.observer.NoBodyObserver;
-import com.wangdaye.common.network.service.FollowService;
 import com.wangdaye.common.network.service.UserService;
 import com.wangdaye.common.bus.MessageBus;
+import com.wangdaye.common.presenter.FollowUserPresenter;
+import com.wangdaye.user.vm.UserActivityModel;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import androidx.lifecycle.MutableLiveData;
 
 public class UserActivityRepository {
 
     private UserService userService;
-    private FollowService followService;
 
     @Inject
-    public UserActivityRepository(UserService userService, FollowService followService) {
+    public UserActivityRepository(UserService userService) {
         this.userService = userService;
-        this.followService = followService;
     }
 
-    public void getUser(@NonNull MutableLiveData<Resource<User>> current, String username) {
+    public void getUser(UserActivityModel viewModel, String username) {
+        MutableLiveData<Resource<User>> current = viewModel.getResource();
         assert current.getValue() != null;
-        current.setValue(Resource.loading(current.getValue().data));
+        viewModel.setResource(Resource.loading(current.getValue().data));
 
         userService.cancel();
         userService.requestUserProfile(username, new BaseObserver<User>() {
 
             @Override
             public void onSucceed(User user) {
-                user.complete = true;
-                current.setValue(Resource.success(user));
+                MessageBus.getInstance().post(new FollowEvent(user));
             }
 
             @Override
@@ -44,39 +42,24 @@ public class UserActivityRepository {
         });
     }
 
-    public void followOrCancelFollowUser(@NonNull MutableLiveData<Resource<User>> current,
-                                         String username, boolean setToFollow) {
-        if (current.getValue() == null || current.getValue().data == null) {
-            return;
-        }
-
+    public void followOrCancelFollowUser(UserActivityModel viewModel, String username, boolean setToFollow) {
+        MutableLiveData<Resource<User>> current = viewModel.getResource();
+        assert current.getValue() != null;
         User user = current.getValue().data;
-        user.settingFollow = true;
-        current.setValue(Resource.loading(user));
 
-        NoBodyObserver callback = new NoBodyObserver(succeed -> {
-            if (current.getValue() != null && current.getValue().data != null) {
-                user.settingFollow = false;
-                if (succeed) {
-                    user.followed_by_user = setToFollow;
-                    user.followers_count += setToFollow ? 1 : -1;
-                    MessageBus.getInstance().post(user);
-                } else {
-                    MessageBus.getInstance().post(user);
-                }
+        if (user != null && !FollowUserPresenter.getInstance().isInProgress(user)) {
+            if (setToFollow) {
+                FollowUserPresenter.getInstance().follow(user);
+            } else {
+                FollowUserPresenter.getInstance().unfollow(user);
             }
-        });
 
-        followService.cancel();
-        if (setToFollow) {
-            followService.followUser(username, callback);
-        } else {
-            followService.cancelFollowUser(username, callback);
+            // handel update result by message bus.
+            // viewModel.setResource(Resource.loading(user), false);
         }
     }
 
     public void cancel() {
         userService.cancel();
-        followService.cancel();
     }
 }

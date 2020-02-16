@@ -1,5 +1,6 @@
 package com.wangdaye.base.unsplash;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -8,7 +9,7 @@ import androidx.annotation.Nullable;
  * Search collections result.
  * */
 
-public class SearchCollectionsResult {
+public class SearchCollectionsResult implements Serializable {
 
     /**
      * total : 237

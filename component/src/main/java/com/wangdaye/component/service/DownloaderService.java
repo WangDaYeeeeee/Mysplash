@@ -12,9 +12,20 @@ import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.Photo;
 
-import java.util.List;
-
 public interface DownloaderService {
+
+    interface OnDownloadListener {
+
+        void onProcess(String title,
+                       @DownloadTask.DownloadTypeRule int type,
+                       float process);
+        void onComplete(String title,
+                        @DownloadTask.DownloadTypeRule int type,
+                        @DownloadTask.DownloadResultRule int result);
+    }
+
+    void addOnDownloadListener(@NonNull OnDownloadListener l);
+    void removeOnDownloadListener(@NonNull OnDownloadListener l);
 
     String DOWNLOADER_MYSPLASH = "mysplash";
     String DOWNLOADER_SYSTEM = "system";
@@ -23,20 +34,20 @@ public interface DownloaderService {
 
     boolean switchDownloader(Context context, @DownloaderRule String downloader);
 
-    void addTask(Context c, Photo p, @DownloadTask.DownloadTypeRule int type, String downloadScale);
+    void addTask(Context context, Photo photo, @DownloadTask.DownloadTypeRule int type, String downloadScale);
 
-    void addTask(Context c, Collection collection);
+    void addTask(Context context, Collection collection);
 
-    void removeTask(Context c, @NonNull DownloadTask entity);
+    void removeTask(Context context, @NonNull DownloadTask task);
 
-    void clearTask(Context c, @Nullable List<DownloadTask> entityList);
+    void clearTask(Context context);
 
     boolean isDownloading(Context c, String title);
 
     @Nullable
     DownloadTask readDownloadTask(Context context, String title);
 
-    void startDownloadManageActivity(Activity a);
+    void startDownloadManageActivity(Activity activity);
 
     void startDownloadManageActivityFromNotification(Context context);
 

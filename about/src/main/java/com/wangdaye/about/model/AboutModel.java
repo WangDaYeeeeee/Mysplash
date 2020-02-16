@@ -1,6 +1,7 @@
 package com.wangdaye.about.model;
 
 import com.wangdaye.about.ui.AboutAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 
 import androidx.annotation.IntDef;
 
@@ -11,7 +12,7 @@ import androidx.annotation.IntDef;
  *
  * */
 
-public interface AboutModel {
+public interface AboutModel extends BaseAdapter.ViewModel {
 
     @AboutTypeRule
     int getType();

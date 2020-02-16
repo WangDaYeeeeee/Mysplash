@@ -1,14 +1,13 @@
 package com.wangdaye.user.repository;
 
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.common.network.observer.ListResourceObserver;
 import com.wangdaye.common.network.service.CollectionService;
+import com.wangdaye.user.vm.UserCollectionsViewModel;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 public class UserCollectionsViewRepository {
 
@@ -19,21 +18,20 @@ public class UserCollectionsViewRepository {
         this.service = service;
     }
 
-    public void getUserCollections(@NonNull MutableLiveData<ListResource<Collection>> current,
+    public void getUserCollections(@NonNull UserCollectionsViewModel viewModel,
                                    String username, boolean refresh) {
-        assert current.getValue() != null;
         if (refresh) {
-            current.setValue(ListResource.refreshing(current.getValue()));
+            viewModel.writeListResource(ListResource::refreshing);
         } else {
-            current.setValue(ListResource.loading(current.getValue()));
+            viewModel.writeListResource(ListResource::loading);
         }
 
         service.cancel();
         service.requestUserCollections(
                 username,
-                current.getValue().getRequestPage(),
-                current.getValue().perPage,
-                new ListResourceObserver<>(current, refresh)
+                viewModel.getListRequestPage(),
+                viewModel.getListPerPage(),
+                new ListResourceObserver<>(viewModel, refresh)
         );
     }
 

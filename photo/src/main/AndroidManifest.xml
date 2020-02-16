@@ -10,12 +10,6 @@
             android:screenOrientation="user"
             android:label="@string/app_name" />
 
-        <activity
-            android:name="com.wangdaye.photo.activity.PreviewActivity"
-            android:theme="@style/MysplashTheme.Translucent.TranslucentNavigation"
-            android:screenOrientation="user"
-            android:label="@string/app_name" />
-
         <activity android:name="com.wangdaye.photo.activity.SetWallpaperActivity"
             android:theme="@style/MysplashTheme.SetWallpaper"
             android:screenOrientation="user"

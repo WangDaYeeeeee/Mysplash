@@ -11,7 +11,6 @@
         <targets>
             <target android:targetId="@android:id/navigationBarBackground" />
             <target android:targetId="@android:id/statusBarBackground" />
-            <target android:targetId="@id/activity_user_statusBar" />
             <target android:targetId="@id/activity_user_shadow" />
         </targets>
     </fade>

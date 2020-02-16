@@ -12,7 +12,6 @@ import com.wangdaye.muzei.R;
 import com.wangdaye.muzei.R2;
 import com.wangdaye.muzei.fragment.MuzeiSettingsFragment;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.manager.ThemeManager;
 
 import androidx.fragment.app.FragmentTransaction;
@@ -25,7 +24,6 @@ public class MuzeiSettingsActivity extends MysplashActivity
 
     @BindView(R2.id.activity_muzei_settings_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_muzei_settings_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_muzei_settings_statusBar) StatusBarView statusBar;
 
     public static final String MUZEI_SETTINGS_ACTIVITY = "/muzei/MuzeiSettingsActivity";
 
@@ -97,7 +95,6 @@ public class MuzeiSettingsActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

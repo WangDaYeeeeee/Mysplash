@@ -12,7 +12,6 @@ import android.view.View;
 
 import com.wangdaye.collection.R;
 import com.wangdaye.collection.R2;
-import com.wangdaye.common.base.adapter.footerAdapter.GridMarginsItemDecoration;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.i.PagerView;
@@ -21,6 +20,7 @@ import com.wangdaye.common.presenter.pager.PagerStateManagePresenter;
 import com.wangdaye.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
+import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
@@ -102,14 +102,14 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
                 PagerScrollablePresenter.onScrolled(
                         CollectionPhotosView.this,
                         recyclerView,
-                        adapter.getRealItemCount(),
+                        adapter.getItemCount(),
                         pagerManageView,
                         0,
                         dy
                 );
             }
         });
-        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext()));
+        recyclerView.addItemDecoration(new GridMarginsItemDecoration(getContext(), recyclerView));
     }
 
     public void setPagerManageView(PagerManageView view) {
@@ -125,7 +125,7 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
 
     @Override
     public boolean setState(State state) {
-        return stateManagePresenter.setState(state, true);
+        return stateManagePresenter.setState(state);
     }
 
     @Override

@@ -16,14 +16,16 @@ import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.DownloadTask;
 import com.wangdaye.common.utils.FileUtils;
 import com.wangdaye.component.ComponentFactory;
+import com.wangdaye.component.service.DownloaderService;
 import com.wangdaye.downloader.DownloaderServiceIMP;
 import com.wangdaye.downloader.base.RoutingHelper;
 import com.wangdaye.downloader.base.NotificationHelper;
-import com.wangdaye.downloader.base.OnDownloadListener;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Abstract downloader executor.
@@ -33,12 +35,12 @@ import java.util.List;
 
 public abstract class AbstractDownloaderExecutor {
 
-    private List<OnDownloadListener> listenerList;
-    private final Object synchronizedLocker;
+    private List<DownloadTask> taskList;
+    private final ReadWriteLock readWriteLock;
+    protected List<DownloaderService.OnDownloadListener> onDownloadListeners;
 
     public static final String ACTION_DOWNLOAD_COMPLETE = DownloadManager.ACTION_DOWNLOAD_COMPLETE;
     public static final String ACTION_NOTIFICATION_CLICKED = DownloadManager.ACTION_NOTIFICATION_CLICKED;
-
     public static final String EXTRA_DOWNLOAD_ID = DownloadManager.EXTRA_DOWNLOAD_ID;
 
     public static class DownloadReceiver extends BroadcastReceiver {
@@ -67,11 +69,22 @@ public abstract class AbstractDownloaderExecutor {
     }
 
     AbstractDownloaderExecutor() {
-        listenerList = new ArrayList<>();
-        synchronizedLocker = new Object();
+        taskList = ComponentFactory.getDatabaseService().readDownloadTaskList(DownloadTask.RESULT_DOWNLOADING);
+        readWriteLock = new ReentrantReadWriteLock();
+        onDownloadListeners = new ArrayList<>();
     }
 
     // management.
+
+    public void addOnDownloadListener(@NonNull DownloaderService.OnDownloadListener l) {
+        if (!onDownloadListeners.contains(l)) {
+            onDownloadListeners.add(l);
+        }
+    }
+
+    public void removeOnDownloadListener(@NonNull DownloaderService.OnDownloadListener l) {
+        onDownloadListeners.remove(l);
+    }
 
     public abstract long addTask(Context c, @NonNull DownloadTask task, boolean showSnackbar);
 
@@ -81,37 +94,68 @@ public abstract class AbstractDownloaderExecutor {
 
     public abstract void removeTask(Context c, @NonNull DownloadTask task, boolean deleteEntity);
 
-    public abstract void clearTask(Context c, @NonNull List<DownloadTask> taskList);
+    @NonNull
+    public abstract List<DownloadTask> clearTask(Context c);
 
     public abstract void updateTaskResult(Context c, @NonNull DownloadTask task,
                                           @DownloadTask.DownloadResultRule int result);
 
-    public abstract float getTaskProcess(Context c, @NonNull DownloadTask task);
-
-    public List<DownloadTask> readDownloadTaskList(Context c) {
-        synchronized (synchronizedLocker) {
-            return ComponentFactory.getDatabaseService().readDownloadTaskList();
-        }
+    public float getTaskProcess(Context c, @NonNull DownloadTask task) {
+        Float[] process = new Float[] {0f};
+        readTaskList(list -> {
+            for (DownloadTask t : list) {
+                if (t.title.equals(task.title)) {
+                    process[0] = t.process;
+                    break;
+                }
+            }
+        });
+        return process[0];
     }
 
     public List<DownloadTask> readDownloadTaskList(Context c,
                                                    @DownloadTask.DownloadResultRule int result) {
-        synchronized (synchronizedLocker) {
+        if (result == DownloadTask.RESULT_DOWNLOADING) {
+            List<DownloadTask> taskList = new ArrayList<>();
+            readTaskList(list -> {
+                for (DownloadTask t : list) {
+                    taskList.add(t.clone());
+                }
+            });
+            return taskList;
+        } else {
             return ComponentFactory.getDatabaseService().readDownloadTaskList(result);
         }
     }
 
     @Nullable
     public DownloadTask readDownloadTask(Context c, String title) {
-        synchronized (synchronizedLocker) {
-            return ComponentFactory.getDatabaseService().readDownloadingTask(title);
+        DownloadTask[] task = new DownloadTask[] {null};
+        readTaskList(list -> {
+            for (DownloadTask t : list) {
+                if (t.title.equals(title)) {
+                    task[0] = t.clone();
+                    break;
+                }
+            }
+        });
+        if (task[0] == null) {
+            task[0] = ComponentFactory.getDatabaseService().readDownloadingTask(title);
         }
+        return task[0];
     }
 
     public boolean isDownloading(String title) {
-        synchronized (synchronizedLocker) {
-            return ComponentFactory.getDatabaseService().readDownloadingTaskCount(title) > 0;
-        }
+        Boolean[] result = new Boolean[] {false};
+        readTaskList(list -> {
+            for (DownloadTask t : list) {
+                if (t.title.equals(title)) {
+                    result[0] = true;
+                    break;
+                }
+            }
+        });
+        return result[0];
     }
 
     // result.
@@ -304,74 +348,33 @@ public abstract class AbstractDownloaderExecutor {
 
     // interface.
 
-    public interface SynchronizedRunnable {
-        void synchronizedRun(@NonNull List<OnDownloadListener> listenerList);
+    public interface TaskListReader {
+        void execute(List<DownloadTask> list);
     }
 
-    public void addOnDownloadListener(@NonNull OnDownloadListener l) {
-        addOnDownloadListener(l, null);
+    public interface TaskListWriter {
+        void execute(List<DownloadTask> list);
     }
 
-    void addOnDownloadListener(@NonNull OnDownloadListener l,
-                               @Nullable SynchronizedRunnable runnable) {
-        synchronized (synchronizedLocker) {
-            listenerList.add(l);
+    protected void readTaskList(TaskListReader reader) {
+        readWriteLock.readLock().lock();
+        reader.execute(taskList);
+        readWriteLock.readLock().unlock();
+    }
 
-            if (runnable != null) {
-                runnable.synchronizedRun(listenerList);
+    protected void writeTaskList(TaskListWriter writer) {
+        readWriteLock.writeLock().lock();
+        writer.execute(taskList);
+        readWriteLock.writeLock().unlock();
+    }
+
+    protected static int indexTask(List<DownloadTask> list, String title) {
+        for (int i = 0; i < list.size(); i ++) {
+            if (list.get(i).title.equals(title)) {
+                return i;
             }
         }
-    }
-
-    public void addOnDownloadListener(@NonNull List<? extends OnDownloadListener> list) {
-        addOnDownloadListener(list, null);
-    }
-
-    void addOnDownloadListener(@NonNull List<? extends OnDownloadListener> list,
-                               @Nullable SynchronizedRunnable runnable) {
-        synchronized (synchronizedLocker) {
-            listenerList.addAll(list);
-
-            if (runnable != null) {
-                runnable.synchronizedRun(listenerList);
-            }
-        }
-    }
-
-    public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
-        removeOnDownloadListener(l, null);
-    }
-
-    void removeOnDownloadListener(@NonNull OnDownloadListener l,
-                                  @Nullable SynchronizedRunnable runnable) {
-        synchronized (synchronizedLocker) {
-            listenerList.remove(l);
-
-            if (runnable != null) {
-                runnable.synchronizedRun(listenerList);
-            }
-        }
-    }
-
-    public void removeOnDownloadListener(@NonNull List<? extends OnDownloadListener> list) {
-        removeOnDownloadListener(list, null);
-    }
-
-    void removeOnDownloadListener(@NonNull List<? extends OnDownloadListener> list,
-                                  @Nullable SynchronizedRunnable runnable) {
-        synchronized (synchronizedLocker) {
-            listenerList.removeAll(list);
-
-            if (runnable != null) {
-                runnable.synchronizedRun(listenerList);
-            }
-        }
-    }
-
-    void synchronizedExecuteRunnable(@NonNull SynchronizedRunnable runnable) {
-        synchronized (synchronizedLocker) {
-            runnable.synchronizedRun(listenerList);
-        }
+        return -1;
     }
 
     private static class OnCheckPhotoListener implements View.OnClickListener {

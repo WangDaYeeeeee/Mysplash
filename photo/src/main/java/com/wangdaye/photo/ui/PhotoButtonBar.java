@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.wangdaye.base.unsplash.Photo;
+import com.wangdaye.common.presenter.LikePhotoPresenter;
 import com.wangdaye.common.ui.widget.CircularProgressIcon;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.component.ComponentFactory;
@@ -65,6 +66,13 @@ public class PhotoButtonBar extends RelativeLayout {
         return true;
     }
 
+    @OnClick(R2.id.container_photo_2_button_bar_infoButton)
+    void checkInfo() {
+        if (listener != null) {
+            listener.onInfoButtonClicked();
+        }
+    }
+
     private int likeIconId;
     private int collectIconId;
 
@@ -87,10 +95,8 @@ public class PhotoButtonBar extends RelativeLayout {
 
     @SuppressLint("InflateParams")
     private void initialize() {
-        addView(
-                LayoutInflater.from(getContext())
-                        .inflate(R.layout.container_photo_2_button_bar, null)
-        );
+        addView(LayoutInflater.from(getContext()).inflate(
+                R.layout.container_photo_2_button_bar, null));
         ButterKnife.bind(this, this);
         initData();
         initWidget();
@@ -139,7 +145,7 @@ public class PhotoButtonBar extends RelativeLayout {
 
     public void setLikeState(Photo photo) {
         if (photo != null) {
-            if (photo.settingLike) {
+            if (LikePhotoPresenter.getInstance().isInProgress(photo)) {
                 likeButton.setProgressState();
             } else {
                 int newIconId = getLikeIcon(photo.liked_by_user);
@@ -224,6 +230,7 @@ public class PhotoButtonBar extends RelativeLayout {
         void onCollectButtonClicked();
         void onDownloadButtonClicked();
         void onDownloadButtonLongClicked();
+        void onInfoButtonClicked();
     }
 
     public void setOnClickButtonListener(OnClickButtonListener l) {

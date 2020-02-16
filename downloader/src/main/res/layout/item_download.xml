@@ -7,6 +7,7 @@
     android:layout_height="@dimen/design_icon_size"
     android:foreground="?attr/selectableItemBackground"
     android:stateListAnimator="@animator/touch_rise_item"
+    android:layout_margin="@dimen/little_margin"
     app:cardElevation="@dimen/low_elevation"
     app:cardBackgroundColor="@color/colorDarkCardBackground"
     app:cardCornerRadius="@dimen/material_card_radius"

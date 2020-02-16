@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+
+import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -17,14 +19,14 @@ import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.FileUtils;
 import com.wangdaye.common.utils.manager.ThreadManager;
 import com.wangdaye.component.ComponentFactory;
-import com.wangdaye.downloader.base.OnDownloadListener;
+import com.wangdaye.component.service.DownloaderService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
 
     private static AndroidDownloaderExecutor instance;
-
     public static AndroidDownloaderExecutor getInstance(@NonNull Context context) {
         if (instance == null) {
             synchronized (AndroidDownloaderExecutor.class) {
@@ -37,34 +39,35 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
     }
 
     @Nullable private DownloadManager downloadManager;
-    private List<DownloadTask> downloadingList;
-
     private Handler handler;
 
     @Nullable private PollingRunnable runnable;
     private class PollingRunnable extends FlagRunnable {
-
         @Override
         public void run() {
             while (isRunning()) {
-                synchronizedExecuteRunnable(listenerList -> {
-                    for (int i = listenerList.size() - 1; i >= 0; i --) {
-                        if (listenerList.get(i).result != DownloadTask.RESULT_DOWNLOADING) {
-                            listenerList.remove(i);
-                            if (listenerList.size() == 0) {
+                writeTaskList(list -> {
+                    for (int i = list.size() - 1; i >= 0; i --) {
+                        if (list.get(i).result != DownloadTask.RESULT_DOWNLOADING) {
+                            list.remove(i);
+                            if (list.size() == 0) {
+                                // stop polling thread.
                                 setRunning(false);
                                 runnable = null;
                                 return;
                             }
                         } else {
-                            final PollingResult targetResult = getDownloadInformation(listenerList.get(i).taskId);
-                            final OnDownloadListener targetListener = listenerList.get(i);
+                            final PollingResult r = getDownloadInformation(list.get(i).taskId);
+                            final DownloadTask t = list.get(i);
+                            t.process = r.process;
+                            t.result = r.result;
                             handler.post(() -> {
-                                targetListener.result = targetResult.result;
-                                if (targetResult.result == DownloadTask.RESULT_DOWNLOADING) {
-                                    targetListener.onProcess(targetResult.process);
-                                } else {
-                                    targetListener.onComplete(targetResult.result);
+                                for (DownloaderService.OnDownloadListener l : onDownloadListeners) {
+                                    if (r.result == DownloadTask.RESULT_DOWNLOADING) {
+                                        l.onProcess(t.title, t.downloadType, t.process);
+                                    } else {
+                                        l.onComplete(t.title, t.downloadType, t.result);
+                                    }
                                 }
                             });
                         }
@@ -78,9 +81,10 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
     private class PollingResult {
 
         @DownloadTask.DownloadResultRule int result;
-        float process;
+        @FloatRange(from = 0, to = 100) float process;
 
-        PollingResult(@DownloadTask.DownloadResultRule int result, float process) {
+        PollingResult(@DownloadTask.DownloadResultRule int result,
+                      @FloatRange(from = 0, to = 100) float process) {
             this.result = result;
             this.process = process;
         }
@@ -89,8 +93,6 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
     private AndroidDownloaderExecutor(Context context) {
         super();
         this.downloadManager = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-        this.downloadingList = ComponentFactory.getDatabaseService()
-                .readDownloadTaskList(DownloadTask.RESULT_DOWNLOADING);
         this.handler = new Handler(Looper.getMainLooper());
     }
 
@@ -101,22 +103,23 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             return -1;
         }
 
-        synchronizedExecuteRunnable(listenerList -> {
-            FileUtils.deleteFile(c, task);
+        writeTaskList(list -> {
+            if (registerDownloadingTask(list, task)) {
+                FileUtils.deleteFile(c, task);
 
-            DownloadManager.Request request = new DownloadManager.Request(Uri.parse(task.downloadUrl))
-                    .setTitle(task.getNotificationTitle())
-                    .setDescription(c.getString(R.string.feedback_downloading))
-                    .setDestinationInExternalPublicDir(
-                            DownloadTask.DOWNLOAD_TYPE_PATH,
-                            DownloadTask.DOWNLOAD_SUB_PATH + "/" + task.title + task.getFormat()
-                    );
-            request.allowScanningByMediaScanner();
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(task.downloadUrl))
+                        .setTitle(task.getNotificationTitle())
+                        .setDescription(c.getString(R.string.feedback_downloading))
+                        .setDestinationInExternalPublicDir(
+                                DownloadTask.DOWNLOAD_TYPE_PATH,
+                                DownloadTask.DOWNLOAD_SUB_PATH + "/" + task.title + task.getFormat()
+                        );
+                request.allowScanningByMediaScanner();
 
-            task.taskId = downloadManager.enqueue(request);
-            task.result = DownloadTask.RESULT_DOWNLOADING;
-            ComponentFactory.getDatabaseService().writeDownloadTask(task);
-            registerDownloadingTask(task);
+                task.taskId = downloadManager.enqueue(request);
+                task.result = DownloadTask.RESULT_DOWNLOADING;
+                ComponentFactory.getDatabaseService().writeDownloadTask(task);
+            }
         });
 
         if (showSnackbar) {
@@ -133,10 +136,10 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             return -1;
         }
 
-        synchronizedExecuteRunnable(listenerList -> {
+        writeTaskList(list -> {
+            unregisterDownloadingTask(list, task);
             downloadManager.remove(task.taskId);
             ComponentFactory.getDatabaseService().deleteDownloadTask(task.taskId);
-            unregisterDownloadingTask(task);
         });
 
         return addTask(c, task, true);
@@ -168,113 +171,49 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             return;
         }
 
-        synchronizedExecuteRunnable(listenerList -> {
+        writeTaskList(list -> {
+            unregisterDownloadingTask(list, task);
             if (task.result != DownloadTask.RESULT_SUCCEED) {
                 downloadManager.remove(task.taskId);
             }
             if (deleteEntity) {
                 ComponentFactory.getDatabaseService().deleteDownloadTask(task.taskId);
             }
-            unregisterDownloadingTask(task);
         });
     }
 
+    @NonNull
     @Override
-    public void clearTask(Context c, @NonNull List<DownloadTask> taskList) {
+    public List<DownloadTask> clearTask(Context c) {
         if (downloadManager == null) {
             showErrorNotification();
-            return;
+            return new ArrayList<>();
         }
 
-        synchronizedExecuteRunnable(listenerList -> {
-            for (int i = 0; i < taskList.size(); i ++) {
-                if (taskList.get(i).result != DownloadTask.RESULT_SUCCEED) {
-                    downloadManager.remove(taskList.get(i).taskId);
+        List<DownloadTask> taskList = new ArrayList<>();
+
+        writeTaskList(list -> {
+            taskList.addAll(list);
+
+            for (DownloadTask t : list) {
+                if (t.result != DownloadTask.RESULT_SUCCEED) {
+                    downloadManager.remove(t.taskId);
                 }
             }
-
             ComponentFactory.getDatabaseService().clearDownloadTask();
-            clearDwonloadingTask();
+            clearDwonloadingTask(list);
         });
+
+        return taskList;
     }
 
     @Override
     public void updateTaskResult(Context c, @NonNull DownloadTask task, int result) {
-        task.result = result;
-        synchronizedExecuteRunnable(listenerList -> {
+        writeTaskList(list -> {
+            task.result = result;
+
+            unregisterDownloadingTask(list, task);
             ComponentFactory.getDatabaseService().updateDownloadTask(task);
-            unregisterDownloadingTask(task);
-        });
-    }
-
-    @Override
-    public float getTaskProcess(Context c, @NonNull DownloadTask entity) {
-        Cursor cursor = getMissionCursor(entity.taskId);
-        if (cursor != null) {
-            float process = getMissionProcess(cursor);
-            cursor.close();
-            return process;
-        }
-        return -1;
-    }
-
-    @Override
-    public boolean isDownloading(String title) {
-        final boolean[] result = new boolean[1];
-        synchronizedExecuteRunnable(listenerList -> {
-            if (downloadingList.size() == 0) {
-                result[0] = false;
-                return;
-            }
-
-            for (int i = 0; i < downloadingList.size(); i ++) {
-                if (downloadingList.get(i).title.equals(title)) {
-                    result[0] = true;
-                    return;
-                }
-            }
-            result[0] = false;
-        });
-        return result[0];
-    }
-
-    @Override
-    public void addOnDownloadListener(@NonNull OnDownloadListener l) {
-        super.addOnDownloadListener(l, listenerList -> {
-            if (runnable == null || !runnable.isRunning()) {
-                runnable = new PollingRunnable();
-                ThreadManager.getInstance().execute(runnable);
-            }
-        });
-    }
-
-    @Override
-    public void addOnDownloadListener(@NonNull List<? extends OnDownloadListener> list) {
-        super.addOnDownloadListener(list, listenerList -> {
-            if (runnable == null || !runnable.isRunning()) {
-                runnable = new PollingRunnable();
-                ThreadManager.getInstance().execute(runnable);
-            }
-        });
-    }
-
-    @Override
-    public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
-        super.removeOnDownloadListener(l, listenerList -> {
-            if (listenerList.size() == 0 && runnable != null && runnable.isRunning()) {
-                runnable.setRunning(false);
-                runnable = null;
-            }
-        });
-    }
-
-    @Override
-    public void removeOnDownloadListener(@NonNull List<? extends OnDownloadListener> list) {
-        super.removeOnDownloadListener(list, listenerList -> {
-            if (listenerList.size() == 0 && runnable != null && runnable.isRunning()) {
-                runnable.setRunning(false);
-                runnable = null;
-            }
         });
     }
 
@@ -283,29 +222,20 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
     }
 
     private boolean isMissionSuccess(long id) {
-        Cursor cursor = getMissionCursor(id);
-        if (cursor != null) {
-            int result = getDownloadResult(cursor);
-            cursor.close();
-            return result == DownloadTask.RESULT_SUCCEED;
-        } else {
-            return true;
-        }
+        return getDownloadInformation(id).result == DownloadTask.RESULT_SUCCEED;
     }
 
-    @DownloadTask.DownloadResultRule
-    private int getDownloadResult(@NonNull Cursor cursor) {
-        switch (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
-            case DownloadManager.STATUS_SUCCESSFUL:
-                return DownloadTask.RESULT_SUCCEED;
-
-            case DownloadManager.STATUS_FAILED:
-            case DownloadManager.STATUS_PAUSED:
-                return DownloadTask.RESULT_FAILED;
-
-            default:
-                return DownloadTask.RESULT_DOWNLOADING;
+    private PollingResult getDownloadInformation(long id) {
+        Cursor cursor = getMissionCursor(id);
+        if (cursor != null) {
+            PollingResult result = new PollingResult(
+                    getDownloadResult(cursor),
+                    getMissionProcess(cursor)
+            );
+            cursor.close();
+            return result;
         }
+        return new PollingResult(DownloadTask.RESULT_SUCCEED, 100);
     }
 
     @Nullable
@@ -326,20 +256,22 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
         }
     }
 
-    private PollingResult getDownloadInformation(long missionId) {
-        Cursor cursor = getMissionCursor(missionId);
-        if (cursor != null) {
-            PollingResult result = new PollingResult(
-                    getDownloadResult(cursor),
-                    getMissionProcess(cursor)
-            );
-            cursor.close();
-            return result;
+    @DownloadTask.DownloadResultRule
+    private int getDownloadResult(@NonNull Cursor cursor) {
+        switch (cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))) {
+            case DownloadManager.STATUS_SUCCESSFUL:
+                return DownloadTask.RESULT_SUCCEED;
+
+            case DownloadManager.STATUS_FAILED:
+            case DownloadManager.STATUS_PAUSED:
+                return DownloadTask.RESULT_FAILED;
+
+            default:
+                return DownloadTask.RESULT_DOWNLOADING;
         }
-        return new PollingResult(DownloadTask.RESULT_SUCCEED, 100);
     }
 
-    private float getMissionProcess(@NonNull Cursor cursor) {
+    private @FloatRange(from = 0, to = 100) float getMissionProcess(@NonNull Cursor cursor) {
         long soFar = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
         long total = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
         int result = (int) (100.0 * soFar / total);
@@ -348,20 +280,32 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
         return result;
     }
 
-    private void registerDownloadingTask(@NonNull DownloadTask task) {
-        downloadingList.add(task);
+    private boolean registerDownloadingTask(@NonNull List<DownloadTask> taskList, @NonNull DownloadTask task) {
+        if (indexTask(taskList, task.title) < 0) {
+            taskList.add(task);
+
+            if (runnable == null || !runnable.isRunning()) {
+                runnable = new PollingRunnable();
+                ThreadManager.getInstance().execute(runnable);
+            }
+            return true;
+        }
+        return false;
     }
 
-    private void unregisterDownloadingTask(@NonNull DownloadTask task) {
-        for (int i = 0; i < downloadingList.size(); i ++) {
-            if (downloadingList.get(i).taskId == task.taskId) {
-                downloadingList.remove(i);
-                break;
-            }
+    private void unregisterDownloadingTask(@NonNull List<DownloadTask> taskList, @NonNull DownloadTask task) {
+        int index = indexTask(taskList, task.title);
+        if (index >= 0) {
+            taskList.remove(index);
+        }
+
+        if (taskList.size() == 0 && runnable != null && runnable.isRunning()) {
+            runnable.setRunning(false);
+            runnable = null;
         }
     }
 
-    private void clearDwonloadingTask() {
-        downloadingList.clear();
+    private void clearDwonloadingTask(@NonNull List<DownloadTask> taskList) {
+        taskList.clear();
     }
 }

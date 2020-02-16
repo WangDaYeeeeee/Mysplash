@@ -209,6 +209,12 @@
     <string name="action_download_manage">下载管理</string>
     <string name="action_settings">设置</string>
     <string name="action_about">关于</string>
+    <string name="action_logout">登出</string>
+
+    <string name="action_orientation_all">所有</string>
+    <string name="action_orientation_landscape">横向</string>
+    <string name="action_orientation_portrait">纵向</string>
+    <string name="action_orientation_squarish">正方形</string>
 
     <string name="action_category_buildings">建筑</string>
     <string name="action_category_food_drink">饮食</string>
@@ -229,6 +235,7 @@
     <string name="action_collect">收藏</string>
     <string name="action_open_download_link">访问下载页</string>
     <string name="action_open_story_link">访问故事页</string>
+    <string name="action_preview">预览</string>
     <string name="action_share">分享</string>
     <string name="action_menu">菜单</string>
 

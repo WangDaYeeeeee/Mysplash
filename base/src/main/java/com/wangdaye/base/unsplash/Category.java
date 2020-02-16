@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Category.
  * */
 
-public class Category implements Parcelable {
+public class Category implements Parcelable, Serializable {
 
     /**
      * id : 2

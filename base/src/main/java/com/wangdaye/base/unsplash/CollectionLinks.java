@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Collection links.
  * */
 
-public class CollectionLinks implements Parcelable {
+public class CollectionLinks implements Parcelable, Serializable {
 
     /**
      * self : https://api.unsplash.com/collections/296

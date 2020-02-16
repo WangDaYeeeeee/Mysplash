@@ -18,11 +18,4 @@
         android:icon="@drawable/ic_share_dark"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/action_filter"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_toolbar_filter_dark"
-        android:title="@string/action_filter"
-        app:showAsAction="always" />
-
 </menu>

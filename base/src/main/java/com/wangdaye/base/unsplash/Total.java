@@ -1,10 +1,12 @@
 package com.wangdaye.base.unsplash;
 
+import java.io.Serializable;
+
 /**
  * Total.
  * */
 
-public class Total {
+public class Total implements Serializable {
 
     /**
      * total_photos : 88350

@@ -11,127 +11,365 @@
         android:id="@+id/activity_photo_3_shadow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/black"
-        android:alpha="0" />
+        android:background="@android:color/black" />
 
-    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+    <com.wangdaye.photo.ui.PhotoSwipeBackCoordinatorLayout
         android:id="@+id/activity_photo_3_swipeBackView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/root_color"
-        android:transitionName="@string/transition_photo_background"
         tools:ignore="UnusedAttribute">
 
-        <com.wangdaye.common.ui.widget.SwipeSwitchLayout
-            android:id="@+id/activity_photo_3_swipeSwitchView"
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/activity_photo_3_viewPager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/black">
+            android:layout_height="match_parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/activity_photo_3_switchBackground"
+        <LinearLayout
+            android:id="@+id/activity_photo_3_appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/gradient_shadow_appbar"
+            android:layout_gravity="top">
+
+            <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:alpha="0"
-                android:scaleType="centerCrop"
-                tools:ignore="ContentDescription" />
+                android:layout_height="wrap_content" />
 
-            <FrameLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/activity_photo_3_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="?attr/root_color">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@android:color/transparent"
+                app:popupTheme="@style/MysplashPopupMenuTheme" />
 
-                <com.wangdaye.common.ui.widget.longPressDrag.LongPressDragHorizontalScrollableImageView
-                    android:id="@+id/activity_photo_3_regularImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:foreground="?attr/selectableItemBackground"
-                    android:scaleType="centerCrop"
-                    android:scrollbars="horizontal"
-                    android:transitionName="@string/transition_photo_image"
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_photo_3_bottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:background="@drawable/gradient_shadow_actor"
+            android:layout_gravity="bottom">
+
+            <LinearLayout
+                android:id="@+id/activity_photo_3_actor_controlBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <com.wangdaye.common.ui.widget.CircularImageView
+                    android:id="@+id/activity_photo_3_actor_avatar"
+                    android:layout_width="@dimen/little_icon_size"
+                    android:layout_height="@dimen/little_icon_size"
+                    android:layout_margin="@dimen/normal_margin"
+                    android:scaleType="fitCenter"
+                    android:translationZ="@dimen/low_elevation"
+                    android:stateListAnimator="@animator/touch_rise_item"
+                    tools:src="@drawable/default_avatar"
                     tools:ignore="UnusedAttribute" />
 
-                <com.wangdaye.common.ui.widget.VerticalNestedScrollView
-                    android:id="@+id/activity_photo_3_scrollView"
+                <RelativeLayout
+                    android:id="@+id/activity_photo_3_actor_titleBar"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scrollbars="vertical">
+                    android:layout_height="wrap_content">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <com.wangdaye.photo.ui.PhotoButtonBar
+                        android:id="@+id/activity_photo_3_actor_buttonBar"
+                        android:layout_width="148dp"
+                        android:layout_height="34dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/normal_margin" />
 
-                        <com.wangdaye.photo.ui.TouchEventTransmitterView
-                            android:id="@+id/activity_photo_3_touchEventTransmitter"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:foreground="?attr/selectableItemBackground"
-                            android:focusable="true"
-                            android:focusableInTouchMode="true"
-                            tools:ignore="UnusedAttribute" />
-
-                        <include layout="@layout/container_photo_3_actor"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_alignBottom="@id/activity_photo_3_touchEventTransmitter" />
-
-                        <androidx.cardview.widget.CardView
-                            android:id="@+id/activity_photo_3_card"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@id/activity_photo_3_touchEventTransmitter"
-                            android:paddingBottom="12dp"
-                            android:layout_marginBottom="-12dp"
-                            app:cardCornerRadius="@dimen/material_card_radius_large"
-                            app:cardBackgroundColor="?attr/root_color"
-                            app:cardElevation="0dp">
-
-                            <androidx.recyclerview.widget.RecyclerView
-                                android:id="@+id/activity_photo_3_recyclerView"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:nestedScrollingEnabled="false" />
-
-                        </androidx.cardview.widget.CardView>
-
-                    </RelativeLayout>
-
-                </com.wangdaye.common.ui.widget.VerticalNestedScrollView>
-
-                <LinearLayout
-                    android:id="@+id/activity_photo_3_appBar"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@drawable/gradient_shadow_appbar">
-
-                    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-                        android:layout_width="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:sbv_translucent_mode="true"
-                        app:sbv_init_alpha="0"
-                        app:sbv_darker_alpha="0" />
+                        android:orientation="vertical"
+                        android:layout_toStartOf="@id/activity_photo_3_actor_buttonBar"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="@dimen/normal_margin">
 
-                    <androidx.appcompat.widget.Toolbar
-                        android:id="@+id/activity_photo_3_toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        android:background="@android:color/transparent"
-                        app:popupTheme="@style/MysplashPopupMenuTheme" />
+                        <TextView
+                            android:id="@+id/activity_photo_3_actor_title"
+                            android:textColor="@android:color/white"
+                            android:maxLines="1"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="1"
+                            android:shadowColor="@color/colorTextDark2nd"
+                            android:layout_marginBottom="-2dp"
+                            style="@style/subtitle_text"
+                            tools:text="Tim Goedhart" />
 
-                </LinearLayout>
+                        <TextView
+                            android:id="@+id/activity_photo_3_actor_subtitle"
+                            android:textColor="@android:color/white"
+                            android:maxLines="1"
+                            android:shadowDx="1"
+                            android:shadowDy="1"
+                            android:shadowRadius="1"
+                            android:shadowColor="@color/colorTextDark2nd"
+                            style="@style/subtitle_text"
+                            tools:text="Sep 13, 2017" />
 
-            </FrameLayout>
+                    </LinearLayout>
 
-        </com.wangdaye.common.ui.widget.SwipeSwitchLayout>
+                </RelativeLayout>
 
-    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
+            </LinearLayout>
 
-    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-        android:id="@+id/activity_photo_3_statusBar"
+            <com.wangdaye.common.ui.widget.windowInsets.NavigationBarView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_photo_3_previewTop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:alpha="0"
+            android:layout_gravity="top">
+
+            <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/normal_icon_size"
+                android:layout_margin="@dimen/normal_margin"
+                app:cardCornerRadius="@dimen/material_card_radius"
+                app:cardBackgroundColor="#fafafa">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_google"
+                        android:layout_width="@dimen/mini_icon_size"
+                        android:layout_height="@dimen/mini_icon_size"
+                        android:layout_marginStart="@dimen/normal_margin"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        tools:ignore="ContentDescription,RtlHardcoded" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_microphone"
+                        android:layout_width="@dimen/mini_icon_size"
+                        android:layout_height="@dimen/mini_icon_size"
+                        android:layout_marginEnd="@dimen/normal_margin"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        tools:ignore="ContentDescription,RtlHardcoded" />
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_photo_3_previewBottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:alpha="0"
+            android:layout_gravity="bottom">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="DisableBaselineAlignment">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_folder"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_rect"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_cube"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_flask"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginBottom="@dimen/normal_margin"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:ignore="DisableBaselineAlignment">
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_phone"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/little_icon_size"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_message"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/little_icon_size"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_drawer"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/little_icon_size"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_circle"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/little_icon_size"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:src="@drawable/ic_preview_rect"
+                        android:layout_width="@dimen/large_icon_size"
+                        android:layout_height="@dimen/large_icon_size"
+                        android:layout_marginTop="@dimen/normal_margin"
+                        android:layout_marginBottom="@dimen/little_icon_size"
+                        android:layout_centerInParent="true"
+                        tools:ignore="ContentDescription" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
+
+            <com.wangdaye.common.ui.widget.windowInsets.NavigationBarView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </com.wangdaye.photo.ui.PhotoSwipeBackCoordinatorLayout>
+
+    <FrameLayout
+        android:id="@+id/activity_photo_3_bottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:sbv_translucent_mode="true"
-        app:sbv_init_alpha="0.1" />
+        android:layout_height="match_parent"
+        android:paddingBottom="-12dp"
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/activity_photo_3_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:cardCornerRadius="@dimen/material_card_radius_large"
+            app:cardBackgroundColor="?attr/root_color">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_photo_3_recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

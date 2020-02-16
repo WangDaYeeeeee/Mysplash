@@ -23,49 +23,46 @@ import android.widget.TextView;
 
 import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.base.pager.ListPager;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
 import com.wangdaye.common.network.UrlCollection;
+import com.wangdaye.common.presenter.LoadImagePresenter;
+import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.common.ui.dialog.ProfileDialog;
 import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.me.R;
 import com.wangdaye.me.R2;
-import com.wangdaye.me.base.PhotoItemEventHelper;
 import com.wangdaye.me.base.RoutingHelper;
 import com.wangdaye.me.di.component.DaggerApplicationComponent;
-import com.wangdaye.me.ui.MeMenuPopupWindow;
 import com.wangdaye.me.ui.view.MeCollectionsView;
 import com.wangdaye.me.ui.view.MePhotosView;
 import com.wangdaye.me.ui.view.MeProfileView;
-import com.wangdaye.me.vm.AbstractMePagerViewModel;
 import com.wangdaye.me.vm.MeActivityModel;
 import com.wangdaye.me.vm.MeCollectionsViewModel;
 import com.wangdaye.me.vm.MeLikesViewModel;
+import com.wangdaye.me.vm.MePagerViewModel;
 import com.wangdaye.me.vm.MePhotosViewModel;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.base.vm.PagerManageViewModel;
 import com.wangdaye.common.ui.adapter.collection.CollectionAdapter;
-import com.wangdaye.common.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.common.base.activity.LoadableActivity;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
-import com.wangdaye.common.ui.popup.PhotoOrderPopupWindow;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.ShareUtils;
-import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.DisplayUtils;
@@ -76,7 +73,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -93,12 +89,10 @@ import butterknife.OnClick;
 
 @Route(path=MeActivity.ME_ACTIVITY)
 public class MeActivity extends LoadableActivity<Photo>
-        implements PagerManageView, Toolbar.OnMenuItemClickListener,
-        MeMenuPopupWindow.OnSelectItemListener, ViewPager.OnPageChangeListener,
-        NestedScrollAppBarLayout.OnNestedScrollingListener, SwipeBackCoordinatorLayout.OnSwipeListener {
+        implements PagerManageView, Toolbar.OnMenuItemClickListener, ViewPager.OnPageChangeListener,
+        SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R2.id.activity_me_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
-    @BindView(R2.id.activity_me_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_me_container) CoordinatorLayout container;
     @BindView(R2.id.activity_me_shadow) View shadow;
 
@@ -121,18 +115,16 @@ public class MeActivity extends LoadableActivity<Photo>
     private PagerAdapter adapter;
 
     private PagerView[] pagers = new PagerView[pageCount()];
-    private FooterAdapter[] adapters = new FooterAdapter[pageCount()];
+    private BaseAdapter[] adapters = new BaseAdapter[pageCount()];
 
     private MeActivityModel activityModel;
     private PagerManageViewModel pagerManageViewModel;
-    private AbstractMePagerViewModel<?, ?>[] pagerModels = new AbstractMePagerViewModel<?, ?>[pageCount()];
+    private PagerViewModel[] pagerModels = new PagerViewModel[pageCount()];
     private MePhotosViewModel photoPagerModel;
     private MeLikesViewModel likesPagerModel;
     private MeCollectionsViewModel collectionsPagerModel;
     @Inject ParamsViewModelFactory viewModelFactory;
-
-    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
-    private PagerLoadablePresenter loadablePresenter;
+    
     private Handler handler;
 
     public static final String ME_ACTIVITY = "/me/MeActivity";
@@ -170,11 +162,6 @@ public class MeActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public boolean hasTranslucentNavigationBar() {
-        return true;
-    }
-
-    @Override
     public void handleBackPressed() {
         if (pagers[getCurrentPagerPosition()].checkNeedBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
@@ -186,8 +173,6 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
-        statusBar.switchToInitAlpha();
-        DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagers[getCurrentPagerPosition()].scrollToPageTop();
     }
@@ -214,18 +199,26 @@ public class MeActivity extends LoadableActivity<Photo>
         return container;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        if (getCurrentPagerPosition() == collectionsPage()) {
-            return new ArrayList<>();
+    public List<Photo> loadMoreData(int currentCount) {
+        if (getCurrentPagerPosition() != collectionsPage()) {
+            int page = getCurrentPagerPosition();
+            return PagerLoadablePresenter.loadMore(
+                    (PagerViewModel<Photo>) pagerModels[page],
+                    currentCount,
+                    pagers[page],
+                    pagers[page].getRecyclerView(),
+                    this,
+                    page
+            );
         }
-        return loadablePresenter.loadMore(
-                list, headIndex, headDirection,
-                pagers[getCurrentPagerPosition()],
-                pagers[getCurrentPagerPosition()].getRecyclerView(),
-                adapters[getCurrentPagerPosition()],
-                this, getCurrentPagerPosition()
-        );
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean isValidProvider(Class clazz) {
+        return clazz == Photo.class;
     }
 
     // init.
@@ -239,38 +232,26 @@ public class MeActivity extends LoadableActivity<Photo>
                 .get(PagerManageViewModel.class);
         pagerManageViewModel.init(photosPage());
 
-
         photoPagerModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(MePhotosViewModel.class);
-        photoPagerModel.init(
-                ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
-                ComponentFactory.getSettingsService().getDefaultPhotoOrder()
-        );
+        photoPagerModel.init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
         pagerModels[photosPage()] = photoPagerModel;
-
 
         likesPagerModel = ViewModelProviders.of(this, viewModelFactory)
                 .get(MeLikesViewModel.class);
-        likesPagerModel.init(
-                ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE),
-                ComponentFactory.getSettingsService().getDefaultPhotoOrder()
-        );
+        likesPagerModel.init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
         pagerModels[likesPage()] = likesPagerModel;
 
-
-        collectionsPagerModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(MeCollectionsViewModel.class);
-        collectionsPagerModel.init(
-                ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE)
-        );
+        collectionsPagerModel = ViewModelProviders.of(this, viewModelFactory).get(
+                MeCollectionsViewModel.class);
+        collectionsPagerModel.init(ListResource.refreshing(0, ListPager.DEFAULT_PER_PAGE));
         pagerModels[collectionsPage()] = collectionsPagerModel;
     }
 
+    @SuppressWarnings("unchecked")
     @SuppressLint("SetTextI18n")
     private void initView() {
         swipeBackView.setOnSwipeListener(this);
-
-        appBar.setOnNestedScrollingListener(this);
 
         if (isTheLowestLevel()) {
             ThemeManager.setNavigationIcon(
@@ -279,40 +260,15 @@ public class MeActivity extends LoadableActivity<Photo>
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         }
-        toolbar.inflateMenu(R.menu.activity_me_toolbar);
+        DisplayUtils.inflateToolbarMenu(toolbar, R.menu.activity_me_toolbar, this);
         toolbar.setNavigationOnClickListener(v -> {
             if (isTheLowestLevel()) {
                 ComponentFactory.getMainModule().startMainActivity(MeActivity.this);
             }
             finishSelf(true);
         });
-        toolbar.setOnMenuItemClickListener(this);
-
-        avatar.setOnClickListener(v -> {
-            if (AuthManager.getInstance().getUser() != null) {
-                ComponentFactory.getPhotoModule().startPreviewActivity(
-                        MeActivity.this, AuthManager.getInstance().getUser(), false);
-            }
-        });
 
         initPages();
-        loadablePresenter = new PagerLoadablePresenter() {
-            @Override
-            public List<Photo> subList(int fromIndex, int toIndex) {
-                int page = getCurrentPagerPosition();
-                if (page == photosPage()) {
-                    return Objects.requireNonNull(
-                            ((MePhotosViewModel) pagerModels[page]).getListResource().getValue()
-                    ).dataList.subList(fromIndex, toIndex);
-                } else if (page == likesPage()) {
-                    return Objects.requireNonNull(
-                            ((MeLikesViewModel) pagerModels[page]).getListResource().getValue()
-                    ).dataList.subList(fromIndex, toIndex);
-                } else {
-                    return new ArrayList<>();
-                }
-            }
-        };
 
         handler = new Handler();
         handler.postDelayed(
@@ -320,67 +276,63 @@ public class MeActivity extends LoadableActivity<Photo>
                 800);
         activityModel.getResource().observe(this, user -> {
 
+            LoadImagePresenter.loadUserAvatar(
+                    MeActivity.this, avatar, AuthManager.getInstance().getUser(), null);
             if (AuthManager.getInstance().getUser() != null) {
                 title.setText(AuthManager.getInstance().getUser().name);
-                ImageHelper.loadAvatar(
-                        MeActivity.this, avatar, AuthManager.getInstance().getUser(), null);
             } else {
                 title.setText("...");
-                ImageHelper.loadAvatar(MeActivity.this, avatar, new User(), null);
             }
 
             for (int i = photosPage(); i < pageCount(); i ++) {
-                if (TextUtils.isEmpty(pagerModels[i].getUsername())) {
+                if (TextUtils.isEmpty(((MePagerViewModel) pagerModels[i]).getUsername())) {
                     PagerViewManagePresenter.initRefresh(pagerModels[i], adapters[i]);
                 }
             }
         });
     }
 
+    @SuppressWarnings("unchecked")
     private void initPages() {
-        adapters[photosPage()] = new PhotoAdapter(
-                Objects.requireNonNull(photoPagerModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        this,
-                        photoPagerModel.getListResource().getValue().dataList,
-                        likeOrDislikePhotoPresenter
+        photoPagerModel.readDataList(list ->
+                adapters[photosPage()] = new PhotoAdapter(this, list).setItemEventCallback(
+                        new PhotoItemEventHelper(
+                                this, photoPagerModel, (context, photo) -> downloadPhoto(photo)
+                        )
                 )
         );
 
-        adapters[likesPage()] = new PhotoAdapter(
-                Objects.requireNonNull(likesPagerModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        this,
-                        likesPagerModel.getListResource().getValue().dataList,
-                        likeOrDislikePhotoPresenter
+        likesPagerModel.readDataList(list ->
+                adapters[likesPage()] = new PhotoAdapter(this, list).setItemEventCallback(
+                        new PhotoItemEventHelper(
+                                this, likesPagerModel, (context, photo) -> downloadPhoto(photo)
+                        )
                 )
         );
 
-        adapters[collectionsPage()] = new CollectionAdapter(
-                Objects.requireNonNull(collectionsPagerModel.getListResource().getValue()).dataList
-        ).setItemEventCallback(new CollectionItemEventHelper(this));
+        collectionsPagerModel.readDataList(list ->
+                adapters[collectionsPage()] = new CollectionAdapter(this, list).setItemEventCallback(
+                        new CollectionItemEventHelper(this)
+                )
+        );
 
         List<View> pageList = new ArrayList<>(
                 Arrays.asList(
                         new MePhotosView(
                                 this,
                                 (PhotoAdapter) adapters[photosPage()],
-                                getCurrentPagerPosition() == photosPage(),
                                 photosPage(),
                                 this
                         ), new MePhotosView(
                                 this,
                                 (PhotoAdapter) adapters[likesPage()],
-                                getCurrentPagerPosition() == likesPage(),
                                 likesPage(),
                                 this
                         ), new MeCollectionsView(
                                 this,
                                 (CollectionAdapter) adapters[collectionsPage()],
-                                getCurrentPagerPosition() == collectionsPage(),
-                                collectionsPage(), this
+                                collectionsPage(),
+                                this
                         )
                 )
         );
@@ -409,18 +361,10 @@ public class MeActivity extends LoadableActivity<Photo>
             for (int i = photosPage(); i < pageCount(); i ++) {
                 pagers[i].setSelected(i == position);
             }
-            DisplayUtils.setNavigationBarStyle(
-                    this,
-                    pagers[position].getState() == PagerView.State.NORMAL,
-                    hasTranslucentNavigationBar()
-            );
 
-            ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
-            if (pagerModels[getCurrentPagerPosition()].getListResource().getValue() != null
-                    && resource != null
-                    && resource.dataList.size() == 0
-                    && resource.state != ListResource.State.REFRESHING
-                    && resource.state != ListResource.State.LOADING) {
+            if (pagerModels[getCurrentPagerPosition()].getListSize() == 0
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.REFRESHING
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.LOADING) {
                 PagerViewManagePresenter.initRefresh(
                         pagerModels[getCurrentPagerPosition()],
                         adapters[getCurrentPagerPosition()]
@@ -430,25 +374,12 @@ public class MeActivity extends LoadableActivity<Photo>
 
         for (int i = photosPage(); i < pageCount(); i ++) {
             int finalI = i;
-            pagerModels[i].getListResource().observe(this, resource ->
+            pagerModels[i].observeListResource(this, viewModel ->
                     PagerViewManagePresenter.responsePagerListResourceChanged(
-                            resource, pagers[finalI], adapters[finalI]
+                            viewModel, pagers[finalI], adapters[finalI]
                     )
             );
         }
-
-        photoPagerModel.getPhotosOrder().observe(this, s -> {
-            String original = photoPagerModel.getPhotosOrder().getValue();
-            if (original != null && !original.equals(s)) {
-                PagerViewManagePresenter.initRefresh(photoPagerModel, adapters[photosPage()]);
-            }
-        });
-        likesPagerModel.getPhotosOrder().observe(this, s -> {
-            String original = likesPagerModel.getPhotosOrder().getValue();
-            if (original != null && !original.equals(s)) {
-                PagerViewManagePresenter.initRefresh(likesPagerModel, adapters[likesPage()]);
-            }
-        });
 
         AnimUtils.translationYInitShow(viewPager, 400);
     }
@@ -539,27 +470,14 @@ public class MeActivity extends LoadableActivity<Photo>
 
     @Override
     public boolean canLoadMore(int index) {
-        return pagerModels[index].getListResource().getValue() != null
-
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state != ListResource.State.REFRESHING
-
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state != ListResource.State.LOADING
-
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state != ListResource.State.ALL_LOADED;
+        return pagerModels[index].getListState() != ListResource.State.REFRESHING
+                && pagerModels[index].getListState() != ListResource.State.LOADING
+                && pagerModels[index].getListState() != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
-        return pagerModels[index].getListResource().getValue() != null
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state == ListResource.State.LOADING;
+        return pagerModels[index].getListState() == ListResource.State.LOADING;
     }
 
     // on menu item click listener.
@@ -572,68 +490,25 @@ public class MeActivity extends LoadableActivity<Photo>
                     && AuthManager.getInstance().getUser() != null) {
                 RoutingHelper.startUpdateMeActivity(this);
             }
-        } else if (i == R.id.action_filter) {
+        } else if (i == R.id.action_submit) {
+            RoutingHelper.startWebActivity(this, UrlCollection.UNSPLASH_SUBMIT_URL);
+        } else if (i == R.id.action_portfolio) {
             if (AuthManager.getInstance().isAuthorized()
                     && AuthManager.getInstance().getUser() != null) {
-                if (getCurrentPagerPosition() == photosPage()) {
-                    new PhotoOrderPopupWindow(
-                            this,
-                            toolbar,
-                            photoPagerModel.getPhotosOrder().getValue(),
-                            PhotoOrderPopupWindow.NO_RANDOM_TYPE
-                    ).setOnPhotoOrderChangedListener(orderValue ->
-                            photoPagerModel.setPhotosOrder(orderValue)
-                    );
-                } else if (getCurrentPagerPosition() == likesPage()) {
-                    new PhotoOrderPopupWindow(
-                            this,
-                            toolbar,
-                            likesPagerModel.getPhotosOrder().getValue(),
-                            PhotoOrderPopupWindow.NO_RANDOM_TYPE
-                    ).setOnPhotoOrderChangedListener(orderValue ->
-                            likesPagerModel.setPhotosOrder(orderValue)
-                    );
+                String url = AuthManager.getInstance().getUser().portfolio_url;
+                if (!TextUtils.isEmpty(url)) {
+                    RoutingHelper.startWebActivity(this, url);
                 } else {
-                    NotificationHelper.showSnackbar(this, getString(R.string.feedback_no_filter));
+                    NotificationHelper.showSnackbar(this, getString(R.string.feedback_portfolio_is_null));
                 }
             }
-        } else if (i == R.id.action_menu) {
+        } else if (i == R.id.action_share) {
             if (AuthManager.getInstance().isAuthorized()
                     && AuthManager.getInstance().getUser() != null) {
-                new MeMenuPopupWindow(this, toolbar).setOnSelectItemListener(this);
+                ShareUtils.shareUser(AuthManager.getInstance().getUser());
             }
         }
         return true;
-    }
-
-    // on select item listener.
-
-    @Override
-    public void onSelectItem(int id) {
-        switch (id) {
-            case MeMenuPopupWindow.ITEM_SUBMIT:
-                RoutingHelper.startWebActivity(this, UrlCollection.UNSPLASH_SUBMIT_URL);
-                break;
-
-            case MeMenuPopupWindow.ITEM_PORTFOLIO:
-                if (AuthManager.getInstance().isAuthorized()
-                        && AuthManager.getInstance().getUser() != null) {
-                    String url = AuthManager.getInstance().getUser().portfolio_url;
-                    if (!TextUtils.isEmpty(url)) {
-                        RoutingHelper.startWebActivity(this, url);
-                    } else {
-                        NotificationHelper.showSnackbar(this, getString(R.string.feedback_portfolio_is_null));
-                    }
-                }
-                break;
-
-            case MeMenuPopupWindow.ITEM_SHARE:
-                if (AuthManager.getInstance().isAuthorized()
-                        && AuthManager.getInstance().getUser() != null) {
-                    ShareUtils.shareUser(AuthManager.getInstance().getUser());
-                }
-                break;
-        }
     }
 
     // on page change listener.
@@ -661,33 +536,6 @@ public class MeActivity extends LoadableActivity<Photo>
                     break;
             }
         }
-    }
-
-    // on nested scrolling listener.
-
-    @Override
-    public void onStartNestedScroll() {
-        // do nothing.
-    }
-
-    @Override
-    public void onNestedScrolling() {
-        if (appBar.getY() > -appBar.getMeasuredHeight()) {
-            if (!statusBar.isInitState()) {
-                statusBar.switchToInitAlpha();
-                DisplayUtils.setStatusBarStyle(this, false);
-            }
-        } else {
-            if (statusBar.isInitState()) {
-                statusBar.switchToDarkerAlpha();
-                DisplayUtils.setStatusBarStyle(this, true);
-            }
-        }
-    }
-
-    @Override
-    public void onStopNestedScroll() {
-        // do nothing.
     }
 
     // on swipe listener. (swipe back listener)

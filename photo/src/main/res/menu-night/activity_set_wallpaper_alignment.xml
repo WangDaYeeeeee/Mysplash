@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_align_left"
+        android:orderInCategory="100"
+        android:title="@string/action_align_left"
+        android:icon="@drawable/ic_align_left_dark"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/action_align_center"
+        android:orderInCategory="100"
+        android:title="@string/action_align_center"
+        android:icon="@drawable/ic_align_center_dark"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+    <item
+        android:id="@+id/action_align_right"
+        android:orderInCategory="100"
+        android:title="@string/action_align_right"
+        android:icon="@drawable/ic_align_right_dark"
+        app:showAsAction="always"
+        tools:ignore="AlwaysShowAction" />
+
+</menu>

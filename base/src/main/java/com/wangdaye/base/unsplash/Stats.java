@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Stats
  * */
 
-public class Stats implements Parcelable {
+public class Stats implements Parcelable, Serializable {
 
     /**
      * total : 2422

@@ -1,6 +1,5 @@
 package com.wangdaye.me.vm;
 
-import com.wangdaye.common.presenter.event.UserEventResponsePresenter;
 import com.wangdaye.me.repository.MyFollowUserViewRepository;
 
 import javax.inject.Inject;
@@ -8,18 +7,17 @@ import javax.inject.Inject;
 public class MyFollowingViewModel extends MyFollowerViewModel {
 
     @Inject
-    public MyFollowingViewModel(MyFollowUserViewRepository repository,
-                                UserEventResponsePresenter presenter) {
-        super(repository, presenter);
+    public MyFollowingViewModel(MyFollowUserViewRepository repository) {
+        super(repository);
     }
 
     @Override
     public void refresh() {
-        getRepository().getFollowing(getListResource(), true);
+        getRepository().getFollowing(this, true);
     }
 
     @Override
     public void load() {
-        getRepository().getFollowing(getListResource(), false);
+        getRepository().getFollowing(this, false);
     }
 }

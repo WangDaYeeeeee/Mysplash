@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Badge.
  * */
 
-public class Badge implements Parcelable {
+public class Badge implements Parcelable, Serializable {
 
     /**
      * title : Book contributor

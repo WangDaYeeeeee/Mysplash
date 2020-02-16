@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_change_theme"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_theme_light"
+        android:title="@string/action_change_theme" />
+
+    <item
+        android:id="@+id/action_download_manage"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_download_light"
+        android:title="@string/action_download_manage" />
+
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_settings_light"
+        android:title="@string/action_settings" />
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_information_light"
+        android:title="@string/action_about" />
+
+    <item
+        android:id="@+id/action_logout"
+        android:orderInCategory="100"
+        android:icon="@drawable/ic_logout_light"
+        android:title="@string/action_logout" />
+
+</menu>

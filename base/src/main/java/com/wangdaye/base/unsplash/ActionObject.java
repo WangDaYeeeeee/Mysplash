@@ -1,5 +1,6 @@
 package com.wangdaye.base.unsplash;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,16 +10,13 @@ import androidx.annotation.Nullable;
  * Action object.
  * */
 
-public class ActionObject {
+public class ActionObject implements Serializable {
     // comment part.
-    public boolean hasFadedIn = false;
     public String id;
     public int downloads;
     public PhotoLinks links;
 
     // photo part.
-    public boolean loadPhotoSuccess = false;
-    public boolean settingLike = false;
     public String created_at;
     public int width;
     public int height;
@@ -46,9 +44,6 @@ public class ActionObject {
     public Badge badge;
 
     public ActionObject(Photo p) {
-        loadPhotoSuccess = p.loadPhotoSuccess;
-        hasFadedIn = p.hasFadedIn;
-        settingLike = p.settingLike;
         id = p.id;
         created_at = p.created_at;
         width = p.width;
@@ -61,12 +56,17 @@ public class ActionObject {
         urls = p.urls;
         links = p.links;
         user = p.user;
-        current_user_collections = new ArrayList<>(p.current_user_collections);
-        categories = new ArrayList<>(p.categories);
+        current_user_collections = new ArrayList<>();
+        if (p.current_user_collections != null) {
+            current_user_collections.addAll(p.current_user_collections);
+        }
+        categories = new ArrayList<>();
+        if (p.categories != null) {
+            categories.addAll(p.categories);
+        }
     }
 
     public ActionObject(User u) {
-        hasFadedIn = u.hasFadedIn;
         id = u.id;
         downloads = u.downloads;
         username = u.username;
@@ -85,9 +85,6 @@ public class ActionObject {
 
     public Photo castToPhoto() {
         Photo p = new Photo();
-        p.loadPhotoSuccess = loadPhotoSuccess;
-        p.hasFadedIn = hasFadedIn;
-        p.settingLike = settingLike;
         p.id = id;
         p.created_at = created_at;
         p.width = width;
@@ -100,8 +97,16 @@ public class ActionObject {
         p.urls = urls;
         p.links = links;
         p.user = user;
-        p.current_user_collections = new ArrayList<>(current_user_collections);
-        p.categories = new ArrayList<>(categories);
+
+        p.current_user_collections = new ArrayList<>();
+        if (current_user_collections != null) {
+            p.current_user_collections.addAll(current_user_collections);
+        }
+
+        p.categories = new ArrayList<>();
+        if (categories != null) {
+            p.categories.addAll(categories);
+        }
         return p;
     }
 

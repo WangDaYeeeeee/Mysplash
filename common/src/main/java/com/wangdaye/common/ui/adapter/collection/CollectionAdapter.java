@@ -1,5 +1,6 @@
 package com.wangdaye.common.ui.adapter.collection;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +10,14 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.common.R;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.User;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
 
 /**
  * Collection adapter.
@@ -24,67 +26,41 @@ import java.util.List;
  *
  * */
 
-public class CollectionAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
-
-    private List<Collection> itemList;
+public class CollectionAdapter extends BaseAdapter<Collection, CollectionModel, CollectionHolder> {
 
     @Nullable private ItemEventCallback callback;
 
-    public CollectionAdapter(List<Collection> list) {
-        super();
-        this.itemList = list;
+    public CollectionAdapter(Context context, List<Collection> list) {
+        super(context, list);
     }
 
     @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            // footer.
-            return new FooterHolder(parent);
-        } else {
-            return new CollectionHolder(
-                    LayoutInflater.from(parent.getContext())
-                            .inflate(R.layout.item_collection, parent, false)
-            );
-        }
+    public CollectionHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+        return new CollectionHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_collection, parent, false)
+        );
     }
 
     @Override
-    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof CollectionHolder && position < getRealItemCount()) {
-            ((CollectionHolder) holder).onBindView(
-                    itemList.get(position),
-                    callback
-            );
-        } else if (holder instanceof FooterHolder) {
-            ((FooterHolder) holder).onBindView();
-        }
+    protected void onBindViewHolder(@NonNull CollectionHolder holder, CollectionModel model) {
+        holder.onBindView(model, callback);
     }
 
     @Override
-    public void onViewRecycled(@NonNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof CollectionHolder) {
-            ((CollectionHolder) holder).onRecycled();
-        }
+    protected void onBindViewHolder(@NonNull CollectionHolder holder, CollectionModel model, @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, model);
     }
 
     @Override
-    public int getRealItemCount() {
-        return itemList.size();
+    public void onViewRecycled(@NonNull CollectionHolder holder) {
+        holder.onRecycled();
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (isFooter(position)) {
-            return -1;
-        } else {
-            return 1;
-        }
-    }
-
-    public List<Collection> getItemList() {
-        return itemList;
+    protected CollectionModel getViewModel(Collection model) {
+        return new CollectionModel(getContext(), model);
     }
 
     public interface ItemEventCallback {

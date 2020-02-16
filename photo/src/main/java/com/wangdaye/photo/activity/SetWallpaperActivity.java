@@ -14,22 +14,21 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
+
 import android.widget.Button;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.wangdaye.base.i.Downloadable;
+import com.wangdaye.common.base.popup.MysplashPopupWindow;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.helper.RoutingHelper;
 import com.wangdaye.common.base.activity.ReadWriteActivity;
-import com.wangdaye.common.ui.widget.photoView.Info;
-import com.wangdaye.common.ui.widget.photoView.PhotoView;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.photo.R;
 import com.wangdaye.photo.R2;
 import com.wangdaye.photo.ui.dialog.WallpaperWhereDialog;
-import com.wangdaye.photo.ui.popup.WallpaperAlignPopupWindow;
-import com.wangdaye.photo.ui.popup.WallpaperClipPopupWindow;
+import com.wangdaye.photo.ui.photoView.PhotoView;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -53,9 +52,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @Route(path = SetWallpaperActivity.SET_WALLPAPER_ACTIVITY)
 public class SetWallpaperActivity extends ReadWriteActivity
-        implements WallpaperClipPopupWindow.OnClipTypeChangedListener,
-        WallpaperAlignPopupWindow.OnAlignTypeChangedListener,
-        WallpaperWhereDialog.OnWhereSelectedListener {
+        implements WallpaperWhereDialog.OnWhereSelectedListener {
 
     @BindView(R2.id.activity_set_wallpaper_container) CoordinatorLayout container;
 
@@ -66,14 +63,30 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @BindView(R2.id.activity_set_wallpaper_typeBtn) AppCompatImageView typeBtn;
     @OnClick(R2.id.activity_set_wallpaper_typeBtn) void showTypePopup() {
-        WallpaperClipPopupWindow popup = new WallpaperClipPopupWindow(this, typeBtn, clipType);
-        popup.setOnClipTypeChangedListener(this);
+        MysplashPopupWindow.show(this, typeBtn, R.menu.activity_set_wallpaper_clip, item -> {
+            if (item.getItemId() == R.id.action_clip_square) {
+                clipType = CLIP_TYPE_SQUARE;
+            } else {
+                clipType = CLIP_TYPE_RECT;
+            }
+            setTypeIcon(clipType);
+            return true;
+        });
     }
 
     @BindView(R2.id.activity_set_wallpaper_alignBtn) AppCompatImageView alignBtn;
     @OnClick(R2.id.activity_set_wallpaper_alignBtn) void showAlignPopup() {
-        WallpaperAlignPopupWindow popup = new WallpaperAlignPopupWindow(this, alignBtn, alignType);
-        popup.setAlignTypeChangedListener(this);
+        MysplashPopupWindow.show(this, alignBtn, R.menu.activity_set_wallpaper_alignment, item -> {
+            if (item.getItemId() == R.id.action_align_left) {
+                alignType = ALIGN_TYPE_LEFT;
+            } else if (item.getItemId() == R.id.action_align_center) {
+                clipType = ALIGN_TYPE_CENTER;
+            } else {
+                clipType = ALIGN_TYPE_RIGHT;
+            }
+            setAlignIcon(clipType);
+            return true;
+        });
     }
 
     @BindView(R2.id.activity_set_wallpaper_setBtn) Button setBtn;
@@ -136,13 +149,8 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @Override
     protected void initSystemBar() {
-        DisplayUtils.setStatusBarStyle(this, true);
-        DisplayUtils.setNavigationBarStyle(this, true, hasTranslucentNavigationBar());
-    }
-
-    @Override
-    public boolean hasTranslucentNavigationBar() {
-        return true;
+        DisplayUtils.setSystemBarStyle(this, true,
+                true, false, true, false);
     }
 
     @SuppressLint("MissingSuperCall")
@@ -187,10 +195,9 @@ public class SetWallpaperActivity extends ReadWriteActivity
         setTypeIcon(clipType);
         setAlignIcon(alignType);
 
-        photoView.enable();
-        photoView.setMaxScale(2.5f);
+        photoView.setMaximumScale(2.5f);
         photoView.setScaleType(AppCompatImageView.ScaleType.CENTER_CROP);
-        ImageHelper.loadBitmap(this, photoView, getIntent().getData());
+        ImageHelper.loadImage(this, photoView, getIntent().getData());
         ImageHelper.loadBitmap(
                 this,
                 getIntent().getData(),
@@ -212,17 +219,9 @@ public class SetWallpaperActivity extends ReadWriteActivity
      * */
     private void setStyle() {
         if (light) {
-            DisplayUtils.setStatusBarStyle(this,
-                    false, true);
-            DisplayUtils.setNavigationBarStyle(this,
-                    false, hasTranslucentNavigationBar(), true);
             closeBtn.setImageResource(R.drawable.ic_toolbar_close_light);
             setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextDark2nd));
         } else {
-            DisplayUtils.setStatusBarStyle(this,
-                    false, false);
-            DisplayUtils.setNavigationBarStyle(this,
-                    false, hasTranslucentNavigationBar(), false);
             closeBtn.setImageResource(R.drawable.ic_toolbar_close_dark);
             setBtn.setTextColor(ContextCompat.getColor(this, R.color.colorTextLight2nd));
         }
@@ -309,8 +308,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
         int screenHeight = getResources().getDisplayMetrics().heightPixels;
 
         // eliminate the error from PhotoView's bound.
-        Info info = photoView.getInfo();
-        RectF imageBound = info.getImageBound();
+        RectF imageBound = photoView.getDisplayRect();
         if (imageBound.left > 0) {
             float delta = -imageBound.left;
             imageBound.left += delta;
@@ -417,28 +415,12 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     // interface.
 
-    // on clip type changed listener.
-
-    @Override
-    public void onClipTypeChanged(int type) {
-        clipType = type;
-        setTypeIcon(type);
-    }
-
-    // on align type changed listener.
-
-    @Override
-    public void onAlignTypeChanged(int type) {
-        alignType = type;
-        setAlignIcon(type);
-    }
-
     // on where selected listener.
 
     @Override
     public void onWhereSelected(int where) {
         Observable.create(emitter -> {
-            Bitmap b = ImageHelper.loadBitmap(this, getIntent().getData());
+            Bitmap b = ImageHelper.loadBitmap(this, getIntent().getData(), null);
             if (b == null) {
                 emitter.onError(new NullPointerException());
                 return;

@@ -1,15 +1,12 @@
 package com.wangdaye.search.repository;
 
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.SearchPhotosResult;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.SearchService;
+import com.wangdaye.search.vm.PhotoSearchPageViewModel;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 public class PhotoSearchPageViewRepository {
 
@@ -20,19 +17,17 @@ public class PhotoSearchPageViewRepository {
         this.service = service;
     }
 
-    public void getPhotos(@NonNull MutableLiveData<ListResource<Photo>> current,
-                          String query, boolean refresh) {
-        assert current.getValue() != null;
+    public void getPhotos(PhotoSearchPageViewModel viewModel, String query, boolean refresh) {
         if (refresh) {
-            current.setValue(ListResource.refreshing(current.getValue()));
+            viewModel.writeListResource(ListResource::refreshing);
         } else {
-            current.setValue(ListResource.loading(current.getValue()));
+            viewModel.writeListResource(ListResource::loading);
         }
 
         service.cancel();
         service.searchPhotos(
                 query,
-                current.getValue().getRequestPage(),
+                viewModel.getListRequestPage(),
                 new BaseObserver<SearchPhotosResult>() {
                     @Override
                     public void onSucceed(SearchPhotosResult searchPhotosResult) {
@@ -41,32 +36,20 @@ public class PhotoSearchPageViewRepository {
                             return;
                         }
                         if (refresh) {
-                            current.setValue(
-                                    ListResource.refreshSuccess(
-                                            current.getValue(),
-                                            searchPhotosResult.results
-                                    )
-                            );
-                        } else if (searchPhotosResult.results.size() == current.getValue().perPage) {
-                            current.setValue(
-                                    ListResource.loadSuccess(
-                                            current.getValue(),
-                                            searchPhotosResult.results
-                                    )
-                            );
+                            viewModel.writeListResource(resource ->
+                                    ListResource.refreshSuccess(resource, searchPhotosResult.results));
+                        } else if (searchPhotosResult.results.size() == viewModel.getListPerPage()) {
+                            viewModel.writeListResource(resource ->
+                                    ListResource.loadSuccess(resource, searchPhotosResult.results));
                         } else {
-                            current.setValue(
-                                    ListResource.allLoaded(
-                                            current.getValue(),
-                                            searchPhotosResult.results
-                                    )
-                            );
+                            viewModel.writeListResource(resource ->
+                                    ListResource.allLoaded(resource, searchPhotosResult.results));
                         }
                     }
 
                     @Override
                     public void onFailed() {
-                        current.setValue(ListResource.error(current.getValue()));
+                        viewModel.writeListResource(ListResource::error);
                     }
                 }
         );

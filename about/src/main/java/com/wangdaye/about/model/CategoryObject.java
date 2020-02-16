@@ -1,6 +1,7 @@
 package com.wangdaye.about.model;
 
 import com.wangdaye.about.ui.AboutAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 
 /**
  * Category object.
@@ -22,5 +23,20 @@ public class CategoryObject
     @Override
     public int getType() {
         return type;
+    }
+
+    @Override
+    public boolean areItemsTheSame(BaseAdapter.ViewModel newModel) {
+        return newModel instanceof CategoryObject && category.equals(((CategoryObject) newModel).category);
+    }
+
+    @Override
+    public boolean areContentsTheSame(BaseAdapter.ViewModel newModel) {
+        return false;
+    }
+
+    @Override
+    public Object getChangePayload(BaseAdapter.ViewModel newModel) {
+        return null;
     }
 }

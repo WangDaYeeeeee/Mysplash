@@ -1,6 +1,7 @@
 package com.wangdaye.about.model;
 
 import com.wangdaye.about.ui.AboutAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 
 /**
  * Header object.
@@ -17,5 +18,20 @@ public class HeaderObject
     @Override
     public int getType() {
         return type;
+    }
+
+    @Override
+    public boolean areItemsTheSame(BaseAdapter.ViewModel newModel) {
+        return newModel instanceof HeaderObject;
+    }
+
+    @Override
+    public boolean areContentsTheSame(BaseAdapter.ViewModel newModel) {
+        return false;
+    }
+
+    @Override
+    public Object getChangePayload(BaseAdapter.ViewModel newModel) {
+        return null;
     }
 }

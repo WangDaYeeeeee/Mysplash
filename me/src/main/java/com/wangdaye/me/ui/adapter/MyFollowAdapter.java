@@ -1,11 +1,14 @@
 package com.wangdaye.me.ui.adapter;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.base.unsplash.User;
 import com.wangdaye.me.R;
 
@@ -21,42 +24,41 @@ import java.util.List;
  *
  * */
 
-public class MyFollowAdapter extends FooterAdapter<MyFollowHolder> {
+public class MyFollowAdapter extends BaseAdapter<User, MyFollowModel, MyFollowHolder> {
 
-    private List<User> itemList;
     @Nullable private ItemEventCallback callback;
 
-    public MyFollowAdapter(List<User> list) {
-        super();
-        this.itemList = list;
+    public MyFollowAdapter(Context context, List<User> list) {
+        super(context, list);
     }
 
     @NotNull
     @Override
     public MyFollowHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_my_follow_user, parent, false);
-        return new MyFollowHolder(v);
+        return new MyFollowHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_my_follow_user, parent, false)
+        );
     }
 
     @Override
-    public void onBindViewHolder(@NotNull MyFollowHolder holder, int position) {
-        holder.onBindView(itemList.get(position), callback);
+    protected void onBindViewHolder(@NonNull MyFollowHolder holder, MyFollowModel model) {
+        holder.onBindView(model, callback);
+    }
+
+    @Override
+    protected void onBindViewHolder(@NonNull MyFollowHolder holder, MyFollowModel model,
+                                    @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, model);
     }
 
     public void onViewRecycled(@NotNull MyFollowHolder holder) {
-        super.onViewRecycled(holder);
         holder.onRecycled();
     }
 
     @Override
-    protected boolean hasFooter() {
-        return false;
-    }
-
-    @Override
-    public int getRealItemCount() {
-        return itemList.size();
+    protected MyFollowModel getViewModel(User model) {
+        return new MyFollowModel(model);
     }
 
     public interface ItemEventCallback {

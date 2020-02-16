@@ -193,13 +193,7 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
 
     private void setSwipeTranslation() {
         int dir = swipeDistance > 0 ? UP_DIR : DOWN_DIR;
-        setTranslationY(
-                (float) (
-                        dir * SWIPE_RADIO
-                                * swipeTrigger
-                                * Math.log10(1 + 9.0 * Math.abs(swipeDistance) / swipeTrigger)
-                )
-        );
+        drawSwipeFeedback(dir, swipeDistance, swipeTrigger);
         if (swipeListener != null) {
             swipeListener.onSwipeProcess(
                     (float) Math.min(
@@ -208,6 +202,16 @@ public class SwipeBackCoordinatorLayout extends CoordinatorLayout {
                     )
             );
         }
+    }
+
+    protected void drawSwipeFeedback(int dir, float swipeDistance, float triggerDistance) {
+        setTranslationY(
+                (float) (
+                        dir * SWIPE_RADIO
+                                * triggerDistance
+                                * Math.log10(1 + 9.0 * Math.abs(swipeDistance) / triggerDistance)
+                )
+        );
     }
 
     /**

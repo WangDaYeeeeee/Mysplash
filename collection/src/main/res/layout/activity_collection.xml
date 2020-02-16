@@ -48,8 +48,7 @@
                 <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
                     android:id="@+id/activity_collection_appBarStatusBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true" />
+                    android:layout_height="wrap_content" />
 
                 <androidx.appcompat.widget.Toolbar
                     android:id="@+id/activity_collection_toolbar"
@@ -102,8 +101,7 @@
                 <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
                     android:id="@+id/activity_collection_creatorBarStatusBar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:sbv_fill_in_mode="true" />
+                    android:layout_height="wrap_content" />
 
                 <RelativeLayout
                     android:id="@+id/activity_collection_touchBar"
@@ -151,11 +149,5 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-        android:id="@+id/activity_collection_statusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:sbv_translucent_mode="true" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Exif.
  * */
 
-public class Exif implements Parcelable {
+public class Exif implements Parcelable, Serializable {
 
     /**
      * make : Canon

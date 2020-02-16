@@ -14,7 +14,6 @@ import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.utils.helper.CrashReportHelper;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,18 +91,14 @@ public abstract class MysplashApplication extends MultiModulesApplication {
         }
     }
 
-    public List<Photo> loadMorePhotos(MysplashActivity activity,
-                                      List<Photo> list, int headIndex, boolean headDirection) {
+    public List<Photo> loadMorePhotos(MysplashActivity activity, int currentCount) {
         int index = activityList.indexOf(activity) - 1;
         if (index > -1) {
             Activity a = activityList.get(index);
             if (a instanceof LoadableActivity) {
                 try {
-                    if (((ParameterizedType) a.getClass().getGenericSuperclass())
-                            .getActualTypeArguments()[0]
-                            .toString()
-                            .equals(Photo.class.toString())) {
-                        return ((LoadableActivity<Photo>) a).loadMoreData(list, headIndex, headDirection);
+                    if (((LoadableActivity) a).isValidProvider(Photo.class)) {
+                        return ((LoadableActivity<Photo>) a).loadMoreData(currentCount);
                     }
                 } catch (Exception ignored) {
                     // do nothing.

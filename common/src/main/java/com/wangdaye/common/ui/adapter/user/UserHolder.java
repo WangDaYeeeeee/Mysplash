@@ -12,10 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.wangdaye.common.R;
 import com.wangdaye.common.R2;
 import com.wangdaye.base.pager.ProfilePager;
 import com.wangdaye.base.unsplash.User;
+import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.component.ComponentFactory;
@@ -41,40 +43,36 @@ class UserHolder extends RecyclerView.ViewHolder {
     }
 
     @SuppressLint("SetTextI18n")
-    void onBindView(User user, @Nullable UserAdapter.ItemEventCallback callback) {
+    void onBindView(UserModel model, @Nullable UserAdapter.ItemEventCallback callback) {
         Context context = itemView.getContext();
 
-        this.user = user;
+        this.user = model.user;
         this.callback = callback;
 
-        title.setText(user.name);
-        if (TextUtils.isEmpty(user.bio)) {
-            subtitle.setText(
-                    user.total_photos
-                            + " " + context.getResources().getStringArray(R.array.user_tabs)[0] + ", "
-                            + user.total_collections
-                            + " " + context.getResources().getStringArray(R.array.user_tabs)[1] + ", "
-                            + user.total_likes
-                            + " " + context.getResources().getStringArray(R.array.user_tabs)[2]
-            );
-        } else {
-            subtitle.setText(user.bio);
-        }
+        title.setText(model.title);
+        subtitle.setText(model.subtitle);
 
-        if (TextUtils.isEmpty(user.portfolio_url)) {
+        if (TextUtils.isEmpty(model.portfolioUrl)) {
             portfolioBtn.setVisibility(View.GONE);
         } else {
             portfolioBtn.setVisibility(View.VISIBLE);
         }
 
-        ImageHelper.loadAvatar(avatar.getContext(), avatar, user, () -> {
-            if (!user.hasFadedIn) {
-                user.hasFadedIn = true;
-                long duration = Long.parseLong(
-                        ComponentFactory.getSettingsService().getSaturationAnimationDuration());
-                ImageHelper.startSaturationAnimation(avatar.getContext(), avatar, duration);
-            }
-        });
+        if (TextUtils.isEmpty(model.avatarUrl)) {
+            ImageHelper.loadImage(context, avatar, R.drawable.default_avatar,
+                    model.avatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, null);
+        } else {
+            ImageHelper.setImageViewSaturation(avatar, model.hasFadeIn ? 1 : 0);
+            ImageHelper.loadImage(context, avatar, model.avatarUrl, R.drawable.default_avatar_round,
+                    model.avatarSize, new BitmapTransformation[]{new CircleTransformation(context)}, () -> {
+                if (!model.hasFadeIn) {
+                    model.hasFadeIn = true;
+                    long duration = Long.parseLong(
+                            ComponentFactory.getSettingsService().getSaturationAnimationDuration());
+                    ImageHelper.startSaturationAnimation(context, avatar, duration);
+                }
+            });
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             avatar.setTransitionName(user.username + "-avatar");

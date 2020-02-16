@@ -53,7 +53,7 @@ public abstract class BrowsableDialogMangePresenter {
     }
 
     public void success() {
-        state = State.ERROR;
+        state = State.SUCCESS;
         if (progress != null) {
             progress.dismiss();
             progress = null;

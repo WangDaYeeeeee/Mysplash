@@ -1,15 +1,12 @@
 package com.wangdaye.search.repository;
 
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.SearchCollectionsResult;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.SearchService;
+import com.wangdaye.search.vm.CollectionSearchPageViewModel;
 
 import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 public class CollectionSearchPageViewRepository {
 
@@ -20,19 +17,17 @@ public class CollectionSearchPageViewRepository {
         this.service = service;
     }
 
-    public void getCollections(@NonNull MutableLiveData<ListResource<Collection>> current,
-                               String query, boolean refresh) {
-        assert current.getValue() != null;
+    public void getCollections(CollectionSearchPageViewModel viewModel, String query, boolean refresh) {
         if (refresh) {
-            current.setValue(ListResource.refreshing(current.getValue()));
+            viewModel.writeListResource(ListResource::refreshing);
         } else {
-            current.setValue(ListResource.loading(current.getValue()));
+            viewModel.writeListResource(ListResource::loading);
         }
 
         service.cancel();
         service.searchCollections(
                 query,
-                current.getValue().getRequestPage(),
+                viewModel.getListRequestPage(),
                 new BaseObserver<SearchCollectionsResult>() {
                     @Override
                     public void onSucceed(SearchCollectionsResult searchCollectionsResult) {
@@ -41,32 +36,20 @@ public class CollectionSearchPageViewRepository {
                             return;
                         }
                         if (refresh) {
-                            current.setValue(
-                                    ListResource.refreshSuccess(
-                                            current.getValue(),
-                                            searchCollectionsResult.results
-                                    )
-                            );
-                        } else if (searchCollectionsResult.results.size() == current.getValue().perPage) {
-                            current.setValue(
-                                    ListResource.loadSuccess(
-                                            current.getValue(),
-                                            searchCollectionsResult.results
-                                    )
-                            );
+                            viewModel.writeListResource(resource ->
+                                    ListResource.refreshSuccess(resource, searchCollectionsResult.results));
+                        } else if (searchCollectionsResult.results.size() == viewModel.getListPerPage()) {
+                            viewModel.writeListResource(resource ->
+                                    ListResource.loadSuccess(resource, searchCollectionsResult.results));
                         } else {
-                            current.setValue(
-                                    ListResource.allLoaded(
-                                            current.getValue(),
-                                            searchCollectionsResult.results
-                                    )
-                            );
+                            viewModel.writeListResource(resource ->
+                                    ListResource.allLoaded(resource, searchCollectionsResult.results));
                         }
                     }
 
                     @Override
                     public void onFailed() {
-                        current.setValue(ListResource.error(current.getValue()));
+                        viewModel.writeListResource(ListResource::error);
                     }
                 }
         );

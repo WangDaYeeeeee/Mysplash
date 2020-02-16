@@ -1,46 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/item_photo_3_more"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/root_color"
-    tools:background="?attr/title_color">
+    android:layout_marginStart="@dimen/normal_margin"
+    android:layout_marginEnd="@dimen/normal_margin"
+    android:layout_marginBottom="@dimen/normal_margin"
+    android:foreground="?attr/selectableItemBackground"
+    android:stateListAnimator="@animator/touch_rise_avatar"
+    app:cardBackgroundColor="@color/colorDarkCardBackground"
+    app:cardCornerRadius="@dimen/material_card_radius"
+    app:cardPreventCornerOverlap="false"
+    app:cardElevation="0dp"
+    tools:ignore="RtlHardcoded,UnusedAttribute">
 
-    <view class="com.wangdaye.common.ui.widget.SwipeSwitchLayout$ViewPager2"
-        android:id="@+id/item_photo_3_more_viewPager"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout_height="@dimen/item_photo_3_more_vertical_height" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/item_photo_3_more_fakeTitle"
-        android:text=" "
-        android:textColor="@android:color/transparent"
-        android:textSize="@dimen/subtitle_text_size"
-        android:textStyle="bold"
-        android:maxLines="1"
-        android:shadowDx="1"
-        android:shadowDy="1"
-        android:shadowRadius="1"
-        android:shadowColor="@android:color/transparent"
-        android:layout_margin="@dimen/normal_margin"
-        android:layout_centerHorizontal="true"
-        android:gravity="center_horizontal"
-        style="@style/title_text"
-        tools:ignore="HardcodedText" />
+        <com.wangdaye.common.ui.widget.CoverImageView
+            android:id="@+id/item_photo_3_more_cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            app:civ_shadow_position="both"
+            tools:src="?attr/title_color" />
 
-    <com.pixelcan.inkpageindicator.InkPageIndicator
-        android:id="@+id/item_photo_3_more_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/item_photo_3_more_fakeTitle"
-        android:paddingBottom="@dimen/normal_margin"
-        app:animationDuration="300"
-        app:pageIndicatorColor="@color/colorTextGrey"
-        app:currentPageIndicatorColor="@android:color/white"
-        app:dotDiameter="@dimen/little_margin"
-        app:dotGap="@dimen/little_margin" />
+        <TextView
+            android:id="@+id/item_photo_3_more_subtitle"
+            android:textColor="@android:color/white"
+            android:maxLines="1"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/colorTextDark2nd"
+            android:alpha="0.9"
+            android:layout_marginStart="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_marginTop="@dimen/normal_margin"
+            style="@style/subtitle_text"
+            tools:text="3 photos"/>
+    
+        <TextView
+            android:id="@+id/item_photo_3_more_title"
+            android:textColor="@android:color/white"
+            android:maxLines="1"
+            android:textSize="@dimen/large_title_text_size"
+            android:textStyle="bold"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="1"
+            android:shadowColor="@color/colorTextDark2nd"
+            android:layout_marginStart="@dimen/normal_margin"
+            android:layout_marginEnd="@dimen/normal_margin"
+            android:layout_below="@id/item_photo_3_more_subtitle"
+            style="@style/title_text"
+            tools:text="LET THE INSPIRATION BEGIN"/>
+    
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/item_photo_3_more_cover">
+    
+            <com.wangdaye.common.ui.widget.CircularImageView
+                android:id="@+id/item_photo_3_more_avatar"
+                android:layout_width="@dimen/mini_icon_size"
+                android:layout_height="@dimen/mini_icon_size"
+                android:layout_margin="@dimen/normal_margin"
+                android:stateListAnimator="@animator/touch_rise_avatar"
+                android:foreground="?attr/selectableItemBackground"
+                tools:src="@drawable/default_avatar"
+                tools:ignore="ContentDescription,RtlHardcoded" />
+    
+            <TextView
+                android:id="@+id/item_photo_3_more_name"
+                android:textColor="@color/colorTextLight"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="1"
+                android:shadowColor="@color/colorTextDark2nd"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/item_photo_3_more_avatar"
+                android:layout_marginEnd="@dimen/normal_margin"
+                android:maxLines="1"
+                style="@style/subtitle_text"
+                tools:text="Wang Yueeeeee"
+                tools:ignore="RtlHardcoded" />
+    
+        </RelativeLayout>
+    
+    </RelativeLayout>
 
-</RelativeLayout>
+</com.wangdaye.common.ui.widget.longPressDrag.LongPressDragCardView>

@@ -31,7 +31,7 @@ greendao {
 
 allprojects {
     repositories {
-        jcenter(){ url 'http://jcenter.bintray.com/'}
+        jcenter()
         google()
         maven {
             url "https://jitpack.io"

@@ -5,33 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_update_me_swipeBackView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/root_color">
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-            android:id="@+id/activity_update_me_statusBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_update_me_swipeBackView"
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/activity_update_me_scrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/root_color">
+            android:fitsSystemWindows="true">
 
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/activity_update_me_scrollView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <include layout="@layout/container_update_me" />
 
-                <include layout="@layout/container_update_me" />
+        </androidx.core.widget.NestedScrollView>
 
-            </androidx.core.widget.NestedScrollView>
-
-        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    </LinearLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

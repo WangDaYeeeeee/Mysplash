@@ -120,6 +120,7 @@ public class MeProfileView extends FrameLayout {
             } else {
                 tags = u.tags.custom;
                 tagList.setAdapter(new MiniTagAdapter(
+                        getContext(),
                         u.tags.custom,
                         (view, tag) -> ComponentFactory.getSearchModule().startSearchActivity(activity, view, tag)
                 ));

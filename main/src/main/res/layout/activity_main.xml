@@ -1,29 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/activity_main_drawerLayout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:openDrawer="start">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/activity_main_fragment"
+    <com.wangdaye.common.ui.widget.NestedScrollAppBarLayout
+        android:id="@+id/activity_main_appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        app:theme="@style/MysplashToolbarTheme">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways">
+
+            <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/activity_main_searchBar"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="@dimen/normal_margin"
+                android:layout_marginStart="@dimen/normal_margin"
+                android:layout_marginEnd="@dimen/normal_margin"
+                android:foreground="?attr/selectableItemBackground"
+                app:cardBackgroundColor="?attr/search_bar_color"
+                app:cardCornerRadius="@dimen/material_card_radius"
+                app:cardElevation="3dp">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.wangdaye.common.ui.widget.CircularImageView
+                        android:id="@+id/activity_main_avatar"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:layout_marginStart="@dimen/little_margin"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
+                        android:stateListAnimator="@animator/touch_rise_avatar"
+                        android:foreground="?attr/selectableItemBackground"
+                        tools:src="@drawable/default_avatar_round"
+                        tools:ignore="ContentDescription,UnusedAttribute" />
+
+                    <ImageButton
+                        android:id="@+id/activity_main_menuButton"
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/ic_menu_light"
+                        android:padding="5dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="11dp"
+                        android:layout_centerVertical="true"
+                        android:tint="?attr/content_color"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/activity_main_searchHint"
+                        android:text="@string/feedback_search_bar"
+                        android:layout_toStartOf="@id/activity_main_menuButton"
+                        android:layout_toEndOf="@id/activity_main_avatar"
+                        android:layout_centerVertical="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="11dp"
+                        android:layout_marginEnd="@dimen/little_margin"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        android:alpha="0"
+                        android:visibility="gone"
+                        style="@style/content_text"
+                        tools:ignore="UnusedAttribute" />
+
+                    <LinearLayout
+                        android:id="@+id/activity_main_logo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:layout_centerInParent="true"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <ImageView
+                            android:id="@+id/activity_main_appIcon"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginEnd="@dimen/little_margin"
+                            android:layout_gravity="center_vertical"
+                            tools:src="@drawable/ic_launcher"
+                            tools:ignore="ContentDescription,UnusedAttribute" />
+
+                        <TextView
+                            android:text="@string/app_name"
+                            android:layout_gravity="center_vertical"
+                            android:textStyle="bold"
+                            style="@style/title_text" />
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/activity_main_tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tab_layout_height"
+                style="@style/MysplashTabLayoutTheme" />
+
+        </LinearLayout>
+
+    </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
+
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/activity_main_viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/root_color" />
-
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/activity_main_navView"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
         android:background="?attr/root_color"
-        android:fitsSystemWindows="false"
-        app:itemBackground="@drawable/nav_item_background"
-        app:headerLayout="@layout/container_nav_header"
-        app:itemTextColor="@color/nav_state_list"
-        app:itemIconTint="@color/nav_state_list"
-        app:insetForeground="@android:color/transparent" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    <com.wangdaye.common.ui.widget.AutoHideInkPageIndicator
+        android:id="@+id/activity_main_indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        app:layout_behavior="com.wangdaye.common.ui.behavior.InkPageIndicatorBehavior"
+        app:animationDuration="300"
+        app:pageIndicatorColor="?attr/subtitle_color"
+        app:currentPageIndicatorColor="?attr/title_color"
+        app:dotDiameter="@dimen/little_margin"
+        app:dotGap="@dimen/little_margin" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

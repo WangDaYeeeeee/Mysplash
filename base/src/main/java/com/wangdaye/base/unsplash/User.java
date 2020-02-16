@@ -6,6 +6,7 @@ import android.text.TextUtils;
 
 import com.wangdaye.base.i.Previewable;
 
+import java.io.Serializable;
 import java.util.List;
 
 import androidx.annotation.Nullable;
@@ -15,11 +16,7 @@ import androidx.annotation.Nullable;
  * */
 
 public class User
-        implements Parcelable, Previewable {
-    // data
-    public boolean hasFadedIn = false;
-    public boolean complete = false;
-    public boolean settingFollow = false;
+        implements Parcelable, Serializable, Previewable {
 
     /**
      * id : QV5S1rtoUJ0
@@ -108,6 +105,10 @@ public class User
         };
     }
 
+    public boolean isComplete() {
+        return badge != null;
+    }
+
     // parcel.
 
     @Override
@@ -117,9 +118,6 @@ public class User
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(this.hasFadedIn ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.complete ? (byte) 1 : (byte) 0);
-        dest.writeByte(this.settingFollow ? (byte) 1 : (byte) 0);
         dest.writeString(this.id);
         dest.writeString(this.updated_at);
         dest.writeInt(this.numeric_id);
@@ -150,9 +148,6 @@ public class User
     }
 
     protected User(Parcel in) {
-        this.hasFadedIn = in.readByte() != 0;
-        this.complete = in.readByte() != 0;
-        this.settingFollow = in.readByte() != 0;
         this.id = in.readString();
         this.updated_at = in.readString();
         this.numeric_id = in.readInt();

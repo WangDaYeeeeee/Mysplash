@@ -54,8 +54,8 @@ public class TranslatorHolder extends AboutAdapter.ViewHolder {
     protected void onBindView(MysplashActivity a, AboutModel model) {
         TranslatorObject object = (TranslatorObject) model;
 
-        ImageHelper.loadAvatar(a, avatar, object.avatarUrl, null);
-        ImageHelper.loadResourceImage(a, flag, object.flagId);
+        ImageHelper.loadImage(a, avatar, object.avatarUrl);
+        ImageHelper.loadImage(a, flag, object.flagId);
 
         title.setText(object.title);
         subtitle.setText(object.subtitle);

@@ -26,6 +26,8 @@ public class UserCollectionsManager {
         loadFinish = false;
     }
 
+
+
     public List<Collection> getCollectionList() {
         return collectionList;
     }
@@ -59,21 +61,6 @@ public class UserCollectionsManager {
     public void clearCollections() {
         collectionList.clear();
         setLoadFinish(false);
-    }
-
-    public void finishEdit(int id) {
-        for (int i = 0; i < collectionList.size(); i ++) {
-            if (id == collectionList.get(i).id) {
-                collectionList.get(i).editing = false;
-                return;
-            }
-        }
-    }
-
-    public void finishEdit() {
-        for (int i = 0; i < collectionList.size(); i ++) {
-            collectionList.get(i).editing = false;
-        }
     }
 
     public boolean isLoadFinish() {

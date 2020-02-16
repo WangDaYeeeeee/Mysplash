@@ -12,14 +12,6 @@
         <attr name="search_bar_color" format="reference|color" />
     </declare-styleable>
 
-    <!-- StatusBarView -->
-    <declare-styleable name="StatusBarView">
-        <attr name="sbv_translucent_mode" format="boolean" />
-        <attr name="sbv_fill_in_mode" format="boolean" />
-        <attr name="sbv_init_alpha" format="float" />
-        <attr name="sbv_darker_alpha" format="float" />
-    </declare-styleable>
-
     <!-- circleImageView -->
     <declare-styleable name="CircularImageView">
         <attr name="civ_border_width" format="dimension" />

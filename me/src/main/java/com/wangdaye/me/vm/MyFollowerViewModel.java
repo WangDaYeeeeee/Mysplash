@@ -1,34 +1,22 @@
 package com.wangdaye.me.vm;
 
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.common.base.vm.PagerViewModel;
 import com.wangdaye.base.unsplash.User;
-import com.wangdaye.common.bus.MessageBus;
-import com.wangdaye.common.presenter.event.UserEventResponsePresenter;
+import com.wangdaye.common.base.vm.pager.UsersPagerViewModel;
 import com.wangdaye.me.repository.MyFollowUserViewRepository;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 
-public class MyFollowerViewModel extends PagerViewModel<User>
-        implements Consumer<User> {
+public class MyFollowerViewModel extends UsersPagerViewModel {
 
     private MyFollowUserViewRepository repository;
-    private UserEventResponsePresenter presenter;
-    private Disposable disposable;
 
     @Inject
-    public MyFollowerViewModel(MyFollowUserViewRepository repository,
-                               UserEventResponsePresenter presenter) {
+    public MyFollowerViewModel(MyFollowUserViewRepository repository) {
         super();
         this.repository = repository;
-        this.presenter = presenter;
-        this.disposable = MessageBus.getInstance()
-                .toObservable(User.class)
-                .subscribe(this);
     }
 
     @Override
@@ -44,28 +32,19 @@ public class MyFollowerViewModel extends PagerViewModel<User>
     protected void onCleared() {
         super.onCleared();
         getRepository().cancel();
-        presenter.clearResponse();
-        disposable.dispose();
     }
 
     @Override
     public void refresh() {
-        getRepository().getFollowers(getListResource(), true);
+        getRepository().getFollowers(this, true);
     }
 
     @Override
     public void load() {
-        getRepository().getFollowers(getListResource(), false);
+        getRepository().getFollowers(this, false);
     }
 
     MyFollowUserViewRepository getRepository() {
         return repository;
-    }
-
-    // interface.
-
-    @Override
-    public void accept(User user) {
-        presenter.updateUser(getListResource(), user, false);
     }
 }

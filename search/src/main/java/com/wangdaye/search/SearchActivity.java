@@ -21,19 +21,21 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.wangdaye.base.DownloadTask;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
 import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
+import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.common.ui.adapter.user.UserItemEventHelper;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.component.ComponentFactory;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.ui.adapter.collection.CollectionAdapter;
 import com.wangdaye.common.ui.adapter.user.UserAdapter;
-import com.wangdaye.common.presenter.list.LikeOrDislikePhotoPresenter;
 import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.common.base.activity.LoadableActivity;
@@ -42,28 +44,25 @@ import com.wangdaye.common.ui.adapter.PagerAdapter;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.manager.ThemeManager;
 import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
-import com.wangdaye.search.base.PhotoItemEventHelper;
 import com.wangdaye.search.di.component.DaggerApplicationComponent;
 import com.wangdaye.search.ui.CollectionSearchPageView;
 import com.wangdaye.search.ui.PhotoSearchPageView;
 import com.wangdaye.search.ui.UserSearchPageView;
-import com.wangdaye.search.vm.AbstractSearchPageViewModel;
 import com.wangdaye.search.vm.CollectionSearchPageViewModel;
 import com.wangdaye.search.vm.PhotoSearchPageViewModel;
 import com.wangdaye.search.vm.SearchActivityModel;
+import com.wangdaye.search.vm.SearchPagerViewModel;
 import com.wangdaye.search.vm.UserSearchPageViewModel;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
@@ -89,7 +88,6 @@ public class SearchActivity extends LoadableActivity<Photo>
         SwipeBackCoordinatorLayout.OnSwipeListener {
 
     @BindView(R2.id.activity_search_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
-    @BindView(R2.id.activity_search_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_search_container) CoordinatorLayout container;
     @BindView(R2.id.activity_search_shadow) View shadow;
 
@@ -100,14 +98,11 @@ public class SearchActivity extends LoadableActivity<Photo>
     @BindView(R2.id.activity_search_indicator) AutoHideInkPageIndicator indicator;
 
     private PagerView[] pagers = new PagerView[pageCount()];
-    private FooterAdapter[] adapters = new FooterAdapter[pageCount()];
+    private BaseAdapter[] adapters = new BaseAdapter[pageCount()];
 
     private SearchActivityModel activityModel;
-    private AbstractSearchPageViewModel<?, ?>[] pagerModels = new AbstractSearchPageViewModel<?, ?>[pageCount()];
+    private PagerViewModel[] pagerModels = new PagerViewModel[pageCount()];
     @Inject ParamsViewModelFactory viewModelFactory;
-
-    @Inject LikeOrDislikePhotoPresenter likeOrDislikePhotoPresenter;
-    private PagerLoadablePresenter loadablePresenter;
 
     private boolean executeTransition;
 
@@ -151,11 +146,6 @@ public class SearchActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public boolean hasTranslucentNavigationBar() {
-        return true;
-    }
-
-    @Override
     public void handleBackPressed() {
         if (pagers[getCurrentPagerPosition()].checkNeedBackToTop()
                 && BackToTopUtils.isSetBackToTop(false)) {
@@ -167,8 +157,6 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     protected void backToTop() {
-        statusBar.switchToInitAlpha();
-        DisplayUtils.setStatusBarStyle(this, false);
         BackToTopUtils.showTopBar(appBar, viewPager);
         pagers[getCurrentPagerPosition()].scrollToPageTop();
     }
@@ -200,14 +188,25 @@ public class SearchActivity extends LoadableActivity<Photo>
         return container;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public List<Photo> loadMoreData(List<Photo> list, int headIndex, boolean headDirection) {
-        return loadablePresenter.loadMore(
-                list, headIndex, headDirection, pagers[photoPage()],
-                pagers[photoPage()].getRecyclerView(),
-                adapters[getCurrentPagerPosition()],
-                this, photoPage()
-        );
+    public List<Photo> loadMoreData(int currentCount) {
+        if (getCurrentPagerPosition() == photoPage()) {
+            return PagerLoadablePresenter.loadMore(
+                    (PagerViewModel<Photo>) pagerModels[photoPage()],
+                    currentCount,
+                    pagers[photoPage()],
+                    pagers[photoPage()].getRecyclerView(),
+                    this,
+                    photoPage()
+            );
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public boolean isValidProvider(Class clazz) {
+        return clazz == Photo.class;
     }
 
     // init.
@@ -221,19 +220,23 @@ public class SearchActivity extends LoadableActivity<Photo>
         activityModel = ViewModelProviders.of(this, viewModelFactory).get(SearchActivityModel.class);
         activityModel.init(photoPage(), query);
 
-        pagerModels[photoPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(PhotoSearchPageViewModel.class);
-        pagerModels[photoPage()].init(ListResource.error(0, ListPager.DEFAULT_PER_PAGE), query);
+        pagerModels[photoPage()] = ViewModelProviders.of(this, viewModelFactory).get(
+                PhotoSearchPageViewModel.class);
+        ((PhotoSearchPageViewModel) pagerModels[photoPage()]).init(
+                ListResource.error(0, ListPager.DEFAULT_PER_PAGE), query);
 
-        pagerModels[collectionPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(CollectionSearchPageViewModel.class);
-        pagerModels[collectionPage()].init(ListResource.error(0, ListPager.DEFAULT_PER_PAGE), query);
+        pagerModels[collectionPage()] = ViewModelProviders.of(this, viewModelFactory).get(
+                CollectionSearchPageViewModel.class);
+        ((CollectionSearchPageViewModel) pagerModels[collectionPage()]).init(
+                ListResource.error(0, ListPager.DEFAULT_PER_PAGE), query);
 
-        pagerModels[userPage()] = ViewModelProviders.of(this, viewModelFactory)
-                .get(UserSearchPageViewModel.class);
-        pagerModels[userPage()].init(ListResource.error(0, ListPager.DEFAULT_PER_PAGE), query);
+        pagerModels[userPage()] = ViewModelProviders.of(this, viewModelFactory).get(
+                UserSearchPageViewModel.class);
+        ((UserSearchPageViewModel) pagerModels[userPage()]).init(
+                ListResource.error(0, ListPager.DEFAULT_PER_PAGE), query);
     }
 
+    @SuppressWarnings("unchecked")
     private void initView() {
         swipeBackView.setOnSwipeListener(this);
 
@@ -249,34 +252,26 @@ public class SearchActivity extends LoadableActivity<Photo>
                     toolbar,
                     R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         }
-        toolbar.inflateMenu(R.menu.activity_search_toolbar);
+        DisplayUtils.inflateToolbarMenu(toolbar, R.menu.activity_search_toolbar, this);
         toolbar.setNavigationOnClickListener(v -> {
             if (MysplashApplication.getInstance().getActivityCount() == 1) {
                 ComponentFactory.getMainModule().startMainActivity(this);
             }
             finishSelf(true);
         });
-        toolbar.setOnMenuItemClickListener(this);
 
         editText.setOnEditorActionListener(this);
 
         initPages();
-        loadablePresenter = new PagerLoadablePresenter() {
-            @Override
-            public List<Photo> subList(int fromIndex, int toIndex) {
-                return Objects.requireNonNull(
-                        ((PhotoSearchPageViewModel) pagerModels[photoPage()]).getListResource().getValue()
-                ).dataList.subList(fromIndex, toIndex);
-            }
-        };
 
         activityModel.getSearchQuery().observe(this, s -> {
             if (!TextUtils.equals(s, editText.getText().toString())) {
                 editText.setText(s);
             }
             for (int i = photoPage(); i < pageCount(); i ++) {
-                if (!TextUtils.equals(s, pagerModels[i].getQuery())) {
-                    pagerModels[i].setQuery(s);
+                SearchPagerViewModel viewModel = (SearchPagerViewModel) pagerModels[i];
+                if (!TextUtils.equals(s, viewModel.getQuery())) {
+                    viewModel.setQuery(s);
                     PagerViewManagePresenter.initRefresh(pagerModels[i], adapters[i]);
                 }
             }
@@ -296,36 +291,34 @@ public class SearchActivity extends LoadableActivity<Photo>
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void initPages() {
-        adapters[photoPage()] = new PhotoAdapter(
-                Objects.requireNonNull(
-                        ((PhotoSearchPageViewModel) pagerModels[photoPage()]).getListResource().getValue()
-                ).dataList
-        ).setItemEventCallback(
-                new PhotoItemEventHelper(
-                        this,
-                        Objects.requireNonNull(
-                                ((PhotoSearchPageViewModel) pagerModels[photoPage()])
-                                        .getListResource()
-                                        .getValue()
-                        ).dataList,
-                        likeOrDislikePhotoPresenter
+        pagerModels[photoPage()].readDataList(list ->
+                adapters[photoPage()] = new PhotoAdapter(this, list).setItemEventCallback(
+                        new PhotoItemEventHelper(
+                                this,
+                                pagerModels[photoPage()],
+                                (context, photo) -> ComponentFactory.getDownloaderService().addTask(
+                                        this,
+                                        photo,
+                                        DownloadTask.DOWNLOAD_TYPE,
+                                        ComponentFactory.getSettingsService().getDownloadScale()
+                                )
+                        )
                 )
         );
 
-        adapters[collectionPage()] = new CollectionAdapter(
-                Objects.requireNonNull(
-                        ((CollectionSearchPageViewModel) pagerModels[collectionPage()])
-                                .getListResource()
-                                .getValue()
-                ).dataList
-        ).setItemEventCallback(new CollectionItemEventHelper(this));
+        pagerModels[collectionPage()].readDataList(list ->
+                adapters[collectionPage()] = new CollectionAdapter(this, list).setItemEventCallback(
+                        new CollectionItemEventHelper(this)
+                )
+        );
 
-        adapters[userPage()] = new UserAdapter(
-                Objects.requireNonNull(
-                        ((UserSearchPageViewModel) pagerModels[userPage()]).getListResource().getValue()
-                ).dataList
-        ).setItemEventCallback(new UserItemEventHelper(this));
+        pagerModels[userPage()].readDataList(list ->
+                adapters[userPage()] = new UserAdapter(this, list).setItemEventCallback(
+                        new UserItemEventHelper(this)
+                )
+        );
 
         List<View> pageList = new ArrayList<>(
                 Arrays.asList(
@@ -377,18 +370,13 @@ public class SearchActivity extends LoadableActivity<Photo>
             for (int i = photoPage(); i < pageCount(); i ++) {
                 pagers[i].setSelected(i == position);
             }
-            DisplayUtils.setNavigationBarStyle(
-                    this,
-                    pagers[position].getState() == PagerView.State.NORMAL,
-                    hasTranslucentNavigationBar()
-            );
-            ListResource resource = pagerModels[getCurrentPagerPosition()].getListResource().getValue();
-            if (resource != null
-                    && resource.dataList.size() == 0
-                    && resource.state != ListResource.State.REFRESHING
-                    && resource.state != ListResource.State.LOADING
-                    && resource.state != ListResource.State.ALL_LOADED
-                    && !TextUtils.isEmpty(pagerModels[getCurrentPagerPosition()].getQuery())) {
+
+            String query = ((SearchPagerViewModel) pagerModels[getCurrentPagerPosition()]).getQuery();
+            if (pagerModels[getCurrentPagerPosition()].getListSize() == 0
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.REFRESHING
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.LOADING
+                    && pagerModels[getCurrentPagerPosition()].getListState() != ListResource.State.ALL_LOADED
+                    && !TextUtils.isEmpty(query)) {
                 PagerViewManagePresenter.initRefresh(
                         pagerModels[getCurrentPagerPosition()],
                         adapters[getCurrentPagerPosition()]
@@ -398,9 +386,9 @@ public class SearchActivity extends LoadableActivity<Photo>
 
         for (int i = photoPage(); i < pageCount(); i ++) {
             int finalI = i;
-            pagerModels[i].getListResource().observe(this, resource ->
+            pagerModels[i].observeListResource(this, viewModel ->
                     PagerViewManagePresenter.responsePagerListResourceChanged(
-                            resource, pagers[finalI], adapters[finalI]
+                            viewModel, pagers[finalI], adapters[finalI]
                     )
             );
         }
@@ -465,27 +453,14 @@ public class SearchActivity extends LoadableActivity<Photo>
 
     @Override
     public boolean canLoadMore(int index) {
-        return pagerModels[index].getListResource().getValue() != null
-
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state != ListResource.State.REFRESHING
-
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state != ListResource.State.LOADING
-
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state != ListResource.State.ALL_LOADED;
+        return pagerModels[index].getListState() != ListResource.State.REFRESHING
+                && pagerModels[index].getListState() != ListResource.State.LOADING
+                && pagerModels[index].getListState() != ListResource.State.ALL_LOADED;
     }
 
     @Override
     public boolean isLoading(int index) {
-        return pagerModels[index].getListResource().getValue() != null
-                && Objects.requireNonNull(
-                        pagerModels[index].getListResource().getValue()
-                ).state == ListResource.State.LOADING;
+        return pagerModels[index].getListState() == ListResource.State.LOADING;
     }
 
     // on menu item click listener.
@@ -551,17 +526,6 @@ public class SearchActivity extends LoadableActivity<Photo>
         InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (manager != null && manager.isActive(editText)) {
             hideKeyboard();
-        }
-        if (appBar.getY() > -appBar.getMeasuredHeight()) {
-            if (!statusBar.isInitState()) {
-                statusBar.switchToInitAlpha();
-                DisplayUtils.setStatusBarStyle(this, false);
-            }
-        } else {
-            if (statusBar.isInitState()) {
-                statusBar.switchToDarkerAlpha();
-                DisplayUtils.setStatusBarStyle(this, true);
-            }
         }
     }
 

@@ -25,7 +25,6 @@ import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.FullscreenInputWorkaround;
 import com.wangdaye.common.utils.manager.AuthManager;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.me.R;
 import com.wangdaye.me.R2;
@@ -58,7 +57,6 @@ public class UpdateMeActivity extends MysplashActivity
 
     @BindView(R2.id.activity_update_me_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_update_me_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_update_me_statusBar) StatusBarView statusBar;
 
     @BindView(R2.id.activity_update_me_scrollView) NestedScrollView scrollView;
     @BindView(R2.id.container_update_me_progressView) CircularProgressView progressView;
@@ -359,7 +357,6 @@ public class UpdateMeActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

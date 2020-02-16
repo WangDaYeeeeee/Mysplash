@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.network.UrlCollection;
+import com.wangdaye.common.presenter.FollowUserPresenter;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.base.unsplash.User;
@@ -129,7 +130,7 @@ public class UserProfileView extends FrameLayout {
     }
 
     public void setRippleButtonState(User user) {
-        if (user.settingFollow) {
+        if (FollowUserPresenter.getInstance().isInProgress(user)) {
             rippleButton.setState(user.followed_by_user
                     ? RippleButton.State.TRANSFORM_TO_OFF : RippleButton.State.TRANSFORM_TO_ON);
         } else {
@@ -144,6 +145,7 @@ public class UserProfileView extends FrameLayout {
             tagList.setVisibility(GONE);
         } else {
             tagList.setAdapter(new MiniTagAdapter(
+                    getContext(),
                     u.tags.custom,
                     (view, tag) -> ComponentFactory.getSearchModule().startSearchActivity(activity, view, tag)
             ));

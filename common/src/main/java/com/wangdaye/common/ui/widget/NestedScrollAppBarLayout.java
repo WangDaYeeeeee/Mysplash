@@ -3,6 +3,7 @@ package com.wangdaye.common.ui.widget;
 import android.animation.AnimatorInflater;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Rect;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -290,6 +291,12 @@ public class NestedScrollAppBarLayout extends AppBarLayout
                     AnimatorInflater.loadStateListAnimator(getContext(), R.animator.appbar_elevation)
             );
         }
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        super.fitSystemWindows(insets);
+        return false;
     }
 
     /**

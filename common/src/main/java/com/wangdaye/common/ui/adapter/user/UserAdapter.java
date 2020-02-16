@@ -1,19 +1,22 @@
 package com.wangdaye.common.ui.adapter.user;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.wangdaye.common.R;
-import com.wangdaye.common.base.adapter.footerAdapter.FooterAdapter;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.base.unsplash.User;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
 
 /**
  * User adapter.
@@ -22,54 +25,42 @@ import java.util.List;
  *
  * */
 
-public class UserAdapter extends FooterAdapter<RecyclerView.ViewHolder> {
+public class UserAdapter extends BaseAdapter<User, UserModel, UserHolder> {
 
-    private List<User> itemList;
     @Nullable private ItemEventCallback callback;
 
-    public UserAdapter(List<User> list) {
-        super();
-        this.itemList = list;
+    public UserAdapter(Context context, List<User> list) {
+        super(context, list);
     }
 
     @NotNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        if (viewType == -1) {
-            // footer.
-            return new FooterHolder(parent);
-        } else {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_user, parent, false);
-            return new UserHolder(v);
-        }
+    public UserHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+        return new UserHolder(
+                LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_user, parent, false)
+        );
     }
 
     @Override
-    public void onBindViewHolder(@NotNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof UserHolder && position < getRealItemCount()) {
-            ((UserHolder) holder).onBindView(itemList.get(position), callback);
-        } else if (holder instanceof FooterHolder) {
-            ((FooterHolder) holder).onBindView();
-        }
+    protected void onBindViewHolder(@NonNull UserHolder holder, UserModel model) {
+        holder.onBindView(model, callback);
     }
 
     @Override
-    public void onViewRecycled(@NotNull RecyclerView.ViewHolder holder) {
-        super.onViewRecycled(holder);
-        if (holder instanceof UserHolder) {
-            ((UserHolder) holder).onRecycled();
-        }
+    protected void onBindViewHolder(@NonNull UserHolder holder, UserModel model,
+                                    @NonNull List<Object> payloads) {
+        onBindViewHolder(holder, model);
     }
 
     @Override
-    public int getRealItemCount() {
-        return itemList.size();
+    public void onViewRecycled(@NotNull UserHolder holder) {
+        holder.onRecycled();
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return isFooter(position) ? -1 : 1;
+    protected UserModel getViewModel(User model) {
+        return new UserModel(getContext(), model);
     }
 
     public interface ItemEventCallback {

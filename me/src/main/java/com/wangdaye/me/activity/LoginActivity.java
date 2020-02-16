@@ -23,9 +23,7 @@ import com.wangdaye.common.network.service.AuthorizeService;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.image.ImageHelper;
-import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.manager.AuthManager;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.ThemeManager;
@@ -52,7 +50,6 @@ public class LoginActivity extends MysplashActivity
 
     @BindView(R2.id.activity_login_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
     @BindView(R2.id.activity_login_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_login_statusBar) StatusBarView statusBar;
     @BindView(R2.id.activity_login_buttonContainer) LinearLayout buttonContainer;
     @BindView(R2.id.activity_login_progressContainer) RelativeLayout progressContainer;
 
@@ -87,7 +84,6 @@ public class LoginActivity extends MysplashActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        DisplayUtils.setNavigationBarStyle(this, false, false);
 
         initData();
         initWidget();
@@ -167,7 +163,7 @@ public class LoginActivity extends MysplashActivity
         swipeBackView.setOnSwipeListener(this);
 
         AppCompatImageView icon = findViewById(R.id.activity_login_icon);
-        ImageHelper.loadResourceImage(this, icon, R.drawable.ic_launcher);
+        ImageHelper.loadImage(this, icon, R.drawable.ic_launcher);
 
         Button loginBtn = findViewById(R.id.activity_login_loginBtn);
         Button joinBtn = findViewById(R.id.activity_login_joinBtn);
@@ -221,7 +217,6 @@ public class LoginActivity extends MysplashActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

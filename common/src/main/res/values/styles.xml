@@ -44,6 +44,7 @@
     <style name="MysplashToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="android:textColorPrimary">?attr/content_color</item>
         <item name="android:textColorSecondary">?attr/content_color</item>
+        <item name="android:textColor">?attr/content_color</item>
     </style>
 
     <!-- tab layout. -->

@@ -1,10 +1,12 @@
 package com.wangdaye.base.unsplash;
 
+import java.io.Serializable;
+
 /**
  * Me.
  * */
 
-public class Me {
+public class Me implements Serializable {
 
     /**
      * id : pXhwzz1JtQU

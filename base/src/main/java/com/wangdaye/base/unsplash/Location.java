@@ -3,11 +3,13 @@ package com.wangdaye.base.unsplash;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.io.Serializable;
+
 /**
  * Location.
  * */
 
-public class Location implements Parcelable {
+public class Location implements Parcelable, Serializable {
 
     /**
      * title : Kitsuné Café, Montreal, Canada

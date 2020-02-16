@@ -4,14 +4,8 @@
     <!-- home tab. -->
     <string-array name="home_tabs">
         <item>EDITORIAL</item>
-        <item>EN VEDETTE</item>
-    </string-array>
-
-    <!-- collection tab. -->
-    <string-array name="collection_tabs">
-        <item>EN VEDETTE</item>
-        <item>TOUT</item>
-        <item>ORGANISE</item>
+        <item>ABONNEMENTS</item>
+        <item>COLLECTION</item>
     </string-array>
 
     <!-- search tab. -->

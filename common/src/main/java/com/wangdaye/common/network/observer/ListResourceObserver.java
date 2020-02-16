@@ -1,40 +1,33 @@
 package com.wangdaye.common.network.observer;
 
-import androidx.lifecycle.MutableLiveData;
-
 import com.wangdaye.base.resource.ListResource;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
 
 import java.util.List;
 
 public class ListResourceObserver<T> extends BaseObserver<List<T>> {
 
-    private MutableLiveData<ListResource<T>> current;
+    private PagerViewModel<T> viewModel;
     private boolean refresh;
 
-    public ListResourceObserver(MutableLiveData<ListResource<T>> current, boolean refresh) {
-        this.current = current;
+    public ListResourceObserver(PagerViewModel<T> viewModel, boolean refresh) {
+        this.viewModel = viewModel;
         this.refresh = refresh;
     }
 
     @Override
     public void onSucceed(List<T> list) {
-        if (current.getValue() == null) {
-            return;
-        }
         if (refresh) {
-            current.setValue(ListResource.refreshSuccess(current.getValue(), list));
-        } else if (list.size() == current.getValue().perPage) {
-            current.setValue(ListResource.loadSuccess(current.getValue(), list));
+            viewModel.writeListResource(resource -> ListResource.refreshSuccess(resource, list));
+        } else if (list.size() == viewModel.getListPerPage()) {
+            viewModel.writeListResource(resource -> ListResource.loadSuccess(resource, list));
         } else {
-            current.setValue(ListResource.allLoaded(current.getValue(), list));
+            viewModel.writeListResource(resource -> ListResource.allLoaded(resource, list));
         }
     }
 
     @Override
     public void onFailed() {
-        if (current.getValue() == null) {
-            return;
-        }
-        current.setValue(ListResource.error(current.getValue()));
+        viewModel.writeListResource(ListResource::error);
     }
 }

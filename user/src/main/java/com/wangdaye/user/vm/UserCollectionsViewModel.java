@@ -4,32 +4,30 @@ import android.text.TextUtils;
 
 import com.wangdaye.base.resource.ListResource;
 import com.wangdaye.base.unsplash.Collection;
-import com.wangdaye.common.bus.event.CollectionEvent;
-import com.wangdaye.common.presenter.event.CollectionEventResponsePresenter;
+import com.wangdaye.common.base.vm.pager.CollectionsPagerViewModel;
 import com.wangdaye.user.repository.UserCollectionsViewRepository;
-
-import java.util.Objects;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-public class UserCollectionsViewModel extends AbstractUserViewModel<Collection, CollectionEvent> {
+public class UserCollectionsViewModel extends CollectionsPagerViewModel
+        implements UserPagerViewModel<Collection> {
 
     private UserCollectionsViewRepository repository;
-    private CollectionEventResponsePresenter presenter;
+    private String username;
 
     @Inject
-    public UserCollectionsViewModel(UserCollectionsViewRepository repository,
-                                    CollectionEventResponsePresenter presenter) {
-        super(CollectionEvent.class);
+    public UserCollectionsViewModel(UserCollectionsViewRepository repository) {
+        super();
         this.repository = repository;
-        this.presenter = presenter;
     }
 
     @Override
     public boolean init(@NonNull ListResource<Collection> defaultResource, String defaultUsername) {
-        if (super.init(defaultResource, defaultUsername)) {
+        if (super.init(defaultResource)) {
+            setUsername(defaultUsername);
             refresh();
             return true;
         }
@@ -39,8 +37,7 @@ public class UserCollectionsViewModel extends AbstractUserViewModel<Collection, 
     @Override
     protected void onCleared() {
         super.onCleared();
-        getRepository().cancel();
-        presenter.clearResponse();
+        repository.cancel();
     }
 
     @Override
@@ -48,7 +45,7 @@ public class UserCollectionsViewModel extends AbstractUserViewModel<Collection, 
         if (TextUtils.isEmpty(getUsername())) {
             return;
         }
-        getRepository().getUserCollections(getListResource(), getUsername(), true);
+        repository.getUserCollections(this, getUsername(), true);
     }
 
     @Override
@@ -56,33 +53,17 @@ public class UserCollectionsViewModel extends AbstractUserViewModel<Collection, 
         if (TextUtils.isEmpty(getUsername())) {
             return;
         }
-        getRepository().getUserCollections(getListResource(), getUsername(), false);
+        repository.getUserCollections(this, getUsername(), false);
     }
 
-    UserCollectionsViewRepository getRepository() {
-        return repository;
+    @Nullable
+    @Override
+    public String getUsername() {
+        return username;
     }
-
-    // interface.
 
     @Override
-    public void accept(CollectionEvent collectionEvent) {
-        if (!collectionEvent.collection.user.username.equals(getUsername())
-                || Objects.requireNonNull(getListResource().getValue()).state != ListResource.State.SUCCESS) {
-            return;
-        }
-        switch (collectionEvent.event) {
-            case CREATE:
-                presenter.createCollection(getListResource(), collectionEvent.collection);
-                break;
-
-            case UPDATE:
-                presenter.updateCollection(getListResource(), collectionEvent.collection);
-                break;
-
-            case DELETE:
-                presenter.deleteCollection(getListResource(), collectionEvent.collection);
-                break;
-        }
+    public void setUsername(@Nullable String username) {
+        this.username = username;
     }
 }

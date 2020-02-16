@@ -3,76 +3,41 @@ package com.wangdaye.user.vm;
 import android.text.TextUtils;
 
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.common.bus.MessageBus;
-import com.wangdaye.common.bus.event.DownloadEvent;
+import com.wangdaye.common.base.vm.pager.PhotosPagerViewModel;
 import com.wangdaye.base.unsplash.Photo;
-import com.wangdaye.common.bus.event.PhotoEvent;
-import com.wangdaye.common.presenter.event.DownloadEventResponsePresenter;
-import com.wangdaye.common.presenter.event.PhotoEventResponsePresenter;
 import com.wangdaye.user.repository.UserPhotosViewRepository;
 
 import javax.inject.Inject;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
+import androidx.annotation.Nullable;
 
-import io.reactivex.disposables.Disposable;
-
-public class UserPhotosViewModel extends AbstractUserViewModel<Photo, PhotoEvent> {
+public class UserPhotosViewModel extends PhotosPagerViewModel
+        implements UserPagerViewModel<Photo> {
 
     private UserPhotosViewRepository repository;
-    private PhotoEventResponsePresenter photoEventResponsePresenter;
-    private DownloadEventResponsePresenter downloadEventResponsePresenter;
-
-    private Disposable downloadEventDisposable;
-
-    private MutableLiveData<String> photosOrder;
+    private String username;
 
     @Inject
-    public UserPhotosViewModel(UserPhotosViewRepository repository,
-                               PhotoEventResponsePresenter photoEventResponsePresenter,
-                               DownloadEventResponsePresenter downloadEventResponsePresenter) {
-        super(PhotoEvent.class);
-
+    public UserPhotosViewModel(UserPhotosViewRepository repository) {
+        super();
         this.repository = repository;
-        this.photoEventResponsePresenter = photoEventResponsePresenter;
-        this.downloadEventResponsePresenter = downloadEventResponsePresenter;
-
-        this.downloadEventDisposable = MessageBus.getInstance()
-                .toObservable(DownloadEvent.class)
-                .subscribe(event -> this.downloadEventResponsePresenter.updatePhoto(
-                        getListResource(),
-                        event,
-                        false
-                ));
-
-        this.photosOrder = null;
     }
 
-    public void init(@NonNull ListResource<Photo> defaultResource,
-                     String defaultOrder, String defaultUsername) {
-        boolean init = super.init(defaultResource, defaultUsername);
-
-        if (photosOrder == null) {
-            photosOrder = new MutableLiveData<>();
-            photosOrder.setValue(defaultOrder);
-        }
-
-        if (init) {
+    @Override
+    public boolean init(@NonNull ListResource<Photo> defaultResource, String defaultUsername) {
+        if (super.init(defaultResource)) {
+            setUsername(defaultUsername);
             refresh();
+            return true;
         }
+        return false;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-
         getRepository().cancel();
-        photoEventResponsePresenter.clearResponse();
-        downloadEventResponsePresenter.clearResponse();
-
-        downloadEventDisposable.dispose();
     }
 
     @Override
@@ -80,12 +45,7 @@ public class UserPhotosViewModel extends AbstractUserViewModel<Photo, PhotoEvent
         if (TextUtils.isEmpty(getUsername())) {
             return;
         }
-        getRepository().getUserPhotos(
-                getListResource(),
-                getUsername(),
-                getPhotosOrder().getValue(),
-                true
-        );
+        getRepository().getUserPhotos(this, getUsername(), true);
     }
 
     @Override
@@ -93,30 +53,21 @@ public class UserPhotosViewModel extends AbstractUserViewModel<Photo, PhotoEvent
         if (TextUtils.isEmpty(getUsername())) {
             return;
         }
-        getRepository().getUserPhotos(
-                getListResource(),
-                getUsername(),
-                getPhotosOrder().getValue(),
-                false
-        );
+        getRepository().getUserPhotos(this, getUsername(), false);
+    }
+
+    @Nullable
+    @Override
+    public String getUsername() {
+        return username;
+    }
+
+    @Override
+    public void setUsername(@Nullable String username) {
+        this.username = username;
     }
 
     UserPhotosViewRepository getRepository() {
         return repository;
-    }
-
-    public LiveData<String> getPhotosOrder() {
-        return photosOrder;
-    }
-
-    public void setPhotosOrder(String order) {
-        photosOrder.setValue(order);
-    }
-
-    // interface.
-
-    @Override
-    public void accept(PhotoEvent photoEvent) {
-        photoEventResponsePresenter.updatePhoto(getListResource(), photoEvent.photo, false);
     }
 }

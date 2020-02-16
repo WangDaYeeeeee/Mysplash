@@ -5,7 +5,6 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,57 +14,57 @@ import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.base.activity.ReadWriteActivity;
 import com.wangdaye.base.DownloadTask;
+import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.component.ComponentFactory;
+import com.wangdaye.component.service.DownloaderService;
 import com.wangdaye.downloader.DownloaderServiceIMP;
 import com.wangdaye.downloader.R;
 import com.wangdaye.common.utils.helper.RoutingHelper;
 import com.wangdaye.common.ui.dialog.DownloadRepeatDialog;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
-import com.wangdaye.common.ui.widget.windowInsets.StatusBarView;
 import com.wangdaye.common.utils.FileUtils;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.helper.RecyclerViewHelper;
 import com.wangdaye.common.utils.manager.ThemeManager;
 import com.wangdaye.downloader.R2;
-import com.wangdaye.downloader.ui.DownloadAdapter;
-import com.wangdaye.downloader.ui.DownloadItemDecoration;
+import com.wangdaye.downloader.ui.DownloadRecyclerView;
+import com.wangdaye.downloader.ui.adapter.DownloadAdapter;
 import com.wangdaye.downloader.ui.PathDialog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.nekocode.rxlifecycle.LifecycleEvent;
 import cn.nekocode.rxlifecycle.RxLifecycle;
 import io.reactivex.Observable;
-import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
 
 /**
  * Download manage activity.
  *
- * This activity is used to show and manage download missions.
+ * This activity is used to show and manage download tasks.
  *
  * */
 
 @Route(path = DownloadManageActivity.DOWNLOAD_MANAGE_ACTIVITY)
 public class DownloadManageActivity extends ReadWriteActivity
         implements Toolbar.OnMenuItemClickListener, SwipeBackCoordinatorLayout.OnSwipeListener,
-        DownloadAdapter.ItemEventCallback {
+        DownloadAdapter.ItemEventCallback, DownloaderService.OnDownloadListener {
 
     @BindView(R2.id.activity_download_manage_container) CoordinatorLayout container;
     @BindView(R2.id.activity_download_manage_shadow) View shadow;
     @BindView(R2.id.activity_download_manage_swipeBackView) SwipeBackCoordinatorLayout swipeBackView;
-    @BindView(R2.id.activity_download_manage_statusBar) StatusBarView statusBar;
-    @BindView(R2.id.activity_download_manage_recyclerView) RecyclerView recyclerView;
+    @BindView(R2.id.activity_download_manage_recyclerView) DownloadRecyclerView recyclerView;
 
     private DownloadAdapter adapter;
-    private List<DownloadTask> missionList;
-    private List<OnDownloadListener> listenerList;
+    private List<DownloadTask> taskList;
+    private ReadWriteLock readWriteLock;
+    private long updateProgressTime = -1;
 
     private boolean readListCompleted = false;
     private boolean destroyed = false;
@@ -76,91 +75,6 @@ public class DownloadManageActivity extends ReadWriteActivity
     // If is true, that means this activity was opened by click downloading notification.
     public static final String KEY_DOWNLOAD_MANAGE_ACTIVITY_FROM_NOTIFICATION = "from_notification";
 
-    public final Object synchronizedLocker = new Object();
-
-    private class OnDownloadListener extends com.wangdaye.downloader.base.OnDownloadListener {
-
-        OnDownloadListener(DownloadTask task) {
-            super(task.taskId, task.getNotificationTitle(), task.result);
-        }
-
-        @Override
-        public void onProcess(float process) {
-            if (destroyed) {
-                return;
-            }
-
-            findProgressingHolderAndUpdateIt(index -> {
-                if (index < 0 || index >= missionList.size()) {
-                    return;
-                }
-
-                synchronized (synchronizedLocker) {
-                    DownloadTask task = missionList.get(index);
-                    float oldProcess = task.process;
-                    task.process = process;
-                    if (task.result != DownloadTask.RESULT_DOWNLOADING) {
-                        DownloaderServiceIMP.getInstance().updateTaskResult(
-                                DownloadManageActivity.this,
-                                task,
-                                DownloadTask.RESULT_DOWNLOADING
-                        );
-                        drawRecyclerItemProcess(index, task);
-                    } else if (task.process != oldProcess) {
-                        drawRecyclerItemProcess(index, task);
-                    }
-                }
-            }, taskId);
-        }
-
-        @Override
-        public void onComplete(int result) {
-            if (destroyed) {
-                return;
-            }
-
-            listenerList.remove(this);
-
-            findProgressingHolderAndUpdateIt(index -> {
-                if (index < 0 || index >= missionList.size()) {
-                    return;
-                }
-
-                synchronized (synchronizedLocker) {
-                    DownloadTask task = missionList.get(index);
-                    int oldResult = task.result;
-                    task.result = result;
-                    switch (result) {
-                        case DownloadTask.RESULT_SUCCEED:
-                            if (oldResult != DownloadTask.RESULT_SUCCEED) {
-                                DownloaderServiceIMP.getInstance().updateTaskResult(
-                                        DownloadManageActivity.this,
-                                        task,
-                                        DownloadTask.RESULT_SUCCEED
-                                );
-                                drawRecyclerItemSucceed(index, task);
-                            }
-                            break;
-
-                        case DownloadTask.RESULT_FAILED:
-                            if (oldResult != DownloadTask.RESULT_FAILED) {
-                                DownloaderServiceIMP.getInstance().updateTaskResult(
-                                        DownloadManageActivity.this,
-                                        task,
-                                        DownloadTask.RESULT_FAILED
-                                );
-                                drawRecyclerItemFailed(index, task);
-                            }
-                            break;
-
-                        case DownloadTask.RESULT_DOWNLOADING:
-                            break;
-                    }
-                }
-            }, taskId);
-        }
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,16 +82,37 @@ public class DownloadManageActivity extends ReadWriteActivity
         ButterKnife.bind(this);
         initData();
         initWidget();
+
+        Observable.create(emitter -> runInWriteLock(() -> {
+            DownloaderServiceIMP.getInstance().addOnDownloadListener(this);
+
+            taskList.addAll(
+                    DownloaderServiceIMP.getInstance()
+                            .readDownloadTaskList(this, DownloadTask.RESULT_FAILED));
+            taskList.addAll(
+                    DownloaderServiceIMP.getInstance()
+                            .readDownloadTaskList(this, DownloadTask.RESULT_DOWNLOADING));
+            taskList.addAll(
+                    DownloaderServiceIMP.getInstance()
+                            .readDownloadTaskList(this, DownloadTask.RESULT_SUCCEED));
+
+            emitter.onComplete();
+        })).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnComplete(() -> {
+                    if (!destroyed) {
+                        readListCompleted = true;
+                        adapter.update(taskList);
+                    }
+                }).subscribe();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         destroyed = true;
-        if (listenerList != null) {
-            DownloaderServiceIMP.getInstance().removeOnDownloadListener(listenerList);
-            listenerList.clear();
-        }
+        DownloaderServiceIMP.getInstance().removeOnDownloadListener(this);
     }
 
     @Override
@@ -214,65 +149,10 @@ public class DownloadManageActivity extends ReadWriteActivity
     // init.
 
     private void initData() {
-        missionList = new ArrayList<>();
+        taskList = new ArrayList<>();
+        readWriteLock = new ReentrantReadWriteLock();
         readListCompleted = false;
         destroyed = false;
-
-        // read failed tasks.
-        missionList.addAll(
-                DownloaderServiceIMP.getInstance()
-                        .readDownloadTaskList(this, DownloadTask.RESULT_FAILED)
-        );
-
-        // read downloading tasks.
-        List<DownloadTask> taskList = DownloaderServiceIMP.getInstance()
-                .readDownloadTaskList(this, DownloadTask.RESULT_DOWNLOADING);
-        listenerList = new ArrayList<>();
-        DownloadTask task;
-        for (int i = 0; i < taskList.size(); i ++) {
-            task = DownloaderServiceIMP.getInstance().readTaskProcess(this, taskList.get(i));
-            missionList.add(task);
-            listenerList.add(new OnDownloadListener(task));
-        }
-
-        adapter = new DownloadAdapter(missionList).setItemEventCallback(this);
-
-        DownloaderServiceIMP.getInstance().addOnDownloadListener(listenerList);
-
-        // read completed tasks.
-        Observable.create((ObservableOnSubscribe<List<DownloadTask>>) emitter -> {
-            List<DownloadTask> failedList = new ArrayList<>(
-                    DownloaderServiceIMP.getInstance()
-                            .readDownloadTaskList(this, DownloadTask.RESULT_SUCCEED)
-            );
-
-            emitter.onNext(failedList);
-            emitter.onComplete();
-        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableObserver<List<DownloadTask>>() {
-                    @Override
-                    public void onNext(List<DownloadTask> list) {
-                        synchronized (synchronizedLocker) {
-                            int size = missionList.size();
-                            missionList.addAll(list);
-                            adapter.notifyItemRangeInserted(
-                                    size,
-                                    missionList.size() - size
-                            );
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        readListCompleted = true;
-                    }
-                });
     }
 
     private void initWidget() {
@@ -286,91 +166,31 @@ public class DownloadManageActivity extends ReadWriteActivity
             ThemeManager.setNavigationIcon(
                     toolbar, R.drawable.ic_toolbar_back_light, R.drawable.ic_toolbar_back_dark);
         }
-        toolbar.inflateMenu(R.menu.activity_download_manage_toolbar);
+        DisplayUtils.inflateToolbarMenu(
+                toolbar, R.menu.activity_download_manage_toolbar, this);
         toolbar.setNavigationOnClickListener(v -> {
             if (MysplashApplication.getInstance().getActivityCount() == 1) {
                 ComponentFactory.getMainModule().startMainActivity(this);
             }
             finishSelf(true);
         });
-        toolbar.setOnMenuItemClickListener(this);
 
+        adapter = new DownloadAdapter(this, new ArrayList<>()).setItemEventCallback(this);
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(
                 new GridLayoutManager(
                         this,
                         RecyclerViewHelper.getGirdColumnCount(this)
                 )
         );
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new DownloadItemDecoration(this));
     }
 
     // control.
 
-    private void findProgressingHolderAndUpdateIt(Consumer<Integer> consumer, long missionId) {
-        Observable.create((ObservableOnSubscribe<Integer>) emitter -> {
-            synchronized (synchronizedLocker) {
-                for (int i = 0; i < missionList.size(); i ++) {
-                    if (missionList.get(i).taskId == missionId) {
-                        emitter.onNext(i);
-                        return;
-                    } else if (missionList.get(i).result == DownloadTask.RESULT_SUCCEED) {
-                        return;
-                    }
-                }
-            }
-        }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(consumer)
-                .subscribe();
-    }
-
-    /**
-     * Make item view show downloading progress and percent.
-     *
-     * @param position    Adapter position for item.
-     * @param mission     A {@link DownloadTask} object which saved information of downloading task. */
-    private void drawRecyclerItemProcess(int position, DownloadTask mission) {
-        missionList.set(position, mission);
-        adapter.notifyItemChanged(position, 1);
-    }
-
-    /**
-     * Make the item view to show the information that means "Download successful".
-     *
-     * @param position Adapter position for item.
-     * @param mission  A {@link DownloadTask} object which saved information of downloading task.
-     * */
-    private void drawRecyclerItemSucceed(int position, DownloadTask mission) {
-        missionList.remove(position);
-        adapter.notifyItemRemoved(position);
-
-        for (int i = missionList.size() - 1; i >= 0; i --) {
-            if (missionList.get(i).result != DownloadTask.RESULT_SUCCEED) {
-                missionList.add(i + 1, mission);
-                adapter.notifyItemInserted(i + 1);
-                return;
-            }
-        }
-        missionList.add(0, mission);
-        adapter.notifyItemInserted(0);
-    }
-
-    /**
-     * Make the item view to show the information that means "Download failed".
-     *
-     * @param position Adapter position for item.
-     * @param mission  A {@link DownloadTask} object which saved information of downloading task.
-     * */
-    private void drawRecyclerItemFailed(int position, DownloadTask mission) {
-        // remove the old item and add a new item on the first position of list.
-
-        missionList.remove(position);
-        adapter.notifyItemRemoved(position);
-
-        missionList.add(0, mission);
-        adapter.notifyItemInserted(0);
+    private void runInWriteLock(Runnable r) {
+        readWriteLock.writeLock().lock();
+        r.run();
+        readWriteLock.writeLock().unlock();
     }
 
     private void restartTaskWithPermissionsCheck(DownloadTask task) {
@@ -389,41 +209,26 @@ public class DownloadManageActivity extends ReadWriteActivity
     }
 
     private void restartTask(DownloadTask task) {
-        DownloadTask mission = DownloaderServiceIMP.getInstance().restartTask(this, task.taskId);
-        if (mission == null) {
+        DownloadTask newTask = DownloaderServiceIMP.getInstance().restartTask(this, task.taskId);
+        if (newTask == null) {
             return;
         }
 
-        OnDownloadListener listener = new OnDownloadListener(mission);
-        listenerList.add(listener);
-        DownloaderServiceIMP.getInstance().addOnDownloadListener(listener);
-
-        synchronized (synchronizedLocker) {
-            // remove old item.
-            int index = -1;
-            for (int i = 0; i < missionList.size(); i ++) {
-                if (missionList.get(i).taskId == task.taskId) {
-                    index = i;
+        runInWriteLock(() -> {
+            for (int i = 0; i < taskList.size(); i ++) {
+                if (taskList.get(i).title.equals(task.title)) {
+                    taskList.remove(i);
                     break;
                 }
             }
-            if (index < 0) {
-                return;
-            }
-            missionList.remove(index);
-            adapter.notifyItemRemoved(index);
-
-            // add new item.
-            index = 0;
-            for (int i = 0; i < missionList.size(); i ++) {
-                if (missionList.get(i).result != DownloadTask.RESULT_FAILED) {
-                    index = i;
+            for (int i = 0; i < taskList.size(); i ++) {
+                if (taskList.get(i).result != DownloadTask.RESULT_FAILED) {
+                    taskList.add(i, newTask);
                     break;
                 }
             }
-            missionList.add(index, mission);
-            adapter.notifyItemInserted(index);
-        }
+        });
+        adapter.update(taskList);
     }
 
     private void checkDownloadResult(DownloadTask entity) {
@@ -452,11 +257,14 @@ public class DownloadManageActivity extends ReadWriteActivity
             PathDialog dialog = new PathDialog();
             dialog.show(getSupportFragmentManager(), null);
         } else if (i == R.id.action_cancel_all) {
-            if (readListCompleted) {
-                DownloaderServiceIMP.getInstance().clearTask(this, new ArrayList<>(missionList));
-                missionList.clear();
-                adapter.notifyDataSetChanged();
+            if (!readListCompleted) {
+                return true;
             }
+            runInWriteLock(() -> {
+                DownloaderServiceIMP.getInstance().clearTask(this);
+                taskList.clear();
+            });
+            adapter.update(taskList);
         }
         return true;
     }
@@ -470,7 +278,6 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @Override
     public void onSwipeProcess(float percent) {
-        statusBar.setAlpha(1 - percent);
         shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 
@@ -493,13 +300,16 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @Override
     public void onDelete(DownloadTask task, int adapterPosition) {
-        if (readListCompleted && adapterPosition >= 0) {
-            synchronized (synchronizedLocker) {
-                DownloaderServiceIMP.getInstance().removeTask(this, task);
-                missionList.remove(adapterPosition);
-                adapter.notifyItemRemoved(adapterPosition);
+        runInWriteLock(() -> {
+            DownloaderServiceIMP.getInstance().removeTask(this, task);
+            for (int i = 0; i < taskList.size(); i ++) {
+                if (taskList.get(i).title.equals(task.title)) {
+                    taskList.remove(i);
+                    break;
+                }
             }
-        }
+        });
+        adapter.removeItem(task);
     }
 
     @Override
@@ -509,8 +319,11 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @Override
     public void onRetry(DownloadTask task, int adapterPosition) {
-        // If there is another mission that is downloading the same thing, we cannot restart
-        // this mission.
+        if (!readListCompleted) {
+            return;
+        }
+        // If there is another task that is downloading the same thing, we cannot restart
+        // this task.
         if (task.result != DownloadTask.RESULT_DOWNLOADING
                 && DownloaderServiceIMP.getInstance().isDownloading(this, task.title)) {
             NotificationHelper.showSnackbar(this, getString(R.string.feedback_download_repeat));
@@ -535,5 +348,60 @@ public class DownloadManageActivity extends ReadWriteActivity
         } else {
             restartTaskWithPermissionsCheck(task);
         }
+    }
+
+    // on download listener.
+
+    @Override
+    public void onProcess(String title, int type, float process) {
+        if (!readListCompleted) {
+            return;
+        }
+        runInWriteLock(() -> {
+            for (DownloadTask t : taskList) {
+                if (t.result == DownloadTask.RESULT_SUCCEED) {
+                    break;
+                }
+                if (t.title.equals(title)) {
+                    t.result = DownloadTask.RESULT_DOWNLOADING;
+                    t.process = process;
+                    break;
+                }
+            }
+        });
+
+        if (System.currentTimeMillis() - updateProgressTime > 300) {
+            updateProgressTime = System.currentTimeMillis();
+            adapter.update(taskList);
+        }
+    }
+
+    @Override
+    public void onComplete(String title, int type, int result) {
+        runInWriteLock(() -> {
+            DownloadTask target = null;
+            for (int i = 0; i < taskList.size(); i ++) {
+                if (taskList.get(i).title.equals(title)) {
+                    target = taskList.remove(i);
+                    break;
+                }
+            }
+
+            if (target != null) {
+                target.result = result;
+                target.process = 100;
+                if (taskList.get(taskList.size() - 1).result != DownloadTask.RESULT_SUCCEED) {
+                    taskList.add(target);
+                } else {
+                    for (int i = 0; i < taskList.size(); i ++) {
+                        if (taskList.get(i).result == DownloadTask.RESULT_SUCCEED) {
+                            taskList.add(i, target);
+                            break;
+                        }
+                    }
+                }
+            }
+        });
+        adapter.update(taskList);
     }
 }

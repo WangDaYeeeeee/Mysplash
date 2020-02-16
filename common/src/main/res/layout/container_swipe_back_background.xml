@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container_swipe_back_background_container"
     android:background="?attr/root_color"
     android:layout_width="match_parent"
@@ -10,8 +9,7 @@
         android:id="@+id/container_swipe_back_background_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        app:sbv_fill_in_mode="true" />
+        android:layout_alignParentTop="true" />
 
     <TextView
         android:text="@string/feedback_drag_to_back"

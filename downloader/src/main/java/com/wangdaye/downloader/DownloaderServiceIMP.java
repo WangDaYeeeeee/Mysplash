@@ -12,7 +12,6 @@ import com.wangdaye.base.DownloadTask;
 import com.wangdaye.common.bus.event.DownloadEvent;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.component.service.DownloaderService;
-import com.wangdaye.downloader.base.OnDownloadListener;
 import com.wangdaye.downloader.base.RoutingHelper;
 import com.wangdaye.downloader.di.DaggerNetworkServiceComponent;
 import com.wangdaye.downloader.executor.AndroidDownloaderExecutor;
@@ -38,7 +37,6 @@ import javax.inject.Inject;
 public class DownloaderServiceIMP implements DownloaderService {
 
     private static volatile DownloaderServiceIMP instance;
-
     public static DownloaderServiceIMP getInstance(Context context,
                                                    @DownloaderRule String downloader) {
         if (instance == null) {
@@ -64,9 +62,19 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Override
+    public void addOnDownloadListener(@NonNull OnDownloadListener l) {
+        downloaderService.addOnDownloadListener(l);
+    }
+
+    @Override
+    public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
+        downloaderService.removeOnDownloadListener(l);
+    }
+
+    @Override
     public boolean switchDownloader(Context context, @DownloaderRule String downloader) {
-        if (ComponentFactory.getDatabaseService()
-                .readDownloadTaskCount(DownloadTask.RESULT_DOWNLOADING) > 0) {
+        if (ComponentFactory.getDatabaseService().readDownloadTaskCount(
+                DownloadTask.RESULT_DOWNLOADING) > 0) {
             return false;
         }
         bindDownloader(context, downloader);
@@ -82,17 +90,16 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Override
-    public void addTask(Context c, Photo p, @DownloadTask.DownloadTypeRule int type, String downloadScale) {
-        if (FileUtils.createDownloadPath(c)) {
+    public void addTask(Context context, Photo photo, @DownloadTask.DownloadTypeRule int type, String downloadScale) {
+        if (FileUtils.createDownloadPath(context)) {
             long taskId = downloaderService.addTask(
-                    c, new DownloadTask(c, p, type, downloadScale), true
-            );
-            photoService.downloadPhoto(p.id);
+                    context, new DownloadTask(context, photo, type, downloadScale), true);
+            photoService.downloadPhoto(photo.id);
 
             MessageBus.getInstance().post(
                     new DownloadEvent(
                             taskId,
-                            p.id,
+                            photo.id,
                             type,
                             DownloadTask.RESULT_DOWNLOADING
                     )
@@ -101,11 +108,10 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Override
-    public void addTask(Context c, Collection collection) {
-        if (FileUtils.createDownloadPath(c)) {
+    public void addTask(Context context, Collection collection) {
+        if (FileUtils.createDownloadPath(context)) {
             long taskId = downloaderService.addTask(
-                    c, new DownloadTask(collection), true
-            );
+                    context, new DownloadTask(collection), true);
 
             MessageBus.getInstance().post(
                     new DownloadEvent(
@@ -119,10 +125,10 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Nullable
-    public DownloadTask restartTask(Context c, long taskId) {
+    public DownloadTask restartTask(Context context, long taskId) {
         DownloadTask task = ComponentFactory.getDatabaseService().readDownloadTask(taskId);
         if (task != null) {
-            task.taskId = downloaderService.restartTask(c, task);
+            task.taskId = downloaderService.restartTask(context, task);
             task.result = DownloadTask.RESULT_DOWNLOADING;
             task.process = 0;
 
@@ -141,10 +147,10 @@ public class DownloaderServiceIMP implements DownloaderService {
         return null;
     }
 
-    public void completeTask(Context c, long taskId) {
+    public void completeTask(Context context, long taskId) {
         DownloadTask entity = ComponentFactory.getDatabaseService().readDownloadTask(taskId);
         if (entity != null) {
-            downloaderService.completeTask(c, entity);
+            downloaderService.completeTask(context, entity);
 
             MessageBus.getInstance().post(
                     new DownloadEvent(
@@ -158,15 +164,15 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Override
-    public void removeTask(Context c, @NonNull DownloadTask entity) {
-        downloaderService.removeTask(c, entity, true);
+    public void removeTask(Context context, @NonNull DownloadTask task) {
+        downloaderService.removeTask(context, task, true);
 
-        if (entity.result == DownloadTask.RESULT_DOWNLOADING) {
+        if (task.result == DownloadTask.RESULT_DOWNLOADING) {
             MessageBus.getInstance().post(
                     new DownloadEvent(
-                            entity.taskId,
-                            entity.title,
-                            entity.downloadType,
+                            task.taskId,
+                            task.title,
+                            task.downloadType,
                             DownloadTask.RESULT_FAILED
                     )
             );
@@ -174,29 +180,26 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Override
-    public void clearTask(Context c, @Nullable List<DownloadTask> entityList) {
-        if (entityList != null) {
-            downloaderService.clearTask(c, entityList);
-
-            for (DownloadTask e : entityList) {
-                if (e.result == DownloadTask.RESULT_DOWNLOADING) {
-                    MessageBus.getInstance().post(
-                            new DownloadEvent(
-                                    e.taskId,
-                                    e.title,
-                                    e.downloadType,
-                                    DownloadTask.RESULT_FAILED
-                            )
-                    );
-                }
+    public void clearTask(Context context) {
+        List<DownloadTask> list = downloaderService.clearTask(context);
+        for (DownloadTask t : list) {
+            if (t.result == DownloadTask.RESULT_DOWNLOADING) {
+                MessageBus.getInstance().post(
+                        new DownloadEvent(
+                                t.taskId,
+                                t.title,
+                                t.downloadType,
+                                DownloadTask.RESULT_FAILED
+                        )
+                );
             }
         }
     }
 
-    public DownloadTask readTaskProcess(Context c, @NonNull DownloadTask task) {
+    public DownloadTask readTaskProcess(Context context, @NonNull DownloadTask task) {
         switch (task.result) {
             case DownloadTask.RESULT_DOWNLOADING:
-                task.process = downloaderService.getTaskProcess(c, task);
+                task.process = downloaderService.getTaskProcess(context, task);
                 break;
 
             case DownloadTask.RESULT_FAILED:
@@ -210,36 +213,20 @@ public class DownloaderServiceIMP implements DownloaderService {
         return task;
     }
 
-    public List<DownloadTask> readDownloadTaskList(Context c,
+    public List<DownloadTask> readDownloadTaskList(Context context,
                                                    @DownloadTask.DownloadResultRule int result) {
-        return downloaderService.readDownloadTaskList(c, result);
+        return downloaderService.readDownloadTaskList(context, result);
     }
 
     @Override
-    public boolean isDownloading(Context c, String title) {
+    public boolean isDownloading(Context context, String title) {
         return downloaderService.isDownloading(title);
     }
 
-    public void updateTaskResult(Context c,
-                                    @NonNull DownloadTask entity,
-                                    @DownloadTask.DownloadResultRule int result) {
-        downloaderService.updateTaskResult(c, entity, result);
-    }
-
-    public void addOnDownloadListener(@NonNull OnDownloadListener l) {
-        downloaderService.addOnDownloadListener(l);
-    }
-
-    public void addOnDownloadListener(@NonNull List<? extends OnDownloadListener> list) {
-        downloaderService.addOnDownloadListener(list);
-    }
-
-    public void removeOnDownloadListener(@NonNull OnDownloadListener l) {
-        downloaderService.removeOnDownloadListener(l);
-    }
-
-    public void removeOnDownloadListener(@NonNull List<? extends OnDownloadListener> list) {
-        downloaderService.removeOnDownloadListener(list);
+    public void updateTaskResult(Context context,
+                                 @NonNull DownloadTask entity,
+                                 @DownloadTask.DownloadResultRule int result) {
+        downloaderService.updateTaskResult(context, entity, result);
     }
 
     @Nullable
@@ -249,8 +236,8 @@ public class DownloaderServiceIMP implements DownloaderService {
     }
 
     @Override
-    public void startDownloadManageActivity(Activity a) {
-        RoutingHelper.startDownloadManageActivity(a);
+    public void startDownloadManageActivity(Activity activity) {
+        RoutingHelper.startDownloadManageActivity(activity);
     }
 
     @Override

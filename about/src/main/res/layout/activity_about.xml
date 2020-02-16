@@ -5,30 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
+        android:id="@+id/activity_about_swipeBackView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/root_color">
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
-            android:id="@+id/activity_about_statusBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary" />
-
-        <com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout
-            android:id="@+id/activity_about_swipeBackView"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_about_recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/root_color">
+            android:fitsSystemWindows="true"
+            android:clipToPadding="false" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/activity_about_recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
-
-    </LinearLayout>
+    </com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

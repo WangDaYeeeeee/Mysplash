@@ -78,7 +78,7 @@ public class ShortcutsManager {
             if (user != null) {
                 Bitmap avatar = null;
                 try {
-                    avatar = ImageHelper.loadBitmap(context, Uri.parse(user.profile_image.large));
+                    avatar = ImageHelper.loadBitmap(context, Uri.parse(user.profile_image.large), null);
                 } catch (Exception ignore) {
                     // do nothing.
                 }
@@ -88,7 +88,7 @@ public class ShortcutsManager {
                         avatar = ImageHelper.loadBitmap(
                                 context,
                                 R.drawable.default_avatar_foreground,
-                                size, size
+                                new int[] {size, size}
                         );
                     } catch (Exception ignore) {
                         // do nothing.
@@ -127,7 +127,7 @@ public class ShortcutsManager {
             try {
                 DisplayUtils utils = new DisplayUtils(context);
                 int size = (int) Math.min(utils.dpToPx(108), 288);
-                Bitmap bitmap = ImageHelper.loadBitmap(context, foregroundId, size, size);
+                Bitmap bitmap = ImageHelper.loadBitmap(context, foregroundId, new int[] {size, size});
                 return Icon.createWithAdaptiveBitmap(bitmap);
             } catch (ExecutionException | InterruptedException ignored) {
 
