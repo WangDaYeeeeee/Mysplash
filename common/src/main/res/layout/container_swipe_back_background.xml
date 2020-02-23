@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+    <com.wangdaye.common.ui.widget.insets.StatusBarView
         android:id="@+id/container_swipe_back_background_statusBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:textColor="?attr/colorAccent"
         style="@style/title_text" />
 
-    <com.wangdaye.common.ui.widget.windowInsets.NavigationBarView
+    <com.wangdaye.common.ui.widget.insets.NavigationBarView
         android:id="@+id/container_swipe_back_background_navigationBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

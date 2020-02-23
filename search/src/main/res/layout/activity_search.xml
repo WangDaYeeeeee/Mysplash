@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 app:layout_scrollFlags="scroll|enterAlways">
 
-                <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                <com.wangdaye.common.ui.widget.insets.StatusBarView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -73,7 +73,7 @@
 
         </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
+        <com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager
             android:id="@+id/activity_search_viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

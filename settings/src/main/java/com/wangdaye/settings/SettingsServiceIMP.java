@@ -37,9 +37,8 @@ public class SettingsServiceIMP implements SettingsService {
     private String backToTopType;
     private boolean notifiedSetBackToTop;
     private String autoNightMode;
+    private boolean cdnEnabled;
     private String language;
-
-    private String defaultPhotoOrder;
 
     private String downloader;
     private String downloadScale;
@@ -61,11 +60,11 @@ public class SettingsServiceIMP implements SettingsService {
         autoNightMode = sharedPreferences.getString(
                 context.getString(R.string.key_auto_night_mode), DAY_NIGHT_MODE_FOLLOW_SYSTEM);
 
+        cdnEnabled = sharedPreferences.getBoolean(
+                context.getString(R.string.key_cdn_enabled), false);
+
         language = sharedPreferences.getString(
                 context.getString(R.string.key_language), LANGUAGE_SYSTEM);
-
-        defaultPhotoOrder = sharedPreferences.getString(
-                context.getString(R.string.key_default_photo_order), PHOTOS_ORDER_LATEST);
 
         downloader = sharedPreferences.getString(
                 context.getString(R.string.key_downloader), DOWNLOADER_MYSPLASH);
@@ -149,21 +148,21 @@ public class SettingsServiceIMP implements SettingsService {
     }
 
     @Override
+    public boolean isCDNEnabled() {
+        return cdnEnabled;
+    }
+
+    public void setCDNEnabled(boolean enabled) {
+        this.cdnEnabled = enabled;
+    }
+
+    @Override
     public String getLanguage() {
         return language;
     }
 
     public void setLanguage(String language) {
         this.language = language;
-    }
-
-    @Override
-    public String getDefaultPhotoOrder() {
-        return defaultPhotoOrder;
-    }
-
-    public void setDefaultPhotoOrder(String defaultPhotoOrder) {
-        this.defaultPhotoOrder = defaultPhotoOrder;
     }
 
     @Override

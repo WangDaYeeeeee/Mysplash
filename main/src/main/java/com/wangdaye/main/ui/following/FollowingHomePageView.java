@@ -147,18 +147,12 @@ public class FollowingHomePageView extends FrameLayout
         refreshLayout.setRefreshEnabled(false);
         refreshLayout.setLoadEnabled(false);
 
-        refreshLayout.post(() -> refreshLayout.setDragTriggerDistance(
-                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                MysplashApplication.getInstance().getWindowInsets().bottom
-                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
-        ));
-
         this.followingAdapter = adapter;
 
         recyclerView.setAdapter(followingAdapter);
         recyclerView.setLayoutManager(
                 RecyclerViewHelper.getDefaultStaggeredGridLayoutManager(columnCount));
-        recyclerView.addItemDecoration(new FollowingItemDecoration(getContext()));
+        recyclerView.addItemDecoration(new FollowingItemDecoration(getContext(), recyclerView));
         recyclerView.setAdapter(
                 new LargeLoadingStateAdapter(getContext(), 56),
                 MultipleStateRecyclerView.STATE_LOADING

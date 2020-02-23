@@ -1,14 +1,11 @@
 package com.wangdaye.common.base.activity;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.CallSuper;
-import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.SharedElementCallback;
@@ -19,7 +16,6 @@ import com.wangdaye.common.base.dialog.MysplashBottomSheetDialogFragment;
 import com.wangdaye.common.base.dialog.MysplashDialogFragment;
 import com.wangdaye.common.ui.transition.sharedElement.SharedElementTransition;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackActivity;
-import com.wangdaye.common.ui.widget.windowInsets.ApplyWindowInsetsLayout;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.LanguageUtils;
 import com.wangdaye.common.utils.manager.ThemeManager;
@@ -36,11 +32,7 @@ import java.util.List;
 
 public abstract class MysplashActivity extends SwipeBackActivity {
 
-    @Nullable private ApplyWindowInsetsLayout applyWindowInsetsLayout;
-    private Rect windowInsets;
-
     private boolean foreground;
-
     private List<DialogFragment> dialogList = new ArrayList<>();
 
     @CallSuper
@@ -53,9 +45,8 @@ public abstract class MysplashActivity extends SwipeBackActivity {
         super.onCreate(savedInstanceState);
         MysplashApplication.getInstance().addActivity(this);
 
+        initSystemBar();
         LanguageUtils.setLanguage(this);
-
-        windowInsets = new Rect(0, 0, 0, 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
@@ -105,37 +96,6 @@ public abstract class MysplashActivity extends SwipeBackActivity {
                     this, !ThemeManager.getInstance(this).isLightTheme());
             MysplashApplication.getInstance().dispatchRecreate();
         }
-    }
-
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        bindApplyWindowInsetsLayout();
-    }
-
-    protected void bindApplyWindowInsetsLayout() {
-        applyWindowInsetsLayout = new ApplyWindowInsetsLayout(this);
-        applyWindowInsetsLayout.setOnApplyWindowInsetsListener(windowInsets -> {
-            MysplashApplication.getInstance().setWindowInsets(
-                    windowInsets.left, windowInsets.top, windowInsets.right, windowInsets.bottom);
-            setWindowInsets(
-                    windowInsets.left, windowInsets.top, windowInsets.right, windowInsets.bottom);
-
-            initSystemBar();
-        });
-
-        ViewGroup decorView = (ViewGroup) getWindow().getDecorView();
-        ViewGroup contentView = (ViewGroup) decorView.getChildAt(0);
-
-        decorView.removeView(contentView);
-        applyWindowInsetsLayout.addView(contentView);
-
-        decorView.addView(applyWindowInsetsLayout, 0);
-    }
-
-    @Nullable
-    protected ApplyWindowInsetsLayout getApplyWindowInsetsLayout() {
-        return applyWindowInsetsLayout;
     }
 
     protected void initSystemBar() {
@@ -227,27 +187,12 @@ public abstract class MysplashActivity extends SwipeBackActivity {
      * */
     public abstract CoordinatorLayout getSnackbarContainer();
 
-    // save instance state.
-
     public boolean isForeground() {
         return foreground;
     }
 
     public List<DialogFragment> getDialogList() {
         return dialogList;
-    }
-
-    // window insets.
-
-    public void setWindowInsets(int left, int top, int right, int bottom) {
-        if (left != windowInsets.left || top != windowInsets.top
-                || right != windowInsets.right || bottom != windowInsets.bottom) {
-            windowInsets.set(left, top, right, bottom);
-        }
-    }
-
-    public Rect getWindowInsets() {
-        return windowInsets;
     }
 
     protected boolean isTheLowestLevel() {

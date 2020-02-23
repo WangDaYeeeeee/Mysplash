@@ -150,7 +150,7 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
                 total.set(0);
                 soFar.set(0);
 
-                readTaskList(list -> {
+                lockableTaskList.read(list -> {
                     size.set(innerListenerList.size());
 
                     if (size.get() != 0) {
@@ -205,8 +205,10 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
         task.result = DownloadTask.RESULT_DOWNLOADING;
         task.process = 0;
 
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             if (registerDownloadingTask(list, task, l)) {
+                setter.setList(list);
+
                 task.taskId = FileDownloader.getImpl()
                         .create(task.downloadUrl)
                         .setPath(task.getFilePath(c))
@@ -227,8 +229,9 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
 
     @Override
     public long restartTask(Context c, @NonNull DownloadTask task) {
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             unregisterDownloadingTask(list, task);
+            setter.setList(list);
 
             FileDownloader.getImpl().clear((int) task.taskId, "");
             FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(task.getFilePath(c)));
@@ -241,9 +244,10 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
     @Override
     public void completeTask(Context c, @NonNull DownloadTask task) {
         AtomicBoolean valid = new AtomicBoolean(false);
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             finishTask(context, task);
             valid.set(unregisterDownloadingTask(list, task));
+            setter.setList(list);
         });
 
         if (valid.get()) {
@@ -255,8 +259,10 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
 
     @Override
     public void removeTask(Context c, @NonNull DownloadTask task, boolean deleteEntity) {
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             unregisterDownloadingTask(list, task);
+            setter.setList(list);
+
             if (task.result != DownloadTask.RESULT_SUCCEED) {
                 FileDownloader.getImpl().clear((int) task.taskId, "");
                 FileDownloadUtils.deleteTempFile(FileDownloadUtils.getTempPath(task.getFilePath(c)));
@@ -272,9 +278,11 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
     public List<DownloadTask> clearTask(Context c) {
         List<DownloadTask> taskList = new ArrayList<>();
 
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             taskList.addAll(list);
             clearDownloadingTask(list);
+            setter.setList(list);
+
             FileDownloader.getImpl().clearAllTaskData();
             ComponentFactory.getDatabaseService().clearDownloadTask();
         });
@@ -284,7 +292,7 @@ public class FileDownloaderExecutor extends AbstractDownloaderExecutor {
 
     @Override
     public void updateTaskResult(Context c, @NonNull DownloadTask task, int result) {
-        writeTaskList(list -> innerUpdateTaskResult(task, result));
+        lockableTaskList.write((list, setter) -> innerUpdateTaskResult(task, result));
     }
 
     private static void finishTask(Context context, @NonNull DownloadTask entity) {

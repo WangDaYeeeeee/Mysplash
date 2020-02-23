@@ -32,8 +32,10 @@ import com.bumptech.glide.request.target.Target;
 import com.wangdaye.common.R;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.image.transformation.NullTransformation;
+import com.wangdaye.common.network.UrlCollection;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.manager.ThemeManager;
+import com.wangdaye.component.ComponentFactory;
 
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
@@ -102,7 +104,7 @@ public class ImageHelper {
                                  @NonNull String url, @Nullable String thumbUrl, @Size(2) @Px int[] size,
                                  @Nullable BitmapTransformation[] ts, @Nullable OnLoadImageListener l) {
         DrawableRequestBuilder<String> thumb = TextUtils.isEmpty(thumbUrl) ? null : Glide.with(getValidContext(context))
-                .load(thumbUrl)
+                .load(ensureUrl(thumbUrl))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .listener(new BaseRequestListener<>(() -> view.setTag(R.id.tag_item_image_fade_in_flag, false)));
         loadImage(context, view, url, thumb, size, ts, l);
@@ -129,7 +131,7 @@ public class ImageHelper {
         }
 
         Glide.with(getValidContext(context))
-                .load(url)
+                .load(ensureUrl(url))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .override(size[0], size[1])
                 .thumbnail(thumbnailRequest)
@@ -165,7 +167,7 @@ public class ImageHelper {
 
     public static void loadImage(Context context, ImageView view, @NonNull String url) {
         Glide.with(getValidContext(context))
-                .load(url)
+                .load(ensureUrl(url))
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .into(view);
     }
@@ -187,7 +189,6 @@ public class ImageHelper {
     public static BitmapTarget loadBitmap(Context context, Uri uri,
                                           @NonNull OnLoadImageHandler handler, int width, int height) {
         BitmapTarget target = new BitmapTarget(handler, width, height);
-
         Glide.with(getValidContext(context))
                 .load(uri)
                 .asBitmap()
@@ -305,6 +306,13 @@ public class ImageHelper {
             return a.equals(b);
         }
         return a == null && b == null;
+    }
+
+    private static String ensureUrl(@NonNull String url) {
+        if (ComponentFactory.getSettingsService().isCDNEnabled()) {
+            return url.replace(UrlCollection.UNSPLASH_IMAGE_HOST, UrlCollection.UNSPLASH_CDN_HOST);
+        }
+        return url;
     }
 
     // interface.

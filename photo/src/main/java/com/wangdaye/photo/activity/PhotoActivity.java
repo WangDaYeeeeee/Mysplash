@@ -191,7 +191,9 @@ public class PhotoActivity extends ReadWriteActivity
     @Override
     public void finishSelf(boolean backPressed) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                && viewPager.getCurrentItem() == activityModel.getInitPage()) {
+                && activityModel.isMultiPage()
+                && activityModel.getInitPage() == viewPager.getCurrentItem()
+                && pagerAdapter.getCurrentScale() == 1) {
             finishAfterTransition();
         } else {
             finish();
@@ -294,11 +296,22 @@ public class PhotoActivity extends ReadWriteActivity
         }
 
         recyclerView.setClipToPadding(false);
-        recyclerView.post(() ->
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            recyclerView.setOnApplyWindowInsetsListener((v, insets) -> {
                 recyclerView.setPadding(0, 0, 0,
-                        (int) (new DisplayUtils(this).dpToPx(12) + getWindowInsets().top + getWindowInsets().bottom)
-                )
-        );
+                        (int) (new DisplayUtils(this).dpToPx(12)
+                                + insets.getSystemWindowInsetTop()
+                                + insets.getSystemWindowInsetBottom())
+                );
+                return insets;
+            });
+        } else {
+            recyclerView.setPadding(0, 0, 0,
+                    (int) (new DisplayUtils(this).dpToPx(12)
+                            + DisplayUtils.getStatusBarHeight(getResources())
+                            + DisplayUtils.getNavigationBarHeight(this))
+            );
+        }
 
         this.bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         bottomSheetBehavior.setHideable(true);
@@ -318,7 +331,7 @@ public class PhotoActivity extends ReadWriteActivity
             }
         });
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-        bottomSheet.post(() -> bottomSheetBehavior.setExpandedOffset(getWindowInsets().top));
+        bottomSheetBehavior.setExpandedOffset(DisplayUtils.getStatusBarHeight(getResources()));
 
         browsableDialogMangePresenter = new BrowsableDialogMangePresenter() {
             @Override
@@ -337,9 +350,7 @@ public class PhotoActivity extends ReadWriteActivity
                 pagerAdapter = new PagerAdapter(this, resource.dataList);
                 viewPager.setAdapter(pagerAdapter);
                 viewPager.registerOnPageChangeCallback(onPageChangeCallback);
-                if (activityModel.getInitPage() >= 0) {
-                    viewPager.setCurrentItem(activityModel.getInitPage(), false);
-                }
+                viewPager.setCurrentItem(activityModel.getInitPage(), false);
             } else {
                 pagerAdapter.update(resource.dataList);
             }
@@ -444,8 +455,7 @@ public class PhotoActivity extends ReadWriteActivity
         }
 
         if (photoInfoAdapter == null) {
-            int columnCount = DisplayUtils.isLandscape(this)
-                    || DisplayUtils.isTabletDevice(this)
+            int columnCount = DisplayUtils.isLandscape(this) || DisplayUtils.isTabletDevice(this)
                     ? PhotoInfoAdapter3.COLUMN_COUNT_HORIZONTAL
                     : PhotoInfoAdapter3.COLUMN_COUNT_VERTICAL;
             photoInfoAdapter = new PhotoInfoAdapter3(this, photo, progressing, columnCount);
@@ -658,8 +668,10 @@ public class PhotoActivity extends ReadWriteActivity
     }
 
     private ViewPager2.OnPageChangeCallback onPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+
         @Override
         public void onPageSelected(int position) {
+
             ListResource<Photo> resource = activityModel.getListResource().getValue();
             assert resource != null;
             if (position < 0 || position >= resource.dataList.size()) {

@@ -28,7 +28,6 @@ public class PhotosHomePageViewRepository {
         service.requestPhotos(
                 viewModel.getListRequestPage(),
                 viewModel.getListPerPage(),
-                SettingsService.PHOTOS_ORDER_LATEST,
                 new ListResourceObserver<>(viewModel, refresh)
         );
     }

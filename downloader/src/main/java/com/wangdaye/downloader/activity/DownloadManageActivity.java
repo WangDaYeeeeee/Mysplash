@@ -14,6 +14,7 @@ import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.base.activity.ReadWriteActivity;
 import com.wangdaye.base.DownloadTask;
+import com.wangdaye.common.base.widget.LockableList;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.component.service.DownloaderService;
@@ -33,8 +34,6 @@ import com.wangdaye.downloader.ui.PathDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -62,8 +61,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     @BindView(R2.id.activity_download_manage_recyclerView) DownloadRecyclerView recyclerView;
 
     private DownloadAdapter adapter;
-    private List<DownloadTask> taskList;
-    private ReadWriteLock readWriteLock;
+    private LockableList<DownloadTask> lockableTaskList;
     private long updateProgressTime = -1;
 
     private boolean readListCompleted = false;
@@ -83,18 +81,20 @@ public class DownloadManageActivity extends ReadWriteActivity
         initData();
         initWidget();
 
-        Observable.create(emitter -> runInWriteLock(() -> {
+        Observable.create(emitter -> lockableTaskList.write((list, setter) -> {
             DownloaderServiceIMP.getInstance().addOnDownloadListener(this);
 
+            List<DownloadTask> taskList = new ArrayList<>();
             taskList.addAll(
                     DownloaderServiceIMP.getInstance()
-                            .readDownloadTaskList(this, DownloadTask.RESULT_FAILED));
+                            .readDownloadTaskList(DownloadTask.RESULT_FAILED));
             taskList.addAll(
                     DownloaderServiceIMP.getInstance()
-                            .readDownloadTaskList(this, DownloadTask.RESULT_DOWNLOADING));
+                            .readDownloadTaskList(DownloadTask.RESULT_DOWNLOADING));
             taskList.addAll(
                     DownloaderServiceIMP.getInstance()
-                            .readDownloadTaskList(this, DownloadTask.RESULT_SUCCEED));
+                            .readDownloadTaskList(DownloadTask.RESULT_SUCCEED));
+            setter.setList(taskList);
 
             emitter.onComplete();
         })).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.DESTROY))
@@ -103,7 +103,7 @@ public class DownloadManageActivity extends ReadWriteActivity
                 .doOnComplete(() -> {
                     if (!destroyed) {
                         readListCompleted = true;
-                        adapter.update(taskList);
+                        lockableTaskList.read(list -> adapter.update(list));
                     }
                 }).subscribe();
     }
@@ -149,8 +149,7 @@ public class DownloadManageActivity extends ReadWriteActivity
     // init.
 
     private void initData() {
-        taskList = new ArrayList<>();
-        readWriteLock = new ReentrantReadWriteLock();
+        lockableTaskList = new LockableList<>(new ArrayList<>());
         readListCompleted = false;
         destroyed = false;
     }
@@ -187,12 +186,6 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     // control.
 
-    private void runInWriteLock(Runnable r) {
-        readWriteLock.writeLock().lock();
-        r.run();
-        readWriteLock.writeLock().unlock();
-    }
-
     private void restartTaskWithPermissionsCheck(DownloadTask task) {
         requestReadWritePermission(task, new RequestPermissionCallback() {
             @Override
@@ -214,21 +207,22 @@ public class DownloadManageActivity extends ReadWriteActivity
             return;
         }
 
-        runInWriteLock(() -> {
-            for (int i = 0; i < taskList.size(); i ++) {
-                if (taskList.get(i).title.equals(task.title)) {
-                    taskList.remove(i);
+        lockableTaskList.write((list, setter) -> {
+            for (int i = 0; i < list.size(); i ++) {
+                if (list.get(i).title.equals(task.title)) {
+                    list.remove(i);
                     break;
                 }
             }
-            for (int i = 0; i < taskList.size(); i ++) {
-                if (taskList.get(i).result != DownloadTask.RESULT_FAILED) {
-                    taskList.add(i, newTask);
+            for (int i = 0; i < list.size(); i ++) {
+                if (list.get(i).result != DownloadTask.RESULT_FAILED) {
+                    list.add(i, newTask);
                     break;
                 }
             }
+            setter.setList(list);
         });
-        adapter.update(taskList);
+        lockableTaskList.read(list -> adapter.update(list));
     }
 
     private void checkDownloadResult(DownloadTask entity) {
@@ -260,11 +254,13 @@ public class DownloadManageActivity extends ReadWriteActivity
             if (!readListCompleted) {
                 return true;
             }
-            runInWriteLock(() -> {
+            lockableTaskList.write((list, setter) -> {
                 DownloaderServiceIMP.getInstance().clearTask(this);
-                taskList.clear();
+
+                list.clear();
+                setter.setList(list);
             });
-            adapter.update(taskList);
+            lockableTaskList.read(list -> adapter.update(list));
         }
         return true;
     }
@@ -300,16 +296,18 @@ public class DownloadManageActivity extends ReadWriteActivity
 
     @Override
     public void onDelete(DownloadTask task, int adapterPosition) {
-        runInWriteLock(() -> {
+        lockableTaskList.write((list, setter) -> {
             DownloaderServiceIMP.getInstance().removeTask(this, task);
-            for (int i = 0; i < taskList.size(); i ++) {
-                if (taskList.get(i).title.equals(task.title)) {
-                    taskList.remove(i);
+
+            for (int i = 0; i < list.size(); i ++) {
+                if (list.get(i).title.equals(task.title)) {
+                    list.remove(i);
                     break;
                 }
             }
+            setter.setList(list);
         });
-        adapter.removeItem(task);
+        lockableTaskList.read(list -> adapter.update(list));
     }
 
     @Override
@@ -357,8 +355,8 @@ public class DownloadManageActivity extends ReadWriteActivity
         if (!readListCompleted) {
             return;
         }
-        runInWriteLock(() -> {
-            for (DownloadTask t : taskList) {
+        lockableTaskList.write((list, setter) -> {
+            for (DownloadTask t : list) {
                 if (t.result == DownloadTask.RESULT_SUCCEED) {
                     break;
                 }
@@ -368,21 +366,22 @@ public class DownloadManageActivity extends ReadWriteActivity
                     break;
                 }
             }
+            setter.setList(list);
         });
 
         if (System.currentTimeMillis() - updateProgressTime > 300) {
             updateProgressTime = System.currentTimeMillis();
-            adapter.update(taskList);
+            lockableTaskList.read(list -> adapter.update(list));
         }
     }
 
     @Override
     public void onComplete(String title, int type, int result) {
-        runInWriteLock(() -> {
+        lockableTaskList.write((list, setter) -> {
             DownloadTask target = null;
-            for (int i = 0; i < taskList.size(); i ++) {
-                if (taskList.get(i).title.equals(title)) {
-                    target = taskList.remove(i);
+            for (int i = 0; i < list.size(); i ++) {
+                if (list.get(i).title.equals(title)) {
+                    target = list.remove(i);
                     break;
                 }
             }
@@ -390,18 +389,18 @@ public class DownloadManageActivity extends ReadWriteActivity
             if (target != null) {
                 target.result = result;
                 target.process = 100;
-                if (taskList.get(taskList.size() - 1).result != DownloadTask.RESULT_SUCCEED) {
-                    taskList.add(target);
+                if (list.get(list.size() - 1).result != DownloadTask.RESULT_SUCCEED) {
+                    list.add(target);
                 } else {
-                    for (int i = 0; i < taskList.size(); i ++) {
-                        if (taskList.get(i).result == DownloadTask.RESULT_SUCCEED) {
-                            taskList.add(i, target);
+                    for (int i = 0; i < list.size(); i ++) {
+                        if (list.get(i).result == DownloadTask.RESULT_SUCCEED) {
+                            list.add(i, target);
                             break;
                         }
                     }
                 }
             }
         });
-        adapter.update(taskList);
+        lockableTaskList.read(list -> adapter.update(list));
     }
 }

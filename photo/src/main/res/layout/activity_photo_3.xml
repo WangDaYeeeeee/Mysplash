@@ -5,7 +5,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_photo_3_container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:transitionName="@string/transition_photo_background"
+    tools:ignore="UnusedAttribute">
 
     <View
         android:id="@+id/activity_photo_3_shadow"
@@ -32,7 +34,7 @@
             android:background="@drawable/gradient_shadow_appbar"
             android:layout_gravity="top">
 
-            <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+            <com.wangdaye.common.ui.widget.insets.StatusBarView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -123,7 +125,7 @@
 
             </LinearLayout>
 
-            <com.wangdaye.common.ui.widget.windowInsets.NavigationBarView
+            <com.wangdaye.common.ui.widget.insets.NavigationBarView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -137,7 +139,7 @@
             android:alpha="0"
             android:layout_gravity="top">
 
-            <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+            <com.wangdaye.common.ui.widget.insets.StatusBarView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -340,7 +342,7 @@
 
             </LinearLayout>
 
-            <com.wangdaye.common.ui.widget.windowInsets.NavigationBarView
+            <com.wangdaye.common.ui.widget.insets.NavigationBarView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 

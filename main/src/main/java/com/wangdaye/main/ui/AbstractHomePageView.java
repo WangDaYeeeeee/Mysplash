@@ -10,13 +10,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.base.adapter.BaseAdapter;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.common.presenter.pager.PagerStateManagePresenter;
 import com.wangdaye.common.ui.adapter.multipleState.LargeErrorStateAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.LargeLoadingStateAdapter;
 import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarBothWaySwipeRefreshLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
  * */
 
 @SuppressLint("ViewConstructor")
-public abstract class AbstractHomePageView extends BothWaySwipeRefreshLayout
+public abstract class AbstractHomePageView extends FitBottomSystemBarBothWaySwipeRefreshLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         LargeErrorStateAdapter.OnRetryListener {
 
@@ -76,12 +76,6 @@ public abstract class AbstractHomePageView extends BothWaySwipeRefreshLayout
         setOnRefreshAndLoadListener(this);
         setRefreshEnabled(false);
         setLoadEnabled(false);
-
-        post(() -> setDragTriggerDistance(
-                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                MysplashApplication.getInstance().getWindowInsets().bottom
-                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
-        ));
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(getLayoutManager());

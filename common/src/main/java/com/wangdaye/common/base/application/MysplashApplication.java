@@ -3,7 +3,6 @@ package com.wangdaye.common.base.application;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
-import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,7 +28,6 @@ public abstract class MysplashApplication extends MultiModulesApplication {
     }
 
     private List<MysplashActivity> activityList;
-    private Rect windowInsets;
 
     @Override
     public void onCreate() {
@@ -37,7 +35,6 @@ public abstract class MysplashApplication extends MultiModulesApplication {
 
         instance = this;
         activityList = new ArrayList<>();
-        windowInsets = new Rect(0, 0, 0, 0);
 
         if (isDebug(this)) {
             ARouter.openLog();
@@ -112,16 +109,5 @@ public abstract class MysplashApplication extends MultiModulesApplication {
         for (int i = activityList.size() - 1; i >= 0; i --) {
             activityList.get(i).recreate();
         }
-    }
-
-    public void setWindowInsets(int left, int top, int right, int bottom) {
-        if (left != windowInsets.left || top != windowInsets.top
-                || right != windowInsets.right || bottom != windowInsets.bottom) {
-            windowInsets.set(left, top, right, bottom);
-        }
-    }
-
-    public Rect getWindowInsets() {
-        return windowInsets;
     }
 }

@@ -45,7 +45,7 @@
                     app:cml_to_alpha="0.75"
                     app:cml_mask_color="?attr/colorPrimary" />
 
-                <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                <com.wangdaye.common.ui.widget.insets.StatusBarView
                     android:id="@+id/activity_collection_appBarStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
@@ -98,7 +98,7 @@
                 app:layout_scrollFlags="scroll|enterAlways"
                 tools:ignore="UselessParent">
 
-                <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+                <com.wangdaye.common.ui.widget.insets.StatusBarView
                     android:id="@+id/activity_collection_creatorBarStatusBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

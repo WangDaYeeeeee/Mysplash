@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.wangdaye.common.R;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
-import com.wangdaye.common.ui.widget.windowInsets.FitBottomSystemBarRecyclerView;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarRecyclerView;
 
 public class GridMarginsItemDecoration extends RecyclerView.ItemDecoration {
 
@@ -29,6 +29,7 @@ public class GridMarginsItemDecoration extends RecyclerView.ItemDecoration {
     private @Px int margins;
     private @Px int cardRadius;
 
+    private Rect insets;
     private @Px int parentPaddingLeft;
     private @Px int parentPaddingRight;
     private @Px int parentPaddingTop;
@@ -66,7 +67,11 @@ public class GridMarginsItemDecoration extends RecyclerView.ItemDecoration {
         } else {
             singleSpan = false;
         }
-        setParentPadding(recyclerView, (singleSpan ? singleSpanMargins : gridMargins) / 2);
+        setParentPadding(
+                recyclerView,
+                (singleSpan ? singleSpanMargins : gridMargins) / 2,
+                getWindowInset(recyclerView)
+        );
     }
 
     @Override
@@ -90,11 +95,12 @@ public class GridMarginsItemDecoration extends RecyclerView.ItemDecoration {
         parentPaddingRight = parent.getPaddingRight();
         parentPaddingTop = parent.getPaddingTop();
         parentPaddingBottom = parent.getPaddingBottom();
-        if (parentPaddingLeft != margins
-                || parentPaddingRight != margins
+        insets = getWindowInset(parent);
+        if (parentPaddingLeft != margins + insets.left
+                || parentPaddingRight != margins + insets.right
                 || parentPaddingTop != margins
-                || parentPaddingBottom != getBottomInset(parent) + margins) {
-            setParentPadding(parent, margins);
+                || parentPaddingBottom != margins + insets.bottom) {
+            setParentPadding(parent, margins, insets);
         }
 
         outRect.set(margins, margins, margins, margins);
@@ -103,8 +109,13 @@ public class GridMarginsItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private void setParentPadding(RecyclerView parent, @Px int padding) {
-        parent.setPadding(padding, padding, padding, padding + getBottomInset(parent));
+    private void setParentPadding(RecyclerView parent, @Px int padding, Rect insets) {
+        parent.setPadding(
+                padding + insets.left,
+                padding,
+                padding + insets.right,
+                padding + insets.bottom
+        );
         parent.setClipToPadding(false);
     }
 
@@ -117,13 +128,11 @@ public class GridMarginsItemDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    private int getBottomInset(RecyclerView parent) {
-        if (parent instanceof MultipleStateRecyclerView) {
-            return ((MultipleStateRecyclerView) parent).getBottomInset();
-        } else if (parent instanceof FitBottomSystemBarRecyclerView) {
-            return (int) ((FitBottomSystemBarRecyclerView) parent).getInsetsBottom();
+    private Rect getWindowInset(RecyclerView parent) {
+        if (parent instanceof FitBottomSystemBarRecyclerView) {
+            return ((FitBottomSystemBarRecyclerView) parent).getWindowInsets();
         } else {
-            return MysplashApplication.getInstance().getWindowInsets().bottom;
+            return new Rect();
         }
     }
 }

@@ -28,9 +28,11 @@ import com.wangdaye.common.base.vm.ParamsViewModelFactory;
 import com.wangdaye.common.base.vm.pager.PagerViewModel;
 import com.wangdaye.common.network.UrlCollection;
 import com.wangdaye.common.presenter.LoadImagePresenter;
+import com.wangdaye.common.presenter.TabLayoutDoubleClickBackToTopPresenter;
 import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.common.ui.dialog.ProfileDialog;
 import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.me.R;
 import com.wangdaye.me.R2;
@@ -110,7 +112,7 @@ public class MeActivity extends LoadableActivity<Photo>
     }
     @BindView(R2.id.activity_me_profileView) MeProfileView profile;
 
-    @BindView(R2.id.activity_me_viewPager) ViewPager viewPager;
+    @BindView(R2.id.activity_me_viewPager) FitBottomSystemBarViewPager viewPager;
     @BindView(R2.id.activity_me_indicator) AutoHideInkPageIndicator indicator;
     private PagerAdapter adapter;
 
@@ -344,7 +346,7 @@ public class MeActivity extends LoadableActivity<Photo>
 
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, userTabs);
-        this.adapter = new PagerAdapter(pageList, tabList);
+        this.adapter = new PagerAdapter(viewPager, pageList, tabList);
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(getCurrentPagerPosition(), false);
@@ -353,6 +355,7 @@ public class MeActivity extends LoadableActivity<Photo>
         TabLayout tabLayout = findViewById(R.id.activity_me_tabLayout);
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.addOnTabSelectedListener(new TabLayoutDoubleClickBackToTopPresenter(MeActivity.this::backToTop));
 
         indicator.setViewPager(viewPager);
         indicator.setAlpha(0f);

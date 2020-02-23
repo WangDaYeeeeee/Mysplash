@@ -14,6 +14,7 @@ import android.view.View;
 import com.wangdaye.common.R;
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.DownloadTask;
+import com.wangdaye.common.base.widget.LockableList;
 import com.wangdaye.common.utils.FileUtils;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.component.service.DownloaderService;
@@ -24,8 +25,6 @@ import com.wangdaye.downloader.base.NotificationHelper;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * Abstract downloader executor.
@@ -35,8 +34,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public abstract class AbstractDownloaderExecutor {
 
-    private List<DownloadTask> taskList;
-    private final ReadWriteLock readWriteLock;
+    protected LockableList<DownloadTask> lockableTaskList;
     protected List<DownloaderService.OnDownloadListener> onDownloadListeners;
 
     public static final String ACTION_DOWNLOAD_COMPLETE = DownloadManager.ACTION_DOWNLOAD_COMPLETE;
@@ -69,8 +67,11 @@ public abstract class AbstractDownloaderExecutor {
     }
 
     AbstractDownloaderExecutor() {
-        taskList = ComponentFactory.getDatabaseService().readDownloadTaskList(DownloadTask.RESULT_DOWNLOADING);
-        readWriteLock = new ReentrantReadWriteLock();
+        lockableTaskList = new LockableList<>(
+                ComponentFactory.getDatabaseService().readDownloadTaskList(
+                        DownloadTask.RESULT_DOWNLOADING
+                )
+        );
         onDownloadListeners = new ArrayList<>();
     }
 
@@ -100,9 +101,9 @@ public abstract class AbstractDownloaderExecutor {
     public abstract void updateTaskResult(Context c, @NonNull DownloadTask task,
                                           @DownloadTask.DownloadResultRule int result);
 
-    public float getTaskProcess(Context c, @NonNull DownloadTask task) {
+    public float getTaskProcess(@NonNull DownloadTask task) {
         Float[] process = new Float[] {0f};
-        readTaskList(list -> {
+        lockableTaskList.read(list -> {
             for (DownloadTask t : list) {
                 if (t.title.equals(task.title)) {
                     process[0] = t.process;
@@ -113,11 +114,10 @@ public abstract class AbstractDownloaderExecutor {
         return process[0];
     }
 
-    public List<DownloadTask> readDownloadTaskList(Context c,
-                                                   @DownloadTask.DownloadResultRule int result) {
+    public List<DownloadTask> readDownloadTaskList(@DownloadTask.DownloadResultRule int result) {
         if (result == DownloadTask.RESULT_DOWNLOADING) {
             List<DownloadTask> taskList = new ArrayList<>();
-            readTaskList(list -> {
+            lockableTaskList.read(list -> {
                 for (DownloadTask t : list) {
                     taskList.add(t.clone());
                 }
@@ -129,9 +129,9 @@ public abstract class AbstractDownloaderExecutor {
     }
 
     @Nullable
-    public DownloadTask readDownloadTask(Context c, String title) {
+    public DownloadTask readDownloadTask(String title) {
         DownloadTask[] task = new DownloadTask[] {null};
-        readTaskList(list -> {
+        lockableTaskList.read(list -> {
             for (DownloadTask t : list) {
                 if (t.title.equals(title)) {
                     task[0] = t.clone();
@@ -147,7 +147,7 @@ public abstract class AbstractDownloaderExecutor {
 
     public boolean isDownloading(String title) {
         Boolean[] result = new Boolean[] {false};
-        readTaskList(list -> {
+        lockableTaskList.read(list -> {
             for (DownloadTask t : list) {
                 if (t.title.equals(title)) {
                     result[0] = true;
@@ -347,26 +347,6 @@ public abstract class AbstractDownloaderExecutor {
     }
 
     // interface.
-
-    public interface TaskListReader {
-        void execute(List<DownloadTask> list);
-    }
-
-    public interface TaskListWriter {
-        void execute(List<DownloadTask> list);
-    }
-
-    protected void readTaskList(TaskListReader reader) {
-        readWriteLock.readLock().lock();
-        reader.execute(taskList);
-        readWriteLock.readLock().unlock();
-    }
-
-    protected void writeTaskList(TaskListWriter writer) {
-        readWriteLock.writeLock().lock();
-        writer.execute(taskList);
-        readWriteLock.writeLock().unlock();
-    }
 
     protected static int indexTask(List<DownloadTask> list, String title) {
         for (int i = 0; i < list.size(); i ++) {

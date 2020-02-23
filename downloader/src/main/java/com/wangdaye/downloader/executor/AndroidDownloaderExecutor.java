@@ -46,7 +46,7 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
         @Override
         public void run() {
             while (isRunning()) {
-                writeTaskList(list -> {
+                lockableTaskList.write((list, setter) -> {
                     for (int i = list.size() - 1; i >= 0; i --) {
                         if (list.get(i).result != DownloadTask.RESULT_DOWNLOADING) {
                             list.remove(i);
@@ -72,6 +72,7 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
                             });
                         }
                     }
+                    setter.setList(list);
                 });
                 SystemClock.sleep(300);
             }
@@ -103,8 +104,9 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             return -1;
         }
 
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             if (registerDownloadingTask(list, task)) {
+                setter.setList(list);
                 FileUtils.deleteFile(c, task);
 
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(task.downloadUrl))
@@ -136,8 +138,10 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             return -1;
         }
 
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             unregisterDownloadingTask(list, task);
+            setter.setList(list);
+
             downloadManager.remove(task.taskId);
             ComponentFactory.getDatabaseService().deleteDownloadTask(task.taskId);
         });
@@ -171,8 +175,10 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             return;
         }
 
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             unregisterDownloadingTask(list, task);
+            setter.setList(list);
+
             if (task.result != DownloadTask.RESULT_SUCCEED) {
                 downloadManager.remove(task.taskId);
             }
@@ -192,7 +198,7 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
 
         List<DownloadTask> taskList = new ArrayList<>();
 
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             taskList.addAll(list);
 
             for (DownloadTask t : list) {
@@ -202,6 +208,7 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
             }
             ComponentFactory.getDatabaseService().clearDownloadTask();
             clearDwonloadingTask(list);
+            setter.setList(list);
         });
 
         return taskList;
@@ -209,10 +216,12 @@ public class AndroidDownloaderExecutor extends AbstractDownloaderExecutor {
 
     @Override
     public void updateTaskResult(Context c, @NonNull DownloadTask task, int result) {
-        writeTaskList(list -> {
+        lockableTaskList.write((list, setter) -> {
             task.result = result;
 
             unregisterDownloadingTask(list, task);
+            setter.setList(list);
+
             ComponentFactory.getDatabaseService().updateDownloadTask(task);
         });
     }

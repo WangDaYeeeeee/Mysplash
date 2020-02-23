@@ -196,10 +196,10 @@ public class DownloaderServiceIMP implements DownloaderService {
         }
     }
 
-    public DownloadTask readTaskProcess(Context context, @NonNull DownloadTask task) {
+    public DownloadTask readTaskProcess(@NonNull DownloadTask task) {
         switch (task.result) {
             case DownloadTask.RESULT_DOWNLOADING:
-                task.process = downloaderService.getTaskProcess(context, task);
+                task.process = downloaderService.getTaskProcess(task);
                 break;
 
             case DownloadTask.RESULT_FAILED:
@@ -213,9 +213,8 @@ public class DownloaderServiceIMP implements DownloaderService {
         return task;
     }
 
-    public List<DownloadTask> readDownloadTaskList(Context context,
-                                                   @DownloadTask.DownloadResultRule int result) {
-        return downloaderService.readDownloadTaskList(context, result);
+    public List<DownloadTask> readDownloadTaskList(@DownloadTask.DownloadResultRule int result) {
+        return downloaderService.readDownloadTaskList(result);
     }
 
     @Override
@@ -232,7 +231,7 @@ public class DownloaderServiceIMP implements DownloaderService {
     @Nullable
     @Override
     public DownloadTask readDownloadTask(Context context, String title) {
-        return downloaderService.readDownloadTask(context, title);
+        return downloaderService.readDownloadTask(title);
     }
 
     @Override

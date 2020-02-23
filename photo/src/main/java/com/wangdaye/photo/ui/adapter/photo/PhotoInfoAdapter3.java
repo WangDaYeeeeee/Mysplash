@@ -33,6 +33,7 @@ import com.wangdaye.photo.ui.adapter.photo.model.MoreModel;
 import com.wangdaye.photo.ui.adapter.photo.model.ProgressModel;
 import com.wangdaye.photo.ui.adapter.photo.model.StoryModel;
 import com.wangdaye.photo.ui.adapter.photo.model.TagModel;
+import com.wangdaye.photo.ui.photoView.OnScaleChangedListener;
 
 import java.util.ArrayList;
 import java.util.List;

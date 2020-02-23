@@ -12,12 +12,13 @@ import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MultipleStateRecyclerView extends RecyclerView {
+public class MultipleStateRecyclerView extends FitBottomSystemBarRecyclerView {
 
     private Adapter[] multipleAdapters;
     private LayoutManager[] multipleLayouts;
@@ -26,7 +27,7 @@ public class MultipleStateRecyclerView extends RecyclerView {
 
     private ObjectAnimator animator;
 
-    private int bottomInset;
+    private Rect windowInsets = new Rect();
 
     private int paddingLeft;
     private int paddingTop;
@@ -81,8 +82,8 @@ public class MultipleStateRecyclerView extends RecyclerView {
     }
 
     @Override
-    protected boolean fitSystemWindows(Rect insets) {
-        this.bottomInset = insets.bottom;
+    public boolean fitSystemWindows(Rect insets) {
+        this.windowInsets = insets;
         return false;
     }
 
@@ -319,7 +320,7 @@ public class MultipleStateRecyclerView extends RecyclerView {
         animator.start();
     }
 
-    public int getBottomInset() {
-        return bottomInset;
+    public Rect getWindowInsets() {
+        return windowInsets;
     }
 }

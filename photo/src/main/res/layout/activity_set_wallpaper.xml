@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.wangdaye.common.ui.widget.windowInsets.StatusBarView
+        <com.wangdaye.common.ui.widget.insets.StatusBarView
             android:id="@+id/activity_set_wallpaper_statusBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

@@ -4,7 +4,7 @@
     <!-- application. -->
     <string name="app_name">Mysplash</string>
     <string name="powered">Powered by Unsplash.com</string>
-    <string name="version_code">3.8.0</string>
+    <string name="version_code">3.8.1</string>
 
     <!-- key words. -->
     <string name="about_app">ABOUT APP</string>
@@ -310,6 +310,7 @@
     <string name="transition_search_background">search_background</string>
 
     <string name="transition_photo_image">photo_image</string>
+    <string name="transition_photo_background">photo_background</string>
 
     <string name="transition_user_avatar">user_avatar</string>
     <string name="transition_user_background">user_background</string>
@@ -329,15 +330,13 @@
     <string name="settings_title_load_image_size">Select The Resolution Of Images To Load</string>
     <string name="settings_title_custom_api_key">Custom API Key</string>
     <string name="settings_summary_custom_api_key">Set your own API key and secret.</string>
+    <string name="settings_title_cdn_enabled">CDN enabled</string>
+    <string name="settings_summary_cdn_enabled">The app will obtain photos from mirror server when CDN is enabled.</string>
     <string name="settings_title_language">Language</string>
     <string name="settings_title_live_wallpaper">Live Wallpaper</string>
     <string name="settings_summary_live_wallpaper">Get images from Unsplash regularly and set them as wallpaper.</string>
     <string name="settings_title_data_collection">Allow data collection</string>
     <string name="settings_summary_data_collection">Allow Mysplash to send crash data to developers.</string>
-
-    <string name="settings_category_filter">Filter</string>
-    <string name="settings_title_default_order">Default Order</string>
-    <string name="settings_title_default_collection_type">Default Collection Type</string>
 
     <string name="settings_category_download">Download</string>
     <string name="settings_title_downloader">Downloader</string>
@@ -363,11 +362,11 @@
     <string name="key_night_end_time">night_end_time</string>
     <string name="key_load_image_size">load_image_size</string>
     <string name="key_custom_api_key">custom_api_key</string>
+    <string name="key_cdn_enabled">cdn_enabled</string>
     <string name="key_language">language</string>
     <string name="key_live_wallpaper">live_wallpaper</string>
     <string name="key_live_wallpaper_settings">live_wallpaper_settings</string>
     <string name="key_data_collection">data_collection</string>
-    <string name="key_default_photo_order">default_photo_order</string>
     <string name="key_downloader">downloader</string>
     <string name="key_download_scale">download_scale</string>
     <string name="key_saturation_animation_enabled">saturation_animation_enabled</string>

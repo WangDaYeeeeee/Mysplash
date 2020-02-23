@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.presenter.LoadImagePresenter;
+import com.wangdaye.photo.ui.photoView.OnScaleChangedListener;
 import com.wangdaye.photo.ui.photoView.PhotoView;
 import com.wangdaye.photo.R;
 import com.wangdaye.photo.R2;
@@ -31,23 +32,58 @@ public class PagerHolder extends RecyclerView.ViewHolder {
     void clickTouchView() {
         activity.switchComponentsVisibility();
     }
-    private @Nullable ImageHelper.BitmapTarget fullSizePhotoTarget;
 
     private PhotoActivity activity;
+    private Photo photo;
+    private @Nullable ImageHelper.BitmapTarget fullSizePhotoTarget;
+    private boolean attached;
+    private boolean hasRegularImage;
+    private boolean hasFullImage;
 
-    public PagerHolder(@NonNull ViewGroup parent) {
+    public PagerHolder(@NonNull ViewGroup parent, OnScaleChangedListener l) {
         super(LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.container_photo_pager, parent, false));
         ButterKnife.bind(this, itemView);
+
+        regularImage.setOnScaleChangeListener((scaleFactor, focusX, focusY) -> {
+            if (attached) {
+                l.onScaleChange(scaleFactor, focusX, focusY);
+            }
+        });
     }
     
-    protected void onBindViewHolder(PhotoActivity activity, PagerModel model, boolean update,
-                                    boolean executeEnterTransition) {
+    protected void onBindView(PhotoActivity activity, PagerModel model, boolean update) {
         this.activity = activity;
+        this.photo = model.photo;
+        this.fullSizePhotoTarget = null;
+        this.attached = false;
+        this.hasRegularImage = false;
+        this.hasFullImage = false;
 
         if (!update) {
-            resetPhotoImage(model.photo);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                regularImage.setTransitionName(
+                        activity.getString(R.string.transition_photo_image) + "_" + photo.id);
+            }
+            regularImage.setScale(1f, false);
+            regularImage.setZoomTransitionDuration(300);
+            regularImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            regularImage.post(() -> {
+                int[] viewSize = new int[] {
+                        regularImage.getMeasuredWidth(), regularImage.getMeasuredHeight()};
+                setRegularImageScaleLevels(viewSize, photo.getRegularSize());
+            });
+
+            LoadImagePresenter.loadPhotoImage(activity, regularImage, photo, () -> {
+                hasRegularImage = true;
+                loadFullSizePhoto();
+            });
         }
+    }
+
+    protected void onAttachView(boolean executeEnterTransition) {
+        attached = true;
+        loadFullSizePhoto();
 
         // init animation.
         if (executeEnterTransition) {
@@ -66,36 +102,28 @@ public class PagerHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    protected void onRecycledView() {
-        ImageHelper.releaseImageView(regularImage);
-        if (fullSizePhotoTarget != null) {
+    protected void onDetachView() {
+        attached = false;
+        if (!hasFullImage && fullSizePhotoTarget != null) {
             ImageHelper.releaseImageView(fullSizePhotoTarget);
+            fullSizePhotoTarget = null;
         }
     }
-    
-    private void resetPhotoImage(@NonNull Photo photo) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            regularImage.setTransitionName(
-                    activity.getString(R.string.transition_photo_image) + "_" + photo.id);
-        }
-        regularImage.setScale(1f, false);
-        regularImage.setZoomTransitionDuration(300);
-        regularImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        regularImage.post(() -> {
-            int[] viewSize = new int[] {
-                    regularImage.getMeasuredWidth(), regularImage.getMeasuredHeight()};
-            setRegularImageScaleLevels(viewSize, photo.getRegularSize());
-        });
 
-        fullSizePhotoTarget = null;
-        LoadImagePresenter.loadPhotoImage(activity, regularImage, photo, () ->
-                fullSizePhotoTarget = ImageHelper.loadBitmap(
-                        activity, Uri.parse(photo.getFullUrl()), fullSizeHandler, photo.width, photo.height
-                )
-        );
+    protected void onRecycledView() {
+        ImageHelper.releaseImageView(regularImage);
+    }
+
+    private void loadFullSizePhoto() {
+        if (attached && hasRegularImage && !hasFullImage && fullSizePhotoTarget == null) {
+            fullSizePhotoTarget = ImageHelper.loadBitmap(
+                    activity, Uri.parse(photo.getFullUrl()), fullSizeHandler, photo.width, photo.height
+            );
+        }
     }
 
     private ImageHelper.OnLoadImageHandler fullSizeHandler = resource -> {
+        hasFullImage = true;
         ImageHelper.releaseImageView(regularImage);
         regularImage.updateImageDrawable(new BitmapDrawable(activity.getResources(), resource));
     };

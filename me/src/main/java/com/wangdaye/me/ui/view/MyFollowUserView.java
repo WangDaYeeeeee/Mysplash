@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarBothWaySwipeRefreshLayout;
 import com.wangdaye.me.R;
 import com.wangdaye.me.R2;
 import com.wangdaye.me.activity.MyFollowActivity;
@@ -37,7 +38,7 @@ import butterknife.ButterKnife;
  * */
 
 @SuppressLint("ViewConstructor")
-public class MyFollowUserView extends BothWaySwipeRefreshLayout
+public class MyFollowUserView extends FitBottomSystemBarBothWaySwipeRefreshLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         LargeErrorStateAdapter.OnRetryListener {
 

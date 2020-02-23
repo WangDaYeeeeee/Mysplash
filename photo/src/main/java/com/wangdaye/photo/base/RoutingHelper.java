@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.wangdaye.base.unsplash.Photo;
@@ -27,10 +28,10 @@ public class RoutingHelper {
             );
         } else {
             optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
-                    a, image, a.getString(R.string.transition_photo_image) + "_" + photo.id);
-
-            Recolor.addExtraProperties(background, b);
-            RoundCornerTransition.addExtraProperties(background, b);
+                    a,
+                    new Pair<>(image, a.getString(R.string.transition_photo_image) + "_" + photo.id),
+                    new Pair<>(background, a.getString(R.string.transition_photo_image) + "_" + photo.id)
+            );
         }
         ARouter.getInstance()
                 .build(PhotoActivity.PHOTO_ACTIVITY)

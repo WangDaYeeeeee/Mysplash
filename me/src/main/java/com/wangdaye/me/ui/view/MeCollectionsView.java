@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.base.i.PagerManageView;
@@ -16,6 +15,7 @@ import com.wangdaye.common.ui.adapter.multipleState.MiniErrorStateAdapter;
 import com.wangdaye.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
 import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarBothWaySwipeRefreshLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
@@ -37,7 +37,7 @@ import butterknife.ButterKnife;
  * */
 
 @SuppressLint("ViewConstructor")
-public class MeCollectionsView extends BothWaySwipeRefreshLayout
+public class MeCollectionsView extends FitBottomSystemBarBothWaySwipeRefreshLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         MiniErrorStateAdapter.OnRetryListener {
 
@@ -77,12 +77,6 @@ public class MeCollectionsView extends BothWaySwipeRefreshLayout
         setOnRefreshAndLoadListener(this);
         setRefreshEnabled(false);
         setLoadEnabled(false);
-
-        post(() -> setDragTriggerDistance(
-                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                MysplashApplication.getInstance().getWindowInsets().bottom
-                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
-        ));
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(

@@ -36,7 +36,6 @@ public class SettingsFragment extends MysplashSettingsFragment {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.perference);
         initBasicPart();
-        initFilterPart();
         initDownloadPart();
         initDisplayPart();
     }
@@ -145,6 +144,13 @@ public class SettingsFragment extends MysplashSettingsFragment {
             return true;
         });
 
+        // CDN enabled.
+        findPreference(getString(R.string.key_cdn_enabled)).setOnPreferenceChangeListener((preference, newValue) -> {
+            SettingsServiceIMP.getInstance(requireActivity()).setCDNEnabled((Boolean) newValue);
+            return true;
+        });
+        findPreference(getString(R.string.key_cdn_enabled)).setVisible(false);
+
         // language.
         ListPreference language = findPreference(getString(R.string.key_language));
         language.setSummary(
@@ -172,30 +178,6 @@ public class SettingsFragment extends MysplashSettingsFragment {
         muzei.setVisible(ComponentFactory.getMuzeiService().isMuzeiInstalled(getActivity()));
         muzei.setOnPreferenceClickListener(preference -> {
             ComponentFactory.getMuzeiService().startMuzeiSettingsActivity(requireActivity());
-            return true;
-        });
-    }
-
-    private void initFilterPart() {
-        // default order.
-        ListPreference defaultOrder = findPreference(getString(R.string.key_default_photo_order));
-        defaultOrder.setSummary(
-                getNameByValue(
-                        ComponentFactory.getSettingsService().getDefaultPhotoOrder(),
-                        R.array.photo_orders,
-                        R.array.photo_order_values
-                )
-        );
-        defaultOrder.setOnPreferenceChangeListener((preference, newValue) -> {
-            SettingsServiceIMP.getInstance(requireActivity()).setDefaultPhotoOrder((String) newValue);
-            preference.setSummary(
-                    getNameByValue(
-                            (String) newValue,
-                            R.array.photo_orders,
-                            R.array.photo_order_values
-                    )
-            );
-            showRebootSnackbar();
             return true;
         });
     }

@@ -32,6 +32,12 @@
             android:key="@string/key_custom_api_key"
             android:summary="@string/settings_summary_custom_api_key" />
 
+        <SwitchPreference
+            android:title="@string/settings_title_cdn_enabled"
+            android:key="@string/key_cdn_enabled"
+            android:summary="@string/settings_summary_cdn_enabled"
+            android:defaultValue="false" />
+
         <ListPreference
             android:title="@string/settings_title_language"
             android:key="@string/key_language"
@@ -42,19 +48,6 @@
         <Preference
             android:title="@string/action_muzei_settings"
             android:key="@string/key_live_wallpaper_settings" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory
-        android:title="@string/settings_category_filter"
-        android:key="filter">
-
-        <ListPreference
-            android:title="@string/settings_title_default_order"
-            android:key="@string/key_default_photo_order"
-            android:entries="@array/photo_orders"
-            android:entryValues="@array/photo_order_values"
-            android:defaultValue="latest" />
 
     </PreferenceCategory>
 

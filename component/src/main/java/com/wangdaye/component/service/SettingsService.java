@@ -41,14 +41,6 @@ public interface SettingsService {
             LANGUAGE_PORTUGUESE_BR
     }) @interface LanguageRule {}
 
-    String PHOTOS_ORDER_LATEST = "latest";
-    String PHOTOS_ORDER_OLDEST = "oldest";
-    String PHOTOS_ORDER_POPULAR = "popular";
-    String PHOTOS_ORDER_RANDOM = "random";
-    @StringDef({
-            PHOTOS_ORDER_LATEST, PHOTOS_ORDER_OLDEST, PHOTOS_ORDER_POPULAR, PHOTOS_ORDER_RANDOM
-    }) @interface PhotosOrderRule {}
-
     String DOWNLOADER_MYSPLASH = DownloaderService.DOWNLOADER_MYSPLASH;
     String DOWNLOADER_SYSTEM = DownloaderService.DOWNLOADER_SYSTEM;
     @StringDef({DOWNLOADER_MYSPLASH, DOWNLOADER_SYSTEM})
@@ -82,11 +74,10 @@ public interface SettingsService {
     @SaturationAnimDurationRule
     String getSaturationAnimationDuration();
 
+    boolean isCDNEnabled();
+
     @LanguageRule
     String getLanguage();
-
-    @PhotosOrderRule
-    String getDefaultPhotoOrder();
 
     @DownloaderRule
     String getDownloader();

@@ -27,9 +27,11 @@ import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
 import com.wangdaye.common.base.vm.pager.PagerViewModel;
+import com.wangdaye.common.presenter.TabLayoutDoubleClickBackToTopPresenter;
 import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.common.ui.adapter.user.UserItemEventHelper;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.base.resource.ListResource;
@@ -94,7 +96,7 @@ public class SearchActivity extends LoadableActivity<Photo>
     @BindView(R2.id.activity_search_appBar) NestedScrollAppBarLayout appBar;
     @BindView(R2.id.activity_search_editText) EditText editText;
 
-    @BindView(R2.id.activity_search_viewPager) ViewPager viewPager;
+    @BindView(R2.id.activity_search_viewPager) FitBottomSystemBarViewPager viewPager;
     @BindView(R2.id.activity_search_indicator) AutoHideInkPageIndicator indicator;
 
     private PagerView[] pagers = new PagerView[pageCount()];
@@ -353,7 +355,7 @@ public class SearchActivity extends LoadableActivity<Photo>
 
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, searchTabs);
-        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
+        PagerAdapter adapter = new PagerAdapter(viewPager, pageList, tabList);
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(getCurrentPagerPosition(), false);
@@ -362,6 +364,7 @@ public class SearchActivity extends LoadableActivity<Photo>
         TabLayout tabLayout = findViewById(R.id.activity_search_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayoutDoubleClickBackToTopPresenter(SearchActivity.this::backToTop));
 
         indicator.setViewPager(viewPager);
         indicator.setAlpha(0f);

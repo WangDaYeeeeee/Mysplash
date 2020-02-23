@@ -162,7 +162,7 @@ public class PhotoActivityModel extends BrowsableViewModel<Photo> {
         if (this.photoId == null) {
             this.photoId = photoId;
         }
-        this.initPage = -1;
+        this.initPage = 0;
         this.multiPage = false;
 
         if (init) {

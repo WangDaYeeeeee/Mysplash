@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.wangdaye.common.base.adapter.BaseAdapter;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarBothWaySwipeRefreshLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.presenter.pager.PagerScrollablePresenter;
 import com.wangdaye.base.i.PagerManageView;
@@ -34,7 +34,7 @@ import butterknife.ButterKnife;
  * */
 
 @SuppressLint("ViewConstructor")
-public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
+public abstract class AbstractSearchPageView extends FitBottomSystemBarBothWaySwipeRefreshLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         LargeErrorStateAdapter.OnRetryListener {
 
@@ -78,12 +78,6 @@ public abstract class AbstractSearchPageView extends BothWaySwipeRefreshLayout
         setOnRefreshAndLoadListener(this);
         setRefreshEnabled(false);
         setLoadEnabled(false);
-
-        post(() -> setDragTriggerDistance(
-                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                MysplashApplication.getInstance().getWindowInsets().bottom
-                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
-        ));
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(getLayoutManager());

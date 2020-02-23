@@ -1,6 +1,7 @@
 package com.wangdaye.photo.ui;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -26,6 +27,17 @@ public class PhotoSwipeBackCoordinatorLayout extends SwipeBackCoordinatorLayout 
 
     public PhotoSwipeBackCoordinatorLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    @Override
+    protected boolean fitSystemWindows(Rect insets) {
+        int count = getChildCount();
+        for (int i = 0; i < count; i ++) {
+            if (getChildAt(i) != horizontalConsumer) {
+                getChildAt(i).setPadding(insets.left, 0, insets.right, 0);
+            }
+        }
+        return false;
     }
 
     @Override

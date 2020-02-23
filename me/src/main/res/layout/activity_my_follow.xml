@@ -34,7 +34,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@android:color/transparent"
-                app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/MysplashPopupMenuTheme"/>
 
             <com.google.android.material.tabs.TabLayout
@@ -45,7 +44,7 @@
 
         </com.wangdaye.common.ui.widget.NestedScrollAppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
+        <com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager
             android:id="@+id/activity_my_follow_viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

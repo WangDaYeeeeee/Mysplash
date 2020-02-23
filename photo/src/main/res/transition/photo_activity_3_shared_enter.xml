@@ -15,21 +15,12 @@
 
     <changeBounds
         android:interpolator="@android:interpolator/fast_out_slow_in"
-        tools:ignore="NewApi">
-        <targets>
-            <target android:targetId="@id/container_photo_pager" />
-        </targets>
-    </changeBounds>
-
-    <transition
-        class="com.wangdaye.common.ui.transition.sharedElement.RoundCornerTransition"
-        android:interpolator="@android:interpolator/fast_out_slow_in"
         android:duration="350"
         tools:ignore="NewApi">
         <targets>
             <target android:targetId="@id/container_photo_pager" />
         </targets>
-    </transition>
+    </changeBounds>
 
     <pathMotion
         class="com.wangdaye.common.ui.transition.GravityArcMotion"

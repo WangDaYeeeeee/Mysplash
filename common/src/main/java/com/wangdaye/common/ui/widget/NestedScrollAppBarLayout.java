@@ -21,6 +21,7 @@ import androidx.core.view.ViewCompat;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.wangdaye.common.R;
+import com.wangdaye.common.ui.widget.insets.FitTopSystemBarAppBarLayout;
 
 /**
  * Nested scroll app bar layout.
@@ -29,7 +30,7 @@ import com.wangdaye.common.R;
  *
  * */
 
-public class NestedScrollAppBarLayout extends AppBarLayout
+public class NestedScrollAppBarLayout extends FitTopSystemBarAppBarLayout
         implements CoordinatorLayout.AttachedBehavior, NestedScrollingChild3 {
 
     private NestedScrollingChildHelper nestedScrollingChildHelper;

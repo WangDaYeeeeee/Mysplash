@@ -7,7 +7,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.wangdaye.common.ui.widget.windowInsets.FitBottomSystemBarRecyclerView;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarRecyclerView;
 import com.wangdaye.downloader.R;
 
 public class DownloadRecyclerView extends FitBottomSystemBarRecyclerView {
@@ -25,10 +25,15 @@ public class DownloadRecyclerView extends FitBottomSystemBarRecyclerView {
     }
 
     @Override
-    protected boolean fitSystemWindows(Rect insets) {
+    public boolean fitSystemWindows(Rect insets) {
         int padding = getResources().getDimensionPixelSize(R.dimen.little_margin);
-        setPadding(padding, padding, padding, padding + insets.bottom);
+        setPadding(
+                padding + insets.left,
+                padding,
+                padding + insets.right,
+                padding + insets.bottom
+        );
         setClipToPadding(false);
-        return super.fitSystemWindows(insets);
+        return false;
     }
 }

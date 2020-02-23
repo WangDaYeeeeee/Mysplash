@@ -29,7 +29,6 @@ public class UserPhotosViewRepository {
                 username,
                 viewModel.getListRequestPage(),
                 viewModel.getListPerPage(),
-                SettingsService.PHOTOS_ORDER_LATEST,
                 new ListResourceObserver<>(viewModel, refresh)
         );
     }
@@ -46,7 +45,6 @@ public class UserPhotosViewRepository {
                 username,
                 viewModel.getListRequestPage(),
                 viewModel.getListPerPage(),
-                SettingsService.PHOTOS_ORDER_LATEST,
                 new ListResourceObserver<>(viewModel, refresh)
         );
     }

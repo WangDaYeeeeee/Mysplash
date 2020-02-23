@@ -16,6 +16,8 @@ import android.view.View;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.common.base.vm.ParamsViewModelFactory;
+import com.wangdaye.common.presenter.TabLayoutDoubleClickBackToTopPresenter;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
 import com.wangdaye.me.R;
 import com.wangdaye.me.R2;
 import com.wangdaye.me.di.component.DaggerApplicationComponent;
@@ -63,7 +65,7 @@ public class MyFollowActivity extends MysplashActivity
     @BindView(R2.id.activity_my_follow_container) CoordinatorLayout container;
     @BindView(R2.id.activity_my_follow_shadow) View shadow;
     @BindView(R2.id.activity_my_follow_appBar) NestedScrollAppBarLayout appBar;
-    @BindView(R2.id.activity_my_follow_viewPager) ViewPager viewPager;
+    @BindView(R2.id.activity_my_follow_viewPager) FitBottomSystemBarViewPager viewPager;
 
     private PagerView[] pagers = new PagerView[pageCount()];
     private MyFollowAdapter[] adapters = new MyFollowAdapter[pageCount()];
@@ -194,7 +196,7 @@ public class MyFollowActivity extends MysplashActivity
 
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, myFollowTabs);
-        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
+        PagerAdapter adapter = new PagerAdapter(viewPager, pageList, tabList);
         if (AuthManager.getInstance().getUser() != null) {
             adapter.titleList.set(
                     followerPage(),
@@ -214,6 +216,7 @@ public class MyFollowActivity extends MysplashActivity
         TabLayout tabLayout = findViewById(R.id.activity_my_follow_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayoutDoubleClickBackToTopPresenter(MyFollowActivity.this::backToTop));
 
         pagerManageModel.getPagerPosition().observe(this, position -> {
             for (int i = followerPage(); i < pageCount(); i ++) {

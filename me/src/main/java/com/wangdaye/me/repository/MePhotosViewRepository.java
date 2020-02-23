@@ -33,7 +33,6 @@ public class MePhotosViewRepository {
                     AuthManager.getInstance().getUsername(),
                     viewModel.getListRequestPage(),
                     viewModel.getListPerPage(),
-                    SettingsService.PHOTOS_ORDER_LATEST,
                     new ListResourceObserver<>(viewModel, refresh)
             );
         }
@@ -52,7 +51,6 @@ public class MePhotosViewRepository {
                     AuthManager.getInstance().getUsername(),
                     viewModel.getListRequestPage(),
                     viewModel.getListPerPage(),
-                    SettingsService.PHOTOS_ORDER_LATEST,
                     new ListResourceObserver<>(viewModel, refresh)
             );
         }

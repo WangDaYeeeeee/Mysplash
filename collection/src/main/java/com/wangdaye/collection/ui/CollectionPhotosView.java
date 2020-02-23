@@ -12,7 +12,6 @@ import android.view.View;
 
 import com.wangdaye.collection.R;
 import com.wangdaye.collection.R2;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.base.i.PagerManageView;
 import com.wangdaye.base.i.PagerView;
 import com.wangdaye.common.presenter.pager.PagerScrollablePresenter;
@@ -22,6 +21,7 @@ import com.wangdaye.common.ui.adapter.multipleState.MiniLoadingStateAdapter;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
 import com.wangdaye.common.ui.decoration.GridMarginsItemDecoration;
 import com.wangdaye.common.ui.widget.MultipleStateRecyclerView;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarBothWaySwipeRefreshLayout;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.ui.widget.swipeRefreshView.BothWaySwipeRefreshLayout;
 import com.wangdaye.common.utils.BackToTopUtils;
@@ -38,7 +38,7 @@ import butterknife.ButterKnife;
  *
  * */
 
-public class CollectionPhotosView extends BothWaySwipeRefreshLayout
+public class CollectionPhotosView extends FitBottomSystemBarBothWaySwipeRefreshLayout
         implements PagerView, BothWaySwipeRefreshLayout.OnRefreshAndLoadListener,
         MiniErrorStateAdapter.OnRetryListener {
 
@@ -75,12 +75,6 @@ public class CollectionPhotosView extends BothWaySwipeRefreshLayout
         setOnRefreshAndLoadListener(this);
         setRefreshEnabled(false);
         setLoadEnabled(false);
-
-        post(() -> setDragTriggerDistance(
-                BothWaySwipeRefreshLayout.DIRECTION_BOTTOM,
-                MysplashApplication.getInstance().getWindowInsets().bottom
-                        + getResources().getDimensionPixelSize(R.dimen.normal_margin)
-        ));
 
         recyclerView.setLayoutManager(
                 RecyclerViewHelper.getDefaultStaggeredGridLayoutManager(getContext()));

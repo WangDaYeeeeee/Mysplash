@@ -25,6 +25,7 @@ import com.wangdaye.about.R2;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.ThemeManager;
@@ -54,7 +55,7 @@ public class IntroduceActivity extends MysplashActivity
         implements ViewPager.OnPageChangeListener {
 
     @BindView(R2.id.activity_introduce_container) CoordinatorLayout container;
-    @BindView(R2.id.activity_introduce_viewPager) ViewPager viewPager;
+    @BindView(R2.id.activity_introduce_viewPager) FitBottomSystemBarViewPager viewPager;
     @BindView(R2.id.activity_introduce_button) Button button;
     @OnClick(R2.id.activity_introduce_button) void clickBtn() {
         if (viewPager.getCurrentItem() == introduceModelList.size() - 1) {
@@ -248,7 +249,7 @@ public class IntroduceActivity extends MysplashActivity
             titleList.add(introduceModelList.get(i).title);
         }
 
-        PagerAdapter adapter = new PagerAdapter(pageList, titleList);
+        PagerAdapter adapter = new PagerAdapter(viewPager, pageList, titleList);
 
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(this);

@@ -34,6 +34,7 @@ import com.wangdaye.common.base.vm.ParamsViewModelFactory;
 import com.wangdaye.common.base.vm.pager.PagerViewModel;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.presenter.LoadImagePresenter;
+import com.wangdaye.common.presenter.TabLayoutDoubleClickBackToTopPresenter;
 import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
 import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
 import com.wangdaye.common.ui.adapter.PagerAdapter;
@@ -44,6 +45,7 @@ import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.AnimUtils;
 import com.wangdaye.common.utils.DisplayUtils;
@@ -134,7 +136,7 @@ public class MainActivity extends LoadableActivity<Photo>
     @BindView(R2.id.activity_main_logo) LinearLayout logo;
     @BindView(R2.id.activity_main_appIcon) ImageView appIcon;
 
-    @BindView(R2.id.activity_main_viewPager) ViewPager viewPager;
+    @BindView(R2.id.activity_main_viewPager) FitBottomSystemBarViewPager viewPager;
     @BindView(R2.id.activity_main_indicator) AutoHideInkPageIndicator indicator;
 
     private PagerView[] pagers = new PagerView[pageCount()];
@@ -335,7 +337,7 @@ public class MainActivity extends LoadableActivity<Photo>
 
         List<String> tabList = new ArrayList<>();
         Collections.addAll(tabList, searchTabs);
-        PagerAdapter adapter = new PagerAdapter(pageList, tabList);
+        PagerAdapter adapter = new PagerAdapter(viewPager, pageList, tabList);
 
         viewPager.setAdapter(adapter);
         viewPager.setCurrentItem(getCurrentPagerPosition(), false);
@@ -344,6 +346,7 @@ public class MainActivity extends LoadableActivity<Photo>
         TabLayout tabLayout = findViewById(R.id.activity_main_tabLayout);
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.addOnTabSelectedListener(new TabLayoutDoubleClickBackToTopPresenter(MainActivity.this::backToTop));
 
         indicator.setViewPager(viewPager);
         indicator.setAlpha(0f);

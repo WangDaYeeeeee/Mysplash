@@ -68,8 +68,8 @@ public class PhotoService {
     }
 
     public void requestPhotos(@ListPager.PageRule int page, @ListPager.PerPageRule int per_page,
-                              String order_by, BaseObserver<List<Photo>> observer) {
-        api.getPhotos(page, per_page, order_by)
+                              BaseObserver<List<Photo>> observer) {
+        api.getPhotos(page, per_page, "latest")
                 .compose(SchedulerTransformer.create())
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
@@ -107,16 +107,16 @@ public class PhotoService {
 
     public void requestUserPhotos(String username,
                                   @ListPager.PageRule int page, @ListPager.PerPageRule int per_page,
-                                  String order_by, BaseObserver<List<Photo>> observer) {
-        api.getUserPhotos(username, page, per_page, order_by)
+                                  BaseObserver<List<Photo>> observer) {
+        api.getUserPhotos(username, page, per_page, "latest")
                 .compose(SchedulerTransformer.create())
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }
 
     public void requestUserLikes(String username,
                                  @ListPager.PageRule int page, @ListPager.PerPageRule int per_page,
-                                 String order_by, final BaseObserver<List<Photo>> observer) {
-        api.getUserLikes(username, page, per_page, order_by)
+                                 final BaseObserver<List<Photo>> observer) {
+        api.getUserLikes(username, page, per_page, "latest")
                 .compose(SchedulerTransformer.create())
                 .subscribe(new ObserverContainer<>(compositeDisposable, observer));
     }

@@ -7,8 +7,8 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.common.R;
-import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
+import com.wangdaye.common.utils.DisplayUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +29,7 @@ public class InkPageIndicatorBehavior<V extends InkPageIndicator> extends Coordi
     @Override
     public boolean onLayoutChild(@NotNull CoordinatorLayout parent, @NotNull V child, int layoutDirection) {
         int marginTop = parent.getResources().getDimensionPixelSize(R.dimen.normal_margin);
-        int statusBarHeight = MysplashApplication.getInstance().getWindowInsets().top;
+        int statusBarHeight = DisplayUtils.getStatusBarHeight(parent.getResources());
         child.layout(
                 (int) (0.5 * (parent.getMeasuredWidth() - child.getMeasuredWidth())),
                 marginTop + statusBarHeight,
