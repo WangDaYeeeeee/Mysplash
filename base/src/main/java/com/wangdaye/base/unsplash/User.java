@@ -1,5 +1,6 @@
 package com.wangdaye.base.unsplash;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
@@ -189,31 +190,31 @@ public class User
     // interface.
 
     @Override
-    public String getRegularUrl() {
+    public String getRegularUrl(Context context) {
         return profile_image.large;
     }
 
     @Override
-    public String getFullUrl() {
+    public String getFullUrl(Context context) {
         if (TextUtils.isEmpty(profile_image.custom)) {
-            return getRegularUrl();
+            return getRegularUrl(context);
         } else {
             return profile_image.custom;
         }
     }
 
     @Override
-    public String getDownloadUrl() {
+    public String getDownloadUrl(Context context) {
         return profile_image.large;
     }
 
     @Override
-    public int getWidth() {
+    public int getWidth(Context context) {
         return 128;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Context context) {
         return 128;
     }
 }

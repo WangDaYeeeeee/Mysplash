@@ -35,7 +35,7 @@ public class PhotoFeedModel extends FollowingModel {
     public PhotoFeedModel(Context context, Photo photo, int adapterPosition, int photoPosition) {
         super(photo, adapterPosition, photoPosition);
 
-        photoUrl = photo.getRegularUrl();
+        photoUrl = photo.getRegularUrl(context);
         thumbUrl = photo.urls.thumb;
         photoSize = photo.getRegularSize();
         photoColor = ImageHelper.computeCardBackgroundColor(context, photo.color);

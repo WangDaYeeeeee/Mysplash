@@ -18,16 +18,8 @@ public class LoadImagePresenter {
     public static void loadPhotoImage(Context context, ImageView view, @Nullable Photo photo,
                                       @Nullable ImageHelper.OnLoadImageListener l) {
         if (photo != null) {
-            ImageHelper.loadImage(context, view, photo.getRegularUrl(), photo.urls.thumb,
+            ImageHelper.loadImage(context, view, photo.getRegularUrl(context), photo.urls.thumb,
                     photo.getRegularSize(), null, l);
-        }
-    }
-
-    public static void loadFullSizePhotoImage(Context context, ImageView view, @Nullable Photo photo,
-                                              @Nullable ImageHelper.OnLoadImageListener l) {
-        if (photo != null) {
-            ImageHelper.loadImage(context, view, photo.getFullUrl(), photo.getRegularUrl(),
-                    photo.getFullSize(), null, l);
         }
     }
 

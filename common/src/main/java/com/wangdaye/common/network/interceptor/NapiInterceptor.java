@@ -3,6 +3,7 @@ package com.wangdaye.common.network.interceptor;
 import androidx.annotation.NonNull;
 
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import okhttp3.MediaType;
 import okhttp3.Protocol;
@@ -23,7 +24,7 @@ import okio.GzipSource;
 
 public class NapiInterceptor extends ReportExceptionInterceptor {
 
-    private static final Charset UTF8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = StandardCharsets.UTF_8;
 
     @NonNull
     @Override

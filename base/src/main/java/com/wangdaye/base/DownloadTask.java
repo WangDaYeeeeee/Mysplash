@@ -58,7 +58,7 @@ public class DownloadTask implements Downloadable, Cloneable {
 
     public DownloadTask(Context context, @NonNull Photo p, @DownloadTypeRule int type, String downloadScale) {
         this.title = p.id;
-        this.photoUri = p.getRegularUrl();
+        this.photoUri = p.getRegularUrl(context);
         switch (downloadScale) {
             case "tiny":
                 this.downloadUrl = p.getTinyDownloadSizeUrl(context);

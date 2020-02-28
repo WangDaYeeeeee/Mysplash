@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import androidx.annotation.Nullable;
+
 import com.wangdaye.common.R;
 import com.wangdaye.common.utils.AnimUtils;
 
@@ -60,22 +62,27 @@ public class SwipeBackHelper {
         backgroundView = null;
     }
 
+    @Nullable
     public static Bitmap getViewSnapshot(View view) {
-        view.setDrawingCacheEnabled(true);
-        Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
-        view.setDrawingCacheEnabled(false);
+        try {
+            view.setDrawingCacheEnabled(true);
+            Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());
+            view.setDrawingCacheEnabled(false);
 
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
-        byte[] bytes = stream.toByteArray();
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+            byte[] bytes = stream.toByteArray();
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 8;
-        return blur(
-                view.getContext(),
-                BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options),
-                25f / 8f
-        );
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inSampleSize = 8;
+            return blur(
+                    view.getContext(),
+                    BitmapFactory.decodeByteArray(bytes, 0, bytes.length, options),
+                    25f / 8f
+            );
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private static Bitmap blur(Context context, Bitmap source, float radius){

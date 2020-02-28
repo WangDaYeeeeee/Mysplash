@@ -66,13 +66,6 @@ public class PhotoButtonBar extends RelativeLayout {
         return true;
     }
 
-    @OnClick(R2.id.container_photo_2_button_bar_infoButton)
-    void checkInfo() {
-        if (listener != null) {
-            listener.onInfoButtonClicked();
-        }
-    }
-
     private int likeIconId;
     private int collectIconId;
 
@@ -230,7 +223,6 @@ public class PhotoButtonBar extends RelativeLayout {
         void onCollectButtonClicked();
         void onDownloadButtonClicked();
         void onDownloadButtonLongClicked();
-        void onInfoButtonClicked();
     }
 
     public void setOnClickButtonListener(OnClickButtonListener l) {

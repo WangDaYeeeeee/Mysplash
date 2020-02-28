@@ -149,7 +149,7 @@ public class SettingsFragment extends MysplashSettingsFragment {
             SettingsServiceIMP.getInstance(requireActivity()).setCDNEnabled((Boolean) newValue);
             return true;
         });
-        findPreference(getString(R.string.key_cdn_enabled)).setVisible(false);
+        // findPreference(getString(R.string.key_cdn_enabled)).setVisible(false);
 
         // language.
         ListPreference language = findPreference(getString(R.string.key_language));

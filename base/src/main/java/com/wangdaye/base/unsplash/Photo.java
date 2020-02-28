@@ -21,6 +21,8 @@ import java.util.List;
 public class Photo
         implements Parcelable, Serializable, Cloneable, Previewable, Downloadable {
 
+    public static final float MAX_SCALE = 2.5f;
+
     /**
      * id : Dwu85P9SOIk
      * created_at : 2016-05-03T11:00:28-04:00
@@ -161,18 +163,42 @@ public class Photo
     }
 
     @Size(2)
-    public int[] getFullSize() {
-        return new int[] {width, height};
+    public int[] getFullSize(Context context) {
+        return getCropScaleSize(context, MAX_SCALE);
     }
 
     public String getTinyDownloadSizeUrl(Context context) {
-        double scaleRatio = 0.7 * Math.max(
-                context.getResources().getDisplayMetrics().widthPixels,
-                context.getResources().getDisplayMetrics().heightPixels
-        ) / Math.min(width, height);
-        int w = (int) (scaleRatio * width);
-        int h = (int) (scaleRatio * height);
-        return urls.raw + "?q=75&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
+        return getUrl(getCropScaleSize(context, 1));
+    }
+
+    @Size(2)
+    private int[] getCropScaleSize(Context context, float scale) {
+        float screenRatio = 1.f
+                * context.getResources().getDisplayMetrics().widthPixels
+                / context.getResources().getDisplayMetrics().heightPixels;
+        float imageRatio = 1.f * width / height;
+
+        if (imageRatio >= screenRatio) {
+            int maxScaleHeight = (int) (context.getResources().getDisplayMetrics().heightPixels * scale);
+            if (height <= maxScaleHeight) {
+                return new int[] {width, height};
+            } else {
+                return new int[] {
+                        (int) (1.f * maxScaleHeight * width / height),
+                        maxScaleHeight
+                };
+            }
+        } else {
+            int maxScaleWidth = (int) (context.getResources().getDisplayMetrics().widthPixels * scale);
+            if (width <= maxScaleWidth) {
+                return new int[] {width, height};
+            } else {
+                return new int[] {
+                        maxScaleWidth,
+                        (int) (1.f * maxScaleWidth * height / width)
+                };
+            }
+        }
     }
 
     public String getUrl(@Size(2) int[] size) {
@@ -182,51 +208,7 @@ public class Photo
                 + "&h=" + size[1]
                 + "&fit=crop";
     }
-/*
-    @Size(2)
-    public int[] getRegularSize(Context context) {
-        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
 
-        float screenRatio = (float) (1.0 * screenWidth / screenHeight);
-        float imageRatio = (float) (1.0 * width / height);
-
-        if (imageRatio > screenRatio) {
-            int h = Math.min(screenHeight / 2, height);
-            int w = (int) (1.0 * width / height * h);
-            return new int[] {w, h};
-        } else {
-            int w = Math.min(screenWidth / 2, width);
-            int h = (int) (1.0 * height / width * w);
-            return new int[] {w, h};
-        }
-    }
-
-    public String getWallpaperSizeUrl(Context context) {
-        double scaleRatio = 0.7
-                * Math.max(
-                context.getResources().getDisplayMetrics().widthPixels,
-                context.getResources().getDisplayMetrics().heightPixels)
-                / Math.min(width, height);
-        int w = (int) (scaleRatio * width);
-        int h = (int) (scaleRatio * height);
-        return urls.raw + "?q=75&fm=jpg&w=" + w + "&h=" + h + "&fit=crop";
-    }
-
-    @Size(2)
-    public int[] getWallpaperSize(Context context) {
-        double scaleRatio = 0.7
-                * Math.max(
-                context.getResources().getDisplayMetrics().widthPixels,
-                context.getResources().getDisplayMetrics().heightPixels)
-                / Math.min(width, height);
-        return new int[] {(int) (scaleRatio * width), (int) (scaleRatio * height)};
-    }
-
-    public String getRegularSizeUrl(Context context) {
-        return getUrl(getRegularSize(context));
-    }
-*/
     public boolean isComplete() {
         return exif != null;
     }
@@ -313,27 +295,27 @@ public class Photo
     // interface.
 
     @Override
-    public String getRegularUrl() {
+    public String getRegularUrl(Context context) {
         return urls.regular;
     }
 
     @Override
-    public String getFullUrl() {
-        return urls.full;
+    public String getFullUrl(Context context) {
+        return getUrl(getFullSize(context));
     }
 
     @Override
-    public String getDownloadUrl() {
+    public String getDownloadUrl(Context context) {
         return urls.raw;
     }
 
     @Override
-    public int getWidth() {
+    public int getWidth(Context context) {
         return width;
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Context context) {
         return height;
     }
 }

@@ -33,7 +33,7 @@ class CollectionModel implements BaseAdapter.ViewModel {
 
     CollectionModel(Context context, Collection collection) {
         if (collection.cover_photo != null) {
-            coverUrl = collection.cover_photo.getRegularUrl();
+            coverUrl = collection.cover_photo.getRegularUrl(context);
             thumbUrl = collection.cover_photo.urls.thumb;
             coverSize = collection.cover_photo.getRegularSize();
             coverColor = ImageHelper.computeCardBackgroundColor(context, collection.cover_photo.color);

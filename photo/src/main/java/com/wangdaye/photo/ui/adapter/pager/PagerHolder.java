@@ -1,6 +1,5 @@
 package com.wangdaye.photo.ui.adapter.pager;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.presenter.LoadImagePresenter;
 import com.wangdaye.photo.ui.photoView.OnScaleChangedListener;
-import com.wangdaye.photo.ui.photoView.PhotoView;
+import com.wangdaye.photo.ui.photoView.NestedScrollingPhotoView;
 import com.wangdaye.photo.R;
 import com.wangdaye.photo.R2;
 import com.wangdaye.photo.activity.PhotoActivity;
@@ -27,7 +26,7 @@ import butterknife.OnClick;
 
 public class PagerHolder extends RecyclerView.ViewHolder {
 
-    @BindView(R2.id.container_photo_pager) PhotoView regularImage;
+    @BindView(R2.id.container_photo_pager) NestedScrollingPhotoView regularImage;
     @OnClick(R2.id.container_photo_pager)
     void clickTouchView() {
         activity.switchComponentsVisibility();
@@ -35,7 +34,7 @@ public class PagerHolder extends RecyclerView.ViewHolder {
 
     private PhotoActivity activity;
     private Photo photo;
-    private @Nullable ImageHelper.BitmapTarget fullSizePhotoTarget;
+    private @Nullable ImageHelper.DrawableTarget fullSizePhotoTarget;
     private boolean attached;
     private boolean hasRegularImage;
     private boolean hasFullImage;
@@ -116,16 +115,15 @@ public class PagerHolder extends RecyclerView.ViewHolder {
 
     private void loadFullSizePhoto() {
         if (attached && hasRegularImage && !hasFullImage && fullSizePhotoTarget == null) {
-            fullSizePhotoTarget = ImageHelper.loadBitmap(
-                    activity, Uri.parse(photo.getFullUrl()), fullSizeHandler, photo.width, photo.height
+            fullSizePhotoTarget = ImageHelper.loadDrawable(
+                    activity, Uri.parse(photo.getFullUrl(activity)), fullSizeHandler, photo.width, photo.height
             );
         }
     }
 
-    private ImageHelper.OnLoadImageHandler fullSizeHandler = resource -> {
+    private ImageHelper.OnLoadDrawableHandler fullSizeHandler = drawable -> {
         hasFullImage = true;
-        ImageHelper.releaseImageView(regularImage);
-        regularImage.updateImageDrawable(new BitmapDrawable(activity.getResources(), resource));
+        regularImage.updateImageDrawable(drawable);
     };
 
     private void setRegularImageScaleLevels(int[] viewSize, int[] photoSize) {
@@ -133,17 +131,17 @@ public class PagerHolder extends RecyclerView.ViewHolder {
         float photoRatio = 1.f * photoSize[0] / photoSize[1];
 
         if (screenRatio == photoRatio) {
-            regularImage.setScaleLevels(1f, 1.5f, 2f);
+            regularImage.setScaleLevels(1f, 1.5f, Photo.MAX_SCALE);
         } else if (screenRatio < photoRatio) {
             // port screen, land photo.
             float mediumScale = 1.f * viewSize[1] / (viewSize[0] / photoRatio);
             regularImage.setScaleLevels(
-                    1f, mediumScale, mediumScale * 2.5f);
+                    1f, mediumScale, mediumScale * Photo.MAX_SCALE);
         } else {
             // land screen, port photo.
             float mediumScale = 1.f * viewSize[0] / (viewSize[1] * photoRatio);
             regularImage.setScaleLevels(
-                    1f, mediumScale, mediumScale * 2.5f);
+                    1f, mediumScale, mediumScale * Photo.MAX_SCALE);
         }
     }
 }

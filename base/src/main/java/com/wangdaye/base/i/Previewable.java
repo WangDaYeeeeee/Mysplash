@@ -1,15 +1,17 @@
 package com.wangdaye.base.i;
 
+import android.content.Context;
+
 /**
  * Previewable.
  * */
 
 public interface Previewable {
 
-    String getRegularUrl();
-    String getFullUrl();
-    String getDownloadUrl();
+    String getRegularUrl(Context context);
+    String getFullUrl(Context context);
+    String getDownloadUrl(Context context);
 
-    int getWidth();
-    int getHeight();
+    int getWidth(Context context);
+    int getHeight(Context context);
 }

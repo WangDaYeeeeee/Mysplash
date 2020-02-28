@@ -34,7 +34,7 @@ class PhotoModel implements BaseAdapter.ViewModel {
     boolean hasFadeIn;
 
     PhotoModel(Context context, Photo photo) {
-        photoUrl = photo.getRegularUrl();
+        photoUrl = photo.getRegularUrl(context);
         thumbUrl = photo.urls.thumb;
         photoSize = photo.getRegularSize();
         photoColor = ImageHelper.computeCardBackgroundColor(context, photo.color);

@@ -27,6 +27,15 @@ import io.reactivex.schedulers.Schedulers;
  * */
 public abstract class SwipeBackActivity extends AppCompatActivity {
 
+    private static class BitmapWrapper {
+
+        @Nullable Bitmap bitmap;
+
+        BitmapWrapper(@Nullable Bitmap bitmap) {
+            this.bitmap = bitmap;
+        }
+    }
+
     @Nullable
     protected abstract SwipeBackCoordinatorLayout provideSwipeBackView();
 
@@ -55,15 +64,13 @@ public abstract class SwipeBackActivity extends AppCompatActivity {
             boolean createFlag = (Boolean) decorView.getTag(R.id.tag_activity_create_flag);
             decorView.setTag(R.id.tag_activity_create_flag, false);
 
-            Observable<Bitmap> snapshot = Observable.create((ObservableOnSubscribe<Bitmap>) emitter -> {
+            Observable<BitmapWrapper> snapshot = Observable.create((ObservableOnSubscribe<BitmapWrapper>) emitter -> {
                 ViewGroup previousContentView = secondFloorActivity.findViewById(Window.ID_ANDROID_CONTENT);
+                Bitmap bitmap = null;
                 if (previousContentView != null) {
-                    emitter.onNext(
-                            SwipeBackHelper.getViewSnapshot(previousContentView.getChildAt(0))
-                    );
-                } else {
-                    view.prepareViews(this);
+                    bitmap = SwipeBackHelper.getViewSnapshot(previousContentView.getChildAt(0));
                 }
+                emitter.onNext(new BitmapWrapper(bitmap));
             }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.STOP))
                     .subscribeOn(Schedulers.io())
                     .unsubscribeOn(Schedulers.io())
@@ -73,12 +80,18 @@ public abstract class SwipeBackActivity extends AppCompatActivity {
                     ? Observable.timer(350, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
                     : Observable.just(System.currentTimeMillis());
 
-            Observable.zip(snapshot, timer, (bitmap, aLong) -> bitmap)
+            Observable.zip(snapshot, timer, (wrapper, aLong) -> wrapper)
                     .compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.STOP))
                     .subscribeOn(AndroidSchedulers.mainThread())
                     .unsubscribeOn(AndroidSchedulers.mainThread())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnNext(b -> decorView.setBackground(new BitmapDrawable(getResources(), b)))
+                    .doOnNext(wrapper -> {
+                        if (wrapper.bitmap != null) {
+                            decorView.setBackground(new BitmapDrawable(getResources(), wrapper.bitmap));
+                        } else {
+                            view.prepareViews(this);
+                        }
+                    })
                     .subscribe();
         }
     }

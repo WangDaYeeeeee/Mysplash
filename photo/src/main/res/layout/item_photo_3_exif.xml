@@ -7,8 +7,7 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:foreground="?attr/selectableItemBackground"
-    android:background="?attr/root_color"
-    tools:ignore="DisableBaselineAlignment">
+    tools:ignore="DisableBaselineAlignment,UnusedAttribute">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/item_photo_3_exif_icon"

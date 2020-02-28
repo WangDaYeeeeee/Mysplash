@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wangdaye.photo.ui.photoView.PhotoView
+<com.wangdaye.photo.ui.photoView.NestedScrollingPhotoView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_photo_pager"

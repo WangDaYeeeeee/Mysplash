@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/item_photo_3_tag_container"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="?attr/root_color">
+    android:layout_height="wrap_content">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_photo_3_tag"
@@ -14,7 +13,6 @@
         android:clipToPadding="false"
         android:layout_marginTop="@dimen/little_margin"
         android:layout_marginBottom="@dimen/normal_margin"
-        android:background="?attr/root_color"
         android:layout_centerInParent="true"
         tools:ignore="RtlHardcoded,RtlSymmetry" />
 

@@ -70,7 +70,7 @@ public class MysplashMuzeiWorker extends Worker
                     .persistentUri(Uri.parse(
                             screenSizeImage
                                     ? p.getUrl(MuzeiUpdateHelper.getScreenSize(context))
-                                    : p.getDownloadUrl()
+                                    : p.getDownloadUrl(context)
                     )).token(p.id)
                     .webUri(Uri.parse(p.links.html))
                     .build());

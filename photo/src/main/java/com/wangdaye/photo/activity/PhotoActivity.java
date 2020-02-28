@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.cardview.widget.CardView;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import androidx.lifecycle.ViewModelProviders;
@@ -25,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.base.pager.ListPager;
@@ -58,6 +56,7 @@ import com.wangdaye.photo.ui.PhotoButtonBar;
 import com.wangdaye.photo.ui.PhotoSwipeBackCoordinatorLayout;
 import com.wangdaye.photo.ui.adapter.pager.PagerAdapter;
 import com.wangdaye.photo.ui.adapter.photo.PhotoInfoAdapter3;
+import com.wangdaye.photo.ui.behavior.BottomSheetBehavior;
 import com.wangdaye.photo.ui.dialog.DownloadTypeDialog;
 import com.wangdaye.photo.vm.PhotoActivityModel;
 import com.wangdaye.photo.R;
@@ -114,13 +113,13 @@ public class PhotoActivity extends ReadWriteActivity
     @BindView(R2.id.activity_photo_3_previewTop) View previewTop;
     @BindView(R2.id.activity_photo_3_previewBottom) View previewBottom;
 
-    @BindView(R2.id.activity_photo_3_bottomSheet) View bottomSheet;
-    @OnClick(R2.id.activity_photo_3_bottomSheet)
+    @BindView(R2.id.activity_photo_3_bottomSheet_background) View bottomSheetBackground;
+    @OnClick(R2.id.activity_photo_3_bottomSheet_background)
     void clickBottomSheet() {
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
-    @BindView(R2.id.activity_photo_3_card) CardView card;
-    @BindView(R2.id.activity_photo_3_recyclerView) RecyclerView recyclerView;
+
+    @BindView(R2.id.activity_photo_3_bottomSheet) RecyclerView bottomSheet;
     private BottomSheetBehavior bottomSheetBehavior;
     private PhotoInfoAdapter3 photoInfoAdapter;
 
@@ -245,6 +244,7 @@ public class PhotoActivity extends ReadWriteActivity
     private void initView() {
         swipeBackView.setTarget(viewPager);
         swipeBackView.setHorizontalConsumer(viewPager);
+        swipeBackView.setBottomSheetRecyclerView(bottomSheet);
         swipeBackView.setOnSwipeListener(this);
 
         viewPager.setUserInputEnabled(false);
@@ -289,16 +289,16 @@ public class PhotoActivity extends ReadWriteActivity
             }
         }
         if (marginHorizontal > 0) {
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) bottomSheet.getLayoutParams();
             params.setMarginStart(marginHorizontal);
             params.setMarginEnd(marginHorizontal);
-            card.setLayoutParams(params);
+            bottomSheet.setLayoutParams(params);
         }
 
-        recyclerView.setClipToPadding(false);
+        bottomSheet.setClipToPadding(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            recyclerView.setOnApplyWindowInsetsListener((v, insets) -> {
-                recyclerView.setPadding(0, 0, 0,
+            bottomSheet.setOnApplyWindowInsetsListener((v, insets) -> {
+                bottomSheet.setPadding(0, 0, 0,
                         (int) (new DisplayUtils(this).dpToPx(12)
                                 + insets.getSystemWindowInsetTop()
                                 + insets.getSystemWindowInsetBottom())
@@ -306,7 +306,7 @@ public class PhotoActivity extends ReadWriteActivity
                 return insets;
             });
         } else {
-            recyclerView.setPadding(0, 0, 0,
+            bottomSheet.setPadding(0, 0, 0,
                     (int) (new DisplayUtils(this).dpToPx(12)
                             + DisplayUtils.getStatusBarHeight(getResources())
                             + DisplayUtils.getNavigationBarHeight(this))
@@ -318,20 +318,40 @@ public class PhotoActivity extends ReadWriteActivity
         bottomSheetBehavior.setSkipCollapsed(true);
         bottomSheetBehavior.setFitToContents(false);
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+
+            float lastOffset = -1;
+            int visibility = View.GONE;
+
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                // do nothing.
+                if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                    PhotoActivity.this.bottomSheet.scrollToPosition(0);
+                }
             }
 
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                slideOffset = (float) Math.min(0.66, slideOffset);
-                viewPager.setAlpha(1 - slideOffset);
-                topBar.setAlpha(1 - slideOffset);
+                if (lastOffset >= 0 || slideOffset >= 0) {
+                    float r = (float) Math.min(0.66, Math.max(0, slideOffset));
+                    bottomSheetBackground.setAlpha(r);
+                    visibility = r > 0 ? View.VISIBLE : View.GONE;
+                } else {
+                    visibility = View.GONE;
+                }
+
+                lastOffset = slideOffset;
+
+                if (bottomSheetBackground.getVisibility() != visibility) {
+                    bottomSheetBackground.setVisibility(visibility);
+                }
             }
         });
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
         bottomSheetBehavior.setExpandedOffset(DisplayUtils.getStatusBarHeight(getResources()));
+        bottomSheet.post(() ->
+                bottomSheetBehavior.setHalfExpandedRatio(
+                        1.f * bottomBar.getMeasuredHeight() / container.getMeasuredHeight())
+        );
 
         browsableDialogMangePresenter = new BrowsableDialogMangePresenter() {
             @Override
@@ -386,8 +406,8 @@ public class PhotoActivity extends ReadWriteActivity
                 layoutManager.setSpanSizeLookup(
                         photoInfoAdapter.getSpanSizeLookup(DisplayUtils.isLandscape(this))
                 );
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(photoInfoAdapter);
+                bottomSheet.setLayoutManager(layoutManager);
+                bottomSheet.setAdapter(photoInfoAdapter);
             }
         });
         activityModel.getComponentsVisibility().observe(this, visibility -> {
@@ -465,10 +485,6 @@ public class PhotoActivity extends ReadWriteActivity
             photoInfoAdapter.update(photo, progressing);
             return false;
         }
-    }
-
-    public void expandBottomSheet() {
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
     }
 
     public void switchComponentsVisibility() {
@@ -606,15 +622,19 @@ public class PhotoActivity extends ReadWriteActivity
     }
 
     @Override
-    public void onSwipeProcess(float percent) {
-        shadow.setAlpha(1 - percent);
-        topBar.setAlpha(1 - percent);
-        bottomBar.setAlpha(1 - percent);
+    public void onSwipeProcess(@SwipeBackCoordinatorLayout.DirectionRule int dir, float percent) {
+        if (dir == SwipeBackCoordinatorLayout.DOWN_DIR) {
+            shadow.setAlpha(1 - percent);
+            topBar.setAlpha(1 - percent);
+            bottomBar.setAlpha(1 - percent);
+        }
     }
 
     @Override
     public void onSwipeFinish(@SwipeBackCoordinatorLayout.DirectionRule int dir) {
-        finishSelf(false);
+        if (dir == SwipeBackCoordinatorLayout.DOWN_DIR) {
+            finishSelf(false);
+        }
     }
 
     // on click button listener.
@@ -660,11 +680,6 @@ public class PhotoActivity extends ReadWriteActivity
     @Override
     public void onDownloadButtonLongClicked() {
         readyToDownload(DownloadTask.DOWNLOAD_TYPE);
-    }
-
-    @Override
-    public void onInfoButtonClicked() {
-        expandBottomSheet();
     }
 
     private ViewPager2.OnPageChangeCallback onPageChangeCallback = new ViewPager2.OnPageChangeCallback() {

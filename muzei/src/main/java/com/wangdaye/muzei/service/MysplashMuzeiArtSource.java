@@ -56,7 +56,7 @@ public class MysplashMuzeiArtSource extends RemoteMuzeiArtSource
                 new Artwork.Builder()
                         .title(getString(R.string.by) + " " + photo.user.name)
                         .byline(getString(R.string.on) + " " + photo.created_at.split("T")[0])
-                        .imageUri(Uri.parse(photo.getDownloadUrl()))
+                        .imageUri(Uri.parse(photo.getDownloadUrl(getApplicationContext())))
                         .token(photo.id)
                         .viewIntent(
                                 RoutingHelper.getWebActivityIntent(

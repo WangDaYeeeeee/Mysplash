@@ -8,6 +8,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorMatrixColorFilter;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -25,6 +26,7 @@ import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -76,11 +78,26 @@ public class ImageHelper {
         }
     }
 
+    public static class DrawableTarget extends SimpleTarget<GlideDrawable> {
+
+        private OnLoadDrawableHandler handler;
+
+        DrawableTarget(OnLoadDrawableHandler handler, int width, int height) {
+            super(width, height);
+            this.handler = handler;
+        }
+
+        @Override
+        public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
+            handler.onComplete(resource);
+        }
+    }
+
     public static class BitmapTarget extends SimpleTarget<Bitmap> {
 
-        private OnLoadImageHandler handler;
+        private OnLoadBitmapHandler handler;
 
-        BitmapTarget(OnLoadImageHandler handler, int width, int height) {
+        BitmapTarget(OnLoadBitmapHandler handler, int width, int height) {
             super(width, height);
             this.handler = handler;
         }
@@ -103,10 +120,26 @@ public class ImageHelper {
     public static void loadImage(Context context, ImageView view,
                                  @NonNull String url, @Nullable String thumbUrl, @Size(2) @Px int[] size,
                                  @Nullable BitmapTransformation[] ts, @Nullable OnLoadImageListener l) {
+        loadImage(context, view, url, thumbUrl, size, null, ts, l);
+    }
+
+    public static void loadImage(Context context, ImageView view,
+                                 @NonNull String url, @Nullable String thumbUrl,
+                                 @Size(2) @Px int[] size, @Nullable @Size(2) @Px int[] thumbSize,
+                                 @Nullable BitmapTransformation[] ts, @Nullable OnLoadImageListener l) {
+        if (thumbSize == null) {
+            thumbSize = new int[] {Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL};
+        }
         DrawableRequestBuilder<String> thumb = TextUtils.isEmpty(thumbUrl) ? null : Glide.with(getValidContext(context))
                 .load(ensureUrl(thumbUrl))
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .listener(new BaseRequestListener<>(() -> view.setTag(R.id.tag_item_image_fade_in_flag, false)));
+                .override(thumbSize[0], thumbSize[1])
+                .diskCacheStrategy(
+                        thumbSize[0] == Target.SIZE_ORIGINAL
+                                ? DiskCacheStrategy.NONE
+                                : DiskCacheStrategy.SOURCE
+                ).listener(
+                        new BaseRequestListener<>(() -> view.setTag(R.id.tag_item_image_fade_in_flag, false))
+                );
         loadImage(context, view, url, thumb, size, ts, l);
     }
 
@@ -186,8 +219,19 @@ public class ImageHelper {
                 .into(view);
     }
 
+    public static DrawableTarget loadDrawable(Context context, Uri uri,
+                                            @NonNull OnLoadDrawableHandler handler, int width, int height) {
+        DrawableTarget target = new DrawableTarget(handler, width, height);
+        Glide.with(getValidContext(context))
+                .load(uri)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .into(target);
+
+        return target;
+    }
+
     public static BitmapTarget loadBitmap(Context context, Uri uri,
-                                          @NonNull OnLoadImageHandler handler, int width, int height) {
+                                          @NonNull OnLoadBitmapHandler handler, int width, int height) {
         BitmapTarget target = new BitmapTarget(handler, width, height);
         Glide.with(getValidContext(context))
                 .load(uri)
@@ -297,7 +341,7 @@ public class ImageHelper {
         Glide.clear(view);
     }
 
-    public static void releaseImageView(@NonNull BitmapTarget target) {
+    public static void releaseImageView(@NonNull DrawableTarget target) {
         Glide.clear(target);
     }
 
@@ -323,7 +367,11 @@ public class ImageHelper {
         void onCompleted();
     }
 
-    public interface OnLoadImageHandler {
-        void onComplete(Bitmap resource);
+    public interface OnLoadDrawableHandler {
+        void onComplete(Drawable drawable);
+    }
+
+    public interface OnLoadBitmapHandler {
+        void onComplete(Bitmap bitmap);
     }
 }

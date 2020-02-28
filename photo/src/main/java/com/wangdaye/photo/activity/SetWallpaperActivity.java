@@ -16,9 +16,12 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
+import com.bumptech.glide.request.target.Target;
 import com.wangdaye.base.i.Downloadable;
+import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.common.base.popup.MysplashPopupWindow;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.DisplayUtils;
@@ -195,9 +198,17 @@ public class SetWallpaperActivity extends ReadWriteActivity
         setTypeIcon(clipType);
         setAlignIcon(alignType);
 
-        photoView.setMaximumScale(2.5f);
-        photoView.setScaleType(AppCompatImageView.ScaleType.CENTER_CROP);
-        ImageHelper.loadImage(this, photoView, getIntent().getData());
+        photoView.setScale(1f, false);
+        photoView.setZoomTransitionDuration(300);
+        photoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        photoView.setMaximumScale(Photo.MAX_SCALE);
+        ImageHelper.loadDrawable(
+                this,
+                getIntent().getData(),
+                drawable -> photoView.setImageDrawable(drawable),
+                Target.SIZE_ORIGINAL,
+                Target.SIZE_ORIGINAL
+        );
         ImageHelper.loadBitmap(
                 this,
                 getIntent().getData(),

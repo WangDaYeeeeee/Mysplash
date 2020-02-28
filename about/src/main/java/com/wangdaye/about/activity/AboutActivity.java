@@ -91,7 +91,7 @@ public class AboutActivity extends MysplashActivity
     }
 
     @Override
-    public void onSwipeProcess(float percent) {
+    public void onSwipeProcess(@SwipeBackCoordinatorLayout.DirectionRule int dir, float percent) {
         container.setBackgroundColor(SwipeBackCoordinatorLayout.getBackgroundColor(percent));
     }
 

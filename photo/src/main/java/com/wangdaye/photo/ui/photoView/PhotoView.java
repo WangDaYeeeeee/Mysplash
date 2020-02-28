@@ -23,23 +23,17 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.core.view.NestedScrollingChild3;
-import androidx.core.view.NestedScrollingChildHelper;
 
 /**
  * A zoomable ImageView. See {@link PhotoViewAttacher} for most of the details on how the zooming
  * is accomplished
  */
 @SuppressWarnings("unused")
-public class PhotoView extends AppCompatImageView
-        implements NestedScrollingChild3 {
+public class PhotoView extends AppCompatImageView {
 
     private PhotoViewAttacher attacher;
     private ScaleType pendingScaleType;
-    private NestedScrollingChildHelper nestedScrollingChildHelper;
 
     public PhotoView(Context context) {
         this(context, null);
@@ -64,9 +58,6 @@ public class PhotoView extends AppCompatImageView
             setScaleType(pendingScaleType);
             pendingScaleType = null;
         }
-
-        nestedScrollingChildHelper = new NestedScrollingChildHelper(this);
-        nestedScrollingChildHelper.setNestedScrollingEnabled(true);
     }
 
     /**
@@ -115,13 +106,6 @@ public class PhotoView extends AppCompatImageView
         // setImageBitmap calls through to this method
         if (attacher != null) {
             attacher.update();
-        }
-    }
-
-    public void updateImageDrawable(Drawable drawable) {
-        super.setImageDrawable(drawable);
-        if (attacher != null) {
-            attacher.retainSuppMatrixUpdate();
         }
     }
 
@@ -202,6 +186,10 @@ public class PhotoView extends AppCompatImageView
         return attacher.getScale();
     }
 
+    public void setAllowParentInterceptOnEdge(boolean allow) {
+        attacher.setAllowParentInterceptOnEdge(allow);
+    }
+
     public void setMinimumScale(float minimumScale) {
         attacher.setMinimumScale(minimumScale);
     }
@@ -264,44 +252,5 @@ public class PhotoView extends AppCompatImageView
 
     public void setOnSingleFlingListener(OnSingleFlingListener onSingleFlingListener) {
         attacher.setOnSingleFlingListener(onSingleFlingListener);
-    }
-
-    // interface.
-
-    // nested scrolling child.
-
-    @Override
-    public boolean startNestedScroll(int axes, int type) {
-        return nestedScrollingChildHelper.startNestedScroll(axes, type);
-    }
-
-    @Override
-    public void stopNestedScroll(int type) {
-        nestedScrollingChildHelper.stopNestedScroll(type);
-    }
-
-    @Override
-    public boolean hasNestedScrollingParent(int type) {
-        return nestedScrollingChildHelper.hasNestedScrollingParent(type);
-    }
-
-    @Override
-    public boolean dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed,
-                                        @Nullable int[] offsetInWindow, int type) {
-        return nestedScrollingChildHelper.dispatchNestedScroll(
-                dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type);
-    }
-
-    @Override
-    public void dispatchNestedScroll(int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed,
-                                     @Nullable int[] offsetInWindow, int type, @NonNull int[] consumed) {
-        nestedScrollingChildHelper.dispatchNestedScroll(
-                dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, offsetInWindow, type, consumed);
-    }
-
-    @Override
-    public boolean dispatchNestedPreScroll(int dx, int dy, @Nullable int[] consumed,
-                                           @Nullable int[] offsetInWindow, int type) {
-        return nestedScrollingChildHelper.dispatchNestedPreScroll(dx, dy, consumed, offsetInWindow, type);
     }
 }

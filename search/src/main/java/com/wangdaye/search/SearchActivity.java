@@ -551,7 +551,7 @@ public class SearchActivity extends LoadableActivity<Photo>
     }
 
     @Override
-    public void onSwipeProcess(float percent) {
+    public void onSwipeProcess(@SwipeBackCoordinatorLayout.DirectionRule int dir, float percent) {
         shadow.setAlpha(SwipeBackCoordinatorLayout.getBackgroundAlpha(percent));
     }
 

@@ -39,7 +39,7 @@ class CollectionMiniModel implements BaseAdapter.ViewModel {
 
     CollectionMiniModel(Context context, Photo photo, Collection collection, boolean progressing) {
         if (collection.cover_photo != null) {
-            coverUrl = collection.cover_photo.getRegularUrl();
+            coverUrl = collection.cover_photo.getRegularUrl(context);
             coverSize = collection.cover_photo.getRegularSize();
         } else {
             coverUrl = null;
