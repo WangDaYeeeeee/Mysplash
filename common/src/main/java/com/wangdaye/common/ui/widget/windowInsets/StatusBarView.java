@@ -153,7 +153,7 @@ public class StatusBarView extends View {
 
     public void switchToInitAlpha() {
         if (translucentMode) {
-            setInitState(true);
+            this.initState = true;
             setAlpha(getTargetAlpha());
         }
     }

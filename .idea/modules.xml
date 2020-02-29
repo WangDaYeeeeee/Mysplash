@@ -3,6 +3,22 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/MySplash.iml" filepath="$PROJECT_DIR$/MySplash.iml" group="MySplash" />
+      <module fileurl="file://$PROJECT_DIR$/Mysplash.iml" filepath="$PROJECT_DIR$/Mysplash.iml" group="Mysplash" />
+      <module fileurl="file://$PROJECT_DIR$/about/Mysplash-about.iml" filepath="$PROJECT_DIR$/about/Mysplash-about.iml" group="Mysplash/about" />
+      <module fileurl="file://$PROJECT_DIR$/app/Mysplash-app.iml" filepath="$PROJECT_DIR$/app/Mysplash-app.iml" group="Mysplash/app" />
+      <module fileurl="file://$PROJECT_DIR$/base/Mysplash-base.iml" filepath="$PROJECT_DIR$/base/Mysplash-base.iml" group="Mysplash/base" />
+      <module fileurl="file://$PROJECT_DIR$/collection/Mysplash-collection.iml" filepath="$PROJECT_DIR$/collection/Mysplash-collection.iml" group="Mysplash/collection" />
+      <module fileurl="file://$PROJECT_DIR$/common/Mysplash-common.iml" filepath="$PROJECT_DIR$/common/Mysplash-common.iml" group="Mysplash/common" />
+      <module fileurl="file://$PROJECT_DIR$/component/Mysplash-component.iml" filepath="$PROJECT_DIR$/component/Mysplash-component.iml" group="Mysplash/component" />
+      <module fileurl="file://$PROJECT_DIR$/db/Mysplash-db.iml" filepath="$PROJECT_DIR$/db/Mysplash-db.iml" group="Mysplash/db" />
+      <module fileurl="file://$PROJECT_DIR$/downloader/Mysplash-downloader.iml" filepath="$PROJECT_DIR$/downloader/Mysplash-downloader.iml" group="Mysplash/downloader" />
+      <module fileurl="file://$PROJECT_DIR$/main/Mysplash-main.iml" filepath="$PROJECT_DIR$/main/Mysplash-main.iml" group="Mysplash/main" />
+      <module fileurl="file://$PROJECT_DIR$/me/Mysplash-me.iml" filepath="$PROJECT_DIR$/me/Mysplash-me.iml" group="Mysplash/me" />
+      <module fileurl="file://$PROJECT_DIR$/muzei/Mysplash-muzei.iml" filepath="$PROJECT_DIR$/muzei/Mysplash-muzei.iml" group="Mysplash/muzei" />
+      <module fileurl="file://$PROJECT_DIR$/photo/Mysplash-photo.iml" filepath="$PROJECT_DIR$/photo/Mysplash-photo.iml" group="Mysplash/photo" />
+      <module fileurl="file://$PROJECT_DIR$/search/Mysplash-search.iml" filepath="$PROJECT_DIR$/search/Mysplash-search.iml" group="Mysplash/search" />
+      <module fileurl="file://$PROJECT_DIR$/settings/Mysplash-settings.iml" filepath="$PROJECT_DIR$/settings/Mysplash-settings.iml" group="Mysplash/settings" />
+      <module fileurl="file://$PROJECT_DIR$/user/Mysplash-user.iml" filepath="$PROJECT_DIR$/user/Mysplash-user.iml" group="Mysplash/user" />
       <module fileurl="file://$PROJECT_DIR$/about/about.iml" filepath="$PROJECT_DIR$/about/about.iml" group="MySplash/about" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="MySplash/app" />
       <module fileurl="file://$PROJECT_DIR$/base/base.iml" filepath="$PROJECT_DIR$/base/base.iml" group="MySplash/base" />
