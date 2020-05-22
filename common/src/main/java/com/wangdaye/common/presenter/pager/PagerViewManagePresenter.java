@@ -70,7 +70,8 @@ public class PagerViewManagePresenter {
                     adapter.addItems(appendList);
                 });
             } else if (event instanceof ListResource.ItemInserted) {
-                model.readDataList(list -> adapter.addItem(list.get(listSize - 1)));
+                int index = ((ListResource.ItemInserted) event).index;
+                model.readDataList(list -> adapter.addItem(list.get(index), index));
             } else if (event instanceof ListResource.ItemChanged) {
                 int index = ((ListResource.ItemChanged) event).index;
                 model.readDataList(list -> adapter.updateItem(list.get(index)));

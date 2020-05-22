@@ -43,7 +43,8 @@ public class TitleFeedModel extends FollowingModel {
 
     @Override
     public boolean areContentsTheSame(BaseAdapter.ViewModel newModel) {
-        return ImageHelper.isSameUrl(((TitleFeedModel) newModel).avatarUrl, avatarUrl)
+        return newModel instanceof TitleFeedModel
+                && ImageHelper.isSameUrl(((TitleFeedModel) newModel).avatarUrl, avatarUrl)
                 && ((TitleFeedModel) newModel).title.equals(title)
                 && ImageHelper.isSameUrl(((TitleFeedModel) newModel).subtitle, subtitle);
     }

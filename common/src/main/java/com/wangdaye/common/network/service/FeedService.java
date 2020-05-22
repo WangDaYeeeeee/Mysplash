@@ -37,6 +37,7 @@ public class FeedService {
                         client.newBuilder()
                                 .addInterceptor(new FeedInterceptor())
                                 .addInterceptor(new NapiInterceptor())
+                                // .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                                 .build()
                 ).addConverterFactory(gsonConverterFactory)
                 .addCallAdapterFactory(rxJava2CallAdapterFactory)

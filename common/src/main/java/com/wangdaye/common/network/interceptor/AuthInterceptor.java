@@ -2,6 +2,8 @@ package com.wangdaye.common.network.interceptor;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.wangdaye.common.base.application.MysplashApplication;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.utils.manager.CustomApiManager;
@@ -19,8 +21,9 @@ import okhttp3.Response;
 
 public class AuthInterceptor extends ReportExceptionInterceptor {
 
+    @NonNull
     @Override
-    public Response intercept(Chain chain) {
+    public Response intercept(@NonNull Chain chain) {
         Request request;
         if (AuthManager.getInstance().isAuthorized()) {
             request = chain.request()

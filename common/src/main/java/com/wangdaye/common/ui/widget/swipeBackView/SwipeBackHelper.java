@@ -63,7 +63,11 @@ public class SwipeBackHelper {
     }
 
     @Nullable
-    public static Bitmap getViewSnapshot(View view) {
+    public static Bitmap getViewSnapshot(@Nullable View view) {
+        if (view == null) {
+            return null;
+        }
+
         try {
             view.setDrawingCacheEnabled(true);
             Bitmap bitmap = Bitmap.createBitmap(view.getDrawingCache());

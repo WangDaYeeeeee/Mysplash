@@ -107,7 +107,7 @@ public class User
     }
 
     public boolean isComplete() {
-        return badge != null;
+        return updated_at != null;
     }
 
     // parcel.

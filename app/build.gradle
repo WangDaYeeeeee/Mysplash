@@ -7,8 +7,8 @@ android {
         applicationId "com.wangdaye.mysplash"
         minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
-        versionCode 382
-        versionName "3.8.2"
+        versionCode 387
+        versionName "3.8.7"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

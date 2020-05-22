@@ -63,6 +63,10 @@ public class PhotoFeedModel extends FollowingModel {
 
     @Override
     public boolean areContentsTheSame(BaseAdapter.ViewModel newModel) {
+        if (!(newModel instanceof PhotoFeedModel)) {
+            return false;
+        }
+
         ((PhotoFeedModel) newModel).hasFadeIn = hasFadeIn;
 
         return ImageHelper.isSameUrl(((PhotoFeedModel) newModel).photoUrl, photoUrl)

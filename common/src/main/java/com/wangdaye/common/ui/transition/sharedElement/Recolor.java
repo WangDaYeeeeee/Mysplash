@@ -83,7 +83,7 @@ public class Recolor extends SharedElementTransition {
     @Override
     public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
-        if (endValues == null) {
+        if (startValues == null || endValues == null) {
             return null;
         }
 

@@ -2,7 +2,6 @@ package com.wangdaye.user.repository;
 
 import com.wangdaye.base.resource.Resource;
 import com.wangdaye.base.unsplash.User;
-import com.wangdaye.common.bus.event.FollowEvent;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.UserService;
 import com.wangdaye.common.bus.MessageBus;
@@ -32,7 +31,7 @@ public class UserActivityRepository {
 
             @Override
             public void onSucceed(User user) {
-                MessageBus.getInstance().post(new FollowEvent(user));
+                MessageBus.getInstance().post(user);
             }
 
             @Override

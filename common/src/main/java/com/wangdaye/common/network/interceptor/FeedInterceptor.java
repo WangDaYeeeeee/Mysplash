@@ -1,5 +1,7 @@
 package com.wangdaye.common.network.interceptor;
 
+import androidx.annotation.NonNull;
+
 import com.wangdaye.common.BuildConfig;
 import com.wangdaye.common.network.service.FeedService;
 
@@ -16,6 +18,7 @@ import okhttp3.Response;
 
 public class FeedInterceptor extends ReportExceptionInterceptor {
 
+    @NonNull
     @Override
     public Response intercept(Chain chain) {
         Request request = chain.request()

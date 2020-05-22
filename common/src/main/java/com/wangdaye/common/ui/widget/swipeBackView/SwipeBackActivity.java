@@ -68,7 +68,9 @@ public abstract class SwipeBackActivity extends AppCompatActivity {
                 ViewGroup previousContentView = secondFloorActivity.findViewById(Window.ID_ANDROID_CONTENT);
                 Bitmap bitmap = null;
                 if (previousContentView != null) {
-                    bitmap = SwipeBackHelper.getViewSnapshot(previousContentView.getChildAt(0));
+                    if (previousContentView.getChildCount() > 0) {
+                        bitmap = SwipeBackHelper.getViewSnapshot(previousContentView.getChildAt(0));
+                    }
                 }
                 emitter.onNext(new BitmapWrapper(bitmap));
             }).compose(RxLifecycle.bind(this).disposeObservableWhen(LifecycleEvent.STOP))

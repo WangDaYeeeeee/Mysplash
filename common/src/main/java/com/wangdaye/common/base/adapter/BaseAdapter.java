@@ -91,6 +91,12 @@ public abstract class BaseAdapter<M, VM extends BaseAdapter.ViewModel, VH extend
         submitList(vmList);
     }
 
+    public void addItem(M model, int index) {
+        List<VM> vmList = new ArrayList<>(getCurrentList());
+        vmList.add(index, getViewModel(model));
+        submitList(vmList);
+    }
+
     public void addItems(@NonNull List<M> list) {
         List<VM> vmList = new ArrayList<>(getCurrentList());
         vmList.addAll(getViewModelList(list));

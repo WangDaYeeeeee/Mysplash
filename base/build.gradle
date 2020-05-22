@@ -44,10 +44,10 @@ dependencies {
     // android compat.
     api 'androidx.appcompat:appcompat:1.1.0'
     api 'androidx.cardview:cardview:1.0.0'
-    api 'androidx.preference:preference:1.1.0'
+    api 'androidx.preference:preference:1.1.1'
     api 'androidx.legacy:legacy-support-v4:1.0.0'
     api 'androidx.browser:browser:1.2.0'
-    api 'com.google.android.material:material:1.2.0-alpha05'
+    api 'com.google.android.material:material:1.2.0-alpha06'
     api 'android.arch.work:work-runtime:1.0.1'
     api 'org.jetbrains:annotations-java5:15.0'
 
@@ -65,13 +65,14 @@ dependencies {
     api 'com.squareup.retrofit2:adapter-rxjava2:2.6.2'
     api 'com.squareup.okhttp3:okhttp:3.12.0'
     api 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+    api 'org.brotli:dec:0.1.2'
 
     // glide.
     api 'com.github.bumptech.glide:glide:3.7.0'
     api 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
 
     // butter knife.
-    api 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife:10.1.0'
 
     // dagger.
     api 'com.google.dagger:dagger:2.21'
