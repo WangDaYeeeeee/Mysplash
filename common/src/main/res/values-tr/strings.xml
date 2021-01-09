@@ -1,40 +1,77 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- application. -->
-    <string name="powered">Unsplash.com Tarafından Desteklenmektedir</string>
+    <string name="powered">Unsplash.com tarafından desteklenmektedir</string>
 
     <!-- key words. -->
     <string name="about_app">HAKKINDA</string>
-    <string name="introduce">GİRİŞ</string>
-    <string name="gitHub">GITHUB</string>
+    <string name="introduce">KARŞILAMA</string>
+    <string name="gitHub">GİTHUB</string>
     <string name="email">EPOSTA</string>
-    <string name="source_code">KAYNAK KODU</string>
+    <string name="source_code">KAYNAK KOD</string>
+    <string name="donate">BAĞIŞ</string>
+    <string name="donate_alipay">ALIPAY</string>
+    <string name="donate_wechat">WECHAT</string>
     <string name="translators">ÇEVİRMENLER</string>
     <string name="libraries">KÜTÜPHANELER</string>
-    <string name="enter">ONAYLA</string>
-    <string name="copy">KOPYALA</string>
-    <string name="next">SONRAKİ</string>
+    <string name="enter">GEÇ</string>
+    <string name="exit">ÇIK</string>
+    <string name="copy" tools:ignore="PrivateResource">KOPYALA</string>
+    <string name="next">Sonraki</string>
     <string name="cancel" tools:ignore="ButtonCase">İPTAL</string>
-    <string name="backstage">SAHNE ARKASI</string>
+    <string name="backstage">KULİS</string>
     <string name="details">AYRINTILAR</string>
     <string name="restart">YENİDEN BAŞLAT</string>
     <string name="create">OLUŞTUR</string>
     <string name="delete">SİL</string>
     <string name="save">KAYDET</string>
     <string name="check">KONTROL</string>
-    <string name="set">AYARALA</string>
+    <string name="set">AYARLA</string>
+    <string name="reset">SIFIRLA</string>
     <string name="search">ARA</string>
+    <string name="follow">TAKİP ET</string>
+    <string name="following">TAKİP EDİLİYOR</string>
+    <string name="my_follow">Takipçilerim</string>
     <string name="all">TÜMÜ</string>
     <string name="stats">İstatistikler</string>
     <string name="by">Oluşturan</string>
     <string name="on">Tarih</string>
+    <string name="from">Tarafından</string>
     <string name="now">Şimdi</string>
 
-    <string name="follow_system">Sistem dili</string>
-    <string name="date_format">MMM d yyyy</string>
+    <string name="like">Beğen</string>
+    <string name="liked">Beğenildi</string>
+    <string name="collect">Kaydet</string>
+    <string name="collected">Kaydedildi</string>
+    <string name="download">İndir</string>
+    <string name="followed">Takip edildi</string>
+    <string name="released">Yayınlandı</string>
+    <string name="published">Paylaşıldı</string>
+    <string name="curated">Seçilmiş</string>
+    <string name="photos">fotoğraflar</string>
+    <string name="users">kullanıcılar</string>
+    <string name="to">to</string>
+    <string name="your">sizin</string>
+    <string name="you">senin</string>
+    <string name="photo">fotoğraf</string>
+    <string name="more">DAHA FAZLA</string>
+
+    <string name="year_ago">yıl önce</string>
+    <string name="month_ago">ay önce</string>
+    <string name="day_ago">gün önce</string>
+    <string name="hour_ago">saat önce</string>
+    <string name="minute_ago">dakika önce</string>
+    <string name="second_ago">saniye önce</string>
+
+    <string name="relative_photo">ilgili fotoğraflar</string>
+    <string name="relative_collection">ilgili koleksiyonlar</string>
+
+    <string name="follow_system">Sistemi takip et</string>
+    <string name="date_format">MMM d, yyyy</string>
 
     <!-- about. -->
     <string name="unsplash">Unsplash.com</string>
+    <string name="about_unsplash">Güzel, ücretsiz fotoğraflar.\nDünyanın en cömert fotoğrafçılar topluluğu tarafından hediye edildi.</string>
     <string name="retrofit">Retrofit 2.0</string>
     <string name="about_retrofit">Type-safe HTTP client for Android and Java by Square, Inc.</string>
     <string name="glide">Glide</string>
@@ -49,23 +86,38 @@
     <string name="about_page_indicator">InkPageIndicator created by @nickbutcher for Plaid https://github.com/nickbutcher/plaid and backported by David Pacioianu for API 14+ (4.0+).</string>
     <string name="greendao_db">greenDAO</string>
     <string name="about_greendao_db">greenDAO is activity light and fast ORM solution for Android that maps objects to SQLite databases.</string>
+    <string name="butter_knife">Butter Knife</string>
+    <string name="about_butter_knife">Bind Android views and callbacks to fields and methods.</string>
+    <string name="number_anim_text_view">NumberAnimTextView</string>
+    <string name="about_number_anim_text_view">A TextView with animation when increase number.</string>
+    <string name="file_downloader">FileDownloader</string>
+    <string name="about_file_downloader">Multitask、MultiThread(MultiConnection)、Breakpoint-resume、High-concurrency、Simple to use、Single/NotSingle-process</string>
+    <string name="dagger">Dagger2</string>
+    <string name="about_dagger">A fast dependency injector for Android and Java.</string>
+    <string name="rx_java">RxJava</string>
+    <string name="about_rx_java">RxJava – Reactive Extensions for the JVM – a library for composing asynchronous and event-based programs using observable sequences for the Java VM.</string>
+    <string name="rx_android">RxAndroid</string>
+    <string name="about_rx_android">RxJava bindings for Android</string>
+    <string name="rx_lifecycle">RxLifecycle</string>
+    <string name="about_rx_lifecycle">Bind observables to the lifecycle of Activity or Fragment in a non-invasive way.</string>
 
     <!-- feedback. -->
-    <string name="feedback_click_retry">TEKRAR DENE</string>
+    <string name="feedback_click_retry">YENİDEN DENE</string>
 
     <string name="feedback_load_failed_tv">YÜKLEME BAŞARISIZ</string>
-    <string name="feedback_load_failed_toast">Yükleme Başarısız.</string>
-    <string name="feedback_load_nothing_tv">YÜKLENEMEDİ</string>
+    <string name="feedback_load_failed_toast">Yükleme başarısız</string>
+    <string name="feedback_load_nothing_tv">Yüklenemedi</string>
     <string name="feedback_load_nothing_toast">Yüklenemedi.</string>
 
     <string name="feedback_search_failed_tv">ARAMA BAŞARISIZ</string>
-    <string name="feedback_search_failed_toast">Arama Başarısız.</string>
-    <string name="feedback_search_nothing_tv">ARANAMADI</string>
+    <string name="feedback_search_failed_toast">Arama Başarısız</string>
+    <string name="feedback_search_nothing_tv">Aranamadı</string>
     <string name="feedback_search_nothing_toast">Aranamadı.</string>
+    <string name="feedback_search_bar">Unsplash.com'da ara…</string>
     <string name="feedback_search_photos_bar">Fotoğraf için anahtar kelimeler</string>
     <string name="feedback_search_users_bar">Kullanıcı için anahtar kelimeler</string>
     <string name="feedback_search_photos_tv">FOTOĞRAF ARA</string>
-    <string name="feedback_search_collections_tv">KOLEKSİYON ARA</string>
+    <string name="feedback_search_collections_tv">Koleksiyon ARA</string>
     <string name="feedback_search_users_tv">KULLANICI ARA</string>
 
     <string name="feedback_notify_restart">Çalışma için tekrar başlat.</string>
@@ -77,34 +129,40 @@
     <string name="feedback_download_collection_failed">Koleksiyon indirme başarısız.</string>
     <string name="feedback_downloading">İNDİRİLİYOR</string>
     <string name="feedback_download_start">İndirmeyi başlat.</string>
-    <string name="feedback_no_sd_card">SD Kart bulunamadı.</string>
+    <string name="feedback_no_sd_card">Hafıza kartı bulunamadı.</string>
     <string name="feedback_create_file_failed">Dosya oluşturulamadı.</string>
-    <string name="feedback_need_permission">İzin alma başarısız.</string>
-    <string name="feedback_choose_share_app">Fotoğraf Paylaş</string>
-    <string name="feedback_choose_wallpaper_app">Duvarkağıdı yap</string>
+    <string name="feedback_need_permission">İzin alınamadı.</string>
+    <string name="feedback_choose_share_app">Fotoğraf paylaş</string>
+    <string name="feedback_choose_wallpaper_app">Duvar kağıdı yap</string>
     <string name="feedback_download_repeat">Tekrar indir.</string>
+    <string name="feedback_file_does_not_exist">Dosya bulunmuyor</string>
 
+    <string name="feedback_views">Görüntüleme</string>
+    <string name="feedback_downloads">İndirilenler</string>
+    <string name="feedback_likes">Beğenilenler</string>
     <string name="feedback_size">Boyut</string>
     <string name="feedback_color">Renk</string>
     <string name="feedback_location">Konum</string>
+    <string name="feedback_camera_make">Kamera markası</string>
+    <string name="feedback_camera_model">Kamera modeli</string>
     <string name="feedback_exposure">Pozlama</string>
     <string name="feedback_aperture">Açıklık</string>
     <string name="feedback_focal">Odak Uzaklığı</string>
     <string name="feedback_iso">Iso</string>
 
-    <string name="feedback_portfolio_is_null">Portföy adresi null.</string>
+    <string name="feedback_portfolio_is_null">Kişisel site null.</string>
     <string name="feedback_no_filter">Filtre öğesi yok.</string>
 
     <string name="feedback_request_token_failed">Erişim izni isteği başarısız oldu.</string>
     <string name="feedback_login_text">Unsplash hesabınıza giriş yapın.</string>
-    <string name="feedback_please_login">Lütfen Giriş Yapınız.</string>
+    <string name="feedback_please_login">Lütfen giriş yapın.</string>
 
     <string name="feedback_edit_my_profile">Profili düzenle</string>
-    <string name="feedback_edit_username">Kullanıcı (Harf, sayı, noktalama)</string>
+    <string name="feedback_edit_username">Kullanıcı adı (harf, sayı, alt çizgi)</string>
     <string name="feedback_edit_first_name">Ad</string>
     <string name="feedback_edit_last_name">Soyad</string>
-    <string name="feedback_edit_email">Eposta</string>
-    <string name="feedback_edit_portfolio">Kişisel site/portföy</string>
+    <string name="feedback_edit_email">e-Posta</string>
+    <string name="feedback_edit_portfolio">Kişisel site</string>
     <string name="feedback_edit_location">Konum</string>
     <string name="feedback_edit_bio">Biyografi</string>
     <string name="feedback_update_profile_failed">Profil düzenlenemedi.</string>
@@ -120,7 +178,7 @@
     <string name="feedback_name_is_required">İsim gerekli.</string>
     <string name="feedback_sure">Emin misiniz?</string>
 
-    <string name="feedback_notify_set_back_to_top">Geriye bas efekti ayarlayabilirsiniz.</string>
+    <string name="feedback_notify_set_back_to_top">Geriye dönme etkisini ayarlayabilirsiniz.</string>
 
     <string name="feedback_add_photo_failed">Fotoğraf ekleme başarısız.</string>
     <string name="feedback_delete_photo_failed">Fotoğraf silme başarısız.</string>
@@ -129,35 +187,72 @@
     <string name="feedback_delete_collection_failed">Koleksiyon silme başarısız.</string>
 
     <string name="feedback_overload">Aşırı yükleme</string>
-    <string name="feedback_exceed_rate_limit" tools:ignore="Typos">Şu an, Usplash API kullanım limiti doldurdu, bu nedenle hiç birşey yüklenemiyor .\n\nBir saat sonra tekrar deneyebilirsiniz.</string>
+    <string name="feedback_exceed_rate_limit">Şu an, Usplash API kullanım limiti doldu, bu nedenle hiç birşey yüklenemiyor .\n\nBir saat sonra tekrar deneyebilirsiniz.</string>
 
     <string name="feedback_confirm_change_theme">Tema değişimini onayla</string>
-    <string name="feedback_change_theme_warning">Tema değişimi mevcut indirmeleri durduracak.</string>
+    <string name="feedback_change_theme_warning">Tema değişimi mevcut indirmeleri durdur.</string>
     <string name="feedback_confirm_restart">Yeniden başlatmayı onayla</string>
-    <string name="feedback_restart_warning">Yeniden başlatma mevcut indirmeleri durduracak.</string>
+    <string name="feedback_restart_warning">Yeniden başlatma aktif indirmeleri durdur.</string>
 
     <string name="feedback_click_again_to_exit">Çıkmak için tekrar basınız.</string>
 
-    <string name="feedback_share_photo_title">Unsplash.com dan bir fotoğraf</string>
+    <string name="feedback_share_photo_title">Unsplash.com da bir fotoğraf</string>
     <string name="feedback_share_photo_extra">Oluşturan # tarih $\n</string>
-    <string name="feedback_share_collection_title">Unsplash.com dan bir koleksiyon</string>
+    <string name="feedback_share_collection_title">Unsplash.com da bir koleksiyon</string>
     <string name="feedback_share_collection_extra">Oluşturan # Ttrih $\n</string>
-    <string name="feedback_share_user_title">Unsplash.com dan bir kullanıcı profili</string>
+    <string name="feedback_share_user_title">Unsplash.com da bir kullanıcı profili</string>
     <string name="feedback_share_user_extra">#\n</string>
 
+    <string name="feedback_like_failed">Fotoğraf beğenme başarısız oldu</string>
+    <string name="feedback_unlike_failed">Fotoğrafı beğenmeme başarısız oldu</string>
+
+    <string name="feedback_follow_failed">Takip edilemedi</string>
+    <string name="feedback_cancel_follow_failed">Takip bırakılamadı</string>
+
+    <string name="feedback_story_is_null">Hikaye mevcut değil veya yüklenmemiş</string>
+
+    <string name="feedback_get_notification_failed">Bildirimler yüklenemedi</string>
+
+    <string name="feedback_pick_update_interval">Güncelleme aralığı. (Saat)\nYalnızca Muzei 3.0'dan önceki sürümler için çalışır</string>
+    <string name="feedback_interval_bounds">Aralık 1 ile 24 arasında olmalıdır</string>
+    <string name="feedback_update_only_in_wifi">Cihaz yalnızca kablosuz ağa bağlandığında güncelle</string>
+    <string name="feedback_source_collection">Source collections</string>
+    <string name="feedback_set_as_source_succeed">Set as source successfully</string>
+    <string name="feedback_set_as_source_failed">This source is already exist</string>
+    <string name="feedback_confirm_exit_without_save">Ayarları kaydetmeden çıkmak istiyor musunuz?</string>
+
+    <string name="feedback_task_in_process">İndirme yaparken indiriciyi değiştiremezsiniz</string>
+
+    <string name="feedback_separated_by_comma">Separated by \",\" (like \"space,ocean\")</string>
+
+    <string name="feedback_drag_to_back">GERİ DÖNMEK İÇİN SÜRÜKLE…</string>
+
     <!-- introduce. -->
-    <string name="introduce_title_back_top">Yukarı Kaydır</string>
-    <string name="introduce_description_back_top">Üst çubuğu veya geri düğmesini tıklayın, fotoğraf listesi görünümü en üste geri gider.</string>
+    <string name="introduce_title_back_top">Yukarı kaydır</string>
+    <string name="introduce_description_back_top">Üst çubuğa veya geri düğmesini tıklanırsa, fotoğraf listesi görünümü en üste geri gider.</string>
+
+    <string name="introduce_title_data_collection">@string/settings_title_data_collection</string>
+    <string name="introduce_description_data_collection">@string/settings_summary_data_collection</string>
+
+    <string name="muzei_description">Unsplashta Öne Çıkan Fotoğraflar</string>
 
     <!-- menu. -->
-    <string name="action_home">Home</string>
-    <string name="action_collection">KOLEKSİYONLAR</string>
-    <string name="action_multi_filter">Çoklu-Filtre</string>
+    <string name="action_home">Anasayfa</string>
+    <string name="action_following">Takip ediliyor</string>
+    <string name="action_collection">Koleksiyon</string>
     <string name="action_category">Kategori</string>
-    <string name="action_change_theme">Tema Değiştir</string>
+    <string name="action_selected">Seçildi</string>
+    <string name="action_multi_filter">Çoklu-Filtre</string>
+    <string name="action_change_theme">Temayı değiştir</string>
     <string name="action_download_manage">İndirilenler</string>
     <string name="action_settings">Ayarlar</string>
     <string name="action_about">Hakkında</string>
+    <string name="action_logout">Çıkış yap</string>
+
+    <string name="action_orientation_all">Tümü</string>
+    <string name="action_orientation_landscape">Manzara</string>
+    <string name="action_orientation_portrait">Portre</string>
+    <string name="action_orientation_squarish">Kare</string>
 
     <string name="action_category_buildings">Yapılar</string>
     <string name="action_category_food_drink">Yemek &amp; İçecek</string>
@@ -168,32 +263,81 @@
 
     <string name="action_search">Ara</string>
     <string name="action_filter">Filtre</string>
+    <string name="action_notification">Bildirim</string>
+
+    <string name="action_refresh">Yenile</string>
 
     <string name="action_clear_text">Temizle</string>
 
-    <string name="action_open_download_link">İndirme sayfasını aç</string>
+    <string name="action_like">Beğen</string>
+    <string name="action_collect">Koleksiyona ekle</string>
+    <string name="action_open_download_link">İndirme Sayfasını Aç</string>
+    <string name="action_open_story_link">Open Story Image Page</string>
+    <string name="action_preview">Ön izleme</string>
     <string name="action_share">Paylaş</string>
     <string name="action_menu">Menü</string>
 
-    <string name="action_open_portfolio">Portföy bağlantısını aç</string>
+    <string name="action_open_portfolio">Kişisel web sayfasını aç</string>
     <string name="action_submit">Fotoğraf ekle</string>
 
     <string name="action_edit">Düzenle</string>
     <string name="action_download">İndir</string>
+    <string name="action_set_as_source">Duvar Kağıdı Kaynağı Olarak Ayarla</string>
+    <string name="action_remove_source">Duvar Kağıdı Kaynağından Kaldır</string>
 
     <string name="action_path">İndirme yolu</string>
     <string name="action_cancel_all">Tümünü iptal et</string>
 
     <!-- settings. -->
-    <string name="settings_category_basic">Basit</string>
-    <string name="settings_title_back_to_top">Üste gitmek için geri düğmesine basın</string>
-    <string name="settings_title_language">Dil</string>
-
     <string name="settings_category_filter">Filtre</string>
     <string name="settings_title_default_order">Varsayılan düzen</string>
     <string name="settings_title_default_collection_type">Varsayılan koleksiyon tarzı</string>
 
-    <string name="settings_category_download">İndirme</string>
-    <string name="settings_title_download_scale">İndirme boyutu</string>
+    <string name="action_clip_with_square">Kare olarak kırp</string>
+    <string name="action_clip_with_rectangle">Dikdörtgen olarak kırp</string>
+
+    <string name="action_align_left">Sol Tarafa Hizala</string>
+    <string name="action_align_center">Ortaya Hizala</string>
+    <string name="action_align_right">Sağ Tarafa Hizala</string>
+
+    <string name="action_wallpaper">Duvar kağıdı</string>
+    <string name="action_lockscreen">Kilit Ekranı</string>
+    <string name="action_wallpaper_lockscreen">Duvar Kağıdı ve Kilit Ekranı</string>
+
+    <string name="action_muzei_settings">Muzei için Ayarlar</string>
+
+    <!-- settings. -->
+    <string name="settings_category_basic">Temel</string>
+    <string name="settings_title_back_to_top">Yukarı kaydırmak için geri düğmesine basın</string>
+    <string name="settings_title_auto_night_mode">Otomatik Gece modu</string>
+    <string name="settings_title_night_start_time">Gece modu başlangıç zamanı</string>
+    <string name="settings_title_night_end_time">Gece modu bitiş zamanı</string>
+    <string name="settings_title_load_image_size">Yüklenecek görüntülerin çözünürlüğünü seçin</string>
+    <string name="settings_title_custom_api_key">Özel API Anahtarı</string>
+    <string name="settings_summary_custom_api_key">Kendi API anahtarınızı ayarlayın ve saklayın.</string>
+    <string name="settings_title_cdn_enabled">CDN etkin</string>
+    <string name="settings_summary_cdn_enabled">Uygulama, CDN etkinleştirildiğinde ayna sunucusundan fotoğrafları alacaktır.</string>
+    <string name="settings_title_language">Dil</string>
+    <string name="settings_title_live_wallpaper">Canlı duvar kağıdı</string>
+    <string name="settings_summary_live_wallpaper">Düzenli olarak Unsplashtan resimler alın ve bunları duvar kağıdı olarak ayarla.</string>
+    <string name="settings_title_data_collection">Veri toplamaya izin ver</string>
+    <string name="settings_summary_data_collection">Mysplashın geliştiricilerine kilitlenme verilerini göndermesine izin ver.</string>
+
+    <string name="settings_category_download">İndir</string>
+    <string name="settings_title_downloader">İndirici</string>
+    <string name="settings_title_download_scale">Download Scale</string>
+
+    <string name="settings_category_display">Görünüm</string>
+    <string name="settings_title_saturation_animation_enabled">Canlılık Animasyonu Etkin</string>
+    <string name="settings_title_saturation_animation_duration">Canlılık Animasyon Süresi</string>
+    <string name="settings_title_grid_list_in_port">Görüntü ızgarasını dikey yönde göster</string>
+    <string name="settings_title_grid_list_in_land">Görüntü ızgarasını yatay yönde göster</string>
+
+    <string name="muzei_settings_title_source">Kaynak</string>
+    <string name="muzei_settings_title_screen_size_image">Screen Size Image</string>
+    <string name="muzei_settings_title_screen_size_image_summary_off">Orijinal boyut</string>
+    <string name="muzei_settings_title_cache_mode">Önbellek Modu</string>
+    <string name="muzei_settings_title_collection_source">Koleksiyon Kaynağı</string>
+    <string name="muzei_settings_title_query">Sorgu</string>
 
 </resources>

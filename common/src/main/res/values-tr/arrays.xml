@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
 
     <!-- home tab. -->
     <string-array name="home_tabs">
-        <item>EDITORIAL</item>
-        <item>FOLLOWING</item>
-        <item>KOLEKSİYONLAR</item>
+        <item>EDİTÖRYAL</item>
+        <item>TAKİP EDİLENLER</item>
+        <item>KOLEKSİYON</item>
     </string-array>
 
     <!-- search tab. -->
     <string-array name="search_tabs">
         <item>FOTOĞRAFLAR</item>
-        <item>KOLEKSİYONLAR</item>
+        <item>KOLEKSİYON</item>
         <item>KULLANICILAR</item>
     </string-array>
 
@@ -19,14 +19,20 @@
     <string-array name="user_tabs">
         <item>FOTOĞRAFLAR</item>
         <item>BEĞENİLER</item>
-        <item>KOLEKSİYONLAR</item>
+        <item>KOLEKSİYON</item>
+    </string-array>
+
+    <!-- my follow tab. -->
+    <string-array name="my_follow_tabs">
+        <item>TAKİPÇİLER</item>
+        <item>TAKİP EDİLENLER</item>
     </string-array>
 
     <!-- download option. -->
     <string-array name="download_options">
         <item>İNDİR</item>
         <item>PAYLAŞ</item>
-        <item>DUVARKAĞIDI</item>
+        <item>DUVAR KAĞIDI</item>
     </string-array>
 
     <!-- requestKey order. -->
@@ -37,18 +43,38 @@
         <item>Rastgele</item>
     </string-array>
 
+    <!-- downloader -->
+    <string-array name="downloader_types">
+        <item>Mysplash indiricisi</item>
+        <item>Sistem indiricisi</item>
+    </string-array>
+
     <!-- download type. -->
     <string-array name="download_types">
-        <item>Tiny</item>
+        <item>Küçük</item>
         <item>Kompakt</item>
-        <item>Raw</item>
+        <item>Orjinal</item>
     </string-array>
 
     <!-- back to top. -->
     <string-array name="back_to_top_types">
         <item>Liste görünümünün tamamı</item>
-        <item>Sadece giriş</item>
-        <item>Hiçbiri</item>
+        <item>Sadece anasayfa</item>
+        <item>Asla</item>
+    </string-array>
+
+    <!-- auto night mode. -->
+    <string-array name="auto_night_mode_types">
+        <item>Kapat</item>
+        <item>Atomatik</item>
+        <item>Sistemi takip et</item>
+    </string-array>
+
+    <!-- saturation animation duration. -->
+    <string-array name="saturation_animation_durations">
+        <item>Kısa (300 ms)</item>
+        <item>Orta (1000 ms)</item>
+        <item>Normal (2000 ms)</item>
     </string-array>
 
     <!-- search orientation. -->
@@ -57,5 +83,18 @@
         <item>Portre</item>
         <item>Kare</item>
     </string-array>
-	
+
+    <!-- Muzei source. -->
+    <string-array name="muzei_sources">
+        <item>Tüm fotoğraflar</item>
+        <item>Öne çıkan</item>
+        <item>Koleksiyon</item>
+    </string-array>
+
+    <!-- Muzei cache mode. -->
+    <string-array name="muzei_cache_modes">
+        <item>Eski fotoğrafları sakla</item>
+        <item>Eski fotoğrafları sil</item>
+    </string-array>
+
 </resources>
