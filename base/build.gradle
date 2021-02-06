@@ -72,7 +72,7 @@ dependencies {
     api 'com.github.bumptech.glide:okhttp3-integration:1.4.0@aar'
 
     // butter knife.
-    api 'com.jakewharton:butterknife:10.1.0'
+    api 'com.jakewharton:butterknife:10.2.3'
 
     // dagger.
     api 'com.google.dagger:dagger:2.21'
