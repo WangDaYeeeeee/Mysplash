@@ -9,11 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.wangdaye.base.unsplash.User;
 import com.wangdaye.common.R;
 import com.wangdaye.common.base.adapter.BaseAdapter;
-import com.wangdaye.base.unsplash.User;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -33,9 +31,9 @@ public class UserAdapter extends BaseAdapter<User, UserModel, UserHolder> {
         super(context, list);
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public UserHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public UserHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new UserHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_user, parent, false)
@@ -54,7 +52,7 @@ public class UserAdapter extends BaseAdapter<User, UserModel, UserHolder> {
     }
 
     @Override
-    public void onViewRecycled(@NotNull UserHolder holder) {
+    public void onViewRecycled(@NonNull UserHolder holder) {
         holder.onRecycled();
     }
 

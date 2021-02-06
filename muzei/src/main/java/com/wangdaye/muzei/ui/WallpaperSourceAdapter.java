@@ -1,7 +1,5 @@
 package com.wangdaye.muzei.ui;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +7,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.wangdaye.common.base.activity.MysplashActivity;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.wangdaye.base.MuzeiWallpaperSource;
+import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.muzei.R;
 import com.wangdaye.muzei.R2;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,9 +119,9 @@ public class WallpaperSourceAdapter
         this.activity = activity;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_wallpaper_source, parent, false);
         return new ViewHolder(v);
@@ -140,7 +139,7 @@ public class WallpaperSourceAdapter
     }
 
     @Override
-    public void onViewRecycled(@NotNull ViewHolder holder) {
+    public void onViewRecycled(@NonNull ViewHolder holder) {
         holder.onRecycled();
     }
 

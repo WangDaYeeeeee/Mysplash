@@ -1,19 +1,17 @@
 package com.wangdaye.me.ui.adapter;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.wangdaye.common.base.adapter.BaseAdapter;
-import com.wangdaye.base.unsplash.User;
-import com.wangdaye.me.R;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import com.wangdaye.base.unsplash.User;
+import com.wangdaye.common.base.adapter.BaseAdapter;
+import com.wangdaye.me.R;
 
 import java.util.List;
 
@@ -32,9 +30,9 @@ public class MyFollowAdapter extends BaseAdapter<User, MyFollowModel, MyFollowHo
         super(context, list);
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public MyFollowHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public MyFollowHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new MyFollowHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_my_follow_user, parent, false)
@@ -52,7 +50,7 @@ public class MyFollowAdapter extends BaseAdapter<User, MyFollowModel, MyFollowHo
         onBindViewHolder(holder, model);
     }
 
-    public void onViewRecycled(@NotNull MyFollowHolder holder) {
+    public void onViewRecycled(@NonNull MyFollowHolder holder) {
         holder.onRecycled();
     }
 

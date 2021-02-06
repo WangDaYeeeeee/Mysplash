@@ -9,12 +9,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.wangdaye.common.R;
-import com.wangdaye.common.base.adapter.BaseAdapter;
 import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.User;
-
-import org.jetbrains.annotations.NotNull;
+import com.wangdaye.common.R;
+import com.wangdaye.common.base.adapter.BaseAdapter;
 
 import java.util.List;
 
@@ -34,9 +32,9 @@ public class CollectionAdapter extends BaseAdapter<Collection, CollectionModel, 
         super(context, list);
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public CollectionHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public CollectionHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new CollectionHolder(
                 LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_collection, parent, false)

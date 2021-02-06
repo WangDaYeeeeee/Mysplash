@@ -8,32 +8,31 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatImageView;
-
 import android.widget.Button;
 import android.widget.ImageView;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.bumptech.glide.request.target.Target;
 import com.wangdaye.base.i.Downloadable;
 import com.wangdaye.base.unsplash.Photo;
+import com.wangdaye.common.base.activity.ReadWriteActivity;
 import com.wangdaye.common.base.popup.MysplashPopupWindow;
+import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.helper.RoutingHelper;
-import com.wangdaye.common.base.activity.ReadWriteActivity;
-import com.wangdaye.common.image.ImageHelper;
 import com.wangdaye.photo.R;
 import com.wangdaye.photo.R2;
 import com.wangdaye.photo.ui.dialog.WallpaperWhereDialog;
 import com.wangdaye.photo.ui.photoView.PhotoView;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
@@ -158,7 +157,7 @@ public class SetWallpaperActivity extends ReadWriteActivity
 
     @SuppressLint("MissingSuperCall")
     @Override
-    protected void onSaveInstanceState(@NotNull Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         // do nothing.
     }
 

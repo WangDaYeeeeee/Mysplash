@@ -1,23 +1,22 @@
 package com.wangdaye.about.ui;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.wangdaye.about.R;
-import com.wangdaye.about.ui.holder.AppHolder;
-import com.wangdaye.about.ui.holder.TranslatorHolder;
-import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.about.model.AboutModel;
 import com.wangdaye.about.presenter.CreateAboutModelPresenter;
+import com.wangdaye.about.ui.holder.AppHolder;
 import com.wangdaye.about.ui.holder.CategoryHolder;
 import com.wangdaye.about.ui.holder.HeaderHolder;
 import com.wangdaye.about.ui.holder.LibraryHolder;
+import com.wangdaye.about.ui.holder.TranslatorHolder;
+import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.base.adapter.BaseAdapter;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ import java.util.List;
 
 public class AboutAdapter extends BaseAdapter<AboutModel, AboutModel, AboutAdapter.ViewHolder> {
 
-    private MysplashActivity a;
+    private final MysplashActivity a;
 
     /**
      * Basic CollectionHolder class for {@link AboutAdapter}.
@@ -56,9 +55,9 @@ public class AboutAdapter extends BaseAdapter<AboutModel, AboutModel, AboutAdapt
         return model;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public AboutAdapter.ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
+    public AboutAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         switch (viewType) {
             case AboutModel.TYPE_HEADER:
                 return new HeaderHolder(
@@ -100,7 +99,7 @@ public class AboutAdapter extends BaseAdapter<AboutModel, AboutModel, AboutAdapt
     }
 
     @Override
-    public void onViewRecycled(@NotNull ViewHolder holder) {
+    public void onViewRecycled(@NonNull ViewHolder holder) {
         holder.onRecycled();
     }
 

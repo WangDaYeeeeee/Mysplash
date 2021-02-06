@@ -3,14 +3,13 @@ package com.wangdaye.common.ui.behavior;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.pixelcan.inkpageindicator.InkPageIndicator;
 import com.wangdaye.common.R;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.utils.DisplayUtils;
-
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Ink page indicator behavior.
@@ -27,7 +26,7 @@ public class InkPageIndicatorBehavior<V extends InkPageIndicator> extends Coordi
     }
 
     @Override
-    public boolean onLayoutChild(@NotNull CoordinatorLayout parent, @NotNull V child, int layoutDirection) {
+    public boolean onLayoutChild(@NonNull CoordinatorLayout parent, @NonNull V child, int layoutDirection) {
         int marginTop = parent.getResources().getDimensionPixelSize(R.dimen.normal_margin);
         int statusBarHeight = DisplayUtils.getStatusBarHeight(parent.getResources());
         child.layout(

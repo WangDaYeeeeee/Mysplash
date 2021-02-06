@@ -7,16 +7,16 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.image.ImageHelper;
+import com.wangdaye.common.image.transformation.CircleTransformation;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.rippleButton.RippleButton;
 import com.wangdaye.me.R2;
 
-import org.jetbrains.annotations.Nullable;
-
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

@@ -24,15 +24,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.wangdaye.common.R;
-import com.wangdaye.common.R2;
-import com.wangdaye.common.base.activity.MysplashActivity;
-import com.wangdaye.common.base.dialog.MysplashDialogFragment;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.base.unsplash.ChangeCollectionPhotoResult;
 import com.wangdaye.base.unsplash.Collection;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
+import com.wangdaye.common.R;
+import com.wangdaye.common.R2;
+import com.wangdaye.common.base.activity.MysplashActivity;
+import com.wangdaye.common.base.dialog.MysplashDialogFragment;
 import com.wangdaye.common.di.component.DaggerNetworkServiceComponent;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.CollectionService;
@@ -44,8 +44,6 @@ import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.helper.NotificationHelper;
 import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.utils.manager.ThemeManager;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -437,7 +435,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
         private int scrollY = 0;
 
         @Override
-        public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy){
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy){
             scrollY += dy;
             selectorTitleBar.setElevation(Math.min(5, scrollY));
         }
@@ -446,7 +444,7 @@ public class SelectCollectionDialog extends MysplashDialogFragment
     private class LoadScrollListener extends RecyclerView.OnScrollListener {
 
         @Override
-        public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             if (recyclerView.getLayoutManager() == null) {
                 return;
             }
@@ -530,8 +528,8 @@ public class SelectCollectionDialog extends MysplashDialogFragment
 
     private class OnChangeCollectionPhotoObserver extends BaseObserver<ChangeCollectionPhotoResult> {
 
-        private Collection collection;
-        private boolean add;
+        private final Collection collection;
+        private final boolean add;
 
         OnChangeCollectionPhotoObserver(Collection collection, boolean add) {
             this.collection = collection;

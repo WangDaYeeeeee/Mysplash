@@ -25,7 +25,7 @@ import com.wangdaye.mysplash.common.utils.helper.LiveWallpaperHelper;
 import com.wangdaye.mysplash.common.utils.manager.LiveWallpaperOptionManager;
 import com.wangdaye.mysplash.common.utils.manager.ThreadManager;
 
-import org.jetbrains.annotations.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.concurrent.ExecutionException;
 

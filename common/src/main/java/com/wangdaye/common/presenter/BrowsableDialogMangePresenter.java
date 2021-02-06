@@ -1,14 +1,16 @@
 package com.wangdaye.common.presenter;
 
+import androidx.annotation.Nullable;
+
 import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.dialog.RequestBrowsableDataDialog;
 import com.wangdaye.common.ui.dialog.RetryDialog;
 
-import org.jetbrains.annotations.Nullable;
 
 public abstract class BrowsableDialogMangePresenter {
 
-    @Nullable private RequestBrowsableDataDialog progress;
+    @Nullable
+    private RequestBrowsableDataDialog progress;
     @Nullable private RetryDialog retry;
 
     private State state;
