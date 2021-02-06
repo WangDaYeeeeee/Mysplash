@@ -5,4 +5,5 @@
 /.idea/libraries
 .DS_Store
 /build
+**/build
 /captures
