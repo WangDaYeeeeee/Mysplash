@@ -113,7 +113,7 @@
     <string name="feedback_search_failed_toast">Arama Başarısız</string>
     <string name="feedback_search_nothing_tv">Aranamadı</string>
     <string name="feedback_search_nothing_toast">Aranamadı.</string>
-    <string name="feedback_search_bar">Unsplash.com'da ara…</string>
+    <string name="feedback_search_bar">Unsplash.com\'da ara…</string>
     <string name="feedback_search_photos_bar">Fotoğraf için anahtar kelimeler</string>
     <string name="feedback_search_users_bar">Kullanıcı için anahtar kelimeler</string>
     <string name="feedback_search_photos_tv">FOTOĞRAF ARA</string>
@@ -213,7 +213,7 @@
 
     <string name="feedback_get_notification_failed">Bildirimler yüklenemedi</string>
 
-    <string name="feedback_pick_update_interval">Güncelleme aralığı. (Saat)\nYalnızca Muzei 3.0'dan önceki sürümler için çalışır</string>
+    <string name="feedback_pick_update_interval">Güncelleme aralığı. (Saat)\nYalnızca Muzei 3.0\'dan önceki sürümler için çalışır</string>
     <string name="feedback_interval_bounds">Aralık 1 ile 24 arasında olmalıdır</string>
     <string name="feedback_update_only_in_wifi">Cihaz yalnızca kablosuz ağa bağlandığında güncelle</string>
     <string name="feedback_source_collection">Source collections</string>

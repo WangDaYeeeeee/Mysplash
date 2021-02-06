@@ -1,62 +1,61 @@
 package com.wangdaye.user;
 
 import android.os.Bundle;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-
-import com.alibaba.android.arouter.facade.annotation.Route;
-import com.google.android.material.tabs.TabLayout;
-
-import androidx.lifecycle.ViewModelProviders;
-import androidx.transition.TransitionManager;
-import androidx.viewpager.widget.ViewPager;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Handler;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.transition.TransitionManager;
+import androidx.viewpager.widget.ViewPager;
+
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.google.android.material.tabs.TabLayout;
+import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.i.Downloadable;
+import com.wangdaye.base.i.PagerManageView;
+import com.wangdaye.base.i.PagerView;
 import com.wangdaye.base.pager.ListPager;
 import com.wangdaye.base.pager.ProfilePager;
-import com.wangdaye.common.base.adapter.BaseAdapter;
-import com.wangdaye.common.base.vm.ParamsViewModelFactory;
-import com.wangdaye.common.base.vm.pager.PagerViewModel;
-import com.wangdaye.common.presenter.LoadImagePresenter;
-import com.wangdaye.common.presenter.TabLayoutDoubleClickBackToTopPresenter;
-import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
-import com.wangdaye.common.ui.dialog.ProfileDialog;
-import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
-import com.wangdaye.common.utils.helper.RoutingHelper;
-import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
-import com.wangdaye.component.ComponentFactory;
-import com.wangdaye.base.DownloadTask;
 import com.wangdaye.base.resource.ListResource;
-import com.wangdaye.base.i.PagerView;
 import com.wangdaye.base.resource.Resource;
-import com.wangdaye.common.base.vm.PagerManageViewModel;
-import com.wangdaye.common.ui.adapter.collection.CollectionAdapter;
-import com.wangdaye.common.presenter.BrowsableDialogMangePresenter;
-import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
-import com.wangdaye.base.i.PagerManageView;
-import com.wangdaye.common.base.activity.LoadableActivity;
 import com.wangdaye.base.unsplash.Photo;
 import com.wangdaye.base.unsplash.User;
+import com.wangdaye.common.base.activity.LoadableActivity;
+import com.wangdaye.common.base.adapter.BaseAdapter;
+import com.wangdaye.common.base.vm.PagerManageViewModel;
+import com.wangdaye.common.base.vm.ParamsViewModelFactory;
+import com.wangdaye.common.base.vm.pager.PagerViewModel;
+import com.wangdaye.common.presenter.BrowsableDialogMangePresenter;
+import com.wangdaye.common.presenter.LoadImagePresenter;
+import com.wangdaye.common.presenter.TabLayoutDoubleClickBackToTopPresenter;
+import com.wangdaye.common.presenter.pager.PagerLoadablePresenter;
+import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.common.ui.adapter.PagerAdapter;
+import com.wangdaye.common.ui.adapter.collection.CollectionAdapter;
+import com.wangdaye.common.ui.adapter.collection.CollectionItemEventHelper;
 import com.wangdaye.common.ui.adapter.photo.PhotoAdapter;
+import com.wangdaye.common.ui.adapter.photo.PhotoItemEventHelper;
+import com.wangdaye.common.ui.dialog.ProfileDialog;
 import com.wangdaye.common.ui.widget.AutoHideInkPageIndicator;
 import com.wangdaye.common.ui.widget.CircularImageView;
 import com.wangdaye.common.ui.widget.NestedScrollAppBarLayout;
+import com.wangdaye.common.ui.widget.insets.FitBottomSystemBarViewPager;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
+import com.wangdaye.common.utils.AnimUtils;
+import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.DisplayUtils;
 import com.wangdaye.common.utils.ShareUtils;
 import com.wangdaye.common.utils.helper.NotificationHelper;
+import com.wangdaye.common.utils.helper.RoutingHelper;
 import com.wangdaye.common.utils.manager.AuthManager;
-import com.wangdaye.common.ui.adapter.PagerAdapter;
-import com.wangdaye.common.utils.AnimUtils;
-import com.wangdaye.common.utils.BackToTopUtils;
 import com.wangdaye.common.utils.manager.ThemeManager;
-import com.wangdaye.common.presenter.pager.PagerViewManagePresenter;
+import com.wangdaye.component.ComponentFactory;
 import com.wangdaye.user.di.component.DaggerApplicationComponent;
 import com.wangdaye.user.ui.UserCollectionsView;
 import com.wangdaye.user.ui.UserPhotosView;
@@ -65,8 +64,6 @@ import com.wangdaye.user.vm.UserActivityModel;
 import com.wangdaye.user.vm.UserCollectionsViewModel;
 import com.wangdaye.user.vm.UserLikesViewModel;
 import com.wangdaye.user.vm.UserPhotosViewModel;
-
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -115,12 +112,12 @@ public class UserActivity extends LoadableActivity<Photo>
     @BindView(R2.id.activity_user_indicator) AutoHideInkPageIndicator indicator;
     private PagerAdapter adapter;
 
-    private PagerView[] pagers = new PagerView[pageCount()];
-    private BaseAdapter[] adapters = new BaseAdapter[pageCount()];
+    private final PagerView[] pagers = new PagerView[pageCount()];
+    private final BaseAdapter[] adapters = new BaseAdapter[pageCount()];
 
     private UserActivityModel activityModel;
     private PagerManageViewModel pagerManageModel;
-    private PagerViewModel[] pagerModels = new PagerViewModel[pageCount()];
+    private final PagerViewModel[] pagerModels = new PagerViewModel[pageCount()];
     private UserPhotosViewModel photoPagerModel;
     private UserLikesViewModel likesPagerModel;
     private UserCollectionsViewModel collectionsPagerModel;
@@ -321,11 +318,7 @@ public class UserActivity extends LoadableActivity<Photo>
                 collectionsPagerModel.refresh();
             }
 
-            if (TextUtils.isEmpty(resource.data.portfolio_url)) {
-                toolbar.getMenu().getItem(0).setVisible(false);
-            } else {
-                toolbar.getMenu().getItem(0).setVisible(true);
-            }
+            toolbar.getMenu().getItem(0).setVisible(!TextUtils.isEmpty(resource.data.portfolio_url));
 
             LoadImagePresenter.loadUserAvatar(this, avatar, resource.data, null);
 

@@ -47,7 +47,7 @@ public class CircularProgressIcon extends FrameLayout {
 
     private class ShowAnimation extends Animation {
 
-        private View target;
+        private final View target;
 
         ShowAnimation(View target) {
             this.target = target;
@@ -68,7 +68,7 @@ public class CircularProgressIcon extends FrameLayout {
 
     private class HideAnimation extends Animation {
 
-        private View target;
+        private final View target;
 
         HideAnimation(View target) {
             this.target = target;
@@ -86,7 +86,7 @@ public class CircularProgressIcon extends FrameLayout {
         }
     }
 
-    private Animation.AnimationListener animationListener = new Animation.AnimationListener() {
+    private final Animation.AnimationListener animationListener = new Animation.AnimationListener() {
 
         @Override
         public void onAnimationStart(Animation animation) {
@@ -144,11 +144,7 @@ public class CircularProgressIcon extends FrameLayout {
         addView(progress);
 
         forceSetResultState(android.R.color.transparent);
-    }
-
-
-
-    @Override
+    }@Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (state == STATE_PROGRESS) {

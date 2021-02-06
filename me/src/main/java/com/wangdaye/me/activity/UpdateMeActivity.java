@@ -5,32 +5,32 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.IntDef;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.widget.NestedScrollView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.widget.NestedScrollView;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.wangdaye.base.unsplash.Me;
+import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.network.observer.BaseObserver;
 import com.wangdaye.common.network.service.UserService;
-import com.wangdaye.common.base.activity.MysplashActivity;
 import com.wangdaye.common.ui.widget.swipeBackView.SwipeBackCoordinatorLayout;
 import com.wangdaye.common.utils.FullscreenInputWorkaround;
-import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.common.utils.helper.NotificationHelper;
+import com.wangdaye.common.utils.manager.AuthManager;
 import com.wangdaye.me.R;
 import com.wangdaye.me.R2;
 import com.wangdaye.me.di.component.DaggerApplicationComponent;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -120,7 +120,7 @@ public class UpdateMeActivity extends MysplashActivity
     }
 
     @Override
-    public void onSaveInstanceState(@NotNull Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (usernameTxt.getText() != null) {
             outState.putString(KEY_UPDATE_ME_ACTIVITY_USERNAME, usernameTxt.getText().toString());
