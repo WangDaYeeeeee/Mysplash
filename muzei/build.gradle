@@ -24,32 +24,22 @@ android {
     }
 }
 
-allprojects {
-    repositories {
-        jcenter()
-        google()
-        maven {
-            url "https://jitpack.io"
-        }
-    }
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project (':common')
 
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
     // butter knife.
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.3'
 
     // dagger.
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.21'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.31.2'
 
     // arouter.
-    annotationProcessor 'com.alibaba:arouter-compiler:1.2.0'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.5.1'
 
     // muzei.
     implementation "com.google.android.apps.muzei:muzei-api:3.1.0"
