@@ -43,5 +43,5 @@ dependencies {
     annotationProcessor 'com.alibaba:arouter-compiler:1.5.1'
 
     // muzei.
-    implementation "com.google.android.apps.muzei:muzei-api:3.1.0"
+    implementation "com.google.android.apps.muzei:muzei-api:3.2.0"
 }
